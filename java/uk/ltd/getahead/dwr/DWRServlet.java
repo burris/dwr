@@ -2,6 +2,7 @@ package uk.ltd.getahead.dwr;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -584,20 +585,64 @@ public class DWRServlet extends HttpServlet
 
             doReply(req, resp, reply);
         }
-        catch (IllegalAccessException ex)
+        catch (Exception ex)
         {
-            ex.printStackTrace();
+            doError(req, resp, ex);
+        }
+    }
+
+    /**
+     * @param req
+     * @param resp
+     * @param ex
+     */
+    private void doError(HttpServletRequest req, HttpServletResponse resp, Throwable ex)
+    {
+        if (ex instanceof InvocationTargetException)
+        {
+            InvocationTargetException itex = (InvocationTargetException) ex;
+            doError(req, resp, itex.getCause());
+        }
+        else if (ex instanceof IllegalArgumentException)
+        {
+            IllegalArgumentException iaex = (IllegalArgumentException) ex;
+            iaex.printStackTrace();
             doError(resp, HttpServletResponse.SC_FORBIDDEN, getClassName(req));
         }
-        catch (IllegalArgumentException ex)
+        else if (ex instanceof IllegalAccessException)
         {
-            ex.printStackTrace();
+            IllegalAccessException iaex = (IllegalAccessException) ex;
+            iaex.printStackTrace();
             doError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing class parameter");
         }
-        catch (Exception ex)
+        else
         {
             ex.printStackTrace();
             doError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception: "+ex);
+        }
+    }
+
+    /**
+     * @param resp
+     * @param reason
+     * @param message
+     */
+    private void doError(HttpServletResponse resp, int reason, String message)
+    {
+        try
+        {
+            resp.setStatus(reason);
+            resp.setContentType("text/html");
+
+            PrintWriter out = resp.getWriter();
+            String output = escape(message);
+            out.println("<script type='text/javascript'>window.parent.dwrHandleError('"+output+"')</script>");
+            out.flush();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+            return;
         }
     }
 
@@ -626,8 +671,9 @@ public class DWRServlet extends HttpServlet
         }
         else
         {
-            out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('"+reply+"')</script>");
-            out.println("<p>The called function returned: [<span style='color:#800; font-family:monospace;'>"+reply+"</span>]<br/>");
+            String output = escape(reply.toString());
+            out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('"+output+"')</script>");
+            out.println("<p>The called function returned: [<span style='color:#800; font-family:monospace;'>"+output+"</span>]<br/>");
         }
 
         out.println("This resulted from the query: [<span style='color:#800; font-family:monospace;'>"+req.getQueryString()+"</span>]</p>");
@@ -640,26 +686,17 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * @param resp
-     * @param reason
-     * @param message
+     * @param input
+     * @return Ans escapsed version of the string
      */
-    private void doError(HttpServletResponse resp, int reason, String message)
+    private String escape(String input)
     {
-        try
-        {
-            resp.setStatus(reason);
-            resp.setContentType("text/html");
-
-            PrintWriter out = resp.getWriter();
-            out.println("<script type='text/javascript'>window.parent.dwrHandleError('"+message+"')</script>");
-            out.flush();
-        }
-        catch (IOException ex)
-        {
-            ex.printStackTrace();
-            return;
-        }
+        input = input.replaceAll("\'", "\\\\'");
+        input = input.replaceAll("\"", "\\\\\"");
+        input = input.replaceAll("\r", "\\\\r");
+        input = input.replaceAll("\n", "\\\\n");
+        input = input.replaceAll("\t", "\\\\t");
+        return input;
     }
 
     /**
