@@ -1,36 +1,31 @@
 // engine.js
-var preHook;
-var postHook;
-var calls = new Object();
-var errorHandler;
-
-function Call(callback)
-{
-    this.callback = callback;
-}
+var dwrPreHook;
+var dwrPostHook;
+var dwrCalls = new Object();
+var dwrErrorHandler;
 
 function dwrSetErrorHandler(handler)
 {
-    errorHandler = handler;
+    dwrErrorHandler = handler;
 }
 
-function dwrPreHook(handler)
+function dwrSetPreHook(handler)
 {
-    preHook = handler;
+    dwrPreHook = handler;
 }
 
-function dwrPostHook(handler)
+function dwrSetPostHook(handler)
 {
-    postHook = handler;
+    dwrPostHook = handler;
 }
 
 function dwrHandleResponse(id, reply)
 {
-    var call = calls[id];
+    var call = dwrCalls[id];
     if (call == null)
     {
         var known = "";
-        for (call in calls)
+        for (call in dwrCalls)
         {
             known += call + "\n";
         }
@@ -55,17 +50,17 @@ function dwrHandleResponse(id, reply)
         call.callback(reply);
     }
 
-    if (postHook != null)
+    if (dwrPostHook != null)
     {
-        postHook();
+        dwrPostHook();
     }
 
-    calls[id] = undefined;
+    dwrCalls[id] = undefined;
 }
 
 function dwrHandleError(id, reason)
 {
-    var call = calls[id];
+    var call = dwrCalls[id];
     if (call == null)
     {
         alert("Internal Error: Call with id="+id+" unknown.");
@@ -77,21 +72,21 @@ function dwrHandleError(id, reason)
         call.iframe.parentNode.removeChild(call.iframe);
     }
 
-    if (postHook != null)
+    if (dwrPostHook != null)
     {
-        postHook();
+        dwrPostHook();
     }
 
-    if (errorHandler != null)
+    if (dwrErrorHandler != null)
     {
-        errorHandler(reason);
+        dwrErrorHandler(reason);
     }
     else
     {
         alert(reason);
     }
 
-    calls[id] = undefined;
+    dwrCalls[id] = undefined;
 }
 
 function dwrGetID()
@@ -102,13 +97,14 @@ function dwrGetID()
 
 function dwrExecute(func, classname, methodname, vararg_params)
 {
-    var call = new Call(func);
+    var call = new Object();
+    call.callback = func
     call.id = dwrGetID();
-    calls[call.id] = call;
+    dwrCalls[call.id] = call;
 
-    if (preHook != null)
+    if (dwrPreHook != null)
     {
-        preHook();
+        dwrPreHook();
     }
 
     if (func != null && typeof func != "function")
@@ -122,7 +118,8 @@ function dwrExecute(func, classname, methodname, vararg_params)
     var argdata = '';
     for (var i=3; i<dwrExecute.arguments.length; i++)
     {
-        argdata = argdata + '&param' + (i-3) + '=' + dwrExecute.arguments[i];
+        var marshall = dwrMarshall(dwrExecute.arguments[i]);
+        argdata = argdata + '&param' + (i-3) + '=' + marshall;
     }
 
     // Warning: if you can see EL-like (${...}) expressions on the next line, don't be fooled into thinking it is EL.
@@ -168,10 +165,94 @@ function dwrExecute(func, classname, methodname, vararg_params)
     }
 }
 
+function dwrMarshall(data)
+{
+    if (data == null)
+    {
+        return 
+    }
+
+    switch (typeof data)
+    {
+    case "boolean":
+        return data;
+
+    case "number":
+        return data;
+
+    case "string":
+        return encodeURIComponent(data);
+
+    case "object":
+        if (data instanceof Boolean)
+        {
+            return data;
+        }
+        else if (data instanceof Number)
+        {
+            return data;
+        }
+        else if (data instanceof String)
+        {
+            return encodeURIComponent(data);
+        }
+        else if (data instanceof Date)
+        {
+            return encodeURIComponent(data);
+        }
+        else if (data instanceof Array)
+        {
+            var reply = "["
+            for (var i = 0; i < data.length; i++)
+            {
+                if (i != 0)
+                {
+                    reply += ",";
+                }
+
+                var marshalled = dwrMarshall(data[i]).toString();
+                marshalled = marshalled.replace(/,/, "%2c");
+                marshalled = marshalled.replace(/\[/, "%5b");
+                marshalled = marshalled.replace(/\]/, "%5d");
+                reply += marshalled;
+            }
+            reply += "]";
+            return reply;
+        }
+        else
+        {
+             // treat anything else as an associative array (map)
+            var reply = "{"
+            for (element in data)
+            {
+                reply += element;
+                reply += ":";
+                reply += data[element];
+                reply += ", ";
+            }
+            reply.substring(0, reply.length() - 2);
+            reply += "}";
+            return reply;
+        }
+
+    default:
+        return data;
+    }
+
+    return data;
+}
+
 function dwrStateChange(call)
 {
     if (call.req.readyState == 4)
     {
-        eval(call.req.responseText);
+        if (call.req.status == 200)
+        {
+            eval(call.req.responseText);
+        }
+        else
+        {
+            dwrHandleError(call.id, call.req.responseText);
+        }
     }
 }

@@ -13,7 +13,6 @@ import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
@@ -48,9 +47,9 @@ public class Configuration
     }
 
     /**
+     * Add to the current configuration by reading a DOM tree from a IO stream.
      * @param in The InputStream to parse from
-     * @throws FactoryConfigurationError
-     * @throws SAXException 
+     * @throws SAXException If the parse fails
      */
     public void addConfig(InputStream in) throws SAXException
     {
@@ -75,8 +74,9 @@ public class Configuration
     }
 
     /**
-     * @param doc
-     * @throws SAXException
+     * Add to the current configuration by reading a DOM tree directly
+     * @param doc The DOM tree
+     * @throws SAXException If the parse fails
      */
     public void addConfig(Document doc) throws SAXException
     {
@@ -102,8 +102,9 @@ public class Configuration
     }
 
     /**
-     * @param child
-     * @throws SAXException
+     * Internal method to load the inits element
+     * @param child The element to read
+     * @throws SAXException If the parse fails
      */
     private void loadInits(Element child) throws SAXException
     {
@@ -127,8 +128,9 @@ public class Configuration
     }
 
     /**
-     * @param initer
-     * @throws SAXException
+     * Internal method to load the creator element
+     * @param initer The element to read
+     * @throws SAXException If the parse fails
      */
     private void loadCreator(Element initer) throws SAXException
     {
@@ -147,8 +149,9 @@ public class Configuration
     }
 
     /**
-     * @param initer
-     * @throws SAXException
+     * Internal method to load the converter element
+     * @param initer The element to read
+     * @throws SAXException If the parse fails
      */
     private void loadConverter(Element initer) throws SAXException
     {
@@ -167,8 +170,9 @@ public class Configuration
     }
 
     /**
-     * @param child
-     * @throws SAXException 
+     * Internal method to load the create/convert elements
+     * @param child The element to read
+     * @throws SAXException If the parse fails
      */
     private void loadAllows(Element child) throws SAXException
     {
@@ -191,8 +195,9 @@ public class Configuration
     }
 
     /**
-     * @param allower
-     * @throws SAXException 
+     * Internal method to load the convert element
+     * @param allower The element to read
+     * @throws SAXException If the parse fails
      */
     private void loadConvert(Element allower) throws SAXException
     {
@@ -218,8 +223,9 @@ public class Configuration
     }
 
     /**
-     * @param allower
-     * @throws SAXException
+     * Internal method to load the create element
+     * @param allower The element to read
+     * @throws SAXException If the parse fails
      */
     private void loadCreate(Element allower) throws SAXException
     {

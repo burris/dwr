@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 import uk.ltd.getahead.dwr.Converter.ScriptSetup;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
+import uk.ltd.getahead.dwr.util.Log;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -65,7 +66,7 @@ public class DWRServlet extends HttpServlet
         }
         catch (SAXException ex)
         {
-            ex.printStackTrace();
+            Log.fatal("Failed to parse dwr.xml", ex);
             throw new ServletException("Parse error reading from dwr.xml", ex);
         }
     }
@@ -86,6 +87,7 @@ public class DWRServlet extends HttpServlet
         try
         {
             ExecutionContext.setExecutionContext(req, resp, getServletConfig());
+            Log.setExecutionContext(this);
     
             String pathinfo = req.getPathInfo();
             if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals("/"))
@@ -133,6 +135,7 @@ public class DWRServlet extends HttpServlet
         finally
         {
             ExecutionContext.unset();
+            Log.unsetExecutionContext();
         }
     }
 
@@ -420,8 +423,8 @@ public class DWRServlet extends HttpServlet
             String methodName = req.getParameter("method");
             if (methodName == null)
             {
-                log("Missing method parameter in url: "+req.getRequestURL()+"?"+req.getQueryString());
-                doError(resp, id, HttpServletResponse.SC_BAD_REQUEST, "Missing method parameter", xml);
+                Log.warn("Missing method parameter in url: "+req.getRequestURL()+"?"+req.getQueryString());
+                doError(resp, id, "Missing method parameter", xml);
                 return;
             }
 
@@ -476,7 +479,7 @@ public class DWRServlet extends HttpServlet
             // Pick a method to call
             if (available.size() > 1)
             {
-                log("Warning multiple matching methods. Using first match.");
+                Log.warn("Warning multiple matching methods. Using first match.");
             }
 
             Method method = null;
@@ -503,20 +506,16 @@ public class DWRServlet extends HttpServlet
                     }
                 }
 
-                log("Missing method " + creator.getType().getName() + "." + methodName + "("+allParams+") in url: "+req.getRequestURL()+"?"+req.getQueryString());
-                doError(resp, id, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+creator.getType().getName()+"."+methodName+"("+allParams+");", xml);
+                Log.warn("Missing method " + creator.getType().getName() + "." + methodName + "("+allParams+") in url: "+req.getRequestURL()+"?"+req.getQueryString());
+                doError(resp, id, "Missing method: "+creator.getType().getName()+"."+methodName+"("+allParams+");", xml);
                 return;
             }
 
-            // Create an instance if the method is not static
-            Object object = null;
-            if (!Modifier.isStatic(method.getModifiers()))
-            {
-                object = creator.getInstance();
-            }
+            // Create an instance
+            Object object = creator.getInstance();
 
             // Execute
-            log("Executing: "+method.toString());
+            Log.info("Executing: "+method.toString());
             Object reply = method.invoke(object, params);
 
             doReply(resp, id, reply, xml);
@@ -543,26 +542,24 @@ public class DWRServlet extends HttpServlet
         }
         else
         {
-            ex.printStackTrace();
-            doError(resp, id, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.toString(), xml);
+            Log.warn("Error for call: "+id, ex);
+            doError(resp, id, ex.toString(), xml);
         }
     }
 
     /**
      * @param resp The response channel
      * @param id The id of the call supplied by the browser
-     * @param reason The HTTP error code
      * @param message The HTTP error message
      * @param xml Are we in XMLHttpRequest mode?
      */
-    private void doError(HttpServletResponse resp, String id, int reason, String message, boolean xml)
+    private void doError(HttpServletResponse resp, String id, String message, boolean xml)
     {
-        log("Erroring: id[" + id + "] reason[" + reason + "] message[" + message + "] xml[" + xml + "]");
+        Log.warn("Erroring: id[" + id + "] message[" + message + "] xml[" + xml + "]");
 
         try
         {
             PrintWriter out = resp.getWriter();
-            //resp.setStatus(reason);
             String output = StringEscapeUtils.escapeJavaScript(message);
 
             if (xml)
@@ -584,7 +581,7 @@ public class DWRServlet extends HttpServlet
         }
         catch (IOException ex)
         {
-            ex.printStackTrace();
+            Log.error("IO error: "+id, ex);
             return;
         }
     }
@@ -602,7 +599,7 @@ public class DWRServlet extends HttpServlet
         PrintWriter out = resp.getWriter();
 
         ScriptSetup ss = configuration.convertFrom(reply);
-        log("Returning: id[" + id + "] init[" + ss.initCode + "] assign[" + ss.assignCode + "] xml[" + xml + "]");
+        Log.info("Returning: id[" + id + "] init[" + ss.initCode + "] assign[" + ss.assignCode + "] xml[" + xml + "]");
 
         // Set standard HTTP/1.1 no-cache headers.
         resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");

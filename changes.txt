@@ -3,6 +3,8 @@ Recent changes
 --------------
 Added code to support StringEscapeUtils.escapeJavaScript() from commons-lang (Dimitry D'hondt/Joe Walker)
 Extracted Creator and Converter types along with Configurator that reads dwr.xml files (Joe Walker)
+Changed all javascript variables and functions to be prefixed dwr to avoid namespace clases (Joe Walker)
+Spring integration allowing you to get beans from spring (Joe Walker)
 
 Changes for Version 0.3
 -----------------------

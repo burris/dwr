@@ -32,6 +32,15 @@ public class ArrayConverter implements Converter
             throw new ConversionException("Class: " + paramType + " is not an array type");
         }
 
+        if (data.startsWith("["))
+        {
+            data = data.substring(1);
+        }
+        if (data.endsWith("]"))
+        {
+            data = data.substring(0, data.length() - 1);
+        }
+
         try
         {
             StringTokenizer st = new StringTokenizer(data, ",");

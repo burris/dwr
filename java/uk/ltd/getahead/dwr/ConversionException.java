@@ -1,19 +1,21 @@
 package uk.ltd.getahead.dwr;
 
 /**
+ * Something has gone wrong when we were doing some conversion.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class ConversionException extends Exception
 {
     /**
-     * 
+     * Default ctor
      */
     public ConversionException()
     {
     }
 
     /**
-     * @param message
+     * Construct a ConversionException with a description message
+     * @param message error description
      */
     public ConversionException(String message)
     {
@@ -21,8 +23,9 @@ public class ConversionException extends Exception
     }
 
     /**
-     * @param message
-     * @param ex 
+     * Construct a ConversionException with a description message and exception
+     * @param message error description
+     * @param ex error stack trace
      */
     public ConversionException(String message, Throwable ex)
     {
@@ -31,7 +34,8 @@ public class ConversionException extends Exception
     }
 
     /**
-     * @param ex
+     * Construct a ConversionException with an exception
+     * @param ex error stack trace
      */
     public ConversionException(Throwable ex)
     {
@@ -47,5 +51,8 @@ public class ConversionException extends Exception
         return ex;
     }
 
+    /**
+     * Stored exception cause
+     */
     private Throwable ex;
 }

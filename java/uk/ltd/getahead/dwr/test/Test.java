@@ -52,16 +52,6 @@ public class Test
     }
 
     /**
-     * @param test1
-     * @param test2
-     * @return string
-     */
-    public String stringStringParam(String test1, String test2)
-    {
-        return "Test.stringParam(String, String) says hello, "+test1+" "+test2;
-    }
-
-    /**
      * 
      */
     public void voidParam()
@@ -246,6 +236,16 @@ public class Test
     public TestBean[] testBeanArrayParam(TestBean[] test)
     {
         return test;
+    }
+
+    /**
+     * @param param1
+     * @param param2
+     * @return string
+     */
+    public String stringStringParam(String param1, String param2)
+    {
+        return "param1='"+param1+"' param2='"+param2+"'";
     }
 
     /**

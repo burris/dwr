@@ -26,7 +26,7 @@ public class PrimitiveConverter implements Converter
         {
             if (paramType == Boolean.TYPE || paramType == Boolean.class)
             {
-                return new Boolean(object);
+                return new Boolean(object.trim());
             }
             else if (paramType == Byte.TYPE || paramType == Byte.class)
             {
@@ -35,7 +35,7 @@ public class PrimitiveConverter implements Converter
                     byte b = 0;
                     return new Byte(b);
                 }
-                return new Byte(object);
+                return new Byte(object.trim());
             }
             else if (paramType == Short.TYPE || paramType == Short.class)
             {
@@ -44,7 +44,7 @@ public class PrimitiveConverter implements Converter
                     short s = 0;
                     return new Short(s);
                 }
-                return new Short(object);
+                return new Short(object.trim());
             }
             else if (paramType == Character.TYPE || paramType == Character.class)
             {
@@ -63,7 +63,7 @@ public class PrimitiveConverter implements Converter
                 {
                     return new Integer(0);
                 }
-                return new Integer(object);
+                return new Integer(object.trim());
             }
             else if (paramType == Long.TYPE || paramType == Long.class)
             {
@@ -71,7 +71,7 @@ public class PrimitiveConverter implements Converter
                 {
                     return new Long(0);
                 }
-                return new Long(object);
+                return new Long(object.trim());
             }
             else if (paramType == Float.TYPE || paramType == Float.class)
             {
@@ -79,7 +79,7 @@ public class PrimitiveConverter implements Converter
                 {
                     return new Float(0);
                 }
-                return new Float(object);
+                return new Float(object.trim());
             }
             else if (paramType == Double.TYPE || paramType == Double.class)
             {
@@ -87,7 +87,7 @@ public class PrimitiveConverter implements Converter
                 {
                     return new Double(0);
                 }
-                return new Double(object);
+                return new Double(object.trim());
             }
 
             throw new ConversionException("Non-primitive paramType: "+paramType.getName());
