@@ -587,6 +587,18 @@ public class DWRServlet extends HttpServlet
         {
             resp.setContentType("text/xml");
 
+            // Set standard HTTP/1.1 no-cache headers.
+            resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+
+            // Set IE extended HTTP/1.1 no-cache headers (use addHeader).
+            resp.addHeader("Cache-Control", "post-check=0, pre-check=0");
+
+            // Set standard HTTP/1.0 no-cache header.
+            resp.setHeader("Pragma", "no-cache");
+
+            // Set to expire far in the past. Prevents caching at the proxy server
+            resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
+
             if (reply == null)
             {
                 out.println("");

@@ -24,6 +24,8 @@ I've added more documentation to the home page about ExecutionContext
     Access to HttpServletRequest and associated classes is now possible using
     uk.ltd.getahead.dwr.ExecutionContext. For example:
     req = ExecutionContext.getExecutionContext().getHttpServletRequest();
+Fixed caching issues (Joe Walker)
+Broke the main servlet down a bit because it was getting too big (Joe Walker)
 
 
 About role membership
