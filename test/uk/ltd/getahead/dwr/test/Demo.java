@@ -55,7 +55,7 @@ public class Demo
      */
     public String getServerInfo()
     {
-        return ExecutionContext.get().getServletContext().getServerInfo();
+        return ExecutionContext.get().getServletContext().getServerInfo() + " running on JDK " + System.getProperty("java.specification.version"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

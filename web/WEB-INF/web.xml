@@ -6,8 +6,6 @@
   <display-name>DWR (Direct Web Remoting)</display-name>
   <description>A demo of how to call Java on the server directly from Javascript on the client</description>
 
-  <distributable/>
-
   <servlet>
     <servlet-name>dwr-invoker</servlet-name>
     <display-name>DWR Servlet</display-name>
@@ -25,11 +23,13 @@
       <param-value>true</param-value>
       <description>Do we startup in debug/test mode?</description>
     </init-param>
+    <!--
     <init-param>
       <param-name>logLevel</param-name>
       <param-value>DEBUG</param-value>
       <description>How verbose do we want logging to be?</description>
     </init-param>
+    -->
     <load-on-startup>-1</load-on-startup>
   </servlet>
   <servlet-mapping>

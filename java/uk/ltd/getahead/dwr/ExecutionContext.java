@@ -25,13 +25,15 @@ public final class ExecutionContext
      * @param request The incoming http request
      * @param response The outgoing http reply
      * @param config The servlet configuration
-     * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig)
+     * @param context The servlet context
+     * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext)
      */
-    private ExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config)
+    private ExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context)
     {
         this.request = request;
         this.response = response;
         this.config = config;
+        this.context = context;
     }
 
     /**
@@ -74,7 +76,7 @@ public final class ExecutionContext
      */
     public ServletContext getServletContext()
     {
-        return getSession().getServletContext();
+        return context;
     }
 
     /**
@@ -174,6 +176,7 @@ public final class ExecutionContext
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final ServletConfig config;
+    private final ServletContext context;
     private Properties props = null;
 
     private static ThreadLocal user = new ThreadLocal();
@@ -204,17 +207,18 @@ public final class ExecutionContext
      * @param request The incoming http request
      * @param response The outgoing http reply
      * @param config The servlet configuration
+     * @param context The servlet context
      * @see ExecutionContext#unset()
      */
-    protected static void setExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config)
+    protected static void setExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context)
     {
-        user.set(new ExecutionContext(request, response, config));
+        user.set(new ExecutionContext(request, response, config, context));
     }
 
     /**
      * Unset the current ExecutionContext
      * This method is only for use internally to DWR.
-     * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig)
+     * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext)
      */
     protected static void unset()
     {

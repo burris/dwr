@@ -32,7 +32,7 @@ public final class LocalUtil
         {
             return text;
         }
-    
+
         StringBuffer buf = new StringBuffer(text.length());
         int searchFrom = 0;
         while (true)
@@ -42,12 +42,12 @@ public final class LocalUtil
             {
                 break;
             }
-    
+
             buf.append(text.substring(searchFrom, foundAt)).append(with);
             searchFrom = foundAt + repl.length();
         }
         buf.append(text.substring(searchFrom));
-    
+
         return buf.toString();
     }
 
@@ -95,7 +95,7 @@ public final class LocalUtil
         {
             return c2 == Void.class || c2 == Void.TYPE;
         }
-    
+
         return false;
     }
 
@@ -169,7 +169,7 @@ public final class LocalUtil
     }
 
     /**
-     * URL dencode a value. This method gets around the lack of a
+     * URL decode a value. This method gets around the lack of a
      * decode(String, String) method in JDK 1.3.
      * @param value The string to decode
      * @return The decoded string
@@ -187,7 +187,7 @@ public final class LocalUtil
                 if (!warn13)
                 {
                     Log.warn("URLDecoder.decode(String, String) is not available. Falling back to 1.3 variant."); //$NON-NLS-1$
-                    warn13= true;
+                    warn13 = true;
                 }
             }
 
@@ -210,6 +210,8 @@ public final class LocalUtil
     }
 
     private static boolean warn13 = false;
+
     private static boolean testedDecoder = false;
+
     private static Method decode14 = null;
 }

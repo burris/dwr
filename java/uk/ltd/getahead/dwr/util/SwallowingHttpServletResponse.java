@@ -3,16 +3,17 @@ package uk.ltd.getahead.dwr.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Used by ExecutionContext to forward results back via javascript
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public final class SwallowingHttpServletResponse extends HttpServletResponseWrapper
+public final class SwallowingHttpServletResponse implements HttpServletResponse
 {
     /**
      * @param response
@@ -21,9 +22,9 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
      */
     public SwallowingHttpServletResponse(HttpServletResponse response, Writer sout, String url)
     {
-        super(response);
-
+        this.response = response;
         this.url = url;
+
         pout = new PrintWriter(sout);
         oout = new WriterOutputStream(sout);
     }
@@ -90,21 +91,204 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
      */
     public void setStatus(int sc, String sm)
     {
-        Log.warn("Ignoring call to setStatus(" + sc+ ", " + sm + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        Log.warn("Ignoring call to setStatus(" + sc + ", " + sm + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)
+     */
+    public void addCookie(Cookie cookie)
+    {
+        response.addCookie(cookie);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
+     */
+    public boolean containsHeader(String name)
+    {
+        return response.containsHeader(name);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
+     */
+    public String encodeURL(String encurl)
+    {
+        return response.encodeURL(encurl);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
+     */
+    public String encodeRedirectURL(String encurl)
+    {
+        return response.encodeRedirectURL(encurl);
     }
 
     /**
-     * 
+     * @deprecated
+     * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
+     */
+    public String encodeUrl(String encurl)
+    {
+        return response.encodeUrl(encurl);
+    }
+
+    /**
+     * @deprecated
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectUrl(java.lang.String)
+     */
+    public String encodeRedirectUrl(String encurl)
+    {
+        return response.encodeRedirectUrl(encurl);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     */
+    public void setDateHeader(String name, long date)
+    {
+        response.setDateHeader(name, date);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     */
+    public void addDateHeader(String name, long date)
+    {
+        response.addDateHeader(name, date);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+     */
+    public void setHeader(String name, String value)
+    {
+        response.setHeader(name, value);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     */
+    public void addHeader(String name, String value)
+    {
+        response.addHeader(name, value);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     */
+    public void setIntHeader(String name, int value)
+    {
+        response.setIntHeader(name, value);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     */
+    public void addIntHeader(String name, int value)
+    {
+        response.addIntHeader(name, value);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getCharacterEncoding()
+     */
+    public String getCharacterEncoding()
+    {
+        return response.getCharacterEncoding();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setContentLength(int)
+     */
+    public void setContentLength(int len)
+    {
+        response.setContentLength(len);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
+     */
+    public void setContentType(String type)
+    {
+        response.setContentType(type);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setBufferSize(int)
+     */
+    public void setBufferSize(int size)
+    {
+        response.setBufferSize(size);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getBufferSize()
+     */
+    public int getBufferSize()
+    {
+        return response.getBufferSize();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#isCommitted()
+     */
+    public boolean isCommitted()
+    {
+        return response.isCommitted();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#reset()
+     */
+    public void reset()
+    {
+        response.reset();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#resetBuffer()
+     */
+    public void resetBuffer()
+    {
+        response.resetBuffer();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setLocale(java.util.Locale)
+     */
+    public void setLocale(Locale loc)
+    {
+        response.setLocale(loc);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getLocale()
+     */
+    public Locale getLocale()
+    {
+        return response.getLocale();
+    }
+
+    /**
+     * The forwarding output stream
      */
     private final ServletOutputStream oout;
 
     /**
-     * 
+     * The url that we are grabbing the output from
      */
     private final String url;
 
     /**
-     * 
+     * The forwarding output stream
      */
     private final PrintWriter pout;
+
+    /**
+     * The real response that we grab data from
+     */
+    private HttpServletResponse response;
 }

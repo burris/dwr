@@ -152,9 +152,9 @@ public class DWRServlet extends HttpServlet
     {
         try
         {
-            ExecutionContext.setExecutionContext(req, resp, getServletConfig());
+            ExecutionContext.setExecutionContext(req, resp, getServletConfig(), getServletContext());
             Log.setExecutionContext(this);
-    
+
             String pathinfo = req.getPathInfo();
             if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals(PATH_ROOT))
             {
@@ -310,20 +310,20 @@ public class DWRServlet extends HttpServlet
 
             out.println(BLANK); //$NON-NLS-1$
             out.println("<li>"); //$NON-NLS-1$
-            out.println("  "+method.getName()+"("); //$NON-NLS-1$ //$NON-NLS-2$
+            out.println("  " + method.getName() + "("); //$NON-NLS-1$ //$NON-NLS-2$
 
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print("    <input class='itext' type='text' size='10' id='p"+i+j+"' title='Will be converted to: "+paramTypes[j].getName()+"'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                out.print("    <input class='itext' type='text' size='10' id='p" + i + j + "' title='Will be converted to: " + paramTypes[j].getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 out.println(j == paramTypes.length - 1 ? BLANK : ", "); //$NON-NLS-1$ //$NON-NLS-2$
             }
             out.println("  );"); //$NON-NLS-1$
 
-            String onclick = scriptname+"."+method.getName()+"(reply"+i; //$NON-NLS-1$ //$NON-NLS-2$
+            String onclick = scriptname + "." + method.getName() + "(reply" + i; //$NON-NLS-1$ //$NON-NLS-2$
             for (int j = 0; j < paramTypes.length; j++)
             {
-                onclick += ",document.getElementById(\"p"+i+j+"\").value"; //$NON-NLS-1$ //$NON-NLS-2$
+                onclick += ",document.getElementById(\"p" + i + j + "\").value"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             onclick += ");"; //$NON-NLS-1$
 
@@ -422,10 +422,10 @@ public class DWRServlet extends HttpServlet
         //resp.setContentType("text/javascript");
         PrintWriter out = resp.getWriter();
         out.println();
-        out.println("// Methods for: "+creator.getType().getName()); //$NON-NLS-1$
+        out.println("// Methods for: " + creator.getType().getName()); //$NON-NLS-1$
 
         out.println();
-        out.println(pathinfo+" = new Object();"); //$NON-NLS-1$
+        out.println(pathinfo + " = new Object();"); //$NON-NLS-1$
 
         Method[] methods = creator.getType().getDeclaredMethods();
         for (int i = 0; i < methods.length; i++)
@@ -448,19 +448,19 @@ public class DWRServlet extends HttpServlet
             {
                 out.print("\n"); //$NON-NLS-1$
             }
-            out.print(pathinfo+"."+method.getName()+" = function(callback"); //$NON-NLS-1$ //$NON-NLS-2$
+            out.print(pathinfo + "." + method.getName() + " = function(callback"); //$NON-NLS-1$ //$NON-NLS-2$
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print(", p"+j); //$NON-NLS-1$
+                out.print(", p" + j); //$NON-NLS-1$
             }
             out.println(")"); //$NON-NLS-1$
             out.println("{"); //$NON-NLS-1$
 
-            out.print("    dwrExecute(callback, '"+pathinfo+"', '"+method.getName()+"'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            out.print("    dwrExecute(callback, '" + pathinfo + "', '" + method.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print(", p"+j); //$NON-NLS-1$
+                out.print(", p" + j); //$NON-NLS-1$
             }
             out.println(");"); //$NON-NLS-1$
 
@@ -624,26 +624,46 @@ public class DWRServlet extends HttpServlet
     }
 
     protected static final String PATH_ROOT = "/"; //$NON-NLS-1$
+
     protected static final String PATH_EXEC = "/exec"; //$NON-NLS-1$
+
     protected static final String PATH_INTERFACE = "/interface/"; //$NON-NLS-1$
+
     protected static final String PATH_TEST = "/test/"; //$NON-NLS-1$
+
     protected static final String EXTENSION_JS = ".js"; //$NON-NLS-1$
+
     protected static final String FILE_UTIL = "util.js"; //$NON-NLS-1$
+
     protected static final String FILE_ENGINE = "engine.js"; //$NON-NLS-1$
+
     protected static final String FILE_DWR_XML = "dwr.xml"; //$NON-NLS-1$
+
     protected static final String FILE_HELP = "help.html"; //$NON-NLS-1$
 
     protected static final String INIT_CONFIG = "config"; //$NON-NLS-1$
+
     protected static final String INIT_DEBUG = "debug"; //$NON-NLS-1$
+
     protected static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
+
     protected static final String INIT_CONVERTER = "converterManager"; //$NON-NLS-1$
+
     protected static final String INIT_CREATOR = "creatorManager"; //$NON-NLS-1$
 
     protected static final String INIT_DEFAULT_CONVERTER = "uk.ltd.getahead.dwr.impl.DefaultConverterManager"; //$NON-NLS-1$
+
     protected static final String INIT_DEFAULT_CREATOR = "uk.ltd.getahead.dwr.impl.DefaultCreatorManager"; //$NON-NLS-1$
 
+    /*
+     * If we need to do more advanced char processing then we should consider
+     * adding "; charset=utf-8" to the end of these 3 strings and altering the
+     * marshalling to assume utf-8, which it currently does not.
+     */
     protected static final String MIME_XML = "text/xml"; //$NON-NLS-1$
+
     protected static final String MIME_HTML = "text/html"; //$NON-NLS-1$
+
     protected static final String MIME_JS = "text/javascript"; //$NON-NLS-1$
 
     protected static final String BLANK = ""; //$NON-NLS-1$
