@@ -10,12 +10,12 @@ import java.util.Map;
  * Manage the various possible Coercers.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class CoercerManager
+public class ConverterManager
 {
     /**
      * Prevent Instansiation
      */
-    private CoercerManager()
+    private ConverterManager()
     {
     }
 
@@ -31,7 +31,7 @@ public class CoercerManager
             return true;
         }
 
-        return CoercerManager.coercers.containsKey(paramType);
+        return ConverterManager.coercers.containsKey(paramType);
     }
 
     /**
@@ -40,7 +40,7 @@ public class CoercerManager
      * @param object The string version of the object
      * @return The coerced object or null if the object could not be coerced
      */
-    protected static Object coerce(Class paramType, String object)
+    protected static Object convertTo(Class paramType, String object)
     {
         if (paramType.isPrimitive())
         {
@@ -126,8 +126,8 @@ public class CoercerManager
             {
                 for (Iterator ir = options.iterator(); ir.hasNext();)
                 {
-                    Coercer coercer = (Coercer) ir.next();
-                    Object reply = coercer.coerce(object);
+                    Converter coercer = (Converter) ir.next();
+                    Object reply = coercer.convertTo(object);
                     if (reply != null)
                     {
                         return reply;
@@ -143,16 +143,16 @@ public class CoercerManager
      * A map of all the converters
      */
     private static Map coercers = new HashMap();
-    private static Coercer[] ALL = new Coercer[]
+    private static Converter[] ALL = new Converter[]
     {
-        new ConstructorCoercer(Boolean.class),
-        new ConstructorCoercer(Byte.class),
-        new ConstructorCoercer(Short.class),
-        new ConstructorCoercer(Integer.class),
-        new ConstructorCoercer(Long.class),
-        new ConstructorCoercer(Float.class),
-        new ConstructorCoercer(Double.class),
-        new StringCoercer(),
+        new ConstructorConverter(Boolean.class),
+        new ConstructorConverter(Byte.class),
+        new ConstructorConverter(Short.class),
+        new ConstructorConverter(Integer.class),
+        new ConstructorConverter(Long.class),
+        new ConstructorConverter(Float.class),
+        new ConstructorConverter(Double.class),
+        new StringConverter(),
     };
 
     /**
@@ -162,7 +162,7 @@ public class CoercerManager
     {
         for (int i = 0; i < ALL.length; i++)
         {
-            Class coerceToClass = ALL[i].getCoerceToClass();
+            Class coerceToClass = ALL[i].getConversionClass();
 
             List options = (List) coercers.get(coerceToClass);
             if (options == null)

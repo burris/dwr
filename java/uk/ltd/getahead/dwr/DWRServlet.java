@@ -9,11 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -47,31 +44,7 @@ public class DWRServlet extends HttpServlet
     public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
-
-        // The Javascript reserved words array so we don't generate illegal javascript
-        if (reserved == null)
-        {
-            reserved = new TreeSet();
-            reserved.addAll(Arrays.asList(RESERVED_ARRAY));
-        }
-
-        try
-        {
-            // Which classes are we allowed to communicate with?
-            allowed = new AccessList(config.getInitParameter("allowed"));
-        }
-        catch (NullPointerException ex)
-        {
-            throw new ServletException("Mising 'allowed' init-parameter");
-        }
-        catch (Exception ex)
-        {
-            throw new ServletException(ex);
-        }
-
-        // Are we in debug mode?
-        String debugStr = config.getInitParameter("debug");
-        debug = Boolean.valueOf(debugStr).booleanValue();
+        configuration = new Configuration(config);
     }
 
     /* (non-Javadoc)
@@ -87,47 +60,56 @@ public class DWRServlet extends HttpServlet
      */
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException
     {
-        String pathinfo = req.getPathInfo();
-        if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals("/"))
+        try
         {
-            if (debug)
+            ExecutionContext.setExecutionContext(req, resp, getServletConfig());
+    
+            String pathinfo = req.getPathInfo();
+            if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals("/"))
             {
-                doIndex(req, resp);
+                if (configuration.isDebugMode())
+                {
+                    doIndex(req, resp);
+                }
+                else
+                {
+                    log("Failed attempt to access index page outside of debug mode. Set the debug init-parameter to true to enable.");
+                    resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                }
+            }
+            else if (pathinfo != null && pathinfo.startsWith("/test/"))
+            {
+                if (configuration.isDebugMode())
+                {
+                    doTest(req, resp);
+                }
+                else
+                {
+                    log("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable.");
+                    resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                }
+            }
+            else if (pathinfo != null && pathinfo.equalsIgnoreCase("/engine.js"))
+            {
+                doEngine(req, resp);
+            }
+            else if (pathinfo != null && pathinfo.startsWith("/interface/"))
+            {
+                doInterface(req, resp);
+            }
+            else if (pathinfo != null && pathinfo.startsWith("/exec"))
+            {
+                doExec(req, resp);
             }
             else
             {
-                log("Failed attempt to access index page outside of debug mode. Set the debug init-parameter to true to enable.");
-                resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                log("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/");
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
         }
-        else if (pathinfo != null && pathinfo.startsWith("/test/"))
+        finally
         {
-            if (debug)
-            {
-                doTest(req, resp);
-            }
-            else
-            {
-                log("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable.");
-                resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-            }
-        }
-        else if (pathinfo != null && pathinfo.equalsIgnoreCase("/engine.js"))
-        {
-            doEngine(req, resp);
-        }
-        else if (pathinfo != null && pathinfo.startsWith("/interface/"))
-        {
-            doInterface(req, resp);
-        }
-        else if (pathinfo != null && pathinfo.startsWith("/exec"))
-        {
-            doExec(req, resp);
-        }
-        else
-        {
-            log("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/");
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            ExecutionContext.unset();
         }
     }
 
@@ -147,10 +129,10 @@ public class DWRServlet extends HttpServlet
         out.println("<body>");
         out.println("<h2>Classes known to DWR:</h2>");
 
-        for (Iterator it = allowed.iterator(); it.hasNext();)
+        for (Iterator it = configuration.getAllowedNames(); it.hasNext();)
         {
-            Class allow = (Class) it.next();
-            out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+"/test/"+allow.getName()+"'>"+allow.getName()+"</a></li>");
+            AllowedClass allow = (AllowedClass) it.next();
+            out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+"/test/"+allow.getName()+"'>"+allow.getName()+"</a> ("+allow.getType().getName()+")</li>");
         }
 
         out.println("</body></html>");
@@ -169,14 +151,14 @@ public class DWRServlet extends HttpServlet
         pathinfo = LocalUtil.replace(pathinfo, "/", "");
 
         String classname = pathinfo;
-        Class allow = processClass(req, resp, classname);
+        AllowedClass allow = configuration.getAllowedClass(classname);
         if (allow == null)
         {
-            return;
+            throw new SecurityException("No class by name: "+classname);
         }
 
-        String name = LocalUtil.getShortClassName(allow);
-        Method[] methods = allow.getDeclaredMethods();
+        String name = allow.getName();
+        Method[] methods = allow.getType().getDeclaredMethods();
 
         resp.setContentType("text/html");
         PrintWriter out = resp.getWriter();
@@ -194,7 +176,7 @@ public class DWRServlet extends HttpServlet
         out.println("</head>");
         out.println("<body>");
         out.println("");
-        out.println("<h2>Methods For: "+allow.getName()+"</h2>");
+        out.println("<h2>Methods For: "+allow.getName()+" ("+allow.getType().getName()+")</h2>");
         out.println("<p>Replies from DWR are shown with a yellow background.<br/>There are "+methods.length+" declared methods:<ul>");
 
         for (int i = 0; i < methods.length; i++)
@@ -210,7 +192,7 @@ public class DWRServlet extends HttpServlet
             }
 
             // Is it on the list of banned names
-            if (reserved.contains(method.getName()))
+            if (configuration.isReservedWord(method.getName()))
             {
                 out.println("");
                 out.println("<li style='color: #888;'>"+method.getName()+"() is not available because it is a reserved word.</li>");
@@ -263,7 +245,7 @@ public class DWRServlet extends HttpServlet
             // Print a warning if the method uses un-marshallable types
             for (int j = 0; j < paramTypes.length; j++)
             {
-                if (!CoercerManager.isCoercable(paramTypes[j]))
+                if (!ConverterManager.isCoercable(paramTypes[j]))
                 {
                     out.println("<span style='font-size: smaller; color: red;'>(Warning: "+paramTypes[j].getName()+" is not marshallable yet)</span>");
                 }
@@ -296,24 +278,21 @@ public class DWRServlet extends HttpServlet
         String pathinfo = req.getPathInfo();
         pathinfo = LocalUtil.replace(pathinfo, "/interface/", "");
         pathinfo = LocalUtil.replace(pathinfo, ".js", "");
-
-        Class allow = processClass(req, resp, pathinfo);
+        AllowedClass allow = configuration.getAllowedClass(pathinfo);
         if (allow == null)
         {
-            return;
+            throw new SecurityException("No class by name: "+pathinfo);
         }
-
-        String name = LocalUtil.getShortClassName(allow);
 
         //resp.setContentType("text/javascript");
         PrintWriter out = resp.getWriter();
         out.println();
-        out.println("// Methods for: "+allow.getName());
+        out.println("// Methods for: "+allow.getType().getName());
 
         out.println();
-        out.println(name+" = new Object();");
+        out.println(allow.getName()+" = new Object();");
 
-        Method[] methods = allow.getDeclaredMethods();
+        Method[] methods = allow.getType().getDeclaredMethods();
         for (int i = 0; i < methods.length; i++)
         {
             Method method = methods[i];
@@ -325,7 +304,7 @@ public class DWRServlet extends HttpServlet
             }
 
             // Is it on the list of banned names
-            if (reserved.contains(method.getName()))
+            if (configuration.isReservedWord(method.getName()))
             {
                 continue;
             }
@@ -334,7 +313,7 @@ public class DWRServlet extends HttpServlet
             {
                 out.print("\n");
             }
-            out.print(name+"."+method.getName()+" = function(callback");
+            out.print(allow.getName()+"."+method.getName()+" = function(callback");
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
@@ -405,10 +384,10 @@ public class DWRServlet extends HttpServlet
         try
         {
             String className = req.getParameter("class");
-            Class clazz = processClass(req, resp, className);
-            if (clazz == null)
+            AllowedClass allow = configuration.getAllowedClass(className);
+            if (allow == null)
             {
-                return;
+                throw new SecurityException("No class by name: "+className);
             }
 
             String methodName = req.getParameter("method");
@@ -435,7 +414,7 @@ public class DWRServlet extends HttpServlet
             // method.
             List available = new ArrayList();
             List coerced = new ArrayList();
-            Method[] methods = clazz.getMethods();
+            Method[] methods = allow.getType().getMethods();
             methods:
             for (int i = 0; i < methods.length; i++)
             {
@@ -454,7 +433,7 @@ public class DWRServlet extends HttpServlet
                         {
                             Class paramType = method.getParameterTypes()[j];
                             String param = (String) params.get(j);
-                            converted[j] = CoercerManager.coerce(paramType, param);
+                            converted[j] = ConverterManager.convertTo(paramType, param);
                             if (converted[j] == null)
                             {
                                 break methods;
@@ -480,8 +459,8 @@ public class DWRServlet extends HttpServlet
                     }
                 }
 
-                log("Missing method " + clazz.getName() + "." + methodName + "("+allParams+") in url: "+req.getRequestURL()+"?"+req.getQueryString());
-                doError(req, resp, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+clazz.getName()+"."+methodName+"("+allParams+");");
+                log("Missing method " + allow.getType().getName() + "." + methodName + "("+allParams+") in url: "+req.getRequestURL()+"?"+req.getQueryString());
+                doError(req, resp, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+allow.getType().getName()+"."+methodName+"("+allParams+");");
                 return;
             }
 
@@ -498,7 +477,7 @@ public class DWRServlet extends HttpServlet
             Object object = null;
             if (!Modifier.isStatic(method.getModifiers()))
             {
-                object = clazz.newInstance();
+                object = allow.getInstance();
             }
 
             // Parameters
@@ -506,9 +485,7 @@ public class DWRServlet extends HttpServlet
 
             // Execute
             log("Executing: "+method.toString());
-            ExecutionContext.setExecutionContext(req, resp, getServletConfig());
             Object reply = method.invoke(object, converted);
-            ExecutionContext.unset();
 
             doReply(req, resp, reply, xml);
         }
@@ -561,7 +538,7 @@ public class DWRServlet extends HttpServlet
             else
             {
                 resp.setContentType("text/html");
-                String output = LocalUtil.escape(message);
+                String output = StringEscapeUtils.escapeJavaScript(message);
                 out.println("<script type='text/javascript'>window.parent.dwrHandleError('"+output+"')</script>");
             }
 
@@ -584,7 +561,13 @@ public class DWRServlet extends HttpServlet
     private void doReply(HttpServletRequest req, HttpServletResponse resp, Object reply, boolean xml) throws IOException
     {
         PrintWriter out = resp.getWriter();
-        
+
+        String output = null;
+        if (reply != null)
+        {
+            output = StringEscapeUtils.escapeJavaScript(reply.toString());
+        }
+
         if (xml)
         {
             resp.setContentType("text/xml");
@@ -607,36 +590,23 @@ public class DWRServlet extends HttpServlet
             }
             else
             {
-                out.println(reply.toString());
+                out.println(output);
             }
         }
         else
         {
             resp.setContentType("text/html");
-    
-            out.println("<html>");
-            out.println("<head>");
-            out.println("  <title>DWR Exec Reply</title>");
-            out.println("</head>");
-            out.println("<body>");
 
-            if (reply == null)
+            out.println("<html><head><title>DWR Exec Reply</title></head><body>");
+            out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('" + output + "')</script>");
+
+            if (configuration.isDebugMode())
             {
-                out.println("<script type='text/javascript'>window.parent.dwrHandleResponse()</script>");
-                out.println("<p>The called function returned void or null.<br/>");
-            }
-            else
-            {
-                String output = reply.toString();
-                out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('" + StringEscapeUtils.escapeJavaScript(output) + "')</script>");
-                out.println("<p>The called function returned: [<span style='color:#800; font-family:monospace;'>" + StringEscapeUtils.escapeHtml(output) + "</span>]<br/>");
+                out.println("This resulted from the query: [<span style='color:#800; font-family:monospace;'>"+req.getQueryString()+"</span>]</p>");
+                out.println("<p>If you can see this then it is likely that debug is on or that something is broken. An attempt has been made to passed the reply to dwrHandleResponse() in the parent window which should delete this iframe is debug is off.</p>");
             }
 
-            out.println("This resulted from the query: [<span style='color:#800; font-family:monospace;'>"+req.getQueryString()+"</span>]</p>");
-            out.println("<p>If you can see this then it is likely that debug is on or that something is broken. An attempt has been made to passed the reply to dwrHandleResponse() in the parent window which should delete this iframe is debug is off.</p>");
-
-            out.println("</body>");
-            out.println("</html>");
+            out.println("</body></html>");
         }
 
         out.flush();
@@ -653,49 +623,12 @@ public class DWRServlet extends HttpServlet
 
     /**
      * @param req
-     * @param resp
-     * @param classname
-     * @return The specified class or null if not found or not allowed
-     */
-    private Class processClass(HttpServletRequest req, HttpServletResponse resp, String classname)
-    {
-        if (classname == null)
-        {
-            log("Null classname. url: " + req.getRequestURL()+"?"+req.getQueryString());
-            doError(req, resp, HttpServletResponse.SC_NOT_ACCEPTABLE, classname);
-            return null;
-        }
-
-        Class allow = null;
-        try
-        {
-            allow = Class.forName(classname);
-        }
-        catch (ClassNotFoundException ex)
-        {
-            log("Class not found: " + classname + ". url=" + req.getRequestURL()+"?"+req.getQueryString(), ex);
-            doError(req, resp, HttpServletResponse.SC_NOT_FOUND, classname);
-            return null;
-        }
-
-        if (!allowed.isAllowed(allow))
-        {
-            log("Access denied to class: " + classname + ". If you wish to enable access to this class, add it to the 'allowed' init-parameter");
-            doError(req, resp, HttpServletResponse.SC_FORBIDDEN, classname);
-            return null;
-        }
-
-        return allow;
-    }
-
-    /**
-     * @param req
      * @param allow
      * @return A URL linked to the interface Javascript for a given class
      */
-    private String getInterfaceURL(HttpServletRequest req, Class allow)
+    private String getInterfaceURL(HttpServletRequest req, AllowedClass allow)
     {
-        return req.getContextPath()+req.getServletPath()+"/interface/"+allow.getName()+".js";
+        return req.getContextPath() + req.getServletPath() + "/interface/" + allow.getName() + ".js";
     }
 
     /**
@@ -713,55 +646,7 @@ public class DWRServlet extends HttpServlet
     private String scriptCache = null;
 
     /**
-     * Are we in debug mode?
+     * The local configuration settings
      */
-    private boolean debug = false;
-
-    /**
-     * The allowed classes
-     */
-    private AccessList allowed = null;
-
-    private static SortedSet reserved = null;
-    private static String[] RESERVED_ARRAY =  new String[]
-    {
-        // Reserved and used at ECMAScript 4
-        "as", "break", "case", "catch", "class", "const", "continue", "default",
-        "delete", "do", "else", "export", "extends", "false", "finally", "for",
-        "function", "if", "import", "in", "instanceof", "is", "namespace",
-        "new", "null", "package", "private", "public", "return", "super",
-        "switch", "this", "throw", "true", "try", "typeof", "use", "var",
-        "void", "while", "with",
-        // Reserved for future use at ECMAScript 4
-        "abstract", "debugger", "enum", "goto", "implements", "interface",
-        "native", "protected", "synchronized", "throws", "transient",
-        "volatile",
-        // Reserved in ECMAScript 3, unreserved at 4 best to avoid anyway
-        "boolean", "byte", "char", "double", "final", "float", "int", "long",
-        "short", "static",
-        // I have seen the folowing list as 'best avoided for function names'
-        // but it seems way to all encompassing, so I'm not going to include it
-        /*
-        "alert", "anchor", "area", "arguments", "array", "assign", "blur",
-        "boolean", "button", "callee", "caller", "captureevents", "checkbox",
-        "clearinterval", "cleartimeout", "close", "closed", "confirm",
-        "constructor", "date", "defaultstatus", "document", "element", "escape",
-        "eval", "fileupload", "find", "focus", "form", "frame", "frames",
-        "getclass", "hidden", "history", "home", "image", "infinity",
-        "innerheight", "isfinite", "innerwidth", "isnan", "java", "javaarray",
-        "javaclass", "javaobject", "javapackage", "length", "link", "location",
-        "locationbar", "math", "menubar", "mimetype", "moveby", "moveto",
-        "name", "nan", "navigate", "navigator", "netscape", "number", "object",
-        "onblur", "onerror", "onfocus", "onload", "onunload", "open", "opener",
-        "option", "outerheight", "outerwidth", "packages", "pagexoffset",
-        "pageyoffset", "parent", "parsefloat", "parseint", "password",
-        "personalbar", "plugin", "print", "prompt", "prototype", "radio", "ref",
-        "regexp", "releaseevents", "reset", "resizeby", "resizeto",
-        "routeevent", "scroll", "scrollbars", "scrollby", "scrollto", "select",
-        "self", "setinterval", "settimeout", "status", "statusbar", "stop",
-        "string", "submit", "sun", "taint",  "text", "textarea", "toolbar",
-        "top", "tostring", "unescape", "untaint", "unwatch", "valueof", "watch",
-        "window",
-        */
-    };
+    private Configuration configuration = null;
 }

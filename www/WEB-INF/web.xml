@@ -13,17 +13,12 @@
     <display-name>DWR Servlet</display-name>
     <description>Direct Web Remoter Servlet</description>
     <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
-      <init-param>
-         <param-name>allowed</param-name>
-         <param-value>uk.ltd.getahead.dwr.test.Test java.util.Date</param-value>
-         <description>What classes do we allow access to?</description>
-      </init-param>
-      <init-param>
-         <param-name>debug</param-name>
-         <param-value>true</param-value>
-         <description>Do we startup in debug/test mode?</description>
-      </init-param>
-      <load-on-startup>-1</load-on-startup>
+    <init-param>
+       <param-name>debug</param-name>
+       <param-value>true</param-value>
+       <description>Do we startup in debug/test mode?</description>
+    </init-param>
+    <load-on-startup>-1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>dwr-invoker</servlet-name>

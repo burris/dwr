@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN" "http://www.getahead.ltd.uk/dwr/dwr.dtd">
+
+<dwr>
+  <new id="Test" class="uk.ltd.getahead.dwr.test.Test"/>
+  <new id="Date" class="java.util.Date"/>
+  <session id="TestBean" class="uk.ltd.getahead.dwr.test.TestBean"/>
+  <!--
+  <spring id="SpringBean" beanName="SpringBean"/>
+  -->
+</dwr>

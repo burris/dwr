@@ -56,8 +56,6 @@ package uk.ltd.getahead.dwr.lang;
 import java.io.IOException;
 import java.io.Writer;
 
-import uk.ltd.getahead.dwr.LocalUtil;
-
 /**
  * <p>Escapes and unescapes <code>String</code>s for
  * Java, Java Script, HTML, XML, and SQL.</p>
@@ -522,31 +520,5 @@ public class StringEscapeUtils {
         }
         return Entities.XML.unescape(str);
     }
-
-    /**
-     * <p>Escapes the characters in a <code>String</code> to be suitable to pass to
-     * an SQL query.</p>
-     *
-     * <p>For example,
-     * <pre>statement.executeQuery("SELECT * FROM MOVIES WHERE TITLE='" + 
-     *   StringEscapeUtils.escapeSql("McHale's Navy") + 
-     *   "'");</pre>
-     * </p>
-     *
-     * <p>At present, this method only turns single-quotes into doubled single-quotes
-     * (<code>"McHale's Navy"</code> => <code>"McHale''s Navy"</code>). It does not
-     * handle the cases of percent (%) or underscore (_) for use in LIKE clauses.</p>
-     *
-     * see http://www.jguru.com/faq/view.jsp?EID=8881
-     * @param str  the string to escape, may be null
-     * @return a new String, escaped for SQL, <code>null</code> if null string input
-     */
-    public static String escapeSql(String str) {
-        if (str == null) {
-            return null;
-        }
-        return LocalUtil.replace(str, "'", "''");
-    }
-
 }
 

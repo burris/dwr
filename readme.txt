@@ -29,6 +29,14 @@ DWR comes as a simple jar file and a few lines to add to your web.xml file to co
 The Javascript works, depending on your browser, either using XMLHttpRequest or by dynamically creating an iframe. Through this it calls the DWR servlet with instructions about what Java code to call. The DWR servlet marshals the parameters, calls the server-side Java code and returns the reply, which returns the reply to the calling Javascript.
 More detailed instructions are available on the DWR site.
 
+Java.Net: 2004-12-15
+DWR 0.3 Released: Call server side Java directly from browser Javascript  
+http://dwr.dev.java.net/
+DWR (Direct Web Remoting) is a very simple way to call server-side Java code directly from browser JavaScript. It helps you create sites like G-Mail, Google Suggest or Kuro5hin that update themselves without loading new pages.
+DWR comes as a simple jar file and a few lines to add to your web.xml file to configure the remoted classes. In a web page you add a couple of &lt;script&gt; tags to indicate which classes you wish to import and can then call your Java code directly from Javascript.
+The Javascript works, depending on your browser, either using XMLHttpRequest or by dynamically creating an iframe. Through this it calls the DWR servlet with instructions about what Java code to call. The DWR servlet marshals the parameters, calls the server-side Java code and returns the reply, which returns the reply to the calling Javascript.
+More detailed instructions are available on the DWR site: http://dwr.dev.java.net/
+
 
 License
 -------
