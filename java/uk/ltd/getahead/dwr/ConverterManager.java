@@ -89,50 +89,66 @@ public class ConverterManager
      */
     public ScriptSetup convertFrom(Object object, Map converted) throws ConversionException
     {
+        // Check to see if we have done this one already
         ScriptSetup ss = (ScriptSetup) converted.get(object);
-
         if (ss != null)
         {
             // So the object as been converted already, we just need to refer to it.
             return new ScriptSetup("", ss.assignCode);
         }
-        else
+
+        // So we will have to create one for ourselves
+        ss = new ScriptSetup();
+        String varName = getNextVariableName(converted);
+        ss.assignCode = varName;
+
+        // Save this for another time so we don't recurse into it
+        converted.put(object, ss);
+
+        Converter converter = getConverter(object);
+        if (converter == null)
         {
-            Converter converter = getConverter(object);
-            if (converter == null)
-            {
-                throw new ConversionException("No converter found for " + object.getClass().getName());
-            }
-
-            String varName = getNextVariableName(converted);
-
-            ss = converter.convertFrom(object, converted, varName);
-            if (ss == null)
-            {
-                throw new IllegalStateException("null ScriptSetup from " + converter.getClass().getName() + " given " + object);
-            }
-
-            // Save this for another time if it is not a value type
-            if (!ss.isValueType)
-            {
-                converted.put(object, ss);
-            }
+            throw new ConversionException("No converter found for " + object.getClass().getName());
         }
+
+        ss.initCode = converter.convertFrom(object, ss.assignCode, converted);
 
         return ss;
     }
 
     /**
-     * Convert an object from being a string into an object of some type
+     * Convert an object from being a string into an object of some type.
+     * Designed for use 'from the outside' i.e. not by a Converter that is part
+     * of the conversion process.
      * @param paramType The type that you want the object to be
-     * @param object The string version of the object
+     * @param data The string version of the object
      * @return The coerced object or null if the object could not be coerced
      * @throws ConversionException If the conversion failed for some reason
      */
-    public Object convertTo(Class paramType, String object) throws ConversionException
+    public Object convertTo(Class paramType, ConversionData data) throws ConversionException
     {
+        return convertTo(paramType, data, new HashMap());
+    }
+
+    /**
+     * Convert an object from being a string into an object of some type.
+     * Designed for use with converters that have a working map passed to them
+     * @param paramType The type that you want the object to be
+     * @param data The string version of the object
+     * @param working The map of data that we are working on
+     * @return The coerced object or null if the object could not be coerced
+     * @throws ConversionException If the conversion failed for some reason
+     */
+    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
+    {
+        Object done = working.get(data);
+        if (done != null)
+        {
+            return done;
+        }
+
         Converter converter = getConverter(paramType);
-        return converter.convertTo(paramType, object);
+        return converter.convertTo(paramType, data, working);
     }
 
     /**
@@ -242,7 +258,7 @@ public class ConverterManager
     private String getNextVariableName(Map converted)
     {
         Integer varCount = (Integer) converted.get(VAR_COUNT_KEY);
-        String varName = "obj" + varCount;
+        String varName = "s" + varCount;
         converted.put(VAR_COUNT_KEY, new Integer(varCount.intValue() + 1));
 
         return varName;

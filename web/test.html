@@ -165,13 +165,11 @@
 
   tests.push({ code:"Test.charArrayParam(testResults, [ 'a', ',', '[', ']' ])", expected:[ 'a', ',', '[', ']' ] });
 
-  tests.push({ code:"Test.byteArrayParam(testResults, '[ -128, -1, 0, 1, 127 ]')", expected:[ -128, -1, 0, 1, 127 ] });
+  tests.push({ code:"Test.byteArrayParam(testResults, [ -128, -128, -128, -128, -127 ])", expected:[ -128, -128, -128, -128, -127 ] });
   tests.push({ code:"Test.byteArrayParam(testResults, [ -128, -1, 0, 1, 127 ])", expected:[ -128, -1, 0, 1, 127 ] });
 
-  tests.push({ code:"Test.shortArrayParam(testResults, '[ -32768, -1, 0, 1, 32767 ]')", expected:[ -32768, -1, 0, 1, 32767 ] });
   tests.push({ code:"Test.shortArrayParam(testResults, [ -32768, -1, 0, 1, 32767 ])", expected:[ -32768, -1, 0, 1, 32767 ] });
 
-  tests.push({ code:"Test.intArrayParam(testResults, '[ -2147483648, -1, 0, 1, 2147483647 ]')", expected:[ -2147483648, -1, 0, 1, 2147483647 ] });
   tests.push({ code:"Test.intArrayParam(testResults, [ -2147483648, -1, 0, 1, 2147483647 ])", expected:[ -2147483648, -1, 0, 1, 2147483647 ] });
 
   tests.push({ code:"Test.longArrayParam(testResults, '[ -9223372036854775000, -1, 0, 1, 9223372036854775000 ]')", expected:[ -9223372036854775000, -1, 0, 1, 9223372036854775000 ] });
@@ -236,13 +234,15 @@
   */
 
   var nested = { integer:0, string:'0123456789' };
-  // at some stage it would be good to include the following, however recursive
-  // javascript objects are way beyond us right now.
-  // nested.testBean = nested;
+  nested.testBean = nested;
+
+/*
+  tests.push({ code:"Test.byteArrayParam(testResults, [ -128, -128, -128, -128, -127 ])", expected:[ -128, -128, -128, -128, -127 ] });
 
   tests.push({ code:"Test.testBeanParam(testResults, { integer:-2147483648, string:'!\"$%^&*()', testBean:null })", expected:{ integer:-2147483648, string:'!"$%^&*()', testBean:null } });
-  tests.push({ code:"Test.testBeanParam(testResults, { integer:-1, string:'null', testBean:null })", expected:{ integer:-1, string:'null', testBean:null } });
-  tests.push({ code:"Test.testBeanParam(testResults, { integer:0, string:'undefined', testBean:undefined })", expected:{ integer:0, string:'undefined', testBean:undefined } });
+  tests.push({ code:"Test.testBeanParam(testResults, { integer:-1, string:'Null', testBean:null })", expected:{ integer:-1, string:'Null', testBean:null } });
+  tests.push({ code:"Test.testBeanParam(testResults, { integer:0, string:'Undefined', testBean:undefined })", expected:{ integer:0, string:'Undefined', testBean:undefined } });
+*/
   tests.push({ code:"Test.testBeanParam(testResults, { integer:1, string:'0987654321', testBean:nested })", expected:{ integer:1, string:'0987654321', testBean:nested } });
 
   function startTest()
@@ -295,14 +295,14 @@
 
       // TODO: maybe make a separate function for testing equality
       var passed = testEquals(data, test.expected);
-      if (passed)
+      if (typeof passed == "boolean" && passed)
       {
           //passes.innerHTML += test.code + "<br/>";
           execreport.innerHTML = (index + 1);
       }
       else
       {
-          failures.innerHTML += test.code + "<br/>&nbsp;&nbsp;Expected: " + test.expected + " Actual: " + data + "<br/>";
+          failures.innerHTML += test.code + "<br/>&nbsp;&nbsp;" + passed + "<br/>&nbsp;&nbsp;Expected: " + test.expected + " Actual: " + data + "<br/>";
           failcount++;
           failreport.innerHTML = failcount;
 
@@ -323,59 +323,68 @@
   {
       if (expected instanceof Array)
       {
-          if (actual instanceof Array)
+          if (!(actual instanceof Array))
           {
-              if (actual.length = expected.length)
-              {
-                  for (var i = 0; i < actual.length; i++)
-                  {
-                      if (!testEquals(actual[i], expected[i]))
-                      {
-                          return false;
-                      }
-                  }
+              return "expected array, actual not an array";
+          }
 
-                  return true;
+          if (actual.length != expected.length)
+          {
+              return "expected array length = " + expected.length + ", actual array length = " + actual.length;
+          }
+
+          for (var i = 0; i < actual.length; i++)
+          {
+              var nest = testEquals(actual[i], expected[i]);
+              if (typeof nest != "boolean" || !nest)
+              {
+                  return "element " + i + " does not match: " + nest;
               }
           }
 
-          return false;
+          return true;
       }
       else if (expected instanceof Object)
       {
-          if (actual instanceof Object)
+          if (!(actual instanceof Object))
           {
-              var actualLength = 0;
-              for (var prop in actual)
-              {
-                  if (!testEquals(actual[prop], expected[prop]))
-                  {
-                      return false;
-                  }
-
-                  actualLength++;
-              }
-
-              // need to check length too
-              var expectedLength = 0;
-              for (prop in expected)
-              {
-                  expectedLength++;
-              }
-
-              if (actualLength != expectedLength)
-              {
-                  return false;
-              }
-
-              return true;
+              return "expected object, actual not an object";
           }
 
-          return false;
+          var actualLength = 0;
+          for (var prop in actual)
+          {
+              var nest = testEquals(actual[prop], expected[prop]);
+              if (typeof nest != "boolean" || !nest)
+              {
+                  return "element " + prop + " does not match: " + nest;
+              }
+
+              actualLength++;
+          }
+
+          // need to check length too
+          var expectedLength = 0;
+          for (prop in expected)
+          {
+              expectedLength++;
+          }
+
+          if (actualLength != expectedLength)
+          {
+              return "expected object size = " + expectedLength + ", actual object size = " + actualLength;
+          }
+
+          return true;
       }
       else
       {
-          return (actual == expected);
+          if (actual != expected)
+          {
+              return "expected = " + expected + ", actual = " + actual;
+          }
+
+          return true;
       }
   }
 

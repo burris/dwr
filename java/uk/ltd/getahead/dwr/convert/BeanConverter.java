@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
@@ -31,29 +32,30 @@ public class BeanConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, java.lang.String)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
      */
-    public Object convertTo(Class paramType, String data) throws ConversionException
+    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
     {
-        if (data.trim().equals("null"))
+        String value = data.getValue();
+        if (value.trim().equals("null"))
         {
             return null;
         }
 
-        if (data.startsWith("{"))
+        if (value.startsWith("{"))
         {
-            data = data.substring(1);
+            value = value.substring(1);
         }
-        if (data.endsWith("}"))
+        if (value.endsWith("}"))
         {
-            data = data.substring(0, data.length() - 1);
+            value = value.substring(0, value.length() - 1);
         }
 
         try
         {
             // We know what we are converting to so we create a map of property
             // names against PropertyDescriptors to speed lookup later
-            Object array = paramType.newInstance();
+            Object bean = paramType.newInstance();
             BeanInfo info = Introspector.getBeanInfo(paramType);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             Map props = new HashMap();
@@ -63,8 +65,12 @@ public class BeanConverter implements Converter
                 props.put(key, descriptors[i]);
             }
 
+            // We should put the new object into the working map in case it
+            // is referenced later nested down in the conversion process.
+            working.put(data, bean);
+
             // Loop through the property declarations
-            StringTokenizer st = new StringTokenizer(data, ",");
+            StringTokenizer st = new StringTokenizer(value, ",");
             int size = st.countTokens();
             for (int i = 0; i < size; i++)
             {
@@ -81,7 +87,7 @@ public class BeanConverter implements Converter
                 }
 
                 String key = token.substring(0, colonpos).trim();
-                String value = token.substring(colonpos + 1).trim();
+                String val = token.substring(colonpos + 1).trim();
 
                 PropertyDescriptor descriptor = (PropertyDescriptor) props.get(key);
                 if (descriptor == null)
@@ -99,12 +105,13 @@ public class BeanConverter implements Converter
                 {
                     Class propType = descriptor.getPropertyType();
 
-                    Object output = config.convertTo(propType, value);
-                    descriptor.getWriteMethod().invoke(array, new Object[] { output });
+                    ConversionData nested = new ConversionData(data.getLookup(), val);
+                    Object output = config.convertTo(propType, nested, working);
+                    descriptor.getWriteMethod().invoke(bean, new Object[] { output });
                 }
             }
 
-            return array;
+            return bean;
         }
         catch (ConversionException ex)
         {
@@ -117,9 +124,9 @@ public class BeanConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public ScriptSetup convertFrom(Object data, Map converted, String varname) throws ConversionException
+    public String convertFrom(Object data, String varname, Map converted) throws ConversionException
     {
         StringBuffer buffer = new StringBuffer();
         buffer.append("var " + varname + " = new Object();");
@@ -163,11 +170,7 @@ public class BeanConverter implements Converter
             throw new ConversionException(ex);
         }
 
-        ScriptSetup ss = new ScriptSetup();
-        ss.initCode = buffer.toString();
-        ss.assignCode = varname;
-        ss.isValueType = false;
-        return ss;
+        return buffer.toString();
     }
 
     /**

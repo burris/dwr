@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
@@ -27,22 +28,24 @@ public class CollectionConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, java.lang.String)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
      */
-    public Object convertTo(Class paramType, String data) throws ConversionException
+    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
     {
-        if (data.startsWith("["))
+        String value = data.getValue();
+
+        if (value.startsWith("["))
         {
-            data = data.substring(1);
+            value = value.substring(1);
         }
-        if (data.endsWith("]"))
+        if (value.endsWith("]"))
         {
-            data = data.substring(0, data.length() - 1);
+            value = value.substring(0, value.length() - 1);
         }
 
         try
         {
-            StringTokenizer st = new StringTokenizer(data, ",");
+            StringTokenizer st = new StringTokenizer(value, ",");
             int size = st.countTokens();
 
             Collection col;
@@ -59,10 +62,15 @@ public class CollectionConverter implements Converter
                 throw new ConversionException("Can't convert javascript arrays to " + paramType);
             }
 
+            // We should put the new object into the working map in case it
+            // is referenced later nested down in the conversion process.
+            working.put(data, col);
+
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-                Object output = config.convertTo(String.class, token);
+                ConversionData nested = new ConversionData(data.getLookup(), token);
+                Object output = config.convertTo(String.class, nested, working);
                 col.add(output);
             }
 
@@ -75,9 +83,9 @@ public class CollectionConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public ScriptSetup convertFrom(Object data, Map converted, String varname) throws ConversionException
+    public String convertFrom(Object data, String varname, Map converted) throws ConversionException
     {
         Iterator it = null;
         if (data instanceof Collection)
@@ -115,11 +123,7 @@ public class CollectionConverter implements Converter
             i++;
         }
 
-        ScriptSetup ss = new ScriptSetup();
-        ss.initCode = buffer.toString();
-        ss.assignCode = varname;
-        ss.isValueType = false;
-        return ss;
+        return buffer.toString();
     }
 
     /**

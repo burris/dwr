@@ -8,10 +8,10 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.ScriptSetup;
 import uk.ltd.getahead.dwr.util.Log;
 
 /**
@@ -29,10 +29,12 @@ public class DateConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, java.lang.String)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
      */
-    public Object convertTo(Class paramType, String data) throws ConversionException
+    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
     {
+        String value = data.getValue();
+
         /*
         if (!(data instanceof Date))
         {
@@ -40,25 +42,25 @@ public class DateConverter implements Converter
         }
         */
 
-        if (data.startsWith("["))
+        if (value.startsWith("["))
         {
-            data = data.substring(1);
+            value = value.substring(1);
         }
-        if (data.endsWith("]"))
+        if (value.endsWith("]"))
         {
-            data = data.substring(0, data.length() - 1);
+            value = value.substring(0, value.length() - 1);
         }
 
         Calendar calendar = new GregorianCalendar();
 
         try
         {
-            StringTokenizer st = new StringTokenizer(data, ",");
+            StringTokenizer st = new StringTokenizer(value, ",");
             int size = st.countTokens();
 
             if (size != 7)
             {
-                Log.warn("Date does not have 7 components: " + data);
+                Log.warn("Date does not have 7 components: " + value);
             }
 
             for (int i = 0; i < size && i < 7; i++)
@@ -66,8 +68,8 @@ public class DateConverter implements Converter
                 try
                 {
                     String token = st.nextToken();
-                    int value = Integer.parseInt(token.trim());
-                    calendar.set(FIELDS[i], value);
+                    int intval = Integer.parseInt(token.trim());
+                    calendar.set(FIELDS[i], intval);
                 }
                 catch (NumberFormatException ex)
                 {
@@ -103,14 +105,14 @@ public class DateConverter implements Converter
         }
         catch (Exception ex)
         {
-            throw new ConversionException("Format error converting " + data + " to " + paramType.getName(), ex);
+            throw new ConversionException("Format error converting " + value + " to " + paramType.getName(), ex);
         }
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public ScriptSetup convertFrom(Object data, Map converted, String varname) throws ConversionException
+    public String convertFrom(Object data, String varname, Map converted) throws ConversionException
     {
         if (!(data instanceof Date))
         {
@@ -138,11 +140,7 @@ public class DateConverter implements Converter
         buffer.append(calendar.get(Calendar.MILLISECOND));
         buffer.append(");");
 
-        ScriptSetup ss = new ScriptSetup();
-        ss.initCode = buffer.toString();
-        ss.assignCode = varname;
-        ss.isValueType = false;
-        return ss;
+        return buffer.toString();
     }
 
     /**

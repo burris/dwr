@@ -106,20 +106,31 @@ public class ExecuteQuery
      */
     private void parseParameters()
     {
-        id = (String) params.get(KEY_ID);
-        className = (String) params.get(KEY_CLASSNAME);
-        methodName = (String) params.get(KEY_METHODNAME);
-        xmlMode = Boolean.valueOf((String) params.get(KEY_XMLMODE)).booleanValue();
+        // The special values
+        id = (String) params.remove(KEY_ID);
+        className = (String) params.remove(KEY_CLASSNAME);
+        methodName = (String) params.remove(KEY_METHODNAME);
+        xmlMode = Boolean.valueOf((String) params.remove(KEY_XMLMODE)).booleanValue();
+
+        // Look through the params and convert to ConversionData.
+        for (Iterator it = params.keySet().iterator(); it.hasNext();)
+        {
+            String key = (String) it.next();
+            String value = (String) params.get(key);
+            ConversionData cd = new ConversionData(params, value);
+            params.put(key, cd);
+        }
 
         paramList = new ArrayList();
         while (true)
         {
-            String param = (String) params.get("param" + paramList.size());
-            if (param == null || param.equals("undefined"))
+            ConversionData cd = (ConversionData) params.get("param" + paramList.size());
+            if (cd == null)
             {
                 break;
             }
-            paramList.add(param);
+
+            paramList.add(cd);
         }
     }
 
@@ -172,7 +183,7 @@ public class ExecuteQuery
                     for (int j = 0; j < methods[i].getParameterTypes().length; j++)
                     {
                         Class paramType = methods[i].getParameterTypes()[j];
-                        String param = (String) paramList.get(j);
+                        ConversionData param = (ConversionData) paramList.get(j);
                         coerced[j] = converterManager.convertTo(paramType, param);
                         if (coerced[j] == null)
                         {
@@ -267,7 +278,23 @@ public class ExecuteQuery
             }
         }
 
-        return "" + className + "." + methodName + "("+allParams+");";
+        StringBuffer allData = new StringBuffer();
+        for (Iterator it = params.keySet().iterator(); it.hasNext();)
+        {
+            String key = (String) it.next();
+            ConversionData value = (ConversionData) params.get(key);
+
+            allData.append(key);
+            allData.append("=");
+            allData.append(value.getRawData());
+
+            if (it.hasNext())
+            {
+                allData.append(", ");
+            }
+        }
+
+        return "" + className + "." + methodName + "(" + allParams + "); with " + allData;
     }
 
     private static final String SEPARATOR = "=";

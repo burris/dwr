@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
@@ -25,36 +26,43 @@ public class ArrayConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, java.lang.String)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
      */
-    public Object convertTo(Class paramType, String data) throws ConversionException
+    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
     {
         if (!paramType.isArray())
         {
             throw new ConversionException("Class: " + paramType + " is not an array type");
         }
 
-        if (data.startsWith("["))
+        String value = data.getValue();
+        if (value.startsWith("["))
         {
-            data = data.substring(1);
+            value = value.substring(1);
         }
-        if (data.endsWith("]"))
+        if (value.endsWith("]"))
         {
-            data = data.substring(0, data.length() - 1);
+            value = value.substring(0, value.length() - 1);
         }
 
         try
         {
-            StringTokenizer st = new StringTokenizer(data, ",");
+            StringTokenizer st = new StringTokenizer(value, ",");
             int size = st.countTokens();
 
             Class componentType = paramType.getComponentType();
             //componentType = LocalUtil.getNonPrimitiveType(componentType);
             Object array = Array.newInstance(componentType, size);
+
+            // We should put the new object into the working map in case it
+            // is referenced later nested down in the conversion process.
+            working.put(data, array);
+
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-                Object output = converterManager.convertTo(componentType, token);
+                ConversionData nested = new ConversionData(data.getLookup(), token);
+                Object output = converterManager.convertTo(componentType, nested, working);
                 Array.set(array, i, output);
             }
 
@@ -67,9 +75,9 @@ public class ArrayConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public ScriptSetup convertFrom(Object data, Map converted, String varname) throws ConversionException
+    public String convertFrom(Object data, String varname, Map converted) throws ConversionException
     {
         if (!data.getClass().isArray())
         {
@@ -92,11 +100,7 @@ public class ArrayConverter implements Converter
             buffer.append(";");
         }
 
-        ScriptSetup ss = new ScriptSetup();
-        ss.initCode = buffer.toString();
-        ss.assignCode = varname;
-        ss.isValueType = false;
-        return ss;
+        return buffer.toString();
     }
 
     private ConverterManager converterManager;

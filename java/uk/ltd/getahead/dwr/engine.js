@@ -1,24 +1,48 @@
 // engine.js
+
+// A function to be called before requests are marshalled. Can be null.
 var dwrPreHook;
+
+// A function to be called after replies are received. Can be null.
 var dwrPostHook;
-var dwrCalls = new Object();
+
+// A function to call if something fails.
 var dwrErrorHandler;
 
+// A map of all the known current calls
+var dwrCalls = new Object();
+
+// When we are dreaming up variable names, this is a number that we use
+// as a basis to ensure uniqueness.
+// WARNING: if it is possible for dwrExecute to be called again before
+// marshalling has finished on the first then this will break, but I
+// *think* that is not possible.
+var dwrParamCount = 0;
+
+// Warning: if you can see EL-like (${...}) expressions on the next line, don't be fooled into thinking it is EL.
+// Check the source in DWRServlet for the hack. Maybe we will do something more EL like in the future.
+// If you can't see the ${...} then you are probably looking at the processed source
+var dwrUrlBase = '${request.contextPath}${request.servletPath}/exec';
+
+// The error handler function
 function dwrSetErrorHandler(handler)
 {
     dwrErrorHandler = handler;
 }
 
+// A pre execute hook
 function dwrSetPreHook(handler)
 {
     dwrPreHook = handler;
 }
 
+// A post execute hook
 function dwrSetPostHook(handler)
 {
     dwrPostHook = handler;
 }
 
+// Called when the replies are received
 function dwrHandleResponse(id, reply)
 {
     var call = dwrCalls[id];
@@ -58,6 +82,7 @@ function dwrHandleResponse(id, reply)
     dwrCalls[id] = undefined;
 }
 
+// Called when errors are received
 function dwrHandleError(id, reason)
 {
     var call = dwrCalls[id];
@@ -89,12 +114,14 @@ function dwrHandleError(id, reason)
     dwrCalls[id] = undefined;
 }
 
+// Get a unique ID for this call
 function dwrGetID()
 {
     var random = Math.floor(Math.random() * 10001);
     return (random + "_" + new Date().getTime()).toString();
 }
 
+// Send a request to the server
 function dwrExecute(func, classname, methodname, vararg_params)
 {
     var call = new Object();
@@ -115,72 +142,63 @@ function dwrExecute(func, classname, methodname, vararg_params)
 
     call.callback = func;
 
-    // Warning: if you can see EL-like (${...}) expressions on the next line, don't be fooled into thinking it is EL.
-    // Check the source in DWRServlet for the hack. Maybe we will do something more EL like in the future.
-    // If you can't see the ${...} then you are probably looking at the processed source
-    var urlbase = '${request.contextPath}${request.servletPath}/exec';
+    // Build a map containing all the values to pass to the server.
+    dwrParamCount = 0;
 
+    call.map = new Object();
+    call.map.classname = classname;
+    call.map.methodname = methodname;
+    call.map.id = call.id;
+    call.map.xml = true;
+    for (var i=3; i<dwrExecute.arguments.length; i++)
+    {
+        dwrMarshall(call.map, new Object(), dwrExecute.arguments[i], "param" + (i-3));
+    }
+
+    // Get setup for XMLHttpRequest if possible
     if (window.XMLHttpRequest)
     {
-        var map = new Object;
-        map.classname = classname;
-        map.methodname = methodname;
-        map.id = call.id;
-        map.xml = true;
-
-        for (var i=3; i<dwrExecute.arguments.length; i++)
-        {
-            var marshall = dwrMarshall(dwrExecute.arguments[i]);
-            map["param" + (i-3)] = marshall;
-        }
-
-        var query = "";
-        for (var prop in map)
-        {
-            query += prop + "=" + map[prop] + "\n";
-        }
-
-        call.url = urlbase;
-        call.map = map;
-
         call.req = new XMLHttpRequest();
-        call.req.onreadystatechange = function() { dwrStateChange(call); };
-        //call.req.open("GET", call.url+'&xml=true', true);
-        //call.req.send(null);
-        call.req.open("POST", urlbase, true);
-        alert(query);
-        call.req.send(query);
     }
-    /*
-    The IE version appears to cache replies.
     else if (window.ActiveXObject)
     {
         // I've seen code that asks for the following:
         // call.req = new ActiveXObject("Msxml2.XMLHTTP");
         call.req = new ActiveXObject("Microsoft.XMLHTTP");
-        if (call.req)
+        if (!call.req)
         {
-            call.req.onreadystatechange = dwrStateChange;
-            call.req.open("GET", call.url+'&xml=true', true);
-            call.req.send();
-        }
-        else
-        {
-            alert("Creation of Microsoft.XMLHTTP failed. Aborting.");
+            alert("Creation of Microsoft.XMLHTTP failed. Reverting to iframe method.");
         }
     }
-    */
-    else
+
+    if (call.req)
     {
-        var argdata = '';
-        for (var i=3; i<dwrExecute.arguments.length; i++)
+        // Proceed using XMLHttpRequest
+        var query = "";
+        for (var prop in call.map)
         {
-            var marshall = dwrMarshall(dwrExecute.arguments[i]);
-            argdata = argdata + '&param' + (i-3) + '=' + marshall;
+            query += prop + "=" + call.map[prop] + "\n";
         }
 
-        var query = "class=" + classname + "&method=" + methodname + argdata + "&id=" + call.id;
-        call.url = urlbase + "?" + query;
+        call.url = dwrUrlBase;
+
+        call.req.onreadystatechange = function() { dwrStateChange(call); };
+        call.req.open("POST", call.url, true);
+        alert(query);
+        call.req.send(query);
+    }
+    else
+    {
+        // Proceed using iframe
+        var query = "";
+        for (var prop in call.map)
+        {
+            var lookup = call.map[prop];
+            query += lookup.name + "=" + lookup.convert + "&";
+        }
+        query = query.substring(0, query.length - 1);
+
+        call.url = dwrUrlBase + "?" + query;
 
         call.iframe = document.createElement('iframe');
         call.iframe.setAttribute('id', 'dwr-iframe');
@@ -190,96 +208,128 @@ function dwrExecute(func, classname, methodname, vararg_params)
     }
 }
 
-function dwrMarshall(data)
+// Marshall a data item
+function dwrMarshall(output, referto, data, name)
 {
     if (data == null)
     {
-        return "null";
+        output[name] = "null:null";
+        return;
     }
 
     switch (typeof data)
     {
     case "boolean":
-        return data;
+        output[name] = "boolean:" + data;
+        break;
 
     case "number":
-        return data;
+        output[name] = "number:" + data;
+        break;
 
     case "string":
-        return encodeURIComponent(data);
+        // if we get encoding problems we can try encodeURIComponent(data)
+        output[name] = "string:" + data;
+        break;
 
     case "object":
         if (data instanceof Boolean)
         {
-            return data;
+            output[name] = "Boolean:" + data;
         }
         else if (data instanceof Number)
         {
-            return data;
+            output[name] = "Number:" + data;
         }
         else if (data instanceof String)
         {
-            return encodeURIComponent(data);
+            // if we get encoding problems we can try encodeURIComponent(data)
+            output[name] = "String:" + data;
         }
         else if (data instanceof Date)
         {
-            return "[ " + data.getUTCFullYear() + ", " + data.getUTCMonth() + ", " + data.getUTCDate() + ", " + data.getUTCHours() + ", " + data.getUTCMinutes() + ", " + data.getUTCSeconds() + ", " + data.getUTCMilliseconds() + "]";
-        }
-        else if (data instanceof Array)
-        {
-            var reply = "["
-            for (var i = 0; i < data.length; i++)
-            {
-                if (i != 0)
-                {
-                    reply += ",";
-                }
-
-                var marshalled = "" + dwrMarshall(data[i]);
-                marshalled = marshalled.replace(/,/, "%2c");
-                marshalled = marshalled.replace(/\[/, "%5b");
-                marshalled = marshalled.replace(/\]/, "%5d");
-                reply += marshalled;
-            }
-            reply += "]";
-            return reply;
+            output[name] = "Date:[ " + data.getUTCFullYear() + ", " + data.getUTCMonth() + ", " + data.getUTCDate() + ", " + data.getUTCHours() + ", " + data.getUTCMinutes() + ", " + data.getUTCSeconds() + ", " + data.getUTCMilliseconds() + "]";
         }
         else
         {
-             // treat anything else as an associative array (map)
-            var reply = "{"
-            for (element in data)
+            // This is the beginning of the types that can recurse
+            var lookup = referto[data];
+            if (lookup != null)
             {
-                var marshalled = dwrMarshall(data[element]);
-
-                reply += element;
-                reply += ":";
-                reply += marshalled;
-                reply += ", ";
+                output[name] = "reference:" + lookup;
+                return;
             }
-            reply = reply.substring(0, reply.length - 2);
-            reply += "}";
-            return reply;
+
+            referto[data] = name;
+
+            if (data instanceof Array)
+            {
+                var reply = "Array:["
+                for (var i = 0; i < data.length; i++)
+                {
+                    if (i != 0)
+                    {
+                        reply += ",";
+                    }
+
+                    dwrParamCount++;
+                    var childName = "c"+dwrParamCount;
+                    dwrMarshall(output, referto, data[i], childName);
+                    reply += "reference:";
+                    reply += childName;
+                }
+                reply += "]";
+
+                output[name] = reply;
+            }
+            else
+            {
+                 // treat anything else as an associative array (map)
+                var reply = "Object:{"
+                for (element in data)
+                {
+                    dwrParamCount++;
+                    var childName = "c"+dwrParamCount;
+                    dwrMarshall(output, referto, data[element], childName);
+
+                    reply += element;
+                    reply += ":reference:";
+                    reply += childName;
+                    reply += ", ";
+                }
+                reply = reply.substring(0, reply.length - 2);
+                reply += "}";
+
+                output[name] = reply;
+            }
+            break;
         }
 
     default:
-        return data;
+        alert("Unexpected type: " + typeof data + ", attempting default converter");
+        output[name] = "default:" + data;
     }
-
-    return data;
 }
 
+// Called by XMLHttpRequest to indicate that something has happened
 function dwrStateChange(call)
 {
     if (call.req.readyState == 4)
     {
-        if (call.req.status == 200)
+        try
         {
-            eval(call.req.responseText);
+            if (call.req.status == 200)
+            {
+                eval(call.req.responseText);
+            }
+            else
+            {
+                dwrHandleError(call.id, call.req.responseText);
+            }
         }
-        else
+        catch (ex)
         {
-            dwrHandleError(call.id, call.req.responseText);
+            dwrHandleError(call.id, ex);
         }
     }
 }

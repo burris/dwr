@@ -3,9 +3,9 @@ package uk.ltd.getahead.dwr.convert;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 
+import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.ScriptSetup;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 
 /**
@@ -23,14 +23,14 @@ public class ConstructorConverter implements Converter
     }
     
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, java.lang.String)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
      */
-    public Object convertTo(Class paramType, String data)
+    public Object convertTo(Class paramType, ConversionData data, Map working)
     {
         try
         {
             Constructor converter = paramType.getConstructor(new Class[] { String.class });
-            return converter.newInstance(new Object[] { data });
+            return converter.newInstance(new Object[] { data.getValue() });
         }
         catch (Exception ex)
         {
@@ -39,10 +39,10 @@ public class ConstructorConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public ScriptSetup convertFrom(Object data, Map converted, String varname)
+    public String convertFrom(Object data, String varname, Map converted)
     {
-        return new ScriptSetup("", "\"" + StringEscapeUtils.escapeJavaScript(data.toString()) + "\"");
+        return "var " + varname + " = \"" + StringEscapeUtils.escapeJavaScript(data.toString()) + "\";";
     }
 }

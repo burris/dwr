@@ -33,11 +33,4 @@ public class ScriptSetup
      * The code to be executed to get the value of the initialized data
      */
     public String assignCode = "";
-
-    /**
-     * Should this conversion from java to javascript be cached in case it
-     * comes up again by being referenced from somewhere else in this method
-     * call?
-     */
-    public boolean isValueType = true;
 }

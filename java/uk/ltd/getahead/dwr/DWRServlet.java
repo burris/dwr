@@ -484,7 +484,7 @@ public class DWRServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Log.warn("Erroring: id[" + eq.getId() + "] message[" + ex.getMessage() + "] xml[" + eq.isXmlMode() + "]");
+            Log.warn("Erroring: id[" + eq.getId() + "] message[" + ex.getMessage() + "]", ex);
 
             try
             {

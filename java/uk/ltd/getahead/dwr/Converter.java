@@ -19,18 +19,19 @@ public interface Converter
      * Attempt to coerce the data from a string to an Object
      * @param paramType The type to convert to
      * @param data The data to convert
+     * @param working The map of data that we are working on
      * @return The convered data, or null if the conversion was not possible
      * @throws ConversionException If the conversion failed for some reason
      */
-    public Object convertTo(Class paramType, String data) throws ConversionException;
+    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException;
 
     /**
      * Attempt to coerce the data from an Object to a string
      * @param data The data to convert
+     * @param varName The variable to declare
      * @param converted Objects already converted and the results
-     * @param varname A name for the variable to declare
-     * @return The convered data, or null if the conversion was not possible
+     * @return The string that declares the given variable
      * @throws ConversionException If the conversion failed for some reason
      */
-    public ScriptSetup convertFrom(Object data, Map converted, String varname) throws ConversionException;
+    public String convertFrom(Object data, String varName, Map converted) throws ConversionException;
 }
