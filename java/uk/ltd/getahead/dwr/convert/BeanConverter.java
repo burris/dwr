@@ -150,7 +150,10 @@ public class BeanConverter implements Converter
 
                         ScriptSetup nested = config.convertFrom(value, converted);
 
+                        // Make sure the nested thing is declared
                         buffer.append(nested.initCode);
+
+                        // And now declare our stuff
                         buffer.append(varname);
                         buffer.append(".");
                         buffer.append(name);

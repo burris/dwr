@@ -188,7 +188,7 @@ public class DWRServlet extends HttpServlet
         {
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
-            out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+"/test/"+name+"'>"+name+"</a> ("+creator.getType().getName()+")</li>");
+            out.println("<li><a href='" + req.getContextPath() + req.getServletPath() + "/test/" + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>");
         }
 
         out.println("</body></html>");
@@ -482,7 +482,7 @@ public class DWRServlet extends HttpServlet
 
             out.flush();
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             Log.warn("Erroring: id[" + eq.getId() + "] message[" + ex.getMessage() + "]", ex);
 

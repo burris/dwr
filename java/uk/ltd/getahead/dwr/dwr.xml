@@ -12,6 +12,7 @@
     <converter id="primitive" class="uk.ltd.getahead.dwr.convert.PrimitiveConverter"/>
     <converter id="string" class="uk.ltd.getahead.dwr.convert.StringConverter"/>
     <converter id="array" class="uk.ltd.getahead.dwr.convert.ArrayConverter"/>
+    <converter id="map" class="uk.ltd.getahead.dwr.convert.MapConverter"/>
     <converter id="collection" class="uk.ltd.getahead.dwr.convert.CollectionConverter"/>
     <converter id="date" class="uk.ltd.getahead.dwr.convert.DateConverter"/>
     <converter id="bean" class="uk.ltd.getahead.dwr.convert.BeanConverter"/>
@@ -47,9 +48,11 @@
     <convert converter="string" match="java.lang.String"/>
     <convert converter="array" match="[L*"/>
     <convert converter="date" match="java.util.Date"/>
-    <!-- The catch here is that we really mean java.util.Collection<String>
-    but we need to do more work before this syntax is enabled -->
+    <!-- The catch for the next 2 is that we really mean java.util.Collection<String>
+    and java.util.Map<String, String> but we need to do more work before this
+    syntax is enabled -->
     <convert converter="collection" match="java.util.Collection"/>
+    <convert converter="map" match="java.util.Map"/>
   </allow>
 
 </dwr>

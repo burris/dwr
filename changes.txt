@@ -5,14 +5,12 @@ New package names? net.java.dev.dwr in place of uk.ltd.getahead.dwr?
 
 Todo
 ----
-fix duplicate bean/array generated name bug
-fix input marshalling recursion bug
 tests for collections converter
 tests for bean converter
 update config docs
 test config file web.xml element
 test dual deploy in web.xml for j2ee security
-
+Check that if a method requires a Set then we don't give it an ArrayList becuase we think it is a Collection.
 
 Recent changes
 --------------

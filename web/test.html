@@ -16,7 +16,6 @@
   var index = 0;
   var tests = new Array();
 
-/*
   tests.push({ code:"Test.voidParam(testResults)", expected:undefined });
 
   tests.push({ code:"Test.booleanParam(testResults, true)", expected:true });
@@ -180,9 +179,8 @@
 
   tests.push({ code:"Test.doubleArrayParam(testResults, '[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ]')", expected:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] });
   tests.push({ code:"Test.doubleArrayParam(testResults, [ -100000000000000000000, -1, 0, 1, 100000000000000000000 ])", expected:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] });
-*/
+
   // Unicode: we could be here for some time, so I just picked some commmon ones
-  /*
   tests.push({ code:"Test.charParam(testResults, '£')", expected:"£" });
   tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
   tests.push({ code:"Test.charParam(testResults, '¦')", expected:"¦" });
@@ -231,18 +229,15 @@
   tests.push({ code:"Test.charParam(testResults, '\\u00C6')", expected:"\u00C6" });
   tests.push({ code:"Test.charParam(testResults, '\\u00DF')", expected:"\u00DF" });
   tests.push({ code:"Test.charParam(testResults, '\\u00FF')", expected:"\u00FF" });
-  */
 
   var nested = { integer:0, string:'0123456789' };
   nested.testBean = nested;
 
-/*
   tests.push({ code:"Test.byteArrayParam(testResults, [ -128, -128, -128, -128, -127 ])", expected:[ -128, -128, -128, -128, -127 ] });
 
   tests.push({ code:"Test.testBeanParam(testResults, { integer:-2147483648, string:'!\"$%^&*()', testBean:null })", expected:{ integer:-2147483648, string:'!"$%^&*()', testBean:null } });
   tests.push({ code:"Test.testBeanParam(testResults, { integer:-1, string:'Null', testBean:null })", expected:{ integer:-1, string:'Null', testBean:null } });
   tests.push({ code:"Test.testBeanParam(testResults, { integer:0, string:'Undefined', testBean:undefined })", expected:{ integer:0, string:'Undefined', testBean:undefined } });
-*/
   tests.push({ code:"Test.testBeanParam(testResults, { integer:1, string:'0987654321', testBean:nested })", expected:{ integer:1, string:'0987654321', testBean:nested } });
 
   function startTest()

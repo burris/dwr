@@ -16,6 +16,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import uk.ltd.getahead.dwr.util.LogErrorHandler;
+
 /**
  * The Configuration class has responsibility for reading all config data from
  * web.xml and dwr.xml
@@ -53,8 +55,11 @@ public class Configuration
         {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setValidating(true);
+
             DocumentBuilder db = dbf.newDocumentBuilder();
             db.setEntityResolver(new DTDEntityResolver());
+            db.setErrorHandler(new LogErrorHandler());
+
             Document doc = db.parse(in);
 
             addConfig(doc);

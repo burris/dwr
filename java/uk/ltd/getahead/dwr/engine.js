@@ -184,7 +184,6 @@ function dwrExecute(func, classname, methodname, vararg_params)
 
         call.req.onreadystatechange = function() { dwrStateChange(call); };
         call.req.open("POST", call.url, true);
-        alert(query);
         call.req.send(query);
     }
     else
@@ -316,7 +315,7 @@ function dwrStateChange(call)
 {
     if (call.req.readyState == 4)
     {
-        try
+        //try
         {
             if (call.req.status == 200)
             {
@@ -327,9 +326,9 @@ function dwrStateChange(call)
                 dwrHandleError(call.id, call.req.responseText);
             }
         }
-        catch (ex)
+        //catch (ex)
         {
-            dwrHandleError(call.id, ex);
+        //    dwrHandleError(call.id, ex);
         }
     }
 }

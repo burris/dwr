@@ -137,11 +137,10 @@ public class ExecuteQuery
     /**
      * Check (as far as we can) that the execute method will succeed.
      * @return The return from the method invocation
-     * @throws ExecutionException If the method could not be executed
-     * @throws ConversionException If conversion to java fails.
-     * @throws IOException If there was an HTTP request parse failure
+     * @throws Throwable Almost anything could go wrong. We're not exception
+     * wrapping and we are unwrapping InvocationTargetException
      */
-    public Object execute() throws ExecutionException, ConversionException, IOException
+    public Object execute() throws Throwable
     {
         if (delayed != null)
         {
@@ -229,21 +228,9 @@ public class ExecuteQuery
             Log.info("Executing: " + method.toString());
             return method.invoke(object, converted);
         }
-        catch (InstantiationException ex)
-        {
-            throw new ExecutionException("Failed to create: " + creator.getClass().getName(), ex);
-        }
-        catch (IllegalArgumentException ex)
-        {
-            throw new ExecutionException("Illegal argument executing: " + method.getName(), ex);
-        }
-        catch (IllegalAccessException ex)
-        {
-            throw new ExecutionException("Illegal access executing: " + method.getName(), ex);
-        }
         catch (InvocationTargetException ex)
         {
-            throw new ExecutionException("Nested exception executing: " + method.getName(), ex.getTargetException());
+            throw ex.getTargetException();
         }
     }
 
