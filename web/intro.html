@@ -36,21 +36,45 @@
     &lt;url-pattern>/dwr/*&lt;/url-pattern>
   &lt;/servlet-mapping>
 </pre>
+
 <p>
-  Note that in the next release of DWR we will be moving to using a simple
-  dwr.xml file to configure the allowed beans, however for now you have to use
-  web.xml.
+  Then create a dwr.xml file that lives in WEB-INF alongside web.xml.
+  A simple way to start is with something like this:
 </p>
+
+<pre>
+&lt;dwr>
+  &lt;allow>
+    &lt;create creator="new" javascript="Date" class="java.util.Date"/>
+    &lt;create creator="new" javascript="Test" class="uk.ltd.getahead.dwr.test.Test"/>
+    &lt;create creator="session" javascript="TestBean" class="uk.ltd.getahead.dwr.test.TestBean"/>
+    &lt;create creator="session" javascript="Demo" class="uk.ltd.getahead.dwr.test.Demo"/>
+  &lt;/allow>
+&lt;/dwr>
+</pre>
+
 <p>
-  You can change the <i>allowed</i> init-param to specify any classes you want, so long
-  as they satisfy the following:
+  The DWR config file does 2 things. Firstly it defines what classes DWR can
+  create and remote for use by Javascript and defines the types that can be
+  marshalled as part of that remoting.
+  <br/>
+  In the example above we are defining 4 classes that are remoted and giving
+  the classes names in Javascript so we don't have to use the full package
+  names. We also specify how the objects are to be created "new" means that we
+  create a new object for each an every invocation. "session" stores the object
+  in users HTTP session.
+  <br/>
+  Secondly dwr.xml allows you to define new ways to create and marshall objects.
+</p>
+
+<p>
+  The class attribute can contain any valid Java class so long as it satisfies
+  the following:
 </p>
 <ul>
   <li>The class must have a public no-args constructor like any normal Java Bean</li>
-  <li>Avoid classes called by reserved JavaScript words. (methods called by reserved words are automatically excluded)</li>
-  <li>There must be a way of converting from a string to all the parameter types. Currently the Coercer class converts Strings and all primitive types.</li>
-  <li>Overridden methods will be involved in a bit of a lottery as to which gets called, so avoid overridden methods.</li>
-  <li>Although you can allow several classes with the name last name component (like java.util.Date and java.sql.Date) you can't use them both in the same page.</li>
+  <li>Avoid reserved JavaScript words, methods called by reserved words are automatically excluded.</li>
+  <li>Overridden methods can be involved in a bit of a lottery as to which gets called, so avoid overridden methods.</li>
 </ul>
 
 <h4>3. Go to the following URL</h4>
@@ -80,8 +104,9 @@
   (see below).
 </p>
 <p>
-  The best way to get started is to nick the code from the pages that you have
-  just looked at:
+  The best way to get started is look at the source from the pages that you have
+  just viewed. The demo pages (see the sidebar) have some more advanced examples
+  of scripting your pages using DWR.
 </p>
 <ul>
   <li>Go to http://localhost:8080/[YOUR-WEBAPP]/dwr and click on you class</li>
@@ -89,7 +114,7 @@
   <li>Paste the text into an HTML or JSP page in your web-app.</li>
   <li>Include links to the javascript files that make the magic happen:
 <pre>
-&lt;script src='/[YOUR-WEBAPP]/dwr/interface/[YOUR-CLASS].js'>&lt;/script>
+&lt;script src='/[YOUR-WEBAPP]/dwr/interface/[YOUR-SCRIPT-NAME].js'>&lt;/script>
 &lt;script src='/[YOUR-WEBAPP]/dwr/engine.js'>&lt;/script>
 </pre>
 </li>

@@ -1,8 +1,4 @@
 
-Changes that might happen
--------------------------
-New package names? net.java.dev.dwr in place of uk.ltd.getahead.dwr?
-
 Todo
 ----
 tests for collections converter
