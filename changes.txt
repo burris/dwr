@@ -1,9 +1,18 @@
 
+Future Ideas
+------------
+save log messages to a ring buffer and then have DWR grab them and turn them
+    into alert()s whenever engine.js is read. Only good for errors and warnings
+    but could help in setting things up.
+Create a wiki with help on error messages
+Create a jdk 1.5 version of the collections code converter to get more type info
+Create a batch send mechanism so a page can start by sending a set of remote
+    calls all at the same time.
+
 Todo
 ----
 tests for collections converter
 tests for bean converter
-update config docs
 test config file web.xml element
 test dual deploy in web.xml for j2ee security
 Check that if a method requires a Set then we don't give it an ArrayList becuase we think it is a Collection.

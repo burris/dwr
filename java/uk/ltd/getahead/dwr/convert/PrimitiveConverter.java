@@ -31,7 +31,7 @@ public class PrimitiveConverter implements Converter
         {
             if (paramType == Boolean.TYPE || paramType == Boolean.class)
             {
-                return new Boolean(value.trim());
+                return Boolean.valueOf(value.trim());
             }
             else if (paramType == Byte.TYPE || paramType == Byte.class)
             {
@@ -112,6 +112,7 @@ public class PrimitiveConverter implements Converter
 
         if (object.equals(Boolean.TRUE))
         {
+            // @PMD:REVIEWED:AvoidDuplicateLiterals: by Joe on 02/02/05 10:56
             return "var " + varname + " = true;";
         }
         else if (object.equals(Boolean.FALSE))

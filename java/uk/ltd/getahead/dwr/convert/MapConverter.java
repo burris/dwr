@@ -99,7 +99,9 @@ public class MapConverter implements Converter
         Map map = (Map) data;
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var " + varname + " = new Object();");
+        buffer.append("var ");
+        buffer.append(varname);
+        buffer.append(" = new Object();");
 
         for (Iterator it = map.keySet().iterator(); it.hasNext();)
         {

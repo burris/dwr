@@ -22,9 +22,6 @@ public class ExecutionContext
         this.request = request;
         this.response = response;
         this.config = config;
-
-        this.session = request.getSession(true);
-        this.context = session.getServletContext();
     }
 
     /**
@@ -32,7 +29,7 @@ public class ExecutionContext
      */
     public HttpSession getSession()
     {
-        return session;
+        return request.getSession(true);
     }
 
     /**
@@ -48,7 +45,7 @@ public class ExecutionContext
      */
     public ServletContext getServletContext()
     {
-        return context;
+        return getSession().getServletContext();
     }
 
     /**
@@ -67,11 +64,9 @@ public class ExecutionContext
         return response;
     }
 
-    private HttpSession session;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
-    private ServletContext context;
-    private ServletConfig config;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
+    private final ServletConfig config;
 
     private static ThreadLocal user = new ThreadLocal();
 

@@ -199,10 +199,10 @@ public class Test
      */
     public TestBean[] getNestingTest()
     {
-        TestBean a = new TestBean(0, "!\"$%^&*()_", null);
-        TestBean b = new TestBean(0, "!\"$%^&*()_", a);
-        TestBean c = new TestBean(0, "!\"$%^&*()_", b);
-        TestBean d = new TestBean(0, "!\"$%^&*()_", c);
+        TestBean a = new TestBean(0, "!\"$%^&*()_1", null);
+        TestBean b = new TestBean(0, "!\"$%^&*()_2", a);
+        TestBean c = new TestBean(0, "!\"$%^&*()_3", b);
+        TestBean d = new TestBean(0, "!\"$%^&*()_4", c);
 
         TestBean[] reply = new TestBean[]
         {
@@ -259,12 +259,12 @@ public class Test
     }
 
     /**
-     * @param x
+     * @param param1
      * @return string
      */
-    public String dangerOverride(String x)
+    public String dangerOverride(String param1)
     {
-        return "Test.dangerOverride("+x+") says hello.";
+        return "Test.dangerOverride("+param1+") says hello.";
     }
 
     /**

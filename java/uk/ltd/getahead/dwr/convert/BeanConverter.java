@@ -129,7 +129,9 @@ public class BeanConverter implements Converter
     public String convertFrom(Object data, String varname, Map converted) throws ConversionException
     {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var " + varname + " = new Object();");
+        buffer.append("var ");
+        buffer.append(varname);
+        buffer.append(" = new Object();");
 
         try
         {
@@ -163,7 +165,11 @@ public class BeanConverter implements Converter
                     }
                     catch (Exception ex)
                     {
-                        buffer.append("alert('Failed to marshall: " + name + ". " + ex + "');");
+                        buffer.append("alert('Failed to marshall: ");
+                        buffer.append(name);
+                        buffer.append(". ");
+                        buffer.append(ex);
+                        buffer.append("');");
                     }
                 }
             }

@@ -63,6 +63,13 @@ public class SessionCreator implements Creator
         return reply;
     }
 
+    /**
+     * 
+     */
     private Class clazz;
+
+    /**
+     * 
+     */
     private String scriptname;
 }

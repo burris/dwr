@@ -157,6 +157,6 @@ public class Demo
     }
 
     private static int nextId = 10;
-    private Map people = new HashMap();
+    private final Map people = new HashMap();
     private Person person = new Person("John Doe", new Date().toString(), 1, 100000.0F);
 }

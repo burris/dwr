@@ -4,7 +4,7 @@
 Top level conviguration element.
 -->
 <!ELEMENT dwr (
-    (init?), allow
+    (init?), (allow?)
 )>
 
 <!--

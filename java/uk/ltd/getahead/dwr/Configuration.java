@@ -31,13 +31,6 @@ public class Configuration
      */
     public Configuration(boolean debug)
     {
-        // The Javascript reserved words array so we don't generate illegal javascript
-        if (reserved == null)
-        {
-            reserved = new TreeSet();
-            reserved.addAll(Arrays.asList(RESERVED_ARRAY));
-        }
-
         this.debug = debug;
 
         converterManager = new ConverterManager();
@@ -276,20 +269,20 @@ public class Configuration
     /**
      * The ConverterManager to which we delegate conversion of parameters
      */
-    private ConverterManager converterManager;
+    private final ConverterManager converterManager;
 
     /**
      * The CreatorManager to which we delegate creation of new objects.
      */
-    private CreatorManager creatorManager;
+    private final CreatorManager creatorManager;
 
     /**
      * Are we in debug mode?
      */
-    private boolean debug = false;
+    private final boolean debug;
 
-    private static SortedSet reserved = null;
-    private static String[] RESERVED_ARRAY =  new String[]
+    private static SortedSet reserved = new TreeSet();
+    private static final String[] RESERVED_ARRAY =  new String[]
     {
         // Reserved and used at ECMAScript 4
         "as", "break", "case", "catch", "class", "const", "continue", "default",
@@ -330,4 +323,13 @@ public class Configuration
         "window",
         */
     };
+
+    /**
+     * For easy access ...
+     */
+    static
+    {
+        // The Javascript reserved words array so we don't generate illegal javascript
+        reserved.addAll(Arrays.asList(RESERVED_ARRAY));
+    }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>DWR Issues</title>
+  <title>DWR - Issues</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
   <link rel="stylesheet" type="text/css" href="generic.css"/>
 </head>
@@ -90,6 +90,19 @@ public void debugPeople(List people)
   There is a potential for us to invent an extension to the dwr.xml config
   file that allowed us to say <code>void debugPeople(List people)</code> is the
   same as <code>void debugPeople(List&lt;Person> people)</code>.
+</p>
+
+<h3>Other Issues</h3>
+
+<p>
+  This section is being used as a dumping ground for potential gotchas that we
+  may get around to investigating one day.
+</p>
+
+<p>
+  Is there any guarantee that the ordering of param-names as read by DWR will
+  be the same as the file ordering? The order in which the files are read is
+  important since the files may depend on each other.
 </p>
 
 </body>

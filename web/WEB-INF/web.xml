@@ -15,20 +15,20 @@
     <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
     <!--
     <init-param>
-       <param-name>config</param-name>
-       <param-value>WEB-INF/dwr.xml</param-value>
-       <description>What config file do we use?</description>
+      <param-name>config</param-name>
+      <param-value>WEB-INF/dwr.xml</param-value>
+      <description>What config file do we use?</description>
     </init-param>
     -->
     <init-param>
-       <param-name>debug</param-name>
-       <param-value>true</param-value>
-       <description>Do we startup in debug/test mode?</description>
+      <param-name>debug</param-name>
+      <param-value>true</param-value>
+      <description>Do we startup in debug/test mode?</description>
     </init-param>
     <init-param>
-       <param-name>logLevel</param-name>
-       <param-value>DEBUG</param-value>
-       <description>How verbose do we want logging to be?</description>
+      <param-name>logLevel</param-name>
+      <param-value>DEBUG</param-value>
+      <description>How verbose do we want logging to be?</description>
     </init-param>
     <load-on-startup>-1</load-on-startup>
   </servlet>

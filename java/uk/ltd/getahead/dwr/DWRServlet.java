@@ -62,43 +62,41 @@ public class DWRServlet extends HttpServlet
             Log.setLevel(logLevel);
         }
 
+        // Load the system config file
         try
         {
-            // Load the system config file
             InputStream in = getClass().getResourceAsStream("dwr.xml");
             configuration.addConfig(in);
-
-            // Find all the init params
-            Enumeration en = config.getInitParameterNames();
-
-            boolean foundConfig = false;
-
-            // Loop through the ones that do exist
-            while (en.hasMoreElements())
-            {
-                String name = (String) en.nextElement();
-                if (name.startsWith("config"))
-                {
-                    // if the init param starts with "config" then try to load it
-                    String configFile = config.getInitParameter(name);
-                    in = config.getServletContext().getResourceAsStream(configFile);
-                    configuration.addConfig(in);
-
-                    foundConfig = true;
-                }
-            }
-
-            // If there are none then use the default name
-            if (!foundConfig)
-            {
-                in = config.getServletContext().getResourceAsStream("WEB-INF/dwr.xml");
-                configuration.addConfig(in);
-            }
         }
         catch (SAXException ex)
         {
             Log.fatal("Failed to parse dwr.xml", ex);
             throw new ServletException("Parse error reading from dwr.xml", ex);
+        }
+
+        // Find all the init params
+        Enumeration en = config.getInitParameterNames();
+
+        boolean foundConfig = false;
+
+        // Loop through the ones that do exist
+        while (en.hasMoreElements())
+        {
+            String name = (String) en.nextElement();
+            if (name.startsWith("config"))
+            {
+                foundConfig = true;
+
+                // if the init param starts with "config" then try to load it
+                String configFile = config.getInitParameter(name);
+                readFile(configFile);
+            }
+        }
+
+        // If there are none then use the default name
+        if (!foundConfig)
+        {
+            readFile(DEFAULT_DWR_XML);
         }
 
         converterManager = configuration.getConverterManager();
@@ -515,6 +513,35 @@ public class DWRServlet extends HttpServlet
             }
         }
     }
+
+    /**
+     * Load a DWR config file.
+     * @param configFile the config file to read
+     */
+    private void readFile(String configFile)
+    {
+        try
+        {
+            InputStream in = getServletContext().getResourceAsStream(configFile);
+            if (in != null)
+            {
+                configuration.addConfig(in);
+            }
+            else
+            {
+                Log.warn("Could not find dwr config file at: " + configFile);
+            }
+        }
+        catch (SAXException ex)
+        {
+            Log.fatal("Failed to parse: " + configFile, ex);
+        }
+    }
+
+    /**
+     * The default dwr.xml file path
+     */
+    private static final String DEFAULT_DWR_XML = "WEB-INF/dwr.xml";
 
     /**
      * We cache the script output for speed
