@@ -398,7 +398,7 @@ public final class DWRServlet extends HttpServlet
 
     /**
      * Basically a file servlet component that does some <b>very limitted</b>
-     * EL type processing on the file.
+     * EL type processing on the file. See the source for the cheat.
      * @param req The browsers request
      * @param resp The response channel
      * @param path The path to search for, process and output

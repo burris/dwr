@@ -53,6 +53,15 @@ public class Demo
     }
 
     /**
+     * Get information about the current version of DWR.
+     * @return string host information
+     */
+    public String getDWRInfo()
+    {
+        return ExecutionContext.get().getVersion();
+    }
+
+    /**
      * Get information about the use of this page.
      * @return string click information.
      */

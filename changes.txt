@@ -1,17 +1,23 @@
 
-Future Ideas
-------------
-save log messages to a ring buffer and then have DWR grab them and turn them
-    into alert()s whenever engine.js is read. Only good for errors and warnings
-    but could help in setting things up.
-Create a wiki with help on error messages along with a link in error
+Before 1.0
+----------
+Internationalize
+Work out if we need to polish util.js
+Get feedback
+
+Future Ideas (In order of importance)
+-------------------------------------
+Add creators for HiveMind Pica, Nano, etc if there is interest
 Create a jdk 1.5 version of the collections code converter to get more type info
+Add pluggable marshallers so we could do JSON or XML-RPC out the back end
+Create a wiki with help on error messages along with a link in error
 Create a batch send mechanism so a page can start by sending a set of remote
     calls all at the same time.
-Add pluggable marshallers so we could do JSON or XML-RPC out the back end
-use jdk5 annotations to pass comments to generated javascript interface so the
+Save log messages to a ring buffer and then have DWR grab them and turn them
+    into alert()s whenever engine.js is read. Only good for errors and warnings
+    but could help in setting things up.
+Use jdk5 annotations to pass comments to generated javascript interface so the
     the created javascript is documented (or maybe javacc and javadoc)
-Add creators for HiveMind Pica, Nano, etc
 
 Recent changes
 --------------
