@@ -10,33 +10,64 @@ pre
 
 body
 {
-    font-family: Verdana, sans-serif;
-    margin-right: 170px;
+    font-family: verdana, arial, sans-serif;
+    color: #666;
+    background: #EEE;
+    margin: 0px;
 }
 
-#sidebar
+.snip-content
 {
-    border: 0px solid;
-    border-left: 2px solid #cccccc;
-    border-bottom: 2px solid #cccccc;
-    position: absolute;
+    clear: left;
+    border: 0;
+    display: block;
+    font-family: verdana, arial, sans-serif;
+    color: #666;
+    font-size: 90%;
+    line-height: 120%;
+    font-weight: normal;
+    background: #FFF;
+}
+
+#page-content
+{
+    float: left;
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    margin-left: 5%;
+    background: #FFF;
+    border: 1px #CCC solid;
+    width: 65%;
+}
+
+#page-portlet-1
+{
+    float: right;
     top: 0px;
-    right: 0px;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 5px;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    background: #DDD;
+    font-family: verdana, arial, sans-serif;
+    color: #666;
+    font-size: 11px;
+    font-weight: normal;
+    line-height: 16px;
+    border: 1px solid #AAA;
+
     width: 150px;
     height: 700px;
     overflow: hidden;
 }
 
-body>#sidebar
-{
-    position: fixed;
-    height: 100%;
-}
-
 .sidebody
 {
     margin: 10px 5px 20px 5px;
-    background: #eeeeee;
+    background: #DDD;
     font-size: 90%;
 }
 
@@ -49,4 +80,99 @@ body>#sidebar
 {
     font-size: 95%;
     margin-bottom: 0;
+}
+
+a
+{
+    color: #9A1414;
+    font-family: verdana, arial, sans-serif;
+    text-decoration: none;
+}
+
+a:link
+{
+    color: #9A1414;
+    text-decoration: none;
+}
+
+a:visited
+{
+    color: #9A1414;
+    text-decoration: none;
+}
+
+a:active
+{
+    color: #FFCC66;
+}
+
+a:hover
+{
+    color: #FFCC66;
+}
+
+h1
+{
+    color: #000000;
+    background-color: inherit;
+    font-weight: bold;
+    font-size: 120%;
+    font-variant: uppercase;
+}
+
+h2
+{
+    color: #000000;
+    background-color: inherit;
+    font-size: 110%;
+    font-variant: uppercase;
+}
+
+h3
+{
+    color: #000000;
+    background-color: inherit;
+    font-size: 100%;
+    font-variant: uppercase;
+}
+
+h4
+{
+    color: #000000;
+    background-color: inherit;
+    font-size: 90%;
+    font-variant: uppercase;
+}
+
+#page-logo
+{
+    color: #FFFFFF;
+    background-color: #5a5a8d;
+    border: 1px solid #000000;
+    font-family: courier new;
+    font-weight: bold;
+    font-size: 28pt;
+    padding-top: 0.20em;
+    padding-bottom: 0.20em;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#page-title
+{
+    background-color: #7272a2;
+    border: 1px solid #000000;
+    border-top: 0px;
+    font-family: verdana, arial, sans-serif;
+    padding: 5px;
+    text-align: right;
+    color: #000000;
+    font-size: 6pt;
+}
+
+#page-title a
+{
+    color: #333;
+    font-weight: normal;
+    font-size: 6pt;
 }
