@@ -253,6 +253,7 @@ public class Test
      * @param test
      * @return string
      */
+    // @PMD:REVIEWED:LooseCoupling: by Joe on 09/02/05 08:25
     public HashSet stringHashSetParam(HashSet test)
     {
         return test;
@@ -262,6 +263,7 @@ public class Test
      * @param test
      * @return string
      */
+    // @PMD:REVIEWED:LooseCoupling: by Joe on 09/02/05 08:25
     public TreeSet stringTreeSetParam(TreeSet test)
     {
         return test;
