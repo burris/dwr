@@ -10,14 +10,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import javax.servlet.ServletConfig;
@@ -58,30 +53,18 @@ public class DWRServlet extends HttpServlet
             reserved.addAll(Arrays.asList(RESERVED_ARRAY));
         }
 
-        // Which classes are we allowed to communicate with?
-        String allowStr = config.getInitParameter("allowed");
-        if (allowStr == null)
+        try
+        {
+            // Which classes are we allowed to communicate with?
+            allowed = new AccessList(config.getInitParameter("allowed"));
+        }
+        catch (NullPointerException ex)
         {
             throw new ServletException("Mising 'allowed' init-parameter");
         }
-
-        // replace all the commas, tabs and new lines with spaces.
-        StringTokenizer st = new StringTokenizer(allowStr, ", \t\n\r\f");
-        while (st.hasMoreElements())
+        catch (Exception ex)
         {
-            String allow = st.nextToken().trim();            
-            if (allow.length() > 0)
-            {
-                try
-                {
-                    Class clazz = Class.forName(allow);
-                    allowed.add(clazz);
-                }
-                catch (ClassNotFoundException ex)
-                {
-                    log("Failed to find class: "+allow, ex);
-                }
-            }
+            throw new ServletException(ex);
         }
 
         // Are we in debug mode?
@@ -111,12 +94,9 @@ public class DWRServlet extends HttpServlet
             }
             else
             {
+                log("Failed attempt to access index page outside of debug mode. Set the debug init-parameter to true to enable.");
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN);
             }
-        }
-        else if (pathinfo != null && pathinfo.startsWith("/engine"))
-        {
-            doEngine(req, resp);
         }
         else if (pathinfo != null && pathinfo.startsWith("/test/"))
         {
@@ -126,19 +106,25 @@ public class DWRServlet extends HttpServlet
             }
             else
             {
+                log("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable.");
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN);
             }
+        }
+        else if (pathinfo != null && pathinfo.equalsIgnoreCase("/engine.js"))
+        {
+            doEngine(req, resp);
         }
         else if (pathinfo != null && pathinfo.startsWith("/interface/"))
         {
             doInterface(req, resp);
         }
-        else if (pathinfo != null && pathinfo.indexOf("/exec") != -1)
+        else if (pathinfo != null && pathinfo.startsWith("/exec"))
         {
             doExec(req, resp);
         }
         else
         {
+            log("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/");
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
@@ -177,39 +163,20 @@ public class DWRServlet extends HttpServlet
     private void doTest(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         String pathinfo = req.getPathInfo();
-        pathinfo = replace(pathinfo, "/test/", "");
-        pathinfo = replace(pathinfo, "/", "");
+        pathinfo = LocalUtil.replace(pathinfo, "/test/", "");
+        pathinfo = LocalUtil.replace(pathinfo, "/", "");
 
         String classname = pathinfo;
-        if (classname == null)
+        Class allow = processClass(req, resp, classname);
+        if (allow == null)
         {
-            doError(req, resp, HttpServletResponse.SC_BAD_REQUEST, "Missing class parameter");
             return;
         }
 
-        Class allow = null;
-        try
-        {
-            allow = Class.forName(classname);
-        }
-        catch (ClassNotFoundException ex)
-        {
-            doError(req, resp, HttpServletResponse.SC_NOT_ACCEPTABLE, classname);
-            ex.printStackTrace();
-        }
-
-        if (!isAllowed(allow))
-        {
-            doError(req, resp, HttpServletResponse.SC_FORBIDDEN, classname);
-            return;
-        }
-
-        String name = getShortClassName(allow);
-
+        String name = LocalUtil.getShortClassName(allow);
         Method[] methods = allow.getDeclaredMethods();
 
         resp.setContentType("text/html");
-
         PrintWriter out = resp.getWriter();
 
         out.println("<html>");
@@ -294,8 +261,7 @@ public class DWRServlet extends HttpServlet
             // Print a warning if the method uses un-marshallable types
             for (int j = 0; j < paramTypes.length; j++)
             {
-                Object coercer = coercers.get(paramTypes[j]);
-                if (!paramTypes[j].isPrimitive() && coercer == null)
+                if (!CoercerManager.isCoercable(paramTypes[j]))
                 {
                     out.println("<span style='font-size: smaller; color: red;'>(Warning: "+paramTypes[j].getName()+" is not marshallable yet)</span>");
                 }
@@ -320,23 +286,14 @@ public class DWRServlet extends HttpServlet
 
     /**
      * @param req
-     * @return Is the request using XMLHttpRequest
-     */
-    private boolean isXMLHttpRequest(HttpServletRequest req)
-    {
-        return Boolean.valueOf(req.getParameter("xml")).booleanValue();
-    }
-
-    /**
-     * @param req
      * @param resp
      * @throws IOException
      */
     private void doInterface(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         String pathinfo = req.getPathInfo();
-        pathinfo = replace(pathinfo, "/interface/", "");
-        pathinfo = replace(pathinfo, ".js", "");
+        pathinfo = LocalUtil.replace(pathinfo, "/interface/", "");
+        pathinfo = LocalUtil.replace(pathinfo, ".js", "");
 
         Class allow = processClass(req, resp, pathinfo);
         if (allow == null)
@@ -344,7 +301,7 @@ public class DWRServlet extends HttpServlet
             return;
         }
 
-        String name = getShortClassName(allow);
+        String name = LocalUtil.getShortClassName(allow);
 
         //resp.setContentType("text/javascript");
         PrintWriter out = resp.getWriter();
@@ -400,45 +357,11 @@ public class DWRServlet extends HttpServlet
     /**
      * @param req
      * @param resp
-     * @param classname
-     * @return The specified class or null if not found or not allowed
-     */
-    private Class processClass(HttpServletRequest req, HttpServletResponse resp, String classname)
-    {
-        if (classname == null)
-        {
-            doError(req, resp, HttpServletResponse.SC_NOT_ACCEPTABLE, classname);
-            return null;
-        }
-
-        Class allow = null;
-        try
-        {
-            allow = Class.forName(classname);
-        }
-        catch (ClassNotFoundException ex)
-        {
-            doError(req, resp, HttpServletResponse.SC_NOT_FOUND, classname);
-            return null;
-        }
-
-        if (!isAllowed(allow))
-        {
-            doError(req, resp, HttpServletResponse.SC_FORBIDDEN, classname);
-            return null;
-        }
-
-        return allow;
-    }
-
-    /**
-     * @param req
-     * @param resp
      * @throws IOException
      */
     private void doEngine(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        //resp.setContentType("text/javascript");
+        resp.setContentType("text/javascript");
 
         if (scriptCache == null)
         {
@@ -454,8 +377,8 @@ public class DWRServlet extends HttpServlet
                     break;
                 }
                 
-                line = replace(line, "\\$\\{request.contextPath\\}", req.getContextPath());
-                line = replace(line, "\\$\\{request.servletPath\\}", req.getServletPath());
+                line = LocalUtil.replace(line, "${request.contextPath}", req.getContextPath());
+                line = LocalUtil.replace(line, "${request.servletPath}", req.getServletPath());
 
                 buffer.append(line);
                 buffer.append("\n");
@@ -479,14 +402,8 @@ public class DWRServlet extends HttpServlet
 
         try
         {
-            String classname = getClassName(req);
-            if (classname == null)
-            {
-                doError(req, resp, HttpServletResponse.SC_FORBIDDEN, classname);
-                return;
-            }
-
-            Class clazz = processClass(req, resp, classname);
+            String className = req.getParameter("class");
+            Class clazz = processClass(req, resp, className);
             if (clazz == null)
             {
                 return;
@@ -495,6 +412,7 @@ public class DWRServlet extends HttpServlet
             String methodName = req.getParameter("method");
             if (methodName == null)
             {
+                log("Missing method parameter in url: "+req.getRequestURL()+"?"+req.getQueryString());
                 doError(req, resp, HttpServletResponse.SC_BAD_REQUEST, "Missing method parameter");
                 return;
             }
@@ -534,7 +452,7 @@ public class DWRServlet extends HttpServlet
                         {
                             Class paramType = method.getParameterTypes()[j];
                             String param = (String) params.get(j);
-                            converted[j] = coerce(paramType, param);
+                            converted[j] = CoercerManager.coerce(paramType, param);
                             if (converted[j] == null)
                             {
                                 break methods;
@@ -560,6 +478,7 @@ public class DWRServlet extends HttpServlet
                     }
                 }
 
+                log("Missing method " + clazz.getName() + "." + methodName + "("+allParams+") in url: "+req.getRequestURL()+"?"+req.getQueryString());
                 doError(req, resp, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+clazz.getName()+"."+methodName+"("+allParams+");");
                 return;
             }
@@ -640,7 +559,7 @@ public class DWRServlet extends HttpServlet
             else
             {
                 resp.setContentType("text/html");
-                String output = escape(message);
+                String output = LocalUtil.escape(message);
                 out.println("<script type='text/javascript'>window.parent.dwrHandleError('"+output+"')</script>");
             }
 
@@ -694,7 +613,7 @@ public class DWRServlet extends HttpServlet
             }
             else
             {
-                String output = escape(reply.toString());
+                String output = LocalUtil.escape(reply.toString());
                 out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('"+output+"')</script>");
                 out.println("<p>The called function returned: [<span style='color:#800; font-family:monospace;'>"+output+"</span>]<br/>");
             }
@@ -710,27 +629,49 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * Get the current classname from a request
-     * @param req The http request from which to get the classname
-     * @return The specified classname
+     * @param req
+     * @return Is the request using XMLHttpRequest
      */
-    private String getClassName(HttpServletRequest req)
+    private boolean isXMLHttpRequest(HttpServletRequest req)
     {
-        String pathinfo = req.getPathInfo();
-        StringTokenizer st = new StringTokenizer(pathinfo, "/");
-        // disguard the first
-        st.nextToken();
-        return st.nextToken();
+        return Boolean.valueOf(req.getParameter("xml")).booleanValue();
     }
 
     /**
-     * Is the given class on the list of classes we are allowed to access
-     * @param allow The class in question
-     * @return true if access is allowed to <code>allow</code>
+     * @param req
+     * @param resp
+     * @param classname
+     * @return The specified class or null if not found or not allowed
      */
-    private boolean isAllowed(Class allow)
+    private Class processClass(HttpServletRequest req, HttpServletResponse resp, String classname)
     {
-        return allowed.contains(allow);
+        if (classname == null)
+        {
+            log("Null classname. url: " + req.getRequestURL()+"?"+req.getQueryString());
+            doError(req, resp, HttpServletResponse.SC_NOT_ACCEPTABLE, classname);
+            return null;
+        }
+
+        Class allow = null;
+        try
+        {
+            allow = Class.forName(classname);
+        }
+        catch (ClassNotFoundException ex)
+        {
+            log("Class not found: " + classname + ". url=" + req.getRequestURL()+"?"+req.getQueryString(), ex);
+            doError(req, resp, HttpServletResponse.SC_NOT_FOUND, classname);
+            return null;
+        }
+
+        if (!allowed.isAllowed(allow))
+        {
+            log("Access denied to class: " + classname + ". If you wish to enable access to this class, add it to the 'allowed' init-parameter");
+            doError(req, resp, HttpServletResponse.SC_FORBIDDEN, classname);
+            return null;
+        }
+
+        return allow;
     }
 
     /**
@@ -753,125 +694,6 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * Convert an object from being a string into an object of some type
-     * @param paramType The type that you want the object to be
-     * @param object The string version of the object
-     * @return The coerced object or null if the object could not be coerced
-     */
-    private Object coerce(Class paramType, String object)
-    {
-        if (paramType.isPrimitive())
-        {
-            try
-            {
-                if (paramType == Boolean.TYPE)
-                {
-                    return new Boolean(object);
-                }
-                else if (paramType == Byte.TYPE)
-                {
-                    if (object.length() == 0)
-                    {
-                        byte b = 0;
-                        return new Byte(b);
-                    }
-                    return new Byte(object);
-                }
-                else if (paramType == Short.TYPE)
-                {
-                    if (object.length() == 0)
-                    {
-                        short s = 0;
-                        return new Short(s);
-                    }
-                    return new Short(object);
-                }
-                else if (paramType == Character.TYPE)
-                {
-                    if (object.length() == 1)
-                    {
-                        return new Character(object.charAt(0));
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                else if (paramType == Integer.TYPE)
-                {
-                    if (object.length() == 0)
-                    {
-                        return new Integer(0);
-                    }
-                    return new Integer(object);
-                }
-                else if (paramType == Long.TYPE)
-                {
-                    if (object.length() == 0)
-                    {
-                        return new Long(0);
-                    }
-                    return new Long(object);
-                }
-                else if (paramType == Float.TYPE)
-                {
-                    if (object.length() == 0)
-                    {
-                        return new Float(0);
-                    }
-                    return new Float(object);
-                }
-                else if (paramType == Double.TYPE)
-                {
-                    if (object.length() == 0)
-                    {
-                        return new Double(0);
-                    }
-                    return new Double(object);
-                }
-
-                return null;
-            }
-            catch (NumberFormatException ex)
-            {
-                return null;
-            }
-        }
-        else
-        {
-            List options = (List) coercers.get(paramType);
-            if (options != null)
-            {
-                for (Iterator ir = options.iterator(); ir.hasNext();)
-                {
-                    Coercer coercer = (Coercer) ir.next();
-                    Object reply = coercer.coerce(object);
-                    if (reply != null)
-                    {
-                        return reply;
-                    }
-                }
-            }
-
-            return null;
-        }
-    }
-
-    /**
-     * The exec properties
-     */
-    private Set allowed = new TreeSet(new Comparator()
-    {
-        public int compare(Object o1, Object o2)
-        {
-            Class c1 = (Class) o1;
-            Class c2 = (Class) o2;
-
-            return c1.getName().compareTo(c2.getName());
-        }
-    });
-
-    /**
      * We cache the script output for speed
      */
     private String scriptCache = null;
@@ -882,112 +704,9 @@ public class DWRServlet extends HttpServlet
     private boolean debug = false;
 
     /**
-     * Return a short class name without the package component.
-     * @param clazz  The class to simplfy the name of
-     * @return A short version of the class name
+     * The allowed classes
      */
-    private static String getShortClassName(Class clazz)
-    {
-        if (clazz == null)
-        {
-            throw new NullPointerException("The class must not be null");
-        }
-
-        String name = clazz.getName();
-
-        // Inner classes have $ in them. Strip out.
-        name = name.replace('$', '.');
-
-        int lastDot = name.lastIndexOf('.');
-        return name.substring(lastDot+1);
-    }
-
-    /**
-     * Escape a string to make it Javascript friendly.
-     * i.e replace ', " and \ with escaped versions of themselves
-     * @param input The string to be escaped
-     * @return An escapsed version of the string
-     */
-    private static String escape(String input)
-    {
-        input = replace(input, "\'", "\\\\'");
-        input = replace(input, "\"", "\\\\\"");
-        input = replace(input, "\\", "\\\\\\");
-        input = replace(input, "\t", "\\\\t");
-        input = replace(input, "\r", "\\\\r");
-        input = replace(input, "\n", "\\\\n");
-        input = replace(input, "\f", "\\\\f");
-
-        return input;
-    }
-
-    /**
-     * Replacement for String#replaceAll(String, String) in JDK 1.4+
-     * @param text source text
-     * @param repl the stuff to get rid of
-     * @param with the stuff to replace it with
-     * @return replaced text or null if any args are null
-     */
-    private static String replace(String text, String repl, String with)
-    {
-        if (text == null || repl == null || with == null || repl.length() == 0)
-        {
-            return text;
-        }
-
-        StringBuffer buf = new StringBuffer(text.length());
-        int searchFrom = 0;
-        while (true)
-        {
-            int foundAt = text.indexOf(repl, searchFrom);
-            if (foundAt == -1)
-            {
-                break;
-            }
-
-            buf.append(text.substring(searchFrom, foundAt)).append(with);
-            searchFrom = foundAt + repl.length();
-        }
-        buf.append(text.substring(searchFrom));
-
-        return buf.toString();
-    }
-
-    /**
-     * A map of all the converters
-     */
-    private static Map coercers = new HashMap();
-    private static Coercer[] ALL = new Coercer[]
-    {
-        new ConstructorCoercer(Boolean.class),
-        new ConstructorCoercer(Byte.class),
-        new ConstructorCoercer(Short.class),
-        new ConstructorCoercer(Integer.class),
-        new ConstructorCoercer(Long.class),
-        new ConstructorCoercer(Float.class),
-        new ConstructorCoercer(Double.class),
-        new StringCoercer(),
-    };
-
-    /**
-     * Copy the array into the map for fast lookup
-     */
-    static
-    {
-        for (int i = 0; i < ALL.length; i++)
-        {
-            Class coerceToClass = ALL[i].getCoerceToClass();
-
-            List options = (List) coercers.get(coerceToClass);
-            if (options == null)
-            {
-                options = new ArrayList();
-                coercers.put(coerceToClass, options);
-            }
-
-            options.add(ALL[i]);
-        }
-    }
+    private AccessList allowed = null;
 
     private static SortedSet reserved = null;
     private static String[] RESERVED_ARRAY =  new String[]

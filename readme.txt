@@ -3,7 +3,9 @@ See www/index.html for more information.
 
 Issues to resolve
 -----------------
+- better javadoc
 - Demo
+- Source download
 - Some form of bean marshalling
 - More testing
 

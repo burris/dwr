@@ -44,8 +44,11 @@ function dwrHandleResponse(data)
 
 function dwrHandleError(reason)
 {
-    iframe.parentNode.removeChild(iframe);
-    iframe = null;
+    if (iframe != null)
+    {
+        iframe.parentNode.removeChild(iframe);
+        iframe = null;
+    }
 
     if (postHook != null)
     {
@@ -82,7 +85,7 @@ function dwrExecute(func, classname, methodname, vararg_params)
     // Warning: if you can see EL-like expressions on the next line, don't be fooled into thinking it is EL.
     // Check the source in DWRServlet for the hack. Maybe we will do something more EL like in the future.
     // If you can't see the ${...} then you are probably looking at the processed source
-    var url = '${request.contextPath}${request.servletPath}/'+classname+'/exec?method='+methodname+argdata;
+    var url = '${request.contextPath}${request.servletPath}/exec?class='+classname+'&method='+methodname+argdata;
 
     if (window.XMLHttpRequest)
     {
