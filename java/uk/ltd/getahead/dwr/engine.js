@@ -395,7 +395,7 @@ DWREngine.marshall = function(output, referto, data, name)
             {
                 // treat anything else as an associative array (map)
                 var reply = "Object:{"
-                for (element in data)
+                for (var element in data)
                 {
                     DWREngine.paramCount++;
                     var childName = "c" + DWREngine.paramCount;
