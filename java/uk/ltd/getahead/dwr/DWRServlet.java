@@ -218,12 +218,13 @@ public class DWRServlet extends HttpServlet
         out.println("  <style>");
         out.println("    input.itext { font-size: smaller; background: #E4E4E4; border: 0; }");
         out.println("    input.ibutton { font-size: xx-small; border: 1px outset; margin: 0px; padding: 0px; }");
+        out.println("    span.reply { background: #ffffdd; }");
         out.println("  </style>");
         out.println("</head>");
         out.println("<body>");
         out.println("");
         out.println("<h2>Methods For: "+allow.getName()+"</h2>");
-        out.println("<p>There are "+methods.length+" declared methods:<ul>");
+        out.println("<p>Replies from DWR are shown with a yellow background.<br/>There are "+methods.length+" declared methods:<ul>");
 
         for (int i = 0; i < methods.length; i++)
         {
@@ -272,7 +273,7 @@ public class DWRServlet extends HttpServlet
             out.println("      document.getElementById('d"+i+"').innerHTML = data;");
             out.println("    }");
             out.println("  </script>");
-            out.println("  <span id='d"+i+"'></span>");
+            out.println("  <span id='d"+i+"' class='reply'></span>");
 
             // Print a warning if this method is overloaded
             boolean overridden = false;
