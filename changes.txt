@@ -1,6 +1,7 @@
 
 Recent changes
 --------------
+Added code to support StringEscapeUtils.escapeJavaScript() from commons-lang (Dimitry D'hondt/Joe Walker)
 
 Changes for Version 0.3
 -----------------------

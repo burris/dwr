@@ -21,7 +21,7 @@ public class LocalUtil
      * @param with the stuff to replace it with
      * @return replaced text or null if any args are null
      */
-    protected static String replace(String text, String repl, String with)
+    public static String replace(String text, String repl, String with)
     {
         if (text == null || repl == null || with == null || repl.length() == 0)
         {

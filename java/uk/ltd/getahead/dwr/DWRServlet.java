@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
+
 /**
  * This is the main servlet that handles all the requests to DWR.
  * <p>It is on the large side because it can't use technologies like JSPs etc
@@ -626,8 +628,8 @@ public class DWRServlet extends HttpServlet
             else
             {
                 String output = LocalUtil.escape(reply.toString());
-                out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('"+output+"')</script>");
-                out.println("<p>The called function returned: [<span style='color:#800; font-family:monospace;'>"+output+"</span>]<br/>");
+                out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('" + StringEscapeUtils.escapeJavaScript(output) + "')</script>");
+                out.println("<p>The called function returned: [<span style='color:#800; font-family:monospace;'>" + StringEscapeUtils.escapeHtml(output) + "</span>]<br/>");
             }
 
             out.println("This resulted from the query: [<span style='color:#800; font-family:monospace;'>"+req.getQueryString()+"</span>]</p>");
