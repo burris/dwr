@@ -22,9 +22,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * .
- * @author Joe Walker [joe at eireneh dot com]
- * @version $Id:$
+ * This is the main servlet that handles all the requests to DWR.
+ * <p>It is on the large side because it can't use technologies like JSPs etc
+ * since it all needs to be deployed in a single jar file, and while it might be
+ * possible to integrate Velocity or similar I think simplicity is more
+ * important, and there are only 2 real pages both script heavy in this servlet
+ * anyway.</p>
+ * <p>There are 5 things to do, in the order that you come across them:
+ * <li>The index test page that points at the classes</li>
+ * <li>The class test page that lets you execute methods</li>
+ * <li>The interface javascript that uses the engine to send requests</li>
+ * <li>The engine javascript to form the iframe request and process replies</li>
+ * <li>The exec 'page' that executes the method and returns data to the iframe</li>
+ * </p>
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DWRServlet extends HttpServlet
 {
@@ -35,6 +46,7 @@ public class DWRServlet extends HttpServlet
     {
         super.init(config);
 
+        // The Javascript reserved words array so we don't generate illegal javascript
         if (reserved == null)
         {
             reserved = new TreeSet();
@@ -43,16 +55,22 @@ public class DWRServlet extends HttpServlet
 
         try
         {
-            String debugStr = config.getServletContext().getInitParameter("dwr-debug");
-            debug = Boolean.valueOf(debugStr).booleanValue();
-
-            String allowStr = config.getServletContext().getInitParameter("dwr-allowed");
+            // Which classes are we allowed to communicate with?
+            String allowStr = config.getInitParameter("allowed");
+            if (allowStr == null)
+            {
+                throw new ServletException("Mising 'allowed' init-parameter");
+            }
             String[] allowArray = allowStr.split(" ");
             for (int i = 0; i < allowArray.length; i++)
             {
                 Class clazz = Class.forName(allowArray[i]);
                 allowed.add(clazz);
             }
+
+            // Are we in debug mode?
+            String debugStr = config.getInitParameter("debug");
+            debug = Boolean.valueOf(debugStr).booleanValue();
         }
         catch (Exception ex)
         {
@@ -80,19 +98,19 @@ public class DWRServlet extends HttpServlet
             {
                 doIndex(req, resp);
             }
-            else if (pathinfo.matches("/engine.*"))
+            else if (pathinfo != null && pathinfo.matches("/engine.*"))
             {
                 doEngine(req, resp);
             }
-            else if (pathinfo.matches("/.*/test.*"))
+            else if (pathinfo != null && pathinfo.matches("/.*/test.*"))
             {
                 doTest(req, resp);
             }
-            else if (pathinfo.matches("/.*/interface.*"))
+            else if (pathinfo != null && pathinfo.matches("/.*/interface.*"))
             {
                 doInterface(req, resp);
             }
-            else if (pathinfo.matches("/.*/exec.*"))
+            else if (pathinfo != null && pathinfo.matches("/.*/exec.*"))
             {
                 doExec(req, resp);
             }
@@ -130,7 +148,7 @@ public class DWRServlet extends HttpServlet
         for (Iterator it = allowed.iterator(); it.hasNext();)
         {
             Class allow = (Class) it.next();
-            out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+'/'+allow.getName()+"/test'>"+allow.getName()+"</a></li>");
+            out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+"/"+allow.getName()+"/test'>"+allow.getName()+"</a></li>");
         }
 
         out.println("</body></html>");
@@ -147,6 +165,8 @@ public class DWRServlet extends HttpServlet
     private void doTest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, IllegalAccessException
     {
         Class allow = getClass(req);
+        String name = getShortClassName(allow);
+
         Method[] methods = allow.getDeclaredMethods();
 
         resp.setContentType("text/html");
@@ -158,6 +178,10 @@ public class DWRServlet extends HttpServlet
         out.println("  <title>DWR Test</title>");
         out.println("  <script type='text/javascript' src='"+getInterfaceURL(req, allow)+"'></script>");
         out.println("  <script type='text/javascript' src='"+getEngineURL(req)+"'></script>");
+        out.println("  <style>");
+        out.println("    input.itext { font-size: smaller; background: #E4E4E4; border: 0; }");
+        out.println("    input.ibutton { font-size: xx-small; border: 1px outset; margin: 0px; padding: 0px; }");
+        out.println("  </style>");
         out.println("</head>");
         out.println("<body>");
         out.println("");
@@ -186,17 +210,17 @@ public class DWRServlet extends HttpServlet
 
             out.println("");
             out.println("<li>");
-            out.println("  "+method.getName()+'(');
+            out.println("  "+method.getName()+"(");
 
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print("    <input style='font-size: smaller; background: #E4E4E4; border: 0;' size='10' type='text' id='p"+i+j+"' title='"+paramTypes[j].getName()+"'/>");
+                out.print("    <input class='itext' type='text' size='10' id='p"+i+j+"' title='"+paramTypes[j].getName()+"'/>");
                 out.println(j == paramTypes.length - 1 ? "" : ", ");
             }
             out.println("  );");
 
-            out.print("  <input style='font-size: xx-small; border: 1px outset; margin: 0px; padding: 0px;' type='button' onclick='"+method.getName()+'(');
+            out.print("  <input class='ibutton' type='button' onclick='"+name+"."+method.getName()+"(");
             out.print("reply"+i);
             for (int j = 0; j < paramTypes.length; j++)
             {
@@ -268,9 +292,13 @@ public class DWRServlet extends HttpServlet
         PrintWriter out = resp.getWriter();
 
         Class allow = getClass(req);
+        String name = getShortClassName(allow);
 
         out.println();
         out.println("// Methods for: "+allow.getName());
+
+        out.println();
+        out.println(name+" = new Object();");
 
         Method[] methods = allow.getDeclaredMethods();
         for (int i = 0; i < methods.length; i++)
@@ -291,9 +319,9 @@ public class DWRServlet extends HttpServlet
 
             if (i != 0)
             {
-                out.println();
+                out.print("\n");
             }
-            out.print("function "+method.getName()+"(callback");
+            out.print(name+"."+method.getName()+" = function(callback");
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
@@ -302,7 +330,7 @@ public class DWRServlet extends HttpServlet
             out.println(")");
             out.println("{");
 
-            out.print("    dwrExecute(callback, '"+allow.getName()+"', '"+method.getName()+'\'');
+            out.print("    dwrExecute(callback, '"+allow.getName()+"', '"+method.getName()+"'");
             for (int j = 0; j < paramTypes.length; j++)
             {
                 out.print(", p"+j);
@@ -442,7 +470,7 @@ public class DWRServlet extends HttpServlet
                 doError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing method parameter");
                 return;
             }
-    
+
             List params = new ArrayList();
             while (true)
             {
@@ -453,7 +481,7 @@ public class DWRServlet extends HttpServlet
                 }
                 params.add(param);
             }
-    
+
             // Get a list of the available matching methods with the coerced
             // parameters that we will use to call it if we choose to use that
             // method.
@@ -471,12 +499,12 @@ public class DWRServlet extends HttpServlet
                     if (method.getParameterTypes().length == params.size())
                     {
                         Object[] converted = new Object[params.size()];
-    
+
                         // Check parameter types
                         params:
                         for (int j = 0; j < method.getParameterTypes().length; j++)
                         {
-                            Class paramType = method.getParameterTypes()[j];                            
+                            Class paramType = method.getParameterTypes()[j];
                             String param = (String) params.get(j);
                             converted[j] = coerce(paramType, param);
                             if (converted[j] == null)
@@ -484,13 +512,13 @@ public class DWRServlet extends HttpServlet
                                 break methods;
                             }
                         }
-    
+
                         available.add(method);
                         coerced.add(converted);
                     }
                 }
             }
-    
+
             // Check we have something to call
             if (available.size() == 0)
             {
@@ -503,11 +531,11 @@ public class DWRServlet extends HttpServlet
                         allParams.append(", ");
                     }
                 }
-    
-                doError(resp, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+clazz.getName()+'.'+methodName+'('+allParams+");");
+
+                doError(resp, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+clazz.getName()+"."+methodName+"("+allParams+");");
                 return;
             }
-    
+
             // At the moment we are just going to take the first match, for a
             // later increment we might pack the best implementation
             if (available.size() > 1)
@@ -517,11 +545,11 @@ public class DWRServlet extends HttpServlet
             Method method = (Method) available.get(0);
             Object[] converted = (Object[]) coerced.get(0);
             log("Executing: "+method.toString());
-    
+
             // Execute
             Object object = clazz.newInstance();
             Object reply = method.invoke(object, converted);
-    
+
             doReply(req, resp, reply);
         }
         catch (IllegalAccessException ex)
@@ -576,18 +604,6 @@ public class DWRServlet extends HttpServlet
         out.println("</body>");
         out.println("</html>");
 
-try
-{
-    synchronized (this)
-    {
-        wait(2000);
-    }
-}
-catch (InterruptedException ex)
-{
-}
-log("send reply");
-
         out.flush();
     }
 
@@ -619,7 +635,7 @@ log("send reply");
      * @param req
      * @return The specified classname
      */
-    private static String getClassName(HttpServletRequest req)
+    private String getClassName(HttpServletRequest req)
     {
         String pathinfo = req.getPathInfo();
         String[] parts = pathinfo.split("/");
@@ -656,25 +672,44 @@ log("send reply");
      * @param allow
      * @return A URL linked to the interface Javascript for a given class
      */
-    private static String getInterfaceURL(HttpServletRequest req, Class allow)
+    private String getInterfaceURL(HttpServletRequest req, Class allow)
     {
-        return req.getContextPath()+req.getServletPath()+'/'+allow.getName()+"/interface.js";
+        return req.getContextPath()+req.getServletPath()+"/"+allow.getName()+"/interface.js";
     }
 
     /**
      * @param req
      * @return A URL linked to the engine Javascript
      */
-    private static String getEngineURL(HttpServletRequest req)
+    private String getEngineURL(HttpServletRequest req)
     {
         return req.getContextPath() + req.getServletPath() + "/engine.js";
     }
 
     /**
-     * 
+     * Return a short class name without the package component.
      */
-    private static final Map coercers = new HashMap();
-    private static final Coercer[] ALL = new Coercer[]
+    public static String getShortClassName(Class clazz)
+    {
+        if (clazz == null)
+        {
+            throw new NullPointerException("The class must not be null");
+        }
+
+        String name = clazz.getName();
+
+        // Inner classes have $ in them. Strip out.
+        name = name.replace('$', '.');
+
+        int lastDot = name.lastIndexOf('.');
+        return name.substring(lastDot+1);
+    }
+
+    /**
+     *
+     */
+    private static Map coercers = new HashMap();
+    private static Coercer[] ALL = new Coercer[]
     {
         new ConstructorCoercer(Boolean.class),
         new ConstructorCoercer(Byte.class),
@@ -716,13 +751,14 @@ log("send reply");
             {
                 if (paramType == Boolean.TYPE)
                 {
-                    return Boolean.valueOf(object);
+                    return new Boolean(object);
                 }
                 else if (paramType == Byte.TYPE)
                 {
                     if (object.length() == 0)
                     {
-                        return new Byte((byte) 0);
+                        byte b = 0;
+                        return new Byte(b);
                     }
                     return new Byte(object);
                 }
@@ -730,8 +766,8 @@ log("send reply");
                 {
                     if (object.length() == 0)
                     {
-                        //short sh = (short) 0;
-                        return new Short((short) 0);
+                        short s = 0;
+                        return new Short(s);
                     }
                     return new Short(object);
                 }
@@ -758,7 +794,7 @@ log("send reply");
                 {
                     if (object.length() == 0)
                     {
-                        return new Long(0L);
+                        return new Long(0);
                     }
                     return new Long(object);
                 }
@@ -766,7 +802,7 @@ log("send reply");
                 {
                     if (object.length() == 0)
                     {
-                        return new Float(0.0F);
+                        return new Float(0);
                     }
                     return new Float(object);
                 }
@@ -774,11 +810,11 @@ log("send reply");
                 {
                     if (object.length() == 0)
                     {
-                        return new Double(0.0D);
+                        return new Double(0);
                     }
                     return new Double(object);
                 }
-    
+
                 return null;
             }
             catch (NumberFormatException ex)
@@ -801,13 +837,13 @@ log("send reply");
                     }
                 }
             }
-    
+
             return null;
         }
     }
 
     private static SortedSet reserved = null;
-    private static final String[] RESERVED_ARRAY =  new String[]
+    private static String[] RESERVED_ARRAY =  new String[]
     {
         // Reserved and used at ECMAScript 4
         "as", "break", "case", "catch", "class", "const", "continue", "default",
