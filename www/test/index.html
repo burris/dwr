@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <title>DWR Unit Test Page</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+  <script type='text/javascript' src='/dwr/dwr/interface/Test.js'></script>
+  <script type='text/javascript' src='/dwr/dwr/engine.js'></script>
+</head>
+
+<body>
+
+<h2>Unit Test Page</h2>
+
+<p>
+  Click <input type='button' onclick='startTest();' value='Start'/>
+  to begin the test script
+</p>
+
+<p>
+  Tests that passed:
+  <div id='passes' style="border: 1px solid green; max-height:200px; overflow:auto;">
+  None:
+  </div>
+</p>
+
+<p>
+  Test that failed:
+  <div id='failures' style="border: 1px solid red; max-height:200px; overflow:auto;">
+  None:
+  </div>
+</p>
+
+<script type='text/javascript'>
+  var passes = document.getElementById("passes");
+  var failures = document.getElementById("failures");
+  var index = 0;
+  var tests = new Array();
+  tests.push({ code:"Test.voidParam(testResults)", expected:undefined });
+
+  tests.push({ code:"Test.booleanParam(testResults, true)", expected:true });
+  tests.push({ code:"Test.booleanParam(testResults, false)", expected:false });
+
+  tests.push({ code:"Test.byteParam(testResults, -128)", expected:-128 });
+  tests.push({ code:"Test.byteParam(testResults, -1)", expected:-1 });
+  tests.push({ code:"Test.byteParam(testResults, 0)", expected:0 });
+  tests.push({ code:"Test.byteParam(testResults, 1)", expected:1 });
+  tests.push({ code:"Test.byteParam(testResults, 127)", expected:127 });
+
+  tests.push({ code:"Test.shortParam(testResults, -32768)", expected:-32768 });
+  tests.push({ code:"Test.shortParam(testResults, -1)", expected:-1 });
+  tests.push({ code:"Test.shortParam(testResults, 0)", expected:0 });
+  tests.push({ code:"Test.shortParam(testResults, 1)", expected:1 });
+  tests.push({ code:"Test.shortParam(testResults, 32767)", expected:32767 });
+
+  tests.push({ code:"Test.intParam(testResults, -2147483648)", expected:-2147483648 });
+  tests.push({ code:"Test.intParam(testResults, -1)", expected:-1 });
+  tests.push({ code:"Test.intParam(testResults, 0)", expected:0 });
+  tests.push({ code:"Test.intParam(testResults, 1)", expected:1 });
+  tests.push({ code:"Test.intParam(testResults, 2147483647)", expected:2147483647 });
+
+  // Mozilla rounds 9223372036854775808 to 9223372036854776000 which overflows so we round down
+  tests.push({ code:"Test.longParam(testResults, -9223372036854775000)", expected:-9223372036854775000 });
+  tests.push({ code:"Test.longParam(testResults, -1)", expected:-1 });
+  tests.push({ code:"Test.longParam(testResults, 0)", expected:0 });
+  tests.push({ code:"Test.longParam(testResults, 1)", expected:1 });
+  tests.push({ code:"Test.longParam(testResults, 9223372036854775000)", expected:9223372036854775000 });
+
+  tests.push({ code:"Test.floatParam(testResults, -100000000000000000000)", expected:-100000000000000000000 });
+  tests.push({ code:"Test.floatParam(testResults, -1)", expected:-1 });
+  tests.push({ code:"Test.floatParam(testResults, 0)", expected:0 });
+  tests.push({ code:"Test.floatParam(testResults, 1)", expected:1 });
+  tests.push({ code:"Test.floatParam(testResults, 100000000000000000000)", expected:100000000000000000000 });
+
+  tests.push({ code:"Test.doubleParam(testResults, -100000000000000000000)", expected:-100000000000000000000 });
+  tests.push({ code:"Test.doubleParam(testResults, -1)", expected:-1 });
+  tests.push({ code:"Test.doubleParam(testResults, 0)", expected:0 });
+  tests.push({ code:"Test.doubleParam(testResults, 1)", expected:1 });
+  tests.push({ code:"Test.doubleParam(testResults, 100000000000000000000)", expected:100000000000000000000 });
+
+  tests.push({ code:"Test.charParam(testResults, ' ')", expected:" " });
+  tests.push({ code:"Test.charParam(testResults, '!')", expected:"!" });
+  tests.push({ code:"Test.charParam(testResults, '\"')", expected:'"' });
+  //tests.push({ code:"Test.charParam(testResults, '#')", expected:"#" });
+  tests.push({ code:"Test.charParam(testResults, '$')", expected:"$" });
+  //tests.push({ code:"Test.charParam(testResults, '%')", expected:"%" });
+  //tests.push({ code:"Test.charParam(testResults, '&')", expected:"&" });
+  //tests.push({ code:"Test.charParam(testResults, '\'')", expected:"'" });
+  tests.push({ code:"Test.charParam(testResults, '(')", expected:"(" });
+  tests.push({ code:"Test.charParam(testResults, ')')", expected:")" });
+  tests.push({ code:"Test.charParam(testResults, '*')", expected:"*" });
+  //tests.push({ code:"Test.charParam(testResults, '+')", expected:"+" });
+  tests.push({ code:"Test.charParam(testResults, ',')", expected:"," });
+  tests.push({ code:"Test.charParam(testResults, '-')", expected:"-" });
+  tests.push({ code:"Test.charParam(testResults, '.')", expected:"." });
+  tests.push({ code:"Test.charParam(testResults, '/')", expected:"/" });
+  tests.push({ code:"Test.charParam(testResults, '0')", expected:"0" });
+  tests.push({ code:"Test.charParam(testResults, '9')", expected:"9" });
+  tests.push({ code:"Test.charParam(testResults, ':')", expected:":" });
+  tests.push({ code:"Test.charParam(testResults, ';')", expected:";" });
+  tests.push({ code:"Test.charParam(testResults, '<')", expected:"<" });
+  tests.push({ code:"Test.charParam(testResults, '=')", expected:"=" });
+  tests.push({ code:"Test.charParam(testResults, '>')", expected:">" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '@')", expected:"@" });
+  tests.push({ code:"Test.charParam(testResults, 'A')", expected:"A" });
+  tests.push({ code:"Test.charParam(testResults, 'Z')", expected:"Z" });
+  tests.push({ code:"Test.charParam(testResults, '[')", expected:"[" });
+  //tests.push({ code:"Test.charParam(testResults, '\\')", expected:"\\" });
+  tests.push({ code:"Test.charParam(testResults, ']')", expected:"]" });
+  tests.push({ code:"Test.charParam(testResults, '^')", expected:"^" });
+  tests.push({ code:"Test.charParam(testResults, '_')", expected:"_" });
+  tests.push({ code:"Test.charParam(testResults, '`')", expected:"`" });
+  tests.push({ code:"Test.charParam(testResults, 'a')", expected:"a" });
+  tests.push({ code:"Test.charParam(testResults, 'z')", expected:"z" });
+  tests.push({ code:"Test.charParam(testResults, '{')", expected:"{" });
+  tests.push({ code:"Test.charParam(testResults, '|')", expected:"|" });
+  tests.push({ code:"Test.charParam(testResults, '}')", expected:"}" });
+  tests.push({ code:"Test.charParam(testResults, '~')", expected:"~" });
+
+/*
+  tests.push({ code:"Test.charParam(testResults, '£')", expected:"£" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '¦')", expected:"¦" });
+  tests.push({ code:"Test.charParam(testResults, '¬')", expected:"¬" });
+  tests.push({ code:"Test.charParam(testResults, '¥')", expected:"¥" });
+  tests.push({ code:"Test.charParam(testResults, '©')", expected:"©" });
+  tests.push({ code:"Test.charParam(testResults, 'Ç')", expected:"Ç" });
+  tests.push({ code:"Test.charParam(testResults, 'Æ')", expected:"Æ" });
+  tests.push({ code:"Test.charParam(testResults, 'ß')", expected:"ß" });
+  tests.push({ code:"Test.charParam(testResults, 'ÿ')", expected:"ÿ" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+  tests.push({ code:"Test.charParam(testResults, '?')", expected:"?" });
+*/
+
+  function startTest()
+  {
+      dwrSetErrorHandler(catchFailure);
+
+      passes.innerHTML = "";
+      failures.innerHTML = "";
+
+      index = 0;
+      executeTest();
+  }
+
+  function executeTest()
+  {
+      if (index >= tests.length)
+      {
+          alert("Tests finished");
+          return;
+      }
+
+      var test = tests[index];
+      eval(test.code);
+  }
+
+  function testResults(data)
+  {
+      // which test have we just run?
+      var test = tests[index];
+
+      if (data == test.expected)
+      {
+          passes.innerHTML += test.code + "<br/>";
+      }
+      else
+      {
+          failures.innerHTML += test.code + "<br/>&nbsp;&nbsp;Expected: " + test.expected + " Actual: " + data + "<br/>";
+      }
+
+      index++;
+      executeTest();
+  }
+
+  function catchFailure(data)
+  {
+      // which test have we just run?
+      var test = tests[index];
+
+      failures.innerHTML += test.code + "<br/>&nbsp;&nbsp;Error: " + data + "<br/>";
+
+      index++;
+      executeTest();
+  }
+</script>
+
+</body>
+</html>

@@ -18,7 +18,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.xml.sax.SAXException;
+
+import uk.ltd.getahead.dwr.Converter.ScriptSetup;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -44,7 +48,26 @@ public class DWRServlet extends HttpServlet
     public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
-        configuration = new Configuration(config);
+
+        // Are we in debug mode?
+        String debugStr = config.getInitParameter("debug");
+        boolean debug = Boolean.valueOf(debugStr).booleanValue();
+
+        configuration = new Configuration(debug);
+
+        try
+        {
+            InputStream in = getClass().getResourceAsStream("dwr.xml");
+            configuration.addConfig(in);
+
+            in = config.getServletContext().getResourceAsStream("WEB-INF/dwr.xml");
+            configuration.addConfig(in);
+        }
+        catch (SAXException ex)
+        {
+            ex.printStackTrace();
+            throw new ServletException("Parse error reading from dwr.xml", ex);
+        }
     }
 
     /* (non-Javadoc)
@@ -114,9 +137,9 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req The browsers request
+     * @param resp The response channel
+     * @throws IOException If writing to the output fails
      */
     private void doIndex(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
@@ -129,10 +152,11 @@ public class DWRServlet extends HttpServlet
         out.println("<body>");
         out.println("<h2>Classes known to DWR:</h2>");
 
-        for (Iterator it = configuration.getAllowedNames(); it.hasNext();)
+        for (Iterator it = configuration.getCreatorNames().iterator(); it.hasNext();)
         {
-            AllowedClass allow = (AllowedClass) it.next();
-            out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+"/test/"+allow.getName()+"'>"+allow.getName()+"</a> ("+allow.getType().getName()+")</li>");
+            String name = (String) it.next();
+            Creator creator = configuration.getCreator(name);
+            out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+"/test/"+name+"'>"+name+"</a> ("+creator.getType().getName()+")</li>");
         }
 
         out.println("</body></html>");
@@ -140,25 +164,23 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req The browsers request
+     * @param resp The response channel
+     * @throws IOException If writing to the output fails
      */
     private void doTest(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        String pathinfo = req.getPathInfo();
-        pathinfo = LocalUtil.replace(pathinfo, "/test/", "");
-        pathinfo = LocalUtil.replace(pathinfo, "/", "");
+        String scriptname = req.getPathInfo();
+        scriptname = LocalUtil.replace(scriptname, "/test/", "");
+        scriptname = LocalUtil.replace(scriptname, "/", "");
 
-        String classname = pathinfo;
-        AllowedClass allow = configuration.getAllowedClass(classname);
-        if (allow == null)
+        Creator creator = configuration.getCreator(scriptname);
+        if (creator == null)
         {
-            throw new SecurityException("No class by name: "+classname);
+            throw new SecurityException("No class by name: "+scriptname);
         }
 
-        String name = allow.getName();
-        Method[] methods = allow.getType().getDeclaredMethods();
+        Method[] methods = creator.getType().getDeclaredMethods();
 
         resp.setContentType("text/html");
         PrintWriter out = resp.getWriter();
@@ -166,7 +188,7 @@ public class DWRServlet extends HttpServlet
         out.println("<html>");
         out.println("<head>");
         out.println("  <title>DWR Test</title>");
-        out.println("  <script type='text/javascript' src='"+getInterfaceURL(req, allow)+"'></script>");
+        out.println("  <script type='text/javascript' src='"+getInterfaceURL(req, scriptname)+"'></script>");
         out.println("  <script type='text/javascript' src='"+getEngineURL(req)+"'></script>");
         out.println("  <style>");
         out.println("    input.itext { font-size: smaller; background: #E4E4E4; border: 0; }");
@@ -176,7 +198,7 @@ public class DWRServlet extends HttpServlet
         out.println("</head>");
         out.println("<body>");
         out.println("");
-        out.println("<h2>Methods For: "+allow.getName()+" ("+allow.getType().getName()+")</h2>");
+        out.println("<h2>Methods For: "+scriptname+" ("+creator.getType().getName()+")</h2>");
         out.println("<p>Replies from DWR are shown with a yellow background.<br/>There are "+methods.length+" declared methods:<ul>");
 
         for (int i = 0; i < methods.length; i++)
@@ -211,7 +233,7 @@ public class DWRServlet extends HttpServlet
             }
             out.println("  );");
 
-            String onclick = name+"."+method.getName()+"(reply"+i;
+            String onclick = scriptname+"."+method.getName()+"(reply"+i;
             for (int j = 0; j < paramTypes.length; j++)
             {
                 onclick += ",document.getElementById(\"p"+i+j+"\").value";
@@ -245,10 +267,14 @@ public class DWRServlet extends HttpServlet
             // Print a warning if the method uses un-marshallable types
             for (int j = 0; j < paramTypes.length; j++)
             {
-                if (!ConverterManager.isCoercable(paramTypes[j]))
+                if (!configuration.isConvertable(paramTypes[j]))
                 {
-                    out.println("<span style='font-size: smaller; color: red;'>(Warning: "+paramTypes[j].getName()+" is not marshallable yet)</span>");
+                    out.println("<span style='font-size: smaller; color: red;'>(Warning: "+paramTypes[j].getName()+" param not marshallable)</span>");
                 }
+            }
+            if (!configuration.isConvertable(method.getReturnType()))
+            {
+                out.println("<span style='font-size: smaller; color: red;'>(Warning: "+method.getReturnType().getName()+" return type not marshallable)</span>");
             }
 
             out.println("</li>");
@@ -260,7 +286,7 @@ public class DWRServlet extends HttpServlet
         out.println("<h2>Other Links</h2>");
         out.println("<ul>");
         out.println("<li>Back to <a href='"+req.getContextPath()+req.getServletPath()+"'>class index</a>.</li>");
-        out.println("<li>The Javascript <a href='"+getInterfaceURL(req, allow)+"'>interface</a> definition corresponding to your Java classes</li>");
+        out.println("<li>The Javascript <a href='"+getInterfaceURL(req, scriptname)+"'>interface</a> definition corresponding to your Java classes</li>");
         out.println("<li>The Javascript <a href='"+getEngineURL(req)+"'>engine</a> Marshalls calls to the server. Used by the interface script. This is the same for all classes.</li>");
         out.println("</ul>");
 
@@ -269,17 +295,17 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req The browsers request
+     * @param resp The response channel
+     * @throws IOException If writing to the output fails
      */
     private void doInterface(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         String pathinfo = req.getPathInfo();
         pathinfo = LocalUtil.replace(pathinfo, "/interface/", "");
         pathinfo = LocalUtil.replace(pathinfo, ".js", "");
-        AllowedClass allow = configuration.getAllowedClass(pathinfo);
-        if (allow == null)
+        Creator creator = configuration.getCreator(pathinfo);
+        if (creator == null)
         {
             throw new SecurityException("No class by name: "+pathinfo);
         }
@@ -287,12 +313,12 @@ public class DWRServlet extends HttpServlet
         //resp.setContentType("text/javascript");
         PrintWriter out = resp.getWriter();
         out.println();
-        out.println("// Methods for: "+allow.getType().getName());
+        out.println("// Methods for: "+creator.getType().getName());
 
         out.println();
-        out.println(allow.getName()+" = new Object();");
+        out.println(pathinfo+" = new Object();");
 
-        Method[] methods = allow.getType().getDeclaredMethods();
+        Method[] methods = creator.getType().getDeclaredMethods();
         for (int i = 0; i < methods.length; i++)
         {
             Method method = methods[i];
@@ -313,7 +339,7 @@ public class DWRServlet extends HttpServlet
             {
                 out.print("\n");
             }
-            out.print(allow.getName()+"."+method.getName()+" = function(callback");
+            out.print(pathinfo+"."+method.getName()+" = function(callback");
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
@@ -322,7 +348,7 @@ public class DWRServlet extends HttpServlet
             out.println(")");
             out.println("{");
 
-            out.print("    dwrExecute(callback, '"+allow.getName()+"', '"+method.getName()+"'");
+            out.print("    dwrExecute(callback, '"+pathinfo+"', '"+method.getName()+"'");
             for (int j = 0; j < paramTypes.length; j++)
             {
                 out.print(", p"+j);
@@ -336,9 +362,9 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req The browsers request
+     * @param resp The response channel
+     * @throws IOException If writing to the output fails
      */
     private void doEngine(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
@@ -357,7 +383,7 @@ public class DWRServlet extends HttpServlet
                 {
                     break;
                 }
-                
+
                 line = LocalUtil.replace(line, "${request.contextPath}", req.getContextPath());
                 line = LocalUtil.replace(line, "${request.servletPath}", req.getServletPath());
 
@@ -374,18 +400,19 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * @param req
-     * @param resp
+     * @param req The browsers request
+     * @param resp The response channel
      */
     private void doExec(HttpServletRequest req, HttpServletResponse resp)
     {
         boolean xml = isXMLHttpRequest(req);
+        String id = req.getParameter("id");
 
         try
         {
             String className = req.getParameter("class");
-            AllowedClass allow = configuration.getAllowedClass(className);
-            if (allow == null)
+            Creator creator = configuration.getCreator(className);
+            if (creator == null)
             {
                 throw new SecurityException("No class by name: "+className);
             }
@@ -394,19 +421,19 @@ public class DWRServlet extends HttpServlet
             if (methodName == null)
             {
                 log("Missing method parameter in url: "+req.getRequestURL()+"?"+req.getQueryString());
-                doError(req, resp, HttpServletResponse.SC_BAD_REQUEST, "Missing method parameter");
+                doError(resp, id, HttpServletResponse.SC_BAD_REQUEST, "Missing method parameter", xml);
                 return;
             }
 
-            List params = new ArrayList();
+            List paramList = new ArrayList();
             while (true)
             {
-                String param = req.getParameter("param" + params.size());
+                String param = req.getParameter("param" + paramList.size());
                 if (param == null || param.equals("undefined"))
                 {
                     break;
                 }
-                params.add(param);
+                paramList.add(param);
             }
 
             // Get a list of the available matching methods with the coerced
@@ -414,7 +441,7 @@ public class DWRServlet extends HttpServlet
             // method.
             List available = new ArrayList();
             List coerced = new ArrayList();
-            Method[] methods = allow.getType().getMethods();
+            Method[] methods = creator.getType().getMethods();
             methods:
             for (int i = 0; i < methods.length; i++)
             {
@@ -423,17 +450,17 @@ public class DWRServlet extends HttpServlet
                 if (method.getName().equals(methodName))
                 {
                     // Check number of parameters
-                    if (method.getParameterTypes().length == params.size())
+                    if (method.getParameterTypes().length == paramList.size())
                     {
-                        Object[] converted = new Object[params.size()];
+                        Object[] converted = new Object[paramList.size()];
 
                         // Check parameter types
                         params:
                         for (int j = 0; j < method.getParameterTypes().length; j++)
                         {
                             Class paramType = method.getParameterTypes()[j];
-                            String param = (String) params.get(j);
-                            converted[j] = ConverterManager.convertTo(paramType, param);
+                            String param = (String) paramList.get(j);
+                            converted[j] = configuration.convertTo(paramType, param);
                             if (converted[j] == null)
                             {
                                 break methods;
@@ -446,11 +473,28 @@ public class DWRServlet extends HttpServlet
                 }
             }
 
-            // Check we have something to call
-            if (available.size() == 0)
+            // Pick a method to call
+            if (available.size() > 1)
+            {
+                log("Warning multiple matching methods. Using first match.");
+            }
+
+            Method method = null;
+            Object[] params = null;
+
+            // At the moment we are just going to take the first match, for a
+            // later increment we might pack the best implementation
+            if (!available.isEmpty())
+            {
+                method = (Method) available.get(0);
+                params = (Object[]) coerced.get(0);
+            }
+
+            // Complain if there is nothing to call
+            if (method == null)
             {
                 StringBuffer allParams = new StringBuffer();
-                for (Iterator it = params.iterator(); it.hasNext();)
+                for (Iterator it = paramList.iterator(); it.hasNext();)
                 {
                     allParams.append(it.next());
                     if (it.hasNext())
@@ -459,87 +503,81 @@ public class DWRServlet extends HttpServlet
                     }
                 }
 
-                log("Missing method " + allow.getType().getName() + "." + methodName + "("+allParams+") in url: "+req.getRequestURL()+"?"+req.getQueryString());
-                doError(req, resp, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+allow.getType().getName()+"."+methodName+"("+allParams+");");
+                log("Missing method " + creator.getType().getName() + "." + methodName + "("+allParams+") in url: "+req.getRequestURL()+"?"+req.getQueryString());
+                doError(resp, id, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+creator.getType().getName()+"."+methodName+"("+allParams+");", xml);
                 return;
             }
-
-            // At the moment we are just going to take the first match, for a
-            // later increment we might pack the best implementation
-            if (available.size() > 1)
-            {
-                log("Warning multiple matching methods. Using first match.");
-            }
-
-            Method method = (Method) available.get(0);
 
             // Create an instance if the method is not static
             Object object = null;
             if (!Modifier.isStatic(method.getModifiers()))
             {
-                object = allow.getInstance();
+                object = creator.getInstance();
             }
-
-            // Parameters
-            Object[] converted = (Object[]) coerced.get(0);
 
             // Execute
             log("Executing: "+method.toString());
-            Object reply = method.invoke(object, converted);
+            Object reply = method.invoke(object, params);
 
-            doReply(req, resp, reply, xml);
+            doReply(resp, id, reply, xml);
         }
         catch (Exception ex)
         {
-            doError(req, resp, ex, xml);
+            doError(req, resp, id, ex, xml);
         }
     }
 
     /**
-     * @param req
-     * @param resp
-     * @param ex
-     * @param xml
+     * @param req The browsers request
+     * @param resp The response channel
+     * @param id The id of the call supplied by the browser
+     * @param ex The exception to report to the user
+     * @param xml Are we in XMLHttpRequest mode?
      */
-    private void doError(HttpServletRequest req, HttpServletResponse resp, Throwable ex, boolean xml)
+    private void doError(HttpServletRequest req, HttpServletResponse resp, String id, Throwable ex, boolean xml)
     {
         if (ex instanceof InvocationTargetException)
         {
             InvocationTargetException itex = (InvocationTargetException) ex;
-            doError(req, resp, itex.getTargetException(), xml);
+            doError(req, resp, id, itex.getTargetException(), xml);
         }
         else
         {
             ex.printStackTrace();
-            doError(req, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception: "+ex);
+            doError(resp, id, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.toString(), xml);
         }
     }
 
     /**
-     * @param req
-     * @param resp
-     * @param reason
-     * @param message
+     * @param resp The response channel
+     * @param id The id of the call supplied by the browser
+     * @param reason The HTTP error code
+     * @param message The HTTP error message
+     * @param xml Are we in XMLHttpRequest mode?
      */
-    private void doError(HttpServletRequest req, HttpServletResponse resp, int reason, String message)
+    private void doError(HttpServletResponse resp, String id, int reason, String message, boolean xml)
     {
-        boolean xml = isXMLHttpRequest(req);
+        log("Erroring: id[" + id + "] reason[" + reason + "] message[" + message + "] xml[" + xml + "]");
 
         try
         {
             PrintWriter out = resp.getWriter();
-            resp.setStatus(reason);
+            //resp.setStatus(reason);
+            String output = StringEscapeUtils.escapeJavaScript(message);
 
             if (xml)
             {
                 resp.setContentType("text/xml");
-                out.println(message);
+
+                out.println("dwrHandleError(\"" + id + "\", \"" + output + "\");");
             }
             else
             {
                 resp.setContentType("text/html");
-                String output = StringEscapeUtils.escapeJavaScript(message);
-                out.println("<script type='text/javascript'>window.parent.dwrHandleError('"+output+"')</script>");
+
+                out.println("<script type='text/javascript'>");
+                out.println("window.parent.dwrHandleError(\""+id+"\", '"+output+"')");
+                out.println("</script>");
             }
 
             out.flush();
@@ -552,60 +590,47 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * @param req
-     * @param resp
-     * @param reply
-     * @param xml
-     * @throws IOException
+     * @param resp The response channel
+     * @param id The id of the call supplied by the browser
+     * @param reply The object to send to Javascript land
+     * @param xml Are we in XMLHttpRequest mode?
+     * @throws IOException If writing to the output fails
+     * @throws ConversionException If the conversion failed for some reason
      */
-    private void doReply(HttpServletRequest req, HttpServletResponse resp, Object reply, boolean xml) throws IOException
+    private void doReply(HttpServletResponse resp, String id, Object reply, boolean xml) throws IOException, ConversionException
     {
         PrintWriter out = resp.getWriter();
 
-        String output = null;
-        if (reply != null)
-        {
-            output = StringEscapeUtils.escapeJavaScript(reply.toString());
-        }
+        ScriptSetup ss = configuration.convertFrom(reply);
+        log("Returning: id[" + id + "] init[" + ss.initCode + "] assign[" + ss.assignCode + "] xml[" + xml + "]");
+
+        // Set standard HTTP/1.1 no-cache headers.
+        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        // Set IE extended HTTP/1.1 no-cache headers (use addHeader).
+        resp.addHeader("Cache-Control", "post-check=0, pre-check=0");
+        // Set standard HTTP/1.0 no-cache header.
+        resp.setHeader("Pragma", "no-cache");
+        // Set to expire far in the past. Prevents caching at the proxy server
+        resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
 
         if (xml)
         {
             resp.setContentType("text/xml");
 
-            // Set standard HTTP/1.1 no-cache headers.
-            resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-
-            // Set IE extended HTTP/1.1 no-cache headers (use addHeader).
-            resp.addHeader("Cache-Control", "post-check=0, pre-check=0");
-
-            // Set standard HTTP/1.0 no-cache header.
-            resp.setHeader("Pragma", "no-cache");
-
-            // Set to expire far in the past. Prevents caching at the proxy server
-            resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
-
-            if (reply == null)
-            {
-                out.println("");
-            }
-            else
-            {
-                out.println(output);
-            }
+            out.println(ss.initCode);
+            out.println("var reply = "+ss.assignCode);
+            out.println("dwrHandleResponse(\"" + id + "\", reply);");
         }
         else
         {
             resp.setContentType("text/html");
 
             out.println("<html><head><title>DWR Exec Reply</title></head><body>");
-            out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('" + output + "')</script>");
-
-            if (configuration.isDebugMode())
-            {
-                out.println("This resulted from the query: [<span style='color:#800; font-family:monospace;'>"+req.getQueryString()+"</span>]</p>");
-                out.println("<p>If you can see this then it is likely that debug is on or that something is broken. An attempt has been made to passed the reply to dwrHandleResponse() in the parent window which should delete this iframe is debug is off.</p>");
-            }
-
+            out.println("<script type='text/javascript'>");
+            out.println(ss.initCode);
+            out.println("var reply = "+ss.assignCode);
+            out.println("window.parent.dwrHandleResponse(\""+id+"\", reply);");
+            out.println("</script>");
             out.println("</body></html>");
         }
 
@@ -613,7 +638,7 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * @param req
+     * @param req The browsers request
      * @return Is the request using XMLHttpRequest
      */
     private boolean isXMLHttpRequest(HttpServletRequest req)
@@ -622,17 +647,17 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * @param req
-     * @param allow
+     * @param req The browsers request
+     * @param scriptname The name of the object in Javascript land
      * @return A URL linked to the interface Javascript for a given class
      */
-    private String getInterfaceURL(HttpServletRequest req, AllowedClass allow)
+    private String getInterfaceURL(HttpServletRequest req, String scriptname)
     {
-        return req.getContextPath() + req.getServletPath() + "/interface/" + allow.getName() + ".js";
+        return req.getContextPath() + req.getServletPath() + "/interface/" + scriptname + ".js";
     }
 
     /**
-     * @param req
+     * @param req The browsers request
      * @return A URL linked to the engine Javascript
      */
     private String getEngineURL(HttpServletRequest req)

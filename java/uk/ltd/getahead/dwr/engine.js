@@ -1,14 +1,13 @@
 // engine.js
-var iframe;
-var callback;
 var preHook;
 var postHook;
-var req;
+var calls = new Object();
+var errorHandler;
 
-var errorHandler = function(data)
+function Call(callback)
 {
-    alert(data);
-};
+    this.callback = callback;
+}
 
 function dwrSetErrorHandler(handler)
 {
@@ -25,29 +24,57 @@ function dwrPostHook(handler)
     postHook = handler;
 }
 
-function dwrHandleResponse(data)
+function dwrHandleResponse(id, reply)
 {
-    if (iframe != null)
+    var call = calls[id];
+    if (call == null)
     {
-        iframe.parentNode.removeChild(iframe);
-        iframe = null;
+        var known = "";
+        for (call in calls)
+        {
+            known += call + "\n";
+        }
+        alert("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
+        return;
     }
 
-    callback(data);
-    callback = null;
+    if (call.iframe != null)
+    {
+        call.iframe.parentNode.removeChild(call.iframe);
+    }
+
+    if (call.callback == null)
+    {
+        if (reply != null)
+        {
+            alert("Missing callback for reply "+reply);
+        }
+    }
+    else
+    {
+        call.callback(reply);
+    }
 
     if (postHook != null)
     {
         postHook();
     }
+
+    calls[id] = undefined;
 }
 
-function dwrHandleError(reason)
+function dwrHandleError(id, reason)
 {
-    if (iframe != null)
+    var call = calls[id];
+    if (call == null)
     {
-        iframe.parentNode.removeChild(iframe);
-        iframe = null;
+        alert("Internal Error: Call with id="+id+" unknown.");
+        return;
+    }
+
+    if (call.iframe != null)
+    {
+        call.iframe.parentNode.removeChild(call.iframe);
     }
 
     if (postHook != null)
@@ -59,22 +86,38 @@ function dwrHandleError(reason)
     {
         errorHandler(reason);
     }
+    else
+    {
+        alert(reason);
+    }
+
+    calls[id] = undefined;
+}
+
+function dwrGetID()
+{
+    var random = Math.floor(Math.random() * 10001);
+    return (random + "_" + new Date().getTime()).toString();
 }
 
 function dwrExecute(func, classname, methodname, vararg_params)
 {
-    if (iframe != null)
-    {
-        alert('Warning previous call did not complete, old results may be lost.');
-    }
+    var call = new Call(func);
+    call.id = dwrGetID();
+    calls[call.id] = call;
 
     if (preHook != null)
     {
-
         preHook();
     }
 
-    callback = func;
+    if (func != null && typeof func != "function")
+    {
+        alert("Supplied callback function is neither null nor a function: "+func);
+        return;
+    }
+
+    call.callback = func;
 
     var argdata = '';
     for (var i=3; i<dwrExecute.arguments.length; i++)
@@ -82,28 +125,32 @@ function dwrExecute(func, classname, methodname, vararg_params)
         argdata = argdata + '&param' + (i-3) + '=' + dwrExecute.arguments[i];
     }
 
-    // Warning: if you can see EL-like expressions on the next line, don't be fooled into thinking it is EL.
+    // Warning: if you can see EL-like (${...}) expressions on the next line, don't be fooled into thinking it is EL.
     // Check the source in DWRServlet for the hack. Maybe we will do something more EL like in the future.
     // If you can't see the ${...} then you are probably looking at the processed source
-    var url = '${request.contextPath}${request.servletPath}/exec?class='+classname+'&method='+methodname+argdata;
+    call.url = '${request.contextPath}${request.servletPath}/exec?class='+classname+'&method='+methodname+argdata+'&id='+call.id;
 
     if (window.XMLHttpRequest)
     {
-        req = new XMLHttpRequest();
-        req.onreadystatechange = dwrStateChange;
-        req.open("GET", url+'&xml=true', true);
-        req.send(null);
+        call.req = new XMLHttpRequest();
+        call.req.onreadystatechange = function() { dwrStateChange(call); };
+        call.req.open("GET", call.url+'&xml=true', true);
+        call.req.send(null);
     }
     /*
     The IE version appears to cache replies.
     else if (window.ActiveXObject)
     {
-        req = new ActiveXObject("Microsoft.XMLHTTP");
-        if (req)
+        // I've seen code that asks for the following:
+        // call.req = new ActiveXObject("Msxml2.XMLHTTP");
+        // followed by the version that we are using, in try/catch blocks
+        // but try/catch isn't supported by all browsers so we ignore for the mo
+        call.req = new ActiveXObject("Microsoft.XMLHTTP");
+        if (call.req)
         {
-            req.onreadystatechange = dwrStateChange;
-            req.open("GET", url+'&xml=true', true);
-            req.send();
+            call.req.onreadystatechange = dwrStateChange;
+            call.req.open("GET", call.url+'&xml=true', true);
+            call.req.send();
         }
         else
         {
@@ -113,26 +160,18 @@ function dwrExecute(func, classname, methodname, vararg_params)
     */
     else
     {
-        iframe = document.createElement('iframe');
-        iframe.setAttribute('id', 'dwr-iframe');
-        iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
-        iframe.setAttribute('src', url);
-        document.body.appendChild(iframe);
+        call.iframe = document.createElement('iframe');
+        call.iframe.setAttribute('id', 'dwr-iframe');
+        call.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
+        call.iframe.setAttribute('src', call.url);
+        document.body.appendChild(call.iframe);
     }
 }
 
-function dwrStateChange()
+function dwrStateChange(call)
 {
-    if (req.readyState == 4)
+    if (call.req.readyState == 4)
     {
-        if (req.status == 200)
-        {
-            dwrHandleResponse(req.responseText)
-        }
-        else
-        {
-            dwrHandleError(req.statusText)
-        }
+        eval(call.req.responseText);
     }
 }
-

@@ -19,7 +19,7 @@ public final class DTDEntityResolver implements EntityResolver
     {
         if (arg0.equals("-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN"))
         {
-            InputStream raw = getClass().getResourceAsStream("/dwr.dtd");
+            InputStream raw = getClass().getResourceAsStream("dwr.dtd");
             return new InputSource(raw);
         }
         else

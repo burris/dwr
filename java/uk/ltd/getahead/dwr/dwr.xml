@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN" "http://www.getahead.ltd.uk/dwr/dwr.dtd">
+
+<dwr>
+
+  <init>
+    <creator id="new" class="uk.ltd.getahead.dwr.create.NewCreator"/>
+    <creator id="session" class="uk.ltd.getahead.dwr.create.SessionCreator"/>
+    <creator id="spring" class="uk.ltd.getahead.dwr.create.SpringCreator"/>
+    <converter id="null" class="uk.ltd.getahead.dwr.convert.NullConverter"/>
+    <converter id="primitive" class="uk.ltd.getahead.dwr.convert.PrimitiveConverter"/>
+    <converter id="string" class="uk.ltd.getahead.dwr.convert.StringConverter"/>
+    <converter id="array" class="uk.ltd.getahead.dwr.convert.ArrayConverter"/>
+    <!-- converter id="collection" class="uk.ltd.getahead.dwr.convert.CollectionConverter"/ -->
+    <converter id="auto" class="uk.ltd.getahead.dwr.convert.AutoConverter"/>
+  </init>
+
+  <allow>
+    <convert converter="null" match="java.lang.Void"/>
+    <convert converter="primitive" match="java.lang.Boolean"/>
+    <convert converter="primitive" match="java.lang.Byte"/>
+    <convert converter="primitive" match="java.lang.Short"/>
+    <convert converter="primitive" match="java.lang.Integer"/>
+    <convert converter="primitive" match="java.lang.Long"/>
+    <convert converter="primitive" match="java.lang.Float"/>
+    <convert converter="primitive" match="java.lang.Double"/>
+    <convert converter="primitive" match="java.lang.Character"/>
+    <convert converter="null" match="void"/>
+    <convert converter="primitive" match="boolean"/>
+    <convert converter="primitive" match="byte"/>
+    <convert converter="primitive" match="short"/>
+    <convert converter="primitive" match="int"/>
+    <convert converter="primitive" match="long"/>
+    <convert converter="primitive" match="float"/>
+    <convert converter="primitive" match="double"/>
+    <convert converter="primitive" match="char"/>
+    <convert converter="array" match="[Z"/>
+    <convert converter="array" match="[B"/>
+    <convert converter="array" match="[S"/>
+    <convert converter="array" match="[I"/>
+    <convert converter="array" match="[J"/>
+    <convert converter="array" match="[F"/>
+    <convert converter="array" match="[D"/>
+    <convert converter="array" match="[C"/>
+    <convert converter="string" match="java.lang.String"/>
+    <convert converter="array" match="[L*"/>
+    <!-- convert converter="collection" match="java.util.Collection"/ -->
+  </allow>
+
+</dwr>

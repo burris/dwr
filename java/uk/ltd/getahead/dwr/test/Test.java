@@ -52,15 +52,6 @@ public class Test
     }
 
     /**
-     * @param test
-     * @return string
-     */
-    public String stringParam(String test)
-    {
-        return "Test.stringParam(String) says hello, "+test;
-    }
-
-    /**
      * @param test1
      * @param test2
      * @return string
@@ -71,12 +62,190 @@ public class Test
     }
 
     /**
+     * 
+     */
+    public void voidParam()
+    {
+    }
+
+    /**
      * @param test
      * @return string
      */
-    public String intParam(int test)
+    public boolean booleanParam(boolean test)
     {
-        return "Test.intParam(int) says hello, #"+test;
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public byte byteParam(byte test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public char charParam(char test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public short shortParam(short test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public int intParam(int test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public long longParam(long test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public float floatParam(float test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public double doubleParam(double test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public String stringParam(String test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public boolean[] booleanArrayParam(boolean[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public char[] charArrayParam(char[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public byte[] byteArrayParam(byte[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public short[] shortArrayParam(short[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public int[] intArrayParam(int[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public long[] longArrayParam(long[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public float[] floatArrayParam(float[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public double[] doubleArrayParam(double[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public String[] stringArrayParam(String[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public TestBean testBeanParam(TestBean test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public TestBean[] testBeanArrayParam(TestBean[] test)
+    {
+        return test;
     }
 
     /**

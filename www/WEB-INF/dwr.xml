@@ -2,10 +2,20 @@
 <!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN" "http://www.getahead.ltd.uk/dwr/dwr.dtd">
 
 <dwr>
-  <new id="Test" class="uk.ltd.getahead.dwr.test.Test"/>
-  <new id="Date" class="java.util.Date"/>
-  <session id="TestBean" class="uk.ltd.getahead.dwr.test.TestBean"/>
-  <!--
-  <spring id="SpringBean" beanName="SpringBean"/>
-  -->
+
+  <init>
+    <converter id="testbean" priority="1" class="uk.ltd.getahead.dwr.test.TestBean2Converter"/>
+  </init>
+
+  <allow>
+    <create creator="new" javascript="Test" class="uk.ltd.getahead.dwr.test.Test"/>
+    <create creator="new" javascript="Date" class="java.util.Date"/>
+    <create creator="session" javascript="TestBean" class="uk.ltd.getahead.dwr.test.TestBean"/>
+    <!--
+    <create creator="spring" javascript="SpringBean" beanName="SpringBean"/>
+    -->
+    <convert converter="auto" match="*"/>
+    <convert converter="testbean" match="uk.ltd.getahead.dwr.test.TestBean2"/>
+  </allow>
+
 </dwr>

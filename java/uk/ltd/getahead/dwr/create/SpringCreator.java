@@ -1,32 +1,27 @@
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.create;
 
 import java.lang.reflect.Method;
+
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
+import uk.ltd.getahead.dwr.Creator;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class SpringAllowedClass implements AllowedClass
+public class SpringCreator implements Creator
 {
-    /**
-     * @param name 
-     * @param bean 
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.create.Creator#init(org.w3c.dom.Element)
      */
-    public SpringAllowedClass(String name, String bean)
+    public void init(Element config) throws SAXException
     {
-        this.name = name;
-        this.bean = bean;
+        this.beanname = config.getAttribute("beanName");
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.AllowedClass#getName()
-     */
-    public String getName()
-    {
-        return name;
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.AllowedClass#getType()
+     * @see uk.ltd.getahead.dwr.Creator#getType()
      */
     public Class getType()
     {
@@ -47,7 +42,7 @@ public class SpringAllowedClass implements AllowedClass
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.AllowedClass#getInstance()
+     * @see uk.ltd.getahead.dwr.Creator#getInstance()
      */
     public Object getInstance() throws InstantiationException
     {
@@ -59,7 +54,7 @@ public class SpringAllowedClass implements AllowedClass
         try
         {
             Method creator = factory.getClass().getMethod("getBean", new Class[] { String.class });
-            Object reply = creator.invoke(factory, new Object[] { bean });
+            Object reply = creator.invoke(factory, new Object[] { beanname });
             return reply;
         }
         catch (RuntimeException ex)
@@ -73,31 +68,15 @@ public class SpringAllowedClass implements AllowedClass
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object arg0)
-    {
-        if (!(arg0 instanceof AllowedClass))
-        {
-            throw new ClassCastException();
-        }
-        
-        AllowedClass that = (AllowedClass) arg0;
-
-        return getName().compareTo(that.getName());
-    }
-
     /**
      * @param factory The factory to set.
      */
     public static void setXmlBeanFactory(Object factory)
     {
-        SpringAllowedClass.factory = factory;
+        SpringCreator.factory = factory;
     }
 
     private static Object factory = null;
     private Class clazz;
-    private String bean;
-    private String name;
+    private String beanname;
 }
