@@ -63,6 +63,32 @@
   better for it in the long term.
 </p>
 
+<h3>Request Ordering</h3>
+<p>
+  Some applications may require order guarantees to ensure that methods are
+  executed on the server in the same order that they are generated in the
+  browser, or that replies are received in the same order.
+  <br/>
+  Neither of these guarantees are easy to fulfill however there are a number of
+  options open you you. The simplest would be to call useLoadingMessage() from
+  util.js (see the <a href="config-js.html">javascript documentation</a>).
+  This ensures that only on event is outstanding at any one time (and gives you
+  a gmail type "Loading" message).
+  <br/>
+  The second option would be to send a browser timestamp with each request and
+  have your Java code drop out of date requests. This option is more work
+  however is may make your site more responsive. It is worth noting that
+  multi-threaded user interfaces have been notoriously tricky to implement so
+  this choice may be painful in the future.
+  <br/>
+  The third option might be to help fix
+  <a href="https://dwr.dev.java.net/issues/show_bug.cgi?id=14">bug 14</a> which
+  could provide some of these guarantees while requiring the events are sent
+  in batch mode. Alternatively
+  <a href="https://dwr.dev.java.net/issues/show_bug.cgi?id=18">bug 18</a> sets
+  out to fix the root cause of this issue.
+</p>
+
 <h3>Marshalling to a collection</h3>
 <p>
   Suppose you are trying to call a Java method that does something like this:
