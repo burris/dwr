@@ -8,9 +8,11 @@ import org.w3c.dom.Element;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
+import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.Log;
 
 /**
+ * A creator that relies on a spring bean factory
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class SpringCreator implements Creator
@@ -20,8 +22,8 @@ public class SpringCreator implements Creator
      */
     public void init(Element config) throws IllegalArgumentException
     {
-        this.beanName = config.getAttribute("beanName");
-        this.resourceName = config.getAttribute("resourceName");
+        this.beanName = config.getAttribute("beanName"); //$NON-NLS-1$
+        this.resourceName = config.getAttribute("resourceName"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
@@ -59,26 +61,26 @@ public class SpringCreator implements Creator
                     URL url = getClass().getClassLoader().getResource(resourceName);
                     if (url != null)
                     {
-                        Log.info("Loading spring config via the classloader from " + url.toExternalForm());
+                        Log.info("Loading spring config via the classloader from " + url.toExternalForm()); //$NON-NLS-1$
                     }
                     else
                     {
                         url = ExecutionContext.get().getServletContext().getResource(resourceName);
                         if (url != null)
                         {
-                            Log.info("Loading spring config via servlet context from " + url.toExternalForm());
+                            Log.info("Loading spring config via servlet context from " + url.toExternalForm()); //$NON-NLS-1$
                         }
                         else
                         {
-                            throw new InstantiationException("Failed to find spring configuration file using resourceName=" + resourceName);
+                            throw new InstantiationException(Messages.getString("SpringCreator.ResourceNameInvalid", resourceName)); //$NON-NLS-1$
                         }
                     }
 
                     // Could use url.openStream() but then we can do relative url
                     // traversal.
-                    Class cUrlResource = Class.forName("org.springframework.core.io.UrlResource");
-                    Class cResource = Class.forName("org.springframework.core.io.Resource");
-                    Class cXmlBeanFactory = Class.forName("org.springframework.beans.factory.xml.XmlBeanFactory");
+                    Class cUrlResource = Class.forName("org.springframework.core.io.UrlResource"); //$NON-NLS-1$
+                    Class cResource = Class.forName("org.springframework.core.io.Resource"); //$NON-NLS-1$
+                    Class cXmlBeanFactory = Class.forName("org.springframework.beans.factory.xml.XmlBeanFactory"); //$NON-NLS-1$
 
                     Constructor ctorUrlResource = cUrlResource.getConstructor(new Class[] { URL.class });
                     Object resource = ctorUrlResource.newInstance(new Object[] { url });
@@ -88,11 +90,11 @@ public class SpringCreator implements Creator
                 }
                 else
                 {
-                    throw new InstantiationException("No spring XmlBeanFactory set. Either call uk.ltd.getahead.dwr.create.SpringCreator.setXmlBeanFactory() with a beanFactory or ");
+                    throw new InstantiationException(Messages.getString("SpringCreator.MissingFactory")); //$NON-NLS-1$
                 }
             }
 
-            Method creator = factory.getClass().getMethod("getBean", new Class[] { String.class });
+            Method creator = factory.getClass().getMethod("getBean", new Class[] { String.class }); //$NON-NLS-1$
             Object reply = creator.invoke(factory, new Object[] { beanName });
             return reply;
         }

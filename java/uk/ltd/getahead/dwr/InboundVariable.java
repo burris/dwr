@@ -44,12 +44,12 @@ public final class InboundVariable
         String tempType = type;
         String tempValue = value;
 
-        while (TYPE_REFERENCE.equals(tempType))
+        while (ConversionConstants.TYPE_REFERENCE.equals(tempType))
         {
             InboundVariable cd = context.getInboundVariable(tempValue);
             if (cd == null)
             {
-                throw new ConversionException("Failed to find reference to " + tempValue);
+                throw new ConversionException(Messages.getString("InboundVariable.MissingVariable", tempValue)); //$NON-NLS-1$
             }
 
             tempType = cd.type;
@@ -64,7 +64,7 @@ public final class InboundVariable
      */
     public String getRawData()
     {
-        return type + ":" + value;
+        return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value;
     }
 
     /* (non-Javadoc)
@@ -72,20 +72,20 @@ public final class InboundVariable
      */
     public String toString()
     {
-        if (TYPE_REFERENCE.equals(type))
+        if (ConversionConstants.TYPE_REFERENCE.equals(type))
         {
             try
             {
-                return type + ":" + value + "=(" + getValue() + ")";
+                return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value + "=(" + getValue() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             catch (ConversionException ex)
             {
-                return type + ":" + value + "=(invalid)";
+                return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value + "=(invalid)"; //$NON-NLS-1$
             }
         }
         else
         {
-            return type + ":" + value;
+            return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value;
         }
     }
 
@@ -121,11 +121,6 @@ public final class InboundVariable
     {
         return value.hashCode() + type.hashCode();
     }
-
-    /**
-     * The name for reference types
-     */
-    private static final String TYPE_REFERENCE = "reference";
 
     /**
      * How do be lookup references?

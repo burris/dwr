@@ -34,7 +34,7 @@ public final class CreatorManager
     {
         if (!Creator.class.isAssignableFrom(clazz))
         {
-            throw new IllegalArgumentException("Creator " + clazz.getName() + " does not implement " + Creator.class.getName());
+            throw new IllegalArgumentException(Messages.getString("CreatorManager.CreatorNotAssignabe", clazz.getName(), Creator.class.getName())); //$NON-NLS-1$
         }
 
         creatorTypes.put(typename, clazz);
@@ -60,7 +60,7 @@ public final class CreatorManager
         Creator other = (Creator) creators.get(javascript);
         if (other != null)
         {
-            throw new IllegalArgumentException("Javascript name '" + javascript + "' is used by 2 classes (" + other.getType().getName() + " and " + type + ")");
+            throw new IllegalArgumentException(Messages.getString("CreatorManager.DuplicateName", javascript, other.getType().getName(), type)); //$NON-NLS-1$
         }
 
         creators.put(javascript, creator);
@@ -93,16 +93,16 @@ public final class CreatorManager
         Creator creator = (Creator) creators.get(name);
         if (creator == null)
         {
-            StringBuffer buffer = new StringBuffer("Names of known classes are: ");
+            StringBuffer buffer = new StringBuffer("Names of known classes are: "); //$NON-NLS-1$
             for (Iterator it = creators.keySet().iterator(); it.hasNext();)
             {
                 String key = (String) it.next();
                 buffer.append(key);
-                buffer.append(" ");
+                buffer.append(' ');
             }
 
             Log.warn(buffer.toString());
-            throw new SecurityException("No class by name: "+name);
+            throw new SecurityException(Messages.getString("CreatorManager.MissingName", name)); //$NON-NLS-1$
         }
 
         return creator;

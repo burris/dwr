@@ -60,10 +60,10 @@ public final class OutboundVariable
     /**
      * The code to be executed to initialize any variables
      */
-    private String initCode = "";
+    private String initCode = ""; //$NON-NLS-1$
 
     /**
      * The code to be executed to get the value of the initialized data
      */
-    private String assignCode = "";
+    private String assignCode = ""; //$NON-NLS-1$
 }

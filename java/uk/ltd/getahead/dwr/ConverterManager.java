@@ -28,7 +28,7 @@ public final class ConverterManager
     {
         if (!Converter.class.isAssignableFrom(clazz))
         {
-            throw new IllegalArgumentException("Class " + clazz + " does not implement " + Converter.class.getName());
+            throw new IllegalArgumentException(Messages.getString("ConverterManager.ConverterNotAssignable", clazz, Converter.class.getName())); //$NON-NLS-1$
         }
 
         converterTypes.put(id, clazz);
@@ -47,7 +47,7 @@ public final class ConverterManager
         Class clazz = (Class) converterTypes.get(type);
         if (clazz == null)
         {
-            throw new IllegalArgumentException("Unknown converter called: "+type);
+            throw new IllegalArgumentException(Messages.getString("ConverterManager.Converterunknown", type)); //$NON-NLS-1$
         }
 
         Converter converter = (Converter) clazz.newInstance();
@@ -57,7 +57,7 @@ public final class ConverterManager
         Converter other = (Converter) converters.get(match);
         if (other != null)
         {
-            throw new IllegalArgumentException("Match '" + match + "' is used by 2 converters.");
+            throw new IllegalArgumentException(Messages.getString("ConverterManager.DuplicateMatches", match)); //$NON-NLS-1$
         }
 
         converters.put(match, converter);
@@ -129,7 +129,7 @@ public final class ConverterManager
         if (ov != null)
         {
             // So the object as been converted already, we just need to refer to it.
-            return new OutboundVariable("", ov.getAssignCode());
+            return new OutboundVariable("", ov.getAssignCode()); //$NON-NLS-1$
         }
 
         // So we will have to create one for ourselves
@@ -143,7 +143,7 @@ public final class ConverterManager
         Converter converter = getConverter(object);
         if (converter == null)
         {
-            throw new ConversionException("No converter found for " + object.getClass().getName());
+            throw new ConversionException(Messages.getString("ConverterManager.MissingConverter", object.getClass().getName())); //$NON-NLS-1$
         }
 
         ov.setInitCode(converter.convertOutbound(object, ov.getAssignCode(), converted));
@@ -179,7 +179,7 @@ public final class ConverterManager
         String lookup = paramType.getName();
 
         // We first check for exact matches using instanceof
-        for (Iterator it = converters.keySet().iterator(); it.hasNext(); )
+        for (Iterator it = converters.keySet().iterator(); it.hasNext();)
         {
             String name = (String) it.next();
             try
@@ -200,14 +200,14 @@ public final class ConverterManager
         while (true)
         {
             // Can we find a converter using wildcards?
-            Converter converter = (Converter) converters.get(lookup+".*");
+            Converter converter = (Converter) converters.get(lookup + ".*"); //$NON-NLS-1$
             if (converter != null)
             {
                 return converter;
             }
 
             // Arrays can have wildcards like [L* so we don't require a .
-            converter = (Converter) converters.get(lookup+"*");
+            converter = (Converter) converters.get(lookup + '*');
             if (converter != null)
             {
                 return converter;
@@ -224,7 +224,7 @@ public final class ConverterManager
             if (lastdot == -1)
             {
                 // Cope with arrays
-                if (lookup.startsWith("["))
+                if (lookup.charAt(0) == '[')
                 {
                     lastdot = 2;
                 }
@@ -237,7 +237,7 @@ public final class ConverterManager
             lookup = lookup.substring(0, lastdot);
         }
 
-        throw new ConversionException("No converter found for " + paramType.getName());
+        throw new ConversionException(Messages.getString("ConverterManager.MissingConverter", paramType.getName())); //$NON-NLS-1$
     }
 
     /**

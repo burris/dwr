@@ -3,14 +3,16 @@ package uk.ltd.getahead.dwr.convert;
 import java.lang.reflect.Array;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.ExecuteQuery;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 
 /**
  * An implementation of Converter for Arrays.
@@ -34,22 +36,22 @@ public class ArrayConverter implements Converter
     {
         if (!paramType.isArray())
         {
-            throw new ConversionException("Class: " + paramType + " is not an array type");
+            throw new ConversionException(Messages.getString("ArrayConverter.ClassIsNotAnArray", paramType.getName())); //$NON-NLS-1$
         }
 
         String value = data.getValue();
-        if (value.startsWith("["))
+        if (value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
         {
             value = value.substring(1);
         }
-        if (value.endsWith("]"))
+        if (value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
         {
             value = value.substring(0, value.length() - 1);
         }
 
         try
         {
-            StringTokenizer st = new StringTokenizer(value, ",");
+            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
             int size = st.countTokens();
 
             Class componentType = paramType.getComponentType();
@@ -59,28 +61,14 @@ public class ArrayConverter implements Converter
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
             inctx.addConverted(data, array);
+            final InboundContext key = data.getLookup();
 
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-                final InboundContext key = data.getLookup();
+                String[] split = ExecuteQuery.splitInbound(token);
 
-                int colon = token.indexOf(":");
-                String type;
-                String ivalue;
-                if (colon != -1)
-                {
-                    type = token.substring(0, colon);
-                    ivalue = token.substring(colon + 1);
-                }
-                else
-                {
-                    Log.error("Missing : in conversion data");
-                    type = "string";
-                    ivalue = token;
-                }
-
-                InboundVariable nested = new InboundVariable(key, type, ivalue);
+                InboundVariable nested = new InboundVariable(key, split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
                 Object output = converterManager.convertInbound(componentType, nested, inctx);
                 Array.set(array, i, output);
             }
@@ -100,11 +88,11 @@ public class ArrayConverter implements Converter
     {
         if (!data.getClass().isArray())
         {
-            throw new ConversionException("Class: " + data.getClass() + " is not an array type");
+            throw new ConversionException(Messages.getString("ArrayConverter.ClassIsNotAnArray", data.getClass().getName())); //$NON-NLS-1$
         }
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var " + varname + " = new Array();");
+        buffer.append("var " + varname + " = new Array();"); //$NON-NLS-1$ //$NON-NLS-2$
 
         int size = Array.getLength(data);
         for (int i = 0; i < size; i++)
@@ -112,11 +100,12 @@ public class ArrayConverter implements Converter
             OutboundVariable nested = converterManager.convertOutbound(Array.get(data, i), outctx);
 
             buffer.append(nested.getInitCode());
-            buffer.append(varname + "[");
+            buffer.append(varname);
+            buffer.append('[');
             buffer.append(i);
-            buffer.append("] = ");
+            buffer.append("] = "); //$NON-NLS-1$
             buffer.append(nested.getAssignCode());
-            buffer.append(";");
+            buffer.append(';');
         }
 
         return buffer.toString();

@@ -1,6 +1,7 @@
 package uk.ltd.getahead.dwr.convert;
 
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
@@ -61,7 +62,7 @@ public class PrimitiveConverter implements Converter
                 }
                 else
                 {
-                    throw new ConversionException("Can't convert string to single char: '" + value + "'");
+                    throw new ConversionException(Messages.getString("PrimitiveConverter.StringTooLong", value)); //$NON-NLS-1$
                 }
             }
             else if (paramType == Integer.TYPE || paramType == Integer.class)
@@ -97,11 +98,11 @@ public class PrimitiveConverter implements Converter
                 return new Double(value.trim());
             }
 
-            throw new ConversionException("Non-primitive paramType: "+paramType.getName());
+            throw new ConversionException(Messages.getString("PrimitiveConverter.TypeNotPrimitive", paramType.getName())); //$NON-NLS-1$
         }
         catch (NumberFormatException ex)
         {
-            throw new ConversionException("Format error converting " + value + " to " + paramType.getName(), ex);
+            throw new ConversionException(Messages.getString("PrimitiveConverter.FormatError", value, paramType.getName()), ex); //$NON-NLS-1$
         }
     }
 
@@ -115,21 +116,21 @@ public class PrimitiveConverter implements Converter
         if (object.equals(Boolean.TRUE))
         {
             // @PMD:REVIEWED:AvoidDuplicateLiterals: by Joe on 02/02/05 10:56
-            return "var " + varname + " = true;";
+            return "var " + varname + " = true;"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         else if (object.equals(Boolean.FALSE))
         {
-            return "var " + varname + " = false;";
+            return "var " + varname + " = false;"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         else if (paramType == Character.class)
         {
             // Treat characters as strings
-            return "var " + varname + " = \"" + StringEscapeUtils.escapeJavaScript(object.toString()) + "\";";
+            return "var " + varname + " = \"" + StringEscapeUtils.escapeJavaScript(object.toString()) + "\";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         else
         {
             // We just use the default toString for all numbers
-            return "var " + varname + " = " + object.toString() + ";";
+            return "var " + varname + " = " + object.toString() + ";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 }

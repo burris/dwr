@@ -35,11 +35,17 @@ public class Demo
     {
         if (big)
         {
-            return new int[] { 1000, 2000, 3000, 4000 };
+            return new int[]
+            {
+                1000, 2000, 3000, 4000
+            };
         }
         else
         {
-            return new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            return new int[]
+            {
+                1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+            };
         }
     }
 
@@ -70,8 +76,8 @@ public class Demo
         HttpSession session = ExecutionContext.get().getSession();
         ServletContext context = ExecutionContext.get().getServletContext();
 
-        Integer contextClicks = (Integer) context.getAttribute("contextClicks");
-        Integer sessionClicks = (Integer) session.getAttribute("sessionClicks");
+        Integer contextClicks = (Integer) context.getAttribute(CONTEXT_CLICKS);
+        Integer sessionClicks = (Integer) session.getAttribute(SESSION_CLICKS);
 
         if (contextClicks == null)
         {
@@ -86,10 +92,10 @@ public class Demo
         contextClicks = new Integer(contextClicks.intValue() + 1);
         sessionClicks = new Integer(sessionClicks.intValue() + 1);
 
-        context.setAttribute("contextClicks", contextClicks);
-        session.setAttribute("sessionClicks", sessionClicks);
+        context.setAttribute(CONTEXT_CLICKS, contextClicks);
+        session.setAttribute(SESSION_CLICKS, sessionClicks);
 
-        return "getClicks() has been clicked "+sessionClicks+" times this session and "+contextClicks+" times since the last deployment";
+        return "getClicks() has been clicked " + sessionClicks + " times this session and " + contextClicks + " times since the last deployment"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
@@ -100,7 +106,7 @@ public class Demo
      */
     public String getForward() throws ServletException, IOException
     {
-        return ExecutionContext.get().forwardToString("/forward.jsp");
+        return ExecutionContext.get().forwardToString("/forward.jsp"); //$NON-NLS-1$
     }
 
     /**
@@ -169,16 +175,22 @@ public class Demo
      */
     private void createPeople()
     {
-        Person fred = new Person("Fred", new Date().toString(), 2, 100000.0f);
-        Person jim = new Person("Jim", new Date().toString(), 3, 20000.0f);
-        Person shiela = new Person("Shiela", new Date().toString(), 4, 3000000.0f);
+        Person fred = new Person("Fred", new Date().toString(), 2, 100000.0f); //$NON-NLS-1$
+        Person jim = new Person("Jim", new Date().toString(), 3, 20000.0f); //$NON-NLS-1$
+        Person shiela = new Person("Shiela", new Date().toString(), 4, 3000000.0f); //$NON-NLS-1$
 
         people.put(new Integer(fred.getId()), fred);
         people.put(new Integer(jim.getId()), jim);
         people.put(new Integer(shiela.getId()), shiela);
     }
 
+    private static final String SESSION_CLICKS = "sessionClicks"; //$NON-NLS-1$
+
+    private static final String CONTEXT_CLICKS = "contextClicks"; //$NON-NLS-1$
+
     private static int nextId = 10;
+
     private final Map people = new HashMap();
-    private Person person = new Person("John Doe", new Date().toString(), 1, 100000.0F);
+
+    private Person person = new Person("John Doe", new Date().toString(), 1, 100000.0F); //$NON-NLS-1$
 }

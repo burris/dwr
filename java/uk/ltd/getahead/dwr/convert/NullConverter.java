@@ -33,6 +33,6 @@ public class NullConverter implements Converter
      */
     public String convertOutbound(Object data, String varname, OutboundContext outctx)
     {
-        return "var " + varname + " = undefined;";
+        return "var " + varname + " = undefined;";  //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

@@ -157,10 +157,10 @@ class IntHashMap {
     public IntHashMap(int initialCapacity, float loadFactor) {
         super();
         if (initialCapacity < 0) {
-            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity); //$NON-NLS-1$
         }
         if (loadFactor <= 0) {
-            throw new IllegalArgumentException("Illegal Load: " + loadFactor);
+            throw new IllegalArgumentException("Illegal Load: " + loadFactor); //$NON-NLS-1$
         }
         if (initialCapacity == 0) {
             initialCapacity = 1;

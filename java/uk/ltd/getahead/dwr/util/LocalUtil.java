@@ -156,16 +156,16 @@ public final class LocalUtil
     public static void addNoCacheHeaders(HttpServletResponse resp)
     {
         // Set standard HTTP/1.1 no-cache headers.
-        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // Set IE extended HTTP/1.1 no-cache headers (use addHeader).
-        resp.addHeader("Cache-Control", "post-check=0, pre-check=0");
+        resp.addHeader("Cache-Control", "post-check=0, pre-check=0"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // Set standard HTTP/1.0 no-cache header.
-        resp.setHeader("Pragma", "no-cache");
+        resp.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
 
         // Set to expire far in the past. Prevents caching at the proxy server
-        resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
+        resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -180,11 +180,15 @@ public final class LocalUtil
         {
             try
             {
-                decode14 = URLDecoder.class.getMethod("decode", new Class[] { String.class, String.class });
+                decode14 = URLDecoder.class.getMethod("decode", new Class[] { String.class, String.class }); //$NON-NLS-1$
             }
             catch (Exception ex)
             {
-                Log.warn("URLDecoder.decode(String, String) is not available. Falling back to 1.3 variant.");
+                if (!warn13)
+                {
+                    Log.warn("URLDecoder.decode(String, String) is not available. Falling back to 1.3 variant."); //$NON-NLS-1$
+                    warn13= true;
+                }
             }
 
             testedDecoder = true;
@@ -194,17 +198,18 @@ public final class LocalUtil
         {
             try
             {
-                return (String) decode14.invoke(null, new Object[] { value, "UTF-8" });
+                return (String) decode14.invoke(null, new Object[] { value, "UTF-8" }); //$NON-NLS-1$
             }
             catch (Exception ex)
             {
-                Log.warn("Failed to use JDK 1.4 decoder", ex);
+                Log.warn("Failed to use JDK 1.4 decoder", ex); //$NON-NLS-1$
             }
         }
 
         return URLDecoder.decode(value);
     }
 
+    private static boolean warn13 = false;
     private static boolean testedDecoder = false;
     private static Method decode14 = null;
 }

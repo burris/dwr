@@ -3,6 +3,7 @@ package uk.ltd.getahead.dwr.create;
 import org.w3c.dom.Element;
 
 import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.Messages;
 
 /**
  * A creator that simply uses the default constructor each time it is called.
@@ -15,7 +16,7 @@ public class NewCreator implements Creator
      */
     public void init(Element config) throws IllegalArgumentException
     {
-        String classname = config.getAttribute("class");
+        String classname = config.getAttribute("class"); //$NON-NLS-1$
 
         try
         {
@@ -23,7 +24,7 @@ public class NewCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException("Class not found: "+classname);
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
         }
     }
 
@@ -46,7 +47,7 @@ public class NewCreator implements Creator
         }
         catch (IllegalAccessException ex)
         {
-            throw new InstantiationException("Illegal Access to default constructor");
+            throw new InstantiationException(Messages.getString("Creator.IllegalAccess")); //$NON-NLS-1$
         }
     }
 

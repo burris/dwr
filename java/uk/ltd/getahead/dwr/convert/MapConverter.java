@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.InboundContext;
@@ -35,16 +37,16 @@ public class MapConverter implements Converter
     public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
     {
         String value = data.getValue();
-        if (value.trim().equals("null"))
+        if (value.trim().equals(ConversionConstants.INBOUND_NULL))
         {
             return null;
         }
 
-        if (value.startsWith("{"))
+        if (value.startsWith(ConversionConstants.INBOUND_MAP_START))
         {
             value = value.substring(1);
         }
-        if (value.endsWith("}"))
+        if (value.endsWith(ConversionConstants.INBOUND_MAP_END))
         {
             value = value.substring(0, value.length() - 1);
         }
@@ -74,7 +76,7 @@ public class MapConverter implements Converter
             inctx.addConverted(data, map);
 
             // Loop through the property declarations
-            StringTokenizer st = new StringTokenizer(value, ",");
+            StringTokenizer st = new StringTokenizer(value, ","); //$NON-NLS-1$
             int size = st.countTokens();
             for (int i = 0; i < size; i++)
             {
@@ -84,10 +86,10 @@ public class MapConverter implements Converter
                     continue;
                 }
 
-                int colonpos = token.indexOf(":");
+                int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
                 if (colonpos == -1)
                 {
-                    throw new ConversionException("Missing ':' in object description: " + token);
+                    throw new ConversionException(Messages.getString("MapConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token)); //$NON-NLS-1$
                 }
 
                 String key = token.substring(0, colonpos).trim();
@@ -116,9 +118,9 @@ public class MapConverter implements Converter
         Map map = (Map) data;
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var ");
+        buffer.append("var "); //$NON-NLS-1$
         buffer.append(varname);
-        buffer.append(" = new Object();");
+        buffer.append(" = new Object();"); //$NON-NLS-1$
 
         for (Iterator it = map.keySet().iterator(); it.hasNext();)
         {
@@ -132,11 +134,11 @@ public class MapConverter implements Converter
 
             // And now declare our stuff
             buffer.append(varname);
-            buffer.append(".");
+            buffer.append('.');
             buffer.append(key);
-            buffer.append(" = ");
+            buffer.append(" = "); //$NON-NLS-1$
             buffer.append(nested.getAssignCode());
-            buffer.append(";");
+            buffer.append(';');
         }
 
         return buffer.toString();

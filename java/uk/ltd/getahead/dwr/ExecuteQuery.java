@@ -32,7 +32,7 @@ public final class ExecuteQuery
         this.creatorManager = creatorManager;
         this.converterManager = converterManager;
 
-        if (req.getParameter("id") != null)
+        if (req.getParameter(ConversionConstants.INBOUND_KEY_ID) != null)
         {
             parseParameters(parseGet(req));
         }
@@ -41,7 +41,7 @@ public final class ExecuteQuery
             parseParameters(parsePost(req));
         }
 
-        Log.debug("Exec: " + toString());
+        Log.debug("Exec: " + toString()); //$NON-NLS-1$
     }
 
     /**
@@ -68,15 +68,15 @@ public final class ExecuteQuery
                     break;
                 }
 
-                int sep = line.indexOf(SEPARATOR);
+                int sep = line.indexOf(ConversionConstants.INBOUND_DECL_SEPARATOR);
                 if (sep == -1)
                 {
-                    Log.warn("Missing separator in POST line: " + line);
+                    Log.warn("Missing separator in POST line: " + line); //$NON-NLS-1$
                 }
                 else
                 {
                     String key = line.substring(0, sep);
-                    String value = line.substring(sep  + SEPARATOR.length());
+                    String value = line.substring(sep  + ConversionConstants.INBOUND_DECL_SEPARATOR.length());
 
                     parammap.put(key, value);
                 }
@@ -110,10 +110,10 @@ public final class ExecuteQuery
     private void parseParameters(Map parammap)
     {
         // The special values
-        id = (String) parammap.remove(KEY_ID);
-        className = (String) parammap.remove(KEY_CLASSNAME);
-        methodName = (String) parammap.remove(KEY_METHODNAME);
-        xmlMode = Boolean.valueOf((String) parammap.remove(KEY_XMLMODE)).booleanValue();
+        id = (String) parammap.remove(ConversionConstants.INBOUND_KEY_ID);
+        className = (String) parammap.remove(ConversionConstants.INBOUND_KEY_CLASSNAME);
+        methodName = (String) parammap.remove(ConversionConstants.INBOUND_KEY_METHODNAME);
+        xmlMode = Boolean.valueOf((String) parammap.remove(ConversionConstants.INBOUND_KEY_XMLMODE)).booleanValue();
 
         // Look through the params and convert to InboundVariable.
         for (Iterator it = parammap.keySet().iterator(); it.hasNext();)
@@ -146,7 +146,7 @@ public final class ExecuteQuery
     {
         String[] reply = new String[2];
 
-        int colon = data.indexOf(":");
+        int colon = data.indexOf(ConversionConstants.INBOUND_TYPE_SEPARATOR);
         if (colon != -1)
         {
             reply[INBOUND_INDEX_TYPE] = data.substring(0, colon);
@@ -154,8 +154,8 @@ public final class ExecuteQuery
         }
         else
         {
-            Log.error("Missing : in conversion data");
-            reply[INBOUND_INDEX_TYPE] = "string";
+            Log.error("Missing : in conversion data"); //$NON-NLS-1$
+            reply[INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
             reply[INBOUND_INDEX_VALUE] = data;
         }
 
@@ -177,12 +177,12 @@ public final class ExecuteQuery
 
         if (className == null)
         {
-            throw new IllegalArgumentException("Missing class parameter");
+            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingClassParam")); //$NON-NLS-1$
         }
 
         if (methodName == null)
         {
-            throw new IllegalArgumentException("Missing method parameter");
+            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingMethodParam")); //$NON-NLS-1$
         }
 
         // Get a list of the available matching methods with the coerced
@@ -232,7 +232,7 @@ public final class ExecuteQuery
         // Pick a method to call
         if (available.size() > 1)
         {
-            Log.warn("Warning multiple matching methods. Using first match.");
+            Log.warn("Warning multiple matching methods. Using first match."); //$NON-NLS-1$
         }
 
         Method method = null;
@@ -249,7 +249,7 @@ public final class ExecuteQuery
         // Complain if there is nothing to call
         if (method == null)
         {
-            throw new IllegalArgumentException("Missing method: " + toString());
+            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.UnknownMethod", toString())); //$NON-NLS-1$
         }
 
         try
@@ -258,7 +258,7 @@ public final class ExecuteQuery
             Object object = creator.getInstance();
 
             // Execute
-            Log.info("Executing: " + method.toString());
+            Log.info("Executing: " + method.toString()); //$NON-NLS-1$
             return method.invoke(object, converted);
         }
         catch (InvocationTargetException ex)
@@ -293,7 +293,7 @@ public final class ExecuteQuery
         {
             if (i != 0)
             {
-                allParams.append(", ");
+                allParams.append(',');
             }
             allParams.append(inctx.getParameter(i));
         }
@@ -305,23 +305,17 @@ public final class ExecuteQuery
             InboundVariable value = inctx.getInboundVariable(key);
 
             allData.append(key);
-            allData.append("=");
+            allData.append('=');
             allData.append(value.getRawData());
 
             if (it.hasNext())
             {
-                allData.append(", ");
+                allData.append(',');
             }
         }
 
-        return "" + className + "." + methodName + "(" + allParams + "); with " + allData;
+        return className + '.' + methodName + '(' + allParams + "); with " + allData; //$NON-NLS-1$
     }
-
-    private static final String SEPARATOR = "=";
-    private static final String KEY_METHODNAME = "methodname";
-    private static final String KEY_CLASSNAME = "classname";
-    private static final String KEY_ID = "id";
-    private static final String KEY_XMLMODE = "xml";
 
     private ConverterManager converterManager;
     private CreatorManager creatorManager;

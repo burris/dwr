@@ -3,6 +3,7 @@ package uk.ltd.getahead.dwr.create;
 import org.w3c.dom.Element;
 
 import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.Messages;
 
 /**
  * A 'Creator' for static classes.
@@ -17,7 +18,7 @@ public class StaticCreator implements Creator
      */
     public void init(Element config) throws IllegalArgumentException
     {
-        String classname = config.getAttribute("class");
+        String classname = config.getAttribute("class"); //$NON-NLS-1$
 
         try
         {
@@ -25,7 +26,7 @@ public class StaticCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException("Class not found: "+classname);
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
         }
     }
 

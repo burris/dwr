@@ -25,9 +25,9 @@ public final class InboundContext
 
         variables.put(key, cte);
 
-        if (key.startsWith(PARAM_PREFIX))
+        if (key.startsWith(ConversionConstants.PARAM_PREFIX))
         {
-            int i = Integer.parseInt(key.substring(PARAM_PREFIX.length())) + 1;
+            int i = Integer.parseInt(key.substring(ConversionConstants.PARAM_PREFIX.length())) + 1;
             if (i > paramCount )
             {
                 paramCount = i;
@@ -92,7 +92,7 @@ public final class InboundContext
      */
     protected InboundVariable getParameter(int index)
     {
-        return (InboundVariable) variables.get(PARAM_PREFIX + index);
+        return (InboundVariable) variables.get(ConversionConstants.PARAM_PREFIX + index);
     }
 
     /**
@@ -103,11 +103,6 @@ public final class InboundContext
     {
         return variables.keySet().iterator();
     }
-
-    /**
-     * What prefix do we put to the input paramters
-     */
-    public static final String PARAM_PREFIX = "param";
 
     /**
      * How many params are there?.

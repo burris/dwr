@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
@@ -40,11 +41,11 @@ public class BigNumberConverter implements Converter
                 return new BigInteger(value.trim());
             }
 
-            throw new ConversionException("Non-primitive paramType: "+paramType.getName());
+            throw new ConversionException(Messages.getString("BigNumberConverter.NonPrimitive", paramType.getName())); //$NON-NLS-1$
         }
         catch (NumberFormatException ex)
         {
-            throw new ConversionException("Format error converting " + value + " to " + paramType.getName(), ex);
+            throw new ConversionException(Messages.getString("BigNumberConverter.FormatError", value, paramType.getName()), ex); //$NON-NLS-1$
         }
     }
 
@@ -53,6 +54,6 @@ public class BigNumberConverter implements Converter
      */
     public String convertOutbound(Object object, String varname, OutboundContext outctx)
     {
-        return "var " + varname + " = " + object.toString() + ";";
+        return "var " + varname + " = " + object.toString() + ";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 }

@@ -92,7 +92,7 @@ public class Person
         this.salary = salary;
     }
 
-    private String name = "";
+    private String name = ""; //$NON-NLS-1$
     private String dateOfBirth = new Date().toString();
     private float salary = 0.0f;
     private int id = -1;

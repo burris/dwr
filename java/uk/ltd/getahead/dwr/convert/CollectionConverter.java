@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.ExecuteQuery;
+import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.InboundContext;
@@ -40,18 +42,18 @@ public class CollectionConverter implements Converter
     {
         String value = data.getValue();
 
-        if (value.startsWith("["))
+        if (value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
         {
             value = value.substring(1);
         }
-        if (value.endsWith("]"))
+        if (value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
         {
             value = value.substring(0, value.length() - 1);
         }
 
         try
         {
-            StringTokenizer st = new StringTokenizer(value, ",");
+            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
             int size = st.countTokens();
 
             Class subtype = String.class;
@@ -112,7 +114,7 @@ public class CollectionConverter implements Converter
             }
             else
             {
-                throw new ConversionException("Can't convert javascript arrays to " + paramType.getName());
+                throw new ConversionException(Messages.getString("CollectionConverter.ConvertError") + paramType.getName()); //$NON-NLS-1$
             }
 
             // We should put the new object into the working map in case it
@@ -164,11 +166,11 @@ public class CollectionConverter implements Converter
         }
         else
         {
-            throw new ConversionException("Can't convert " + data.getClass().getName() + " to a javscript array.");
+            throw new ConversionException(Messages.getString("CollectionConverter.ConvertFailed", data.getClass().getName())); //$NON-NLS-1$
         }
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var " + varname + " = new Array();");
+        buffer.append("var " + varname + " = new Array();"); //$NON-NLS-1$ //$NON-NLS-2$
 
         int i = 0;
         while (it.hasNext())
@@ -179,11 +181,11 @@ public class CollectionConverter implements Converter
 
             buffer.append(nested.getInitCode());
             buffer.append(varname);
-            buffer.append("[");
+            buffer.append('[');
             buffer.append(i);
-            buffer.append("] = ");
+            buffer.append("] = "); //$NON-NLS-1$
             buffer.append(nested.getAssignCode());
-            buffer.append(";");
+            buffer.append(';');
 
             i++;
         }

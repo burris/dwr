@@ -6,8 +6,10 @@ import org.w3c.dom.Element;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
+import uk.ltd.getahead.dwr.Messages;
 
 /**
+ * A creator that records created objects in the users session.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class SessionCreator implements Creator
@@ -17,8 +19,8 @@ public class SessionCreator implements Creator
      */
     public void init(Element config) throws IllegalArgumentException
     {
-        String classname = config.getAttribute("class");
-        scriptname = config.getAttribute("javascript");
+        String classname = config.getAttribute("class"); //$NON-NLS-1$
+        scriptname = config.getAttribute("javascript"); //$NON-NLS-1$
 
         try
         {
@@ -26,7 +28,7 @@ public class SessionCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException("Class not found: "+classname);
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
         }
     }
 
@@ -54,7 +56,7 @@ public class SessionCreator implements Creator
             }
             catch (IllegalAccessException ex)
             {
-                throw new InstantiationException("Illegal Access to default constructor");
+                throw new InstantiationException(Messages.getString("Creator.IllegalAccess")); //$NON-NLS-1$
             }
             
             session.setAttribute(scriptname, reply);
@@ -64,12 +66,12 @@ public class SessionCreator implements Creator
     }
 
     /**
-     * 
+     * The class type that we generate by default
      */
     private Class clazz;
 
     /**
-     * 
+     * The javascript name for the class
      */
     private String scriptname;
 }

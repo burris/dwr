@@ -12,12 +12,9 @@ import java.util.Map;
 public final class OutboundContext
 {
     /**
-     * Create a ConversionContext which stores context information about a set
-     * of conversions from Java to Javascript.
+     * The prefix for outbound variable names the we generate
      */
-    public OutboundContext()
-    {
-    }
+    public static final String OUTBOUND_VARIABLE_PREFIX = "s"; //$NON-NLS-1$
 
     /**
      * Have we already converted an object?
@@ -44,7 +41,7 @@ public final class OutboundContext
      */
     public String getNextVariableName()
     {
-        String varName = "s" + nextVarIndex;
+        String varName = OUTBOUND_VARIABLE_PREFIX + nextVarIndex;
         nextVarIndex++;
 
         return varName;
@@ -53,11 +50,10 @@ public final class OutboundContext
     /**
      * The map of objects to how we converted them last time
      */
-    private Map map = new HashMap();
+    private final Map map = new HashMap();
 
     /**
      * What index do we tack on the next variable name that we generate
      */
     private int nextVarIndex = 0;
 }
-

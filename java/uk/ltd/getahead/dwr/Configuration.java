@@ -59,11 +59,11 @@ public final class Configuration
         }
         catch (ParserConfigurationException ex)
         {
-            throw new SAXException("Parser exception", ex);
+            throw new SAXException(Messages.getString("Configuration.ParseError"), ex); //$NON-NLS-1$
         }
         catch (IOException ex)
         {
-            throw new SAXException("IO Error reading from dwr.xml", ex);
+            throw new SAXException(Messages.getString("Configuration.FileError"), ex); //$NON-NLS-1$
         }
     }
 
@@ -83,11 +83,11 @@ public final class Configuration
             {
                 Element child = (Element) node;
 
-                if (child.getNodeName().equals("init"))
+                if (child.getNodeName().equals(ELEMENT_INIT))
                 {
                     loadInits(child);
                 }
-                else if (child.getNodeName().equals("allow"))
+                else if (child.getNodeName().equals(ELEMENT_ALLOW))
                 {
                     loadAllows(child);
                 }
@@ -109,11 +109,11 @@ public final class Configuration
             {
                 Element initer = (Element) inits.item(j);
 
-                if (initer.getNodeName().equals("creator"))
+                if (initer.getNodeName().equals(ATTRIBUTE_CREATOR))
                 {
                     loadCreator(initer);
                 }
-                else if (initer.getNodeName().equals("converter"))
+                else if (initer.getNodeName().equals(ATTRIBUTE_CONVERTER))
                 {
                     loadConverter(initer);
                 }
@@ -128,8 +128,8 @@ public final class Configuration
      */
     private void loadCreator(Element initer) throws SAXException
     {
-        String id = initer.getAttribute("id");
-        String classname = initer.getAttribute("class");
+        String id = initer.getAttribute(ATTRIBUTE_ID);
+        String classname = initer.getAttribute(ATTRIBUTE_CLASS);
 
         try
         {
@@ -138,7 +138,7 @@ public final class Configuration
         }
         catch (ClassNotFoundException ex)
         {
-            throw new SAXException("Failed to find class: "+classname+", for creator with id="+id, ex);
+            throw new SAXException(Messages.getString("Configuration.CreatorNotFound", classname, id), ex); //$NON-NLS-1$
         }
     }
 
@@ -149,8 +149,8 @@ public final class Configuration
      */
     private void loadConverter(Element initer) throws SAXException
     {
-        String id = initer.getAttribute("id");
-        String classname = initer.getAttribute("class");
+        String id = initer.getAttribute(ATTRIBUTE_ID);
+        String classname = initer.getAttribute(ATTRIBUTE_CLASS);
 
         try
         {
@@ -159,7 +159,7 @@ public final class Configuration
         }
         catch (ClassNotFoundException ex)
         {
-            throw new SAXException("Failed to find class: " + classname + ", for converter with id=" + id, ex);
+            throw new SAXException(Messages.getString("Configuration.ConverterNotFound", classname, id), ex); //$NON-NLS-1$
         }
     }
 
@@ -176,11 +176,11 @@ public final class Configuration
             if (allows.item(j).getNodeType() == Node.ELEMENT_NODE)
             {
                 Element allower = (Element) allows.item(j);
-                if (allower.getNodeName().equals("create"))
+                if (allower.getNodeName().equals(ELEMENT_CREATE))
                 {
                     loadCreate(allower);
                 }
-                else if (allower.getNodeName().equals("convert"))
+                else if (allower.getNodeName().equals(ELEMENT_CONVERT))
                 {
                     loadConvert(allower);
                 }
@@ -195,8 +195,8 @@ public final class Configuration
      */
     private void loadConvert(Element allower) throws SAXException
     {
-        String match = allower.getAttribute("match");
-        String type = allower.getAttribute("converter");
+        String match = allower.getAttribute(ATTRIBUTE_MATCH);
+        String type = allower.getAttribute(ATTRIBUTE_CONVERTER);
 
         try
         {
@@ -208,7 +208,7 @@ public final class Configuration
         }
         catch (Exception ex)
         {
-            throw new SAXException("Error instansiating: "+type, ex);
+            throw new SAXException(Messages.getString("Configuration.ErrorInstansiating", type), ex); //$NON-NLS-1$
         }
     }
 
@@ -219,8 +219,8 @@ public final class Configuration
      */
     private void loadCreate(Element allower) throws SAXException
     {
-        String type = allower.getAttribute("creator");
-        String javascript = allower.getAttribute("javascript");
+        String type = allower.getAttribute(ATTRIBUTE_CREATOR);
+        String javascript = allower.getAttribute(ATTRIBUTE_JAVASCRIPT);
 
         try
         {
@@ -232,7 +232,7 @@ public final class Configuration
         }
         catch (Exception ex)
         {
-            throw new SAXException("Error instansiating: "+type, ex);
+            throw new SAXException(Messages.getString("Configuration.ErrorInstansiating", type), ex); //$NON-NLS-1$
         }
     }
 
@@ -289,23 +289,86 @@ public final class Configuration
      */
     private final boolean debug;
 
+    private static final String ELEMENT_INIT = "init"; //$NON-NLS-1$
+    private static final String ELEMENT_ALLOW = "allow"; //$NON-NLS-1$
+    private static final String ELEMENT_CREATE = "create"; //$NON-NLS-1$
+    private static final String ELEMENT_CONVERT = "convert"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_CONVERTER = "converter"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_MATCH = "match"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_JAVASCRIPT = "javascript"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_CREATOR = "creator"; //$NON-NLS-1$
+
     private static SortedSet reserved = new TreeSet();
     private static final String[] RESERVED_ARRAY =  new String[]
     {
         // Reserved and used at ECMAScript 4
-        "as", "break", "case", "catch", "class", "const", "continue", "default",
-        "delete", "do", "else", "export", "extends", "false", "finally", "for",
-        "function", "if", "import", "in", "instanceof", "is", "namespace",
-        "new", "null", "package", "private", "public", "return", "super",
-        "switch", "this", "throw", "true", "try", "typeof", "use", "var",
-        "void", "while", "with",
+        "as", //$NON-NLS-1$
+        "break", //$NON-NLS-1$
+        "case", //$NON-NLS-1$
+        "catch", //$NON-NLS-1$
+        "class", //$NON-NLS-1$
+        "const", //$NON-NLS-1$
+        "continue", //$NON-NLS-1$
+        "default", //$NON-NLS-1$
+        "delete", //$NON-NLS-1$
+        "do", //$NON-NLS-1$
+        "else", //$NON-NLS-1$
+        "export", //$NON-NLS-1$
+        "extends", //$NON-NLS-1$
+        "false", //$NON-NLS-1$
+        "finally", //$NON-NLS-1$
+        "for", //$NON-NLS-1$
+        "function", //$NON-NLS-1$
+        "if", //$NON-NLS-1$
+        "import", //$NON-NLS-1$
+        "in", //$NON-NLS-1$
+        "instanceof", //$NON-NLS-1$
+        "is", //$NON-NLS-1$
+        "namespace", //$NON-NLS-1$
+        "new", //$NON-NLS-1$
+        "null", //$NON-NLS-1$
+        "package", //$NON-NLS-1$
+        "private", //$NON-NLS-1$
+        "public", //$NON-NLS-1$
+        "return", //$NON-NLS-1$
+        "super", //$NON-NLS-1$
+        "switch", //$NON-NLS-1$
+        "this", //$NON-NLS-1$
+        "throw", //$NON-NLS-1$
+        "true", //$NON-NLS-1$
+        "try", //$NON-NLS-1$
+        "typeof", //$NON-NLS-1$
+        "use", //$NON-NLS-1$
+        "var", //$NON-NLS-1$
+        "void",  //$NON-NLS-1$
+        "while", //$NON-NLS-1$
+        "with", //$NON-NLS-1$
         // Reserved for future use at ECMAScript 4
-        "abstract", "debugger", "enum", "goto", "implements", "interface",
-        "native", "protected", "synchronized", "throws", "transient",
-        "volatile",
+        "abstract", //$NON-NLS-1$
+        "debugger", //$NON-NLS-1$
+        "enum", //$NON-NLS-1$
+        "goto", //$NON-NLS-1$
+        "implements", //$NON-NLS-1$
+        "interface", //$NON-NLS-1$
+        "native", //$NON-NLS-1$
+        "protected", //$NON-NLS-1$
+        "synchronized", //$NON-NLS-1$
+        "throws", //$NON-NLS-1$
+        "transient", //$NON-NLS-1$
+        "volatile", //$NON-NLS-1$
         // Reserved in ECMAScript 3, unreserved at 4 best to avoid anyway
-        "boolean", "byte", "char", "double", "final", "float", "int", "long",
-        "short", "static",
+        "boolean", //$NON-NLS-1$
+        "byte", //$NON-NLS-1$
+        "char", //$NON-NLS-1$
+        "double", //$NON-NLS-1$
+        "final", //$NON-NLS-1$
+        "float", //$NON-NLS-1$
+        "int", //$NON-NLS-1$
+        "long", //$NON-NLS-1$
+        "short", //$NON-NLS-1$
+        "static", //$NON-NLS-1$
         // I have seen the folowing list as 'best avoided for function names'
         // but it seems way to all encompassing, so I'm not going to include it
         /*

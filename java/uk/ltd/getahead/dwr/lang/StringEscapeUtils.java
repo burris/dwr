@@ -190,7 +190,7 @@ public class StringEscapeUtils {
 
     private static void escapeJavaStyleString(Writer out, String str, boolean escapeSingleQuote) throws IOException {
         if (out == null) {
-            throw new IllegalArgumentException("The Writer must not be null");
+            throw new IllegalArgumentException("The Writer must not be null"); //$NON-NLS-1$
         }
         if (str == null) {
             return;
@@ -202,11 +202,11 @@ public class StringEscapeUtils {
 
             // handle unicode
             if (ch > 0xfff) {
-                out.write("\\u" + hex(ch));
+                out.write("\\u" + hex(ch)); //$NON-NLS-1$
             } else if (ch > 0xff) {
-                out.write("\\u0" + hex(ch));
+                out.write("\\u0" + hex(ch)); //$NON-NLS-1$
             } else if (ch > 0x7f) {
-                out.write("\\u00" + hex(ch));
+                out.write("\\u00" + hex(ch)); //$NON-NLS-1$
             } else if (ch < 32) {
                 switch (ch) {
                     case '\b':
@@ -231,9 +231,9 @@ public class StringEscapeUtils {
                         break;
                     default :
                         if (ch > 0xf) {
-                            out.write("\\u00" + hex(ch));
+                            out.write("\\u00" + hex(ch)); //$NON-NLS-1$
                         } else {
-                            out.write("\\u000" + hex(ch));
+                            out.write("\\u000" + hex(ch)); //$NON-NLS-1$
                         }
                         break;
                 }
@@ -311,7 +311,7 @@ public class StringEscapeUtils {
      */
     public static void unescapeJava(Writer out, String str) throws IOException {
         if (out == null) {
-            throw new IllegalArgumentException("The Writer must not be null");
+            throw new IllegalArgumentException("The Writer must not be null"); //$NON-NLS-1$
         }
         if (str == null) {
             return;
@@ -336,7 +336,7 @@ public class StringEscapeUtils {
                         inUnicode = false;
                         hadSlash = false;
                     } catch (NumberFormatException nfe) {
-                        throw new IllegalArgumentException("Unable to parse unicode value: " + unicode + " cause: " + nfe);
+                        throw new IllegalArgumentException("Unable to parse unicode value: " + unicode + " cause: " + nfe); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
                 continue;

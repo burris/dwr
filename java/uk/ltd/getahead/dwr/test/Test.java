@@ -292,17 +292,14 @@ public class Test
      */
     public TestBean[] getNestingTest()
     {
-        TestBean a = new TestBean(0, "!\"$%^&*()_1", null);
-        TestBean b = new TestBean(0, "!\"$%^&*()_2", a);
-        TestBean c = new TestBean(0, "!\"$%^&*()_3", b);
-        TestBean d = new TestBean(0, "!\"$%^&*()_4", c);
+        TestBean a = new TestBean(0, "!\"$%^&*()_1", null); //$NON-NLS-1$
+        TestBean b = new TestBean(0, "!\"$%^&*()_2", a); //$NON-NLS-1$
+        TestBean c = new TestBean(0, "!\"$%^&*()_3", b); //$NON-NLS-1$
+        TestBean d = new TestBean(0, "!\"$%^&*()_4", c); //$NON-NLS-1$
 
         TestBean[] reply = new TestBean[]
         {
-            a,
-            c,
-            d,
-            d,
+            a, c, d, d,
         };
 
         return reply;
@@ -315,7 +312,7 @@ public class Test
      */
     public String stringStringParam(String param1, String param2)
     {
-        return "param1='"+param1+"' param2='"+param2+"'";
+        return "param1='" + param1 + "' param2='" + param2 + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**
@@ -323,7 +320,7 @@ public class Test
      */
     public String delete()
     {
-        return "You can't touch me";
+        return "You can't touch me"; //$NON-NLS-1$
     }
 
     /**
@@ -332,7 +329,7 @@ public class Test
     protected String protectedMethod()
     {
         privateMethod();
-        return "You can't touch me";
+        return "You can't touch me"; //$NON-NLS-1$
     }
 
     /**
@@ -340,7 +337,7 @@ public class Test
      */
     private String privateMethod()
     {
-        return "You can't touch me";
+        return "You can't touch me"; //$NON-NLS-1$
     }
 
     /**
@@ -348,7 +345,7 @@ public class Test
      */
     public static String staticMethod()
     {
-        return "static Test.staticMethod() says hello.";
+        return "static Test.staticMethod() says hello."; //$NON-NLS-1$
     }
 
     /**
@@ -357,7 +354,7 @@ public class Test
      */
     public String dangerOverride(String param1)
     {
-        return "Test.dangerOverride("+param1+") says hello.";
+        return "Test.dangerOverride(" + param1 + ") says hello.";  //$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**
@@ -365,6 +362,6 @@ public class Test
      */
     public String dangerOverride()
     {
-        return "Test.dangerOverride() says hello.";
+        return "Test.dangerOverride() says hello."; //$NON-NLS-1$
     }
 }

@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
@@ -43,11 +45,11 @@ public class DateConverter implements Converter
         }
         */
 
-        if (value.startsWith("["))
+        if (value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
         {
             value = value.substring(1);
         }
-        if (value.endsWith("]"))
+        if (value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
         {
             value = value.substring(0, value.length() - 1);
         }
@@ -56,12 +58,12 @@ public class DateConverter implements Converter
 
         try
         {
-            StringTokenizer st = new StringTokenizer(value, ",");
+            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
             int size = st.countTokens();
 
             if (size != 7)
             {
-                Log.warn("Date does not have 7 components: " + value);
+                Log.warn("Date does not have 7 components: " + value); //$NON-NLS-1$
             }
 
             for (int i = 0; i < size && i < 7; i++)
@@ -97,7 +99,7 @@ public class DateConverter implements Converter
             }
             else
             {
-                throw new ConversionException("DateConverter can only create instances of java.util.Date, java.sql.Date, java.sql.Time, java.sql.Timestamp. Given: " + paramType.getName());
+                throw new ConversionException(Messages.getString("DateConverter.WrongType") + paramType.getName()); //$NON-NLS-1$
             }
         }
         catch (ConversionException ex)
@@ -106,7 +108,7 @@ public class DateConverter implements Converter
         }
         catch (Exception ex)
         {
-            throw new ConversionException("Format error converting " + value + " to " + paramType.getName(), ex);
+            throw new ConversionException(Messages.getString("DateConverter.ErrorConverting", value, paramType.getName()), ex); //$NON-NLS-1$
         }
     }
 
@@ -117,7 +119,7 @@ public class DateConverter implements Converter
     {
         if (!(data instanceof Date))
         {
-            throw new ConversionException("Class: " + data.getClass() + " is not a java.util.Date");
+            throw new ConversionException(Messages.getString("DateConverter.TypeError", data.getClass())); //$NON-NLS-1$
         }
 
         Date date = (Date) data;
@@ -125,21 +127,21 @@ public class DateConverter implements Converter
         calendar.setTime(date);
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var " + varname + " = new Date(");
+        buffer.append("var " + varname + " = new Date("); //$NON-NLS-1$ //$NON-NLS-2$
         buffer.append(calendar.get(Calendar.YEAR));
-        buffer.append(", ");
+        buffer.append(',');
         buffer.append(calendar.get(Calendar.MONTH));
-        buffer.append(", ");
+        buffer.append(',');
         buffer.append(calendar.get(Calendar.DAY_OF_MONTH));
-        buffer.append(", ");
+        buffer.append(',');
         buffer.append(calendar.get(Calendar.HOUR_OF_DAY));
-        buffer.append(", ");
+        buffer.append(',');
         buffer.append(calendar.get(Calendar.MINUTE));
-        buffer.append(", ");
+        buffer.append(',');
         buffer.append(calendar.get(Calendar.SECOND));
-        buffer.append(", ");
+        buffer.append(',');
         buffer.append(calendar.get(Calendar.MILLISECOND));
-        buffer.append(");");
+        buffer.append(");"); //$NON-NLS-1$
 
         return buffer.toString();
     }

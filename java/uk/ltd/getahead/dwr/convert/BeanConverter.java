@@ -10,12 +10,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.ExecuteQuery;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.Log;
@@ -40,16 +42,16 @@ public class BeanConverter implements Converter
     public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
     {
         String value = data.getValue();
-        if (value.trim().equals("null"))
+        if (value.trim().equals(ConversionConstants.INBOUND_NULL))
         {
             return null;
         }
 
-        if (value.startsWith("{"))
+        if (value.startsWith(ConversionConstants.INBOUND_MAP_START))
         {
             value = value.substring(1);
         }
-        if (value.endsWith("}"))
+        if (value.endsWith(ConversionConstants.INBOUND_MAP_END))
         {
             value = value.substring(0, value.length() - 1);
         }
@@ -73,7 +75,7 @@ public class BeanConverter implements Converter
             inctx.addConverted(data, bean);
 
             // Loop through the property declarations
-            StringTokenizer st = new StringTokenizer(value, ",");
+            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);
             int size = st.countTokens();
             for (int i = 0; i < size; i++)
             {
@@ -83,10 +85,10 @@ public class BeanConverter implements Converter
                     continue;
                 }
 
-                int colonpos = token.indexOf(":");
+                int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
                 if (colonpos == -1)
                 {
-                    throw new ConversionException("Missing ':' in object description: " + token);
+                    throw new ConversionException(Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token)); //$NON-NLS-1$
                 }
 
                 String key = token.substring(0, colonpos).trim();
@@ -95,14 +97,14 @@ public class BeanConverter implements Converter
                 PropertyDescriptor descriptor = (PropertyDescriptor) props.get(key);
                 if (descriptor == null)
                 {
-                    Log.warn("No setter for " + key);
+                    Log.warn("No setter for " + key); //$NON-NLS-1$
                     StringBuffer all = new StringBuffer();
                     for (Iterator it = props.keySet().iterator(); it.hasNext();)
                     {
                         all.append(it.next());
-                        all.append(" ");
+                        all.append(' ');
                     }
-                    Log.warn("Setters exist for "  + all);
+                    Log.warn("Setters exist for "  + all); //$NON-NLS-1$
                 }
                 else
                 {
@@ -134,9 +136,9 @@ public class BeanConverter implements Converter
     public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
     {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var ");
+        buffer.append("var "); //$NON-NLS-1$
         buffer.append(varname);
-        buffer.append(" = new Object();");
+        buffer.append(" = new Object();"); //$NON-NLS-1$
 
         try
         {
@@ -148,7 +150,7 @@ public class BeanConverter implements Converter
                 String name = descriptor.getName();
 
                 // We don't marshall getClass()
-                if (!name.equals("class"))
+                if (!name.equals("class")) //$NON-NLS-1$
                 {
                     try
                     {
@@ -162,19 +164,19 @@ public class BeanConverter implements Converter
 
                         // And now declare our stuff
                         buffer.append(varname);
-                        buffer.append(".");
+                        buffer.append('.');
                         buffer.append(name);
-                        buffer.append(" = ");
+                        buffer.append(" = "); //$NON-NLS-1$
                         buffer.append(nested.getAssignCode());
-                        buffer.append(";");
+                        buffer.append(';');
                     }
                     catch (Exception ex)
                     {
-                        buffer.append("alert('Failed to marshall: ");
+                        Log.warn("Failed to convert " + name, ex); //$NON-NLS-1$
+
+                        buffer.append("alert('Failed to marshall: "); //$NON-NLS-1$
                         buffer.append(name);
-                        buffer.append(". ");
-                        buffer.append(ex);
-                        buffer.append("');");
+                        buffer.append(".');"); //$NON-NLS-1$
                     }
                 }
             }
