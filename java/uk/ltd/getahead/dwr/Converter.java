@@ -1,7 +1,5 @@
 package uk.ltd.getahead.dwr;
 
-import java.util.Map;
-
 /**
  * An interface for converting types from a string to some other type.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -19,19 +17,20 @@ public interface Converter
      * Attempt to coerce the data from a string to an Object
      * @param paramType The type to convert to
      * @param data The data to convert
-     * @param working The map of data that we are working on
+     * @param inctx The map of data that we are working on
      * @return The convered data, or null if the conversion was not possible
      * @throws ConversionException If the conversion failed for some reason
      */
-    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException;
+    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException;
 
     /**
-     * Attempt to coerce the data from an Object to a string
+     * Return a javascript string that defines the variable named varName to
+     * have the contents of the converted object data.
      * @param data The data to convert
-     * @param varName The variable to declare
-     * @param converted Objects already converted and the results
-     * @return The string that declares the given variable
+     * @param varName The variable to define
+     * @param outctx Objects already converted and the results
+     * @return The string that defines the given variable
      * @throws ConversionException If the conversion failed for some reason
      */
-    public String convertFrom(Object data, String varName, Map converted) throws ConversionException;
+    public String convertOutbound(Object data, String varName, OutboundContext outctx) throws ConversionException;
 }

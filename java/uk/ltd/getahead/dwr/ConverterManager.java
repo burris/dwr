@@ -82,16 +82,36 @@ public class ConverterManager
     }
 
     /**
+     * Convert an object from being a string into an object of some type.
+     * Designed for use with converters that have a working map passed to them
+     * @param paramType The type that you want the object to be
+     * @param iv The string version of the object
+     * @param inctx The map of data that we are working on
+     * @return The coerced object or null if the object could not be coerced
+     * @throws ConversionException If the conversion failed for some reason
+     */
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    {
+        Object converted = inctx.getConverted(iv);
+        if (converted != null)
+        {
+            return converted;
+        }
+
+        Converter converter = getConverter(paramType);
+        return converter.convertInbound(paramType, iv, inctx);
+    }
+
+    /**
      * Convert an object into a Javavscript representation of the same
      * This method is for use by top level objects i.e. DWRServlet
      * @param object The object to convert
      * @return A Javascript string version of the object
      * @throws ConversionException If the conversion failed for some reason
      */
-    public ScriptSetup convertFrom(Object object) throws ConversionException
+    public OutboundVariable convertOutbound(Object object) throws ConversionException
     {
-        Map converted = createConversionContext();
-        return convertFrom(object, converted);
+        return convertOutbound(object, new OutboundContext());
     }
 
     /**
@@ -102,23 +122,23 @@ public class ConverterManager
      * @return A Javascript string version of the object
      * @throws ConversionException If the conversion failed for some reason
      */
-    public ScriptSetup convertFrom(Object object, Map converted) throws ConversionException
+    public OutboundVariable convertOutbound(Object object, OutboundContext converted) throws ConversionException
     {
         // Check to see if we have done this one already
-        ScriptSetup ss = (ScriptSetup) converted.get(object);
-        if (ss != null)
+        OutboundVariable ov = converted.get(object);
+        if (ov != null)
         {
             // So the object as been converted already, we just need to refer to it.
-            return new ScriptSetup("", ss.assignCode);
+            return new OutboundVariable("", ov.assignCode);
         }
 
         // So we will have to create one for ourselves
-        ss = new ScriptSetup();
-        String varName = getNextVariableName(converted);
-        ss.assignCode = varName;
+        ov = new OutboundVariable();
+        String varName = converted.getNextVariableName();
+        ov.assignCode = varName;
 
         // Save this for another time so we don't recurse into it
-        converted.put(object, ss);
+        converted.put(object, ov);
 
         Converter converter = getConverter(object);
         if (converter == null)
@@ -126,44 +146,9 @@ public class ConverterManager
             throw new ConversionException("No converter found for " + object.getClass().getName());
         }
 
-        ss.initCode = converter.convertFrom(object, ss.assignCode, converted);
+        ov.initCode = converter.convertOutbound(object, ov.assignCode, converted);
 
-        return ss;
-    }
-
-    /**
-     * Convert an object from being a string into an object of some type.
-     * Designed for use 'from the outside' i.e. not by a Converter that is part
-     * of the conversion process.
-     * @param paramType The type that you want the object to be
-     * @param data The string version of the object
-     * @return The coerced object or null if the object could not be coerced
-     * @throws ConversionException If the conversion failed for some reason
-     */
-    public Object convertTo(Class paramType, ConversionData data) throws ConversionException
-    {
-        return convertTo(paramType, data, new HashMap());
-    }
-
-    /**
-     * Convert an object from being a string into an object of some type.
-     * Designed for use with converters that have a working map passed to them
-     * @param paramType The type that you want the object to be
-     * @param data The string version of the object
-     * @param working The map of data that we are working on
-     * @return The coerced object or null if the object could not be coerced
-     * @throws ConversionException If the conversion failed for some reason
-     */
-    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
-    {
-        Object done = working.get(data);
-        if (done != null)
-        {
-            return done;
-        }
-
-        Converter converter = getConverter(paramType);
-        return converter.convertTo(paramType, data, working);
+        return ov;
     }
 
     /**
@@ -256,33 +241,6 @@ public class ConverterManager
     }
 
     /**
-     * Create a ConversionContext which stores context information about a set
-     * of conversions from Java to Javascript.
-     * @return A new conversion context
-     */
-    private Map createConversionContext()
-    {
-        Map converted = new HashMap();
-        converted.put(VAR_COUNT_KEY, new Integer(0));
-
-        return converted;
-    }
-
-    /**
-     * Create a new variable name to keep everything we declare separate
-     * @param converted The map of converted variables so far.
-     * @return A new unique variable name
-     */
-    private String getNextVariableName(Map converted)
-    {
-        Integer varCount = (Integer) converted.get(VAR_COUNT_KEY);
-        String varName = "s" + varCount;
-        converted.put(VAR_COUNT_KEY, new Integer(varCount.intValue() + 1));
-
-        return varName;
-    }
-
-    /**
      * The list of the available converters
      */
     private Map converterTypes = new HashMap();
@@ -291,10 +249,4 @@ public class ConverterManager
      * The list of the configured converters
      */
     private Map converters = new HashMap();
-
-    /**
-     * This is the key we use in the map of converted objects so we can
-     * generate unique variable names.
-     */
-    private static final Object VAR_COUNT_KEY = new Object();
 }

@@ -451,7 +451,7 @@ public class DWRServlet extends HttpServlet
         try
         {
             Object reply = eq.execute();
-            ScriptSetup ss = converterManager.convertFrom(reply);
+            OutboundVariable ss = converterManager.convertOutbound(reply);
 
             PrintWriter out = resp.getWriter();
 

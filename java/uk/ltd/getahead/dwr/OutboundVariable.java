@@ -4,12 +4,12 @@ package uk.ltd.getahead.dwr;
  * A simple data container for 2 strings that comprise information about
  * how a Java object has been converted into Javascript
  */
-public class ScriptSetup
+public class OutboundVariable
 {
     /**
      * Default ctor that leaves blank (not null) members
      */
-    public ScriptSetup()
+    public OutboundVariable()
     {
     }
 
@@ -18,7 +18,7 @@ public class ScriptSetup
      * @param initCode the init script
      * @param assignCode the access for the inited code
      */
-    public ScriptSetup(String initCode, String assignCode)
+    public OutboundVariable(String initCode, String assignCode)
     {
         this.initCode = initCode;
         this.assignCode = assignCode;

@@ -6,11 +6,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.ScriptSetup;
 
 /**
  * An implementation of Converter for Maps.
@@ -28,9 +30,9 @@ public class MapConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
      */
-    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
     {
         String value = data.getValue();
         if (value.trim().equals("null"))
@@ -69,7 +71,7 @@ public class MapConverter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            working.put(data, map);
+            inctx.addConverted(data, map);
 
             // Loop through the property declarations
             StringTokenizer st = new StringTokenizer(value, ",");
@@ -109,7 +111,7 @@ public class MapConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public String convertFrom(Object data, String varname, Map converted) throws ConversionException
+    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
     {
         Map map = (Map) data;
 
@@ -123,7 +125,7 @@ public class MapConverter implements Converter
             String key = (String) it.next();
             Object value = map.get(key);
 
-            ScriptSetup nested = config.convertFrom(value, converted);
+            OutboundVariable nested = config.convertOutbound(value, outctx);
 
             // Make sure the nested thing is declared
             buffer.append(nested.initCode);

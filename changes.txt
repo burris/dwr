@@ -11,6 +11,7 @@ Create a batch send mechanism so a page can start by sending a set of remote
 Add pluggable marshallers so we could do JSON or XML-RPC out the back end
 use jdk5 annotations to pass comments to generated javascript interface so the
     the created javascript is documented (or maybe javacc and javadoc)
+Add creators for HiveMind Pica, Nano, etc
 
 Recent changes
 --------------

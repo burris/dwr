@@ -6,15 +6,17 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.ExecuteQuery;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.ScriptSetup;
 
 /**
  * An implementation of Converter for Collections of Strings.
@@ -32,9 +34,9 @@ public class CollectionConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
      */
-    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
     {
         String value = data.getValue();
 
@@ -51,6 +53,30 @@ public class CollectionConverter implements Converter
         {
             StringTokenizer st = new StringTokenizer(value, ",");
             int size = st.countTokens();
+
+            Class subtype = String.class;
+            /*
+            // For JDK5 we can probably do something like this:
+            Type type = paramType.getGenericSuperclass();
+            if (type instanceof ParameterizedType)
+            {
+                ParameterizedType ptype = (ParameterizedType) type;
+                Type[] args = ptype.getActualTypeArguments();
+                if (args.length != 1)
+                {
+                    throw new ConversionException("Multiple type arguments for destination type: " + paramType.getName());
+                }
+
+                if (args[0] instanceof Class)
+                {
+                    subtype = (Class) args[0];
+                }
+                else
+                {
+                    throw new ConversionException("Actual type argument of collection is not a class: " + paramType.getName());
+                }
+            }
+            */
 
             Collection col = null;
 
@@ -86,18 +112,21 @@ public class CollectionConverter implements Converter
             }
             else
             {
-                throw new ConversionException("Can't convert javascript arrays to " + paramType);
+                throw new ConversionException("Can't convert javascript arrays to " + paramType.getName());
             }
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            working.put(data, col);
+            inctx.addConverted(data, col);
 
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-                ConversionData nested = new ConversionData(data.getLookup(), token);
-                Object output = config.convertTo(String.class, nested, working);
+
+                String[] split = ExecuteQuery.splitInbound(token);
+                InboundVariable nested = new InboundVariable(data.getLookup(), split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
+
+                Object output = config.convertInbound(subtype, nested, inctx);
                 col.add(output);
             }
 
@@ -121,7 +150,7 @@ public class CollectionConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public String convertFrom(Object data, String varname, Map converted) throws ConversionException
+    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
     {
         Iterator it = null;
         if (data instanceof Collection)
@@ -146,7 +175,7 @@ public class CollectionConverter implements Converter
         {
             Object element = it.next();
 
-            ScriptSetup nested = config.convertFrom(element, converted);
+            OutboundVariable nested = config.convertOutbound(element, outctx);
 
             buffer.append(nested.initCode);
             buffer.append(varname);

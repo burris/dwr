@@ -5,11 +5,12 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.util.Log;
@@ -29,9 +30,9 @@ public class DateConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
      */
-    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
     {
         String value = data.getValue();
 
@@ -112,7 +113,7 @@ public class DateConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public String convertFrom(Object data, String varname, Map converted) throws ConversionException
+    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
     {
         if (!(data instanceof Date))
         {

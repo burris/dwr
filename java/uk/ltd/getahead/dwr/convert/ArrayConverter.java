@@ -1,14 +1,16 @@
 package uk.ltd.getahead.dwr.convert;
 
 import java.lang.reflect.Array;
-import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.ScriptSetup;
+import uk.ltd.getahead.dwr.util.Log;
 
 /**
  * An implementation of Converter for Arrays.
@@ -26,9 +28,9 @@ public class ArrayConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
      */
-    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
     {
         if (!paramType.isArray())
         {
@@ -56,13 +58,30 @@ public class ArrayConverter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            working.put(data, array);
+            inctx.addConverted(data, array);
 
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-                ConversionData nested = new ConversionData(data.getLookup(), token);
-                Object output = converterManager.convertTo(componentType, nested, working);
+                final InboundContext key = data.getLookup();
+
+                int colon = token.indexOf(":");
+                String type;
+                String ivalue;
+                if (colon != -1)
+                {
+                    type = token.substring(0, colon);
+                    ivalue = token.substring(colon + 1);
+                }
+                else
+                {
+                    Log.error("Missing : in conversion data");
+                    type = "string";
+                    ivalue = token;
+                }
+
+                InboundVariable nested = new InboundVariable(key, type, ivalue);
+                Object output = converterManager.convertInbound(componentType, nested, inctx);
                 Array.set(array, i, output);
             }
 
@@ -77,7 +96,7 @@ public class ArrayConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public String convertFrom(Object data, String varname, Map converted) throws ConversionException
+    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
     {
         if (!data.getClass().isArray())
         {
@@ -90,7 +109,7 @@ public class ArrayConverter implements Converter
         int size = Array.getLength(data);
         for (int i = 0; i < size; i++)
         {
-            ScriptSetup nested = converterManager.convertFrom(Array.get(data, i), converted);
+            OutboundVariable nested = converterManager.convertOutbound(Array.get(data, i), outctx);
 
             buffer.append(nested.initCode);
             buffer.append(varname + "[");

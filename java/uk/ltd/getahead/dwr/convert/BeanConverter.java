@@ -10,11 +10,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.ConversionData;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.ScriptSetup;
+import uk.ltd.getahead.dwr.ExecuteQuery;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.Log;
 
 /**
@@ -32,9 +35,9 @@ public class BeanConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.ConversionData, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
      */
-    public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
     {
         String value = data.getValue();
         if (value.trim().equals("null"))
@@ -67,7 +70,7 @@ public class BeanConverter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            working.put(data, bean);
+            inctx.addConverted(data, bean);
 
             // Loop through the property declarations
             StringTokenizer st = new StringTokenizer(value, ",");
@@ -105,8 +108,10 @@ public class BeanConverter implements Converter
                 {
                     Class propType = descriptor.getPropertyType();
 
-                    ConversionData nested = new ConversionData(data.getLookup(), val);
-                    Object output = config.convertTo(propType, nested, working);
+                    String[] split = ExecuteQuery.splitInbound(val);
+                    InboundVariable nested = new InboundVariable(data.getLookup(), split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
+
+                    Object output = config.convertInbound(propType, nested, inctx);
                     descriptor.getWriteMethod().invoke(bean, new Object[] { output });
                 }
             }
@@ -126,7 +131,7 @@ public class BeanConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
      */
-    public String convertFrom(Object data, String varname, Map converted) throws ConversionException
+    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
     {
         StringBuffer buffer = new StringBuffer();
         buffer.append("var ");
@@ -150,7 +155,7 @@ public class BeanConverter implements Converter
                         Method getter = descriptor.getReadMethod();
                         Object value = getter.invoke(data, new Object[0]);
 
-                        ScriptSetup nested = config.convertFrom(value, converted);
+                        OutboundVariable nested = config.convertOutbound(value, outctx);
 
                         // Make sure the nested thing is declared
                         buffer.append(nested.initCode);

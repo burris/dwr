@@ -34,14 +34,12 @@ public class ExecuteQuery
 
         if (req.getParameter("id") != null)
         {
-            parseGet(req);
+            parseParameters(parseGet(req));
         }
         else
         {
-            parsePost(req);
+            parseParameters(parsePost(req));
         }
-
-        parseParameters();
 
         Log.debug("Exec: " + toString());
     }
@@ -52,13 +50,14 @@ public class ExecuteQuery
      * be possible to return any sort of error to the user. Failure cases should
      * be handled by the <code>checkParams()</code> method.
      * @param req The incoming request
+     * @return The equivalent of HttpServletRequest.getParameterMap() for now
      */
-    private void parsePost(HttpServletRequest req)
+    private Map parsePost(HttpServletRequest req)
     {
+        Map parammap = new HashMap();
+
         try
         {
-            params = new HashMap();
-
             BufferedReader in = req.getReader();
             while (true)
             {
@@ -79,7 +78,7 @@ public class ExecuteQuery
                     String key = line.substring(0, sep);
                     String value = line.substring(sep  + SEPARATOR.length());
 
-                    params.put(key, value);
+                    parammap.put(key, value);
                 }
             }
         }
@@ -87,6 +86,8 @@ public class ExecuteQuery
         {
             delayed = ex;
         }
+
+        return parammap;
     }
 
     /**
@@ -95,43 +96,70 @@ public class ExecuteQuery
      * be possible to return any sort of error to the user. Failure cases should
      * be handled by the <code>checkParams()</code> method.
      * @param req The incoming request
+     * @return Simply HttpServletRequest.getParameterMap() for now
      */
-    private void parseGet(HttpServletRequest req)
+    private Map parseGet(HttpServletRequest req)
     {
-        params = req.getParameterMap();
+        return req.getParameterMap();
     }
 
     /**
      * Fish out the important parameters
+     * @param parammap The string/string map to convert
      */
-    private void parseParameters()
+    private void parseParameters(Map parammap)
     {
         // The special values
-        id = (String) params.remove(KEY_ID);
-        className = (String) params.remove(KEY_CLASSNAME);
-        methodName = (String) params.remove(KEY_METHODNAME);
-        xmlMode = Boolean.valueOf((String) params.remove(KEY_XMLMODE)).booleanValue();
+        id = (String) parammap.remove(KEY_ID);
+        className = (String) parammap.remove(KEY_CLASSNAME);
+        methodName = (String) parammap.remove(KEY_METHODNAME);
+        xmlMode = Boolean.valueOf((String) parammap.remove(KEY_XMLMODE)).booleanValue();
 
-        // Look through the params and convert to ConversionData.
-        for (Iterator it = params.keySet().iterator(); it.hasNext();)
+        // Look through the params and convert to InboundVariable.
+        for (Iterator it = parammap.keySet().iterator(); it.hasNext();)
         {
             String key = (String) it.next();
-            String value = (String) params.get(key);
-            ConversionData cd = new ConversionData(params, value);
-            params.put(key, cd);
-        }
+            String data = (String) parammap.get(key);
+            String[] split = splitInbound(data);
 
-        paramList = new ArrayList();
-        while (true)
+            inctx.createInboundVariable(key, split[INBOUND_INDEX_TYPE], split[INBOUND_INDEX_VALUE]);
+        }
+    }
+
+    /**
+     * splitInbound() returns the type info in this parameter
+     */
+    public static final int INBOUND_INDEX_TYPE = 0;
+
+    /**
+     * splitInbound() returns the value info in this parameter
+     */
+    public static final int INBOUND_INDEX_VALUE = 1;
+
+    /**
+     * The javascript outbound marshaller prefixes the toString value with a
+     * colon and the original type information. This undoes that.
+     * @param data The string to be split up
+     * @return A string array containing the split data
+     */
+    public static String[] splitInbound(String data)
+    {
+        String[] reply = new String[2];
+
+        int colon = data.indexOf(":");
+        if (colon != -1)
         {
-            ConversionData cd = (ConversionData) params.get("param" + paramList.size());
-            if (cd == null)
-            {
-                break;
-            }
-
-            paramList.add(cd);
+            reply[INBOUND_INDEX_TYPE] = data.substring(0, colon);
+            reply[INBOUND_INDEX_VALUE] = data.substring(colon + 1);
         }
+        else
+        {
+            Log.error("Missing : in conversion data");
+            reply[INBOUND_INDEX_TYPE] = "string";
+            reply[INBOUND_INDEX_VALUE] = data;
+        }
+
+        return reply;
     }
 
     /**
@@ -173,19 +201,24 @@ public class ExecuteQuery
             if (methods[i].getName().equals(methodName))
             {
                 // Check number of parameters
-                if (methods[i].getParameterTypes().length == paramList.size())
+                if (methods[i].getParameterTypes().length == inctx.getParameterCount())
                 {
-                    Object[] coerced = new Object[paramList.size()];
+                    Object[] coerced = new Object[inctx.getParameterCount()];
+
+                    // Clear the previous conversion attempts (the param types
+                    // will probably be different)
+                    inctx.clearConverted();
 
                     // Check parameter types
                     params:
                     for (int j = 0; j < methods[i].getParameterTypes().length; j++)
                     {
                         Class paramType = methods[i].getParameterTypes()[j];
-                        ConversionData param = (ConversionData) paramList.get(j);
-                        coerced[j] = converterManager.convertTo(paramType, param);
+                        InboundVariable param = inctx.getParameter(j);
+                        coerced[j] = converterManager.convertInbound(paramType, param, inctx);
                         if (coerced[j] == null)
                         {
+                            // Give up with this method and try the next
                             break methods;
                         }
                     }
@@ -256,20 +289,20 @@ public class ExecuteQuery
     public String toString()
     {
         StringBuffer allParams = new StringBuffer();
-        for (Iterator it = paramList.iterator(); it.hasNext();)
+        for (int i = 0; i < inctx.getParameterCount(); i++)
         {
-            allParams.append(it.next());
-            if (it.hasNext())
+            if (i != 0)
             {
                 allParams.append(", ");
             }
+            allParams.append(inctx.getParameter(i));
         }
 
         StringBuffer allData = new StringBuffer();
-        for (Iterator it = params.keySet().iterator(); it.hasNext();)
+        for (Iterator it = inctx.getInboundVariableNames(); it.hasNext();)
         {
             String key = (String) it.next();
-            ConversionData value = (ConversionData) params.get(key);
+            InboundVariable value = inctx.getInboundVariable(key);
 
             allData.append(key);
             allData.append("=");
@@ -298,6 +331,5 @@ public class ExecuteQuery
     private String className;
     private String methodName;
     private IOException delayed;
-    private Map params;
-    private List paramList;
+    private InboundContext inctx = new InboundContext();
 }

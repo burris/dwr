@@ -1,47 +1,20 @@
 package uk.ltd.getahead.dwr;
 
-import java.util.Map;
-
-import uk.ltd.getahead.dwr.util.Log;
-
 /**
  * A simple struct to hold data about a single converted javascript variable.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ConversionData
+public class InboundVariable
 {
     /**
      * Parsing ctor
-     * @param lookup How we lookup references
-     * @param data The value passed from javascript
+     * @param context How we lookup references
+     * @param type The type information from javascript
+     * @param value The javascript variable converted to a string
      */
-    public ConversionData(Map lookup, String data)
+    public InboundVariable(InboundContext context, String type, String value)
     {
-        this.lookup = lookup;
-
-        int colon = data.indexOf(":");
-        if (colon != -1)
-        {
-            type = data.substring(0, colon);
-            value = data.substring(colon + 1);
-        }
-        else
-        {
-            Log.error("Missing : in conversion data");
-            type = "string";
-            value = data;
-        }
-    }
-
-    /**
-     * Simple ctor
-     * @param lookup How we lookup references
-     * @param type The javascript type
-     * @param value The javascript value
-     */
-    public ConversionData(Map lookup, String type, String value)
-    {
-        this.lookup = lookup;
+        this.context = context;
         this.type = type;
         this.value = value;
     }
@@ -49,9 +22,9 @@ public class ConversionData
     /**
      * @return Returns the lookup table.
      */
-    public Map getLookup()
+    public InboundContext getLookup()
     {
-        return lookup;
+        return context;
     }
 
     /**
@@ -73,11 +46,12 @@ public class ConversionData
 
         while (TYPE_REFERENCE.equals(tempType))
         {
-            ConversionData cd = (ConversionData) lookup.get(tempValue);
+            InboundVariable cd = context.getInboundVariable(tempValue);
             if (cd == null)
             {
                 throw new ConversionException("Failed to find reference to " + tempValue);
             }
+
             tempType = cd.type;
             tempValue = cd.value;
         }
@@ -120,12 +94,12 @@ public class ConversionData
      */
     public boolean equals(Object obj)
     {
-        if (!(obj instanceof ConversionData))
+        if (!(obj instanceof InboundVariable))
         {
             return false;
         }
 
-        ConversionData that = (ConversionData) obj;
+        InboundVariable that = (InboundVariable) obj;
 
         if (!this.type.equals(that.type))
         {
@@ -156,7 +130,7 @@ public class ConversionData
     /**
      * How do be lookup references?
      */
-    private Map lookup;
+    private InboundContext context;
 
     /**
      * The javascript declared variable type
