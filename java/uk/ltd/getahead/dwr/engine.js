@@ -94,6 +94,8 @@ function dwrExecute(func, classname, methodname, vararg_params)
         req.open("GET", url+'&xml=true', true);
         req.send(null);
     }
+    /*
+    The IE version appears to cache replies.
     else if (window.ActiveXObject)
     {
         req = new ActiveXObject("Microsoft.XMLHTTP");
@@ -108,6 +110,7 @@ function dwrExecute(func, classname, methodname, vararg_params)
             alert("Creation of Microsoft.XMLHTTP failed. Aborting.");
         }
     }
+    */
     else
     {
         iframe = document.createElement('iframe');
