@@ -4,6 +4,7 @@
   <!--=======================================================================-->
   <property name="source.root" value="."/>
   <property name="source.java" value="${source.root}/java"/>
+  <property name="source.jar" value="${source.root}/jar"/>
   <property name="source.etc" value="${source.root}/etc"/>
   <property name="source.web" value="${source.root}/www"/>
 
@@ -21,6 +22,9 @@
   <target name="compile" depends="prepare" description="Validate source syntax">
     <mkdir dir="${target.classes}"/>
     <javac debug="on" includes="**/*.java" destdir="${target.classes}">
+      <classpath>
+        <fileset dir="${source.jar}" includes="**/*.jar"/>
+      </classpath>
       <src path="${source.java}"/>
     </javac>
     <copy todir="${target.classes}">
@@ -57,12 +61,10 @@
   </target>
 
   <!--=======================================================================-->
-  <target name="icontext" description="Create an internal context file">
-    <!-- file for elsewhere in tomcat -->
+  <target name="icontext" description="Create a context file that points tomcat into this directory">
     <mkdir dir="${target.war}/../internal"/>
     <!-- do the copy whatever, the values in database.properties may have changed -->
     <delete failonerror="no" file="${target.war}/../internal/${ant.project.name}.xml"/>
-    <!-- file for elsewhere in tomcat -->
     <mkdir dir="${target.war}/../internal"/>
     <copy tofile="${target.war}/../internal/${ant.project.name}.xml" filtering="true" file="${source.etc}/tomcat/server-context.xml">
       <filterset>
