@@ -10,6 +10,7 @@
     <creator id="static" class="uk.ltd.getahead.dwr.create.StaticCreator"/>
     <converter id="null" class="uk.ltd.getahead.dwr.convert.NullConverter"/>
     <converter id="primitive" class="uk.ltd.getahead.dwr.convert.PrimitiveConverter"/>
+    <converter id="bignumber" class="uk.ltd.getahead.dwr.convert.BigNumberConverter"/>
     <converter id="string" class="uk.ltd.getahead.dwr.convert.StringConverter"/>
     <converter id="array" class="uk.ltd.getahead.dwr.convert.ArrayConverter"/>
     <converter id="map" class="uk.ltd.getahead.dwr.convert.MapConverter"/>
@@ -19,16 +20,8 @@
   </init>
 
   <allow>
-    <convert converter="null" match="java.lang.Void"/>
-    <convert converter="primitive" match="java.lang.Boolean"/>
-    <convert converter="primitive" match="java.lang.Byte"/>
-    <convert converter="primitive" match="java.lang.Short"/>
-    <convert converter="primitive" match="java.lang.Integer"/>
-    <convert converter="primitive" match="java.lang.Long"/>
-    <convert converter="primitive" match="java.lang.Float"/>
-    <convert converter="primitive" match="java.lang.Double"/>
-    <convert converter="primitive" match="java.lang.Character"/>
     <convert converter="null" match="void"/>
+    <convert converter="null" match="java.lang.Void"/>
     <convert converter="primitive" match="boolean"/>
     <convert converter="primitive" match="byte"/>
     <convert converter="primitive" match="short"/>
@@ -37,6 +30,18 @@
     <convert converter="primitive" match="float"/>
     <convert converter="primitive" match="double"/>
     <convert converter="primitive" match="char"/>
+    <convert converter="primitive" match="java.lang.Boolean"/>
+    <convert converter="primitive" match="java.lang.Byte"/>
+    <convert converter="primitive" match="java.lang.Short"/>
+    <convert converter="primitive" match="java.lang.Integer"/>
+    <convert converter="primitive" match="java.lang.Long"/>
+    <convert converter="primitive" match="java.lang.Float"/>
+    <convert converter="primitive" match="java.lang.Double"/>
+    <convert converter="primitive" match="java.lang.Character"/>
+    <convert converter="string" match="java.lang.String"/>
+    <convert converter="date" match="java.util.Date"/>
+    <convert converter="bignumber" match="java.math.BigInteger"/>
+    <convert converter="bignumber" match="java.math.BigDecimal"/>
     <convert converter="array" match="[Z"/>
     <convert converter="array" match="[B"/>
     <convert converter="array" match="[S"/>
@@ -45,12 +50,12 @@
     <convert converter="array" match="[F"/>
     <convert converter="array" match="[D"/>
     <convert converter="array" match="[C"/>
-    <convert converter="string" match="java.lang.String"/>
     <convert converter="array" match="[L*"/>
-    <convert converter="date" match="java.util.Date"/>
-    <!-- The catch for the next 2 is that we really mean java.util.Collection<String>
+    <!--
+    The catch for the next 2 is that we really mean java.util.Collection<String>
     and java.util.Map<String, String> but we need to do more work before this
-    syntax is enabled -->
+    syntax is enabled
+    -->
     <convert converter="collection" match="java.util.Collection"/>
     <convert converter="map" match="java.util.Map"/>
   </allow>

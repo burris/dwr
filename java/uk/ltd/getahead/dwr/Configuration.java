@@ -202,6 +202,10 @@ public class Configuration
         {
             converterManager.addConverter(match, type);
         }
+        catch (IllegalArgumentException ex)
+        {
+            throw new SAXException(ex.getMessage(), ex);
+        }
         catch (Exception ex)
         {
             throw new SAXException("Error instansiating: "+type, ex);
@@ -221,6 +225,10 @@ public class Configuration
         try
         {
             creatorManager.addCreator(type, javascript, allower);
+        }
+        catch (IllegalArgumentException ex)
+        {
+            throw new SAXException(ex.getMessage(), ex);
         }
         catch (Exception ex)
         {

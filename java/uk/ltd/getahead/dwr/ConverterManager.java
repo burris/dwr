@@ -7,32 +7,40 @@ import java.util.Map;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
+ * A type to manage the converter types and the instansiated class name matches.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class ConverterManager
 {
     /**
-     * 
+     * Default ctor
      */
     public ConverterManager()
     {
     }
 
     /**
-     * @param id
-     * @param clazz
+     * Add a new converter type
+     * @param id The name of the converter type
+     * @param clazz The class to do the conversion
      */
     public void addConverterType(String id, Class clazz)
     {
+        if (!Converter.class.isAssignableFrom(clazz))
+        {
+            throw new IllegalArgumentException("Class " + clazz + " does not implement " + Converter.class.getName());
+        }
+
         converterTypes.put(id, clazz);
     }
 
     /**
-     * @param match
-     * @param type
-     * @throws IllegalArgumentException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * Add a new converter
+     * @param match The class name(s) to match
+     * @param type The name of the converter type
+     * @throws InstantiationException If reflection based creation fails
+     * @throws IllegalAccessException If reflection based creation fails
+     * @throws IllegalArgumentException If we have a duplicate name
      */
     public void addConverter(String match, String type) throws IllegalArgumentException, InstantiationException, IllegalAccessException
     {
@@ -44,6 +52,13 @@ public class ConverterManager
 
         Converter converter = (Converter) clazz.newInstance();
         converter.init(this);
+
+        // Check that we don't have this one already
+        Converter other = (Converter) converters.get(match);
+        if (other != null)
+        {
+            throw new IllegalArgumentException("Match '" + match + "' is used by 2 converters.");
+        }
 
         converters.put(match, converter);
     }
@@ -205,13 +220,16 @@ public class ConverterManager
             {
                 return converter;
             }
-            else
+
+            // Arrays can have wildcards like [L* so we don't require a .
+            converter = (Converter) converters.get(lookup+"*");
+            if (converter != null)
             {
-                converter = (Converter) converters.get(lookup+"*");
+                return converter;
             }
 
-            // Stop looking if we've found one or if the name is now empty
-            if (converter != null || lookup.length() == 0)
+            // Give up if the name is now empty
+            if (lookup.length() == 0)
             {
                 break;
             }

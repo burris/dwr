@@ -1,5 +1,15 @@
 package uk.ltd.getahead.dwr.test;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collection;
+
 /**
  * Methods to help unit test DWR.
  * @author Joe Walker [joe at eireneh dot com]
@@ -171,7 +181,88 @@ public class Test
      * @param test
      * @return string
      */
+    public BigInteger bigIntegerParam(BigInteger test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public BigDecimal bigDecimalParam(BigDecimal test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
     public String[] stringArrayParam(String[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public Collection stringCollectionParam(Collection test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public LinkedList stringLinkedListParam(LinkedList test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public ArrayList stringArrayListParam(ArrayList test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public List stringListParam(List test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public Set stringSetParam(Set test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public HashSet stringHashSetParam(HashSet test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public TreeSet stringTreeSetParam(TreeSet test)
     {
         return test;
     }

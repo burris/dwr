@@ -126,7 +126,7 @@ function setEnabled(id, state)
     if (ele == null)
     {
         alert("Element id: "+id+" not found.");
-        return;
+        throw id;
     }
 
     // If we want to get funky and disable divs and spans by changing the font
@@ -202,9 +202,23 @@ function isHTMLInputElement(ele)
     }
     else
     {
-        // assume it is an input element if it can take focus
-        // we might use disabled, since that is used in setEnabled
         return typeof ele == "object" && ele.nodeName.toLowerCase() == "input";
+    }
+}
+
+/**
+ *
+ */
+function isHTMLTextAreaElement(ele)
+{
+    // There must be a better way
+    if (is_gecko)
+    {
+        return typeof ele == "object" && ele instanceof HTMLTextAreaElement;
+    }
+    else
+    {
+        return typeof ele == "object" && ele.nodeName.toLowerCase() == "textarea";
     }
 }
 
@@ -220,8 +234,7 @@ function isHTMLSelectElement(ele)
     }
     else
     {
-        // assume it is an input element if it has options
-        return typeof ele == "object" && ele.options;
+        return typeof ele == "object" && ele.nodeName.toLowerCase() == "select";
     }
 }
 
@@ -239,7 +252,7 @@ function setValue(id, val)
     if (ele == null)
     {
         alert("Element id: "+id+" not found.");
-        return;
+        throw id;
     }
 
     if (isHTMLSelectElement(ele))
@@ -288,7 +301,6 @@ function setValue(id, val)
 
         case "hidden":
         case "text":
-        case "textarea":
             ele.value = val;
             return;
 
@@ -299,17 +311,16 @@ function setValue(id, val)
         }
     }
 
+    if (isHTMLTextAreaElement(ele))
+    {
+        ele.value = val;
+        return;
+    }
+
     if (isHTMLElement(ele))
     {
-        try
-        {
-            ele.innerHTML = val;
-            return;
-        }
-        catch (ex)
-        {
-            return;
-        }
+        ele.innerHTML = val;
+        return;
     }
 
     alert("Not sure how to setValue on a " + ele);
@@ -326,7 +337,7 @@ function getValue(id)
     if (ele == null)
     {
         alert("Element id: "+id+" not found.");
-        return;
+        throw id;
     }
 
     if (isHTMLSelectElement(ele))
@@ -354,13 +365,17 @@ function getValue(id)
 
         case "hidden":
         case "text":
-        case "textarea":
             return ele.value;
 
         default:
             alert("Not sure how to setValue on a input element of type " + ele.type);
             return ele.value;
         }
+    }
+
+    if (isHTMLTextAreaElement(ele))
+    {
+        return ele.value;
     }
 
     if (isHTMLElement(ele))
@@ -370,6 +385,38 @@ function getValue(id)
 
     alert("Not sure how to getValue from a " + ele);
     return ele.innerHTML;
+}
+
+/**
+ *
+ */
+function getText(id)
+{
+    var ele = document.getElementById(id);
+
+    if (ele == null)
+    {
+        alert("Element id: "+id+" not found.");
+        throw id;
+    }
+
+    if (!isHTMLSelectElement(ele))
+    {
+        alert("getText() can only be used with select elements. Attempt to use: " + detailedTypeOf(ele));
+        throw ele;
+    }
+
+    // This is a bit of a scam because it assumes single select
+    // but I'm not sure how we should treat multi-select.
+    var sel = ele.selectedIndex;
+    if (sel != -1)
+    {
+        return ele.options[sel].text;
+    }
+    else
+    {
+        return "";
+    }
 }
 
 /**
@@ -387,27 +434,65 @@ function setValues(map)
 /**
  *
  */
-function fillList(id, data)
-{
-    var ele = document.getElementById(id);
-    ele.options.length = 0;
-    for (var i = 0; i < data.length; i++)
-    {
-        var opt = new Option(data[i]);
-        ele.options[ele.options.length] = opt;
-    }
-}
-
-/**
- *
- */
 function fillList(id, data, valueprop, textprop)
 {
     var ele = document.getElementById(id);
+
+    if (ele == null)
+    {
+        alert("Element id: "+id+" not found.");
+        throw id;
+    }
+
+    if (!isHTMLSelectElement(ele))
+    {
+        alert("fillList() can only be used with select elements. Attempt to use: " + detailedTypeOf(ele));
+        throw ele;
+    }
+
+    // Empty the list
     ele.options.length = 0;
+
+    // Bail if we have no data
+    if (data == null)
+    {
+        return;
+    }
+
+    // Loop through the data that we do have
     for (var i = 0; i < data.length; i++)
     {
-        var opt = new Option(data[i][textprop], data[i][valueprop]);
+        var text;
+        var value;
+
+        if (valueprop != null)
+        {
+            if (textprop != null)
+            {
+                text = data[i][textprop];
+                value = data[i][valueprop];
+            }
+            else
+            {
+                value = data[i][valueprop];
+                text = value;
+            }
+        }
+        else
+        {
+            if (textprop != null)
+            {
+                text = data[i][textprop];
+                value = text;
+            }
+            else
+            {
+                text = toDescriptiveString(data[i]);
+                value = text;
+            }
+        }
+
+        var opt = new Option(text, value);
         ele.options[ele.options.length] = opt;
     }
 }
@@ -468,3 +553,66 @@ function alternateRowColors()
         rowCount = 0;
     }
 }
+
+/**
+ * A better toString that the default for an Object
+ */
+function toDescriptiveString(object)
+{
+    if (typeof object != "object")
+    {
+        return object.toString();
+    }
+
+    /*
+    if (data instanceof Boolean || data instanceof Number ||
+        data instanceof String || data instanceof Date)
+    {
+        return object.toString();
+    }
+    */
+
+    if (object.toString != Object.prototype.toString)
+    {
+        return object.toString();
+    }
+
+    var reply = "" + detailedTypeOf(object) + " {";
+    var i = 0;
+    for (var prop in object)
+    {
+        var value = "" + object[prop];
+        if (value.length > 13)
+        {
+            value = value.substring(0, 10) + "...";
+        }
+
+        reply += prop;
+        reply += ":";
+        reply += value;
+        reply += ", ";
+
+        i++;
+        if (i > 5)
+        {
+            reply += "...";
+            break;
+        }
+    }
+    reply += "}";
+
+    return reply;
+}
+
+function detailedTypeOf(x)
+{
+    var reply = typeof x;
+
+    if (reply == "object")
+    {
+        reply = Object.prototype.toString.apply(x);  // Returns "[object class]"
+        reply = reply.substring(8, reply.length-1);  // Just get the class bit
+    }
+
+    return reply;
+} 

@@ -58,6 +58,18 @@
   tests.push({ code:"Test.doubleParam(testResults, 1)", expected:1 });
   tests.push({ code:"Test.doubleParam(testResults, 100000000000000000000)", expected:100000000000000000000 });
 
+  tests.push({ code:"Test.bigDecimalParam(testResults, -100000000000000000000)", expected:-100000000000000000000 });
+  tests.push({ code:"Test.bigDecimalParam(testResults, -1)", expected:-1 });
+  tests.push({ code:"Test.bigDecimalParam(testResults, 0)", expected:0 });
+  tests.push({ code:"Test.bigDecimalParam(testResults, 1)", expected:1 });
+  tests.push({ code:"Test.bigDecimalParam(testResults, 100000000000000000000)", expected:100000000000000000000 });
+
+  tests.push({ code:"Test.bigIntegerParam(testResults, -100000000000000000000)", expected:-100000000000000000000 });
+  tests.push({ code:"Test.bigIntegerParam(testResults, -1)", expected:-1 });
+  tests.push({ code:"Test.bigIntegerParam(testResults, 0)", expected:0 });
+  tests.push({ code:"Test.bigIntegerParam(testResults, 1)", expected:1 });
+  tests.push({ code:"Test.bigIntegerParam(testResults, 100000000000000000000)", expected:100000000000000000000 });
+
   tests.push({ code:"Test.charParam(testResults, '\\0')", expected:"\0" });
   tests.push({ code:"Test.charParam(testResults, '\\t')", expected:"\t" });
   tests.push({ code:"Test.charParam(testResults, '\\n')", expected:"\n" });
@@ -227,6 +239,44 @@
   tests.push({ code:"Test.testBeanParam(testResults, { integer:0, string:'Undefined', testBean:undefined })", expected:{ integer:0, string:'Undefined', testBean:undefined } });
   tests.push({ code:"Test.testBeanParam(testResults, { integer:1, string:'0987654321', testBean:nested })", expected:{ integer:1, string:'0987654321', testBean:nested } });
 
+  tests.push({ code:"Test.stringCollectionParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]});
+  tests.push({ code:"Test.stringLinkedListParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]});
+  tests.push({ code:"Test.stringArrayListParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]});
+  tests.push({ code:"Test.stringListParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]});
+  // Note the next 2 are unordered to we cheat by only having 1 element
+  tests.push({ code:"Test.stringSetParam(testResults, [ 'abcdef', ])", expected:[ 'abcdef', ]});
+  tests.push({ code:"Test.stringHashSetParam(testResults, [ 'abcdef', ])", expected:[ 'abcdef', ]});
+  tests.push({ code:"Test.stringTreeSetParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]});
+
+  tests.push({ code:"Test.stringCollectionParam(testResults, [ ])", expected:[ ]});
+  tests.push({ code:"Test.stringLinkedListParam(testResults, [ ])", expected:[ ]});
+  tests.push({ code:"Test.stringArrayListParam(testResults, [ ])", expected:[ ]});
+  tests.push({ code:"Test.stringListParam(testResults, [ ])", expected:[ ]});
+  tests.push({ code:"Test.stringSetParam(testResults, [ ])", expected:[ ]});
+  tests.push({ code:"Test.stringHashSetParam(testResults, [ ])", expected:[ ]});
+  tests.push({ code:"Test.stringTreeSetParam(testResults, [ ])", expected:[ ]});
+
+  tests.push({ code:"Test.stringCollectionParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]});
+  tests.push({ code:"Test.stringLinkedListParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]});
+  tests.push({ code:"Test.stringArrayListParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]});
+  tests.push({ code:"Test.stringListParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]});
+  tests.push({ code:"Test.stringSetParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]});
+  tests.push({ code:"Test.stringHashSetParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]});
+  tests.push({ code:"Test.stringTreeSetParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]});
+
+  tests.push({ code:"Test.stringCollectionParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]});
+  tests.push({ code:"Test.stringLinkedListParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]});
+  tests.push({ code:"Test.stringArrayListParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]});
+  tests.push({ code:"Test.stringListParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]});
+  tests.push({ code:"Test.stringSetParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]});
+  tests.push({ code:"Test.stringHashSetParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]});
+  tests.push({ code:"Test.stringTreeSetParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]});
+
+  tests.push({ code:"Test.stringCollectionParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]});
+  tests.push({ code:"Test.stringLinkedListParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]});
+  tests.push({ code:"Test.stringArrayListParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]});
+  tests.push({ code:"Test.stringListParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]});
+
   function startTest()
   {
       failures = document.getElementById("failures");
@@ -310,6 +360,27 @@
           return true;
       }
 
+      if (expected == null)
+      {
+          if (actual != null)
+          {
+              return "expected: null, actual non-null: " + actual;
+          }
+
+          return true;
+      }
+
+      if (actual == null)
+      {
+          if (expected != null)
+          {
+              return "actual: null, expected non-null: " + expected;
+          }
+
+          // wont get here of course ...
+          return true;
+      }
+
       if (expected instanceof Array)
       {
           if (!(actual instanceof Array))
@@ -333,7 +404,8 @@
 
           return true;
       }
-      else if (expected instanceof Object)
+
+      if (expected instanceof Object)
       {
           if (!(actual instanceof Object))
           {
@@ -366,15 +438,13 @@
 
           return true;
       }
-      else
-      {
-          if (actual != expected)
-          {
-              return "expected = " + expected + ", actual = " + actual;
-          }
 
-          return true;
+      if (actual != expected)
+      {
+          return "expected = " + expected + ", actual = " + actual;
       }
+
+      return true;
   }
 
   function catchFailure(data)

@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 import uk.ltd.getahead.dwr.Creator;
 
 /**
+ * A creator that simply uses the default constructor each time it is called.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class NewCreator implements Creator

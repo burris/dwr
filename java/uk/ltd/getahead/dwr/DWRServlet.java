@@ -49,18 +49,18 @@ public class DWRServlet extends HttpServlet
     {
         super.init(config);
 
-        // Are we in debug mode?
-        String debugStr = config.getInitParameter("debug");
-        boolean debug = Boolean.valueOf(debugStr).booleanValue();
-
-        configuration = new Configuration(debug);
-
         // How much logging do we do?
         String logLevel = config.getInitParameter("logLevel");
         if (logLevel != null)
         {
             Log.setLevel(logLevel);
         }
+
+        // Are we in debug mode?
+        String debugStr = config.getInitParameter("debug");
+        boolean debug = Boolean.valueOf(debugStr).booleanValue();
+
+        configuration = new Configuration(debug);
 
         // Load the system config file
         try
@@ -517,8 +517,9 @@ public class DWRServlet extends HttpServlet
     /**
      * Load a DWR config file.
      * @param configFile the config file to read
+     * @throws ServletException If the extra checking of the config file fails
      */
-    private void readFile(String configFile)
+    private void readFile(String configFile) throws ServletException
     {
         try
         {
@@ -529,12 +530,12 @@ public class DWRServlet extends HttpServlet
             }
             else
             {
-                Log.warn("Could not find dwr config file at: " + configFile);
+                throw new ServletException("Could not find dwr config file at: " + configFile);
             }
         }
         catch (SAXException ex)
         {
-            Log.fatal("Failed to parse: " + configFile, ex);
+            throw new ServletException(ex.getMessage());
         }
     }
 

@@ -1,5 +1,6 @@
 package uk.ltd.getahead.dwr.convert;
 
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -50,7 +51,21 @@ public class MapConverter implements Converter
         {
             // Maybe we ought to check that the paramType isn't expecting a more
             // distinct type of Map and attempt to create that?
-            Map map = new HashMap();
+            Map map =  null;
+
+            // If paramType is concrete then just use whatever we've got.
+            if (!paramType.isInterface() && !Modifier.isAbstract(paramType.getModifiers()))
+            {
+                // If there is a problem creating the type then we have no way
+                // of completing this - they asked for a specific type and we
+                // can't create that type. I don't know of a way of finding
+                // subclasses that might be instaniable so we accept failure.
+                map = (Map) paramType.newInstance();
+            }
+            else
+            {
+                map = new HashMap();
+            }
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
@@ -106,7 +121,7 @@ public class MapConverter implements Converter
         for (Iterator it = map.keySet().iterator(); it.hasNext();)
         {
             String key = (String) it.next();
-            String value = (String) map.get(key);
+            Object value = map.get(key);
 
             ScriptSetup nested = config.convertFrom(value, converted);
 

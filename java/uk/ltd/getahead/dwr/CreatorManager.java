@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import uk.ltd.getahead.dwr.util.Log;
 
 /**
+ * A class to manage the types of creators and the instansiated creators.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class CreatorManager
@@ -31,16 +32,22 @@ public class CreatorManager
      */
     protected void addCreatorType(String typename, Class clazz)
     {
+        if (!Creator.class.isAssignableFrom(clazz))
+        {
+            throw new IllegalArgumentException("Creator " + clazz.getName() + " does not implement " + Creator.class.getName());
+        }
+
         creatorTypes.put(typename, clazz);
     }
 
     /**
-     * @param type
-     * @param javascript
-     * @param allower
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
+     * Add a new creator
+     * @param type The class to use as a creator
+     * @param javascript The name for it in Javascript
+     * @param allower The DOM element in case we need more info
+     * @throws InstantiationException If reflection based creation fails
+     * @throws IllegalAccessException If reflection based creation fails
+     * @throws IllegalArgumentException If we have a duplicate name
      */
     protected void addCreator(String type, String javascript, Element allower) throws InstantiationException, IllegalAccessException, IllegalArgumentException
     {
@@ -48,6 +55,13 @@ public class CreatorManager
 
         Creator creator = (Creator) clazz.newInstance();
         creator.init(allower);
+
+        // Check that we don't have this one already
+        Creator other = (Creator) creators.get(javascript);
+        if (other != null)
+        {
+            throw new IllegalArgumentException("Javascript name '" + javascript + "' is used by 2 classes (" + other.getType().getName() + " and " + type + ")");
+        }
 
         creators.put(javascript, creator);
     }
