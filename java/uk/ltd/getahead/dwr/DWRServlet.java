@@ -627,7 +627,7 @@ public class DWRServlet extends HttpServlet
             }
             else
             {
-                String output = LocalUtil.escape(reply.toString());
+                String output = reply.toString();
                 out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('" + StringEscapeUtils.escapeJavaScript(output) + "')</script>");
                 out.println("<p>The called function returned: [<span style='color:#800; font-family:monospace;'>" + StringEscapeUtils.escapeHtml(output) + "</span>]<br/>");
             }
