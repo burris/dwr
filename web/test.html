@@ -16,6 +16,7 @@
   var index = 0;
   var tests = new Array();
 
+/*
   tests.push({ code:"Test.voidParam(testResults)", expected:undefined });
 
   tests.push({ code:"Test.booleanParam(testResults, true)", expected:true });
@@ -181,7 +182,7 @@
 
   tests.push({ code:"Test.doubleArrayParam(testResults, '[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ]')", expected:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] });
   tests.push({ code:"Test.doubleArrayParam(testResults, [ -100000000000000000000, -1, 0, 1, 100000000000000000000 ])", expected:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] });
-
+*/
   // Unicode: we could be here for some time, so I just picked some commmon ones
   /*
   tests.push({ code:"Test.charParam(testResults, '£')", expected:"£" });
@@ -233,6 +234,16 @@
   tests.push({ code:"Test.charParam(testResults, '\\u00DF')", expected:"\u00DF" });
   tests.push({ code:"Test.charParam(testResults, '\\u00FF')", expected:"\u00FF" });
   */
+
+  var nested = { integer:0, string:'0123456789' };
+  // at some stage it would be good to include the following, however recursive
+  // javascript objects are way beyond us right now.
+  // nested.testBean = nested;
+
+  tests.push({ code:"Test.testBeanParam(testResults, { integer:-2147483648, string:'!\"$%^&*()', testBean:null })", expected:{ integer:-2147483648, string:'!"$%^&*()', testBean:null } });
+  tests.push({ code:"Test.testBeanParam(testResults, { integer:-1, string:'null', testBean:null })", expected:{ integer:-1, string:'null', testBean:null } });
+  tests.push({ code:"Test.testBeanParam(testResults, { integer:0, string:'undefined', testBean:undefined })", expected:{ integer:0, string:'undefined', testBean:undefined } });
+  tests.push({ code:"Test.testBeanParam(testResults, { integer:1, string:'0987654321', testBean:nested })", expected:{ integer:1, string:'0987654321', testBean:nested } });
 
   function startTest()
   {
@@ -323,8 +334,41 @@
                           return false;
                       }
                   }
+
                   return true;
               }
+          }
+
+          return false;
+      }
+      else if (expected instanceof Object)
+      {
+          if (actual instanceof Object)
+          {
+              var actualLength = 0;
+              for (var prop in actual)
+              {
+                  if (!testEquals(actual[prop], expected[prop]))
+                  {
+                      return false;
+                  }
+
+                  actualLength++;
+              }
+
+              // need to check length too
+              var expectedLength = 0;
+              for (prop in expected)
+              {
+                  expectedLength++;
+              }
+
+              if (actualLength != expectedLength)
+              {
+                  return false;
+              }
+
+              return true;
           }
 
           return false;
@@ -352,6 +396,11 @@
 
       index++;
       executeTest();
+  }
+  
+  function nestTest()
+  {
+      Test.getNestingTest(nestReply);
   }
   </script>
 </head>

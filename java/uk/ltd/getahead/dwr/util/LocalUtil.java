@@ -1,5 +1,7 @@
 package uk.ltd.getahead.dwr.util;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Various utilities, mostly to make up for JDK 1.4 functionallity that is not
  * in JDK 1.3
@@ -142,5 +144,24 @@ public class LocalUtil
         }
 
         return null;
+    }
+
+    /**
+     * Add headers to prevent browers and proxies from caching this reply.
+     * @param resp The response to add headers to
+     */
+    public static void addNoCacheHeaders(HttpServletResponse resp)
+    {
+        // Set standard HTTP/1.1 no-cache headers.
+        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+
+        // Set IE extended HTTP/1.1 no-cache headers (use addHeader).
+        resp.addHeader("Cache-Control", "post-check=0, pre-check=0");
+
+        // Set standard HTTP/1.0 no-cache header.
+        resp.setHeader("Pragma", "no-cache");
+
+        // Set to expire far in the past. Prevents caching at the proxy server
+        resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
     }
 }

@@ -115,24 +115,41 @@ function dwrExecute(func, classname, methodname, vararg_params)
 
     call.callback = func;
 
-    var argdata = '';
-    for (var i=3; i<dwrExecute.arguments.length; i++)
-    {
-        var marshall = dwrMarshall(dwrExecute.arguments[i]);
-        argdata = argdata + '&param' + (i-3) + '=' + marshall;
-    }
-
     // Warning: if you can see EL-like (${...}) expressions on the next line, don't be fooled into thinking it is EL.
     // Check the source in DWRServlet for the hack. Maybe we will do something more EL like in the future.
     // If you can't see the ${...} then you are probably looking at the processed source
-    call.url = '${request.contextPath}${request.servletPath}/exec?class='+classname+'&method='+methodname+argdata+'&id='+call.id;
+    var urlbase = '${request.contextPath}${request.servletPath}/exec';
 
     if (window.XMLHttpRequest)
     {
+        var map = new Object;
+        map.classname = classname;
+        map.methodname = methodname;
+        map.id = call.id;
+        map.xml = true;
+
+        for (var i=3; i<dwrExecute.arguments.length; i++)
+        {
+            var marshall = dwrMarshall(dwrExecute.arguments[i]);
+            map["param" + (i-3)] = marshall;
+        }
+
+        var query = "";
+        for (var prop in map)
+        {
+            query += prop + "=" + map[prop] + "\n";
+        }
+
+        call.url = urlbase;
+        call.map = map;
+
         call.req = new XMLHttpRequest();
         call.req.onreadystatechange = function() { dwrStateChange(call); };
-        call.req.open("GET", call.url+'&xml=true', true);
-        call.req.send(null);
+        //call.req.open("GET", call.url+'&xml=true', true);
+        //call.req.send(null);
+        call.req.open("POST", urlbase, true);
+        alert(query);
+        call.req.send(query);
     }
     /*
     The IE version appears to cache replies.
@@ -140,8 +157,6 @@ function dwrExecute(func, classname, methodname, vararg_params)
     {
         // I've seen code that asks for the following:
         // call.req = new ActiveXObject("Msxml2.XMLHTTP");
-        // followed by the version that we are using, in try/catch blocks
-        // but try/catch isn't supported by all browsers so we ignore for the mo
         call.req = new ActiveXObject("Microsoft.XMLHTTP");
         if (call.req)
         {
@@ -157,6 +172,16 @@ function dwrExecute(func, classname, methodname, vararg_params)
     */
     else
     {
+        var argdata = '';
+        for (var i=3; i<dwrExecute.arguments.length; i++)
+        {
+            var marshall = dwrMarshall(dwrExecute.arguments[i]);
+            argdata = argdata + '&param' + (i-3) + '=' + marshall;
+        }
+
+        var query = "class=" + classname + "&method=" + methodname + argdata + "&id=" + call.id;
+        call.url = urlbase + "?" + query;
+
         call.iframe = document.createElement('iframe');
         call.iframe.setAttribute('id', 'dwr-iframe');
         call.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
@@ -169,7 +194,7 @@ function dwrMarshall(data)
 {
     if (data == null)
     {
-        return 
+        return "null";
     }
 
     switch (typeof data)
@@ -210,7 +235,7 @@ function dwrMarshall(data)
                     reply += ",";
                 }
 
-                var marshalled = dwrMarshall(data[i]).toString();
+                var marshalled = "" + dwrMarshall(data[i]);
                 marshalled = marshalled.replace(/,/, "%2c");
                 marshalled = marshalled.replace(/\[/, "%5b");
                 marshalled = marshalled.replace(/\]/, "%5d");
@@ -225,14 +250,14 @@ function dwrMarshall(data)
             var reply = "{"
             for (element in data)
             {
-                var marshalled = dwrMarshall(data[element]).toString();
+                var marshalled = dwrMarshall(data[element]);
 
                 reply += element;
                 reply += ":";
                 reply += marshalled;
                 reply += ", ";
             }
-            reply.substring(0, reply.length - 2);
+            reply = reply.substring(0, reply.length - 2);
             reply += "}";
             return reply;
         }

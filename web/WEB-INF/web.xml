@@ -27,7 +27,7 @@
     </init-param>
     <init-param>
        <param-name>logLevel</param-name>
-       <param-value>INFO</param-value>
+       <param-value>DEBUG</param-value>
        <description>How verbose do we want logging to be?</description>
     </init-param>
     <load-on-startup>-1</load-on-startup>

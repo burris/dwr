@@ -35,6 +35,11 @@ public class BeanConverter implements Converter
      */
     public Object convertTo(Class paramType, String data) throws ConversionException
     {
+        if (data.trim().equals("null"))
+        {
+            return null;
+        }
+
         if (data.startsWith("{"))
         {
             data = data.substring(1);
@@ -46,9 +51,8 @@ public class BeanConverter implements Converter
 
         try
         {
-            StringTokenizer st = new StringTokenizer(data, ",");
-            int size = st.countTokens();
-
+            // We know what we are converting to so we create a map of property
+            // names against PropertyDescriptors to speed lookup later
             Object array = paramType.newInstance();
             BeanInfo info = Introspector.getBeanInfo(paramType);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
@@ -59,17 +63,18 @@ public class BeanConverter implements Converter
                 props.put(key, descriptors[i]);
             }
 
+            // Loop through the property declarations
+            StringTokenizer st = new StringTokenizer(data, ",");
+            int size = st.countTokens();
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-
                 if (token.trim().length() == 0)
                 {
                     continue;
                 }
 
                 int colonpos = token.indexOf(":");
-
                 if (colonpos == -1)
                 {
                     throw new ConversionException("Missing ':' in object description: " + token);

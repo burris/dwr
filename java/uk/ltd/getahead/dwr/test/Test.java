@@ -195,6 +195,27 @@ public class Test
     }
 
     /**
+     * @return nest
+     */
+    public TestBean[] getNestingTest()
+    {
+        TestBean a = new TestBean(0, "!\"$%^&*()_", null);
+        TestBean b = new TestBean(0, "!\"$%^&*()_", a);
+        TestBean c = new TestBean(0, "!\"$%^&*()_", b);
+        TestBean d = new TestBean(0, "!\"$%^&*()_", c);
+
+        TestBean[] reply = new TestBean[]
+        {
+            a,
+            c,
+            d,
+            d,
+        };
+
+        return reply;
+    }
+
+    /**
      * @param param1
      * @param param2
      * @return string

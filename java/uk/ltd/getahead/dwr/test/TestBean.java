@@ -6,6 +6,25 @@ package uk.ltd.getahead.dwr.test;
 public class TestBean
 {
     /**
+     * 
+     */
+    public TestBean()
+    {
+    }
+
+    /**
+     * @param string
+     * @param integer
+     * @param testBean
+     */
+    public TestBean(int integer, String string, TestBean testBean)
+    {
+        this.string = string;
+        this.integer = integer;
+        this.testBean = testBean;
+    }
+
+    /**
      * @return Returns the integer.
      */
     public int getInteger()
@@ -37,7 +56,24 @@ public class TestBean
         this.string = string;
     }
 
+    /**
+     * @return Returns the testBean.
+     */
+    public TestBean getTestBean()
+    {
+        return testBean;
+    }
+
+    /**
+     * @param testBean The testBean to set.
+     */
+    public void setTestBean(TestBean testBean)
+    {
+        this.testBean = testBean;
+    }
+
     private String string = "Default initial value";
     private int integer = 42;
+    private TestBean testBean = null;
 }
 
