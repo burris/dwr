@@ -133,7 +133,15 @@ public final class Log
             HttpServlet servlet = (HttpServlet) servlets.get();
             if (servlet != null)
             {
-                servlet.log(message, th);
+                // Tomcat 4 NPEs is th is null
+                if (th == null)
+                {
+                    servlet.log(message);
+                }
+                else
+                {
+                    servlet.log(message, th);
+                }
             }
             else
             {

@@ -12,9 +12,12 @@ import uk.ltd.getahead.dwr.util.Log;
 
 /**
  * A class to manage the types of creators and the instansiated creators.
+ * This class is non-final at the request of the wings project, however I
+ * would recommend against depending on this class remaining unchanged.
+ * DWR is still very much beta.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public final class CreatorManager
+public class CreatorManager
 {
     /**
      * Simple ctor

@@ -158,6 +158,9 @@
   tests.push({ code:"Test.stringParam(testResults, '}')", expected:"}" });
   tests.push({ code:"Test.stringParam(testResults, '~')", expected:"~" });
 
+  tests.push({ code:"Test.stringParam(testResults, '')", expected:"" });
+  tests.push({ code:"Test.stringParam(testResults, 'null')", expected:"null" });
+  tests.push({ code:"Test.stringParam(testResults, 'undefined')", expected:"undefined" });
   tests.push({ code:"Test.stringParam(testResults, ' !\"#$%&\\'()*+,-/')", expected:" !\"#$%&\'()*+,-/" });
   tests.push({ code:"Test.stringParam(testResults, '0123456789')", expected:"0123456789" });
   tests.push({ code:"Test.stringParam(testResults, ':;<=>?@')", expected:":;<=>?@" });

@@ -40,7 +40,7 @@ import uk.ltd.getahead.dwr.util.Log;
  * </p>
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public final class DWRServlet extends HttpServlet
+public class DWRServlet extends HttpServlet
 {
     /* (non-Javadoc)
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
@@ -165,7 +165,7 @@ public final class DWRServlet extends HttpServlet
      * @param resp The response channel
      * @throws IOException If writing to the output fails
      */
-    private void doIndex(HttpServletRequest req, HttpServletResponse resp) throws IOException
+    protected void doIndex(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         if (!configuration.isDebugMode())
         {
@@ -207,7 +207,7 @@ public final class DWRServlet extends HttpServlet
      * @throws IOException If writing to the output fails
      * @PMD:REVIEWED:ExcessiveMethodLength: by Joe on 12/02/05 16:18
      */
-    private void doTest(HttpServletRequest req, HttpServletResponse resp) throws IOException
+    protected void doTest(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         if (!configuration.isDebugMode())
         {
@@ -353,7 +353,7 @@ public final class DWRServlet extends HttpServlet
      * @param resp The response channel
      * @throws IOException If writing to the output fails
      */
-    private void doInterface(HttpServletRequest req, HttpServletResponse resp) throws IOException
+    protected void doInterface(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         String pathinfo = req.getPathInfo();
         pathinfo = LocalUtil.replace(pathinfo, PATH_INTERFACE, BLANK);
@@ -419,7 +419,7 @@ public final class DWRServlet extends HttpServlet
      * @param path The path to search for, process and output
      * @throws IOException If writing to the output fails
      */
-    private void doFile(HttpServletRequest req, HttpServletResponse resp, String path) throws IOException
+    protected void doFile(HttpServletRequest req, HttpServletResponse resp, String path) throws IOException
     {
         resp.setContentType("text/javascript"); //$NON-NLS-1$
 
@@ -459,7 +459,7 @@ public final class DWRServlet extends HttpServlet
      * @param req The browsers request
      * @param resp The response channel
      */
-    private void doExec(HttpServletRequest req, HttpServletResponse resp)
+    protected void doExec(HttpServletRequest req, HttpServletResponse resp)
     {
         ExecuteQuery eq = new ExecuteQuery(req, creatorManager, converterManager);
 
@@ -534,7 +534,7 @@ public final class DWRServlet extends HttpServlet
      * @param configFile the config file to read
      * @throws ServletException If the extra checking of the config file fails
      */
-    private void readFile(String configFile) throws ServletException
+    protected void readFile(String configFile) throws ServletException
     {
         try
         {
@@ -554,46 +554,55 @@ public final class DWRServlet extends HttpServlet
         }
     }
 
-    private static final String PATH_ROOT = "/"; //$NON-NLS-1$
-    private static final String PATH_EXEC = "/exec"; //$NON-NLS-1$
-    private static final String PATH_INTERFACE = "/interface/"; //$NON-NLS-1$
-    private static final String PATH_TEST = "/test/"; //$NON-NLS-1$
-    private static final String EXTENSION_JS = ".js"; //$NON-NLS-1$
-    private static final String FILE_UTIL = "util.js"; //$NON-NLS-1$
-    private static final String FILE_ENGINE = "engine.js"; //$NON-NLS-1$
-    private static final String FILE_DWR_XML = "dwr.xml"; //$NON-NLS-1$
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode()
+    {
+        Log.error("Warning: DWRServlet has not been designed for use in collections."); //$NON-NLS-1$
+        return super.hashCode();
+    }
 
-    private static final String INIT_CONFIG = "config"; //$NON-NLS-1$
-    private static final String INIT_DEBUG = "debug"; //$NON-NLS-1$
-    private static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
+    protected static final String PATH_ROOT = "/"; //$NON-NLS-1$
+    protected static final String PATH_EXEC = "/exec"; //$NON-NLS-1$
+    protected static final String PATH_INTERFACE = "/interface/"; //$NON-NLS-1$
+    protected static final String PATH_TEST = "/test/"; //$NON-NLS-1$
+    protected static final String EXTENSION_JS = ".js"; //$NON-NLS-1$
+    protected static final String FILE_UTIL = "util.js"; //$NON-NLS-1$
+    protected static final String FILE_ENGINE = "engine.js"; //$NON-NLS-1$
+    protected static final String FILE_DWR_XML = "dwr.xml"; //$NON-NLS-1$
 
-    private static final String MIME_XML = "text/xml"; //$NON-NLS-1$
-    private static final String MIME_HTML = "text/html"; //$NON-NLS-1$
+    protected static final String INIT_CONFIG = "config"; //$NON-NLS-1$
+    protected static final String INIT_DEBUG = "debug"; //$NON-NLS-1$
+    protected static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
 
-    private static final String BLANK = ""; //$NON-NLS-1$
+    protected static final String MIME_XML = "text/xml"; //$NON-NLS-1$
+    protected static final String MIME_HTML = "text/html"; //$NON-NLS-1$
+
+    protected static final String BLANK = ""; //$NON-NLS-1$
 
     /**
      * The default dwr.xml file path
      */
-    private static final String DEFAULT_DWR_XML = "WEB-INF/dwr.xml"; //$NON-NLS-1$
+    protected static final String DEFAULT_DWR_XML = "WEB-INF/dwr.xml"; //$NON-NLS-1$
 
     /**
      * We cache the script output for speed
      */
-    private final Map scriptCache = new HashMap();
+    protected final Map scriptCache = new HashMap();
 
     /**
      * The local configuration settings
      */
-    private Configuration configuration = null;
+    protected Configuration configuration = null;
 
     /**
      * How we create new beans
      */
-    private CreatorManager creatorManager = null;
+    protected CreatorManager creatorManager = null;
 
     /**
      * How we convert parameters
      */
-    private ConverterManager converterManager = null;
+    protected ConverterManager converterManager = null;
 }
