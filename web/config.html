@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>DWR (Direct Web Remoting)</title>
+  <title>DWR - Upgrading to DWR 0.4</title>
   <link rel="stylesheet" type="text/css" href="generic.css"/>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
 </head>
@@ -9,86 +9,51 @@
 <body>
 <iframe id="sidebar" src="sidebar.html" frameborder="0"></iframe>
 
-<h2>DWR (Direct Web Remoting)</h2>
+<h2>Upgrading to DWR 0.4</h2>
+<p>
+  web/WEB-INF/web.xml has a fully fleshed out example of the options for dwr.
+  2 parameters (config and logLevel) you can safely ignore.
+  The 3rd, debug, you should leave as true if you want the test/debug setup to
+  work (this is what you are using below)
+  I would suggest turning this off in live.
+</p>
+  
+<p>
+  Secondly you will need a dwr.xml file that does the job of the old allow
+  parameter. By default it lives in WEB-INF/dwr.xml (there is an example in the
+  web folder of this too)
+  <br/>
+  I suggest starting with the example in the web/WEB-INF folder and removing
+  the &lt;init> section and for each allow have a
+  &lt;create creator="new" javascript="Test" class="full.java.pkg.Test"/> tag.
+  <br/>
+  The different type of creators allow us to have different sources for the
+  beans. <code>new</code> was all that existed in dwr 0.3. <code>session</code>
+  gets the bean from the session (creating it if it does not exist).
+  <code>spring</code> uses the spring framework and <code>static</code> works on
+  static methods only.
+  <br/>
+  You can remove all the converter options in the allow section.
+  By default all primitive types, arrays and Strings get converted without need
+  for declaration. The system dwr file in <code>java/uk/ltd/getahead/dwr</code>
+  might help you see what is going on a bit.
+</p>
 
+<p>
+  There is one other breaking change, where in your html you were doing:
+</p>
 <pre>
-
-&lt;!--
-Top level conviguration element.
--->
-&lt;!ELEMENT dwr (
-    init, allow
-)>
-
-&lt;!--
-A list of all the classes to configure as part of dwr at startup time.
--->
-&lt;!ELEMENT init (
-    (creator | converter)*
-)>
-
-&lt;!--
-Define a new method of creating objects for use by Javascript.
-We don't just allow access to any object and some may need special code to
-get a reference to them.
--->
-&lt;!ELEMENT creator EMPTY>
-&lt;!ATTLIST creator
-    id ID #REQUIRED
-    class CDATA #REQUIRED
->
-
-&lt;!--
-Define a new way of converting between javascript objects and java objects.
-Many classes can have default conversion mechanisms but some require more
-custom conversion
--->
-&lt;!ELEMENT converter EMPTY>
-&lt;!ATTLIST converter
-    id ID #REQUIRED
-    class CDATA #REQUIRED
-    priority CDATA #IMPLIED
->
-
-&lt;!--
-Security: we must define which classes we are allowed to access because a
-free-for-all will be very dangerous.
--->
-&lt;!ELEMENT allow (
-    (create | convert)*
-)>
-
-&lt;!--
-Allow the creation of a class, and give it a name in javascript land.
-A reference to a creator is required as are some parameters specific to each
-creator that define the objects it allows creation of.
-It would be nice to make the creator and IDREF rather than a CDATA, since it
-refers to an element defined elsewhere, however we allow multiple dwr.xml
-files and we might refer to one in another file.
--->
-&lt;!ELEMENT create ANY>
-&lt;!ATTLIST create
-    creator CDATA #REQUIRED
-    javascript CDATA #REQUIRED
-    class CDATA #IMPLIED
-    beanName CDATA #IMPLIED
->
-
-&lt;!--
-Allow conversion of a class between Java and Javascript.
-A convert element uses a previously defined converter and gives a class match
-pattern (which can end with *) to define the classes it allows conversion of
-It would be nice to make the converter and IDREF rather than a CDATA, since it
-refers to an element defined elsewhere, however we allow multiple dwr.xml
-files and we might refer to one in another file.
--->
-&lt;!ELEMENT convert EMPTY>
-&lt;!ATTLIST convert
-    converter CDATA #REQUIRED
-    match CDATA #REQUIRED
->
-
+  &lt;script type='text/javascript' src='/XXX/dwr/interface/full.java.pkg.Test.js'></script>
 </pre>
+<p>
+  You would need to do:
+</p>
+<pre>
+  &lt;script type='text/javascript' src='/XXX/dwr/interface/Test.js'></script>
+</pre>
+<p>
+  Where Test is the value you specify in the javascript attribute in your create tag (see above).
+</p>
 
 </body>
 </html>

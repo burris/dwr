@@ -9,8 +9,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -56,13 +59,41 @@ public class DWRServlet extends HttpServlet
 
         configuration = new Configuration(debug);
 
+        // How much logging do we do?
+        String logLevel = config.getInitParameter("logLevel");
+        if (logLevel != null)
+        {
+            Log.setLevel(logLevel);
+        }
+
         try
         {
+            // Load the system config file
             InputStream in = getClass().getResourceAsStream("dwr.xml");
             configuration.addConfig(in);
 
-            in = config.getServletContext().getResourceAsStream("WEB-INF/dwr.xml");
-            configuration.addConfig(in);
+            // Find all the init params
+            Enumeration en = config.getInitParameterNames();
+
+            // If there are none then use the default name
+            if (!en.hasMoreElements())
+            {
+                in = config.getServletContext().getResourceAsStream("WEB-INF/dwr.xml");
+                configuration.addConfig(in);
+            }
+
+            // Loop through the ones that do exist
+            while (en.hasMoreElements())
+            {
+                String name = (String) en.nextElement();
+                if (name.startsWith("config"))
+                {
+                    // if the init param starts with "config" then try to load it
+                    String configFile = config.getInitParameter(name);
+                    in = config.getServletContext().getResourceAsStream(configFile);
+                    configuration.addConfig(in);
+                }
+            }
         }
         catch (SAXException ex)
         {
@@ -116,7 +147,11 @@ public class DWRServlet extends HttpServlet
             }
             else if (pathinfo != null && pathinfo.equalsIgnoreCase("/engine.js"))
             {
-                doEngine(req, resp);
+                doFile(req, resp, "engine.js");
+            }
+            else if (pathinfo != null && pathinfo.equalsIgnoreCase("/util.js"))
+            {
+                doFile(req, resp, "util.js");
             }
             else if (pathinfo != null && pathinfo.startsWith("/interface/"))
             {
@@ -365,19 +400,23 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
+     * Basically a file servlet component that does some <b>very limitted</b>
+     * EL type processing on the file.
      * @param req The browsers request
      * @param resp The response channel
+     * @param path The path to search for, process and output
      * @throws IOException If writing to the output fails
      */
-    private void doEngine(HttpServletRequest req, HttpServletResponse resp) throws IOException
+    private void doFile(HttpServletRequest req, HttpServletResponse resp, String path) throws IOException
     {
         resp.setContentType("text/javascript");
 
-        if (scriptCache == null)
+        String output = (String) scriptCache.get(path);
+        if (output == null)
         {
             StringBuffer buffer = new StringBuffer();
 
-            InputStream raw = getClass().getResourceAsStream("engine.js");
+            InputStream raw = getClass().getResourceAsStream(path);
             BufferedReader in = new BufferedReader(new InputStreamReader(raw));
             while (true)
             {
@@ -394,11 +433,12 @@ public class DWRServlet extends HttpServlet
                 buffer.append("\n");
             }
 
-            scriptCache = buffer.toString();
+            output = buffer.toString();
+            scriptCache.put(path, output);
         }
 
         PrintWriter out = resp.getWriter();
-        out.println(scriptCache);
+        out.println(output);
         out.flush();
     }
 
@@ -615,7 +655,7 @@ public class DWRServlet extends HttpServlet
             resp.setContentType("text/xml");
 
             out.println(ss.initCode);
-            out.println("var reply = " + ss.assignCode);
+            out.println("var reply = " + ss.assignCode + ";");
             out.println("dwrHandleResponse(\"" + id + "\", reply);");
         }
         else
@@ -665,7 +705,7 @@ public class DWRServlet extends HttpServlet
     /**
      * We cache the script output for speed
      */
-    private String scriptCache = null;
+    private Map scriptCache = new HashMap();
 
     /**
      * The local configuration settings

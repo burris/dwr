@@ -15,7 +15,7 @@
     <!--
     <create creator="spring" javascript="SpringBean" beanName="SpringBean"/>
     -->
-    <convert converter="auto" match="*"/>
+    <convert converter="bean" match="uk.ltd.getahead.dwr.test.*"/>
     <convert converter="testbean" match="uk.ltd.getahead.dwr.test.TestBean2"/>
   </allow>
 

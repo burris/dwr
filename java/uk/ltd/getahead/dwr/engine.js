@@ -198,7 +198,7 @@ function dwrMarshall(data)
         }
         else if (data instanceof Date)
         {
-            return encodeURIComponent(data);
+            return "[ " + data.getUTCFullYear() + ", " + data.getUTCMonth() + ", " + data.getUTCDate() + ", " + data.getUTCHours() + ", " + data.getUTCMinutes() + ", " + data.getUTCSeconds() + ", " + data.getUTCMilliseconds() + "]";
         }
         else if (data instanceof Array)
         {
@@ -225,12 +225,14 @@ function dwrMarshall(data)
             var reply = "{"
             for (element in data)
             {
+                var marshalled = dwrMarshall(data[element]).toString();
+
                 reply += element;
                 reply += ":";
-                reply += data[element];
+                reply += marshalled;
                 reply += ", ";
             }
-            reply.substring(0, reply.length() - 2);
+            reply.substring(0, reply.length - 2);
             reply += "}";
             return reply;
         }

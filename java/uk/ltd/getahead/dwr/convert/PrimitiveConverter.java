@@ -94,7 +94,7 @@ public class PrimitiveConverter implements Converter
         }
         catch (NumberFormatException ex)
         {
-            throw new ConversionException("Format error: "+ex.getMessage(), ex);
+            throw new ConversionException("Format error converting " + object + " to " + paramType.getName(), ex);
         }
     }
 

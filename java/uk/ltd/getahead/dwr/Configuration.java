@@ -314,10 +314,16 @@ public class Configuration
         Converter converter = getConverter(object);
         if (converter == null)
         {
-            return null;
+            throw new ConversionException("No converter found for " + object.getClass().getName());
         }
 
-        return converter.convertFrom(object);
+        Converter.ScriptSetup ss = converter.convertFrom(object);
+        if (ss == null)
+        {
+            throw new IllegalStateException("null ScriptSetup from " + converter.getClass().getName() + " given " + object);
+        }
+
+        return ss;
     }
 
     /**
@@ -366,7 +372,7 @@ public class Configuration
 
         // We first check for exact matches using instanceof
         Converter converter = null;
-        for (Iterator it = converters.keySet().iterator(); it.hasNext(); )
+        for (Iterator it = converters.keySet().iterator(); it.hasNext() && converter == null; )
         {
             String name = (String) it.next();
             try
@@ -384,8 +390,27 @@ public class Configuration
             }
         }
 
-        while (converter == null)
+        // If we have found it then don't do the wildcard search
+        if (converter != null)
         {
+            return converter;
+        }
+
+        while (true)
+        {
+            // Can we find a converter using wildcards?
+            converter = (Converter) converters.get(lookup+".*");
+            if (converter == null)
+            {
+                converter = (Converter) converters.get(lookup+"*");
+            }
+
+            // Stop looking if we've found one or if the name is now empty
+            if (converter != null || lookup.length() == 0)
+            {
+                break;
+            }
+
             // Strip of the component after the last .
             int lastdot = lookup.lastIndexOf('.');
             if (lastdot == -1)
@@ -402,12 +427,6 @@ public class Configuration
                 }
             }
             lookup = lookup.substring(0, lastdot);
-
-            converter = (Converter) converters.get(lookup+".*");
-            if (converter == null)
-            {
-                converter = (Converter) converters.get(lookup+"*");
-            }
         }
 
         return converter;

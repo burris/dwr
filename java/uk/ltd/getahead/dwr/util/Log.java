@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServlet;
  * A very quick and dirty logging implementation.
  * <code>java.util.logging</code> is out because we work with JDK 1.3 and we
  * don't want to force users to import log4j or commons-logging.
- * TODO: allow log level to be configured from dwr.xml?
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Log
@@ -165,6 +164,38 @@ public class Log
     public static void setLevel(int level)
     {
         Log.level = level;
+    }
+
+    /**
+     * String version of setLevel.
+     * @param logLevel One of FATAL, ERROR, WARN, INFO, DEBUG
+     */
+    public static void setLevel(String logLevel)
+    {
+        if (logLevel.equalsIgnoreCase("FATAL"))
+        {
+            setLevel(LEVEL_FATAL);
+        }
+        else if (logLevel.equalsIgnoreCase("ERROR"))
+        {
+            setLevel(LEVEL_ERROR);
+        }
+        else if (logLevel.equalsIgnoreCase("WARN"))
+        {
+            setLevel(LEVEL_WARN);
+        }
+        else if (logLevel.equalsIgnoreCase("INFO"))
+        {
+            setLevel(LEVEL_INFO);
+        }
+        else if (logLevel.equalsIgnoreCase("DEBUG"))
+        {
+            setLevel(LEVEL_DEBUG);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unknown log level: " + logLevel);
+        }
     }
 
     /**
