@@ -1,34 +1,33 @@
-/**
- *
- */
-function clearChildNodes(id)
-{
-    var elem = document.getElementById(id);
-    while (elem.childNodes.length > 0)
-    {
-        elem.removeChild(elem.firstChild);
-    }
-}
 
 /**
- *
+ * Browser detection code.
+ * For internal use only.
  */
-function drawTable(tbodyID, dataArray, textFuncs)
-{
-    // assure bug-free redraw in Geck engine by
-    // letting window show cleared table
-    if (navigator.product && navigator.product == "Gecko")
-    {
-        setTimeout(function() { drawTableInner(tbodyID, dataArray, textFuncs); }, 0);
-    }
-    else
-    {
-        drawTableInner(tbodyID, dataArray, textFuncs);
-    }
-}
+var agt = navigator.userAgent.toLowerCase();
+var is_major = parseInt(navigator.appVersion);
+var is_minor = parseFloat(navigator.appVersion);
+
+var is_nav = ((agt.indexOf('mozilla') != -1) && (agt.indexOf('spoofer') == -1)
+             && (agt.indexOf('compatible') == -1) && (agt.indexOf('opera') == -1)
+             && (agt.indexOf('webtv') == -1) && (agt.indexOf('hotjava') == -1));
+
+var is_nav4up = (is_nav && (is_major >= 4));
+var is_nav6up = (is_nav && (is_major >= 5));
+var is_gecko = (agt.indexOf('gecko') != -1);
+
+var is_ie     = ((agt.indexOf("msie") != -1) && (agt.indexOf("opera") == -1));
+var is_ie3    = (is_ie && (is_major < 4));
+var is_ie4    = (is_ie && (is_major == 4) && (agt.indexOf("msie 4")!=-1) );
+var is_ie4up  = (is_ie && (is_major >= 4));
+var is_ie5    = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.0")!=-1) );
+var is_ie5_5  = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.5") !=-1));
+var is_ie5up  = (is_ie && !is_ie3 && !is_ie4);
+var is_ie5_5up =(is_ie && !is_ie3 && !is_ie4 && !is_ie5);
+var is_ie6    = (is_ie && (is_major == 4) && (agt.indexOf("msie 6.")!=-1) );
+var is_ie6up  = (is_ie && !is_ie3 && !is_ie4 && !is_ie5 && !is_ie5_5);
 
 /**
- *
+ * Set the CSS display style to 'block'
  */
 function showById(id)
 {
@@ -36,7 +35,7 @@ function showById(id)
 }
 
 /**
- *
+ * Set the CSS display style to 'none'
  */
 function hideById(id)
 {
@@ -60,7 +59,7 @@ function toggleDisplay(id)
 }
 
 /**
- *
+ * Set the CSS class for an element
  */
 function setCSSClass(id, cssclass)
 {
@@ -72,7 +71,111 @@ function setCSSClass(id, cssclass)
 }
 
 /**
- *
+ * Remove all the children of a given node.
+ * Most useful for dynamic tables where you clearChildNodes() on the tbody
+ * element.
+ */
+function clearChildNodes(id)
+{
+    var elem = document.getElementById(id);
+    while (elem.childNodes.length > 0)
+    {
+        elem.removeChild(elem.firstChild);
+    }
+}
+
+/**
+ * Remove all the options from a select list (specified by id) and replace with
+ * elements in an array of objects. The value and text of each option are taken
+ * from the valueprop and textprop parameters.
+ * If both are left empty then the object itself will be used.
+ */
+function fillList(id, data, valueprop, textprop)
+{
+    var ele = document.getElementById(id);
+
+    if (ele == null)
+    {
+        alert("Element id: "+id+" not found.");
+        throw id;
+    }
+
+    if (!isHTMLSelectElement(ele))
+    {
+        alert("fillList() can only be used with select elements. Attempt to use: " + detailedTypeOf(ele));
+        throw ele;
+    }
+
+    // Empty the list
+    ele.options.length = 0;
+
+    // Bail if we have no data
+    if (data == null)
+    {
+        return;
+    }
+
+    // Loop through the data that we do have
+    for (var i = 0; i < data.length; i++)
+    {
+        var text;
+        var value;
+
+        if (valueprop != null)
+        {
+            if (textprop != null)
+            {
+                text = data[i][textprop];
+                value = data[i][valueprop];
+            }
+            else
+            {
+                value = data[i][valueprop];
+                text = value;
+            }
+        }
+        else
+        {
+            if (textprop != null)
+            {
+                text = data[i][textprop];
+                value = text;
+            }
+            else
+            {
+                text = toDescriptiveString(data[i]);
+                value = text;
+            }
+        }
+
+        var opt = new Option(text, value);
+        ele.options[ele.options.length] = opt;
+    }
+}
+
+/**
+ * TODO: This should probably be renamed fillTable()
+ * Under the tbody (given by id) create a row for each element in the dataArray
+ * and for that row create one cell for each function in the textFuncs array
+ * by passing the rows object (from the dataArray) to the given function.
+ * The return from the function is used to populate the cell.
+ */
+function drawTable(tbodyID, dataArray, textFuncs)
+{
+    // assure bug-free redraw in Geck engine by
+    // letting window show cleared table
+    if (navigator.product && navigator.product == "Gecko")
+    {
+        setTimeout(function() { drawTableInner(tbodyID, dataArray, textFuncs); }, 0);
+    }
+    else
+    {
+        drawTableInner(tbodyID, dataArray, textFuncs);
+    }
+}
+
+/**
+ * Internal function to help rendering tables
  */
 function drawTableInner(tbodyID, dataArray, textFuncs)
 {
@@ -118,7 +221,7 @@ function drawTableInner(tbodyID, dataArray, textFuncs)
 }
 
 /**
- *
+ * Visually enable or diable an element.
  */
 function setEnabled(id, state)
 {
@@ -132,7 +235,7 @@ function setEnabled(id, state)
     // If we want to get funky and disable divs and spans by changing the font
     // colour or something then we might want to check the element type before
     // we make assumptions, but in the mean time ...
-    // if (isHTMLInputElement(ele)) { ...
+    // if (isHTMLInputElement(ele)) { ... }
 
     ele.disabled = !state;
     ele.readonly = !state;
@@ -150,31 +253,8 @@ function setEnabled(id, state)
     }
 }
 
-var agt = navigator.userAgent.toLowerCase();
-var is_major = parseInt(navigator.appVersion);
-var is_minor = parseFloat(navigator.appVersion);
-
-var is_nav = ((agt.indexOf('mozilla') != -1) && (agt.indexOf('spoofer') == -1)
-             && (agt.indexOf('compatible') == -1) && (agt.indexOf('opera') == -1)
-             && (agt.indexOf('webtv') == -1) && (agt.indexOf('hotjava') == -1));
-
-var is_nav4up = (is_nav && (is_major >= 4));
-var is_nav6up = (is_nav && (is_major >= 5));
-var is_gecko = (agt.indexOf('gecko') != -1);
-
-var is_ie     = ((agt.indexOf("msie") != -1) && (agt.indexOf("opera") == -1));
-var is_ie3    = (is_ie && (is_major < 4));
-var is_ie4    = (is_ie && (is_major == 4) && (agt.indexOf("msie 4")!=-1) );
-var is_ie4up  = (is_ie && (is_major >= 4));
-var is_ie5    = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.0")!=-1) );
-var is_ie5_5  = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.5") !=-1));
-var is_ie5up  = (is_ie && !is_ie3 && !is_ie4);
-var is_ie5_5up =(is_ie && !is_ie3 && !is_ie4 && !is_ie5);
-var is_ie6    = (is_ie && (is_major == 4) && (agt.indexOf("msie 6.")!=-1) );
-var is_ie6up  = (is_ie && !is_ie3 && !is_ie4 && !is_ie5 && !is_ie5_5);
-
 /**
- *
+ * Is the given node an HTML element?
  */
 function isHTMLElement(ele)
 {
@@ -191,7 +271,7 @@ function isHTMLElement(ele)
 }
 
 /**
- *
+ * Is the given node an HTML input element?
  */
 function isHTMLInputElement(ele)
 {
@@ -207,7 +287,7 @@ function isHTMLInputElement(ele)
 }
 
 /**
- *
+ * Is the given node an HTML textarea element?
  */
 function isHTMLTextAreaElement(ele)
 {
@@ -223,7 +303,7 @@ function isHTMLTextAreaElement(ele)
 }
 
 /**
- *
+ * Is the given node an HTML select element?
  */
 function isHTMLSelectElement(ele)
 {
@@ -239,7 +319,9 @@ function isHTMLSelectElement(ele)
 }
 
 /**
- *
+ * Set the value for the given id to the specified val.
+ * This method works for selects (where the option with a matching value and
+ * not text is selected), input elements (including textareas) divs and spans.
  */
 function setValue(id, val)
 {
@@ -328,7 +410,9 @@ function setValue(id, val)
 }
 
 /**
- *
+ * The counterpart to setValue() - read the current value for a given element.
+ * This method works for selects (where the option with a matching value and
+ * not text is selected), input elements (including textareas) divs and spans.
  */
 function getValue(id)
 {
@@ -388,7 +472,8 @@ function getValue(id)
 }
 
 /**
- *
+ * getText() is like getValue() with the except that it only works for selects
+ * where it reads the text of an option and not it's value.
  */
 function getText(id)
 {
@@ -420,7 +505,8 @@ function getText(id)
 }
 
 /**
- *
+ * Given a map, call setValue() for all the entries in the map using the key
+ * of each entry as an id.
  */
 function setValues(map)
 {
@@ -428,72 +514,6 @@ function setValues(map)
     {
         var value = map[property];
         setValue(property, value);
-    }
-}
-
-/**
- *
- */
-function fillList(id, data, valueprop, textprop)
-{
-    var ele = document.getElementById(id);
-
-    if (ele == null)
-    {
-        alert("Element id: "+id+" not found.");
-        throw id;
-    }
-
-    if (!isHTMLSelectElement(ele))
-    {
-        alert("fillList() can only be used with select elements. Attempt to use: " + detailedTypeOf(ele));
-        throw ele;
-    }
-
-    // Empty the list
-    ele.options.length = 0;
-
-    // Bail if we have no data
-    if (data == null)
-    {
-        return;
-    }
-
-    // Loop through the data that we do have
-    for (var i = 0; i < data.length; i++)
-    {
-        var text;
-        var value;
-
-        if (valueprop != null)
-        {
-            if (textprop != null)
-            {
-                text = data[i][textprop];
-                value = data[i][valueprop];
-            }
-            else
-            {
-                value = data[i][valueprop];
-                text = value;
-            }
-        }
-        else
-        {
-            if (textprop != null)
-            {
-                text = data[i][textprop];
-                value = text;
-            }
-            else
-            {
-                text = toDescriptiveString(data[i]);
-                value = text;
-            }
-        }
-
-        var opt = new Option(text, value);
-        ele.options[ele.options.length] = opt;
     }
 }
 
@@ -605,7 +625,8 @@ function toDescriptiveString(object)
 }
 
 /**
- *
+ * Like typeOf except that more information for an object is returned other
+ * than "object"
  */
 function detailedTypeOf(x)
 {

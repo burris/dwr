@@ -6,23 +6,17 @@
   <link rel="stylesheet" type="text/css" href="generic.css"/>
   <script type='text/javascript' src='/dwr/dwr/interface/Demo.js'></script>
   <script type='text/javascript' src='/dwr/dwr/engine.js'></script>
+  <script type='text/javascript' src='/dwr/dwr/util.js'></script>
   <script>
   function update()
   {
       var bigselect = document.getElementById("bigselect");
-      Demo.getNumbers(fillList, bigselect.checked);
+      Demo.getNumbers(createList, bigselect.checked);
   }
 
-  function fillList(data)
+  function createList(data)
   {
-      var numlist = document.getElementById("numlist");
-      numlist.options.length = 0;
-      for (var i = 0; i < data.length; i++)
-      {
-          var opt = new Option(data[i]);
-          numlist.options[numlist.options.length] = opt;
-      }
-      numlist.size = data.length;
+      fillList("numlist", data);
   }
   </script>
 </head>
@@ -53,7 +47,7 @@
 function update()
 {
     var bigselect = document.getElementById("bigselect");
-    Demo.getNumbers(fillList, bigselect.checked);
+    Demo.getNumbers(createList, bigselect.checked);
 }
 </pre>
 
@@ -78,29 +72,23 @@ public int[] getNumbers(boolean big)
 </pre>
 
 <p>
-  When this method returns, we asked DWR to call <code>fillList()</code> when
-  we got data from the getNumbers call. The <code>fillList()</code> JavaScript
+  When this method returns, we asked DWR to call <code>createList()</code> when
+  we got data from the getNumbers call. The <code>createList()</code> JavaScript
   function looks like this:
 </p>
 
 <pre>
-function fillList(data)
+function createList(data)
 {
-    var numlist = document.getElementById("numlist");
-    numlist.options.length = 0;
-    for (var i = 0; i < data.length; i++)
-    {
-        var opt = new Option(data[i]);
-        numlist.options[numlist.options.length] = opt;
-    }
-    numlist.size = data.length;
+    fillList("numlist", data);
 }
 </pre>
 
 <p>
-  This function takes the data returned from <code>getNumbers()</code> as the
-  <code>data</code> parameter and loops over the elements of the array creating
-  new options for the select as it goes.
+  The fillList function comes from <code>util.js</code>. It takes the data
+  returned from <code>getNumbers()</code> as the <code>data</code> parameter and
+  loops over the elements of the array creating new options for the select as it
+  goes.
 </p>
 
 </body>
