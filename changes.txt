@@ -1,4 +1,15 @@
 
+Todo
+----
+tests for collections converter
+write bean converter
+tests for bean converter
+write form example
+write table example
+create config file web.xml element
+test dual deploy in web.xml for j2ee security
+update config docs
+
 Recent changes
 --------------
 Added code to support StringEscapeUtils.escapeJavaScript() from commons-lang (Dimitry D'hondt/Joe Walker)

@@ -5,5 +5,5 @@
 	<classpathentry kind="lib" path="jar/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="jar/xml-apis.jar"/>
 	<classpathentry kind="src" path="java"/>
-	<classpathentry kind="output" path="www/WEB-INF/classes"/>
+	<classpathentry kind="output" path="web/WEB-INF/classes"/>
 </classpath>

@@ -1,6 +1,7 @@
 package uk.ltd.getahead.dwr.convert;
 
-import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import uk.ltd.getahead.dwr.Configuration;
@@ -8,11 +9,11 @@ import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 
 /**
- * An implementation of Converter for Arrays.
+ * An implementation of Converter for Collections of Strings.
  * @author Joe Walker [joe at eireneh dot com]
  * @version $Id: StringConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
  */
-public class ArrayConverter implements Converter
+public class CollectionConverter implements Converter
 {
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
@@ -27,11 +28,6 @@ public class ArrayConverter implements Converter
      */
     public Object convertTo(Class paramType, String data) throws ConversionException
     {
-        if (!paramType.isArray())
-        {
-            throw new ConversionException("Class: " + paramType + " is not an array type");
-        }
-
         if (data.startsWith("["))
         {
             data = data.substring(1);
@@ -46,17 +42,15 @@ public class ArrayConverter implements Converter
             StringTokenizer st = new StringTokenizer(data, ",");
             int size = st.countTokens();
 
-            Class componentType = paramType.getComponentType();
-            //componentType = LocalUtil.getNonPrimitiveType(componentType);
-            Object array = Array.newInstance(componentType, size);
+            Collection col = (Collection) paramType.newInstance();
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-                Object converted = config.convertTo(componentType, token);
-                Array.set(array, i, converted);
+                Object converted = config.convertTo(String.class, token);
+                col.add(converted);
             }
 
-            return array;
+            return col;
         }
         catch (Exception ex)
         {
@@ -71,29 +65,30 @@ public class ArrayConverter implements Converter
     {
         ScriptSetup ss = new ScriptSetup();
 
-        if (!data.getClass().isArray())
-        {
-            throw new ConversionException("Class: " + data.getClass() + " is not an array type");
-        }
+        Collection col = (Collection) data;
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var dwrArray = new Array();");
+        buffer.append("var dwrCol = new Array();");
 
-        int size = Array.getLength(data);
-        for (int i = 0; i < size; i++)
+        int i = 0;
+        for (Iterator it = col.iterator(); it.hasNext();)
         {
-            ScriptSetup converted = config.convertFrom(Array.get(data, i));
+            Object element = it.next();
+
+            ScriptSetup converted = config.convertFrom(element);
 
             buffer.append(converted.initCode);
-            buffer.append("dwrArray[");
+            buffer.append("dwrCol[");
             buffer.append(i);
             buffer.append("] = ");
             buffer.append(converted.assignCode);
             buffer.append(";");
+
+            i++;
         }
 
         ss.initCode = buffer.toString();
-        ss.assignCode = "dwrArray";
+        ss.assignCode = "dwrCol";
 
         return ss;
     }

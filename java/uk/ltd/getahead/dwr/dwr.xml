@@ -13,7 +13,7 @@
     <converter id="string" class="uk.ltd.getahead.dwr.convert.StringConverter"/>
     <converter id="array" class="uk.ltd.getahead.dwr.convert.ArrayConverter"/>
     <!-- converter id="collection" class="uk.ltd.getahead.dwr.convert.CollectionConverter"/ -->
-    <converter id="auto" class="uk.ltd.getahead.dwr.convert.AutoConverter"/>
+    <converter id="bean" class="uk.ltd.getahead.dwr.convert.BeanConverter"/>
   </init>
 
   <allow>
@@ -45,7 +45,9 @@
     <convert converter="array" match="[C"/>
     <convert converter="string" match="java.lang.String"/>
     <convert converter="array" match="[L*"/>
-    <!-- convert converter="collection" match="java.util.Collection"/ -->
+    <!-- The catch here is that we really mean java.util.Collection<String>
+    but we need to do more work before this syntax is enabled -->
+    <convert converter="collection" match="java.util.Collection"/>
   </allow>
 
 </dwr>

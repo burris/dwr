@@ -6,7 +6,7 @@
   <property name="source.java" value="${source.root}/java"/>
   <property name="source.jar" value="${source.root}/jar"/>
   <property name="source.etc" value="${source.root}/etc"/>
-  <property name="source.web" value="${source.root}/www"/>
+  <property name="source.web" value="${source.root}/web"/>
 
   <property name="target.root" value="${source.root}/target/ant"/>
   <property name="target.classes" value="${target.root}/temp/classes"/>

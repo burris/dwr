@@ -615,7 +615,7 @@ public class DWRServlet extends HttpServlet
             resp.setContentType("text/xml");
 
             out.println(ss.initCode);
-            out.println("var reply = "+ss.assignCode);
+            out.println("var reply = " + ss.assignCode);
             out.println("dwrHandleResponse(\"" + id + "\", reply);");
         }
         else
@@ -625,8 +625,8 @@ public class DWRServlet extends HttpServlet
             out.println("<html><head><title>DWR Exec Reply</title></head><body>");
             out.println("<script type='text/javascript'>");
             out.println(ss.initCode);
-            out.println("var reply = "+ss.assignCode);
-            out.println("window.parent.dwrHandleResponse(\""+id+"\", reply);");
+            out.println("var reply = " + ss.assignCode + ";");
+            out.println("window.parent.dwrHandleResponse(\"" + id + "\", reply);");
             out.println("</script>");
             out.println("</body></html>");
         }

@@ -11,6 +11,7 @@
     <create creator="new" javascript="Test" class="uk.ltd.getahead.dwr.test.Test"/>
     <create creator="new" javascript="Date" class="java.util.Date"/>
     <create creator="session" javascript="TestBean" class="uk.ltd.getahead.dwr.test.TestBean"/>
+    <create creator="session" javascript="Demo" class="uk.ltd.getahead.dwr.test.Demo"/>
     <!--
     <create creator="spring" javascript="SpringBean" beanName="SpringBean"/>
     -->

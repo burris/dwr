@@ -1,11 +1,11 @@
 package uk.ltd.getahead.dwr.test;
 
-import uk.ltd.getahead.dwr.convert.AutoConverter;
+import uk.ltd.getahead.dwr.convert.BeanConverter;
 
 /**
  * For demo purposes
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class TestBean2Converter extends AutoConverter
+public class TestBean2Converter extends BeanConverter
 {
 }

@@ -107,7 +107,7 @@ function dwrExecute(func, classname, methodname, vararg_params)
         dwrPreHook();
     }
 
-    if (func != null && typeof func != "function")
+    if (func != null && typeof func != "function" && typeof func != "object")
     {
         alert("Supplied callback function is neither null nor a function: "+func);
         return;

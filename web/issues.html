@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <title>DWR Issues</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+  <link rel="stylesheet" type="text/css" href="generic.css"/>
+</head>
+
+<body>
+<iframe id="sidebar" src="sidebar.html" frameborder="0"></iframe>
+
+<h2>Issues with DWR</h2>
+
+<h3>Asynchronisity</h3>
+<p>
+  It might be nice if DWR could return the data to Javascript without you
+  having to pass a callback function as the first parameter. The bad news is
+  that this is unlikely to happen. Javascript is designed to be non-stop, so
+  there is no <code>wait()</code> function, you have to set a timeout using
+  a function in the same way the DWR uses.
+  <br/>
+  It is possible using the IE HttpXMLRequest object to do a synchronous call.
+  However doing so will freeze your browser while the call executes, which if
+  the call fails could be very annoying to the user, and in addition the same
+  functionallity is not provided by the Mozilla HttpXMLRequest object nor is it
+  possible using the iframe method.
+  <br/>
+  It may be more of a hassle writing callback functions but your code will be
+  better for it in the long term.
+</p>
+
+<h3>Marshalling to a collection</h3>
+<p>
+  Suppose you are trying to call a Java method that does something like this:
+</p>
+<pre>
+public void debugPeople(List people)
+{
+    for (Iterator it = people.iterator(); it.hasNext();)
+    {
+        Person person = (Person) it.next();
+        System.out.println(person.getDebugInfo());
+    }
+}
+</pre>
+<p>
+  DWR has a problem: there is nothing in the signature of the method that
+  can tell DWR that the List is expected to be a list of people. DWR may well
+  have data that it could use to create people, however unless we can tell it
+  to create people, we are stuck.
+  <br/>
+  In the short term there are 2 solutions - Either use an array instead of a
+  collection, or write the methods to use Collections of Strings. In the long
+  term the problem could be solved by everyone changing to the JDK 1.5 syntax.
+  There is a potential for us to invent an extension to the dwr.xml config
+  file that allowed us to say <code>void debugPeople(List people)</code> is the
+  same as <code>void debugPeople(List&lt;Person> people)</code>.
+</p>
+
+</body>
+</html>
