@@ -13,6 +13,8 @@ Changed compilations to include 1.3 VMs. Not tested on anything but 1.4/5 though
 Added execute using XMLHttpRequest, or a fallback to iframe.
 Tweak to make server responses clearer in demo pages
 Separated engine.js to make changing it easier
+Fixed a bug that caused the errorHandler to be called whatever (Dave Rooney)
+Fixed a bug that failed to cut up the allowed parameter properly (Daniel Wunsch)
 
 
 About role membership

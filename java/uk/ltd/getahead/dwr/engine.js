@@ -52,7 +52,7 @@ function dwrHandleError(reason)
         postHook();
     }
 
-    if (errorHandler != null);
+    if (errorHandler != null)
     {
         errorHandler(reason);
     }

@@ -64,8 +64,9 @@ public class DWRServlet extends HttpServlet
             throw new ServletException("Mising 'allowed' init-parameter");
         }
 
-        allowStr = allowStr.replace(',', ' ');
-        allowStr = allowStr.replaceAll("\t\r\n", " ");
+        // replace all the commas, tabs and new lines with spaces.
+        allowStr = allowStr.replaceAll("(,|\t|\r|\n)+", " ");
+        allowStr = allowStr.trim();
         String[] allowArray = allowStr.split(" ");
         for (int i = 0; i < allowArray.length; i++)
         {
