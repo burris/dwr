@@ -5,11 +5,13 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.Configuration;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.ScriptSetup;
 import uk.ltd.getahead.dwr.util.Log;
 
 /**
@@ -22,7 +24,7 @@ public class DateConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
      */
-    public void init(Configuration config)
+    public void init(ConverterManager config)
     {
     }
 
@@ -106,9 +108,9 @@ public class DateConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, Map)
      */
-    public ScriptSetup convertFrom(Object data) throws ConversionException
+    public ScriptSetup convertFrom(Object data, Map converted, String varname) throws ConversionException
     {
         if (!(data instanceof Date))
         {
@@ -120,7 +122,7 @@ public class DateConverter implements Converter
         calendar.setTime(date);
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var dwrDate = new Date(");
+        buffer.append("var " + varname + " = new Date(");
         buffer.append(calendar.get(Calendar.YEAR));
         buffer.append(", ");
         buffer.append(calendar.get(Calendar.MONTH));
@@ -136,7 +138,11 @@ public class DateConverter implements Converter
         buffer.append(calendar.get(Calendar.MILLISECOND));
         buffer.append(");");
 
-        return new ScriptSetup(buffer.toString(), "dwrDate");
+        ScriptSetup ss = new ScriptSetup();
+        ss.initCode = buffer.toString();
+        ss.assignCode = varname;
+        ss.isValueType = false;
+        return ss;
     }
 
     /**

@@ -1,0 +1,43 @@
+package uk.ltd.getahead.dwr;
+
+/**
+ * A simple data container for 2 strings that comprise information about
+ * how a Java object has been converted into Javascript
+ */
+public class ScriptSetup
+{
+    /**
+     * Default ctor that leaves blank (not null) members
+     */
+    public ScriptSetup()
+    {
+    }
+
+    /**
+     * Default ctor that leaves blank (not null) members
+     * @param initCode the init script
+     * @param assignCode the access for the inited code
+     */
+    public ScriptSetup(String initCode, String assignCode)
+    {
+        this.initCode = initCode;
+        this.assignCode = assignCode;
+    }
+
+    /**
+     * The code to be executed to initialize any variables
+     */
+    public String initCode = "";
+
+    /**
+     * The code to be executed to get the value of the initialized data
+     */
+    public String assignCode = "";
+
+    /**
+     * Should this conversion from java to javascript be cached in case it
+     * comes up again by being referenced from somewhere else in this method
+     * call?
+     */
+    public boolean isValueType = true;
+}

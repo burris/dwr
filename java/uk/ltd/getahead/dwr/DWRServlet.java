@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.xml.sax.SAXException;
 
-import uk.ltd.getahead.dwr.Converter.ScriptSetup;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Log;
@@ -75,12 +74,7 @@ public class DWRServlet extends HttpServlet
             // Find all the init params
             Enumeration en = config.getInitParameterNames();
 
-            // If there are none then use the default name
-            if (!en.hasMoreElements())
-            {
-                in = config.getServletContext().getResourceAsStream("WEB-INF/dwr.xml");
-                configuration.addConfig(in);
-            }
+            boolean foundConfig = false;
 
             // Loop through the ones that do exist
             while (en.hasMoreElements())
@@ -92,7 +86,16 @@ public class DWRServlet extends HttpServlet
                     String configFile = config.getInitParameter(name);
                     in = config.getServletContext().getResourceAsStream(configFile);
                     configuration.addConfig(in);
+
+                    foundConfig = true;
                 }
+            }
+
+            // If there are none then use the default name
+            if (!foundConfig)
+            {
+                in = config.getServletContext().getResourceAsStream("WEB-INF/dwr.xml");
+                configuration.addConfig(in);
             }
         }
         catch (SAXException ex)
@@ -100,6 +103,9 @@ public class DWRServlet extends HttpServlet
             Log.fatal("Failed to parse dwr.xml", ex);
             throw new ServletException("Parse error reading from dwr.xml", ex);
         }
+
+        converterManager = configuration.getConverterManager();
+        creatorManager = configuration.getCreatorManager();
     }
 
     /* (non-Javadoc)
@@ -190,10 +196,10 @@ public class DWRServlet extends HttpServlet
         out.println("<body>");
         out.println("<h2>Classes known to DWR:</h2>");
 
-        for (Iterator it = configuration.getCreatorNames().iterator(); it.hasNext();)
+        for (Iterator it = creatorManager.getCreatorNames().iterator(); it.hasNext();)
         {
             String name = (String) it.next();
-            Creator creator = configuration.getCreator(name);
+            Creator creator = creatorManager.getCreator(name);
             out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+"/test/"+name+"'>"+name+"</a> ("+creator.getType().getName()+")</li>");
         }
 
@@ -212,11 +218,7 @@ public class DWRServlet extends HttpServlet
         scriptname = LocalUtil.replace(scriptname, "/test/", "");
         scriptname = LocalUtil.replace(scriptname, "/", "");
 
-        Creator creator = configuration.getCreator(scriptname);
-        if (creator == null)
-        {
-            throw new SecurityException("No class by name: "+scriptname);
-        }
+        Creator creator = creatorManager.getCreator(scriptname);
 
         Method[] methods = creator.getType().getDeclaredMethods();
 
@@ -305,12 +307,12 @@ public class DWRServlet extends HttpServlet
             // Print a warning if the method uses un-marshallable types
             for (int j = 0; j < paramTypes.length; j++)
             {
-                if (!configuration.isConvertable(paramTypes[j]))
+                if (!converterManager.isConvertable(paramTypes[j]))
                 {
                     out.println("<span style='font-size: smaller; color: red;'>(Warning: "+paramTypes[j].getName()+" param not marshallable)</span>");
                 }
             }
-            if (!configuration.isConvertable(method.getReturnType()))
+            if (!converterManager.isConvertable(method.getReturnType()))
             {
                 out.println("<span style='font-size: smaller; color: red;'>(Warning: "+method.getReturnType().getName()+" return type not marshallable)</span>");
             }
@@ -342,11 +344,7 @@ public class DWRServlet extends HttpServlet
         String pathinfo = req.getPathInfo();
         pathinfo = LocalUtil.replace(pathinfo, "/interface/", "");
         pathinfo = LocalUtil.replace(pathinfo, ".js", "");
-        Creator creator = configuration.getCreator(pathinfo);
-        if (creator == null)
-        {
-            throw new SecurityException("No class by name: "+pathinfo);
-        }
+        Creator creator = creatorManager.getCreator(pathinfo);
 
         //resp.setContentType("text/javascript");
         PrintWriter out = resp.getWriter();
@@ -454,11 +452,7 @@ public class DWRServlet extends HttpServlet
         try
         {
             String className = req.getParameter("class");
-            Creator creator = configuration.getCreator(className);
-            if (creator == null)
-            {
-                throw new SecurityException("No class by name: "+className);
-            }
+            Creator creator = creatorManager.getCreator(className);
 
             String methodName = req.getParameter("method");
             if (methodName == null)
@@ -503,7 +497,7 @@ public class DWRServlet extends HttpServlet
                         {
                             Class paramType = method.getParameterTypes()[j];
                             String param = (String) paramList.get(j);
-                            converted[j] = configuration.convertTo(paramType, param);
+                            converted[j] = converterManager.convertTo(paramType, param);
                             if (converted[j] == null)
                             {
                                 break methods;
@@ -638,7 +632,7 @@ public class DWRServlet extends HttpServlet
     {
         PrintWriter out = resp.getWriter();
 
-        ScriptSetup ss = configuration.convertFrom(reply);
+        ScriptSetup ss = converterManager.convertFrom(reply);
         Log.info("Returning: id[" + id + "] init[" + ss.initCode + "] assign[" + ss.assignCode + "] xml[" + xml + "]");
 
         // Set standard HTTP/1.1 no-cache headers.
@@ -711,4 +705,14 @@ public class DWRServlet extends HttpServlet
      * The local configuration settings
      */
     private Configuration configuration = null;
+
+    /**
+     * How we create new beans
+     */
+    private CreatorManager creatorManager = null;
+
+    /**
+     * How we convert parameters
+     */
+    private ConverterManager converterManager = null;
 }

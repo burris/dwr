@@ -1,12 +1,15 @@
 package uk.ltd.getahead.dwr.convert;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.Configuration;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.ScriptSetup;
 
 /**
  * An implementation of Converter for Collections of Strings.
@@ -18,7 +21,7 @@ public class CollectionConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
      */
-    public void init(Configuration newConfig)
+    public void init(ConverterManager newConfig)
     {
         this.config = newConfig;
     }
@@ -42,12 +45,25 @@ public class CollectionConverter implements Converter
             StringTokenizer st = new StringTokenizer(data, ",");
             int size = st.countTokens();
 
-            Collection col = (Collection) paramType.newInstance();
+            Collection col;
+            if (Iterator.class.isAssignableFrom(paramType))
+            {
+                col = new ArrayList();
+            }
+            else if (Collection.class.isAssignableFrom(paramType))
+            {
+                col = (Collection) paramType.newInstance();
+            }
+            else
+            {
+                throw new ConversionException("Can't convert javascript arrays to " + paramType);
+            }
+
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-                Object converted = config.convertTo(String.class, token);
-                col.add(converted);
+                Object output = config.convertTo(String.class, token);
+                col.add(output);
             }
 
             return col;
@@ -59,39 +75,55 @@ public class CollectionConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, Map)
      */
-    public ScriptSetup convertFrom(Object data) throws ConversionException
+    public ScriptSetup convertFrom(Object data, Map converted, String varname) throws ConversionException
     {
-        ScriptSetup ss = new ScriptSetup();
-
-        Collection col = (Collection) data;
+        Iterator it = null;
+        if (data instanceof Collection)
+        {
+            Collection col = (Collection) data;
+            it = col.iterator();
+        }
+        else if (data instanceof Iterator)
+        {
+            it = (Iterator) data;
+        }
+        else
+        {
+            throw new ConversionException("Can't convert " + data.getClass().getName() + " to a javscript array.");
+        }
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var dwrCol = new Array();");
+        buffer.append("var " + varname + " = new Array();");
 
         int i = 0;
-        for (Iterator it = col.iterator(); it.hasNext();)
+        while (it.hasNext())
         {
             Object element = it.next();
 
-            ScriptSetup converted = config.convertFrom(element);
+            ScriptSetup nested = config.convertFrom(element, converted);
 
-            buffer.append(converted.initCode);
-            buffer.append("dwrCol[");
+            buffer.append(nested.initCode);
+            buffer.append(varname);
+            buffer.append("[");
             buffer.append(i);
             buffer.append("] = ");
-            buffer.append(converted.assignCode);
+            buffer.append(nested.assignCode);
             buffer.append(";");
 
             i++;
         }
 
+        ScriptSetup ss = new ScriptSetup();
         ss.initCode = buffer.toString();
-        ss.assignCode = "dwrCol";
-
+        ss.assignCode = varname;
+        ss.isValueType = false;
         return ss;
     }
 
-    private Configuration config;
+    /**
+     * For nested conversions
+     */
+    private ConverterManager config;
 }

@@ -1,11 +1,15 @@
 package uk.ltd.getahead.dwr.convert;
 
-import uk.ltd.getahead.dwr.Configuration;
+import java.util.Map;
+
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.ScriptSetup;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 
 /**
+ * Converter for all primitive types
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class PrimitiveConverter implements Converter
@@ -13,7 +17,7 @@ public class PrimitiveConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
      */
-    public void init(Configuration config)
+    public void init(ConverterManager config)
     {
     }
     
@@ -99,9 +103,9 @@ public class PrimitiveConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, Map)
      */
-    public ScriptSetup convertFrom(Object object)
+    public ScriptSetup convertFrom(Object object, Map converted, String varname)
     {
         Class paramType = object.getClass();
 

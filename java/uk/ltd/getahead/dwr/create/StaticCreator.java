@@ -1,7 +1,6 @@
 package uk.ltd.getahead.dwr.create;
 
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import uk.ltd.getahead.dwr.Creator;
 
@@ -16,7 +15,7 @@ public class StaticCreator implements Creator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.create.Creator#init(java.lang.String, org.w3c.dom.Element)
      */
-    public void init(Element config) throws SAXException
+    public void init(Element config) throws IllegalArgumentException
     {
         String classname = config.getAttribute("class");
 
@@ -26,7 +25,7 @@ public class StaticCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new SAXException("Class not found: "+classname);
+            throw new IllegalArgumentException("Class not found: "+classname);
         }
     }
 

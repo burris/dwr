@@ -3,11 +3,6 @@ package uk.ltd.getahead.dwr;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -20,8 +15,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * The Configuration class has responsibility for reading all config data from
@@ -44,6 +37,9 @@ public class Configuration
         }
 
         this.debug = debug;
+
+        converterManager = new ConverterManager();
+        creatorManager = new CreatorManager(debug);
     }
 
     /**
@@ -140,7 +136,7 @@ public class Configuration
         try
         {
             Class clazz = Class.forName(classname);
-            creatorTypes.put(id, clazz);
+            creatorManager.addCreatorType(id, clazz);
         }
         catch (ClassNotFoundException ex)
         {
@@ -161,7 +157,7 @@ public class Configuration
         try
         {
             Class clazz = Class.forName(classname);
-            converterTypes.put(id, clazz);
+            converterManager.addConverterType(id, clazz);
         }
         catch (ClassNotFoundException ex)
         {
@@ -203,22 +199,14 @@ public class Configuration
     {
         String match = allower.getAttribute("match");
         String type = allower.getAttribute("converter");
-        Class clazz = (Class) converterTypes.get(type);
-        if (clazz == null)
-        {
-            throw new SAXException("Unknown converter called: "+type);
-        }
 
         try
         {
-            Converter converter = (Converter) clazz.newInstance();
-            converter.init(this);
-
-            converters.put(match, converter);
+            converterManager.addConverter(match, type);
         }
         catch (Exception ex)
         {
-            throw new SAXException("Error instansiating: "+clazz.getName(), ex);
+            throw new SAXException("Error instansiating: "+type, ex);
         }
     }
 
@@ -231,18 +219,14 @@ public class Configuration
     {
         String type = allower.getAttribute("creator");
         String javascript = allower.getAttribute("javascript");
-        Class clazz = (Class) creatorTypes.get(type);
 
         try
         {
-            Creator creator = (Creator) clazz.newInstance();
-            creator.init(allower);
-
-            creators.put(javascript, creator);
+            creatorManager.addCreator(type, javascript, allower);
         }
         catch (Exception ex)
         {
-            throw new SAXException("Error instansiating: "+clazz.getName(), ex);
+            throw new SAXException("Error instansiating: "+type, ex);
         }
     }
 
@@ -253,33 +237,6 @@ public class Configuration
     public boolean isDebugMode()
     {
         return debug;
-    }
-
-    /**
-     * Get a list of the javascript names of the allowed creators.
-     * This method could be seen as a security risk because it could allow an
-     * attacker to find out extra information about your system so it is only
-     * available if debug is turned on.
-     * @return Loop over all the known allowed classes
-     */
-    protected Collection getCreatorNames()
-    {
-        if (!debug)
-        {
-            throw new SecurityException();
-        }
-
-        return Collections.unmodifiableSet(creators.keySet());
-    }
-
-    /**
-     * Find an <code>Creator</code> by name
-     * @param name The name to lookup against
-     * @return The found Creator instance, or null if none was found.
-     */
-    public Creator getCreator(String name)
-    {
-        return (Creator) creators.get(name);
     }
 
     /**
@@ -294,163 +251,32 @@ public class Configuration
     }
 
     /**
-     * Check if we can coerce the given type
-     * @param paramType The type to check
-     * @return true iff <code>paramType</code> is coercable
+     * Accessor for the CreatorManager that we configure
+     * @return the configured CreatorManager
      */
-    public boolean isConvertable(Class paramType)
+    public CreatorManager getCreatorManager()
     {
-        return getConverter(paramType) != null;
+        return creatorManager;
     }
 
     /**
-     * Convert an object into a Javavscript representation of the same
-     * @param object The object to convert
-     * @return A Javascript string version of the object
-     * @throws ConversionException If the conversion failed for some reason
+     * Accessor for the ConverterManager that we configure
+     * @return the configured ConverterManager
      */
-    public Converter.ScriptSetup convertFrom(Object object) throws ConversionException
+    public ConverterManager getConverterManager()
     {
-        Converter converter = getConverter(object);
-        if (converter == null)
-        {
-            throw new ConversionException("No converter found for " + object.getClass().getName());
-        }
-
-        Converter.ScriptSetup ss = converter.convertFrom(object);
-        if (ss == null)
-        {
-            throw new IllegalStateException("null ScriptSetup from " + converter.getClass().getName() + " given " + object);
-        }
-
-        return ss;
+        return converterManager;
     }
 
     /**
-     * Convert an object from being a string into an object of some type
-     * @param paramType The type that you want the object to be
-     * @param object The string version of the object
-     * @return The coerced object or null if the object could not be coerced
-     * @throws ConversionException If the conversion failed for some reason
+     * The ConverterManager to which we delegate conversion of parameters
      */
-    public Object convertTo(Class paramType, String object) throws ConversionException
-    {
-        Converter converter = getConverter(paramType);
-
-        if (converter == null)
-        {
-            return null;
-        }
-
-        return converter.convertTo(paramType, object);
-    }
+    private ConverterManager converterManager;
 
     /**
-     * Like <code>getConverter(object.getClass());</code> except that since the
-     * object can be null we check for that fist and then do a lookup against
-     * the <code>Void.TYPE</code> converter
-     * @param object The object to find a converter for
-     * @return The converter for the given type
+     * The CreatorManager to which we delegate creation of new objects.
      */
-    private Converter getConverter(Object object)
-    {
-        if (object == null)
-        {
-            return getConverter(Void.TYPE);
-        }
-
-        return getConverter(object.getClass());
-    }
-
-    /**
-     * @param paramType The type to find a converter for
-     * @return The converter for the given type
-     */
-    public Converter getConverter(Class paramType)
-    {
-        String lookup = paramType.getName();
-
-        // We first check for exact matches using instanceof
-        Converter converter = null;
-        for (Iterator it = converters.keySet().iterator(); it.hasNext() && converter == null; )
-        {
-            String name = (String) it.next();
-            try
-            {
-                Class clazz = Class.forName(name);
-
-                if (LocalUtil.isEquivalent(clazz, paramType) || clazz.isAssignableFrom(paramType))
-                {
-                    converter = (Converter) converters.get(name);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Do nothing, having * in the classname is legitimate
-            }
-        }
-
-        // If we have found it then don't do the wildcard search
-        if (converter != null)
-        {
-            return converter;
-        }
-
-        while (true)
-        {
-            // Can we find a converter using wildcards?
-            converter = (Converter) converters.get(lookup+".*");
-            if (converter == null)
-            {
-                converter = (Converter) converters.get(lookup+"*");
-            }
-
-            // Stop looking if we've found one or if the name is now empty
-            if (converter != null || lookup.length() == 0)
-            {
-                break;
-            }
-
-            // Strip of the component after the last .
-            int lastdot = lookup.lastIndexOf('.');
-            if (lastdot == -1)
-            {
-                // Cope with arrays
-                if (lookup.startsWith("["))
-                {
-                    lastdot = 2;
-                }
-                else
-                {
-                    // bail if no more dots and not an array
-                    break;
-                }
-            }
-            lookup = lookup.substring(0, lastdot);
-        }
-
-        return converter;
-    }
-
-    /**
-     * The list of the available creators
-     */
-    private Map creatorTypes = new HashMap();
-
-    /**
-     * The list of the available converters
-     */
-    private Map converterTypes = new HashMap();
-
-    /**
-     * The list of the configured creators
-     */
-    private Map creators = new HashMap();
-
-    /**
-     * The list of the configured converters
-     */
-    private Map converters = new HashMap();
+    private CreatorManager creatorManager;
 
     /**
      * Are we in debug mode?

@@ -1,7 +1,6 @@
 package uk.ltd.getahead.dwr;
 
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * A base class for all AllowedClasses
@@ -13,9 +12,9 @@ public interface Creator
      * Configuration is done via access to the DOM Element.
      * This is not at all ideal, but it will do for the moment.
      * @param config The configuration element
-     * @throws SAXException If the config data in the Element is invalid
+     * @throws IllegalArgumentException If the config data in the Element is invalid
      */
-    public void init(Element config) throws SAXException;
+    public void init(Element config) throws IllegalArgumentException;
 
     /**
      * Accessor for the <code>java.lang.Class</code> that this Creator

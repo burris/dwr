@@ -1,11 +1,13 @@
 package uk.ltd.getahead.dwr.convert;
 
 import java.lang.reflect.Array;
+import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.Configuration;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.ScriptSetup;
 
 /**
  * An implementation of Converter for Arrays.
@@ -17,9 +19,9 @@ public class ArrayConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
      */
-    public void init(Configuration newConfig)
+    public void init(ConverterManager newConfig)
     {
-        this.config = newConfig;
+        this.converterManager = newConfig;
     }
 
     /* (non-Javadoc)
@@ -52,8 +54,8 @@ public class ArrayConverter implements Converter
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-                Object converted = config.convertTo(componentType, token);
-                Array.set(array, i, converted);
+                Object output = converterManager.convertTo(componentType, token);
+                Array.set(array, i, output);
             }
 
             return array;
@@ -65,38 +67,37 @@ public class ArrayConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.util.Map)
      */
-    public ScriptSetup convertFrom(Object data) throws ConversionException
+    public ScriptSetup convertFrom(Object data, Map converted, String varname) throws ConversionException
     {
-        ScriptSetup ss = new ScriptSetup();
-
         if (!data.getClass().isArray())
         {
             throw new ConversionException("Class: " + data.getClass() + " is not an array type");
         }
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var dwrArray = new Array();");
+        buffer.append("var " + varname + " = new Array();");
 
         int size = Array.getLength(data);
         for (int i = 0; i < size; i++)
         {
-            ScriptSetup converted = config.convertFrom(Array.get(data, i));
+            ScriptSetup nested = converterManager.convertFrom(Array.get(data, i), converted);
 
-            buffer.append(converted.initCode);
-            buffer.append("dwrArray[");
+            buffer.append(nested.initCode);
+            buffer.append(varname + "[");
             buffer.append(i);
             buffer.append("] = ");
-            buffer.append(converted.assignCode);
+            buffer.append(nested.assignCode);
             buffer.append(";");
         }
 
+        ScriptSetup ss = new ScriptSetup();
         ss.initCode = buffer.toString();
-        ss.assignCode = "dwrArray";
-
+        ss.assignCode = varname;
+        ss.isValueType = false;
         return ss;
     }
 
-    private Configuration config;
+    private ConverterManager converterManager;
 }

@@ -3,7 +3,6 @@ package uk.ltd.getahead.dwr.create;
 import java.lang.reflect.Method;
 
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import uk.ltd.getahead.dwr.Creator;
 
@@ -15,7 +14,7 @@ public class SpringCreator implements Creator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.create.Creator#init(org.w3c.dom.Element)
      */
-    public void init(Element config) throws SAXException
+    public void init(Element config) throws IllegalArgumentException
     {
         this.beanname = config.getAttribute("beanName");
     }

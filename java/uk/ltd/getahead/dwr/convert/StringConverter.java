@@ -1,7 +1,10 @@
 package uk.ltd.getahead.dwr.convert;
 
-import uk.ltd.getahead.dwr.Configuration;
+import java.util.Map;
+
 import uk.ltd.getahead.dwr.Converter;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.ScriptSetup;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 
 /**
@@ -14,10 +17,10 @@ public class StringConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
      */
-    public void init(Configuration config)
+    public void init(ConverterManager config)
     {
     }
-    
+
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, java.lang.String)
      */
@@ -27,9 +30,9 @@ public class StringConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object)
+     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, Map)
      */
-    public ScriptSetup convertFrom(Object data)
+    public ScriptSetup convertFrom(Object data, Map converted, String varname)
     {
         return new ScriptSetup("", "\"" + StringEscapeUtils.escapeJavaScript(data.toString()) + "\"");
     }

@@ -1,12 +1,15 @@
 
+Changes that might happen
+-------------------------
+New package names? net.java.dev.dwr in place of uk.ltd.getahead.dwr?
+
 Todo
 ----
 fix duplicate bean/array generated name bug
+fix input marshalling recursion bug
 tests for collections converter
 tests for bean converter
-write table example
 update config docs
-make collection converter work with iterators
 test config file web.xml element
 test dual deploy in web.xml for j2ee security
 
