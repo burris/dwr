@@ -604,6 +604,9 @@ function toDescriptiveString(object)
     return reply;
 }
 
+/**
+ *
+ */
 function detailedTypeOf(x)
 {
     var reply = typeof x;
@@ -616,3 +619,43 @@ function detailedTypeOf(x)
 
     return reply;
 } 
+
+/**
+ * Setup a GMail style loading message
+ */
+function useLoadingMessage()
+{
+    var disabledZone = document.createElement('div');
+    disabledZone.setAttribute('id', 'disabledZone');
+    disabledZone.setAttribute('style', 'position:absolute; z-index:1000; left:0px; top:0px; width:100%; height:100%;');
+    document.body.appendChild(disabledZone);
+
+    var messageZone = document.createElement('div');
+    messageZone.setAttribute('id', 'messageZone');
+    messageZone.setAttribute('style', 'position:absolute; top:0px; left:500px; background:red; color:white; font-family:Arial,Helvetica,sans-serif; padding:4px;');
+    disabledZone.appendChild(messageZone);
+
+    var text = document.createTextNode('Loading');
+    messageZone.appendChild(text);
+
+    hidePleaseWait();
+
+    dwrSetPreHook(showPleaseWait);
+    dwrSetPostHook(hidePleaseWait)
+}
+
+/**
+ * Call back function used to show the "please wait" message
+ */
+var showPleaseWait = function()
+{
+    document.getElementById('disabledZone').style.visibility = 'visible';
+}
+
+/**
+ * Call back function used to remove the "please wait" message
+ */
+var hidePleaseWait = function()
+{
+    document.getElementById('disabledZone').style.visibility = 'hidden';
+}

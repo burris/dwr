@@ -56,10 +56,16 @@ function dwrHandleResponse(id, reply)
         alert("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
         return;
     }
+    dwrCalls[id] = undefined;
 
     if (call.iframe != null)
     {
         call.iframe.parentNode.removeChild(call.iframe);
+    }
+
+    if (dwrPostHook != null)
+    {
+        dwrPostHook();
     }
 
     if (call.callback == null)
@@ -73,13 +79,6 @@ function dwrHandleResponse(id, reply)
     {
         call.callback(reply);
     }
-
-    if (dwrPostHook != null)
-    {
-        dwrPostHook();
-    }
-
-    dwrCalls[id] = undefined;
 }
 
 // Called when errors are received
@@ -91,6 +90,7 @@ function dwrHandleError(id, reason)
         alert("Internal Error: Call with id="+id+" unknown.");
         return;
     }
+    dwrCalls[id] = undefined;
 
     if (call.iframe != null)
     {
@@ -110,8 +110,6 @@ function dwrHandleError(id, reason)
     {
         alert(reason);
     }
-
-    dwrCalls[id] = undefined;
 }
 
 // Get a unique ID for this call

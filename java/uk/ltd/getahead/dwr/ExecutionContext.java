@@ -107,6 +107,16 @@ public final class ExecutionContext
     private static ThreadLocal user = new ThreadLocal();
 
     /**
+     * @return The current ExecutionContext
+     * @deprecated Use ExecutionContext.get();
+     * @see ExecutionContext#get()
+     */
+    public static ExecutionContext getExecutionContext()
+    {
+        return get();
+    }
+
+    /**
      * Accessor for the current ExecutionContext.
      * @return The current ExecutionContext
      */
