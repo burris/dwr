@@ -6,8 +6,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,29 +53,36 @@ public class DWRServlet extends HttpServlet
             reserved.addAll(Arrays.asList(RESERVED_ARRAY));
         }
 
-        try
+        // Which classes are we allowed to communicate with?
+        String allowStr = config.getInitParameter("allowed");
+        if (allowStr == null)
         {
-            // Which classes are we allowed to communicate with?
-            String allowStr = config.getInitParameter("allowed");
-            if (allowStr == null)
-            {
-                throw new ServletException("Mising 'allowed' init-parameter");
-            }
-            String[] allowArray = allowStr.split(" ");
-            for (int i = 0; i < allowArray.length; i++)
-            {
-                Class clazz = Class.forName(allowArray[i]);
-                allowed.add(clazz);
-            }
+            throw new ServletException("Mising 'allowed' init-parameter");
+        }
 
-            // Are we in debug mode?
-            String debugStr = config.getInitParameter("debug");
-            debug = Boolean.valueOf(debugStr).booleanValue();
-        }
-        catch (Exception ex)
+        allowStr = allowStr.replace(',', ' ');
+        allowStr = allowStr.replaceAll("\t\r\n", " ");
+        String[] allowArray = allowStr.split(" ");
+        for (int i = 0; i < allowArray.length; i++)
         {
-            throw new ServletException(ex);
+            String allow = allowArray[i].trim();
+            if (allow.length() > 0)
+            {
+                try
+                {
+                    Class clazz = Class.forName(allow);
+                    allowed.add(clazz);
+                }
+                catch (ClassNotFoundException ex)
+                {
+                    log("Failed to find class: "+allow, ex);
+                }
+            }
         }
+
+        // Are we in debug mode?
+        String debugStr = config.getInitParameter("debug");
+        debug = Boolean.valueOf(debugStr).booleanValue();
     }
 
     /* (non-Javadoc)
@@ -102,11 +109,11 @@ public class DWRServlet extends HttpServlet
             {
                 doEngine(req, resp);
             }
-            else if (pathinfo != null && pathinfo.matches("/.*/test.*"))
+            else if (pathinfo != null && pathinfo.matches("/test/.*"))
             {
                 doTest(req, resp);
             }
-            else if (pathinfo != null && pathinfo.matches("/.*/interface.*"))
+            else if (pathinfo != null && pathinfo.matches("/interface/.*"))
             {
                 doInterface(req, resp);
             }
@@ -148,7 +155,7 @@ public class DWRServlet extends HttpServlet
         for (Iterator it = allowed.iterator(); it.hasNext();)
         {
             Class allow = (Class) it.next();
-            out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+"/"+allow.getName()+"/test'>"+allow.getName()+"</a></li>");
+            out.println("<li><a href='"+req.getContextPath()+req.getServletPath()+"/test/"+allow.getName()+"'>"+allow.getName()+"</a></li>");
         }
 
         out.println("</body></html>");
@@ -164,7 +171,19 @@ public class DWRServlet extends HttpServlet
      */
     private void doTest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, IllegalAccessException
     {
-        Class allow = getClass(req);
+        String pathinfo = req.getPathInfo();
+        pathinfo = pathinfo.replaceAll("\\/test\\/", "");
+        pathinfo = pathinfo.replaceAll("/", "");
+
+        String classname = pathinfo;
+        if (classname == null)
+        {
+            throw new IllegalArgumentException();
+        }
+
+        Class allow = Class.forName(classname);
+        checkAllowed(allow);
+
         String name = getShortClassName(allow);
 
         Method[] methods = allow.getDeclaredMethods();
@@ -186,7 +205,7 @@ public class DWRServlet extends HttpServlet
         out.println("<body>");
         out.println("");
         out.println("<h2>Methods For: "+allow.getName()+"</h2>");
-        out.println("<p>Of the "+methods.length+" declared methods, the following are usable:<ul>");
+        out.println("<p>There are "+methods.length+" declared methods:<ul>");
 
         for (int i = 0; i < methods.length; i++)
         {
@@ -215,18 +234,19 @@ public class DWRServlet extends HttpServlet
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print("    <input class='itext' type='text' size='10' id='p"+i+j+"' title='"+paramTypes[j].getName()+"'/>");
+                out.print("    <input class='itext' type='text' size='10' id='p"+i+j+"' title='input id=p"+i+j+"\r\nData will be converted to: "+paramTypes[j].getName()+"'/>");
                 out.println(j == paramTypes.length - 1 ? "" : ", ");
             }
             out.println("  );");
 
-            out.print("  <input class='ibutton' type='button' onclick='"+name+"."+method.getName()+"(");
-            out.print("reply"+i);
+            String onclick = name+"."+method.getName()+"(reply"+i;
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print(", document.getElementById(\"p"+i+j+"\").value");
+                onclick += ",document.getElementById(\"p"+i+j+"\").value";
             }
-            out.println(");' value='Execute'/>");
+            onclick += ");";
+
+            out.print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='onclick=" + onclick + "\r\nWhere reply" + i + " is a callback function (view source for more).'/>");
 
             out.println("  <script type='text/javascript'>");
             out.println("    var reply"+i+" = function(data)");
@@ -287,13 +307,23 @@ public class DWRServlet extends HttpServlet
      */
     private void doInterface(HttpServletRequest req, HttpServletResponse resp) throws IOException, ClassNotFoundException, IllegalAccessException
     {
-        //resp.setContentType("text/javascript");
+        String pathinfo = req.getPathInfo();
+        pathinfo = pathinfo.replaceAll("\\/interface\\/", "");
+        pathinfo = pathinfo.replaceAll("\\.js", "");
 
-        PrintWriter out = resp.getWriter();
+        String classname = pathinfo;
+        if (classname == null)
+        {
+            throw new IllegalArgumentException();
+        }
 
-        Class allow = getClass(req);
+        Class allow = Class.forName(classname);
+        checkAllowed(allow);
+
         String name = getShortClassName(allow);
 
+        //resp.setContentType("text/javascript");
+        PrintWriter out = resp.getWriter();
         out.println();
         out.println("// Methods for: "+allow.getName());
 
@@ -547,8 +577,10 @@ public class DWRServlet extends HttpServlet
             log("Executing: "+method.toString());
 
             // Execute
+            ExecutionContext.setExecutionContext(req, resp, getServletConfig());
             Object object = clazz.newInstance();
             Object reply = method.invoke(object, converted);
+            ExecutionContext.unset();
 
             doReply(req, resp, reply);
         }
@@ -658,13 +690,21 @@ public class DWRServlet extends HttpServlet
         }
 
         Class clazz = Class.forName(classname);
+        checkAllowed(clazz);
 
-        if (!allowed.contains(clazz))
+        return clazz;
+    }
+
+    /**
+     * @param allow
+     * @throws IllegalAccessException
+     */
+    private void checkAllowed(Class allow) throws IllegalAccessException
+    {
+        if (!allowed.contains(allow))
         {
             throw new IllegalAccessException();
         }
-
-        return clazz;
     }
 
     /**
@@ -674,7 +714,7 @@ public class DWRServlet extends HttpServlet
      */
     private String getInterfaceURL(HttpServletRequest req, Class allow)
     {
-        return req.getContextPath()+req.getServletPath()+"/"+allow.getName()+"/interface.js";
+        return req.getContextPath()+req.getServletPath()+"/interface/"+allow.getName()+".js";
     }
 
     /**
@@ -688,6 +728,8 @@ public class DWRServlet extends HttpServlet
 
     /**
      * Return a short class name without the package component.
+     * @param clazz  The class to simplfy the name of
+     * @return A short version of the class name
      */
     public static String getShortClassName(Class clazz)
     {
@@ -888,7 +930,16 @@ public class DWRServlet extends HttpServlet
     /**
      * The exec properties
      */
-    private Set allowed = new HashSet();
+    private Set allowed = new TreeSet(new Comparator()
+    {
+        public int compare(Object o1, Object o2)
+        {
+            Class c1 = (Class) o1;
+            Class c2 = (Class) o2;
+
+            return c1.getName().compareTo(c2.getName());
+        }
+    });
 
     /**
      * Are we in debug mode?

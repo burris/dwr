@@ -1,5 +1,10 @@
 package uk.ltd.getahead.dwr.test;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
+import uk.ltd.getahead.dwr.ExecutionContext;
+
 /**
  * .
  * @author Joe Walker [joe at eireneh dot com]
@@ -10,9 +15,40 @@ public class Test
     /**
      * @return string
      */
-    public String noParam()
+    public String getServerInfo()
     {
-        return "Test.noParam() says hello";
+        String info = ExecutionContext.getExecutionContext().getServletContext().getServerInfo();
+        return "server info: " + info;
+    }
+
+    /**
+     * @return string
+     */
+    public String getClicks()
+    {
+        HttpSession session = ExecutionContext.getExecutionContext().getSession();
+        ServletContext context = ExecutionContext.getExecutionContext().getServletContext();
+
+        Integer contextClicks = (Integer) context.getAttribute("contextClicks");
+        Integer sessionClicks = (Integer) session.getAttribute("sessionClicks");
+
+        if (contextClicks == null)
+        {
+            contextClicks = new Integer(0);
+        }
+
+        if (sessionClicks == null)
+        {
+            sessionClicks = new Integer(0);
+        }
+
+        contextClicks = new Integer(contextClicks.intValue() + 1);
+        sessionClicks = new Integer(sessionClicks.intValue() + 1);
+
+        context.setAttribute("contextClicks", contextClicks);
+        session.setAttribute("sessionClicks", sessionClicks);
+
+        return "getClicks() has been clicked "+sessionClicks+" times this session and "+contextClicks+" times since the last deployment";
     }
 
     /**
@@ -32,14 +68,6 @@ public class Test
     public String stringStringParam(String test1, String test2)
     {
         return "Test.stringParam(String, String) says hello, "+test1+" "+test2;
-    }
-
-    /**
-     * @return string
-     */
-    public String proxy()
-    {
-        return stringParam("proxy");
     }
 
     /**
