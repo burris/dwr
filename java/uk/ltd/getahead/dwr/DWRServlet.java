@@ -236,8 +236,16 @@ public final class DWRServlet extends HttpServlet
         out.println("</head>"); //$NON-NLS-1$
         out.println("<body>"); //$NON-NLS-1$
         out.println(BLANK); //$NON-NLS-1$
+
         out.println("<h2>Methods For: " + scriptname + " (" + creator.getType().getName() + ")</h2>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        out.println("<p>Replies from DWR are shown with a yellow background.<br/>There are " + methods.length + " declared methods:<ul>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("<p>To use this class in your javascript you will need the following script includes:</p>"); //$NON-NLS-1$
+        out.println("<pre>"); //$NON-NLS-1$
+        out.println("  &lt;script type='text/javascript' src='<a href='" + interfaceURL + "'>" + interfaceURL + "</a>'>&lt;/script>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        out.println("  &lt;script type='text/javascript' src='<a href='" + engineURL + "'>" + engineURL + "</a>'>&lt;/script>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        out.println("</pre>"); //$NON-NLS-1$
+
+        out.println("<p>Replies from DWR are shown with a yellow background.<br/>"); //$NON-NLS-1$
+        out.println("There are " + methods.length + " declared methods:<ul>"); //$NON-NLS-1$ //$NON-NLS-2$
 
         for (int i = 0; i < methods.length; i++)
         {
@@ -325,8 +333,6 @@ public final class DWRServlet extends HttpServlet
         out.println("<h2>Other Links</h2>"); //$NON-NLS-1$
         out.println("<ul>"); //$NON-NLS-1$
         out.println("<li>Back to <a href='" + req.getContextPath() + req.getServletPath() + "'>class index</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
-        out.println("<li>The Javascript <a href='" + interfaceURL + "'>interface</a> definition corresponding to your Java classes</li>"); //$NON-NLS-1$ //$NON-NLS-2$
-        out.println("<li>The Javascript <a href='" + engineURL + "'>engine</a> Marshalls calls to the server. Used by the interface script. This is the same for all classes.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("</ul>"); //$NON-NLS-1$
 
         out.println("</body></html>"); //$NON-NLS-1$

@@ -24,6 +24,7 @@ body
     right: 0px;
     width: 150px;
     height: 700px;
+    overflow: hidden;
 }
 
 body>#sidebar
@@ -36,4 +37,16 @@ body>#sidebar
 {
     margin: 10px 5px 20px 5px;
     background: #eeeeee;
+    font-size: 90%;
+}
+
+.sidebody h2
+{
+    font-size: 100%;
+}
+
+.sidebody h3
+{
+    font-size: 95%;
+    margin-bottom: 0;
 }
