@@ -3,18 +3,23 @@ See www/index.html for more information.
 
 Issues to resolve
 -----------------
+- Demo
 - Some form of bean marshalling
 - More testing
 
 
 Recent changes
 --------------
-Changed compilations to include 1.3 VMs. Not tested on anything but 1.4/5 though
-Added execute using XMLHttpRequest, or a fallback to iframe.
-Tweak to make server responses clearer in demo pages
-Separated engine.js to make changing it easier
+Added execute using XMLHttpRequest, or a fallback to iframe. (Joe Walker)
+Changed compilations to include 1.3 VMs. Not tested on anything but 1.4/5 though (Dennis Graham)
+Tweak to make server responses clearer in demo pages (Joe Walker)
+Separated engine.js to make changing it easier (Joe Walker)
 Fixed a bug that caused the errorHandler to be called whatever (Dave Rooney)
 Fixed a bug that failed to cut up the allowed parameter properly (Daniel Wunsch)
+I've added more documentation to the home page about ExecutionContext
+    Access to HttpServletRequest and associated classes is now possible using
+    uk.ltd.getahead.dwr.ExecutionContext. For example:
+    req = ExecutionContext.getExecutionContext().getHttpServletRequest();
 
 
 About role membership

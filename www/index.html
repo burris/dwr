@@ -113,6 +113,20 @@
   <li>Dance the funky chicken (optional).</li>
 </ul>
 
+<p>
+  If you need to access the HttpServletRequest or any of the other servlet
+  classes you can do so using the ExecutionContext class. The code looks
+  something like this:
+</p>
+<pre>
+import uk.ltd.getahead.dwr.ExecutionContext;
+req = ExecutionContext.getExecutionContext().getHttpServletRequest();
+</pre>
+<p>
+  ExecutionContext uses a ThreadLocal variable so you can use the line above
+  anywhere in your code (so long as it has been fired off by DWR).
+</p>
+
 <h4>5. THINK ABOUT SECURITY</h4>
 <p>
 There is a danger that you could cause all sorts of security problems using this
