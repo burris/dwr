@@ -72,15 +72,6 @@ import java.util.TreeMap;
  * @since 2.0
  * @version $Id: Entities.java,v 1.13 2003/08/18 02:22:22 bayard Exp $
  */
-/**
- * @author
- */
-/**
- * @author
- */
-/**
- * @author
- */
 class Entities {
 
     private static final String[][] BASIC_ARRAY = {

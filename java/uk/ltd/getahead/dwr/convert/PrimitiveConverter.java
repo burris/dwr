@@ -1,12 +1,12 @@
 package uk.ltd.getahead.dwr.convert;
 
 import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
@@ -22,20 +22,21 @@ public class PrimitiveConverter implements Converter
     public void init(ConverterManager config)
     {
     }
-    
+
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
-        String value = data.getValue();
+        String value = iv.getValue();
         try
         {
             if (paramType == Boolean.TYPE || paramType == Boolean.class)
             {
                 return Boolean.valueOf(value.trim());
             }
-            else if (paramType == Byte.TYPE || paramType == Byte.class)
+
+            if (paramType == Byte.TYPE || paramType == Byte.class)
             {
                 if (value.length() == 0)
                 {
@@ -44,7 +45,8 @@ public class PrimitiveConverter implements Converter
                 }
                 return new Byte(value.trim());
             }
-            else if (paramType == Short.TYPE || paramType == Short.class)
+
+            if (paramType == Short.TYPE || paramType == Short.class)
             {
                 if (value.length() == 0)
                 {
@@ -53,7 +55,8 @@ public class PrimitiveConverter implements Converter
                 }
                 return new Short(value.trim());
             }
-            else if (paramType == Character.TYPE || paramType == Character.class)
+
+            if (paramType == Character.TYPE || paramType == Character.class)
             {
                 String decode = LocalUtil.decode(value);
                 if (decode.length() == 1)
@@ -65,7 +68,8 @@ public class PrimitiveConverter implements Converter
                     throw new ConversionException(Messages.getString("PrimitiveConverter.StringTooLong", value)); //$NON-NLS-1$
                 }
             }
-            else if (paramType == Integer.TYPE || paramType == Integer.class)
+
+            if (paramType == Integer.TYPE || paramType == Integer.class)
             {
                 if (value.length() == 0)
                 {
@@ -73,7 +77,8 @@ public class PrimitiveConverter implements Converter
                 }
                 return new Integer(value.trim());
             }
-            else if (paramType == Long.TYPE || paramType == Long.class)
+
+            if (paramType == Long.TYPE || paramType == Long.class)
             {
                 if (value.length() == 0)
                 {
@@ -81,7 +86,8 @@ public class PrimitiveConverter implements Converter
                 }
                 return new Long(value.trim());
             }
-            else if (paramType == Float.TYPE || paramType == Float.class)
+
+            if (paramType == Float.TYPE || paramType == Float.class)
             {
                 if (value.length() == 0)
                 {
@@ -89,7 +95,8 @@ public class PrimitiveConverter implements Converter
                 }
                 return new Float(value.trim());
             }
-            else if (paramType == Double.TYPE || paramType == Double.class)
+
+            if (paramType == Double.TYPE || paramType == Double.class)
             {
                 if (value.length() == 0)
                 {
@@ -107,7 +114,7 @@ public class PrimitiveConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
      */
     public String convertOutbound(Object object, String varname, OutboundContext outctx)
     {

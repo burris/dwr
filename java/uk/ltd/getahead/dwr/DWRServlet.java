@@ -56,15 +56,52 @@ public class DWRServlet extends HttpServlet
             Log.setLevel(logLevel);
         }
 
+        // Setup the creator manager
+        String creatorMgrName = config.getInitParameter(INIT_CREATOR);
+        if (creatorMgrName == null)
+        {
+            creatorMgrName = INIT_DEFAULT_CREATOR;
+        }
+        try
+        {
+            Class creatorMgrClass = Class.forName(creatorMgrName);
+            creatorManager = (CreatorManager) creatorMgrClass.newInstance();
+        }
+        catch (Exception ex)
+        {
+            Log.fatal("Failed to create the creator manager", ex); //$NON-NLS-1$
+            throw new ServletException(Messages.getString("DWRServlet.CreatorManagerInit", creatorMgrName, ex)); //$NON-NLS-1$
+        }
+
+        // Setup the converter manager
+        String converterMgrName = config.getInitParameter(INIT_CONVERTER);
+        if (converterMgrName == null)
+        {
+            converterMgrName = INIT_DEFAULT_CONVERTER;
+        }
+        try
+        {
+            Class converterMgrClass = Class.forName(converterMgrName);
+            converterManager = (ConverterManager) converterMgrClass.newInstance();
+        }
+        catch (Exception ex)
+        {
+            Log.fatal("Failed to create the converter manager", ex); //$NON-NLS-1$
+            throw new ServletException(Messages.getString("DWRServlet.ConverterManagerInit", converterMgrName, ex)); //$NON-NLS-1$
+        }
+
         // Are we in debug mode?
         String debugStr = config.getInitParameter(INIT_DEBUG);
         boolean debug = Boolean.valueOf(debugStr).booleanValue();
+        creatorManager.setDebug(debug);
 
-        configuration = new Configuration(debug);
+        configuration = new Configuration();
+        configuration.setConverterManager(converterManager);
+        configuration.setCreatorManager(creatorManager);
 
-        // Load the system config file
         try
         {
+            // Load the system config file
             InputStream in = getClass().getResourceAsStream(FILE_DWR_XML);
             configuration.addConfig(in);
         }
@@ -98,9 +135,6 @@ public class DWRServlet extends HttpServlet
         {
             readFile(DEFAULT_DWR_XML);
         }
-
-        converterManager = configuration.getConverterManager();
-        creatorManager = configuration.getCreatorManager();
     }
 
     /* (non-Javadoc)
@@ -132,11 +166,11 @@ public class DWRServlet extends HttpServlet
             }
             else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_ENGINE))
             {
-                doFile(req, resp, FILE_ENGINE);
+                doFile(req, resp, FILE_ENGINE, MIME_JS);
             }
             else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_UTIL))
             {
-                doFile(req, resp, FILE_UTIL);
+                doFile(req, resp, FILE_UTIL, MIME_JS);
             }
             else if (pathinfo != null && pathinfo.startsWith(PATH_INTERFACE))
             {
@@ -167,7 +201,7 @@ public class DWRServlet extends HttpServlet
      */
     protected void doIndex(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        if (!configuration.isDebugMode())
+        if (!creatorManager.isDebug())
         {
             Log.warn("Failed attempt to access index page outside of debug mode. Set the debug init-parameter to true to enable."); //$NON-NLS-1$
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -209,7 +243,7 @@ public class DWRServlet extends HttpServlet
      */
     protected void doTest(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        if (!configuration.isDebugMode())
+        if (!creatorManager.isDebug())
         {
             Log.warn("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable."); //$NON-NLS-1$
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -281,7 +315,7 @@ public class DWRServlet extends HttpServlet
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print("    <input class='itext' type='text' size='10' id='p"+i+j+"' title='input id=p"+i+j+"\r\nData will be converted to: "+paramTypes[j].getName()+"'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                out.print("    <input class='itext' type='text' size='10' id='p"+i+j+"' title='Will be converted to: "+paramTypes[j].getName()+"'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 out.println(j == paramTypes.length - 1 ? BLANK : ", "); //$NON-NLS-1$ //$NON-NLS-2$
             }
             out.println("  );"); //$NON-NLS-1$
@@ -293,7 +327,7 @@ public class DWRServlet extends HttpServlet
             }
             onclick += ");"; //$NON-NLS-1$
 
-            out.print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='onclick=" + onclick + "\r\nWhere reply" + i + " is a callback function (view source for more).'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            out.print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + "." + method.getName() + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
             out.println("  <script type='text/javascript'>"); //$NON-NLS-1$
             out.println("    var reply" + i + " = function(data)"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -314,7 +348,7 @@ public class DWRServlet extends HttpServlet
             }
             if (overridden)
             {
-                out.println("<span style='font-size: smaller; color: red;'>(Warning: overridden methods are not recommended)</span>"); //$NON-NLS-1$
+                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: overridden methods are not recommended. See <a href='#overriddenMethod'>below</a>)</span>"); //$NON-NLS-1$
             }
 
             // Print a warning if the method uses un-marshallable types
@@ -322,13 +356,13 @@ public class DWRServlet extends HttpServlet
             {
                 if (!converterManager.isConvertable(paramTypes[j]))
                 {
-                    out.println("<span style='font-size: smaller; color: red;'>(Warning: " + paramTypes[j].getName() + " param not marshallable)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: " + paramTypes[j].getName() + " param not marshallable. See <a href='#paramNotMarshallable'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
 
             if (!converterManager.isConvertable(method.getReturnType()))
             {
-                out.println("<span style='font-size: smaller; color: red;'>(Warning: " + method.getReturnType().getName() + " return type not marshallable)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: " + method.getReturnType().getName() + " return type not marshallable. See <a href='#returnNotMarshallable'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             out.println("</li>"); //$NON-NLS-1$
@@ -342,6 +376,31 @@ public class DWRServlet extends HttpServlet
         out.println("<li>Back to <a href='" + req.getContextPath() + req.getServletPath() + "'>class index</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("<li>Up to <a href='" + req.getContextPath() + "/'>top level of web app</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("</ul>"); //$NON-NLS-1$
+
+        String output = (String) scriptCache.get(FILE_HELP);
+        if (output == null)
+        {
+            StringBuffer buffer = new StringBuffer();
+
+            InputStream raw = getClass().getResourceAsStream(FILE_HELP);
+            BufferedReader in = new BufferedReader(new InputStreamReader(raw));
+            while (true)
+            {
+                String line = in.readLine();
+                if (line == null)
+                {
+                    break;
+                }
+
+                buffer.append(line);
+                buffer.append("\n"); //$NON-NLS-1$
+            }
+
+            output = buffer.toString();
+            scriptCache.put(FILE_HELP, output);
+        }
+
+        out.println(output);
 
         out.println("</body></html>"); //$NON-NLS-1$
         out.flush();
@@ -417,11 +476,12 @@ public class DWRServlet extends HttpServlet
      * @param req The browsers request
      * @param resp The response channel
      * @param path The path to search for, process and output
+     * @param mimeType The mime type to use for this output file
      * @throws IOException If writing to the output fails
      */
-    protected void doFile(HttpServletRequest req, HttpServletResponse resp, String path) throws IOException
+    protected void doFile(HttpServletRequest req, HttpServletResponse resp, String path, String mimeType) throws IOException
     {
-        resp.setContentType("text/javascript"); //$NON-NLS-1$
+        resp.setContentType(mimeType);
 
         String output = (String) scriptCache.get(path);
         if (output == null)
@@ -571,13 +631,20 @@ public class DWRServlet extends HttpServlet
     protected static final String FILE_UTIL = "util.js"; //$NON-NLS-1$
     protected static final String FILE_ENGINE = "engine.js"; //$NON-NLS-1$
     protected static final String FILE_DWR_XML = "dwr.xml"; //$NON-NLS-1$
+    protected static final String FILE_HELP = "help.html"; //$NON-NLS-1$
 
     protected static final String INIT_CONFIG = "config"; //$NON-NLS-1$
     protected static final String INIT_DEBUG = "debug"; //$NON-NLS-1$
     protected static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
+    protected static final String INIT_CONVERTER = "converterManager"; //$NON-NLS-1$
+    protected static final String INIT_CREATOR = "creatorManager"; //$NON-NLS-1$
+
+    protected static final String INIT_DEFAULT_CONVERTER = "uk.ltd.getahead.dwr.impl.DefaultConverterManager"; //$NON-NLS-1$
+    protected static final String INIT_DEFAULT_CREATOR = "uk.ltd.getahead.dwr.impl.DefaultCreatorManager"; //$NON-NLS-1$
 
     protected static final String MIME_XML = "text/xml"; //$NON-NLS-1$
     protected static final String MIME_HTML = "text/html"; //$NON-NLS-1$
+    protected static final String MIME_JS = "text/javascript"; //$NON-NLS-1$
 
     protected static final String BLANK = ""; //$NON-NLS-1$
 

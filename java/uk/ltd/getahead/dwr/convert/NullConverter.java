@@ -1,10 +1,10 @@
 package uk.ltd.getahead.dwr.convert;
 
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.OutboundContext;
 
 /**
  * An implementation of Converter for null and undefined.
@@ -19,17 +19,17 @@ public class NullConverter implements Converter
     public void init(ConverterManager config)
     {
     }
-    
+
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx)
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx)
     {
         return null;
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
      */
     public String convertOutbound(Object data, String varname, OutboundContext outctx)
     {

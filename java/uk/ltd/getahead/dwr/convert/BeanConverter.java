@@ -37,11 +37,13 @@ public class BeanConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
-        String value = data.getValue();
+        String value = iv.getValue();
+
+        // If the text is null then the whole bean is null
         if (value.trim().equals(ConversionConstants.INBOUND_NULL))
         {
             return null;
@@ -72,7 +74,7 @@ public class BeanConverter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            inctx.addConverted(data, bean);
+            inctx.addConverted(iv, bean);
 
             // Loop through the property declarations
             StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);
@@ -111,7 +113,7 @@ public class BeanConverter implements Converter
                     Class propType = descriptor.getPropertyType();
 
                     String[] split = ExecuteQuery.splitInbound(val);
-                    InboundVariable nested = new InboundVariable(data.getLookup(), split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
+                    InboundVariable nested = new InboundVariable(iv.getLookup(), split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
 
                     Object output = config.convertInbound(propType, nested, inctx);
                     descriptor.getWriteMethod().invoke(bean, new Object[] { output });
@@ -131,7 +133,7 @@ public class BeanConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
      */
     public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
     {

@@ -175,81 +175,25 @@ public final class ExecuteQuery
             throw delayed;
         }
 
-        if (className == null)
-        {
-            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingClassParam")); //$NON-NLS-1$
-        }
-
-        if (methodName == null)
-        {
-            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingMethodParam")); //$NON-NLS-1$
-        }
-
         // Get a list of the available matching methods with the coerced
         // parameters that we will use to call it if we choose to use that
         // method.
         Creator creator = creatorManager.getCreator(className);
 
-        Method[] methods = creator.getType().getMethods();
-
-        List available = new ArrayList();
-        List coercedList = new ArrayList();
-        methods:
-        for (int i = 0; i < methods.length; i++)
-        {
-            // Check method name and access
-            if (methods[i].getName().equals(methodName))
-            {
-                // Check number of parameters
-                if (methods[i].getParameterTypes().length == inctx.getParameterCount())
-                {
-                    Object[] coerced = new Object[inctx.getParameterCount()];
-
-                    // Clear the previous conversion attempts (the param types
-                    // will probably be different)
-                    inctx.clearConverted();
-
-                    // Check parameter types
-                    params:
-                    for (int j = 0; j < methods[i].getParameterTypes().length; j++)
-                    {
-                        Class paramType = methods[i].getParameterTypes()[j];
-                        InboundVariable param = inctx.getParameter(j);
-                        coerced[j] = converterManager.convertInbound(paramType, param, inctx);
-                        if (coerced[j] == null)
-                        {
-                            // Give up with this method and try the next
-                            break methods;
-                        }
-                    }
-
-                    available.add(methods[i]);
-                    coercedList.add(coerced);
-                }
-            }
-        }
-
-        // Pick a method to call
-        if (available.size() > 1)
-        {
-            Log.warn("Warning multiple matching methods. Using first match."); //$NON-NLS-1$
-        }
-
-        Method method = null;
-        Object[] converted = null;
-
-        // At the moment we are just going to take the first match, for a
-        // later increment we might pack the best implementation
-        if (!available.isEmpty())
-        {
-            method = (Method) available.get(0);
-            converted = (Object[]) coercedList.get(0);
-        }
-
-        // Complain if there is nothing to call
+        // Which method are we using?
+        Method method = findMethod();
         if (method == null)
         {
             throw new IllegalArgumentException(Messages.getString("ExecuteQuery.UnknownMethod", toString())); //$NON-NLS-1$
+        }
+
+        // Convert all the parameters to the correct types
+        Object[] converted = new Object[method.getParameterTypes().length];
+        for (int j = 0; j < method.getParameterTypes().length; j++)
+        {
+            Class paramType = method.getParameterTypes()[j];
+            InboundVariable param = inctx.getParameter(j);
+            converted[j] = converterManager.convertInbound(paramType, param, inctx);
         }
 
         try
@@ -315,6 +259,72 @@ public final class ExecuteQuery
         }
 
         return className + '.' + methodName + '(' + allParams + "); with " + allData; //$NON-NLS-1$
+    }
+
+    /**
+     * Find the method the best matches the method name and parameters
+     * @return A matching method, or null if one was not found.
+     */
+    private Method findMethod()
+    {
+        if (className == null)
+        {
+            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingClassParam")); //$NON-NLS-1$
+        }
+
+        if (methodName == null)
+        {
+            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingMethodParam")); //$NON-NLS-1$
+        }
+
+        Creator creator = creatorManager.getCreator(className);
+        Method[] methods = creator.getType().getMethods();
+        List available = new ArrayList();
+
+        methods:
+        for (int i = 0; i < methods.length; i++)
+        {
+            // Check method name and access
+            if (methods[i].getName().equals(methodName))
+            {
+                // Check number of parameters
+                if (methods[i].getParameterTypes().length == inctx.getParameterCount())
+                {
+                    // Clear the previous conversion attempts (the param types
+                    // will probably be different)
+                    inctx.clearConverted();
+
+                    // Check parameter types
+                    params:
+                    for (int j = 0; j < methods[i].getParameterTypes().length; j++)
+                    {
+                        Class paramType = methods[i].getParameterTypes()[j];
+                        if (!converterManager.isConvertable(paramType))
+                        {
+                            // Give up with this method and try the next
+                            break methods;
+                        }
+                    }
+
+                    available.add(methods[i]);
+                }
+            }
+        }
+
+        // Pick a method to call
+        if (available.size() > 1)
+        {
+            Log.warn("Warning multiple matching methods. Using first match."); //$NON-NLS-1$
+        }
+
+        // At the moment we are just going to take the first match, for a
+        // later increment we might pack the best implementation
+        if (available.isEmpty())
+        {
+            return null;
+        }
+
+        return (Method) available.get(0);
     }
 
     private ConverterManager converterManager;

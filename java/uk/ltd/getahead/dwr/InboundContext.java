@@ -71,7 +71,7 @@ public final class InboundContext
      * @param iv The inbound data to check
      * @return The converted data or null if it has not been converted
      */
-    protected Object getConverted(InboundVariable iv)
+    public Object getConverted(InboundVariable iv)
     {
         return converted.get(iv);
     }

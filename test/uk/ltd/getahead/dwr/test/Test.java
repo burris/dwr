@@ -13,7 +13,7 @@ import java.util.Collection;
 /**
  * Methods to help unit test DWR.
  * @author Joe Walker [joe at eireneh dot com]
- * @version $Id$
+ * @version $Id: Test.java,v 1.11 2005/02/12 16:20:42 joe_walker Exp $
  */
 public class Test
 {

@@ -30,16 +30,16 @@ public class ArrayConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
         if (!paramType.isArray())
         {
             throw new ConversionException(Messages.getString("ArrayConverter.ClassIsNotAnArray", paramType.getName())); //$NON-NLS-1$
         }
 
-        String value = data.getValue();
+        String value = iv.getValue();
         if (value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
         {
             value = value.substring(1);
@@ -60,8 +60,8 @@ public class ArrayConverter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            inctx.addConverted(data, array);
-            final InboundContext key = data.getLookup();
+            inctx.addConverted(iv, array);
+            final InboundContext key = iv.getLookup();
 
             for (int i = 0; i < size; i++)
             {
@@ -82,7 +82,7 @@ public class ArrayConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
      */
     public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
     {

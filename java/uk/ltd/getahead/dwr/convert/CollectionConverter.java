@@ -11,14 +11,14 @@ import java.util.StringTokenizer;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.Converter;
+import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.ExecuteQuery;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.ConverterManager;
 
 /**
  * An implementation of Converter for Collections of Strings.
@@ -36,11 +36,17 @@ public class CollectionConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
-        String value = data.getValue();
+        String value = iv.getValue();
+
+        // If the text is null then the whole bean is null
+        if (value.trim().equals(ConversionConstants.INBOUND_NULL))
+        {
+            return null;
+        }
 
         if (value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
         {
@@ -119,14 +125,14 @@ public class CollectionConverter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            inctx.addConverted(data, col);
+            inctx.addConverted(iv, col);
 
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
 
                 String[] split = ExecuteQuery.splitInbound(token);
-                InboundVariable nested = new InboundVariable(data.getLookup(), split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
+                InboundVariable nested = new InboundVariable(iv.getLookup(), split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
 
                 Object output = config.convertInbound(subtype, nested, inctx);
                 col.add(output);
@@ -150,7 +156,7 @@ public class CollectionConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
      */
     public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
     {

@@ -159,8 +159,13 @@
   tests.push({ code:"Test.stringParam(testResults, '~')", expected:"~" });
 
   tests.push({ code:"Test.stringParam(testResults, '')", expected:"" });
+  tests.push({ code:"Test.stringParam(testResults, null)", expected:null });
+  tests.push({ code:"Test.stringParam(testResults, undefined)", expected:undefined });
+
   tests.push({ code:"Test.stringParam(testResults, 'null')", expected:"null" });
+
   tests.push({ code:"Test.stringParam(testResults, 'undefined')", expected:"undefined" });
+
   tests.push({ code:"Test.stringParam(testResults, ' !\"#$%&\\'()*+,-/')", expected:" !\"#$%&\'()*+,-/" });
   tests.push({ code:"Test.stringParam(testResults, '0123456789')", expected:"0123456789" });
   tests.push({ code:"Test.stringParam(testResults, ':;<=>?@')", expected:":;<=>?@" });
@@ -246,7 +251,7 @@
   tests.push({ code:"Test.stringLinkedListParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]});
   tests.push({ code:"Test.stringArrayListParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]});
   tests.push({ code:"Test.stringListParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]});
-  // Note the next 2 are unordered to we cheat by only having 1 element
+  // Note the next 2 are unordered so we cheat by only having 1 element
   tests.push({ code:"Test.stringSetParam(testResults, [ 'abcdef', ])", expected:[ 'abcdef', ]});
   tests.push({ code:"Test.stringHashSetParam(testResults, [ 'abcdef', ])", expected:[ 'abcdef', ]});
   tests.push({ code:"Test.stringTreeSetParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]});
@@ -367,7 +372,7 @@
       {
           if (actual != null)
           {
-              return "expected: null, actual non-null: " + actual;
+              return "expected: null, actual non-null: " + typeof actual + ":" + actual;
           }
 
           return true;
@@ -377,7 +382,7 @@
       {
           if (expected != null)
           {
-              return "actual: null, expected non-null: " + expected;
+              return "actual: null, expected non-null: " + typeof expected + ":" + expected;
           }
 
           // wont get here of course ...

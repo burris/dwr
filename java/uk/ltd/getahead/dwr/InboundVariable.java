@@ -36,6 +36,15 @@ public final class InboundVariable
     }
 
     /**
+     * Was this type null on the way in
+     * @return true if the javascript variable was null or undefined.
+     */
+    public boolean isNull()
+    {
+        return type.equals(ConversionConstants.INBOUND_NULL);
+    }
+
+    /**
      * @return Returns the value.
      * @throws ConversionException If we can't follow a reference
      */

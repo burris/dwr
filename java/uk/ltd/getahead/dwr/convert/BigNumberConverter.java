@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.OutboundContext;
 
 /**
  * Converter for all primitive types
@@ -23,20 +23,21 @@ public class BigNumberConverter implements Converter
     public void init(ConverterManager config)
     {
     }
-    
+
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertTo(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
-        String value = data.getValue();
+        String value = iv.getValue();
         try
         {
             if (paramType == BigDecimal.class)
             {
                 return new BigDecimal(value.trim());
             }
-            else if (paramType == BigInteger.class)
+
+            if (paramType == BigInteger.class)
             {
                 return new BigInteger(value.trim());
             }
@@ -50,7 +51,7 @@ public class BigNumberConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertFrom(java.lang.Object, java.lang.String, java.util.Map)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
      */
     public String convertOutbound(Object object, String varname, OutboundContext outctx)
     {

@@ -26,18 +26,6 @@ import uk.ltd.getahead.dwr.util.LogErrorHandler;
 public final class Configuration
 {
     /**
-     * Examine the current configuration
-     * @param debug Are we in debug mode?
-     */
-    public Configuration(boolean debug)
-    {
-        this.debug = debug;
-
-        converterManager = new ConverterManager();
-        creatorManager = new CreatorManager(debug);
-    }
-
-    /**
      * Add to the current configuration by reading a DOM tree from a IO stream.
      * @param in The InputStream to parse from
      * @throws SAXException If the parse fails
@@ -237,15 +225,6 @@ public final class Configuration
     }
 
     /**
-     * Are we in debug mode?
-     * @return true if the debug switch is on in web.xml
-     */
-    public boolean isDebugMode()
-    {
-        return debug;
-    }
-
-    /**
      * Check to see if the given word is reserved or a bad idea in any known
      * version of JavaScript.
      * @param name The word to check
@@ -258,11 +237,29 @@ public final class Configuration
 
     /**
      * Accessor for the CreatorManager that we configure
+     * @param creatorManager The new ConverterManager
+     */
+    public void setCreatorManager(CreatorManager creatorManager)
+    {
+        this.creatorManager = creatorManager;
+    }
+
+    /**
+     * Accessor for the CreatorManager that we configure
      * @return the configured CreatorManager
      */
     public CreatorManager getCreatorManager()
     {
         return creatorManager;
+    }
+
+    /**
+     * Accessor for the CreatorManager that we configure
+     * @param converterManager The new ConverterManager
+     */
+    public void setConverterManager(ConverterManager converterManager)
+    {
+        this.converterManager = converterManager;
     }
 
     /**
@@ -277,17 +274,12 @@ public final class Configuration
     /**
      * The ConverterManager to which we delegate conversion of parameters
      */
-    private final ConverterManager converterManager;
+    private ConverterManager converterManager;
 
     /**
      * The CreatorManager to which we delegate creation of new objects.
      */
-    private final CreatorManager creatorManager;
-
-    /**
-     * Are we in debug mode?
-     */
-    private final boolean debug;
+    private CreatorManager creatorManager;
 
     private static final String ELEMENT_INIT = "init"; //$NON-NLS-1$
     private static final String ELEMENT_ALLOW = "allow"; //$NON-NLS-1$

@@ -184,6 +184,24 @@
   The valid values are: FATAL, ERROR, WARN (the default), INFO and DEBUG.
 </p>
 
+<h3>Overriding the default Creator and Converter Managers</h3>
+
+<p>
+  Advanced users may wish to override the default creator and converter
+  managers. This can be achieved by adding one of the following init-params:
+</p>
+
+<pre>
+    &lt;init-param>
+       &lt;param-name>converterManager&lt;/param-name>
+       &lt;param-value>your.impl.of.ConverterManager&lt;/param-value>
+    &lt;/init-param>
+    &lt;init-param>
+       &lt;param-name>creatorManager&lt;/param-name>
+       &lt;param-value>your.impl.of.CreatorManager&lt;/param-value>
+    &lt;/init-param>
+</pre>
+
 <h2>Details to add to your dwr.xml</h2>
 
 <p>
