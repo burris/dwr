@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<project name="dwr" default="all">
+
+  <!--=======================================================================-->
+  <property name="source.root" value="."/>
+  <property name="source.java" value="${source.root}/java"/>
+  <property name="source.uml" value="${source.root}/uml"/>
+  <property name="source.jar" value="${source.root}/jar"/>
+  <property name="source.etc" value="${source.root}/etc"/>
+  <property name="source.web" value="${source.root}/www"/>
+
+  <property name="target.root" value="${source.root}/target/ant"/>
+  <property name="target.classes" value="${target.root}/temp/classes"/>
+  <property name="target.war" value="${target.root}/war"/>
+
+  <!--=======================================================================-->
+  <patternset id="java.non.compile">
+    <include name="**/*.properties"/>
+    <include name="**/*.gif"/>
+    <include name="**/*.jpg"/>
+    <include name="**/*.png"/>
+    <include name="**/*.ser"/>
+  </patternset>
+  <property name="java.non.compile" value="**/*.properties,**/*.gif,**/*.jpg,**/*.png,**/*.ser"/>
+
+  <!--=======================================================================-->
+  <target name="prepare">
+    <echo message="Building on ${os.name}"/>
+    <tstamp/>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="compile" depends="prepare" description="Validate source syntax">
+    <mkdir dir="${target.classes}"/>
+    <javac debug="on" includes="**/*.java" destdir="${target.classes}">
+      <src path="${source.java}"/>
+      <classpath>
+        <dirset dir="${target.classes}"/>
+        <fileset dir="${source.jar}" includes="**/*.jar"/>
+      </classpath>
+    </javac>
+    <copy todir="${target.classes}">
+      <fileset dir="${source.java}">
+        <patternset refid="java.non.compile"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="jar" depends="compile" description="Create a JAR file">
+    <jar destfile="dwr.jar" compress="true" >
+      <fileset dir="${target.classes}"/>
+    </jar>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="war" depends="compile" description="Create a WAR directory">
+    <mkdir dir="${target.war}"/>
+    <copy todir="${target.war}">
+      <fileset dir="${source.web}"/>
+    </copy>
+    <mkdir dir="${target.war}/WEB-INF/classes"/>
+    <copy todir="${target.war}/WEB-INF/classes">
+      <fileset dir="${target.classes}"/>
+      <!-- fileset dir="${source.etc}/classpath"/ -->
+    </copy>
+    <mkdir dir="${target.war}/WEB-INF/lib"/>
+    <copy todir="${target.war}/WEB-INF/lib" flatten="true">
+      <fileset dir="${source.jar}">
+        <include name="lang-2.0.0/commons-lang-2.0.jar"/>
+        <include name="taglibs-1.1/jstl.jar"/>
+        <include name="taglibs-1.1/standard.jar"/>
+      </fileset>
+    </copy>
+    <copy tofile="${target.war}/../${ant.project.name}.xml" filtering="true" file="${source.etc}/tomcat/server-context.xml">
+      <filterset>
+        <filter token="target.war" value="${basedir}/${target.war}"/>
+      </filterset>
+    </copy>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="icontext" description="Create an internal context file">
+    <!-- file for elsewhere in tomcat -->
+    <mkdir dir="${target.war}/../internal"/>
+    <!-- do the copy whatever, the values in database.properties may have changed -->
+    <delete failonerror="no" file="${target.war}/../internal/${ant.project.name}.xml"/>
+    <!-- file for elsewhere in tomcat -->
+    <mkdir dir="${target.war}/../internal"/>
+    <copy tofile="${target.war}/../internal/${ant.project.name}.xml" filtering="true" file="${source.etc}/tomcat/server-context.xml">
+      <filterset>
+        <filter token="target.war" value="${basedir}/${source.web}"/>
+      </filterset>
+    </copy>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="all" depends="clean, jar, war">
+  </target>
+
+  <!--=======================================================================-->
+  <target name="clean">
+    <delete dir="${target.root}"/>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="cvsup" description="cvs update">
+    <cvs dest=".">
+      <!--  cvsRoot=":pserver:joe@cvs.crosswire.org:/cvs/jsword" -->
+      <commandline>
+        <argument value="-q"/>
+        <argument value="update"/>
+        <argument value="-d"/>
+        <argument value="-P"/>
+      </commandline>
+    </cvs>
+    <chmod perm="755">
+      <fileset dir="${source.etc}/admin" includes="**/*.sh"/>
+    </chmod>
+  </target>
+
+</project>
