@@ -143,7 +143,23 @@ DWREngine.handleResponse = function(id, reply)
     }
     else
     {
-        call.callback(reply);
+        // Error handlers inside here indicate an error that is nothing to do
+        // with DWR so we handle them differently.
+        try
+        {
+            call.callback(reply);
+        }
+        catch (ex)
+        {
+            if (DWREngine.errorHandler != null)
+            {
+                DWREngine.errorHandler(ex);
+            }
+            else
+            {
+                alert(ex);
+            }
+        }
     }
 }
 
@@ -154,16 +170,19 @@ DWREngine.handleResponse = function(id, reply)
 DWREngine.handleError = function(id, reason)
 {
     var call = DWREngine.calls[id];
-    if (call == null)
+    if (call != null)
     {
-        alert("Internal Error: Call with id="+id+" unknown.");
-        return;
-    }
-    DWREngine.calls[id] = undefined;
+        DWREngine.calls[id] = undefined;
 
-    if (call.iframe != null)
+        if (call.iframe != null)
+        {
+            call.iframe.parentNode.removeChild(call.iframe);
+        }
+    }
+    else
     {
-        call.iframe.parentNode.removeChild(call.iframe);
+        // Things are going wrong so alerting probably does not make sense
+        // alert("Internal Error: Call with id="+id+" unknown.");
     }
 
     if (DWREngine.postHook != null)
@@ -187,6 +206,12 @@ DWREngine.handleError = function(id, reason)
  */
 DWREngine.execute = function(func, classname, methodname, vararg_params)
 {
+    if (func != null && typeof func != "function" && typeof func != "object")
+    {
+        alert("Supplied callback function is neither null nor a function: "+func);
+        throw func;
+    }
+
     var call = new Object();
     call.callback = func
 
@@ -201,12 +226,6 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
         DWREngine.preHook();
     }
 
-    if (func != null && typeof func != "function" && typeof func != "object")
-    {
-        alert("Supplied callback function is neither null nor a function: "+func);
-        return;
-    }
-
     call.callback = func;
 
     // Build a map containing all the values to pass to the server.
@@ -216,7 +235,6 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
     call.map.classname = classname;
     call.map.methodname = methodname;
     call.map.id = call.id;
-    call.map.xml = true;
     for (var i=3; i<arguments.length; i++)
     {
         DWREngine.marshall(call.map, new Array(), arguments[i], "param" + (i-3));
@@ -243,6 +261,8 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
 
     if (call.req)
     {
+        call.map.xml = true;
+
         // Proceed using XMLHttpRequest
         var query = "";
         for (var prop in call.map)
@@ -258,6 +278,8 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
     }
     else
     {
+        call.map.xml = false;
+
         // Proceed using iframe
         var query = "";
         for (var prop in call.map)
