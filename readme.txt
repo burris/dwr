@@ -15,6 +15,13 @@ Hype
 ----
 If I post an announcement to some site I record it here, so I can cut and paste next time faster
 
+TSS: 2005-03-07
+Direct Web Remoting: Call server-side Java from JavaScript
+<a href="http://dwr.dev.java.net/">Direct Web Remoting</a> (DWR) is a very simple way to call Java code directly from within browser JavaScript. New in version 0.4 is the ability to convert Javascript arrays into Java arrays, Java Objects into Javascript objects and so on.
+DWR gets rid of almost all the boiler plate code between the web browser and your Java code. So you don't need to create servlets, web.xml, struts config files or JSF magic incantations, no writing Actions or implementing some special interface.
+It helps you create sites like G-Mail or Google Suggest that update themselves without loading new pages.
+<a href="http://dwr.dev.java.net/">DWR</a> comes as a simple jar file and a few lines to add to your web.xml file to configure the remoted classes. In a web page you add a couple of &lt;script&gt; tags to indicate which classes you wish to import and can then call your Java code directly from Javascript. Instructions and examples are available on the DWR site.
+
 TSS: 2004-12-11
 Direct Web Remoting: Call server-side Java from JavaScript
 <a href="http://dwr.dev.java.net/">Direct Web Remoting</a> (DWR) is a very simple way to call Java code directly from within browser JavaScript. It helps you create sites like G-Mail, Google Suggest or Kuro5hin that update themselves without loading new pages.
