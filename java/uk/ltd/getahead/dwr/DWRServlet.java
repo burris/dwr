@@ -1,6 +1,9 @@
 package uk.ltd.getahead.dwr;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -104,7 +107,14 @@ public class DWRServlet extends HttpServlet
             String pathinfo = req.getPathInfo();
             if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals("/"))
             {
-                doIndex(req, resp);
+                if (debug)
+                {
+                    doIndex(req, resp);
+                }
+                else
+                {
+                    resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                }
             }
             else if (pathinfo != null && pathinfo.matches("/engine.*"))
             {
@@ -112,7 +122,14 @@ public class DWRServlet extends HttpServlet
             }
             else if (pathinfo != null && pathinfo.matches("/test/.*"))
             {
-                doTest(req, resp);
+                if (debug)
+                {
+                    doTest(req, resp);
+                }
+                else
+                {
+                    resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                }
             }
             else if (pathinfo != null && pathinfo.matches("/interface/.*"))
             {
@@ -383,105 +400,32 @@ public class DWRServlet extends HttpServlet
     {
         //resp.setContentType("text/javascript");
 
+        if (scriptCache == null)
+        {
+            StringBuffer buffer = new StringBuffer();
+
+            InputStream raw = getClass().getResourceAsStream("engine.js");
+            BufferedReader in = new BufferedReader(new InputStreamReader(raw));
+            while (true)
+            {
+                String line = in.readLine();
+                if (line == null)
+                {
+                    break;
+                }
+                
+                line = line.replaceFirst("\\$\\{request.contextPath\\}", req.getContextPath());
+                line = line.replaceFirst("\\$\\{request.servletPath\\}", req.getServletPath());
+
+                buffer.append(line);
+                buffer.append("\n");
+            }
+
+            scriptCache = buffer.toString();
+        }
+
         PrintWriter out = resp.getWriter();
-
-        out.println();
-        out.println("// engine.js");
-        out.println("var iframe;");
-        out.println("var callback;");
-        out.println("var preHook;");
-        out.println("var postHook;");
-        out.println("");
-        out.println("var errorHandler = function(data)");
-        out.println("{");
-        out.println("    alert(data);");
-        out.println("};");
-        out.println("");
-        out.println("function dwrSetErrorHandler(handler)");
-        out.println("{");
-        out.println("    errorHandler = handler;");
-        out.println("}");
-        out.println("");
-        out.println("function dwrPreHook(handler)");
-        out.println("{");
-        out.println("    preHook = handler;");
-        out.println("}");
-        out.println("");
-        out.println("function dwrPostHook(handler)");
-        out.println("{");
-        out.println("    postHook = handler;");
-        out.println("}");
-        out.println("");
-        out.println("function dwrHandleResponse(data)");
-        out.println("{");
-        if (!debug)
-        {
-            out.println("    iframe.parentNode.removeChild(iframe);");
-        }
-        out.println("    iframe = null;");
-        out.println("    callback(data);");
-        out.println("    callback = null;");
-        out.println("");
-        out.println("    if (postHook != null)");
-        out.println("    {");
-        out.println("        postHook();");
-        out.println("    }");
-        out.println("}");
-        out.println("");
-        out.println("function dwrHandleError(reason)");
-        out.println("{");
-        if (!debug)
-        {
-            out.println("    iframe.parentNode.removeChild(iframe);");
-        }
-        out.println("    iframe = null;");
-        out.println("");
-        out.println("    if (postHook != null)");
-        out.println("    {");
-        out.println("        postHook();");
-        out.println("    }");
-        out.println("");
-        out.println("    if (errorHandler != null);");
-        out.println("    {");
-        out.println("        errorHandler(reason);");
-        out.println("    }");
-        out.println("}");
-        out.println("");
-        out.println("function dwrExecute(func, classname, methodname, vararg_params)");
-        out.println("{");
-        out.println("    if (iframe != null)");
-        out.println("    {");
-        out.println("        alert('Warning previous call did not complete, old results may be lost.');");
-        out.println("    }");
-        out.println("");
-        out.println("    if (preHook != null)");
-        out.println("    {");
-        out.println("        preHook();");
-        out.println("    }");
-        out.println("");
-        out.println("    callback = func;");
-        out.println("");
-        out.println("    var argdata = '';");
-        out.println("    for (var i=3; i<dwrExecute.arguments.length; i++)");
-        out.println("    {");
-        out.println("        argdata = argdata + '&param' + (i-3) + '=' + dwrExecute.arguments[i];");
-        out.println("    }");
-        out.println("");
-        out.println("    iframe = document.createElement('iframe');");
-        out.println("    iframe.setAttribute('id', 'dwr-iframe');");
-        if (debug)
-        {
-            out.println("    iframe.setAttribute('style', 'width:100%; height:100px; border: solid 1px black;');");
-        }
-        else
-        {
-            out.println("    iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');");
-        }
-        out.println("    iframe.setAttribute('src', '"+req.getContextPath()+req.getServletPath()+"/'+classname+'/exec?method='+methodname+argdata);");
-        out.println("    document.body.appendChild(iframe);");
-        out.println("}");
-        out.println("");
-
+        out.println(scriptCache);
         out.flush();
     }
 
@@ -491,6 +435,8 @@ public class DWRServlet extends HttpServlet
      */
     private void doExec(HttpServletRequest req, HttpServletResponse resp)
     {
+        boolean xml = Boolean.valueOf(req.getParameter("xml")).booleanValue();
+
         try
         {
             Class clazz = getClass(req);
@@ -498,7 +444,7 @@ public class DWRServlet extends HttpServlet
             String methodName = req.getParameter("method");
             if (methodName == null)
             {
-                doError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing method parameter");
+                doError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing method parameter", xml);
                 return;
             }
 
@@ -563,7 +509,7 @@ public class DWRServlet extends HttpServlet
                     }
                 }
 
-                doError(resp, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+clazz.getName()+"."+methodName+"("+allParams+");");
+                doError(resp, HttpServletResponse.SC_NOT_FOUND, "Missing method: "+clazz.getName()+"."+methodName+"("+allParams+");", xml);
                 return;
             }
 
@@ -583,11 +529,11 @@ public class DWRServlet extends HttpServlet
             Object reply = method.invoke(object, converted);
             ExecutionContext.unset();
 
-            doReply(req, resp, reply);
+            doReply(req, resp, reply, xml);
         }
         catch (Exception ex)
         {
-            doError(req, resp, ex);
+            doError(req, resp, ex, xml);
         }
     }
 
@@ -595,30 +541,31 @@ public class DWRServlet extends HttpServlet
      * @param req
      * @param resp
      * @param ex
+     * @param xml
      */
-    private void doError(HttpServletRequest req, HttpServletResponse resp, Throwable ex)
+    private void doError(HttpServletRequest req, HttpServletResponse resp, Throwable ex, boolean xml)
     {
         if (ex instanceof InvocationTargetException)
         {
             InvocationTargetException itex = (InvocationTargetException) ex;
-            doError(req, resp, itex.getCause());
+            doError(req, resp, itex.getCause(), xml);
         }
         else if (ex instanceof IllegalArgumentException)
         {
             IllegalArgumentException iaex = (IllegalArgumentException) ex;
             iaex.printStackTrace();
-            doError(resp, HttpServletResponse.SC_FORBIDDEN, getClassName(req));
+            doError(resp, HttpServletResponse.SC_FORBIDDEN, getClassName(req), xml);
         }
         else if (ex instanceof IllegalAccessException)
         {
             IllegalAccessException iaex = (IllegalAccessException) ex;
             iaex.printStackTrace();
-            doError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing class parameter");
+            doError(resp, HttpServletResponse.SC_BAD_REQUEST, "Missing class parameter", xml);
         }
         else
         {
             ex.printStackTrace();
-            doError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception: "+ex);
+            doError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Exception: "+ex, xml);
         }
     }
 
@@ -626,17 +573,27 @@ public class DWRServlet extends HttpServlet
      * @param resp
      * @param reason
      * @param message
+     * @param xml
      */
-    private void doError(HttpServletResponse resp, int reason, String message)
+    private void doError(HttpServletResponse resp, int reason, String message, boolean xml)
     {
         try
         {
-            resp.setStatus(reason);
-            resp.setContentType("text/html");
-
             PrintWriter out = resp.getWriter();
-            String output = escape(message);
-            out.println("<script type='text/javascript'>window.parent.dwrHandleError('"+output+"')</script>");
+            resp.setStatus(reason);
+
+            if (xml)
+            {
+                resp.setContentType("text/xml");
+                out.println(message);
+            }
+            else
+            {
+                resp.setContentType("text/html");
+                String output = escape(message);
+                out.println("<script type='text/javascript'>window.parent.dwrHandleError('"+output+"')</script>");
+            }
+
             out.flush();
         }
         catch (IOException ex)
@@ -650,37 +607,54 @@ public class DWRServlet extends HttpServlet
      * @param req
      * @param resp
      * @param reply
+     * @param xml
      * @throws IOException
      */
-    private void doReply(HttpServletRequest req, HttpServletResponse resp, Object reply) throws IOException
+    private void doReply(HttpServletRequest req, HttpServletResponse resp, Object reply, boolean xml) throws IOException
     {
-        resp.setContentType("text/html");
-
         PrintWriter out = resp.getWriter();
-
-        out.println("<html>");
-        out.println("<head>");
-        out.println("  <title>DWR Exec Reply</title>");
-        out.println("</head>");
-        out.println("<body>");
-
-        if (reply == null)
+        
+        if (xml)
         {
-            out.println("<script type='text/javascript'>window.parent.dwrHandleResponse()</script>");
-            out.println("<p>The called function returned void or null.<br/>");
+            resp.setContentType("text/xml");
+
+            if (reply == null)
+            {
+                out.println("");
+            }
+            else
+            {
+                out.println(reply.toString());
+            }
         }
         else
         {
-            String output = escape(reply.toString());
-            out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('"+output+"')</script>");
-            out.println("<p>The called function returned: [<span style='color:#800; font-family:monospace;'>"+output+"</span>]<br/>");
+            resp.setContentType("text/html");
+    
+            out.println("<html>");
+            out.println("<head>");
+            out.println("  <title>DWR Exec Reply</title>");
+            out.println("</head>");
+            out.println("<body>");
+
+            if (reply == null)
+            {
+                out.println("<script type='text/javascript'>window.parent.dwrHandleResponse()</script>");
+                out.println("<p>The called function returned void or null.<br/>");
+            }
+            else
+            {
+                String output = escape(reply.toString());
+                out.println("<script type='text/javascript'>window.parent.dwrHandleResponse('"+output+"')</script>");
+                out.println("<p>The called function returned: [<span style='color:#800; font-family:monospace;'>"+output+"</span>]<br/>");
+            }
+
+            out.println("This resulted from the query: [<span style='color:#800; font-family:monospace;'>"+req.getQueryString()+"</span>]</p>");
+            out.println("<p>If you can see this then it is likely that debug is on or that something is broken. An attempt has been made to passed the reply to dwrHandleResponse() in the parent window which should delete this iframe is debug is off.</p>");
+
+            out.println("</body>");
+            out.println("</html>");
         }
-
-        out.println("This resulted from the query: [<span style='color:#800; font-family:monospace;'>"+req.getQueryString()+"</span>]</p>");
-        out.println("<p>If you can see this then it is likely that debug is on or that something is broken. An attempt has been made to passed the reply to dwrHandleResponse() in the parent window which should delete this iframe is debug is off.</p>");
-
-        out.println("</body>");
-        out.println("</html>");
 
         out.flush();
     }
@@ -977,6 +951,11 @@ public class DWRServlet extends HttpServlet
             return c1.getName().compareTo(c2.getName());
         }
     });
+
+    /**
+     * We cache the script output
+     */
+    private String scriptCache = null;
 
     /**
      * Are we in debug mode?

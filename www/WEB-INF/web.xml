@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE web-app PUBLIC
-  "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-  "http://java.sun.com/dtd/web-app_2_3.dtd">
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app id="dwr">
 
@@ -19,6 +17,11 @@
          <param-name>allowed</param-name>
          <param-value>uk.ltd.getahead.dwr.test.Test java.util.Date</param-value>
          <description>What classes do we allow access to?</description>
+      </init-param>
+      <init-param>
+         <param-name>debug</param-name>
+         <param-value>true</param-value>
+         <description>Do we startup in debug/test mode?</description>
       </init-param>
       <load-on-startup>-1</load-on-startup>
   </servlet>
