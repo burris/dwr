@@ -180,14 +180,21 @@ public final class DWRServlet extends HttpServlet
         out.println("<html>"); //$NON-NLS-1$
         out.println("<head><title>DWR Test Index</title></head>"); //$NON-NLS-1$
         out.println("<body>"); //$NON-NLS-1$
-        out.println("<h2>Classes known to DWR:</h2>"); //$NON-NLS-1$
 
+        out.println("<h2>Classes known to DWR:</h2>"); //$NON-NLS-1$
+        out.println("<ul>"); //$NON-NLS-1$
         for (Iterator it = creatorManager.getCreatorNames().iterator(); it.hasNext();)
         {
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
             out.println("<li><a href='" + req.getContextPath() + req.getServletPath() + PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
+        out.println("</ul>"); //$NON-NLS-1$
+
+        out.println("<h2>Other Links</h2>"); //$NON-NLS-1$
+        out.println("<ul>"); //$NON-NLS-1$
+        out.println("<li>Up to <a href='" + req.getContextPath() + "/'>top level of web app</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("</ul>"); //$NON-NLS-1$
 
         out.println("</body></html>"); //$NON-NLS-1$
         out.flush();
@@ -333,6 +340,7 @@ public final class DWRServlet extends HttpServlet
         out.println("<h2>Other Links</h2>"); //$NON-NLS-1$
         out.println("<ul>"); //$NON-NLS-1$
         out.println("<li>Back to <a href='" + req.getContextPath() + req.getServletPath() + "'>class index</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("<li>Up to <a href='" + req.getContextPath() + "/'>top level of web app</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("</ul>"); //$NON-NLS-1$
 
         out.println("</body></html>"); //$NON-NLS-1$
