@@ -1,16 +1,22 @@
 package uk.ltd.getahead.dwr;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import uk.ltd.getahead.dwr.util.SwallowingHttpServletResponse;
 
 /**
  * Class to enable us to access servlet parameters.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ExecutionContext
+public final class ExecutionContext
 {
     /**
      * @param request
@@ -29,7 +35,16 @@ public class ExecutionContext
      */
     public HttpSession getSession()
     {
-        return request.getSession(true);
+        return request.getSession();
+    }
+
+    /**
+     * @param create 
+     * @return Returns the http session.
+     */
+    public HttpSession getSession(boolean create)
+    {
+        return request.getSession(create);
     }
 
     /**
@@ -62,6 +77,25 @@ public class ExecutionContext
     public HttpServletResponse getHttpServletResponse()
     {
         return response;
+    }
+
+    /**
+     * Forward a request to a given URL and catch the data written to it
+     * @param url The URL to forward to
+     * @return The text that results from forwarding to the given URL
+     * @throws IOException 
+     * @throws ServletException 
+     */
+    public String forwardToString(final String url) throws ServletException, IOException
+    {
+        final StringWriter sout = new StringWriter();
+        final StringBuffer buffer = sout.getBuffer();
+
+        HttpServletResponse fakeResponse = new SwallowingHttpServletResponse(getHttpServletResponse(), sout, url);
+
+        getServletContext().getRequestDispatcher(url).forward(getHttpServletRequest(), fakeResponse);
+
+        return buffer.toString();
     }
 
     private final HttpServletRequest request;

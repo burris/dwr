@@ -1,3 +1,6 @@
+/**
+ *
+ */
 function clearChildNodes(id)
 {
     var elem = document.getElementById(id);
@@ -7,6 +10,9 @@ function clearChildNodes(id)
     }
 }
 
+/**
+ *
+ */
 function drawTable(tbodyID, dataArray, textFuncs)
 {
     // assure bug-free redraw in Geck engine by
@@ -21,6 +27,53 @@ function drawTable(tbodyID, dataArray, textFuncs)
     }
 }
 
+/**
+ *
+ */
+function showById(id)
+{
+    document.getElementById(id).style.display = 'block';
+}
+
+/**
+ *
+ */
+function hideById(id)
+{
+    document.getElementById(id).style.display = 'none';
+}
+
+/**
+ * Toggle an elements visibility
+ */
+function toggleDisplay(id)
+{
+    var ele = document.getElementById(id);
+    if (ele.style.display == 'none')
+    {
+        ele.style.display = 'block';
+    }
+    else
+    {
+        ele.style.display = 'none';
+    }
+}
+
+/**
+ *
+ */
+function setCSSClass(id, cssclass)
+{
+    var element = document.getElementById(id);
+    if (element)
+    {
+        element.className = cssclass;
+    }
+}
+
+/**
+ *
+ */
 function drawTableInner(tbodyID, dataArray, textFuncs)
 {
     var frag = document.createDocumentFragment();
@@ -64,6 +117,9 @@ function drawTableInner(tbodyID, dataArray, textFuncs)
     tbody.appendChild(frag);
 }
 
+/**
+ *
+ */
 function setEnabled(id, state)
 {
     var ele = document.getElementById(id);
@@ -117,6 +173,9 @@ var is_ie5_5up =(is_ie && !is_ie3 && !is_ie4 && !is_ie5);
 var is_ie6    = (is_ie && (is_major == 4) && (agt.indexOf("msie 6.")!=-1) );
 var is_ie6up  = (is_ie && !is_ie3 && !is_ie4 && !is_ie5 && !is_ie5_5);
 
+/**
+ *
+ */
 function isHTMLElement(ele)
 {
     // There must be a better way
@@ -131,6 +190,9 @@ function isHTMLElement(ele)
     }
 }
 
+/**
+ *
+ */
 function isHTMLInputElement(ele)
 {
     // There must be a better way
@@ -146,6 +208,9 @@ function isHTMLInputElement(ele)
     }
 }
 
+/**
+ *
+ */
 function isHTMLSelectElement(ele)
 {
     // There must be a better way
@@ -160,6 +225,9 @@ function isHTMLSelectElement(ele)
     }
 }
 
+/**
+ *
+ */
 function setValue(id, val)
 {
     if (val == null)
@@ -248,6 +316,9 @@ function setValue(id, val)
     ele.innerHTML = val;
 }
 
+/**
+ *
+ */
 function getValue(id)
 {
     var ele = document.getElementById(id);
@@ -262,15 +333,15 @@ function getValue(id)
     {
         // This is a bit of a scam because it assumes single select
         // but I'm not sure how we should treat multi-select.
-        for (var i = 0; i < ele.options.length; i++)
+        var sel = ele.selectedIndex;
+        if (sel != -1)
         {
-            if (ele.options[i].selected == true)
-            {
-                return ele.options[i].value;
-            }
+            return ele.options[sel].value;
         }
-
-        return "";
+        else
+        {
+            return "";
+        }
     }
 
     if (isHTMLInputElement(ele))
@@ -301,6 +372,9 @@ function getValue(id)
     return ele.innerHTML;
 }
 
+/**
+ *
+ */
 function setValues(map)
 {
     for (var property in map)
@@ -310,6 +384,9 @@ function setValues(map)
     }
 }
 
+/**
+ *
+ */
 function fillList(id, data)
 {
     var ele = document.getElementById(id);
@@ -321,6 +398,9 @@ function fillList(id, data)
     }
 }
 
+/**
+ *
+ */
 function fillList(id, data, valueprop, textprop)
 {
     var ele = document.getElementById(id);
@@ -332,6 +412,9 @@ function fillList(id, data, valueprop, textprop)
     }
 }
 
+/**
+ * Ensure a function is called when the page is loaded
+ */
 function callOnLoad(load)
 {
     if (window.addEventListener)
@@ -345,5 +428,43 @@ function callOnLoad(load)
     else if (document.getElementById)
     {
         window.onload = load;
+    }
+}
+
+/**
+ * Alter an rows in a table that have a class of zebra to have classes of either
+ * oddrow or evenrow alternately.
+ * This is probably not the best place for this method, but I dont want to have
+ * to fight with multiple onload functions.
+ */
+function alternateRowColors()
+{
+    var tables = document.getElementsByTagName("table");
+    var rowCount = 0;
+
+    for (var i = 0; i < tables.length; i++)
+    {
+        var table = tables.item(i);
+        var rows = table.getElementsByTagName("tr");
+
+        for (var j = 0; j < rows.length; j++)
+        {
+            var row = rows.item(j);
+            if (row.className == "zebra")
+            {
+                if (rowCount % 2)
+                {
+                    row.className = 'oddrow';
+                }
+                else
+                {
+                    row.className = 'evenrow';
+                }
+
+                rowCount++;
+            }
+        }
+
+        rowCount = 0;
     }
 }

@@ -8,6 +8,8 @@ Create a wiki with help on error messages
 Create a jdk 1.5 version of the collections code converter to get more type info
 Create a batch send mechanism so a page can start by sending a set of remote
     calls all at the same time.
+Add a converter for BigInteger and other arb. prec. number types.
+Have a way for DWR to call a JSP and return the data as a string to javascript
 
 Todo
 ----
