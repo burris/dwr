@@ -17,6 +17,7 @@ Separated engine.js to make changing it easier (Joe Walker)
 Fixed a bug that caused the errorHandler to be called whatever (Dave Rooney)
 Fixed a bug that failed to cut up the allowed parameter properly (Daniel Wunsch)
 Added an ant build file (Joe Walker)
+Execute static methods without creating bean (suggested by Nils Kilden-Pedersen)
 I've added more documentation to the home page about ExecutionContext
     Access to HttpServletRequest and associated classes is now possible using
     uk.ltd.getahead.dwr.ExecutionContext. For example:
