@@ -1,7 +1,9 @@
 
 Before 1.0
 ----------
-Internationalize
+Make Internationalizeale
+Make website clearer
+Check browser portability
 Work out if we need to polish util.js
 Get feedback
 
