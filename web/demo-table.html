@@ -34,8 +34,8 @@
   };
   function fillTable(people)
   {
-      clearChildNodes("peoplebody");
-      drawTable("peoplebody", people, [ getName, getDoB, getSalary, getEdit, getDelete ])
+      DWRUtil.clearChildNodes("peoplebody");
+      DWRUtil.drawTable("peoplebody", people, [ getName, getDoB, getSalary, getEdit, getDelete ])
   }
 
   function readPerson(id)
@@ -55,24 +55,30 @@
   function writePerson()
   {
       // if we return to using dates, use new Date() for the dateOfBirth
-      var person = { id:getValue("id"), name:getValue("name"), dateOfBirth:getValue("dateOfBirth"), salary:getValue("salary") };
+      var person =
+      {
+          id:DWRUtil.getValue("id"),
+          name:DWRUtil.getValue("name"),
+          dateOfBirth:DWRUtil.getValue("dateOfBirth"),
+          salary:DWRUtil.getValue("salary")
+      };
       Demo.addPerson(update, person);
   }
 
   function clearPerson()
   {
-      setValue("id", "-1");
-      setValue("name", "");
-      setValue("dateOfBirth", "");
-      setValue("salary", "");
+      DWRUtil.setValue("id", "-1");
+      DWRUtil.setValue("name", "");
+      DWRUtil.setValue("dateOfBirth", "");
+      DWRUtil.setValue("salary", "");
   }
 
   function fillForm(person)
   {
-      setValue("id", person.id);
-      setValue("name", person.name);
-      setValue("dateOfBirth", person.dateOfBirth);
-      setValue("salary", person.salary);
+      DWRUtil.setValue("id", person.id);
+      DWRUtil.setValue("name", person.name);
+      DWRUtil.setValue("dateOfBirth", person.dateOfBirth);
+      DWRUtil.setValue("salary", person.salary);
   }
   </script>
 </head>
@@ -133,11 +139,6 @@ Edit Person
   documented on other demo pages; This demo just brings it all together a bit.
   So I'm not going to do a step-by-step on it, the source is commented so
   "view source" should give you all you need.
-  <br/>
-  The Javascript makes use of a utility file which is experimental. If you
-  wish to use it I <b>strongly</b> suggest you take a copy of it and use it
-  from there. DWR is about marshalling and not about Javascript libraries so
-  the util.js file is not offically supported.
   <br/>
   The Java code isn't so easy to look at so I'll include the relevant parts
   here. We've seen Person on the <a href="demo-form.html">Live Forms</a> page.

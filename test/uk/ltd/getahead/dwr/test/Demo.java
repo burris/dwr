@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.ExecutionContext;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * Examples for the demo pages.
@@ -119,43 +120,44 @@ public class Demo
     public Map fillAddress(String postcode)
     {
         Map reply = new HashMap();
+        postcode = LocalUtil.replace(postcode, " ", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
-        if (postcode.equalsIgnoreCase("LE16 7TR")) //$NON-NLS-1$
+        if (postcode.equalsIgnoreCase("LE167TR")) //$NON-NLS-1$
         {
             reply.put(LINE2, "Church Lane"); //$NON-NLS-1$
             reply.put(LINE3, "Thorpe Langton"); //$NON-NLS-1$
             reply.put(LINE4, "MARKET HARBOROUGH"); //$NON-NLS-1$
         }
 
-        else if (postcode.equalsIgnoreCase("NR14 7SL")) //$NON-NLS-1$
+        else if (postcode.equalsIgnoreCase("NR147SL")) //$NON-NLS-1$
         {
             reply.put(LINE2, "Rectory Lane"); //$NON-NLS-1$
             reply.put(LINE3, "Poringland"); //$NON-NLS-1$
             reply.put(LINE4, "NORWICH"); //$NON-NLS-1$
         }
 
-        else if (postcode.equalsIgnoreCase("B92 7TT")) //$NON-NLS-1$
+        else if (postcode.equalsIgnoreCase("B927TT")) //$NON-NLS-1$
         {
             reply.put(LINE2, "Olton Mere"); //$NON-NLS-1$
             reply.put(LINE3, "Warwick Road"); //$NON-NLS-1$
             reply.put(LINE4, "SOLIHULL"); //$NON-NLS-1$
         }
         
-        else if (postcode.equalsIgnoreCase("E17 8YT")) //$NON-NLS-1$
+        else if (postcode.equalsIgnoreCase("E178YT")) //$NON-NLS-1$
         {
             reply.put(LINE2, ""); //$NON-NLS-1$
             reply.put(LINE3, "PO Box 43108 "); //$NON-NLS-1$
             reply.put(LINE4, "LONDON"); //$NON-NLS-1$
         }
         
-        else if (postcode.equalsIgnoreCase("SN4 8QS")) //$NON-NLS-1$
+        else if (postcode.equalsIgnoreCase("SN48QS")) //$NON-NLS-1$
         {
             reply.put(LINE2, "Binknoll"); //$NON-NLS-1$
             reply.put(LINE3, "Wootton Bassett"); //$NON-NLS-1$
             reply.put(LINE4, "SWINDON"); //$NON-NLS-1$
         }
         
-        else if (postcode.equalsIgnoreCase("NN5 7HT")) //$NON-NLS-1$
+        else if (postcode.equalsIgnoreCase("NN57HT")) //$NON-NLS-1$
         {
             reply.put(LINE2, "Heathville"); //$NON-NLS-1$
             reply.put(LINE3, ""); //$NON-NLS-1$

@@ -16,7 +16,7 @@
 
   function createList(data)
   {
-      fillList("numlist", data);
+      DWRUtil.fillList("numlist", data);
   }
   </script>
 </head>
@@ -80,12 +80,12 @@ public int[] getNumbers(boolean big)
 <pre>
 function createList(data)
 {
-    fillList("numlist", data);
+    DWRUtil.fillList("numlist", data);
 }
 </pre>
 
 <p>
-  The fillList function comes from <code>util.js</code>. It takes the data
+  The DWRUtil.fillList function comes from <code>util.js</code>. It takes data
   returned from <code>getNumbers()</code> as the <code>data</code> parameter and
   loops over the elements of the array creating new options for the select as it
   goes.

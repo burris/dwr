@@ -1,71 +1,137 @@
 // engine.js
 
-// A function to be called before requests are marshalled. Can be null.
-var dwrPreHook;
-
-// A function to be called after replies are received. Can be null.
-var dwrPostHook;
-
-// A function to call if something fails.
-var dwrErrorHandler;
-
-// A map of all the known current calls
-var dwrCalls = new Object();
-
-// When we are dreaming up variable names, this is a number that we use
-// as a basis to ensure uniqueness.
-// WARNING: if it is possible for dwrExecute to be called again before
-// marshalling has finished on the first then this will break, but I
-// *think* that is not possible.
-var dwrParamCount = 0;
-
-// Warning: if you can see EL-like (${...}) expressions on the next line, don't be fooled into thinking it is EL.
-// Check the source in DWRServlet for the hack. Maybe we will do something more EL like in the future.
-// If you can't see the ${...} then you are probably looking at the processed source
-var dwrUrlBase = '${request.contextPath}${request.servletPath}/exec';
-
-// The error handler function
-function dwrSetErrorHandler(handler)
+/**
+ * Declare a constructor function to which we can add real functions.
+ */
+function DWREngine()
 {
-    dwrErrorHandler = handler;
 }
 
-// A pre execute hook
-function dwrSetPreHook(handler)
+/**
+ * The constants to pick the remoting method
+ */
+DWREngine.XMLHttpRequest = 1;
+DWREngine.IFrame = 2;
+
+/**
+ * private: do not use directly
+ * A function to be called before requests are marshalled. Can be null.
+ */
+DWREngine.preHook = null;
+
+/**
+ * private: do not use directly
+ * A function to be called after replies are received. Can be null.
+ */
+DWREngine.postHook = null;
+
+/**
+ * private: do not use directly
+ * A function to call if something fails.
+ */
+DWREngine.errorHandler = null;
+
+/**
+ * private: do not use directly
+ * A map of all the known current calls
+ */
+DWREngine.calls = new Object();
+
+/**
+ * private: do not use directly
+ * What is the default remoting method
+ */
+DWREngine.method = DWREngine.XMLHttpRequest;
+
+/**
+ * private: do not use directly
+ * When we are dreaming up variable names, this is a number that we use
+ * as a basis to ensure uniqueness.
+ * WARNING: if it is possible for execute to be called again before
+ * marshalling has finished on the first then this will break, but I
+ * think that is not possible.
+ */
+DWREngine.paramCount = 0;
+
+/**
+ * private: do not use directly
+ * The base URL that we use to contact the server. This is dependent on the
+ * server on which DWR is deployed so it is dynamic.
+ * Warning: if you can see EL-like (${...}) expressions on the next line, don't
+ * be fooled into thinking it is EL. Check the DWRServlet source for the hack.
+ * Maybe we will do something more EL like in the future.
+ * If you can't see the ${...} then you are probably looking at the processed
+ * source
+ */
+DWREngine.urlBase = '${request.contextPath}${request.servletPath}/exec';
+
+/**
+ * The error handler function
+ */
+DWREngine.setErrorHandler = function(handler)
 {
-    dwrPreHook = handler;
+    DWREngine.errorHandler = handler;
 }
 
-// A post execute hook
-function dwrSetPostHook(handler)
+/**
+ * A pre execute hook
+ */
+DWREngine.setPreHook = function(handler)
 {
-    dwrPostHook = handler;
+    DWREngine.preHook = handler;
 }
 
-// Called when the replies are received
-function dwrHandleResponse(id, reply)
+/**
+ * A post execute hook
+ */
+DWREngine.setPostHook = function(handler)
 {
-    var call = dwrCalls[id];
+    DWREngine.postHook = handler;
+}
+
+/**
+ * Set the preferred remoting method.
+ * setMethod does not guarantee that the selected method will be used, just that
+ * we will try that method first.
+ */
+DWREngine.setMethod = function(newmethod)
+{
+    if (newmethod != DWREngine.XMLHttpRequest && newmethod != DWREngine.IFrame)
+    {
+        alert("Remoting method must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame");
+        throw newmethod;
+    }
+
+    DWREngine.method = newmethod;
+}
+
+/**
+ * private: do not use directly
+ * Called when the replies are received
+ */
+DWREngine.handleResponse = function(id, reply)
+{
+    var call = DWREngine.calls[id];
     if (call == null)
     {
         var known = "";
-        for (call in dwrCalls)
+        for (call in DWREngine.calls)
         {
             known += call + "\n";
         }
         alert("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
         return;
     }
-    dwrCalls[id] = undefined;
+    DWREngine.calls[id] = undefined;
 
     if (call.iframe != null)
     {
         call.iframe.parentNode.removeChild(call.iframe);
     }
 
-    if (dwrPostHook != null)
+    if (DWREngine.postHook != null)
     {
-        dwrPostHook();
+        DWREngine.postHook();
     }
 
     if (call.callback == null)
@@ -81,30 +147,33 @@ function dwrHandleResponse(id, reply)
     }
 }
 
-// Called when errors are received
-function dwrHandleError(id, reason)
+/**
+ * private: do not use directly
+ * Called when errors are received
+ */
+DWREngine.handleError = function(id, reason)
 {
-    var call = dwrCalls[id];
+    var call = DWREngine.calls[id];
     if (call == null)
     {
         alert("Internal Error: Call with id="+id+" unknown.");
         return;
     }
-    dwrCalls[id] = undefined;
+    DWREngine.calls[id] = undefined;
 
     if (call.iframe != null)
     {
         call.iframe.parentNode.removeChild(call.iframe);
     }
 
-    if (dwrPostHook != null)
+    if (DWREngine.postHook != null)
     {
-        dwrPostHook();
+        DWREngine.postHook();
     }
 
-    if (dwrErrorHandler != null)
+    if (DWREngine.errorHandler != null)
     {
-        dwrErrorHandler(reason);
+        DWREngine.errorHandler(reason);
     }
     else
     {
@@ -112,24 +181,24 @@ function dwrHandleError(id, reason)
     }
 }
 
-// Get a unique ID for this call
-function dwrGetID()
-{
-    var random = Math.floor(Math.random() * 10001);
-    return (random + "_" + new Date().getTime()).toString();
-}
-
-// Send a request to the server
-function dwrExecute(func, classname, methodname, vararg_params)
+/**
+ * private: do not use directly
+ * Send a request to the server
+ */
+DWREngine.execute = function(func, classname, methodname, vararg_params)
 {
     var call = new Object();
     call.callback = func
-    call.id = dwrGetID();
-    dwrCalls[call.id] = call;
 
-    if (dwrPreHook != null)
+    // Get a unique ID for this call
+    var random = Math.floor(Math.random() * 10001);
+    call.id = (random + "_" + new Date().getTime()).toString();
+
+    DWREngine.calls[call.id] = call;
+
+    if (DWREngine.preHook != null)
     {
-        dwrPreHook();
+        DWREngine.preHook();
     }
 
     if (func != null && typeof func != "function" && typeof func != "object")
@@ -141,31 +210,34 @@ function dwrExecute(func, classname, methodname, vararg_params)
     call.callback = func;
 
     // Build a map containing all the values to pass to the server.
-    dwrParamCount = 0;
+    DWREngine.paramCount = 0;
 
     call.map = new Object();
     call.map.classname = classname;
     call.map.methodname = methodname;
     call.map.id = call.id;
     call.map.xml = true;
-    for (var i=3; i<dwrExecute.arguments.length; i++)
+    for (var i=3; i<arguments.length; i++)
     {
-        dwrMarshall(call.map, new Array(), dwrExecute.arguments[i], "param" + (i-3));
+        DWREngine.marshall(call.map, new Array(), arguments[i], "param" + (i-3));
     }
 
     // Get setup for XMLHttpRequest if possible
-    if (window.XMLHttpRequest)
+    if (DWREngine.method == DWREngine.XMLHttpRequest)
     {
-        call.req = new XMLHttpRequest();
-    }
-    else if (window.ActiveXObject)
-    {
-        // I've seen code that asks for the following:
-        // call.req = new ActiveXObject("Msxml2.XMLHTTP");
-        call.req = new ActiveXObject("Microsoft.XMLHTTP");
-        if (!call.req)
+        if (window.XMLHttpRequest)
         {
-            alert("Creation of Microsoft.XMLHTTP failed. Reverting to iframe method.");
+            call.req = new XMLHttpRequest();
+        }
+        else if (window.ActiveXObject)
+        {
+            // I've seen code that asks for the following:
+            // call.req = new ActiveXObject("Msxml2.XMLHTTP");
+            call.req = new ActiveXObject("Microsoft.XMLHTTP");
+            if (!call.req)
+            {
+                alert("Creation of Microsoft.XMLHTTP failed. Reverting to iframe method.");
+            }
         }
     }
 
@@ -178,9 +250,9 @@ function dwrExecute(func, classname, methodname, vararg_params)
             query += prop + "=" + call.map[prop] + "\n";
         }
 
-        call.url = dwrUrlBase;
+        call.url = DWREngine.urlBase;
 
-        call.req.onreadystatechange = function() { dwrStateChange(call); };
+        call.req.onreadystatechange = function() { DWREngine.stateChange(call); };
         call.req.open("POST", call.url, true);
         call.req.send(query);
     }
@@ -195,7 +267,7 @@ function dwrExecute(func, classname, methodname, vararg_params)
         }
         query = query.substring(0, query.length - 1);
 
-        call.url = dwrUrlBase + "?" + query;
+        call.url = DWREngine.urlBase + "?" + query;
 
         call.iframe = document.createElement('iframe');
         call.iframe.setAttribute('id', 'dwr-iframe');
@@ -205,8 +277,11 @@ function dwrExecute(func, classname, methodname, vararg_params)
     }
 }
 
-// Marshall a data item
-function dwrMarshall(output, referto, data, name)
+/**
+ * private: do not use directly
+ * Marshall a data item
+ */
+DWREngine.marshall = function(output, referto, data, name)
 {
     if (data == null)
     {
@@ -284,9 +359,9 @@ function dwrMarshall(output, referto, data, name)
                         reply += ",";
                     }
 
-                    dwrParamCount++;
-                    var childName = "c"+dwrParamCount;
-                    dwrMarshall(output, referto, data[i], childName);
+                    DWREngine.paramCount++;
+                    var childName = "c" + DWREngine.paramCount;
+                    DWREngine.marshall(output, referto, data[i], childName);
                     reply += "reference:";
                     reply += childName;
                 }
@@ -296,13 +371,13 @@ function dwrMarshall(output, referto, data, name)
             }
             else
             {
-                 // treat anything else as an associative array (map)
+                // treat anything else as an associative array (map)
                 var reply = "Object:{"
                 for (element in data)
                 {
-                    dwrParamCount++;
-                    var childName = "c"+dwrParamCount;
-                    dwrMarshall(output, referto, data[element], childName);
+                    DWREngine.paramCount++;
+                    var childName = "c" + DWREngine.paramCount;
+                    DWREngine.marshall(output, referto, data[element], childName);
 
                     reply += element;
                     reply += ":reference:";
@@ -323,25 +398,73 @@ function dwrMarshall(output, referto, data, name)
     }
 }
 
-// Called by XMLHttpRequest to indicate that something has happened
-function dwrStateChange(call)
+/**
+ * private: do not use directly
+ * Called by XMLHttpRequest to indicate that something has happened
+ */
+DWREngine.stateChange = function(call)
 {
     if (call.req.readyState == 4)
     {
-        //try
+        if (call.req.status)
         {
-            if (call.req.status == 200)
+            try
             {
-                eval(call.req.responseText);
+                if (call.req.status == 200)
+                {
+                    eval(call.req.responseText);
+                }
+                else
+                {
+                    DWREngine.handleError(call.id, call.req.responseText);
+                }
             }
-            else
+            catch (ex)
             {
-                dwrHandleError(call.id, call.req.responseText);
+                DWREngine.handleError(call.id, ex);
             }
         }
-        //catch (ex)
+        else
         {
-        //    dwrHandleError(call.id, ex);
+            DWREngine.handleError(call.id, "No response from remote server.");
         }
     }
+}
+
+/**
+ * deprecated
+ * The error handler function
+ */
+function dwrSetErrorHandler(handler)
+{
+    dwrDeprecated();
+    DWREngine.setErrorHandler(handler);
+}
+
+/**
+ * deprecated
+ * A pre execute hook
+ */
+function dwrSetPreHook(handler)
+{
+    dwrDeprecated();
+    DWREngine.setPreHook(handler);
+}
+
+/**
+ * deprecated
+ * A post execute hook
+ */
+function dwrSetPostHook(handler)
+{
+    dwrDeprecated();
+    DWREngine.setPostHook(handler);
+}
+
+/**
+ * Inform the users that the function they just called is deprecated.
+ */
+function dwrDeprecated()
+{
+    alert("dwrXxx() functions are deprecated. Please convert to DWREngine.xxx()");
 }

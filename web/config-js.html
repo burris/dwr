@@ -38,7 +38,7 @@
   documentation other than the demo pages for util.js
 </p>
 
-<h3>dwrSetErrorHandler</h3>
+<h3>DWREngine.setErrorHandler(function)</h3>
 <p>
   Whenever there some sort of server failure DWR calls the error handler and
   passes it the error message. The default behavior if there is no error handler
@@ -48,7 +48,7 @@
   status bar or to do away with them altogether.
 </p>
 
-<h3>dwrSetPreHook</h3>
+<h3>DWREngine.setPreHook(function)</h3>
 <p>
   If you wish to be alerted before DWR actually remotes a call you can set a
   pre-hook function. This will be called with no parameters.
@@ -56,10 +56,21 @@
   being used again until the call returns.
 </p>
 
-<h3>dwrSetPostHook</h3>
+<h3>DWREngine.setPostHook(function)</h3>
 <p>
   Post execute hooks will usually be set in conjunction with pre-execute hooks
   and will generally undo any changes made by the pre-hook.
+</p>
+
+
+<h3>DWREngine.setMethod(newmethod)</h3>
+<p>
+  Set the preferred remoting method. <code>setMethod()</code> does not guarantee
+  that the selected method will be used, just that we will try that method
+  first.
+  <br/>
+  <code>newmethod</code> must be one of <code>DWREngine.XMLHttpRequest</code> or
+  <code>DWREngine.IFrame</code>.
 </p>
 
 <h2>The util.js file</h2>
@@ -69,34 +80,34 @@
 </pre>
 
 
-<h3>showById(id)</h3>
+<h3>DWRUtil.showById(id)</h3>
 <p>
   Set the CSS display style to 'block'
 </p>
 
-<h3>hideById(id)</h3>
+<h3>DWRUtil.hideById(id)</h3>
 <p>
   Set the CSS display style to 'none'
 </p>
 
-<h3>toggleDisplay(id)</h3>
+<h3>DWRUtil.toggleDisplay(id)</h3>
 <p>
   Toggle an elements visibility
 </p>
 
-<h3>setCSSClass(id, cssclass)</h3>
+<h3>DWRUtil.setCSSClass(id, cssclass)</h3>
 <p>
   Set the CSS class for an element
 </p>
 
-<h3>clearChildNodes(id)</h3>
+<h3>DWRUtil.clearChildNodes(id)</h3>
 <p>
   Remove all the children of a given node.
   Most useful for dynamic tables where you clearChildNodes() on the tbody
   element.
 </p>
 
-<h3>fillList(id, data, valueprop, textprop)</h3>
+<h3>DWRUtil.fillList(id, data, valueprop, textprop)</h3>
 <p>
   Remove all the options from a select list (specified by id) and replace with
   elements in an array of objects. The value and text of each option are taken
@@ -104,7 +115,7 @@
   If both are left empty then the object itself will be used.
 </p>
 
-<h3>drawTable(tbodyID, dataArray, textFuncs)</h3>
+<h3>DWRUtil.drawTable(tbodyID, dataArray, textFuncs)</h3>
 <p>
   TODO: This should probably be renamed fillTable()
   Under the tbody (given by id) create a row for each element in the dataArray
@@ -113,63 +124,63 @@
   The return from the function is used to populate the cell.
 </p>
 
-<h3>setEnabled(id, state)</h3>
+<h3>DWRUtil.setEnabled(id, state)</h3>
 <p>
   Visually enable or diable an element.
 </p>
 
-<h3>isHTMLElement(ele)</h3>
+<h3>DWRUtil.isHTMLElement(ele)</h3>
 <p>
   Is the given node an HTML element?
 </p>
 
-<h3>isHTMLInputElement(ele)</h3>
+<h3>DWRUtil.isHTMLInputElement(ele)</h3>
 <p>
   Is the given node an HTML input element?
 </p>
 
-<h3>isHTMLTextAreaElement(ele)</h3>
+<h3>DWRUtil.isHTMLTextAreaElement(ele)</h3>
 <p>
   Is the given node an HTML textarea element?
 </p>
 
-<h3>isHTMLSelectElement(ele)</h3>
+<h3>DWRUtil.isHTMLSelectElement(ele)</h3>
 <p>
   Is the given node an HTML select element?
 </p>
 
-<h3>setValue(id, val)</h3>
+<h3>DWRUtil.setValue(id, val)</h3>
 <p>
   Set the value for the given id to the specified val.
   This method works for selects (where the option with a matching value and
   not text is selected), input elements (including textareas) divs and spans.
 </p>
 
-<h3>getValue(id)</h3>
+<h3>DWRUtil.getValue(id)</h3>
 <p>
   The counterpart to setValue() - read the current value for a given element.
   This method works for selects (where the option with a matching value and
   not text is selected), input elements (including textareas) divs and spans.
 </p>
 
-<h3>getText(id)</h3>
+<h3>DWRUtil.getText(id)</h3>
 <p>
   getText() is like getValue() with the except that it only works for selects
   where it reads the text of an option and not it's value.
 </p>
 
-<h3>setValues(map)</h3>
+<h3>DWRUtil.setValues(map)</h3>
 <p>
   Given a map, call setValue() for all the entries in the map using the key
   of each entry as an id.
 </p>
 
-<h3>callOnLoad(load)</h3>
+<h3>DWRUtil.callOnLoad(load)</h3>
 <p>
   Ensure a function is called when the page is loaded
 </p>
 
-<h3>alternateRowColors()</h3>
+<h3>DWRUtil.alternateRowColors()</h3>
 <p>
   Alter an rows in a table that have a class of zebra to have classes of either
   oddrow or evenrow alternately.
@@ -177,23 +188,21 @@
   to fight with multiple onload functions.
 </p>
 
-<h3>toDescriptiveString(object)</h3>
+<h3>DWRUtil.toDescriptiveString(object)</h3>
 <p>
   A better toString that the default for an Object
 </p>
 
-<h3>detailedTypeOf(x)</h3>
+<h3>DWRUtil.detailedTypeOf(x)</h3>
 <p>
   Like typeOf except that more information for an object is returned other
   than "object"
 </p>
 
-<h3>useLoadingMessage()</h3>
+<h3>DWRUtil.useLoadingMessage()</h3>
 <p>
   Setup a GMail style loading message
 </p>
-
-
 
 </body>
 </html>

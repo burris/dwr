@@ -1,53 +1,83 @@
 
 /**
+ * Declare a constructor function to which we can add real functions.
+ */
+function DWRUtil()
+{
+}
+
+/**
  * Browser detection code.
  * For internal use only.
  */
-var agt = navigator.userAgent.toLowerCase();
-var is_major = parseInt(navigator.appVersion);
-var is_minor = parseFloat(navigator.appVersion);
+DWRUtil.agent = navigator.userAgent.toLowerCase();
+DWRUtil.isMajor = parseInt(navigator.appVersion);
+DWRUtil.isMinor = parseFloat(navigator.appVersion);
 
-var is_nav = ((agt.indexOf('mozilla') != -1) && (agt.indexOf('spoofer') == -1)
-             && (agt.indexOf('compatible') == -1) && (agt.indexOf('opera') == -1)
-             && (agt.indexOf('webtv') == -1) && (agt.indexOf('hotjava') == -1));
+DWRUtil.isNav = ((DWRUtil.agent.indexOf('mozilla') != -1)
+              && (DWRUtil.agent.indexOf('spoofer') == -1)
+              && (DWRUtil.agent.indexOf('compatible') == -1)
+              && (DWRUtil.agent.indexOf('opera') == -1)
+              && (DWRUtil.agent.indexOf('webtv') == -1)
+              && (DWRUtil.agent.indexOf('hotjava') == -1));
 
-var is_nav4up = (is_nav && (is_major >= 4));
-var is_nav6up = (is_nav && (is_major >= 5));
-var is_gecko = (agt.indexOf('gecko') != -1);
+DWRUtil.isNav4up = (DWRUtil.isNav && (DWRUtil.isMajor >= 4));
+DWRUtil.isNav6up = (DWRUtil.isNav && (DWRUtil.isMajor >= 5));
+DWRUtil.isGecko  = (DWRUtil.agent.indexOf('gecko') != -1);
 
-var is_ie     = ((agt.indexOf("msie") != -1) && (agt.indexOf("opera") == -1));
-var is_ie3    = (is_ie && (is_major < 4));
-var is_ie4    = (is_ie && (is_major == 4) && (agt.indexOf("msie 4")!=-1) );
-var is_ie4up  = (is_ie && (is_major >= 4));
-var is_ie5    = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.0")!=-1) );
-var is_ie5_5  = (is_ie && (is_major == 4) && (agt.indexOf("msie 5.5") !=-1));
-var is_ie5up  = (is_ie && !is_ie3 && !is_ie4);
-var is_ie5_5up =(is_ie && !is_ie3 && !is_ie4 && !is_ie5);
-var is_ie6    = (is_ie && (is_major == 4) && (agt.indexOf("msie 6.")!=-1) );
-var is_ie6up  = (is_ie && !is_ie3 && !is_ie4 && !is_ie5 && !is_ie5_5);
+DWRUtil.isIE     = ((DWRUtil.agent.indexOf("msie") != -1) && (DWRUtil.agent.indexOf("opera") == -1));
+DWRUtil.isIE3    = (DWRUtil.isIE && (DWRUtil.isMajor < 4));
+DWRUtil.isIE4    = (DWRUtil.isIE && (DWRUtil.isMajor == 4) && (DWRUtil.agent.indexOf("msie 4")!=-1) );
+DWRUtil.isIE4up  = (DWRUtil.isIE && (DWRUtil.isMajor >= 4));
+DWRUtil.isIE5    = (DWRUtil.isIE && (DWRUtil.isMajor == 4) && (DWRUtil.agent.indexOf("msie 5.0")!=-1) );
+DWRUtil.isIE55   = (DWRUtil.isIE && (DWRUtil.isMajor == 4) && (DWRUtil.agent.indexOf("msie 5.5") !=-1));
+DWRUtil.isIE5up  = (DWRUtil.isIE && !DWRUtil.isIE3 && !DWRUtil.isIE4);
+DWRUtil.isIE55up = (DWRUtil.isIE && !DWRUtil.isIE3 && !DWRUtil.isIE4 && !DWRUtil.isIE5);
+DWRUtil.isIE6    = (DWRUtil.isIE && (DWRUtil.isMajor == 4) && (DWRUtil.agent.indexOf("msie 6.")!=-1) );
+DWRUtil.isIE6up  = (DWRUtil.isIE && !DWRUtil.isIE3 && !DWRUtil.isIE4 && !DWRUtil.isIE5 && !DWRUtil.isIE55);
 
 /**
  * Set the CSS display style to 'block'
  */
-function showById(id)
+DWRUtil.showById = function(id)
 {
-    document.getElementById(id).style.display = 'block';
+    var ele = document.getElementById(id);
+    if (ele == null)
+    {
+        alert("showById() can't find an element with id: " + id + ".");
+        throw id;
+    }
+
+    ele.style.display = 'block';
 }
 
 /**
  * Set the CSS display style to 'none'
  */
-function hideById(id)
+DWRUtil.hideById = function(id)
 {
-    document.getElementById(id).style.display = 'none';
+    var ele = document.getElementById(id);
+    if (ele == null)
+    {
+        alert("hideById() can't find an element with id: " + id + ".");
+        throw id;
+    }
+
+    ele.style.display = 'none';
 }
 
 /**
  * Toggle an elements visibility
  */
-function toggleDisplay(id)
+DWRUtil.toggleDisplay = function(id)
 {
     var ele = document.getElementById(id);
+    if (ele == null)
+    {
+        alert("toggleDisplay() can't find an element with id: " + id + ".");
+        throw id;
+    }
+
     if (ele.style.display == 'none')
     {
         ele.style.display = 'block';
@@ -61,12 +91,18 @@ function toggleDisplay(id)
 /**
  * Set the CSS class for an element
  */
-function setCSSClass(id, cssclass)
+DWRUtil.setCSSClass = function(id, cssclass)
 {
-    var element = document.getElementById(id);
-    if (element)
+    var ele = document.getElementById(id);
+    if (ele == null)
     {
-        element.className = cssclass;
+        alert("setCSSClass() can't find an element with id: " + id + ".");
+        throw id;
+    }
+
+    if (ele)
+    {
+        ele.className = cssclass;
     }
 }
 
@@ -75,12 +111,18 @@ function setCSSClass(id, cssclass)
  * Most useful for dynamic tables where you clearChildNodes() on the tbody
  * element.
  */
-function clearChildNodes(id)
+DWRUtil.clearChildNodes = function(id)
 {
-    var elem = document.getElementById(id);
-    while (elem.childNodes.length > 0)
+    var ele = document.getElementById(id);
+    if (ele == null)
     {
-        elem.removeChild(elem.firstChild);
+        alert("clearChildNodes() can't find an element with id: " + id + ".");
+        throw id;
+    }
+
+    while (ele.childNodes.length > 0)
+    {
+        ele.removeChild(ele.firstChild);
     }
 }
 
@@ -90,19 +132,18 @@ function clearChildNodes(id)
  * from the valueprop and textprop parameters.
  * If both are left empty then the object itself will be used.
  */
-function fillList(id, data, valueprop, textprop)
+DWRUtil.fillList = function(id, data, valueprop, textprop)
 {
     var ele = document.getElementById(id);
-
     if (ele == null)
     {
-        alert("Element id: "+id+" not found.");
+        alert("fillList() can't find an element with id: " + id + ".");
         throw id;
     }
 
-    if (!isHTMLSelectElement(ele))
+    if (!DWRUtil.isHTMLSelectElement(ele))
     {
-        alert("fillList() can only be used with select elements. Attempt to use: " + detailedTypeOf(ele));
+        alert("fillList() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
         throw ele;
     }
 
@@ -143,7 +184,7 @@ function fillList(id, data, valueprop, textprop)
             }
             else
             {
-                text = toDescriptiveString(data[i]);
+                text = DWRUtil.toDescriptiveString(data[i]);
                 value = text;
             }
         }
@@ -160,24 +201,24 @@ function fillList(id, data, valueprop, textprop)
  * by passing the rows object (from the dataArray) to the given function.
  * The return from the function is used to populate the cell.
  */
-function drawTable(tbodyID, dataArray, textFuncs)
+DWRUtil.drawTable = function(tbodyID, dataArray, textFuncs)
 {
     // assure bug-free redraw in Geck engine by
     // letting window show cleared table
     if (navigator.product && navigator.product == "Gecko")
     {
-        setTimeout(function() { drawTableInner(tbodyID, dataArray, textFuncs); }, 0);
+        setTimeout(function() { DWRUtil.drawTableInner(tbodyID, dataArray, textFuncs); }, 0);
     }
     else
     {
-        drawTableInner(tbodyID, dataArray, textFuncs);
+        DWRUtil.drawTableInner(tbodyID, dataArray, textFuncs);
     }
 }
 
 /**
  * Internal function to help rendering tables
  */
-function drawTableInner(tbodyID, dataArray, textFuncs)
+DWRUtil.drawTableInner = function(tbodyID, dataArray, textFuncs)
 {
     var frag = document.createDocumentFragment();
 
@@ -200,7 +241,7 @@ function drawTableInner(tbodyID, dataArray, textFuncs)
             else
             {
                 var reply = func(dataArray[i]);
-                if (isHTMLElement(reply))
+                if (DWRUtil.isHTMLElement(reply))
                 {
                     td.appendChild(reply);
                 }
@@ -223,23 +264,23 @@ function drawTableInner(tbodyID, dataArray, textFuncs)
 /**
  * Visually enable or diable an element.
  */
-function setEnabled(id, state)
+DWRUtil.setEnabled = function(id, state)
 {
     var ele = document.getElementById(id);
     if (ele == null)
     {
-        alert("Element id: "+id+" not found.");
+        alert("setEnabled() can't find an element with id: " + id + ".");
         throw id;
     }
 
     // If we want to get funky and disable divs and spans by changing the font
     // colour or something then we might want to check the element type before
     // we make assumptions, but in the mean time ...
-    // if (isHTMLInputElement(ele)) { ... }
+    // if (DWRUtil.isHTMLInputElement(ele)) { ... }
 
     ele.disabled = !state;
     ele.readonly = !state;
-    if (is_ie)
+    if (DWRUtil.isIE)
     {
         if (state)
         {
@@ -256,65 +297,65 @@ function setEnabled(id, state)
 /**
  * Is the given node an HTML element?
  */
-function isHTMLElement(ele)
+DWRUtil.isHTMLElement = function(ele)
 {
     // There must be a better way
-    if (is_gecko)
+    if (DWRUtil.isGecko)
     {
         return typeof ele == "object" && ele instanceof HTMLElement;
     }
     else
     {
         // assume it is an html element if has an outerhtml property
-        return typeof ele == "object" && ele.nodeName != null;
+        return typeof ele == "object" && ele.nodeName;
     }
 }
 
 /**
  * Is the given node an HTML input element?
  */
-function isHTMLInputElement(ele)
+DWRUtil.isHTMLInputElement = function(ele)
 {
     // There must be a better way
-    if (is_gecko)
+    if (DWRUtil.isGecko)
     {
         return typeof ele == "object" && ele instanceof HTMLInputElement;
     }
     else
     {
-        return typeof ele == "object" && ele.nodeName.toLowerCase() == "input";
+        return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "input";
     }
 }
 
 /**
  * Is the given node an HTML textarea element?
  */
-function isHTMLTextAreaElement(ele)
+DWRUtil.isHTMLTextAreaElement = function(ele)
 {
     // There must be a better way
-    if (is_gecko)
+    if (DWRUtil.isGecko)
     {
         return typeof ele == "object" && ele instanceof HTMLTextAreaElement;
     }
     else
     {
-        return typeof ele == "object" && ele.nodeName.toLowerCase() == "textarea";
+        return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "textarea";
     }
 }
 
 /**
  * Is the given node an HTML select element?
  */
-function isHTMLSelectElement(ele)
+DWRUtil.isHTMLSelectElement = function(ele)
 {
     // There must be a better way
-    if (is_gecko)
+    if (DWRUtil.isGecko)
     {
         return typeof ele == "object" && ele instanceof HTMLSelectElement;
     }
     else
     {
-        return typeof ele == "object" && ele.nodeName.toLowerCase() == "select";
+        return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "select";
     }
 }
 
@@ -323,7 +364,7 @@ function isHTMLSelectElement(ele)
  * This method works for selects (where the option with a matching value and
  * not text is selected), input elements (including textareas) divs and spans.
  */
-function setValue(id, val)
+DWRUtil.setValue = function(id, val)
 {
     if (val == null)
     {
@@ -333,11 +374,11 @@ function setValue(id, val)
     var ele = document.getElementById(id);
     if (ele == null)
     {
-        alert("Element id: "+id+" not found.");
+        alert("setValue() can't find an element with id: " + id + ".");
         throw id;
     }
 
-    if (isHTMLSelectElement(ele))
+    if (DWRUtil.isHTMLSelectElement(ele))
     {
         // search through the values
         var found  = false;
@@ -372,7 +413,7 @@ function setValue(id, val)
         return;
     }
 
-    if (isHTMLInputElement(ele))
+    if (DWRUtil.isHTMLInputElement(ele))
     {
         switch (ele.type)
         {
@@ -393,13 +434,13 @@ function setValue(id, val)
         }
     }
 
-    if (isHTMLTextAreaElement(ele))
+    if (DWRUtil.isHTMLTextAreaElement(ele))
     {
         ele.value = val;
         return;
     }
 
-    if (isHTMLElement(ele))
+    if (DWRUtil.isHTMLElement(ele))
     {
         ele.innerHTML = val;
         return;
@@ -414,17 +455,16 @@ function setValue(id, val)
  * This method works for selects (where the option with a matching value and
  * not text is selected), input elements (including textareas) divs and spans.
  */
-function getValue(id)
+DWRUtil.getValue = function(id)
 {
     var ele = document.getElementById(id);
-
     if (ele == null)
     {
-        alert("Element id: "+id+" not found.");
+        alert("getValue() can't find an element with id: " + id + ".");
         throw id;
     }
 
-    if (isHTMLSelectElement(ele))
+    if (DWRUtil.isHTMLSelectElement(ele))
     {
         // This is a bit of a scam because it assumes single select
         // but I'm not sure how we should treat multi-select.
@@ -439,7 +479,7 @@ function getValue(id)
         }
     }
 
-    if (isHTMLInputElement(ele))
+    if (DWRUtil.isHTMLInputElement(ele))
     {
         switch (ele.type)
         {
@@ -452,17 +492,17 @@ function getValue(id)
             return ele.value;
 
         default:
-            alert("Not sure how to setValue on a input element of type " + ele.type);
+            alert("Not sure how to getValue on a input element of type " + ele.type);
             return ele.value;
         }
     }
 
-    if (isHTMLTextAreaElement(ele))
+    if (DWRUtil.isHTMLTextAreaElement(ele))
     {
         return ele.value;
     }
 
-    if (isHTMLElement(ele))
+    if (DWRUtil.isHTMLElement(ele))
     {
         return ele.innerHTML;
     }
@@ -475,19 +515,18 @@ function getValue(id)
  * getText() is like getValue() with the except that it only works for selects
  * where it reads the text of an option and not it's value.
  */
-function getText(id)
+DWRUtil.getText = function(id)
 {
     var ele = document.getElementById(id);
-
     if (ele == null)
     {
-        alert("Element id: "+id+" not found.");
+        alert("getText() can't find an element with id: " + id + ".");
         throw id;
     }
 
-    if (!isHTMLSelectElement(ele))
+    if (!DWRUtil.isHTMLSelectElement(ele))
     {
-        alert("getText() can only be used with select elements. Attempt to use: " + detailedTypeOf(ele));
+        alert("getText() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
         throw ele;
     }
 
@@ -508,19 +547,28 @@ function getText(id)
  * Given a map, call setValue() for all the entries in the map using the key
  * of each entry as an id.
  */
-function setValues(map)
+DWRUtil.setValues = function(map)
 {
     for (var property in map)
     {
+        // This is done by setValue, but we can provide better debug by doing
+        // it here.
+        var ele = document.getElementById(property);
+        if (ele == null)
+        {
+            alert("setValues() can't find an element with id: " + property + ".");
+            throw id;
+        }
+
         var value = map[property];
-        setValue(property, value);
+        DWRUtil.setValue(property, value);
     }
 }
 
 /**
  * Ensure a function is called when the page is loaded
  */
-function callOnLoad(load)
+DWRUtil.callOnLoad = function(load)
 {
     if (window.addEventListener)
     {
@@ -542,7 +590,7 @@ function callOnLoad(load)
  * This is probably not the best place for this method, but I dont want to have
  * to fight with multiple onload functions.
  */
-function alternateRowColors()
+DWRUtil.alternateRowColors = function()
 {
     var tables = document.getElementsByTagName("table");
     var rowCount = 0;
@@ -577,7 +625,7 @@ function alternateRowColors()
 /**
  * A better toString that the default for an Object
  */
-function toDescriptiveString(object)
+DWRUtil.toDescriptiveString = function(object)
 {
     if (typeof object != "object")
     {
@@ -597,7 +645,7 @@ function toDescriptiveString(object)
         return object.toString();
     }
 
-    var reply = "" + detailedTypeOf(object) + " {";
+    var reply = "" + DWRUtil.detailedTypeOf(object) + " {";
     var i = 0;
     for (var prop in object)
     {
@@ -628,7 +676,7 @@ function toDescriptiveString(object)
  * Like typeOf except that more information for an object is returned other
  * than "object"
  */
-function detailedTypeOf(x)
+DWRUtil.detailedTypeOf = function(x)
 {
     var reply = typeof x;
 
@@ -639,21 +687,32 @@ function detailedTypeOf(x)
     }
 
     return reply;
-} 
+}
 
 /**
  * Setup a GMail style loading message
  */
-function useLoadingMessage()
+DWRUtil.useLoadingMessage = function()
 {
     var disabledZone = document.createElement('div');
     disabledZone.setAttribute('id', 'disabledZone');
-    disabledZone.setAttribute('style', 'position:absolute; z-index:1000; left:0px; top:0px; width:100%; height:100%;');
+    disabledZone.style.position = "absolute";
+    disabledZone.style.zIndex = "1000";
+    disabledZone.style.left = "0px";
+    disabledZone.style.top = "0px";
+    disabledZone.style.width = "100%";
+    disabledZone.style.height = "100%";
     document.body.appendChild(disabledZone);
 
     var messageZone = document.createElement('div');
     messageZone.setAttribute('id', 'messageZone');
-    messageZone.setAttribute('style', 'position:absolute; top:0px; left:500px; background:red; color:white; font-family:Arial,Helvetica,sans-serif; padding:4px;');
+    messageZone.style.position = "absolute";
+    messageZone.style.top = "0px";
+    messageZone.style.right = "0px";
+    messageZone.style.background = "red";
+    messageZone.style.color = "white";
+    messageZone.style.fontFamily = "Arial,Helvetica,sans-serif";
+    messageZone.style.padding = "4px";
     disabledZone.appendChild(messageZone);
 
     var text = document.createTextNode('Loading');
@@ -661,8 +720,8 @@ function useLoadingMessage()
 
     hidePleaseWait();
 
-    dwrSetPreHook(showPleaseWait);
-    dwrSetPostHook(hidePleaseWait)
+    DWREngine.setPreHook(showPleaseWait);
+    DWREngine.setPostHook(hidePleaseWait)
 }
 
 /**
@@ -679,4 +738,199 @@ var showPleaseWait = function()
 var hidePleaseWait = function()
 {
     document.getElementById('disabledZone').style.visibility = 'hidden';
+}
+
+
+/**
+ * Deprecated
+ */
+function showById(id)
+{
+    deprecated("showById");
+    DWRUtil.showById(id);
+}
+
+/**
+ * Deprecated
+ */
+function hideById(id)
+{
+    deprecated("hideById");
+    DWRUtil.hideById(id);
+}
+
+/**
+ * Deprecated
+ */
+function toggleDisplay(id)
+{
+    deprecated("toggleDisplay");
+    DWRUtil.toggleDisplay(id);
+}
+
+/**
+ * Deprecated
+ */
+function setCSSClass(id, cssclass)
+{
+    deprecated("setCSSClass");
+    DWRUtil.setCSSClass(id, cssclass);
+}
+
+/**
+ * Deprecated
+ */
+function clearChildNodes(id)
+{
+    deprecated("clearChildNodes");
+    DWRUtil.clearChildNodes(id);
+}
+
+/**
+ * Deprecated
+ */
+function fillList(id, data, valueprop, textprop)
+{
+    deprecated("fillList");
+    DWRUtil.fillList(id, data, valueprop, textprop);
+}
+
+/**
+ * Deprecated
+ */
+function drawTable(tbodyID, dataArray, textFuncs)
+{
+    deprecated("drawTable");
+    DWRUtil.drawTable(tbodyID, dataArray, textFuncs);
+}
+
+/**
+ * Deprecated
+ */
+function setEnabled(id, state)
+{
+    deprecated("setEnabled");
+    DWRUtil.setEnabled(id, state);
+}
+
+/**
+ * Deprecated
+ */
+function isHTMLElement(ele)
+{
+    deprecated("isHTMLElement");
+    return DWRUtil.isHTMLElement(ele);
+}
+
+/**
+ * Deprecated
+ */
+function isHTMLInputElement(ele)
+{
+    deprecated("isHTMLInputElement");
+    return DWRUtil.isHTMLInputElement(ele);
+}
+
+/**
+ * Deprecated
+ */
+function isHTMLTextAreaElement(ele)
+{
+    deprecated("isHTMLTextAreaElement");
+    return DWRUtil.isHTMLTextAreaElement(ele);
+}
+
+/**
+ * Deprecated
+ */
+function isHTMLSelectElement(ele)
+{
+    deprecated("isHTMLSelectElement");
+    return DWRUtil.isHTMLSelectElement(ele);
+}
+
+/**
+ * Deprecated
+ */
+function setValue(id, val)
+{
+    deprecated("setValue");
+    DWRUtil.setValue(id, val);
+}
+
+/**
+ * Deprecated
+ */
+function getValue(id)
+{
+    deprecated("getValue");
+    return DWRUtil.getValue(id);
+}
+
+/**
+ * Deprecated
+ */
+function getText(id)
+{
+    deprecated("getText");
+    return DWRUtil.getText(id);
+}
+
+/**
+ * Deprecated
+ */
+function setValues(map)
+{
+    deprecated("setValues");
+    DWRUtil.setValues(map);
+}
+
+/**
+ * Deprecated
+ */
+function callOnLoad(load)
+{
+    deprecated("callOnLoad");
+    DWRUtil.callOnLoad(load);
+}
+
+/**
+ * Deprecated
+ */
+function alternateRowColors()
+{
+    deprecated("alternateRowColors");
+    DWRUtil.alternateRowColors();
+}
+
+/**
+ * Deprecated
+ */
+function toDescriptiveString(object)
+{
+    deprecated("toDescriptiveString");
+    return DWRUtil.toDescriptiveString(object);
+}
+
+/**
+ * Deprecated
+ */
+function detailedTypeOf(x)
+{
+    deprecated("detailedTypeOf");
+    return DWRUtil.detailedTypeOf(x);
+}
+
+/**
+ * Deprecated
+ */
+function useLoadingMessage()
+{
+    deprecated("useLoadingMessage");
+    DWRUtil.useLoadingMessage();
+}
+
+function deprecated(fname)
+{
+    alert("Xxx() utility functions like " + fname + "() are deprecated. Please convert to DWRUtil.xxx()");
 }

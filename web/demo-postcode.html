@@ -10,16 +10,16 @@
   <script>
   function fillAddress()
   {
-      var postcode = getValue("postcode");
+      var postcode = DWRUtil.getValue("postcode");
       Demo.fillAddress(fillForm, postcode);
   }
 
   function fillForm(address)
   {
-      setValue("line2", address.line2);
-      setValue("line3", address.line3);
-      setValue("line4", address.line4);
-      setValue("warning", "Please check the address details above.");
+      DWRUtil.setValue("line2", address.line2);
+      DWRUtil.setValue("line3", address.line3);
+      DWRUtil.setValue("line4", address.line4);
+      DWRUtil.setValue("warning", "Please check the address details above.");
   }
   </script>
 </head>
@@ -33,7 +33,7 @@
 <p>
   This is a practical example of the sort of thing that is possible with DWR.
   The fully functional version of this example was written for a client of mine
-  and this site does not have access to the full UK postcode data so this demo
+  that has full access to UK postcode data. This site does not so this demo
   is restricted to the following postcodes:
   <ul>
     <li>LE16 7TR</li>

@@ -1,4 +1,9 @@
 
+Changes for Version 0.5
+-----------------------
+Conversion from global javascript methods to static object-based methods
+Various bug fixes in utils.js
+
 Changes for Version 0.4
 -----------------------
 Have a way for DWR to call a JSP and return the data as a string to javascript

@@ -15,24 +15,24 @@
 
   function writePerson()
   {
-      var person = { id:getValue("id"), name:getValue("name"), dateOfBirth:getValue("dateOfBirth"), salary:getValue("salary") };
+      var person = { id:DWRUtil.getValue("id"), name:DWRUtil.getValue("name"), dateOfBirth:DWRUtil.getValue("dateOfBirth"), salary:DWRUtil.getValue("salary") };
       Demo.setExamplePerson(null, person);
   }
 
   function clearPerson()
   {
-      setValue("id", "");
-      setValue("name", "");
-      setValue("dateOfBirth", "");
-      setValue("salary", "");
+      DWRUtil.setValue("id", "");
+      DWRUtil.setValue("name", "");
+      DWRUtil.setValue("dateOfBirth", "");
+      DWRUtil.setValue("salary", "");
   }
 
   function fillForm(person)
   {
-      setValue("id", person.id);
-      setValue("name", person.name);
-      setValue("dateOfBirth", person.dateOfBirth);
-      setValue("salary", person.salary);
+      DWRUtil.setValue("id", person.id);
+      DWRUtil.setValue("name", person.name);
+      DWRUtil.setValue("dateOfBirth", person.dateOfBirth);
+      DWRUtil.setValue("salary", person.salary);
   }
   </script>
 </head>
@@ -128,10 +128,10 @@ public class Demo
 <pre>
 function fillForm(person)
 {
-    setValue("id", person.id);
-    setValue("name", person.name);
-    setValue("dateOfBirth", person.dateOfBirth);
-    setValue("salary", person.salary);
+    DWRUtil.setValue("id", person.id);
+    DWRUtil.setValue("name", person.name);
+    DWRUtil.setValue("dateOfBirth", person.dateOfBirth);
+    DWRUtil.setValue("salary", person.salary);
 }
 </pre>
 

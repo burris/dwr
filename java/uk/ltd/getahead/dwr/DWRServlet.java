@@ -422,10 +422,9 @@ public class DWRServlet extends HttpServlet
         //resp.setContentType("text/javascript");
         PrintWriter out = resp.getWriter();
         out.println();
-        out.println("// Methods for: " + creator.getType().getName()); //$NON-NLS-1$
 
+        out.println("function " + pathinfo + "() { }"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println();
-        out.println(pathinfo + " = new Object();"); //$NON-NLS-1$
 
         Method[] methods = creator.getType().getDeclaredMethods();
         for (int i = 0; i < methods.length; i++)
@@ -457,7 +456,7 @@ public class DWRServlet extends HttpServlet
             out.println(")"); //$NON-NLS-1$
             out.println("{"); //$NON-NLS-1$
 
-            out.print("    dwrExecute(callback, '" + pathinfo + "', '" + method.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            out.print("    DWREngine.execute(callback, '" + pathinfo + "', '" + method.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             for (int j = 0; j < paramTypes.length; j++)
             {
                 out.print(", p" + j); //$NON-NLS-1$
@@ -540,7 +539,7 @@ public class DWRServlet extends HttpServlet
 
                 out.println(ss.getInitCode());
                 out.println("var reply = " + ss.getAssignCode() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
-                out.println("dwrHandleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("DWREngine.handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
             }
             else
             {
@@ -549,7 +548,7 @@ public class DWRServlet extends HttpServlet
                 out.println("<script type='text/javascript'>"); //$NON-NLS-1$
                 out.println(ss.getInitCode());
                 out.println("var reply = " + ss.getAssignCode() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
-                out.println("window.parent.dwrHandleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("window.parent.DWREngine.handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
                 out.println("</script>"); //$NON-NLS-1$
             }
 
@@ -568,14 +567,14 @@ public class DWRServlet extends HttpServlet
                 {
                     resp.setContentType(MIME_XML);
 
-                    out.println("dwrHandleError(\"" + eq.getId() + "\", \"" + output + "\");"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    out.println("DWREngine.handleError(\"" + eq.getId() + "\", \"" + output + "\");"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
                 else
                 {
                     resp.setContentType(MIME_HTML);
 
                     out.println("<script type='text/javascript'>"); //$NON-NLS-1$
-                    out.println("window.parent.dwrHandleError(\"" + eq.getId() + "\", '" + output + "')"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    out.println("window.parent.DWREngine.handleError(\"" + eq.getId() + "\", '" + output + "')"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     out.println("</script>"); //$NON-NLS-1$
                 }
 
