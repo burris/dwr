@@ -14,7 +14,7 @@ import uk.ltd.getahead.dwr.util.Log;
  * A class to manage the types of creators and the instansiated creators.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class CreatorManager
+public final class CreatorManager
 {
     /**
      * Simple ctor

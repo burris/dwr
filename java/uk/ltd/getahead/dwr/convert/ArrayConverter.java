@@ -111,11 +111,11 @@ public class ArrayConverter implements Converter
         {
             OutboundVariable nested = converterManager.convertOutbound(Array.get(data, i), outctx);
 
-            buffer.append(nested.initCode);
+            buffer.append(nested.getInitCode());
             buffer.append(varname + "[");
             buffer.append(i);
             buffer.append("] = ");
-            buffer.append(nested.assignCode);
+            buffer.append(nested.getAssignCode());
             buffer.append(";");
         }
 

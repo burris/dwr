@@ -19,7 +19,7 @@ import uk.ltd.getahead.dwr.util.Log;
  * passed in to be converted to Java objects.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ExecuteQuery
+public final class ExecuteQuery
 {
     /**
      * Simple ctor

@@ -5,9 +5,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * We need to keep track of what is going on while converting inbound data.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class InboundContext
+public final class InboundContext
 {
     /**
      * Create an inbound variable.

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
  * in JDK 1.3
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class LocalUtil
+public final class LocalUtil
 {
     /**
      * Prevent instansiation

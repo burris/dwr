@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
  * don't want to force users to import log4j or commons-logging.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Log
+public final class Log
 {
     /**
      * Prevent instansiation

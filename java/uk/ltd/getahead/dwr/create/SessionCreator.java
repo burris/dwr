@@ -43,7 +43,7 @@ public class SessionCreator implements Creator
      */
     public Object getInstance() throws InstantiationException
     {
-        HttpSession session = ExecutionContext.getExecutionContext().getSession();
+        HttpSession session = ExecutionContext.get().getSession();
         Object reply = session.getAttribute(scriptname);
 
         if (reply == null)

@@ -10,7 +10,7 @@ import uk.ltd.getahead.dwr.util.LocalUtil;
  * A type to manage the converter types and the instansiated class name matches.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ConverterManager
+public final class ConverterManager
 {
     /**
      * Default ctor
@@ -129,13 +129,13 @@ public class ConverterManager
         if (ov != null)
         {
             // So the object as been converted already, we just need to refer to it.
-            return new OutboundVariable("", ov.assignCode);
+            return new OutboundVariable("", ov.getAssignCode());
         }
 
         // So we will have to create one for ourselves
         ov = new OutboundVariable();
         String varName = converted.getNextVariableName();
-        ov.assignCode = varName;
+        ov.setAssignCode(varName);
 
         // Save this for another time so we don't recurse into it
         converted.put(object, ov);
@@ -146,7 +146,7 @@ public class ConverterManager
             throw new ConversionException("No converter found for " + object.getClass().getName());
         }
 
-        ov.initCode = converter.convertOutbound(object, ov.assignCode, converted);
+        ov.setInitCode(converter.convertOutbound(object, ov.getAssignCode(), converted));
 
         return ov;
     }

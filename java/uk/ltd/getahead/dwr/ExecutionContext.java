@@ -19,11 +19,13 @@ import uk.ltd.getahead.dwr.util.SwallowingHttpServletResponse;
 public final class ExecutionContext
 {
     /**
-     * @param request
-     * @param response
-     * @param config
+     * Prevent instansiation outside of setExecutionContext()
+     * @param request The incoming http request
+     * @param response The outgoing http reply
+     * @param config The servlet configuration
+     * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig)
      */
-    public ExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config)
+    private ExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config)
     {
         this.request = request;
         this.response = response;
@@ -105,17 +107,20 @@ public final class ExecutionContext
     private static ThreadLocal user = new ThreadLocal();
 
     /**
+     * Accessor for the current ExecutionContext.
      * @return The current ExecutionContext
      */
-    public static ExecutionContext getExecutionContext()
+    public static ExecutionContext get()
     {
         return (ExecutionContext) user.get();
     }
 
     /**
-     * @param request
-     * @param response
-     * @param config
+     * Make the current thread know what the current request is
+     * @param request The incoming http request
+     * @param response The outgoing http reply
+     * @param config The servlet configuration
+     * @see ExecutionContext#unset()
      */
     protected static void setExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config)
     {
@@ -124,6 +129,7 @@ public final class ExecutionContext
 
     /**
      * Unset the current ExecutionContext
+     * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig)
      */
     protected static void unset()
     {

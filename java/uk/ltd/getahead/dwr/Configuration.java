@@ -23,7 +23,7 @@ import uk.ltd.getahead.dwr.util.LogErrorHandler;
  * web.xml and dwr.xml
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Configuration
+public final class Configuration
 {
     /**
      * Examine the current configuration

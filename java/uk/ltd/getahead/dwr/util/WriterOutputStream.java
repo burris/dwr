@@ -6,9 +6,10 @@ import java.io.Writer;
 import javax.servlet.ServletOutputStream;
 
 /**
+ * This is not the evil hack you are looking for.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class WriterOutputStream extends ServletOutputStream
+public final class WriterOutputStream extends ServletOutputStream
 {
     /**
      * ctor using platform default encoding
@@ -98,12 +99,12 @@ public class WriterOutputStream extends ServletOutputStream
     /**
      * The destination of all our printing
      */
-    protected Writer writer;
+    private Writer writer;
 
     /**
      * What string encoding should we use
      */
-    protected String encoding;
+    private String encoding;
 
     /**
      * Buffer for write(int)

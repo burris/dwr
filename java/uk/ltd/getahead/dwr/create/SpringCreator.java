@@ -63,7 +63,7 @@ public class SpringCreator implements Creator
                     }
                     else
                     {
-                        url = ExecutionContext.getExecutionContext().getServletContext().getResource(resourceName);
+                        url = ExecutionContext.get().getServletContext().getResource(resourceName);
                         if (url != null)
                         {
                             Log.info("Loading spring config via servlet context from " + url.toExternalForm());

@@ -177,12 +177,12 @@ public class CollectionConverter implements Converter
 
             OutboundVariable nested = config.convertOutbound(element, outctx);
 
-            buffer.append(nested.initCode);
+            buffer.append(nested.getInitCode());
             buffer.append(varname);
             buffer.append("[");
             buffer.append(i);
             buffer.append("] = ");
-            buffer.append(nested.assignCode);
+            buffer.append(nested.getAssignCode());
             buffer.append(";");
 
             i++;

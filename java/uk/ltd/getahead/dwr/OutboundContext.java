@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * We need to keep track of stuff while we are converting on the way out to
+ * prevent recurrsion.
+ * This class helps track the conversion process.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class OutboundContext
+public final class OutboundContext
 {
     /**
      * Create a ConversionContext which stores context information about a set

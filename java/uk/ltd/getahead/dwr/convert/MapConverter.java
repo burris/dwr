@@ -128,14 +128,14 @@ public class MapConverter implements Converter
             OutboundVariable nested = config.convertOutbound(value, outctx);
 
             // Make sure the nested thing is declared
-            buffer.append(nested.initCode);
+            buffer.append(nested.getInitCode());
 
             // And now declare our stuff
             buffer.append(varname);
             buffer.append(".");
             buffer.append(key);
             buffer.append(" = ");
-            buffer.append(nested.assignCode);
+            buffer.append(nested.getAssignCode());
             buffer.append(";");
         }
 

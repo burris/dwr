@@ -49,7 +49,7 @@ public class Demo
      */
     public String getServerInfo()
     {
-        return ExecutionContext.getExecutionContext().getServletContext().getServerInfo();
+        return ExecutionContext.get().getServletContext().getServerInfo();
     }
 
     /**
@@ -58,8 +58,8 @@ public class Demo
      */
     public String getClicks()
     {
-        HttpSession session = ExecutionContext.getExecutionContext().getSession();
-        ServletContext context = ExecutionContext.getExecutionContext().getServletContext();
+        HttpSession session = ExecutionContext.get().getSession();
+        ServletContext context = ExecutionContext.get().getServletContext();
 
         Integer contextClicks = (Integer) context.getAttribute("contextClicks");
         Integer sessionClicks = (Integer) session.getAttribute("sessionClicks");
@@ -91,7 +91,7 @@ public class Demo
      */
     public String getForward() throws ServletException, IOException
     {
-        return ExecutionContext.getExecutionContext().forwardToString("/forward.jsp");
+        return ExecutionContext.get().forwardToString("/forward.jsp");
     }
 
     /**

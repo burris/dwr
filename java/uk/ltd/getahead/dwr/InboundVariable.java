@@ -4,7 +4,7 @@ package uk.ltd.getahead.dwr;
  * A simple struct to hold data about a single converted javascript variable.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class InboundVariable
+public final class InboundVariable
 {
     /**
      * Parsing ctor

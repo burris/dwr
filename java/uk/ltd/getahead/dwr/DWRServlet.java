@@ -40,7 +40,7 @@ import uk.ltd.getahead.dwr.util.Log;
  * </p>
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DWRServlet extends HttpServlet
+public final class DWRServlet extends HttpServlet
 {
     /* (non-Javadoc)
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
@@ -455,7 +455,7 @@ public class DWRServlet extends HttpServlet
 
             PrintWriter out = resp.getWriter();
 
-            Log.info("Returning: id[" + eq.getId() + "] init[" + ss.initCode + "] assign[" + ss.assignCode + "] xml[" + eq.isXmlMode() + "]");
+            Log.info("Returning: id[" + eq.getId() + "] init[" + ss.getInitCode() + "] assign[" + ss.getAssignCode() + "] xml[" + eq.isXmlMode() + "]");
 
             LocalUtil.addNoCacheHeaders(resp);
 
@@ -463,8 +463,8 @@ public class DWRServlet extends HttpServlet
             {
                 resp.setContentType("text/xml");
 
-                out.println(ss.initCode);
-                out.println("var reply = " + ss.assignCode + ";");
+                out.println(ss.getInitCode());
+                out.println("var reply = " + ss.getAssignCode() + ";");
                 out.println("dwrHandleResponse(\"" + eq.getId() + "\", reply);");
             }
             else
@@ -472,8 +472,8 @@ public class DWRServlet extends HttpServlet
                 resp.setContentType("text/html");
 
                 out.println("<script type='text/javascript'>");
-                out.println(ss.initCode);
-                out.println("var reply = " + ss.assignCode + ";");
+                out.println(ss.getInitCode());
+                out.println("var reply = " + ss.getAssignCode() + ";");
                 out.println("window.parent.dwrHandleResponse(\"" + eq.getId() + "\", reply);");
                 out.println("</script>");
             }
