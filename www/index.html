@@ -6,30 +6,30 @@
 
 <body>
 
-<h1>DWR (Direct Web Remoting)</h1>
+<h2>DWR (Direct Web Remoting)</h2>
 
-<h2>What DWR does for you:</h2>
+<h3>What DWR does for you:</h3>
 <ul>
   <li>Gives you a very very easy way to call Java code from your web-app.</li>
   <li>Gives you a jump-start to being able to create GMail type interactivity.</li>
 </ul>
 
-<h2>What DWR does not do for you:</h2>
+<h3>What DWR does not do for you:</h3>
 <ul>
   <li>Be a servlet framework</li>
   <li>Make coffee</li>
   <li>Be a perfect solution. Consider this alpha.</li>
 </ul>
 
-<h2>Steps to getting DWR running in your web app:</h2>
+<h3>Steps to getting DWR running in your web app:</h3>
 
-<h3>1. Copy the JAR file dwr.jar into the WEB-INF/lib directory of your webapp.</h3>
+<h4>1. Copy the JAR file dwr.jar into the WEB-INF/lib directory of your webapp.</h4>
 <p>
   The JAR file can be downloaded <a href="https://dwr.dev.java.net/files/documents/2427/8486/dwr.jar">using the files area</a>,
   or <a href="https://dwr.dev.java.net/source/browse/dwr/">from CVS</a>, or you can build it yourself using the source from CVS.
 </p>
 
-<h3>2. Add the following lines to your WEB-INF/web.xml</h3>
+<h4>2. Add the following lines to your WEB-INF/web.xml</h4>
 <pre>
   &lt;servlet>
     &lt;servlet-name>dwr-invoker&lt;/servlet-name>
@@ -60,7 +60,7 @@
   <li>Although you can allow several classes with the name last name component (like java.util.Date and java.sql.Date) you can't use them both in the same page.</li>
 </ul>
 
-<h3>3. Go to the following URL</h3>
+<h4>3. Go to the following URL</h4>
 
 <code>http://localhost:8080/[YOUR-WEBAPP]/dwr</code>
 <p>
@@ -79,7 +79,7 @@
 </pre>
 <p>This will prevent the Javascript from deleting the iframes that it creates</p>
 
-<h3>4. How to make use of this from your web application</h3>
+<h4>4. How to make use of this from your web application</h4>
 
 <p>
   Best practice is to have a class or 2 built to be called by DWR, this
@@ -103,7 +103,7 @@
   <li>Dance the funky chicken (optional).</li>
 </ul>
 
-<h3>5. THINK ABOUT SECURITY</h3>
+<h4>5. THINK ABOUT SECURITY</h4>
 <p>
 There is a danger that you could cause all sorts of security problems using this
 code. You need to think about security earlier rather than later.
@@ -118,7 +118,7 @@ Access to dwr can be restricted using the declaritive security built into the
 servlet spec.
 </p>
 
-<h3>Notes</h3>
+<h4>Notes</h4>
 <p>
 The JavaBeans you write will function a bit like Stateless Session EJBs. The
 differences are:
