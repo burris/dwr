@@ -9,6 +9,8 @@ Create a jdk 1.5 version of the collections code converter to get more type info
 Create a batch send mechanism so a page can start by sending a set of remote
     calls all at the same time.
 Add pluggable marshallers so we could do JSON or XML-RPC out the back end
+use jdk5 annotations to pass comments to generated javascript interface so the
+    the created javascript is documented (or maybe javacc and javadoc)
 
 Recent changes
 --------------
