@@ -63,6 +63,11 @@
   &lt;/servlet-mapping>
 </pre>
 <p>
+  Note that in the next release of DWR we will be moving to using a simple
+  dwr.xml file to configure the allowed beans, however for now you have to use
+  web.xml.
+</p>
+<p>
   You can change the <i>allowed</i> init-param to specify any classes you want, so long
   as they satisfy the following:
 </p>
@@ -134,29 +139,34 @@ req = ExecutionContext.getExecutionContext().getHttpServletRequest();
 
 <h4>5. THINK ABOUT SECURITY</h4>
 <p>
-There is a danger that you could cause all sorts of security problems using this
-code. You need to think about security earlier rather than later.
+  There is a danger that you could cause all sorts of security problems using this
+  code. You need to think about security earlier rather than later.
 </p>
 <p>
-It makes sense to write your classes with DWR in mind thinking about the
-restrictions in step 2 above. Don't accidentally include methods that would
-allow an attacker to do too more that you wanted.
+  It makes sense to write your classes with DWR in mind thinking about the
+  restrictions in step 2 above. Don't accidentally include methods that would
+  allow an attacker to do too more that you wanted.
 </p>
 <p>
-Access to dwr can be restricted using the declaritive security built into the
-servlet spec.
+  Access to dwr can be restricted using the declaritive security built into the
+  servlet spec.
 </p>
 
 <h4>Notes</h4>
 <p>
-The JavaBeans you write will function a bit like Stateless Session EJBs. The
-differences are:
+  The JavaBeans you write will function a bit like Stateless Session EJBs. The
+  differences are:
 </p>
 <ul>
   <li>DWR has no complex deployment and can be run from Tomcat without needing a full EJB server</li>
   <li>DWR is called directly from JavaScript without needing a separate web framework</li>
   <li>DWR does not do transactions or security but there are 101 frameworks that will give you those things.</li>
 </ul>
+<p>
+  Due to security restrictions in browsers the site hosting the HTML pages must
+  be the same as the site with the webapp. You can't have one web-server giving
+  out HTML that directs the browser to request Javascript pages from another.
+</p>
 
 </body>
 </html>
