@@ -425,7 +425,7 @@ function callOnLoad(load)
     {
         window.attachEvent("onload", load);
     }
-    else if (document.getElementById)
+    else
     {
         window.onload = load;
     }

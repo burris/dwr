@@ -152,7 +152,7 @@ function dwrExecute(func, classname, methodname, vararg_params)
     call.map.xml = true;
     for (var i=3; i<dwrExecute.arguments.length; i++)
     {
-        dwrMarshall(call.map, new Object(), dwrExecute.arguments[i], "param" + (i-3));
+        dwrMarshall(call.map, new Array(), dwrExecute.arguments[i], "param" + (i-3));
     }
 
     // Get setup for XMLHttpRequest if possible
@@ -227,8 +227,7 @@ function dwrMarshall(output, referto, data, name)
         break;
 
     case "string":
-        // if we get encoding problems we can try encodeURIComponent(data)
-        output[name] = "string:" + data;
+        output[name] = "string:" + encodeURIComponent(data);
         break;
 
     case "object":
@@ -242,8 +241,7 @@ function dwrMarshall(output, referto, data, name)
         }
         else if (data instanceof String)
         {
-            // if we get encoding problems we can try encodeURIComponent(data)
-            output[name] = "String:" + data;
+            output[name] = "String:" + encodeURIComponent(data);
         }
         else if (data instanceof Date)
         {
@@ -251,15 +249,32 @@ function dwrMarshall(output, referto, data, name)
         }
         else
         {
-            // This is the beginning of the types that can recurse
-            var lookup = referto[data];
+            // This is the beginning of the types that can recurse so we need to
+            // check that we've not marshalled this object before.
+            // We'd like to do:
+            //   var lookup = referto[data];
+            // However hashmaps in javascript appear to use the hash values of
+            // the *string* versions of the objects used as keys so all objects
+            // count as the same thing.
+            // So we need to have referto as an array and go through it
+            // sequentially checking for equality with data
+            var lookup;
+            for (var i = 0; i < referto.length; i++)
+            {
+                if (referto[i].data === data)
+                {
+                    lookup = referto[i];
+                    break;
+                }
+            }
+
             if (lookup != null)
             {
-                output[name] = "reference:" + lookup;
+                output[name] = "reference:" + lookup.name;
                 return;
             }
 
-            referto[data] = name;
+            referto.push({ data:data, name:name });
 
             if (data instanceof Array)
             {

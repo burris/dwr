@@ -1,5 +1,8 @@
 package uk.ltd.getahead.dwr.util;
 
+import java.lang.reflect.Method;
+import java.net.URLDecoder;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -164,4 +167,44 @@ public class LocalUtil
         // Set to expire far in the past. Prevents caching at the proxy server
         resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
     }
+
+    /**
+     * URL dencode a value. This method gets around the lack of a
+     * decode(String, String) method in JDK 1.3.
+     * @param value The string to decode
+     * @return The decoded string
+     */
+    public static String decode(String value)
+    {
+        if (!testedDecoder)
+        {
+            try
+            {
+                decode14 = URLDecoder.class.getMethod("decode", new Class[] { String.class, String.class });
+            }
+            catch (Exception ex)
+            {
+                Log.warn("URLDecoder.decode(String, String) is not available. Falling back to 1.3 variant.");
+            }
+
+            testedDecoder = true;
+        }
+
+        if (decode14 != null)
+        {
+            try
+            {
+                return (String) decode14.invoke(null, new Object[] { value, "UTF-8" });
+            }
+            catch (Exception ex)
+            {
+                Log.warn("Failed to use JDK 1.4 decoder", ex);
+            }
+        }
+
+        return URLDecoder.decode(value);
+    }
+
+    private static boolean testedDecoder = false;
+    private static Method decode14 = null;
 }

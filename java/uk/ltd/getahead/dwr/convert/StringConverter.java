@@ -7,6 +7,7 @@ import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * An implementation of Converter for Strings.
@@ -27,7 +28,7 @@ public class StringConverter implements Converter
      */
     public Object convertTo(Class paramType, ConversionData data, Map working) throws ConversionException
     {
-        return data.getValue();
+        return LocalUtil.decode(data.getValue());
     }
 
     /* (non-Javadoc)

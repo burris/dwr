@@ -16,6 +16,16 @@
   {
       document.getElementById("reply").innerHTML = data;
   }
+  
+  function forward()
+  {
+      Demo.getForward(loadforward);
+  }
+
+  function loadforward(data)
+  {
+      document.getElementById("forward").innerHTML = data;
+  }
   </script>
 </head>
 
@@ -88,6 +98,34 @@ function loadinfo(data)
   from the server, and display it in the browser. I'm not sure it gets much
   simpler than that!
 </p>
+
+<h2>Resource Forward Demo</h2>
+<p>
+  <input value="Include Page" type="button" onclick="forward()"/>
+  <br/>
+  Included Page:
+  <div id="forward"></div>
+</p>
+
+<h2>How it works</h2>
+
+<p>
+  This example is very similar, the only difference is that we are using the
+  contents of <a href="forward.jsp">this JSP page</a>, and using the
+  ExecutionContext class to allow us to get data from other pages. There are
+  no iframes used in this example - just DWR and a humble div.
+  <br/>
+  The code is all very similar to the above example except for slightly
+  different Java code:
+</p>
+
+<pre>
+public String getInclude() throws ServletException, IOException
+{
+    return ExecutionContext.getExecutionContext()
+                  .forwardToString("forward.jsp");
+}
+</pre>
 
 </body>
 </html>

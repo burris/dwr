@@ -9,18 +9,17 @@ Create a jdk 1.5 version of the collections code converter to get more type info
 Create a batch send mechanism so a page can start by sending a set of remote
     calls all at the same time.
 Add a converter for BigInteger and other arb. prec. number types.
-Have a way for DWR to call a JSP and return the data as a string to javascript
 
 Todo
 ----
 tests for collections converter
-tests for bean converter
 test config file web.xml element
 test dual deploy in web.xml for j2ee security
 Check that if a method requires a Set then we don't give it an ArrayList becuase we think it is a Collection.
 
 Recent changes
 --------------
+Have a way for DWR to call a JSP and return the data as a string to javascript
 Added code to support StringEscapeUtils.escapeJavaScript() from commons-lang (Dimitry D'hondt/Joe Walker)
 Extracted Creator and Converter types along with Configurator that reads dwr.xml files (Joe Walker)
 Changed all javascript variables and functions to be prefixed dwr to avoid namespace clases (Joe Walker)

@@ -1,11 +1,13 @@
 package uk.ltd.getahead.dwr.test;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.ExecutionContext;
@@ -79,6 +81,17 @@ public class Demo
         session.setAttribute("sessionClicks", sessionClicks);
 
         return "getClicks() has been clicked "+sessionClicks+" times this session and "+contextClicks+" times since the last deployment";
+    }
+
+    /**
+     * Get some text that has been fetched from a JSP page.
+     * @return A part of a web page
+     * @throws IOException 
+     * @throws ServletException 
+     */
+    public String getForward() throws ServletException, IOException
+    {
+        return ExecutionContext.getExecutionContext().forwardToString("/forward.jsp");
     }
 
     /**
