@@ -389,8 +389,8 @@ DWREngine.marshall = function(output, referto, data, name)
 
                 output[name] = reply;
             }
-            break;
         }
+        break;
 
     default:
         alert("Unexpected type: " + typeof data + ", attempting default converter");
