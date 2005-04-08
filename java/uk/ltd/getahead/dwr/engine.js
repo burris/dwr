@@ -27,12 +27,6 @@ DWREngine.postHook = null;
 
 /**
  * private: do not use directly
- * A function to call if something fails.
- */
-DWREngine.errorHandler = null;
-
-/**
- * private: do not use directly
  * A map of all the known current calls
  */
 DWREngine.calls = new Object();
@@ -107,6 +101,22 @@ DWREngine.setMethod = function(newmethod)
 
 /**
  * private: do not use directly
+ * A function to call if something fails.
+ */
+DWREngine.errorHandler = function(data)
+{
+    if (typeof data == "object" && data.name = "Error" && data.description)
+    {
+        alert("Error: " + data.description);
+    }
+    else
+    {
+        alert(data);
+    }
+}
+
+/**
+ * private: do not use directly
  * Called when the replies are received
  */
 DWREngine.handleResponse = function(id, reply)
@@ -151,14 +161,7 @@ DWREngine.handleResponse = function(id, reply)
         }
         catch (ex)
         {
-            if (DWREngine.errorHandler != null)
-            {
-                DWREngine.errorHandler(ex);
-            }
-            else
-            {
-                alert(ex);
-            }
+            DWREngine.errorHandler(ex);
         }
     }
 }
@@ -190,14 +193,7 @@ DWREngine.handleError = function(id, reason)
         DWREngine.postHook();
     }
 
-    if (DWREngine.errorHandler != null)
-    {
-        DWREngine.errorHandler(reason);
-    }
-    else
-    {
-        alert(reason);
-    }
+    DWREngine.errorHandler(reason);
 }
 
 /**
