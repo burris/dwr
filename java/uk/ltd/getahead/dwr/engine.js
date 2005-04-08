@@ -105,7 +105,7 @@ DWREngine.setMethod = function(newmethod)
  */
 DWREngine.errorHandler = function(data)
 {
-    if (typeof data == "object" && data.name = "Error" && data.description)
+    if (typeof data == "object" && data.name == "Error" && data.description)
     {
         alert("Error: " + data.description);
     }
