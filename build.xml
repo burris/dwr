@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="dwr" default="all">
+<project name="dwr" default="war">
 
   <!--=======================================================================-->
   <property name="source.root" value="."/>
@@ -7,41 +7,39 @@
   <property name="source.jar" value="${source.root}/jar"/>
   <property name="source.etc" value="${source.root}/etc"/>
   <property name="source.web" value="${source.root}/web"/>
-  <patternset id="java.non.compile">
-    <include name="**/*.properties"/>
-    <include name="**/*.gif"/>
-    <include name="**/*.jpg"/>
-    <include name="**/*.png"/>
-    <include name="**/*.ser"/>
-  </patternset>
+  <property name="target.class" value="${source.web}/WEB-INF/classes"/>
+  <property name="target.war" value="${source.root}/target/ant/war"/>
 
   <!--=======================================================================-->
   <target name="war" description="Create a WAR directory">
     <echo message="Building on ${os.name}"/>
     <tstamp/>
-    <mkdir dir="${source.web}/WEB-INF/classes"/>
-    <javac debug="on" includes="**/*.java" destdir="${source.web}/WEB-INF/classes" source="1.5">
+    <mkdir dir="${target.class}"/>
+    <javac debug="on" includes="**/*.java" destdir="${target.class}" source="1.3">
       <src path="${source.java}"/>
       <classpath>
-        <fileset dir="${source.web}/WEB-INF/lib" includes="**/*.jar"/>
         <fileset dir="${source.jar}" includes="**/*.jar"/>
       </classpath>
     </javac>
-    <copy todir="${source.web}/WEB-INF/classes">
+    <copy todir="${target.class}">
       <fileset dir="${source.java}">
-        <patternset refid="java.non.compile"/>
+        <exclude name="**/*.java"/>
+        <exclude name="**/package.html"/>
       </fileset>
-      <fileset dir="${source.etc}/classpath"/>
     </copy>
   </target>
 
   <!--=======================================================================-->
-  <target name="all" depends="war">
+  <target name="targetwar" depends="war" description="Create a separate WAR directory">
+    <copy todir="${target.war}">
+      <fileset dir="${source.web}"/>
+    </copy>
   </target>
 
   <!--=======================================================================-->
   <target name="clean">
-    <delete dir="${source.web}/WEB-INF/classes"/>
+    <delete dir="${target.class}"/>
+    <delete dir="${target.war}"/>
   </target>
 
   <!--=======================================================================-->

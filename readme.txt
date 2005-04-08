@@ -1,6 +1,15 @@
 
 See www/index.html for more information.
 
+
+About ANT tasks
+---------------
+cvsup syncs with CVS
+war compiles into dwr/web/WEB-INF/classes in a similar way to eclipse
+targetwar creates a war directory in dwr/target/ant/war for external deployment
+clean undoes the previous 2.
+
+
 About role membership
 ---------------------
 I approve anyone to be an observer, but generally deny requests for developer
