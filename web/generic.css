@@ -148,6 +148,9 @@ h4
 {
     color: #FFFFFF;
     background-color: #5a5a8d;
+    background-image: url(http://www.getahead.ltd.uk/images/head-back.png);
+    background-repeat: no-repeat;
+    background-position: right;
     border: 1px solid #000000;
     font-family: courier new;
     font-weight: bold;
