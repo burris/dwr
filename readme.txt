@@ -58,7 +58,3 @@ License
 -------
 This project includes code from the commons-lang project, licensed under the
 Apache License Version 2.0. See http://jakarta.apache.org/commons/license.html
-There is some confusion as to the exact version of the license since the above
-statement conflicts with the copyright statement at the top of the source files.
-Since it is clear that the Apache organization is changing from version 1.0 to
-version 2.0, the latter is being used.

@@ -127,42 +127,6 @@ public final class ExecuteQuery
     }
 
     /**
-     * splitInbound() returns the type info in this parameter
-     */
-    public static final int INBOUND_INDEX_TYPE = 0;
-
-    /**
-     * splitInbound() returns the value info in this parameter
-     */
-    public static final int INBOUND_INDEX_VALUE = 1;
-
-    /**
-     * The javascript outbound marshaller prefixes the toString value with a
-     * colon and the original type information. This undoes that.
-     * @param data The string to be split up
-     * @return A string array containing the split data
-     */
-    public static String[] splitInbound(String data)
-    {
-        String[] reply = new String[2];
-
-        int colon = data.indexOf(ConversionConstants.INBOUND_TYPE_SEPARATOR);
-        if (colon != -1)
-        {
-            reply[INBOUND_INDEX_TYPE] = data.substring(0, colon);
-            reply[INBOUND_INDEX_VALUE] = data.substring(colon + 1);
-        }
-        else
-        {
-            Log.error("Missing : in conversion data"); //$NON-NLS-1$
-            reply[INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
-            reply[INBOUND_INDEX_VALUE] = data;
-        }
-
-        return reply;
-    }
-
-    /**
      * Check (as far as we can) that the execute method will succeed.
      * @return The return from the method invocation
      * @throws Throwable Almost anything could go wrong. We're not exception
@@ -209,6 +173,17 @@ public final class ExecuteQuery
         {
             throw ex.getTargetException();
         }
+    }
+
+    /**
+     * Some browsers (i.e. Konq at least) send the request with no data).
+     * Normally we except later on, but that clogs up the log files, so in the
+     * short term we allow detection of requests from 'broken' browsers.
+     * @return Did we get anything from the browser at all
+     */
+    public boolean isFailingBrowser()
+    {
+        return id == null && methodName == null && className == null;
     }
 
     /**
@@ -325,6 +300,42 @@ public final class ExecuteQuery
         }
 
         return (Method) available.get(0);
+    }
+
+    /**
+     * splitInbound() returns the type info in this parameter
+     */
+    public static final int INBOUND_INDEX_TYPE = 0;
+
+    /**
+     * splitInbound() returns the value info in this parameter
+     */
+    public static final int INBOUND_INDEX_VALUE = 1;
+
+    /**
+     * The javascript outbound marshaller prefixes the toString value with a
+     * colon and the original type information. This undoes that.
+     * @param data The string to be split up
+     * @return A string array containing the split data
+     */
+    public static String[] splitInbound(String data)
+    {
+        String[] reply = new String[2];
+
+        int colon = data.indexOf(ConversionConstants.INBOUND_TYPE_SEPARATOR);
+        if (colon != -1)
+        {
+            reply[INBOUND_INDEX_TYPE] = data.substring(0, colon);
+            reply[INBOUND_INDEX_VALUE] = data.substring(colon + 1);
+        }
+        else
+        {
+            Log.error("Missing : in conversion data"); //$NON-NLS-1$
+            reply[INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
+            reply[INBOUND_INDEX_VALUE] = data;
+        }
+
+        return reply;
     }
 
     private ConverterManager converterManager;

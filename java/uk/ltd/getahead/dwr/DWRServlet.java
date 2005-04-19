@@ -194,7 +194,7 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * Create an debug mode only index page to all the available classes
+     * Create a debug mode only index page to all the available classes
      * @param req The browsers request
      * @param resp The response channel
      * @throws IOException If writing to the output fails
@@ -383,6 +383,11 @@ public class DWRServlet extends HttpServlet
             StringBuffer buffer = new StringBuffer();
 
             InputStream raw = getClass().getResourceAsStream(FILE_HELP);
+            if (raw == null)
+            {
+                throw new IOException(Messages.getString("DWRServlet.MissingHelp", FILE_HELP)); //$NON-NLS-1$
+            }
+
             BufferedReader in = new BufferedReader(new InputStreamReader(raw));
             while (true)
             {
@@ -524,10 +529,20 @@ public class DWRServlet extends HttpServlet
 
         try
         {
+            if (eq.isFailingBrowser())
+            {
+                resp.setContentType(MIME_HTML);
+
+                PrintWriter out = resp.getWriter();
+                out.println("//<script type='text/javascript'>"); //$NON-NLS-1$
+                out.println("alert('Your browser sent a request that could not be understood.\\nIf you understand how Javascript works in your browser, please help us fix the problem.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
+                out.println("//</script>"); //$NON-NLS-1$
+                out.flush();
+                return;
+            }
+
             Object reply = eq.execute();
             OutboundVariable ss = converterManager.convertOutbound(reply);
-
-            PrintWriter out = resp.getWriter();
 
             Log.info("Returning: id[" + eq.getId() + "] init[" + ss.getInitCode() + "] assign[" + ss.getAssignCode() + "] xml[" + eq.isXmlMode() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
@@ -537,25 +552,33 @@ public class DWRServlet extends HttpServlet
             {
                 resp.setContentType(MIME_XML);
 
+                PrintWriter out = resp.getWriter();
                 out.println(ss.getInitCode());
                 out.println("var reply = " + ss.getAssignCode() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
                 out.println("DWREngine.handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.flush();
             }
             else
             {
                 resp.setContentType(MIME_HTML);
 
+                PrintWriter out = resp.getWriter();
                 out.println("<script type='text/javascript'>"); //$NON-NLS-1$
                 out.println(ss.getInitCode());
                 out.println("var reply = " + ss.getAssignCode() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
                 out.println("window.parent.DWREngine.handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
                 out.println("</script>"); //$NON-NLS-1$
+                out.flush();
             }
-
-            out.flush();
         }
         catch (Throwable ex)
         {
+            if (eq.isFailingBrowser())
+            {
+                Log.warn("Failed to write to a failing browser.", ex); //$NON-NLS-1$
+                return;
+            }
+
             Log.warn("Erroring: id[" + eq.getId() + "] message[" + ex.getMessage() + "]", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             try
@@ -584,7 +607,6 @@ public class DWRServlet extends HttpServlet
             catch (IOException ex2)
             {
                 Log.error("IO error: " + eq.getId(), ex2); //$NON-NLS-1$
-                return;
             }
         }
     }
