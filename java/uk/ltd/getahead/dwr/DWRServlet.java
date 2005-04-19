@@ -560,25 +560,26 @@ public class DWRServlet extends HttpServlet
 
             try
             {
-                PrintWriter out = resp.getWriter();
                 String output = StringEscapeUtils.escapeJavaScript(ex.getMessage());
 
                 if (eq.isXmlMode())
                 {
                     resp.setContentType(MIME_XML);
 
+                    PrintWriter out = resp.getWriter();
                     out.println("DWREngine.handleError(\"" + eq.getId() + "\", \"" + output + "\");"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    out.flush();
                 }
                 else
                 {
                     resp.setContentType(MIME_HTML);
 
+                    PrintWriter out = resp.getWriter();
                     out.println("<script type='text/javascript'>"); //$NON-NLS-1$
                     out.println("window.parent.DWREngine.handleError(\"" + eq.getId() + "\", '" + output + "')"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     out.println("</script>"); //$NON-NLS-1$
+                    out.flush();
                 }
-
-                out.flush();
             }
             catch (IOException ex2)
             {
