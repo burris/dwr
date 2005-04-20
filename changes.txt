@@ -1,11 +1,12 @@
 
 Changes for Version 0.5
 -----------------------
-Conversion from global javascript methods to static object-based methods
-Various bug fixes in utils.js
-Change license to ASL 2.0
-Updates to SpringCreator
+Conversion from global javascript methods to static object-based methods (Joe Walker)
+Various bug fixes in utils.js (Joe Walker)
+Change license to ASL 2.0 (Joe Walker)
 Fix to support Weblogic 8.1.3 (John Christopher)
+Updated Spring creator (Marc Logemann)
+New Creator init system using a map rather than a DOM element (Joe Walker)
 
 Changes for Version 0.4
 -----------------------
