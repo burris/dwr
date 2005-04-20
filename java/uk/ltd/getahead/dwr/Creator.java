@@ -1,6 +1,7 @@
 package uk.ltd.getahead.dwr;
 
-import org.w3c.dom.Element;
+import java.util.Map;
+
 
 /**
  * A base class for all AllowedClasses
@@ -11,10 +12,10 @@ public interface Creator
     /**
      * Configuration is done via access to the DOM Element.
      * This is not at all ideal, but it will do for the moment.
-     * @param config The configuration element
+     * @param params The map of paramters to configure the creator
      * @throws IllegalArgumentException If the config data in the Element is invalid
      */
-    public void init(Element config) throws IllegalArgumentException;
+    public void init(Map params) throws IllegalArgumentException;
 
     /**
      * Accessor for the <code>java.lang.Class</code> that this Creator

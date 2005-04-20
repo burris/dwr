@@ -1,6 +1,6 @@
 package uk.ltd.getahead.dwr.create;
 
-import org.w3c.dom.Element;
+import java.util.Map;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
@@ -14,9 +14,9 @@ public class NewCreator implements Creator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.create.Creator#init(java.lang.String, org.w3c.dom.Element)
      */
-    public void init(Element config) throws IllegalArgumentException
+    public void init(Map params) throws IllegalArgumentException
     {
-        String classname = config.getAttribute("class"); //$NON-NLS-1$
+        String classname = (String) params.get("class"); //$NON-NLS-1$
 
         try
         {

@@ -618,21 +618,19 @@ public class DWRServlet extends HttpServlet
      */
     protected void readFile(String configFile) throws ServletException
     {
+        InputStream in = getServletContext().getResourceAsStream(configFile);
+        if (in == null)
+        {
+            throw new ServletException(Messages.getString("DWRServlet.MissingFile", configFile)); //$NON-NLS-1$
+        }
+
         try
         {
-            InputStream in = getServletContext().getResourceAsStream(configFile);
-            if (in != null)
-            {
-                configuration.addConfig(in);
-            }
-            else
-            {
-                throw new ServletException("Could not find dwr config file at: " + configFile); //$NON-NLS-1$
-            }
+            configuration.addConfig(in);
         }
         catch (SAXException ex)
         {
-            throw new ServletException(ex.getMessage());
+            throw new ServletException(ex.getMessage(), ex);
         }
     }
 

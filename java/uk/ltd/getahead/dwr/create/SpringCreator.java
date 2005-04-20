@@ -1,10 +1,18 @@
 package uk.ltd.getahead.dwr.create;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import org.w3c.dom.Element;
+import javax.servlet.ServletContext;
+
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.UrlResource;
+import org.springframework.web.context.ContextLoader;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
@@ -20,10 +28,24 @@ public class SpringCreator implements Creator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.create.Creator#init(org.w3c.dom.Element)
      */
-    public void init(Element config) throws IllegalArgumentException
+    public void init(Map params) throws IllegalArgumentException
     {
-        this.beanName = config.getAttribute("beanName"); //$NON-NLS-1$
-        this.resourceName = config.getAttribute("resourceName"); //$NON-NLS-1$
+        this.beanName = (String) params.get("beanName"); //$NON-NLS-1$
+        this.resourceName = (String) params.get("resourceName"); //$NON-NLS-1$
+
+        List locValues = new ArrayList();
+
+        for (Iterator it = params.keySet().iterator(); it.hasNext();)
+        {
+            String key = (String) it.next();
+            String value = (String) params.get(key);
+            if (key.startsWith("location")) //$NON-NLS-1$
+            {
+                locValues.add(value);
+            }
+        }
+
+        configLocation = (String[]) locValues.toArray(new String[locValues.size()]);
     }
 
     /* (non-Javadoc)
@@ -56,7 +78,12 @@ public class SpringCreator implements Creator
         {
             if (factory == null)
             {
-                if (resourceName != null)
+                // If someone has set a resource name then we need to load that.
+                if (configLocation != null)
+                {
+                    factory = new ClassPathXmlApplicationContext(configLocation);
+                }
+                else if (resourceName != null)
                 {
                     URL url = getClass().getClassLoader().getResource(resourceName);
                     if (url != null)
@@ -76,27 +103,19 @@ public class SpringCreator implements Creator
                         }
                     }
 
-                    // Could use url.openStream() but then we can do relative url
-                    // traversal.
-                    Class cUrlResource = Class.forName("org.springframework.core.io.UrlResource"); //$NON-NLS-1$
-                    Class cResource = Class.forName("org.springframework.core.io.Resource"); //$NON-NLS-1$
-                    Class cXmlBeanFactory = Class.forName("org.springframework.beans.factory.xml.XmlBeanFactory"); //$NON-NLS-1$
-
-                    Constructor ctorUrlResource = cUrlResource.getConstructor(new Class[] { URL.class });
-                    Object resource = ctorUrlResource.newInstance(new Object[] { url });
-
-                    Constructor factctor = cXmlBeanFactory.getConstructor(new Class[] { cResource });
-                    factory = factctor.newInstance(new Object[] { resource });
+                    UrlResource resource = new UrlResource(url);
+                    factory = new XmlBeanFactory(resource);
                 }
                 else
                 {
-                    throw new InstantiationException(Messages.getString("SpringCreator.MissingFactory")); //$NON-NLS-1$
+                    ContextLoader loader = new ContextLoader();
+                    ServletContext context = ExecutionContext.get().getServletContext();
+
+                    factory = loader.initWebApplicationContext(context);
                 }
             }
 
-            Method creator = factory.getClass().getMethod("getBean", new Class[] { String.class }); //$NON-NLS-1$
-            Object reply = creator.invoke(factory, new Object[] { beanName });
-            return reply;
+            return factory.getBean(beanName);
         }
         catch (RuntimeException ex)
         {
@@ -112,13 +131,18 @@ public class SpringCreator implements Creator
     /**
      * @param factory The factory to set.
      */
-    public static void setXmlBeanFactory(Object factory)
+    public static void setXmlBeanFactory(BeanFactory factory)
     {
         SpringCreator.factory = factory;
     }
 
-    private static Object factory = null;
+    private static BeanFactory factory = null;
+
     private Class clazz;
+
     private String beanName;
+
     private String resourceName;
+
+    private String[] configLocation;
 }

@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
@@ -19,7 +22,6 @@ import uk.ltd.getahead.dwr.util.Log;
  */
 public class DefaultCreatorManager implements CreatorManager
 {
-
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.CreatorManager#setDebug(boolean)
      */
@@ -57,7 +59,37 @@ public class DefaultCreatorManager implements CreatorManager
         Class clazz = (Class) creatorTypes.get(type);
 
         Creator creator = (Creator) clazz.newInstance();
-        creator.init(allower);
+
+        Map params = new HashMap();
+
+        // Go through the attributes in the allower element, adding to the param map
+        NamedNodeMap attrs = allower.getAttributes();
+        for (int i = 0; i < attrs.getLength(); i++)
+        {
+            Node node = attrs.item(i);
+            String name = node.getNodeName();
+            String value = node.getNodeValue();
+            params.put(name, value);
+        }
+
+        // Go through the param elements in the allower element, adding to the param map
+        NodeList locNodes = allower.getElementsByTagName("param"); //$NON-NLS-1$
+        for (int i = 0; i < locNodes.getLength(); i++)
+        {
+            // Since this comes from getElementsByTagName we can assume that
+            // all the nodes are elements.
+            Element element = (Element) locNodes.item(i);
+
+            String name = element.getAttribute("name"); //$NON-NLS-1$
+            String value = element.getAttribute("value"); //$NON-NLS-1$
+            if (name != null && value != null)
+            {
+                params.put(name, value);
+            }
+        }
+
+        // Initialize the creator with the parameters that we know of.
+        creator.init(params);
 
         // Check that we don't have this one already
         Creator other = (Creator) creators.get(javascript);

@@ -1,8 +1,8 @@
 package uk.ltd.getahead.dwr.create;
 
-import javax.servlet.http.HttpSession;
+import java.util.Map;
 
-import org.w3c.dom.Element;
+import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
@@ -17,10 +17,10 @@ public class SessionCreator implements Creator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.create.Creator#init(org.w3c.dom.Element)
      */
-    public void init(Element config) throws IllegalArgumentException
+    public void init(Map params) throws IllegalArgumentException
     {
-        String classname = config.getAttribute("class"); //$NON-NLS-1$
-        scriptname = config.getAttribute("javascript"); //$NON-NLS-1$
+        String classname = (String) params.get("class"); //$NON-NLS-1$
+        scriptname = (String) params.get("javascript"); //$NON-NLS-1$
 
         try
         {
