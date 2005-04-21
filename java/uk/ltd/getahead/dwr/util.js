@@ -1,6 +1,7 @@
 
 /**
  * Declare a constructor function to which we can add real functions.
+ * @constructor
  */
 function DWRUtil()
 {
@@ -8,40 +9,38 @@ function DWRUtil()
 
 /**
  * Browser detection code.
+ * This is eeevil, but the official way [if (window.someFunc) ...] does not
+ * work when browsers differ in rendering ability rather than the use of someFunc()
  * For internal use only.
  */
-DWRUtil.agent = navigator.userAgent.toLowerCase();
-DWRUtil.isMajor = parseInt(navigator.appVersion);
-DWRUtil.isMinor = parseFloat(navigator.appVersion);
+DWRUtil._agent   = navigator.userAgent.toLowerCase();
+DWRUtil._isGecko = (DWRUtil._agent.indexOf('gecko') != -1);
+DWRUtil._isIE    = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.indexOf("opera") == -1));
 
-DWRUtil.isNav = ((DWRUtil.agent.indexOf('mozilla') != -1)
-              && (DWRUtil.agent.indexOf('spoofer') == -1)
-              && (DWRUtil.agent.indexOf('compatible') == -1)
-              && (DWRUtil.agent.indexOf('opera') == -1)
-              && (DWRUtil.agent.indexOf('webtv') == -1)
-              && (DWRUtil.agent.indexOf('hotjava') == -1));
+/**
+ * Set the CSS display style to 'block'
+ */
+DWRUtil.getElementById = function(id)
+{
+    if (document.getElementById)
+    {
+        return document.getElementById(id);
+    }
 
-DWRUtil.isNav4up = (DWRUtil.isNav && (DWRUtil.isMajor >= 4));
-DWRUtil.isNav6up = (DWRUtil.isNav && (DWRUtil.isMajor >= 5));
-DWRUtil.isGecko  = (DWRUtil.agent.indexOf('gecko') != -1);
+    if (document.all)
+    {
+        return document.all[e];
+    }
 
-DWRUtil.isIE     = ((DWRUtil.agent.indexOf("msie") != -1) && (DWRUtil.agent.indexOf("opera") == -1));
-DWRUtil.isIE3    = (DWRUtil.isIE && (DWRUtil.isMajor < 4));
-DWRUtil.isIE4    = (DWRUtil.isIE && (DWRUtil.isMajor == 4) && (DWRUtil.agent.indexOf("msie 4")!=-1) );
-DWRUtil.isIE4up  = (DWRUtil.isIE && (DWRUtil.isMajor >= 4));
-DWRUtil.isIE5    = (DWRUtil.isIE && (DWRUtil.isMajor == 4) && (DWRUtil.agent.indexOf("msie 5.0")!=-1) );
-DWRUtil.isIE55   = (DWRUtil.isIE && (DWRUtil.isMajor == 4) && (DWRUtil.agent.indexOf("msie 5.5") !=-1));
-DWRUtil.isIE5up  = (DWRUtil.isIE && !DWRUtil.isIE3 && !DWRUtil.isIE4);
-DWRUtil.isIE55up = (DWRUtil.isIE && !DWRUtil.isIE3 && !DWRUtil.isIE4 && !DWRUtil.isIE5);
-DWRUtil.isIE6    = (DWRUtil.isIE && (DWRUtil.isMajor == 4) && (DWRUtil.agent.indexOf("msie 6.")!=-1) );
-DWRUtil.isIE6up  = (DWRUtil.isIE && !DWRUtil.isIE3 && !DWRUtil.isIE4 && !DWRUtil.isIE5 && !DWRUtil.isIE55);
+    throw "Can't use document.getElementById or document.all";
+}
 
 /**
  * Set the CSS display style to 'block'
  */
 DWRUtil.showById = function(id)
 {
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("showById() can't find an element with id: " + id + ".");
@@ -56,7 +55,7 @@ DWRUtil.showById = function(id)
  */
 DWRUtil.hideById = function(id)
 {
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("hideById() can't find an element with id: " + id + ".");
@@ -71,7 +70,7 @@ DWRUtil.hideById = function(id)
  */
 DWRUtil.toggleDisplay = function(id)
 {
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("toggleDisplay() can't find an element with id: " + id + ".");
@@ -93,7 +92,7 @@ DWRUtil.toggleDisplay = function(id)
  */
 DWRUtil.setCSSClass = function(id, cssclass)
 {
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("setCSSClass() can't find an element with id: " + id + ".");
@@ -113,7 +112,7 @@ DWRUtil.setCSSClass = function(id, cssclass)
  */
 DWRUtil.clearChildNodes = function(id)
 {
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("clearChildNodes() can't find an element with id: " + id + ".");
@@ -134,7 +133,7 @@ DWRUtil.clearChildNodes = function(id)
  */
 DWRUtil.fillList = function(id, data, valueprop, textprop)
 {
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("fillList() can't find an element with id: " + id + ".");
@@ -257,7 +256,7 @@ DWRUtil.drawTableInner = function(tbodyID, dataArray, textFuncs)
         frag.appendChild(tr);
     }
 
-    var tbody = document.getElementById(tbodyID);
+    var tbody = DWRUtil.getElementById(tbodyID);
     tbody.appendChild(frag);
 }
 
@@ -266,7 +265,7 @@ DWRUtil.drawTableInner = function(tbodyID, dataArray, textFuncs)
  */
 DWRUtil.setEnabled = function(id, state)
 {
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("setEnabled() can't find an element with id: " + id + ".");
@@ -280,7 +279,7 @@ DWRUtil.setEnabled = function(id, state)
 
     ele.disabled = !state;
     ele.readonly = !state;
-    if (DWRUtil.isIE)
+    if (DWRUtil._isIE)
     {
         if (state)
         {
@@ -300,7 +299,7 @@ DWRUtil.setEnabled = function(id, state)
 DWRUtil.isHTMLElement = function(ele)
 {
     // There must be a better way
-    if (DWRUtil.isGecko)
+    if (DWRUtil._isGecko)
     {
         return typeof ele == "object" && ele instanceof HTMLElement;
     }
@@ -317,7 +316,7 @@ DWRUtil.isHTMLElement = function(ele)
 DWRUtil.isHTMLInputElement = function(ele)
 {
     // There must be a better way
-    if (DWRUtil.isGecko)
+    if (DWRUtil._isGecko)
     {
         return typeof ele == "object" && ele instanceof HTMLInputElement;
     }
@@ -333,7 +332,7 @@ DWRUtil.isHTMLInputElement = function(ele)
 DWRUtil.isHTMLTextAreaElement = function(ele)
 {
     // There must be a better way
-    if (DWRUtil.isGecko)
+    if (DWRUtil._isGecko)
     {
         return typeof ele == "object" && ele instanceof HTMLTextAreaElement;
     }
@@ -349,7 +348,7 @@ DWRUtil.isHTMLTextAreaElement = function(ele)
 DWRUtil.isHTMLSelectElement = function(ele)
 {
     // There must be a better way
-    if (DWRUtil.isGecko)
+    if (DWRUtil._isGecko)
     {
         return typeof ele == "object" && ele instanceof HTMLSelectElement;
     }
@@ -371,7 +370,7 @@ DWRUtil.setValue = function(id, val)
         val = "";
     }
 
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("setValue() can't find an element with id: " + id + ".");
@@ -457,7 +456,7 @@ DWRUtil.setValue = function(id, val)
  */
 DWRUtil.getValue = function(id)
 {
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("getValue() can't find an element with id: " + id + ".");
@@ -517,7 +516,7 @@ DWRUtil.getValue = function(id)
  */
 DWRUtil.getText = function(id)
 {
-    var ele = document.getElementById(id);
+    var ele = DWRUtil.getElementById(id);
     if (ele == null)
     {
         alert("getText() can't find an element with id: " + id + ".");
@@ -553,7 +552,7 @@ DWRUtil.setValues = function(map)
     {
         // This is done by setValue, but we can provide better debug by doing
         // it here.
-        var ele = document.getElementById(property);
+        var ele = DWRUtil.getElementById(property);
         if (ele == null)
         {
             alert("setValues() can't find an element with id: " + property + ".");
@@ -729,7 +728,7 @@ DWRUtil.useLoadingMessage = function()
  */
 var showPleaseWait = function()
 {
-    document.getElementById('disabledZone').style.visibility = 'visible';
+    DWRUtil.getElementById('disabledZone').style.visibility = 'visible';
 }
 
 /**
@@ -737,7 +736,7 @@ var showPleaseWait = function()
  */
 var hidePleaseWait = function()
 {
-    document.getElementById('disabledZone').style.visibility = 'hidden';
+    DWRUtil.getElementById('disabledZone').style.visibility = 'hidden';
 }
 
 
@@ -932,5 +931,5 @@ function useLoadingMessage()
 
 function deprecated(fname)
 {
-    alert("Xxx() utility functions like " + fname + "() are deprecated. Please convert to DWRUtil.xxx()");
+    alert("Utility functions like " + fname + "() are deprecated. Please convert to the DWRUtil.xxx() versions");
 }

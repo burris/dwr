@@ -345,7 +345,9 @@
 </p>
 <pre>
   &lt;allow>
-    &lt;create creator="new" javascript="Blah" class="java.util.Date"/>
+    &lt;create creator="new" javascript="Blah">
+      &lt;param name="class" value="java.util.Date"/>
+    &lt;/create>
     ... other definitions
   &lt;/allow>
 </pre>
@@ -376,9 +378,9 @@
 <pre>
   &lt;allow>
     ...
-    &lt;create creator="session"
-        javascript="TestBean"
-        class="your.stateful.JavaBean"/>
+    &lt;create creator="session" javascript="TestBean">
+      &lt;param name="class" value="your.stateful.JavaBean"/>
+    &lt;/create>
     ... other definitions
   &lt;/allow>
 </pre>
@@ -403,25 +405,46 @@
     ...
     &lt;create
         creator="spring"
-        javascript="Fred"
-        beanName="Shiela"
-        resourceName="/WEB-INF/classes/beans.xml"/>
+        javascript="Fred">
+      &lt;param name="beanName" value="Shiela"/>
+      &lt;param name="location" value="beans.xml"/>
+    &lt;/create>
   &lt;/allow>
 </pre>
 <p>
-  This causes DWR to look for a bean in Spring. The resource name attribute is
-  optional and will cause DWR to create it's own Spring Bean Factory. The
-  alternative is to have your code call:
-  <code>uk.ltd.getahead.dwr.create.SpringCreator.setXmlBeanFactory(fact)</code>
-  and tell DWR about the bean factory that you've created for yourself.
+  This causes DWR to look for a bean in a Spring Bean Factory.
+  The location parameter is optional. If it is missing then you are expected to
+  have declared the location of your Spring beans using the standard spring
+  <b>WEB-INF/web.xml</b> configuration system:
+</p>
+<pre>
+  &lt;context-param>
+    &lt;param-name>contextConfigLocation&lt;/param-name>
+    &lt;param-value>/WEB-INF/classes/beans.xml&lt;/param-value>
+  &lt;/context-param>
+  &lt;listener>
+    &lt;listener-class>
+      org.springframework.web.context.ContextLoaderListener
+    &lt;/listener-class>
+  &lt;/listener> 
+</pre>
+<p>
+  If you prefer to specify your beans.xml in your dwr.xml file then you can
+  use a location* parameter. You can specify as many as you wish although the
+  names must be unique and start 'location'. For example: location-1,
+  location-2. These locations are used as parameters to a Spring
+  ClassPathXmlApplicationContext.
+  <br/>
+  The spring creator also supports the now deprecated resourceName parameter
+  (which you can still use as a parameter as previously) however this use
+  will be removed soon.
 </p>
 <p>
   DWR does not have a runtime (or compile time) dependency on Spring so if you
   don't use Spring then you won't be affected by this.
 </p>
 <p>
-  There is no reason why we shouldn't add creator methods for other frameworks
-  like Pico, Nano, Atto et al. I've written a Spring one because I use Spring.
+  I would welcome submissions of Creators designed for HiveMind, Pico, etc.
 </p>
 
 <h3>The 'static' Creator</h3>
