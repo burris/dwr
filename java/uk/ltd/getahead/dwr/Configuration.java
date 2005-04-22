@@ -16,6 +16,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import uk.ltd.getahead.dwr.util.Log;
 import uk.ltd.getahead.dwr.util.LogErrorHandler;
 
 /**
@@ -86,9 +87,8 @@ public final class Configuration
     /**
      * Internal method to load the inits element
      * @param child The element to read
-     * @throws SAXException If the parse fails
      */
-    private void loadInits(Element child) throws SAXException
+    private void loadInits(Element child)
     {
         NodeList inits = child.getChildNodes();
         for (int j=0; j<inits.getLength(); j++)
@@ -112,9 +112,8 @@ public final class Configuration
     /**
      * Internal method to load the creator element
      * @param initer The element to read
-     * @throws SAXException If the parse fails
      */
-    private void loadCreator(Element initer) throws SAXException
+    private void loadCreator(Element initer)
     {
         String id = initer.getAttribute(ATTRIBUTE_ID);
         String classname = initer.getAttribute(ATTRIBUTE_CLASS);
@@ -124,18 +123,21 @@ public final class Configuration
             Class clazz = Class.forName(classname);
             creatorManager.addCreatorType(id, clazz);
         }
-        catch (ClassNotFoundException ex)
+        catch (Exception ex)
         {
-            throw new SAXException(Messages.getString("Configuration.CreatorNotFound", classname, id), ex); //$NON-NLS-1$
+            Log.warn("Failed to load creator with id=" + id + ". classname=" + classname + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            Log.warn("Dependency failure loading creator with id=" + id + ". classname=" + classname + ": " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
     /**
      * Internal method to load the converter element
      * @param initer The element to read
-     * @throws SAXException If the parse fails
      */
-    private void loadConverter(Element initer) throws SAXException
+    private void loadConverter(Element initer)
     {
         String id = initer.getAttribute(ATTRIBUTE_ID);
         String classname = initer.getAttribute(ATTRIBUTE_CLASS);
@@ -145,9 +147,13 @@ public final class Configuration
             Class clazz = Class.forName(classname);
             converterManager.addConverterType(id, clazz);
         }
-        catch (ClassNotFoundException ex)
+        catch (Exception ex)
         {
-            throw new SAXException(Messages.getString("Configuration.ConverterNotFound", classname, id), ex); //$NON-NLS-1$
+            Log.warn("Failed to load converter with id=" + id + ". classname=" + classname + ": " + ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            Log.warn("Dependency failure loading converter with id=" + id + ". classname=" + classname + ": " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
