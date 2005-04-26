@@ -7,44 +7,15 @@
   <script type='text/javascript' src='/dwr/dwr/interface/Demo.js'></script>
   <script type='text/javascript' src='/dwr/dwr/engine.js'></script>
   <script type='text/javascript' src='/dwr/dwr/util.js'></script>
-  <script>
-function init()
-{
-    insert("page-portlet-1", "sidebar.html");
-}
-
-function createDocument()
-{
-    if (document.implementation.createDocument)
-    {
-        return document.implementation.createDocument("", "", null);
-    }
-    else if (window.ActiveXObject)
-    {
-        return new ActiveXObject("Microsoft.XMLDOM");
-    }
-    else
-    {
-        throw "XML Document manipulation not supported";
-    }
-}
-
-function insert(id, file)
-{
-    var xmlDoc = createDocument();
-    xmlDoc.async = false;
-    xmlDoc.load(file);
-
-    var ele = document.getElementById(id);
-    DWRUtil.clearChildNodes(id);
-    ele.innerHTML = ;
-}
-  </script>
+  <script type='text/javascript' src='/dwr/dwr/jscp.js'></script>
 </head>
 
-<body onload="init()">
-<div id="page-logo">getahead - dwr</div><div id="page-title">[ <a href="/">getahead</a> ]</div>
+<body>
+<div id="page-logo">DWR</div>
+<div id="page-title">Direct Web Remoting - AJAX and XMLHttpRequest made easy</div>
 <div id="page-portlet-1" class="sidebody">
+  <a href="sidebar.html">Site-Map</a>
+  <script type='text/javascript'>JSCP.insert("page-portlet-1", "sidebar.html");</script>
 </div>
 
 <div id="page-content">
@@ -72,7 +43,7 @@ function insert(id, file)
 
 <p>
   In addition to this there are 3 servlet parameters that are somewhere between
-  vital and vaguely useful.
+  important and vaguely useful.
 </p>
 
 <h3>Using debug/test mode</h3>
@@ -85,12 +56,12 @@ function insert(id, file)
 &lt;init-param>
   &lt;param-name>debug&lt;/param-name>
   &lt;param-value>true&lt;/param-value>
-  &lt;description>Do we startup in debug/test mode?&lt;/description>
+  &lt;description>Do we startup in debug mode?&lt;/description>
 &lt;/init-param>
 </pre>
 
 <p>
-  DWR will generate pages for each of the allowed classes (see dwr.xml below)
+  DWR will generate test pages for each of the allowed classes (see dwr.xml below)
   in debug mode. These can be very useful in seeing what DWR can do and how it
   works. This mode can also alert you to problems like javascript reserved word
   clashes or overloading problems.
@@ -152,51 +123,51 @@ function insert(id, file)
 </p>
 
 <pre>
-  &lt;servlet>
-    &lt;servlet-name>dwr-user-invoker&lt;/servlet-name>
-    &lt;servlet-class>uk.ltd.getahead.dwr.DWRServlet&lt;/servlet-class>
-    &lt;init-param>
-      &lt;param-name>config-user&lt;/param-name>
-      &lt;param-value>WEB-INF/dwr-user.xml&lt;/param-value>
-    &lt;/init-param>
-  &lt;/servlet>
-  &lt;servlet>
-    &lt;servlet-name>dwr-admin-invoker&lt;/servlet-name>
-    &lt;servlet-class>uk.ltd.getahead.dwr.DWRServlet&lt;/servlet-class>
-    &lt;init-param>
-      &lt;param-name>config-admin&lt;/param-name>
-      &lt;param-value>WEB-INF/dwr-admin.xml&lt;/param-value>
-    &lt;/init-param>
-  &lt;/servlet>
-  &lt;servlet-mapping>
-    &lt;servlet-name>dwr-admin-invoker&lt;/servlet-name>
-    &lt;url-pattern>/dwradmin/*&lt;/url-pattern>
-  &lt;/servlet-mapping>
-  &lt;servlet-mapping>
-    &lt;servlet-name>dwr-user-invoker&lt;/servlet-name>
-    &lt;url-pattern>/dwruser/*&lt;/url-pattern>
-  &lt;/servlet-mapping>
+&lt;servlet>
+  &lt;servlet-name>dwr-user-invoker&lt;/servlet-name>
+  &lt;servlet-class>uk.ltd.getahead.dwr.DWRServlet&lt;/servlet-class>
+  &lt;init-param>
+    &lt;param-name>config-user&lt;/param-name>
+    &lt;param-value>WEB-INF/dwr-user.xml&lt;/param-value>
+  &lt;/init-param>
+&lt;/servlet>
+&lt;servlet>
+  &lt;servlet-name>dwr-admin-invoker&lt;/servlet-name>
+  &lt;servlet-class>uk.ltd.getahead.dwr.DWRServlet&lt;/servlet-class>
+  &lt;init-param>
+    &lt;param-name>config-admin&lt;/param-name>
+    &lt;param-value>WEB-INF/dwr-admin.xml&lt;/param-value>
+  &lt;/init-param>
+&lt;/servlet>
+&lt;servlet-mapping>
+  &lt;servlet-name>dwr-admin-invoker&lt;/servlet-name>
+  &lt;url-pattern>/dwradmin/*&lt;/url-pattern>
+&lt;/servlet-mapping>
+&lt;servlet-mapping>
+  &lt;servlet-name>dwr-user-invoker&lt;/servlet-name>
+  &lt;url-pattern>/dwruser/*&lt;/url-pattern>
+&lt;/servlet-mapping>
 
-  &lt;security-constraint>
-    &lt;display-name>dwr-admin&lt;/display-name>
-    &lt;web-resource-collection>
-      &lt;web-resource-name>dwr-admin-collection&lt;/web-resource-name>
-      &lt;url-pattern>/dwradmin/*&lt;/url-pattern>
-    &lt;/web-resource-collection>
-    &lt;auth-constraint>
-      &lt;role-name>admin&lt;/role-name>
-    &lt;/auth-constraint>
-  &lt;/security-constraint>
-  &lt;security-constraint>
-    &lt;display-name>dwr-user&lt;/display-name>
-    &lt;web-resource-collection>
-      &lt;web-resource-name>dwr-user-collection&lt;/web-resource-name>
-      &lt;url-pattern>/dwruser/*&lt;/url-pattern>
-    &lt;/web-resource-collection>
-    &lt;auth-constraint>
-      &lt;role-name>user&lt;/role-name>
-    &lt;/auth-constraint>
-  &lt;/security-constraint>
+&lt;security-constraint>
+  &lt;display-name>dwr-admin&lt;/display-name>
+  &lt;web-resource-collection>
+    &lt;web-resource-name>dwr-admin-collection&lt;/web-resource-name>
+    &lt;url-pattern>/dwradmin/*&lt;/url-pattern>
+  &lt;/web-resource-collection>
+  &lt;auth-constraint>
+    &lt;role-name>admin&lt;/role-name>
+  &lt;/auth-constraint>
+&lt;/security-constraint>
+&lt;security-constraint>
+  &lt;display-name>dwr-user&lt;/display-name>
+  &lt;web-resource-collection>
+    &lt;web-resource-name>dwr-user-collection&lt;/web-resource-name>
+    &lt;url-pattern>/dwruser/*&lt;/url-pattern>
+  &lt;/web-resource-collection>
+  &lt;auth-constraint>
+    &lt;role-name>user&lt;/role-name>
+  &lt;/auth-constraint>
+&lt;/security-constraint>
 </pre>
 
 <h3>Logging</h3>
@@ -214,9 +185,8 @@ function insert(id, file)
 
 <pre>
 &lt;init-param>
-   &lt;param-name>logLevel&lt;/param-name>
-   &lt;param-value>DEBUG&lt;/param-value>
-   &lt;description>How verbose do we want logging to be?&lt;/description>
+ &lt;param-name>logLevel&lt;/param-name>
+ &lt;param-value>DEBUG&lt;/param-value>
 &lt;/init-param>
 </pre>
 
@@ -233,12 +203,12 @@ function insert(id, file)
 
 <pre>
 &lt;init-param>
-   &lt;param-name>converterManager&lt;/param-name>
-   &lt;param-value>your.impl.of.ConverterManager&lt;/param-value>
+ &lt;param-name>converterManager&lt;/param-name>
+ &lt;param-value>your.impl.of.ConverterManager&lt;/param-value>
 &lt;/init-param>
 &lt;init-param>
-   &lt;param-name>creatorManager&lt;/param-name>
-   &lt;param-value>your.impl.of.CreatorManager&lt;/param-value>
+ &lt;param-name>creatorManager&lt;/param-name>
+ &lt;param-value>your.impl.of.CreatorManager&lt;/param-value>
 &lt;/init-param>
 </pre>
 
@@ -481,14 +451,22 @@ function insert(id, file)
   They are defined as follows:
 </p>
 <pre>
-&lt;converter id="null" class="uk.ltd.getahead.dwr.convert.NullConverter"/>
-&lt;converter id="primitive" class="uk.ltd.getahead.dwr.convert.PrimitiveConverter"/>
-&lt;converter id="string" class="uk.ltd.getahead.dwr.convert.StringConverter"/>
-&lt;converter id="array" class="uk.ltd.getahead.dwr.convert.ArrayConverter"/>
-&lt;converter id="map" class="uk.ltd.getahead.dwr.convert.MapConverter"/>
-&lt;converter id="collection" class="uk.ltd.getahead.dwr.convert.CollectionConverter"/>
-&lt;converter id="date" class="uk.ltd.getahead.dwr.convert.DateConverter"/>
-&lt;converter id="bean" class="uk.ltd.getahead.dwr.convert.BeanConverter"/>
+&lt;converter id="null"
+    class="uk.ltd.getahead.dwr.convert.NullConverter"/>
+&lt;converter id="primitive"
+    class="uk.ltd.getahead.dwr.convert.PrimitiveConverter"/>
+&lt;converter id="string"
+    class="uk.ltd.getahead.dwr.convert.StringConverter"/>
+&lt;converter id="array"
+    class="uk.ltd.getahead.dwr.convert.ArrayConverter"/>
+&lt;converter id="map"
+    class="uk.ltd.getahead.dwr.convert.MapConverter"/>
+&lt;converter id="collection"
+    class="uk.ltd.getahead.dwr.convert.CollectionConverter"/>
+&lt;converter id="date"
+    class="uk.ltd.getahead.dwr.convert.DateConverter"/>
+&lt;converter id="bean"
+    class="uk.ltd.getahead.dwr.convert.BeanConverter"/>
 </pre>
 <p>
   The converters are mearly defined here and are put into use with

@@ -2,6 +2,7 @@
 
 /**
  * Declare a constructor function to which we can add real functions.
+ * @constructor
  */
 function DWREngine()
 {

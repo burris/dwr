@@ -4,52 +4,25 @@
   <title>DWR - Upgrading to DWR 0.4</title>
   <link rel="stylesheet" type="text/css" href="generic.css"/>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+  <script type='text/javascript' src='/dwr/dwr/util.js'></script>
+  <script type='text/javascript' src='/dwr/dwr/jscp.js'></script>
 </head>
 
 <body>
-<div id="page-logo">getahead - dwr</div><div id="page-title">[ <a href="/">getahead</a> ]</div>
+<div id="page-logo">DWR</div>
+<div id="page-title">Direct Web Remoting - AJAX and XMLHttpRequest made easy</div>
 <div id="page-portlet-1" class="sidebody">
-  <h2><a href="http://www.getahead.ltd.uk"/>Getahead Ltd</a></h2>
-  <p>
-    <h2>DWR</h2>
-    <a href="index.html" target="_top">Home</a><br/>
-    <a href="https://dwr.dev.java.net" target="_top">Java.net</a><br/>
-    <a href="https://dwr.dev.java.net/servlets/ProjectDocumentList?folderID=2920&expandFolder=2920&folderID=0" target="_top">Download</a>
-    <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList" target="_top">Mailing Lists</a><br/>
-  </p>
-  <p>
-    <h3>Documentation</h3>
-    <a href="intro.html" target="_top">Introduction</a><br/>
-    <a href="config-howto.html" target="_top">Configuration</a><br/>
-    <a href="config-js.html" target="_top">Script Docs</a><br/>
-    <a href="config-ref.html" target="_top">dwr.xml</a><br/>
-    <a href="javadoc-ExecutionContext.html" target="_top">JavaDoc</a><br/>
-    <a href="issues.html" target="_top">Issues</a><br/>
-    <a href="upgrading.html" target="_top">Upgrading</a>
-  </p>
-  <p>
-    <h3>Examples</h3>
-    <a href="demo-text.html" target="_top">Dynamic Text</a><br/>
-    <a href="demo-list.html" target="_top">Selection Lists</a><br/>
-    <a href="demo-form.html" target="_top">Live Forms</a><br/>
-    <a href="demo-table.html" target="_top">Live Tables</a><br/>
-    <a href="demo-postcode.html" target="_top">Address Entry</a>
-  </p>
-  <p>
-    <h3>Testing</h3>
-    <a href="test.html" target="_top">Unit Tests</a><br/>
-    <a href="dwr" target="_top">Manual Tests</a>
-  </p>
+  <a href="sidebar.html">Site-Map</a>
+  <script type='text/javascript'>JSCP.insert("page-portlet-1", "sidebar.html");</script>
 </div>
 
 <div id="page-content">
 
 <h2>Upgrading to DWR 0.5</h2>
 <p>
-  All the util.js methods and engine.js methods are now 'static class'
-  functions. The old versions are deprecated, and you will get a warning to move
-  over as an alert box. The new versions should have less chance of name
-  clashes.
+  All the functions in util.js and engine.js are now 'static class' functions.
+  The old versions are deprecated, and you will get a warning to move over as
+  an alert box. The new versions should have less chance of name clashes.
 </p>
 
 <p>
@@ -93,13 +66,13 @@
   There is one other breaking change, where in your html you were doing:
 </p>
 <pre>
-  &lt;script type='text/javascript' src='/XXX/dwr/interface/full.java.pkg.Test.js'></script>
+&lt;script type='text/javascript' src='/XXX/dwr/interface/full.java.pkg.Test.js'></script>
 </pre>
 <p>
   You would need to do:
 </p>
 <pre>
-  &lt;script type='text/javascript' src='/XXX/dwr/interface/Test.js'></script>
+&lt;script type='text/javascript' src='/XXX/dwr/interface/Test.js'></script>
 </pre>
 <p>
   Where Test is the value you specify in the javascript attribute in your create tag (see above).

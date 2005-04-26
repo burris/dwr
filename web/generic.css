@@ -1,11 +1,10 @@
 
 pre
 {
-    background: #f8f8f8;
-    border: 3px dashed #dddddd;
-    margin-left: 50px;
-    margin-right: 50px;
-    padding: 10px;
+    background: #fafafa;
+    border: 2px dashed #ddd;
+    padding: 5px;
+    font-size: 85%;
 }
 
 body
@@ -31,26 +30,25 @@ body
 
 #page-content
 {
-    float: left;
     padding: 15px;
     margin-top: 15px;
     margin-bottom: 15px;
-    margin-left: 5%;
+    margin-left: 50px;
+    margin-right: 180px;
     background: #FFF;
     border: 1px #CCC solid;
-    width: 65%;
 }
 
 #page-portlet-1
 {
-    float: right;
+    position: absolute;
     top: 0px;
+    right: 0px;
     padding-top: 15px;
     padding-left: 10px;
-    padding-right: 5px;
     padding-bottom: 15px;
+    margin-top: 120px;
     margin-bottom: 15px;
-    margin-top: 15px;
     background: #DDD;
     font-family: verdana, arial, sans-serif;
     color: #666;
@@ -152,9 +150,9 @@ h4
     background-repeat: no-repeat;
     background-position: right;
     border: 1px solid #000000;
-    font-family: courier new;
-    font-weight: bold;
-    font-size: 28pt;
+    font-family: Arial Black;
+    font-size: 24pt;
+    letter-spacing: 5px;
     padding-top: 0.20em;
     padding-bottom: 0.20em;
     padding-left: 15px;
@@ -170,12 +168,12 @@ h4
     padding: 5px;
     text-align: right;
     color: #000000;
-    font-size: 6pt;
+    font-size: 8pt;
 }
 
 #page-title a
 {
     color: #333;
     font-weight: normal;
-    font-size: 6pt;
+    font-size: 8pt;
 }

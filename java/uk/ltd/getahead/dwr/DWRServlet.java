@@ -172,6 +172,10 @@ public class DWRServlet extends HttpServlet
             {
                 doFile(req, resp, FILE_UTIL, MIME_JS);
             }
+            else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_JSCP))
+            {
+                doFile(req, resp, FILE_JSCP, MIME_JS);
+            }
             else if (pathinfo != null && pathinfo.startsWith(PATH_INTERFACE))
             {
                 doInterface(req, resp);
@@ -385,23 +389,27 @@ public class DWRServlet extends HttpServlet
             InputStream raw = getClass().getResourceAsStream(FILE_HELP);
             if (raw == null)
             {
-                throw new IOException(Messages.getString("DWRServlet.MissingHelp", FILE_HELP)); //$NON-NLS-1$
+                Log.error(Messages.getString("DWRServlet.MissingHelp", FILE_HELP)); //$NON-NLS-1$
+                output = "<p>Failed to read help text from resource file. Check dwr.jar is built to include html files.</p>"; //$NON-NLS-1$
             }
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(raw));
-            while (true)
+            else
             {
-                String line = in.readLine();
-                if (line == null)
+                BufferedReader in = new BufferedReader(new InputStreamReader(raw));
+                while (true)
                 {
-                    break;
+                    String line = in.readLine();
+                    if (line == null)
+                    {
+                        break;
+                    }
+
+                    buffer.append(line);
+                    buffer.append("\n"); //$NON-NLS-1$
                 }
 
-                buffer.append(line);
-                buffer.append("\n"); //$NON-NLS-1$
+                output = buffer.toString();
             }
 
-            output = buffer.toString();
             scriptCache.put(FILE_HELP, output);
         }
 
@@ -656,6 +664,8 @@ public class DWRServlet extends HttpServlet
     protected static final String FILE_UTIL = "util.js"; //$NON-NLS-1$
 
     protected static final String FILE_ENGINE = "engine.js"; //$NON-NLS-1$
+
+    protected static final String FILE_JSCP = "jscp.js"; //$NON-NLS-1$
 
     protected static final String FILE_DWR_XML = "dwr.xml"; //$NON-NLS-1$
 

@@ -79,7 +79,7 @@ public class SpringCreator implements Creator
             if (factory == null)
             {
                 // If someone has set a resource name then we need to load that.
-                if (configLocation != null)
+                if (configLocation != null && configLocation.length > 0)
                 {
                     factory = new ClassPathXmlApplicationContext(configLocation);
                 }

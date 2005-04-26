@@ -4,42 +4,16 @@
   <title>DWR - Issues</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
   <link rel="stylesheet" type="text/css" href="generic.css"/>
+  <script type='text/javascript' src='/dwr/dwr/util.js'></script>
+  <script type='text/javascript' src='/dwr/dwr/jscp.js'></script>
 </head>
 
 <body>
-<div id="page-logo">getahead - dwr</div><div id="page-title">[ <a href="/">getahead</a> ]</div>
+<div id="page-logo">DWR</div>
+<div id="page-title">Direct Web Remoting - AJAX and XMLHttpRequest made easy</div>
 <div id="page-portlet-1" class="sidebody">
-  <h2><a href="http://www.getahead.ltd.uk"/>Getahead Ltd</a></h2>
-  <p>
-    <h2>DWR</h2>
-    <a href="index.html" target="_top">Home</a><br/>
-    <a href="https://dwr.dev.java.net" target="_top">Java.net</a><br/>
-    <a href="https://dwr.dev.java.net/servlets/ProjectDocumentList?folderID=2920&expandFolder=2920&folderID=0" target="_top">Download</a>
-    <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList" target="_top">Mailing Lists</a><br/>
-  </p>
-  <p>
-    <h3>Documentation</h3>
-    <a href="intro.html" target="_top">Introduction</a><br/>
-    <a href="config-howto.html" target="_top">Configuration</a><br/>
-    <a href="config-js.html" target="_top">Script Docs</a><br/>
-    <a href="config-ref.html" target="_top">dwr.xml</a><br/>
-    <a href="javadoc-ExecutionContext.html" target="_top">JavaDoc</a><br/>
-    <a href="issues.html" target="_top">Issues</a><br/>
-    <a href="upgrading.html" target="_top">Upgrading</a>
-  </p>
-  <p>
-    <h3>Examples</h3>
-    <a href="demo-text.html" target="_top">Dynamic Text</a><br/>
-    <a href="demo-list.html" target="_top">Selection Lists</a><br/>
-    <a href="demo-form.html" target="_top">Live Forms</a><br/>
-    <a href="demo-table.html" target="_top">Live Tables</a><br/>
-    <a href="demo-postcode.html" target="_top">Address Entry</a>
-  </p>
-  <p>
-    <h3>Testing</h3>
-    <a href="test.html" target="_top">Unit Tests</a><br/>
-    <a href="dwr" target="_top">Manual Tests</a>
-  </p>
+  <a href="sidebar.html">Site-Map</a>
+  <script type='text/javascript'>JSCP.insert("page-portlet-1", "sidebar.html");</script>
 </div>
 
 <div id="page-content">
@@ -48,10 +22,11 @@
 
 <h3>Security</h3>
 <p>
-  I'm nervious about the ability DWR might give to an attacker to do things to
-  your system that you were not expecting. For that reason I recommend that you
-  keep the set of classes that DWR can access fairly separate from the rest of
-  the system.
+  In the short term I strongly recommend that you keep the set of classes that
+  DWR can access fairly separate from the rest of the system. DWR is fairly new
+  and although care has been taken to ensure it does not do anything dangerous
+  without more exposure to more eyeballs it makes sense to err on the side of
+  paranoia.
 </p>
 <p>
   What opportunities does an attacker have to exploit your system? Using DWR
@@ -81,12 +56,44 @@
 <h3>Browser Compatibility</h3>
 <p>
   DWR is regularly tested against Firefox 1.0, IE 6, and Opera 8 where it
-  appears to work just fine. It is known not to work in Safari 1.2 and many
-  releases of Konqueror, if you can help fixing these browsers, please join
+  appears to work just fine. We need to do more work in supporting other
+  browsers; If you can help testing or fixing these browsers, please join
   <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList">dwr-dev</a>
   mailing list.
-  <br/>
-  Testing is needed on Safari 1.3 and IE 4 - 5.5.
+  <table>
+    <tr>
+      <th>Browser</th>
+      <th>Status</th>
+    </tr>
+    <tr>
+      <td>Firefox 1.0.x</td>
+      <td>No known issues</td>
+    </tr>
+    <tr>
+      <td>IE 6.0</td>
+      <td>No known issues</td>
+    </tr>
+    <tr>
+      <td>IE 5.x</td>
+      <td>Unknown. Please help us test.</td>
+    </tr>
+    <tr>
+      <td>Opera 8.0</td>
+      <td>Mostly working fine, minor issues with <a href="https://dwr.dev.java.net/issues/show_bug.cgi?id=20">strings containing nulls</a></td>
+    </tr>
+    <tr>
+      <td>Opera 7.x</td>
+      <td>Unknown. Please help us test.</td>
+    </tr>
+    <tr>
+      <td>Safari 1.3</td>
+      <td>Unknown. Please help us test.</td>
+    </tr>
+    <tr>
+      <td>Safari 1.2</td>
+      <td>Unknown. Please help us test.</td>
+    </tr>
+  </table>
 </p>
 
 <h3>Asynchronisity</h3>
