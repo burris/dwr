@@ -16,12 +16,12 @@
     <create creator="session" javascript="Demo" class="uk.ltd.getahead.dwr.test.Demo"/>
     <!--
     <create creator="spring" javascript="SpringBean" beanName="SpringBean"/>
-    -->
 
     <create creator="new" javascript="UrlValidator" class="org.apache.commons.validator.UrlValidator"/>
     <create creator="new" javascript="CreditCardValidator" class="org.apache.commons.validator.CreditCardValidator"/>
     <create creator="new" javascript="EmailValidator" class="org.apache.commons.validator.EmailValidator"/>
     <create creator="new" javascript="ISBNValidator" class="org.apache.commons.validator.ISBNValidator"/>
+    -->
 
     <convert converter="bean" match="uk.ltd.getahead.dwr.test.*"/>
     <convert converter="testbean" match="uk.ltd.getahead.dwr.test.TestBean2"/>
