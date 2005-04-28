@@ -4,6 +4,7 @@
   <!--=======================================================================-->
   <property name="source.root" value="."/>
   <property name="source.java" value="${source.root}/java"/>
+  <property name="source.test" value="${source.root}/test"/>
   <property name="source.jar" value="${source.root}/jar"/>
   <property name="source.etc" value="${source.root}/etc"/>
   <property name="source.web" value="${source.root}/web"/>
@@ -17,6 +18,7 @@
     <mkdir dir="${target.class}"/>
     <javac debug="on" includes="**/*.java" destdir="${target.class}" source="1.3">
       <src path="${source.java}"/>
+      <src path="${source.test}"/>
       <classpath>
         <fileset dir="${source.jar}" includes="**/*.jar"/>
       </classpath>
@@ -32,7 +34,9 @@
   <!--=======================================================================-->
   <target name="jar" depends="war" description="Create a JAR file">
     <jar destfile="dwr.jar" compress="true" >
-      <fileset dir="${target.classes}"/>
+      <fileset dir="${target.classes}">
+        <exclude name="**/test/**"/>
+      </fileset>
     </jar>
   </target>
 
