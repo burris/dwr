@@ -34,7 +34,7 @@
   <!--=======================================================================-->
   <target name="jar" depends="war" description="Create a JAR file">
     <jar destfile="dwr.jar" compress="true" >
-      <fileset dir="${target.classes}">
+      <fileset dir="${target.class}">
         <exclude name="**/test/**"/>
       </fileset>
     </jar>
