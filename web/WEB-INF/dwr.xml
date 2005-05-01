@@ -10,18 +10,22 @@
   </init>
 
   <allow>
+
     <create creator="new" javascript="Test" class="uk.ltd.getahead.dwr.test.Test"/>
     <create creator="new" javascript="JDate" class="java.util.Date"/>
+
     <create creator="session" javascript="TestBean" class="uk.ltd.getahead.dwr.test.TestBean"/>
     <create creator="session" javascript="Demo" class="uk.ltd.getahead.dwr.test.Demo"/>
+
+    <create creator="new" javascript="Chat" class="uk.ltd.getahead.dwr.test.Chat"/>
+
     <!--
     <create creator="spring" javascript="SpringBean" beanName="SpringBean"/>
+    -->
 
     <create creator="new" javascript="UrlValidator" class="org.apache.commons.validator.UrlValidator"/>
     <create creator="new" javascript="CreditCardValidator" class="org.apache.commons.validator.CreditCardValidator"/>
-    <create creator="new" javascript="EmailValidator" class="org.apache.commons.validator.EmailValidator"/>
-    <create creator="new" javascript="ISBNValidator" class="org.apache.commons.validator.ISBNValidator"/>
-    -->
+    <create creator="new" javascript="EmailValidator" class="uk.ltd.getahead.dwr.test.EmailValidator"/>
 
     <convert converter="bean" match="uk.ltd.getahead.dwr.test.*"/>
     <convert converter="testbean" match="uk.ltd.getahead.dwr.test.TestBean2"/>

@@ -1,6 +1,5 @@
 package uk.ltd.getahead.dwr;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.SortedSet;
@@ -8,13 +7,11 @@ import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import uk.ltd.getahead.dwr.util.Log;
 import uk.ltd.getahead.dwr.util.LogErrorHandler;
@@ -29,14 +26,13 @@ public final class Configuration
     /**
      * Add to the current configuration by reading a DOM tree from a IO stream.
      * @param in The InputStream to parse from
-     * @throws SAXException If the parse fails
      */
-    public void addConfig(InputStream in) throws SAXException
+    public void addConfig(InputStream in)
     {
         try
         {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setValidating(true);
+            //dbf.setValidating(true);
 
             DocumentBuilder db = dbf.newDocumentBuilder();
             db.setEntityResolver(new DTDEntityResolver());
@@ -46,26 +42,22 @@ public final class Configuration
 
             addConfig(doc);
         }
-        catch (ParserConfigurationException ex)
+        catch (Exception ex)
         {
-            throw new SAXException(Messages.getString("Configuration.ParseError"), ex); //$NON-NLS-1$
-        }
-        catch (IOException ex)
-        {
-            throw new SAXException(Messages.getString("Configuration.FileError"), ex); //$NON-NLS-1$
+            Log.fatal("Failed to parse dwr.xml", ex); //$NON-NLS-1$
         }
     }
 
     /**
      * Add to the current configuration by reading a DOM tree directly
      * @param doc The DOM tree
-     * @throws SAXException If the parse fails
      */
-    public void addConfig(Document doc) throws SAXException
+    public void addConfig(Document doc)
     {
         Element root = doc.getDocumentElement();
+
         NodeList rootChildren = root.getChildNodes();
-        for (int i=0; i<rootChildren.getLength(); i++)
+        for (int i = 0; i < rootChildren.getLength(); i++)
         {
             Node node = rootChildren.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE)
@@ -91,7 +83,7 @@ public final class Configuration
     private void loadInits(Element child)
     {
         NodeList inits = child.getChildNodes();
-        for (int j=0; j<inits.getLength(); j++)
+        for (int j = 0; j < inits.getLength(); j++)
         {
             if (inits.item(j).getNodeType() == Node.ELEMENT_NODE)
             {
@@ -160,9 +152,8 @@ public final class Configuration
     /**
      * Internal method to load the create/convert elements
      * @param child The element to read
-     * @throws SAXException If the parse fails
      */
-    private void loadAllows(Element child) throws SAXException
+    private void loadAllows(Element child)
     {
         NodeList allows = child.getChildNodes();
         for (int j=0; j<allows.getLength(); j++)
@@ -170,6 +161,7 @@ public final class Configuration
             if (allows.item(j).getNodeType() == Node.ELEMENT_NODE)
             {
                 Element allower = (Element) allows.item(j);
+
                 if (allower.getNodeName().equals(ELEMENT_CREATE))
                 {
                     loadCreate(allower);
@@ -185,9 +177,8 @@ public final class Configuration
     /**
      * Internal method to load the convert element
      * @param allower The element to read
-     * @throws SAXException If the parse fails
      */
-    private void loadConvert(Element allower) throws SAXException
+    private void loadConvert(Element allower)
     {
         String match = allower.getAttribute(ATTRIBUTE_MATCH);
         String type = allower.getAttribute(ATTRIBUTE_CONVERTER);
@@ -196,22 +187,17 @@ public final class Configuration
         {
             converterManager.addConverter(match, type);
         }
-        catch (IllegalArgumentException ex)
-        {
-            throw new SAXException(ex.getMessage(), ex);
-        }
         catch (Exception ex)
         {
-            throw new SAXException(Messages.getString("Configuration.ErrorInstansiating", type), ex); //$NON-NLS-1$
+            Log.error("Failed to add convertor: match=" + match + ", type=" + type, ex); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
     /**
      * Internal method to load the create element
      * @param allower The element to read
-     * @throws SAXException If the parse fails
      */
-    private void loadCreate(Element allower) throws SAXException
+    private void loadCreate(Element allower)
     {
         String type = allower.getAttribute(ATTRIBUTE_CREATOR);
         String javascript = allower.getAttribute(ATTRIBUTE_JAVASCRIPT);
@@ -220,13 +206,9 @@ public final class Configuration
         {
             creatorManager.addCreator(type, javascript, allower);
         }
-        catch (IllegalArgumentException ex)
-        {
-            throw new SAXException(ex.getMessage(), ex);
-        }
         catch (Exception ex)
         {
-            throw new SAXException(Messages.getString("Configuration.ErrorInstansiating", type), ex); //$NON-NLS-1$
+            Log.error("Failed to add creator: type=" + type + ", javascript=" + javascript, ex); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

@@ -30,22 +30,21 @@
 
 <h4>2. Add the following lines to your WEB-INF/web.xml</h4>
 <pre>
-  &lt;servlet>
-    &lt;servlet-name>dwr-invoker&lt;/servlet-name>
-    &lt;display-name>DWR Servlet&lt;/display-name>
-    &lt;description>Direct Web Remoter Servlet&lt;/description>
-    &lt;servlet-class>uk.ltd.getahead.dwr.DWRServlet&lt;/servlet-class>
-      &lt;init-param>
-         &lt;param-name>debug&lt;/param-name>
-         &lt;param-value>true&lt;/param-value>
-         &lt;description>Do we startup in debug/test mode?&lt;/description>
-      &lt;/init-param>
-      &lt;load-on-startup>-1&lt;/load-on-startup>
-  &lt;/servlet>
-  &lt;servlet-mapping>
-    &lt;servlet-name>dwr-invoker&lt;/servlet-name>
-    &lt;url-pattern>/dwr/*&lt;/url-pattern>
-  &lt;/servlet-mapping>
+&lt;servlet>
+  &lt;servlet-name>dwr-invoker&lt;/servlet-name>
+  &lt;display-name>DWR Servlet&lt;/display-name>
+  &lt;description>Direct Web Remoter Servlet&lt;/description>
+  &lt;servlet-class>uk.ltd.getahead.dwr.DWRServlet&lt;/servlet-class>
+  &lt;init-param>
+     &lt;param-name>debug&lt;/param-name>
+     &lt;param-value>true&lt;/param-value>
+  &lt;/init-param>
+&lt;/servlet>
+
+&lt;servlet-mapping>
+  &lt;servlet-name>dwr-invoker&lt;/servlet-name>
+  &lt;url-pattern>/dwr/*&lt;/url-pattern>
+&lt;/servlet-mapping>
 </pre>
 
 <p>
@@ -70,13 +69,17 @@
   The DWR config file does 2 things. Firstly it defines what classes DWR can
   create and remote for use by Javascript and defines the types that can be
   marshalled as part of that remoting.
-  <br/>
-  In the example above we are defining 4 classes that are remoted and giving
+</p>
+
+<p>
+  In the example above we are defining 2 classes that are remoted and giving
   the classes names in Javascript so we don't have to use the full package
   names. We also specify how the objects are to be created "new" means that we
   create a new object for each an every invocation. "session" stores the object
   in users HTTP session.
-  <br/>
+</p>
+
+<p>
   Secondly dwr.xml allows you to define new ways to create and marshall objects.
 </p>
 

@@ -24,6 +24,19 @@ Hype
 ----
 If I post an announcement to some site I record it here, so I can cut and paste next time faster
 
+Java.net 2005-04-30
+DWR 0.5 Released: Ajax and XMLHttpRequest made simple
+http://www.getahead.ltd.uk/dwr/
+http://www.getahead.ltd.uk/blog/joe/2005/04/28/1114692652085.html
+Joe Walker has released <a href="http://www.getahead.ltd.uk/dwr/">DWR</a> (Direct Web Remoting) version 0.5. DWR makes AJAX easy by allowing you to call Java code directly from within browser JavaScript.
+New in version 0.5 is improved integration with Spring, better Javascript libraries to cut down on the mucking about with DHTML and a new website with <a href="http://www.getahead.ltd.uk/dwr/demo-text.html">worked examples</a>.
+
+TSS: 2005-04-30
+DWR 0.5 Released: Ajax and XMLHttpRequest made simple
+Joe Walker has released DWR (Direct Web Remoting) version 0.5. DWR makes AJAX easy by allowing you to call Java code directly from within browser JavaScript.
+New in version 0.5 is improved integration with Spring, better Javascript libraries to cut down on the mucking about with DHTML and a new website with worked examples.
+DWR is more full-featured and easier to use that alternatives like JSON-RPC. And that's not just the author's opinion, it must be true because Matt Riable says so.
+
 TSS: 2005-03-07
 Direct Web Remoting: Call server-side Java from JavaScript
 <a href="http://dwr.dev.java.net/">Direct Web Remoting</a> (DWR) is a very simple way to call Java code directly from within browser JavaScript. New in version 0.4 is the ability to convert Javascript arrays into Java arrays, Java Objects into Javascript objects and so on.

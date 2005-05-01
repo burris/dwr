@@ -1,4 +1,7 @@
 
+Changes for Version 0.6
+-----------------------
+
 Changes for Version 0.5
 -----------------------
 Conversion from global javascript methods to static object-based methods (Joe Walker)

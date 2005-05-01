@@ -11,7 +11,7 @@ body
 {
     font-family: verdana, arial, sans-serif;
     color: #666;
-    background: #EEE;
+    background: #EEEEEE;
     margin: 0px;
 }
 
@@ -25,7 +25,7 @@ body
     font-size: 90%;
     line-height: 120%;
     font-weight: normal;
-    background: #FFF;
+    background: #FFFFFF;
 }
 
 #page-content
@@ -35,8 +35,8 @@ body
     margin-bottom: 15px;
     margin-left: 50px;
     margin-right: 180px;
-    background: #FFF;
-    border: 1px #CCC solid;
+    background: #FFFFFF;
+    border: 1px #CCCCCC solid;
 }
 
 #page-portlet-1
@@ -49,13 +49,13 @@ body
     padding-bottom: 15px;
     margin-top: 120px;
     margin-bottom: 15px;
-    background: #DDD;
+    background: #DDDDDD;
     font-family: verdana, arial, sans-serif;
     color: #666;
     /*font-size: 11px;*/
     font-weight: normal;
     line-height: 130%;
-    border: 1px solid #AAA;
+    border: 1px solid #AAAAAA;
 
     width: 150px;
     height: 700px;
@@ -65,7 +65,7 @@ body
 .sidebody
 {
     margin: 10px 5px 20px 5px;
-    background: #DDD;
+    background: #DDDDDD;
     font-size: 90%;
 }
 
@@ -173,7 +173,7 @@ h4
 
 #page-title a
 {
-    color: #333;
+    color: #333333;
     font-weight: normal;
     font-size: 8pt;
 }

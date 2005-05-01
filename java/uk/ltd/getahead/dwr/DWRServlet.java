@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.xml.sax.SAXException;
-
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Log;
@@ -99,17 +97,9 @@ public class DWRServlet extends HttpServlet
         configuration.setConverterManager(converterManager);
         configuration.setCreatorManager(creatorManager);
 
-        try
-        {
-            // Load the system config file
-            InputStream in = getClass().getResourceAsStream(FILE_DWR_XML);
-            configuration.addConfig(in);
-        }
-        catch (SAXException ex)
-        {
-            Log.fatal("Failed to parse dwr.xml", ex); //$NON-NLS-1$
-            throw new ServletException(Messages.getString("DWRServlet.FileError"), ex); //$NON-NLS-1$
-        }
+        // Load the system config file
+        InputStream in = getClass().getResourceAsStream(FILE_DWR_XML);
+        configuration.addConfig(in);
 
         // Find all the init params
         Enumeration en = config.getInitParameterNames();
@@ -260,7 +250,7 @@ public class DWRServlet extends HttpServlet
 
         Creator creator = creatorManager.getCreator(scriptname);
 
-        Method[] methods = creator.getType().getDeclaredMethods();
+        Method[] methods = creator.getType().getMethods();
 
         resp.setContentType(MIME_HTML);
         PrintWriter out = resp.getWriter();
@@ -439,7 +429,7 @@ public class DWRServlet extends HttpServlet
         out.println("function " + pathinfo + "() { }"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println();
 
-        Method[] methods = creator.getType().getDeclaredMethods();
+        Method[] methods = creator.getType().getMethods();
         for (int i = 0; i < methods.length; i++)
         {
             Method method = methods[i];
@@ -632,14 +622,7 @@ public class DWRServlet extends HttpServlet
             throw new ServletException(Messages.getString("DWRServlet.MissingFile", configFile)); //$NON-NLS-1$
         }
 
-        try
-        {
-            configuration.addConfig(in);
-        }
-        catch (SAXException ex)
-        {
-            throw new ServletException(ex.getMessage(), ex);
-        }
+        configuration.addConfig(in);
     }
 
     /* (non-Javadoc)

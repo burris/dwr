@@ -113,14 +113,15 @@ public class Demo
     private static final String LINE4 = "line4"; //$NON-NLS-1$
     private static final String LINE3 = "line3"; //$NON-NLS-1$
     private static final String LINE2 = "line2"; //$NON-NLS-1$
+
     /**
-     * @param postcode the code to lookup
+     * @param origpostcode the code to lookup
      * @return a map of postcode data
      */
-    public Map fillAddress(String postcode)
+    public Map fillAddress(String origpostcode)
     {
         Map reply = new HashMap();
-        postcode = LocalUtil.replace(postcode, " ", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String postcode = LocalUtil.replace(origpostcode, " ", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
         if (postcode.equalsIgnoreCase("LE167TR")) //$NON-NLS-1$
         {

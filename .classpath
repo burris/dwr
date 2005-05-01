@@ -23,6 +23,14 @@
 		<attributes>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/commons-validator-1.1.4.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="web/WEB-INF/lib/jakarta-oro-2.0.8.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="java">
 		<attributes>
 		</attributes>

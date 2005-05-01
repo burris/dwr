@@ -14,7 +14,6 @@ function DWRUtil()
  * For internal use only.
  */
 DWRUtil._agent   = navigator.userAgent.toLowerCase();
-DWRUtil._isGecko = (DWRUtil._agent.indexOf('gecko') != -1);
 DWRUtil._isIE    = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.indexOf("opera") == -1));
 
 /**
@@ -47,7 +46,8 @@ DWRUtil.showById = function(id)
         throw id;
     }
 
-    ele.style.display = 'block';
+    // Apparently this works better that display = 'block'; ???
+    ele.style.display = '';
 }
 
 /**
@@ -79,7 +79,8 @@ DWRUtil.toggleDisplay = function(id)
 
     if (ele.style.display == 'none')
     {
-        ele.style.display = 'block';
+        // Apparently this works better that display = 'block'; ???
+        ele.style.display = '';
     }
     else
     {
@@ -298,16 +299,9 @@ DWRUtil.setEnabled = function(id, state)
  */
 DWRUtil.isHTMLElement = function(ele)
 {
-    // There must be a better way
-    if (DWRUtil._isGecko)
-    {
-        return typeof ele == "object" && ele instanceof HTMLElement;
-    }
-    else
-    {
-        // assume it is an html element if has an outerhtml property
-        return typeof ele == "object" && ele.nodeName;
-    }
+    // If I.E. worked properly we could use:
+    //  return typeof ele == "object" && ele instanceof HTMLElement;
+    return typeof ele == "object" && ele.nodeName;
 }
 
 /**
@@ -315,15 +309,9 @@ DWRUtil.isHTMLElement = function(ele)
  */
 DWRUtil.isHTMLInputElement = function(ele)
 {
-    // There must be a better way
-    if (DWRUtil._isGecko)
-    {
-        return typeof ele == "object" && ele instanceof HTMLInputElement;
-    }
-    else
-    {
-        return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "input";
-    }
+    // If I.E. worked properly we could use:
+    //   return typeof ele == "object" && ele instanceof HTMLInputElement;
+    return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "input";
 }
 
 /**
@@ -331,15 +319,9 @@ DWRUtil.isHTMLInputElement = function(ele)
  */
 DWRUtil.isHTMLTextAreaElement = function(ele)
 {
-    // There must be a better way
-    if (DWRUtil._isGecko)
-    {
-        return typeof ele == "object" && ele instanceof HTMLTextAreaElement;
-    }
-    else
-    {
-        return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "textarea";
-    }
+    // If I.E. worked properly we could use:
+    //   return typeof ele == "object" && ele instanceof HTMLTextAreaElement;
+    return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "textarea";
 }
 
 /**
@@ -347,15 +329,9 @@ DWRUtil.isHTMLTextAreaElement = function(ele)
  */
 DWRUtil.isHTMLSelectElement = function(ele)
 {
-    // There must be a better way
-    if (DWRUtil._isGecko)
-    {
-        return typeof ele == "object" && ele instanceof HTMLSelectElement;
-    }
-    else
-    {
-        return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "select";
-    }
+    // If I.E. worked properly we could use:
+    //   return typeof ele == "object" && ele instanceof HTMLSelectElement;
+    return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "select";
 }
 
 /**
