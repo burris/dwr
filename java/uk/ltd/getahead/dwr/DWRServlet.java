@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -51,7 +52,7 @@ public class DWRServlet extends HttpServlet
         String logLevel = config.getInitParameter(INIT_LOGLEVEL);
         if (logLevel != null)
         {
-            Log.setLevel(logLevel);
+            ServletLoggingOutput.setLevel(logLevel);
         }
 
         // Setup the creator manager
@@ -143,7 +144,7 @@ public class DWRServlet extends HttpServlet
         try
         {
             ExecutionContext.setExecutionContext(req, resp, getServletConfig(), getServletContext());
-            Log.setExecutionContext(this);
+            ServletLoggingOutput.setExecutionContext(this);
 
             String pathinfo = req.getPathInfo();
             if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals(PATH_ROOT))
@@ -183,7 +184,7 @@ public class DWRServlet extends HttpServlet
         finally
         {
             ExecutionContext.unset();
-            Log.unsetExecutionContext();
+            ServletLoggingOutput.unsetExecutionContext();
         }
     }
 

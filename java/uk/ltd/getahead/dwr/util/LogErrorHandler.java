@@ -15,7 +15,7 @@ public final class LogErrorHandler implements ErrorHandler
      */
     public void fatalError(SAXParseException ex) throws SAXException
     {
-        Log.fatal(getMessage(ex), ex);
+        Log.fatal(getMessage(ex));
     }
 
     /* (non-Javadoc)
@@ -23,7 +23,7 @@ public final class LogErrorHandler implements ErrorHandler
      */
     public void error(SAXParseException ex) throws SAXException
     {
-        Log.error(getMessage(ex), ex);
+        Log.error(getMessage(ex));
     }
 
     /* (non-Javadoc)
@@ -31,7 +31,7 @@ public final class LogErrorHandler implements ErrorHandler
      */
     public void warning(SAXParseException ex) throws SAXException
     {
-        Log.warn(getMessage(ex), ex);
+        Log.warn(getMessage(ex));
     }
 
     /**

@@ -32,7 +32,7 @@ public final class Configuration
         try
         {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            //dbf.setValidating(true);
+            dbf.setValidating(true);
 
             DocumentBuilder db = dbf.newDocumentBuilder();
             db.setEntityResolver(new DTDEntityResolver());

@@ -18,37 +18,46 @@
 
 <div id="page-content">
 
-<h1>DWR (Direct Web Remoting)</h1>
+<h1>DWR - Direct Web Remoting</h1>
 
-<p>What DWR does for you:</p>
-<ul>
-  <li>
-    DWR is easy Ajax. XMLHttpRequest without any hassle.
-    It makes it simple to call Java code directly from Javascript.
-    It gets rid of almost all the boiler plate code between the web browser
-    and your Java code.
-    <br/>
-    So you don't need to create servlets and web.xml entries for all your code,
-    you don't need struts config files or JSF magic incantations, no writing
-    Actions or implementing some special interface.
-    Just you, DWR, Java, HTML and Javascript.
-  </li>
-  <li>
-    DWR gives you a jump-start to being able to create GMail type interactivity.
-    We are gradually moving to a web where more and more is done dynamically,
-    and love it or lothe it that means Javascript. DWR makes the Javascript
-    easier by giving you a set of examples of how to create dynamic sites.
-  </li>
-</ul>
+<p>
+  DWR is AJAX and XMLHttpRequest made easy.
+  It makes it simple to call Java on the server directly from Javascript in
+  the browser marshalling all the parameters and return values.
+</p>
+<p>
+  It gets rid of almost all the boiler plate code between the web browser
+  and your Java code.
+</p>
+<p>
+  DWR helps you in producing highly interactive web-sites by providing some
+  Javascript libraries to help with DHTML and by giving you a set of examples
+  to copy from.
+</p>
 
-<p>What DWR does not do for you:</p>
+<div style="text-align:center">
+  <img src="howitworks.gif"/>
+</div>
+
+<p>
+  DWR fits in with your current servlet framework, it does not take over.
+  It comes with Spring beans integration allowing you to remote your spring
+  beans to Javascript.
+</p>
+
+<h2>Examples</h2>
+<p>
+  We have 4 tutorials/demos of using DWR to create:
+</p>
 <ul>
-  <li>
-    It is not a servlet framework. If you are already using Struts, JSF,
-    Webwork or Spring, then DWR fits in just fine. It comes with Spring beans
-    integration allowing you to remote your spring beans to Javascript.
-  </li>
+  <li><a href="demo-text.html">Dynamic Text</a></li>
+  <li><a href="demo-list.html">Selection Lists</a></li>
+  <li><a href="demo-table.html">Live Tables</a></li>
+  <li><a href="demo-form.html">Live Forms</a></li>
 </ul>
+<p>
+  It is also work checking out 
+</p>
 
 <h2>Finding out more ...</h2>
 <p>
@@ -79,23 +88,12 @@
   <a href="config-js.html">documented</a>.
 </p>
 
-<h2>Worked Examples</h2>
-<p>
-  We have 4 working examples of using DWR to create:
-  <ul>
-    <li><a href="demo-text.html">Dynamic Text</a></li>
-    <li><a href="demo-list.html">Selection Lists</a></li>
-    <li><a href="demo-table.html">Live Tables</a></li>
-    <li><a href="demo-form.html">Live Forms</a></li>
-  </ul>
-</p>
-
 <h2>Unit Tests</h2>
 <p>
   If you are running these pages from your own server then you will also find
-  a working <a href="test.html">unit test page</a>. It won't work from my site
-  because I don't wish to stress my server too much with hundreds of people
-  running the same tests over and over again.
+  a working <a href="test.html">unit test page</a>. When run from this site you
+  will discover a much reduced set of tests to save stressing the server out too
+  much.
 </p>
 
 <h2>Related Projects</h2>

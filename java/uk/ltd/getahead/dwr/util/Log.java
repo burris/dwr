@@ -1,7 +1,5 @@
 package uk.ltd.getahead.dwr.util;
 
-import javax.servlet.http.HttpServlet;
-
 /**
  * A very quick and dirty logging implementation.
  * <code>java.util.logging</code> is out because we work with JDK 1.3 and we
@@ -19,32 +17,26 @@ public final class Log
     }
 
     /**
-     * Something has gone very badly wrong.
-     * Processing is likely to stop.
+     * The logging implementation
      */
-    public static final int LEVEL_FATAL = 5;
+    private static LoggingOutput output;
 
     /**
-     * Something has gone wrong with the current request.
-     * The user will notice that we've broken something.
+     * 
      */
-    public static final int LEVEL_ERROR = 4;
-
-    /**
-     * Something has gone wrong, but it could well be the users fault.
-     * No need to panic yet.
-     */
-    public static final int LEVEL_WARN = 3;
-
-    /**
-     * An event happened that we might need to keep track of.
-     */
-    public static final int LEVEL_INFO = 2;
-
-    /**
-     * Testing information.
-     */
-    public static final int LEVEL_DEBUG = 1;
+    static
+    {
+        try
+        {
+            output = new CommonsLoggingOutput();
+            output.info("Logging using commons-logging."); //$NON-NLS-1$
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            output = new ServletLoggingOutput();
+            output.info("Logging using servlet.log."); //$NON-NLS-1$
+        }
+    }
 
     /**
      * Log a debug message
@@ -52,7 +44,7 @@ public final class Log
      */
     public static void debug(String message)
     {
-        log(LEVEL_DEBUG, message, null);
+        output.debug(message);
     }
 
     /**
@@ -61,7 +53,7 @@ public final class Log
      */
     public static void info(String message)
     {
-        log(LEVEL_INFO, message, null);
+        output.info(message);
     }
 
     /**
@@ -70,7 +62,7 @@ public final class Log
      */
     public static void warn(String message)
     {
-        log(LEVEL_WARN, message, null);
+        output.warn(message);
     }
 
     /**
@@ -80,7 +72,7 @@ public final class Log
      */
     public static void warn(String message, Throwable th)
     {
-        log(LEVEL_WARN, message, th);
+        output.warn(message, th);
     }
 
     /**
@@ -89,7 +81,7 @@ public final class Log
      */
     public static void error(String message)
     {
-        log(LEVEL_ERROR, message, null);
+        output.error(message);
     }
 
     /**
@@ -99,7 +91,7 @@ public final class Log
      */
     public static void error(String message, Throwable th)
     {
-        log(LEVEL_ERROR, message, th);
+        output.error(message, th);
     }
 
     /**
@@ -108,7 +100,7 @@ public final class Log
      */
     public static void fatal(String message)
     {
-        log(LEVEL_FATAL, message, null);
+        output.fatal(message);
     }
 
     /**
@@ -118,119 +110,6 @@ public final class Log
      */
     public static void fatal(String message, Throwable th)
     {
-        log(LEVEL_FATAL, message, th);
+        output.fatal(message, th);
     }
-
-    /**
-     * Internal log implementation.
-     * @param loglevel The level to log at
-     * @param message The (optional) message to log
-     * @param th The (optional) exception
-     */
-    private static void log(int loglevel, String message, Throwable th)
-    {
-        if (loglevel >= level)
-        {
-            HttpServlet servlet = (HttpServlet) servlets.get();
-            if (servlet != null)
-            {
-                // Tomcat 4 NPEs is th is null
-                if (th == null)
-                {
-                    servlet.log(message);
-                }
-                else
-                {
-                    servlet.log(message, th);
-                }
-            }
-            else
-            {
-                if (message != null)
-                {
-                    System.out.println(message);
-                }
-    
-                if (th != null)
-                {
-                    th.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
-     * @return Returns the logging level.
-     */
-    public static int getLevel()
-    {
-        return level;
-    }
-
-    /**
-     * @param level The logging level to set.
-     */
-    public static void setLevel(int level)
-    {
-        Log.level = level;
-    }
-
-    /**
-     * String version of setLevel.
-     * @param logLevel One of FATAL, ERROR, WARN, INFO, DEBUG
-     */
-    public static void setLevel(String logLevel)
-    {
-        if (logLevel.equalsIgnoreCase("FATAL")) //$NON-NLS-1$
-        {
-            setLevel(LEVEL_FATAL);
-        }
-        else if (logLevel.equalsIgnoreCase("ERROR")) //$NON-NLS-1$
-        {
-            setLevel(LEVEL_ERROR);
-        }
-        else if (logLevel.equalsIgnoreCase("WARN")) //$NON-NLS-1$
-        {
-            setLevel(LEVEL_WARN);
-        }
-        else if (logLevel.equalsIgnoreCase("INFO")) //$NON-NLS-1$
-        {
-            setLevel(LEVEL_INFO);
-        }
-        else if (logLevel.equalsIgnoreCase("DEBUG")) //$NON-NLS-1$
-        {
-            setLevel(LEVEL_DEBUG);
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unknown log level: " + logLevel); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Associate a servlet with this thread for logging purposes.
-     * @param servlet The servlet to use for logging in this thread
-     */
-    public static void setExecutionContext(HttpServlet servlet)
-    {
-        servlets.set(servlet);
-    }
-
-    /**
-     * Remove the servlet from this thread for logging purposes
-     */
-    public static void unsetExecutionContext()
-    {
-        servlets.set(null);
-    }
-
-    /**
-     * The container for all known threads
-     */
-    private static final ThreadLocal servlets = new ThreadLocal();
-
-    /**
-     * What is the current debug level?
-     */
-    private static int level = LEVEL_WARN;
 }

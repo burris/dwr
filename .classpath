@@ -27,6 +27,10 @@
 		<attributes>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="web/WEB-INF/commons-logging.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="web/WEB-INF/lib/jakarta-oro-2.0.8.jar">
 		<attributes>
 		</attributes>
