@@ -685,7 +685,7 @@ public class DWRServlet extends HttpServlet
     /**
      * The default dwr.xml file path
      */
-    protected static final String DEFAULT_DWR_XML = "WEB-INF/dwr.xml"; //$NON-NLS-1$
+    protected static final String DEFAULT_DWR_XML = "/WEB-INF/dwr.xml"; //$NON-NLS-1$
 
     /**
      * We cache the script output for speed
