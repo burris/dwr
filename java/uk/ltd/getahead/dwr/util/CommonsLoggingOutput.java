@@ -75,5 +75,5 @@ public class CommonsLoggingOutput implements LoggingOutput
         log.fatal(message, th);
     }
 
-    private static Log log = LogFactory.getLog(Log.class);
+    private static Log log = LogFactory.getLog(uk.ltd.getahead.dwr.util.Log.class);
 }
