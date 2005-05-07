@@ -13,11 +13,12 @@ function DWRUtil()
  * work when browsers differ in rendering ability rather than the use of someFunc()
  * For internal use only.
  */
-DWRUtil._agent   = navigator.userAgent.toLowerCase();
-DWRUtil._isIE    = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.indexOf("opera") == -1));
+DWRUtil._agent = navigator.userAgent.toLowerCase();
+DWRUtil._isIE  = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.indexOf("opera") == -1));
 
 /**
  * Set the CSS display style to 'block'
+ * @param id The id of the element
  */
 DWRUtil.getElementById = function(id)
 {
@@ -36,6 +37,7 @@ DWRUtil.getElementById = function(id)
 
 /**
  * Set the CSS display style to 'block'
+ * @param id The id of the element
  */
 DWRUtil.showById = function(id)
 {
@@ -52,6 +54,7 @@ DWRUtil.showById = function(id)
 
 /**
  * Set the CSS display style to 'none'
+ * @param id The id of the element
  */
 DWRUtil.hideById = function(id)
 {
@@ -67,6 +70,7 @@ DWRUtil.hideById = function(id)
 
 /**
  * Toggle an elements visibility
+ * @param id The id of the element
  */
 DWRUtil.toggleDisplay = function(id)
 {
@@ -89,7 +93,27 @@ DWRUtil.toggleDisplay = function(id)
 }
 
 /**
+ * Enables you to react to return being pressed in an input
+ * For example <input type="text" onkeypressed="DWRUtil.onReturn(event, methodName)"/>
+ * @param event The event object for Netscape browsers
+ * @param action Method name to execute when return is pressed
+ */
+DWRUtil.onReturn = function(event, action)
+{
+    if (!event)
+    {
+        event = window.event;
+    }
+
+    if (event && event.keyCode && event.keyCode == 13)
+    {
+        action();
+    }
+}
+
+/**
  * Set the CSS class for an element
+ * @param id The id of the element
  */
 DWRUtil.setCSSClass = function(id, cssclass)
 {
@@ -110,6 +134,7 @@ DWRUtil.setCSSClass = function(id, cssclass)
  * Remove all the children of a given node.
  * Most useful for dynamic tables where you clearChildNodes() on the tbody
  * element.
+ * @param id The id of the element
  */
 DWRUtil.clearChildNodes = function(id)
 {
@@ -128,9 +153,30 @@ DWRUtil.clearChildNodes = function(id)
 
 /**
  * Remove all the options from a select list (specified by id) and replace with
- * elements in an array of objects. The value and text of each option are taken
- * from the valueprop and textprop parameters.
- * If both are left empty then the object itself will be used.
+ * elements in an array of objects.
+ * If valueprop and textprop are null then each member of the data array will
+ * be converted to a string and used as both the value and the text.
+ * (The text is what is displayed in an option and the value what is passed to
+ * the server and used in scripts)
+ * So without valueprop or textprop the pseudo code goes:
+ * <pre>
+ *   for (var i = 0; i < data.length; i++)
+ *     list.addOption( text = value = DWRUtil.toDescriptiveString(data[i]) );
+ * </pre>
+ * If only valueprop is specified then both the text and value will be set to
+ * the specified property. i.e.:
+ * <pre>
+ *   for (var i = 0; i < data.length; i++)
+ *     list.addOption( text = value = data[i][valueprop] );
+ * </pre>
+ * If both are specified, then value prop used used to set the value and
+ * textprop (unsurprisingly) is used to set the text.
+ * @param id A string containing the id of the list element
+ * @param data An array of data items to populate the list with
+ * @param valueprop (optional) If property name as an index into each data item
+ *     for use as an option value
+ * @param textprop (optional) If property name as an index into each data item
+ *     for use as the option text
  */
 DWRUtil.fillList = function(id, data, valueprop, textprop)
 {
@@ -195,30 +241,47 @@ DWRUtil.fillList = function(id, data, valueprop, textprop)
 }
 
 /**
- * TODO: This should probably be renamed fillTable()
  * Under the tbody (given by id) create a row for each element in the dataArray
- * and for that row create one cell for each function in the textFuncs array
+ * and for that row create one cell for each function in the cellFuncs array
  * by passing the rows object (from the dataArray) to the given function.
  * The return from the function is used to populate the cell.
+ * <p>The pseudo code looks something like this:
+ * <pre>
+ *   for (var i = 0; i < dataArray.length; i++)
+ *     for (var j = 0; j < cellFuncs.length; j++)
+ *       create cell from cellFuncs[j](dataArray[i])
+ * </pre>
+ * One slight modification to this is that any members of the cellFuncs array
+ * that are strings instead of functions, the strings are used as cell contents
+ * directly.
+ * <p>Note that this function uses instanceof to detect strings which may break
+ * on IE5 Mac. So we might need to rely on typeof == "string" alone. I'm not
+ * yet sure if this might be an issue.
+ * @param tbodyID The id of the tbody element
+ * @param dataArray Array containing one entry for each row in the updated table
+ * @param cellFuncs An array of functions (one per column) for extracting cell
+ *    data from the passed row data
  */
-DWRUtil.drawTable = function(tbodyID, dataArray, textFuncs)
+DWRUtil.drawTable = function(tbodyID, dataArray, cellFuncs)
 {
-    // assure bug-free redraw in Geck engine by
+    // assure bug-free redraw in Gecko engine by
     // letting window show cleared table
     if (navigator.product && navigator.product == "Gecko")
     {
-        setTimeout(function() { DWRUtil.drawTableInner(tbodyID, dataArray, textFuncs); }, 0);
+        setTimeout(function() { DWRUtil._drawTableInner(tbodyID, dataArray, cellFuncs); }, 0);
     }
     else
     {
-        DWRUtil.drawTableInner(tbodyID, dataArray, textFuncs);
+        DWRUtil._drawTableInner(tbodyID, dataArray, cellFuncs);
     }
 }
 
 /**
- * Internal function to help rendering tables
+ * Internal function to help rendering tables.
+ * @see DWRUtil.drawTable(tbodyID, dataArray, cellFuncs)
+ * @private
  */
-DWRUtil.drawTableInner = function(tbodyID, dataArray, textFuncs)
+DWRUtil._drawTableInner = function(tbodyID, dataArray, cellFuncs)
 {
     var frag = document.createDocumentFragment();
 
@@ -227,12 +290,12 @@ DWRUtil.drawTableInner = function(tbodyID, dataArray, textFuncs)
     {
         var tr = document.createElement("tr");
 
-        for (var j = 0; j < textFuncs.length; j++)
+        for (var j = 0; j < cellFuncs.length; j++)
         {
             var td = document.createElement("td");
             tr.appendChild(td);
 
-            var func = textFuncs[j];
+            var func = cellFuncs[j];
             if (typeof func == "string" || func instanceof String)
             {
                 var text = document.createTextNode(func);
@@ -263,6 +326,8 @@ DWRUtil.drawTableInner = function(tbodyID, dataArray, textFuncs)
 
 /**
  * Visually enable or diable an element.
+ * @param id The id of the element
+ * @param state Boolean true/false to set if the element should be enabled
  */
 DWRUtil.setEnabled = function(id, state)
 {
@@ -338,6 +403,7 @@ DWRUtil.isHTMLSelectElement = function(ele)
  * Set the value for the given id to the specified val.
  * This method works for selects (where the option with a matching value and
  * not text is selected), input elements (including textareas) divs and spans.
+ * @param id The id of the element
  */
 DWRUtil.setValue = function(id, val)
 {
@@ -392,6 +458,7 @@ DWRUtil.setValue = function(id, val)
     {
         switch (ele.type)
         {
+        case "checkbox":
         case "check-box":
         case "radio":
             ele.checked = (val == true);
@@ -429,6 +496,7 @@ DWRUtil.setValue = function(id, val)
  * The counterpart to setValue() - read the current value for a given element.
  * This method works for selects (where the option with a matching value and
  * not text is selected), input elements (including textareas) divs and spans.
+ * @param id The id of the element
  */
 DWRUtil.getValue = function(id)
 {
@@ -458,6 +526,7 @@ DWRUtil.getValue = function(id)
     {
         switch (ele.type)
         {
+        case "checkbox":
         case "check-box":
         case "radio":
             return ele.checked;
@@ -489,6 +558,7 @@ DWRUtil.getValue = function(id)
 /**
  * getText() is like getValue() with the except that it only works for selects
  * where it reads the text of an option and not it's value.
+ * @param id The id of the element
  */
 DWRUtil.getText = function(id)
 {
@@ -717,7 +787,7 @@ var hidePleaseWait = function()
 
 
 /**
- * Deprecated
+ * @deprecated
  */
 function showById(id)
 {
@@ -726,7 +796,7 @@ function showById(id)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function hideById(id)
 {
@@ -735,7 +805,7 @@ function hideById(id)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function toggleDisplay(id)
 {
@@ -744,7 +814,7 @@ function toggleDisplay(id)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function setCSSClass(id, cssclass)
 {
@@ -753,7 +823,7 @@ function setCSSClass(id, cssclass)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function clearChildNodes(id)
 {
@@ -762,7 +832,7 @@ function clearChildNodes(id)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function fillList(id, data, valueprop, textprop)
 {
@@ -771,16 +841,16 @@ function fillList(id, data, valueprop, textprop)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
-function drawTable(tbodyID, dataArray, textFuncs)
+function drawTable(tbodyID, dataArray, cellFuncs)
 {
     deprecated("drawTable");
-    DWRUtil.drawTable(tbodyID, dataArray, textFuncs);
+    DWRUtil.drawTable(tbodyID, dataArray, cellFuncs);
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function setEnabled(id, state)
 {
@@ -789,7 +859,7 @@ function setEnabled(id, state)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function isHTMLElement(ele)
 {
@@ -798,7 +868,7 @@ function isHTMLElement(ele)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function isHTMLInputElement(ele)
 {
@@ -807,7 +877,7 @@ function isHTMLInputElement(ele)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function isHTMLTextAreaElement(ele)
 {
@@ -816,7 +886,7 @@ function isHTMLTextAreaElement(ele)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function isHTMLSelectElement(ele)
 {
@@ -825,7 +895,7 @@ function isHTMLSelectElement(ele)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function setValue(id, val)
 {
@@ -834,7 +904,7 @@ function setValue(id, val)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function getValue(id)
 {
@@ -843,7 +913,7 @@ function getValue(id)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function getText(id)
 {
@@ -852,7 +922,7 @@ function getText(id)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function setValues(map)
 {
@@ -861,7 +931,7 @@ function setValues(map)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function callOnLoad(load)
 {
@@ -870,7 +940,7 @@ function callOnLoad(load)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function alternateRowColors()
 {
@@ -879,7 +949,7 @@ function alternateRowColors()
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function toDescriptiveString(object)
 {
@@ -888,7 +958,7 @@ function toDescriptiveString(object)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function detailedTypeOf(x)
 {
@@ -897,7 +967,7 @@ function detailedTypeOf(x)
 }
 
 /**
- * Deprecated
+ * @deprecated
  */
 function useLoadingMessage()
 {

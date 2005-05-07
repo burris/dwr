@@ -104,9 +104,12 @@ public class BeanConverter implements Converter
                     for (Iterator it = props.keySet().iterator(); it.hasNext();)
                     {
                         all.append(it.next());
-                        all.append(' ');
+                        if (it.hasNext())
+                        {
+                            all.append(',');
+                        }
                     }
-                    Log.warn("Setters exist for "  + all); //$NON-NLS-1$
+                    Log.warn("Setters exist for (" + all + ")"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 else
                 {

@@ -12,28 +12,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import uk.ltd.getahead.dwr.util.Log;
 import uk.ltd.getahead.dwr.util.SwallowingHttpServletResponse;
 
 /**
  * Class to enable us to access servlet parameters.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public final class ExecutionContext
+public class ExecutionContext
 {
     /**
      * Prevent instansiation outside of setExecutionContext()
-     * @param request The incoming http request
-     * @param response The outgoing http reply
-     * @param config The servlet configuration
-     * @param context The servlet context
+     * @param newRequest The incoming http request
+     * @param newResponse The outgoing http reply
+     * @param newConfig The servlet configuration
+     * @param newContext The servlet context
      * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext)
      */
-    private ExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context)
+    protected void init(HttpServletRequest newRequest, HttpServletResponse newResponse, ServletConfig newConfig, ServletContext newContext)
     {
-        this.request = request;
-        this.response = response;
-        this.config = config;
-        this.context = context;
+        this.request = newRequest;
+        this.response = newResponse;
+        this.config = newConfig;
+        this.context = newContext;
     }
 
     /**
@@ -173,13 +174,14 @@ public final class ExecutionContext
     private static final String KEY_ERROR = "error"; //$NON-NLS-1$
     private static final String VALUE_UNKNOWN = "unknown"; //$NON-NLS-1$
 
-    private final HttpServletRequest request;
-    private final HttpServletResponse response;
-    private final ServletConfig config;
-    private final ServletContext context;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private ServletConfig config;
+    private ServletContext context;
     private Properties props = null;
 
     private static ThreadLocal user = new ThreadLocal();
+    private static Class implementation = ExecutionContext.class;
 
     /**
      * This method will be removed in the next release
@@ -212,7 +214,16 @@ public final class ExecutionContext
      */
     protected static void setExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context)
     {
-        user.set(new ExecutionContext(request, response, config, context));
+        try
+        {
+            ExecutionContext ec = (ExecutionContext) implementation.newInstance();
+            ec.init(request, response, config, context);
+            user.set(ec);
+        }
+        catch (Exception ex)
+        {
+            Log.fatal("Failed to create an ExecutionContext", ex); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -223,5 +234,23 @@ public final class ExecutionContext
     protected static void unset()
     {
         user.set(null);
+    }
+
+    /**
+     * Alter the implementation of ExecutionContext to some child class
+     * @param implname The new implementation class name
+     * @throws IllegalAccessException If the given class can not be accessed
+     * @throws InstantiationException If the given class can not be instantiated
+     * @throws ClassNotFoundException If the given class can not be found
+     */
+    protected static void setImplementation(String implname) throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    {
+        ExecutionContext.implementation = Class.forName(implname);
+
+        // Check we can create one
+        ExecutionContext ec = (ExecutionContext) implementation.newInstance();
+
+        // Shut warnings up
+        ExecutionContext ignore = ec; ec = ignore;
     }
 }

@@ -55,6 +55,23 @@ public class DWRServlet extends HttpServlet
             ServletLoggingOutput.setLevel(logLevel);
         }
 
+        // Maybe we want to override the ExecutionContext
+        // This code is un-documented, and experimental. We'll keep it if it
+        // turns out to be useful.
+        String execCxName = config.getInitParameter(INIT_EXEC_CONTEXT);
+        if (execCxName != null)
+        {
+            try
+            {
+                ExecutionContext.setImplementation(execCxName);
+            }
+            catch (Exception ex)
+            {
+                Log.fatal("Invalid executionContext parameter", ex); //$NON-NLS-1$
+                throw new ServletException(Messages.getString("DWRServlet.ExecutionContextInit", execCxName, ex)); //$NON-NLS-1$
+            }
+        }
+
         // Setup the creator manager
         String creatorMgrName = config.getInitParameter(INIT_CREATOR);
         if (creatorMgrName == null)
@@ -660,6 +677,8 @@ public class DWRServlet extends HttpServlet
     protected static final String INIT_DEBUG = "debug"; //$NON-NLS-1$
 
     protected static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
+
+    protected static final String INIT_EXEC_CONTEXT = "executionContext"; //$NON-NLS-1$
 
     protected static final String INIT_CONVERTER = "converterManager"; //$NON-NLS-1$
 

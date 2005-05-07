@@ -55,7 +55,9 @@ DWREngine._paramCount = 0;
  * be fooled into thinking it is EL. Check the DWRServlet source for the hack.
  * Maybe we will do something more EL like in the future.
  * If you can't see the ${...} then you are probably looking at the processed
- * source
+ * source.
+ * Brian Dole used '/dwr/exec;jsessionid=' + u.sid;
+ * in order to make DWR work without cookies. I'm nor sure what u is or how this helps
  * @private
  */
 DWREngine._urlBase = '${request.contextPath}${request.servletPath}/exec';
@@ -142,7 +144,8 @@ DWREngine.handleResponse = function(id, reply)
         alert("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
         return;
     }
-    DWREngine._calls[id] = undefined;
+
+    DWREngine._calls[id] = null;
 
     if (call.iframe != null)
     {
@@ -186,7 +189,7 @@ DWREngine.handleError = function(id, reason)
     var call = DWREngine._calls[id];
     if (call != null)
     {
-        DWREngine._calls[id] = undefined;
+        DWREngine._calls[id] = null;
 
         if (call.iframe != null)
         {
@@ -211,6 +214,11 @@ DWREngine.handleError = function(id, reason)
  * Send a request to the server
  * This method is called by Javascript that is emitted by server
  * @private
+ * @param func The callback function to which any returned data should be passed
+ *             if this is null, any returned data will be ignored
+ * @param classname The class to execute
+ * @param methodname The method on said class to execute
+ * @param vararg_params The parameters to pass to the above class
  */
 DWREngine.execute = function(func, classname, methodname, vararg_params)
 {
@@ -243,10 +251,15 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
     call.map.classname = classname;
     call.map.methodname = methodname;
     call.map.id = call.id;
+
+    // Serialize the parameters into call.map
+    DWREngine._addSerializeFunctions();
+    var context = new Array();
     for (var i=3; i<arguments.length; i++)
     {
-        DWREngine._marshall(call.map, new Array(), arguments[i], "param" + (i-3));
+        DWREngine._serializeAll(call.map, context, arguments[i], "param" + (i-3));
     }
+    DWREngine._removeSerializeFunctions();
 
     // Get setup for XMLHttpRequest if possible
     if (DWREngine._method == DWREngine.XMLHttpRequest)
@@ -255,7 +268,8 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
         {
             call.req = new XMLHttpRequest();
         }
-        else if (window.ActiveXObject)
+        // IE5 for the mac claims to support window.ActiveXObject, but throws an error when it's used
+        else if (window.ActiveXObject && !(navigator.userAgent.indexOf ('Mac') >= 0 && navigator.userAgent.indexOf ("MSIE") >= 0))
         {
             // I've seen code that asks for the following:
             // call.req = new ActiveXObject("Msxml2.XMLHTTP");
@@ -267,13 +281,14 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
         }
     }
 
+    var query = "";
+    var prop;
     if (call.req)
     {
         call.map.xml = true;
 
         // Proceed using XMLHttpRequest
-        var query = "";
-        for (var prop in call.map)
+        for (prop in call.map)
         {
             query += prop + "=" + call.map[prop] + "\n";
         }
@@ -289,8 +304,7 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
         call.map.xml = false;
 
         // Proceed using iframe
-        var query = "";
-        for (var prop in call.map)
+        for (prop in call.map)
         {
             var lookup = call.map[prop];
             query += lookup.name + "=" + lookup.convert + "&";
@@ -308,10 +322,50 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
 }
 
 /**
+ *
+ */
+DWREngine._addSerializeFunctions = function()
+{
+    Object.prototype.dwrSerialize = DWREngine._serializeObject;
+    Array.prototype.dwrSerialize = DWREngine._serializeArray;
+    Boolean.prototype.dwrSerialize = DWREngine._serializeBoolean;
+    Number.prototype.dwrSerialize = DWREngine._serializeNumber;
+    String.prototype.dwrSerialize = DWREngine._serializeString;
+    Date.prototype.dwrSerialize = DWREngine._serializeDate;
+}
+
+/**
+ *
+ */
+DWREngine._removeSerializeFunctions = function()
+{
+    delete Object.prototype.dwrSerialize;
+    delete Array.prototype.dwrSerialize;
+    delete Boolean.prototype.dwrSerialize;
+    delete Number.prototype.dwrSerialize;
+    delete String.prototype.dwrSerialize;
+    delete Date.prototype.dwrSerialize;
+}
+
+/**
  * Marshall a data item
  * @private
+ * @param output A map of variables to how they have been marshalled
+ * @param referto An array of already marshalled variables to prevent recurrsion
+ * @param data The data to be marshalled
+ * @param name The name of the data being marshalled
  */
-DWREngine._marshall = function(output, referto, data, name)
+DWREngine._serializeAll = function(output, referto, data, name)
+{
+    DWREngine._serializeAll(output, referto, data, name)
+}
+
+/**
+ * Marshall a data item of unknown type
+ * @private
+ * @see DWREngine._serializeAll()
+ */
+DWREngine._serializeAll = function(output, referto, data, name)
 {
     if (data == null)
     {
@@ -334,98 +388,173 @@ DWREngine._marshall = function(output, referto, data, name)
         break;
 
     case "object":
-        if (data instanceof Boolean)
+        if (data.dwrSerialize)
         {
-            output[name] = "Boolean:" + data;
-        }
-        else if (data instanceof Number)
-        {
-            output[name] = "Number:" + data;
-        }
-        else if (data instanceof String)
-        {
-            output[name] = "String:" + encodeURIComponent(data);
-        }
-        else if (data instanceof Date)
-        {
-            output[name] = "Date:[ " + data.getUTCFullYear() + ", " + data.getUTCMonth() + ", " + data.getUTCDate() + ", " + data.getUTCHours() + ", " + data.getUTCMinutes() + ", " + data.getUTCSeconds() + ", " + data.getUTCMilliseconds() + "]";
+            output[name] = data.dwrSerialize(output, referto, data, name);
         }
         else
         {
-            // This is the beginning of the types that can recurse so we need to
-            // check that we've not marshalled this object before.
-            // We'd like to do:
-            //   var lookup = referto[data];
-            // However hashmaps in javascript appear to use the hash values of
-            // the *string* versions of the objects used as keys so all objects
-            // count as the same thing.
-            // So we need to have referto as an array and go through it
-            // sequentially checking for equality with data
-            var lookup;
-            for (var i = 0; i < referto.length; i++)
-            {
-                if (referto[i].data === data)
-                {
-                    lookup = referto[i];
-                    break;
-                }
-            }
-
-            if (lookup != null)
-            {
-                output[name] = "reference:" + lookup.name;
-                return;
-            }
-
-            referto.push({ data:data, name:name });
-
-            if (data instanceof Array)
-            {
-                var reply = "Array:["
-                for (var i = 0; i < data.length; i++)
-                {
-                    if (i != 0)
-                    {
-                        reply += ",";
-                    }
-
-                    DWREngine._paramCount++;
-                    var childName = "c" + DWREngine._paramCount;
-                    DWREngine._marshall(output, referto, data[i], childName);
-                    reply += "reference:";
-                    reply += childName;
-                }
-                reply += "]";
-
-                output[name] = reply;
-            }
-            else
-            {
-                // treat anything else as an associative array (map)
-                var reply = "Object:{"
-                for (var element in data)
-                {
-                    DWREngine._paramCount++;
-                    var childName = "c" + DWREngine._paramCount;
-                    DWREngine._marshall(output, referto, data[element], childName);
-
-                    reply += element;
-                    reply += ":reference:";
-                    reply += childName;
-                    reply += ", ";
-                }
-                reply = reply.substring(0, reply.length - 2);
-                reply += "}";
-
-                output[name] = reply;
-            }
+            alert("Object without dwrSerialize: " + typeof data + ", attempting default converter.");
+            output[name] = "default:" + data;
         }
         break;
 
+    case "function":
+        // We just ignore functions.
+        break;
+
     default:
-        alert("Unexpected type: " + typeof data + ", attempting default converter");
+        alert("Unexpected type: " + typeof data + ", attempting default converter.");
         output[name] = "default:" + data;
+        break;
     }
+}
+
+/**
+ * This is for the types that can recurse so we need to check that we've not
+ * marshalled this object before.
+ * We'd like to do:
+ *   var lookup = referto[data];
+ * However hashmaps in Javascript appear to use the hash values of the *string*
+ * versions of the objects used as keys so all objects count as the same thing.
+ * So we need to have referto as an array and go through it sequentially
+ * checking for equality with data
+ * @para
+ */
+DWREngine._lookup = function(referto, data, name)
+{
+    var lookup;
+    for (var i = 0; i < referto.length; i++)
+    {
+        if (referto[i].data === data)
+        {
+            lookup = referto[i];
+            break;
+        }
+    }
+
+    if (lookup != null)
+    {
+        return "reference:" + lookup.name;
+    }
+
+    referto.push({ data:data, name:name });
+    return null;
+}
+
+/**
+ * Marshall an object
+ * @private
+ * @see DWREngine._serializeAll()
+ */
+DWREngine._serializeObject = function(output, referto, data, name)
+{
+    var ref = DWREngine._lookup(referto, this, name);
+    if (ref != null)
+    {
+        return ref;
+    }
+
+    // treat objects as an associative arrays
+    var reply = "Object:{"
+    var element;
+    for (element in this)
+    {
+        if (element != "dwrSerialize")
+        {
+            DWREngine._paramCount++;
+            var childName = "c" + DWREngine._paramCount;
+            DWREngine._serializeAll(output, referto, this[element], childName);
+
+            reply += element;
+            reply += ":reference:";
+            reply += childName;
+            reply += ", ";
+        }
+    }
+    reply = reply.substring(0, reply.length - 2);
+    reply += "}";
+
+    return reply;
+}
+
+/**
+ * Marshall an array
+ * @private
+ * @see DWREngine._serializeAll()
+ */
+DWREngine._serializeArray = function(output, referto, data, name)
+{
+    var ref = DWREngine._lookup(referto, this, name);
+    if (ref != null)
+    {
+        return ref;
+    }
+
+    var reply = "Array:["
+    for (var i = 0; i < this.length; i++)
+    {
+        if (i != 0)
+        {
+            reply += ",";
+        }
+
+        DWREngine._paramCount++;
+        var childName = "c" + DWREngine._paramCount;
+        DWREngine._serializeAll(output, referto, this[i], childName);
+        reply += "reference:";
+        reply += childName;
+    }
+    reply += "]";
+
+    return reply;
+}
+
+/**
+ * Marshall a Boolean
+ * @private
+ * @see DWREngine._serializeAll()
+ */
+DWREngine._serializeBoolean = function(output, referto, data, name)
+{
+    return "Boolean:" + this;
+}
+
+/**
+ * Marshall a Number
+ * @private
+ * @see DWREngine._serializeAll()
+ */
+DWREngine._serializeNumber = function(output, referto, data, name)
+{
+    return "Number:" + this;
+}
+
+/**
+ * Marshall a String
+ * @private
+ * @see DWREngine._serializeAll()
+ */
+DWREngine._serializeString = function(output, referto, data, name)
+{
+    return "String:" + encodeURIComponent(this);
+}
+
+/**
+ * Marshall a Date
+ * @private
+ * @see DWREngine._serializeAll()
+ */
+DWREngine._serializeDate = function(output, referto, data, name)
+{
+    return "Date:[ " +
+        this.getUTCFullYear() + ", " +
+        this.getUTCMonth() + ", " +
+        this.getUTCDate() + ", " +
+        this.getUTCHours() + ", " +
+        this.getUTCMinutes() + ", " +
+        this.getUTCSeconds() + ", " +
+        this.getUTCMilliseconds() + "]";
 }
 
 /**
@@ -436,27 +565,20 @@ DWREngine._stateChange = function(call)
 {
     if (call.req.readyState == 4)
     {
-        if (call.req.status)
+        try
         {
-            try
+            if (call.req.status && call.req.status == 200)
             {
-                if (call.req.status == 200)
-                {
-                    eval(call.req.responseText);
-                }
-                else
-                {
-                    DWREngine.handleError(call.id, call.req.responseText);
-                }
+                eval(call.req.responseText);
             }
-            catch (ex)
+            else
             {
-                DWREngine.handleError(call.id, ex);
+                DWREngine.handleError(call.id, call.req.responseText);
             }
         }
-        else
+        catch (ex)
         {
-            DWREngine.handleError(call.id, "No response from remote server.");
+            DWREngine.handleError(call.id, ex);
         }
     }
 }

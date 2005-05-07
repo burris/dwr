@@ -100,7 +100,27 @@ public final class ExecuteQuery
      */
     private Map parseGet(HttpServletRequest req)
     {
-        return req.getParameterMap();
+        Map paramMap = req.getParameterMap();
+
+        Map convertedMap = new HashMap();
+        for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            Object value = entry.getValue();
+            if (value != null)
+            {
+                if (value instanceof String[])
+                {
+                    convertedMap.put(entry.getKey(), ((String[]) value)[0]);
+                }
+                else
+                {
+                    convertedMap.put(entry.getKey(), value);
+                }
+            }
+        }
+
+        return convertedMap;
     }
 
     /**
