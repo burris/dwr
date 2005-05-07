@@ -293,8 +293,8 @@ public class DWRServlet extends HttpServlet
         out.println("<h2>Methods For: " + scriptname + " (" + creator.getType().getName() + ")</h2>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         out.println("<p>To use this class in your javascript you will need the following script includes:</p>"); //$NON-NLS-1$
         out.println("<pre>"); //$NON-NLS-1$
-        out.println("  &lt;script type='text/javascript' src='<a href='" + interfaceURL + "'>" + interfaceURL + "</a>'>&lt;/script>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        out.println("  &lt;script type='text/javascript' src='<a href='" + engineURL + "'>" + engineURL + "</a>'>&lt;/script>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        out.println("  &lt;script type='text/javascript' src='<a href='" + interfaceURL + "'>" + interfaceURL + "</a>'&gt;&lt;/script&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        out.println("  &lt;script type='text/javascript' src='<a href='" + engineURL + "'>" + engineURL + "</a>'&gt;&lt;/script&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         out.println("</pre>"); //$NON-NLS-1$
 
         out.println("<p>Replies from DWR are shown with a yellow background.<br/>"); //$NON-NLS-1$
