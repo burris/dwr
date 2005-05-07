@@ -2,7 +2,6 @@ package uk.ltd.getahead.dwr;
 
 import java.util.Map;
 
-
 /**
  * A base class for all AllowedClasses
  * @author Joe Walker [joe at getahead dot ltd dot uk]

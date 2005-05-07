@@ -2,6 +2,8 @@ package uk.ltd.getahead.dwr;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -10,6 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -204,12 +207,65 @@ public final class Configuration
 
         try
         {
-            creatorManager.addCreator(type, javascript, allower);
+            Map params = createParameterMap(allower);
+            creatorManager.addCreator(type, javascript, params);
         }
         catch (Exception ex)
         {
             Log.error("Failed to add creator: type=" + type + ", javascript=" + javascript, ex); //$NON-NLS-1$ //$NON-NLS-2$
         }
+    }
+
+    /**
+     * Create a parameter map from nested <param name="foo" value="blah"/>
+     * elements
+     * @param parent The parent element
+     * @return A map of parameters
+     */
+    private static Map createParameterMap(Element parent)
+    {
+        Map params = new HashMap();
+
+        // Go through the attributes in the allower element, adding to the param map
+        NamedNodeMap attrs = parent.getAttributes();
+        for (int i = 0; i < attrs.getLength(); i++)
+        {
+            Node node = attrs.item(i);
+            String name = node.getNodeName();
+            String value = node.getNodeValue();
+            params.put(name, value);
+        }
+
+        // Go through the param elements in the allower element, adding to the param map
+        NodeList locNodes = parent.getElementsByTagName("param"); //$NON-NLS-1$
+        for (int i = 0; i < locNodes.getLength(); i++)
+        {
+            // Since this comes from getElementsByTagName we can assume that
+            // all the nodes are elements.
+            Element element = (Element) locNodes.item(i);
+
+            String name = element.getAttribute("name"); //$NON-NLS-1$
+            if (name != null)
+            {
+                String value = element.getAttribute("value"); //$NON-NLS-1$
+                if (value == null || value.length() == 0)
+                {
+                    StringBuffer buffer = new StringBuffer();
+                    NodeList textNodes = element.getChildNodes();
+
+                    for (int j = 0; j < textNodes.getLength(); j++)
+                    {
+                        buffer.append(textNodes.item(j).getNodeValue());
+                    }
+
+                    value = buffer.toString();
+                }
+
+                params.put(name, value);
+            }
+        }
+
+        return params;
     }
 
     /**

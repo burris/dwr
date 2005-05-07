@@ -8,6 +8,7 @@
     <creator id="session" class="uk.ltd.getahead.dwr.create.SessionCreator"/>
     <creator id="spring" class="uk.ltd.getahead.dwr.create.SpringCreator"/>
     <creator id="static" class="uk.ltd.getahead.dwr.create.StaticCreator"/>
+    <creator id="script" class="uk.ltd.getahead.dwr.create.ScriptedCreator"/>
     <converter id="null" class="uk.ltd.getahead.dwr.convert.NullConverter"/>
     <converter id="primitive" class="uk.ltd.getahead.dwr.convert.PrimitiveConverter"/>
     <converter id="bignumber" class="uk.ltd.getahead.dwr.convert.BigNumberConverter"/>

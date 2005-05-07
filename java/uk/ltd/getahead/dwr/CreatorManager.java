@@ -1,8 +1,7 @@
 package uk.ltd.getahead.dwr;
 
 import java.util.Collection;
-
-import org.w3c.dom.Element;
+import java.util.Map;
 
 /**
  * A class to manage the types of creators and the instansiated creators.
@@ -35,12 +34,12 @@ public interface CreatorManager
      * Add a new creator
      * @param type The class to use as a creator
      * @param javascript The name for it in Javascript
-     * @param allower The DOM element in case we need more info
+     * @param params The extra parameters to allow the creator to configure itself
      * @throws InstantiationException If reflection based creation fails
      * @throws IllegalAccessException If reflection based creation fails
      * @throws IllegalArgumentException If we have a duplicate name
      */
-    public void addCreator(String type, String javascript, Element allower) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
+    public void addCreator(String type, String javascript, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
 
     /**
      * Get a list of the javascript names of the allowed creators.

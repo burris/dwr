@@ -81,8 +81,8 @@ Some elements (currently only create although there is no hard reason why
 convert elements should not be the same) need customization in ways that we
 can't predict now, and this seems like the only way to do it.
 -->
-<!ELEMENT param EMPTY>
+<!ELEMENT param (#PCDATA)>
 <!ATTLIST param
     name CDATA #REQUIRED
-    value CDATA #REQUIRED
+    value CDATA #IMPLIED
 >
