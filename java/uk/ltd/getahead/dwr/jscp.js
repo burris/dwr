@@ -45,14 +45,10 @@ JSCP._insertReceive = function(id, req)
         {
             try
             {
-                if (req.status == 200)
-                {
-                    DWRUtil.setValue(id, req.responseText);
-                }
-                else
-                {
-                    alert(req.responseText);
-                }
+                // We're not checking req.status here.
+                // We used to check for 200, but sometimes we got a 304 instead
+                // and it was never clear that an alert was better anyway.
+                DWRUtil.setValue(id, req.responseText);
             }
             catch (ex)
             {
