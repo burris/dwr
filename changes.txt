@@ -1,6 +1,12 @@
 
 Changes for Version 0.6
 -----------------------
+Better documentation (Joe Walker)
+Better error messages (Joe Walker)
+New ScriptedCreator (Joe Walker)
+Wider support for browsers (Brian Doyle, Joe Walker)
+Performance fixed (Benjamin Francioni, Joe Walker)
+Fix to support Jetty (Mark Murphy)
 
 Changes for Version 0.5
 -----------------------

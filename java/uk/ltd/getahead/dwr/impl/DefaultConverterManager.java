@@ -1,7 +1,6 @@
 package uk.ltd.getahead.dwr.impl;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import uk.ltd.getahead.dwr.ConversionException;
@@ -12,7 +11,6 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
-import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * A class to manage the converter types and the instansiated class name matches.
@@ -41,7 +39,7 @@ public class DefaultConverterManager implements ConverterManager
         Class clazz = (Class) converterTypes.get(type);
         if (clazz == null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultConverterManager.Converterunknown", type)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultConverterManager.ConverterUnknown", type)); //$NON-NLS-1$
         }
 
         Converter converter = (Converter) clazz.newInstance();
@@ -159,31 +157,19 @@ public class DefaultConverterManager implements ConverterManager
      */
     private Converter getConverter(Class paramType)
     {
-        String lookup = paramType.getName();
-
-        // We first check for exact matches using instanceof
-        for (Iterator it = converters.keySet().iterator(); it.hasNext();)
+        // Can we find a converter assignable to paramType in the HashMap?
+        Converter converter = getConverterAssignableFrom(paramType);
+        if (converter != null)
         {
-            String name = (String) it.next();
-            try
-            {
-                Class clazz = Class.forName(name);
-
-                if (LocalUtil.isEquivalent(clazz, paramType) || clazz.isAssignableFrom(paramType))
-                {
-                    return (Converter) converters.get(name);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Do nothing, having * in the classname is legitimate
-            }
+            return converter;
         }
+
+        String lookup = paramType.getName();
 
         while (true)
         {
             // Can we find a converter using wildcards?
-            Converter converter = (Converter) converters.get(lookup + ".*"); //$NON-NLS-1$
+            converter = (Converter) converters.get(lookup + ".*"); //$NON-NLS-1$
             if (converter != null)
             {
                 return converter;
@@ -217,10 +203,53 @@ public class DefaultConverterManager implements ConverterManager
                     break;
                 }
             }
+
             lookup = lookup.substring(0, lastdot);
         }
 
         return null;
+    }
+
+    /**
+     * @param paramType The type to find a converter for
+     * @return The converter assignable for the given type, or null if one can't be found
+     */
+    private Converter getConverterAssignableFrom(Class paramType)
+    {
+        if (paramType == null)
+        {
+            return null;
+        }
+
+        String lookup = paramType.getName();
+
+        // Can we find the converter for paramType in the converters HashMap?
+        Converter converter = (Converter) converters.get(lookup);
+        if (converter != null)
+        {
+            return converter;
+        }
+
+        // Lookup all of the interfaces of this class for a match
+        Class[] interfaces = paramType.getInterfaces();
+        for (int i = 0; i < interfaces.length; i++)
+        {
+            converter = getConverterAssignableFrom(interfaces[i]);
+            if (converter != null)
+            {
+                converters.put(lookup, converter);
+                return converter;
+            }
+        }
+
+        // Let's search it in paramType superClass
+        converter = getConverterAssignableFrom(paramType.getSuperclass());
+        if (converter != null)
+        {
+            converters.put(lookup, converter);
+        }
+
+        return converter;
     }
 
     /**
