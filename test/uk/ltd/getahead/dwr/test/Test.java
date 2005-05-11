@@ -2,7 +2,10 @@ package uk.ltd.getahead.dwr.test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.HashSet;
 import java.util.List;
@@ -274,6 +277,33 @@ public class Test
      * @return string
      */
     public TestBean testBeanParam(TestBean test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public Map stringStringMapParam(Map test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public Map stringStringHashMapParam(HashMap test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public Map stringStringTreeMapParam(TreeMap test)
     {
         return test;
     }

@@ -61,14 +61,14 @@ public class ArrayConverter implements Converter
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
             inctx.addConverted(iv, array);
-            final InboundContext key = iv.getLookup();
+            InboundContext incx = iv.getLookup();
 
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
                 String[] split = ExecuteQuery.splitInbound(token);
 
-                InboundVariable nested = new InboundVariable(key, split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
+                InboundVariable nested = new InboundVariable(incx, split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
                 Object output = converterManager.convertInbound(componentType, nested, inctx);
                 Array.set(array, i, output);
             }

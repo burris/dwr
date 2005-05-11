@@ -10,6 +10,7 @@ import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.ExecuteQuery;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
@@ -73,9 +74,12 @@ public class MapConverter implements Converter
                 map = new HashMap();
             }
 
+            Class subtype = String.class;
+
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
             inctx.addConverted(iv, map);
+            InboundContext incx = iv.getLookup();
 
             // Loop through the property declarations
             StringTokenizer st = new StringTokenizer(value, ","); //$NON-NLS-1$
@@ -97,7 +101,11 @@ public class MapConverter implements Converter
                 String key = token.substring(0, colonpos).trim();
                 String val = token.substring(colonpos + 1).trim();
 
-                map.put(key, val);
+                String[] split = ExecuteQuery.splitInbound(val);
+                InboundVariable nested = new InboundVariable(incx, split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
+                Object output = config.convertInbound(subtype, nested, inctx);
+
+                map.put(key, output);
             }
 
             return map;
@@ -136,9 +144,9 @@ public class MapConverter implements Converter
 
             // And now declare our stuff
             buffer.append(varname);
-            buffer.append('.');
+            buffer.append("['"); //$NON-NLS-1$
             buffer.append(key);
-            buffer.append(" = "); //$NON-NLS-1$
+            buffer.append("'] = "); //$NON-NLS-1$
             buffer.append(nested.getAssignCode());
             buffer.append(';');
         }

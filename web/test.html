@@ -288,14 +288,23 @@
   tests.push({ code:"Test.stringArrayListParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]});
   tests.push({ code:"Test.stringListParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]});
 
+  var map1 = { a:'a', b:'b', c:'c' };
+  var map2 = { };
+  map2['a.a'] = "a.a";
+  map2['b!'] = "b!";
+  map2['c$'] = "c$";
+
+  tests.push({ code:"Test.stringStringMapParam(testResults, map1)", expected:map1 });
+  tests.push({ code:"Test.stringStringMapParam(testResults, map2)", expected:map2 });
+
   function startTest()
   {
-      failures = document.getElementById("failures");
-      progress = document.getElementById("progress");
-      failreport = document.getElementById("failreport");
-      execreport = document.getElementById("execreport");
+      failures = DWRUtil.getElementById("failures");
+      progress = DWRUtil.getElementById("progress");
+      failreport = DWRUtil.getElementById("failreport");
+      execreport = DWRUtil.getElementById("execreport");
 
-      document.getElementById("start").disabled = true;
+      DWRUtil.getElementById("start").disabled = true;
 
       DWREngine.setErrorHandler(catchFailure);
 
@@ -315,12 +324,12 @@
   {
       if (index >= tests.length)
       {
-          document.getElementById("start").disabled = false;
+          DWRUtil.getElementById("start").disabled = false;
 
           var mslen = new Date().getTime() - starttime.getTime();
           var tps = Math.round((10000 * tests.length) / mslen) / 10;
           var totals = "Tests executed in " + (mslen / 1000) + " seconds at an average of " + tps + " tests per second.";
-          document.getElementById("totals").innerHTML = totals;
+          DWRUtil.getElementById("totals").innerHTML = totals;
 
           return;
       }
@@ -334,7 +343,7 @@
       // which test have we just run?
       var test = tests[index];
 
-      //var progress = document.getElementById("progress");
+      //var progress = DWRUtil.getElementById("progress");
 
       // TODO: maybe make a separate function for testing equality
       var passed = testEquals(data, test.expected, 0);
@@ -392,30 +401,6 @@
           return true;
       }
 
-      if (expected instanceof Array)
-      {
-          if (!(actual instanceof Array))
-          {
-              return "expected array, actual not an array";
-          }
-
-          if (actual.length != expected.length)
-          {
-              return "expected array length = " + expected.length + ", actual array length = " + actual.length;
-          }
-
-          for (var i = 0; i < actual.length; i++)
-          {
-              var nest = testEquals(actual[i], expected[i], depth + 1);
-              if (typeof nest != "boolean" || !nest)
-              {
-                  return "element " + i + " does not match: " + nest;
-              }
-          }
-
-          return true;
-      }
-
       if (expected instanceof Object)
       {
           if (!(actual instanceof Object))
@@ -453,6 +438,30 @@
       if (actual != expected)
       {
           return "expected = " + expected + ", actual = " + actual;
+      }
+
+      if (expected instanceof Array)
+      {
+          if (!(actual instanceof Array))
+          {
+              return "expected array, actual not an array";
+          }
+
+          if (actual.length != expected.length)
+          {
+              return "expected array length = " + expected.length + ", actual array length = " + actual.length;
+          }
+
+          for (var i = 0; i < actual.length; i++)
+          {
+              var nest = testEquals(actual[i], expected[i], depth + 1);
+              if (typeof nest != "boolean" || !nest)
+              {
+                  return "element " + i + " does not match: " + nest;
+              }
+          }
+
+          return true;
       }
 
       return true;
