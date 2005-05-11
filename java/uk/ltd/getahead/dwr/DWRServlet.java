@@ -435,16 +435,16 @@ public class DWRServlet extends HttpServlet
      */
     protected void doInterface(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        String pathinfo = req.getPathInfo();
-        pathinfo = LocalUtil.replace(pathinfo, PATH_INTERFACE, BLANK);
-        pathinfo = LocalUtil.replace(pathinfo, EXTENSION_JS, BLANK);
-        Creator creator = creatorManager.getCreator(pathinfo);
+        String scriptname = req.getPathInfo();
+        scriptname = LocalUtil.replace(scriptname, PATH_INTERFACE, BLANK);
+        scriptname = LocalUtil.replace(scriptname, EXTENSION_JS, BLANK);
+        Creator creator = creatorManager.getCreator(scriptname);
 
         //resp.setContentType("text/javascript");
         PrintWriter out = resp.getWriter();
         out.println();
 
-        out.println("function " + pathinfo + "() { }"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("function " + scriptname + "() { }"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println();
 
         Method[] methods = creator.getType().getMethods();
@@ -468,7 +468,7 @@ public class DWRServlet extends HttpServlet
             {
                 out.print("\n"); //$NON-NLS-1$
             }
-            out.print(pathinfo + "." + method.getName() + " = function(callback"); //$NON-NLS-1$ //$NON-NLS-2$
+            out.print(scriptname + "." + method.getName() + " = function(callback"); //$NON-NLS-1$ //$NON-NLS-2$
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
@@ -477,7 +477,9 @@ public class DWRServlet extends HttpServlet
             out.println(")"); //$NON-NLS-1$
             out.println("{"); //$NON-NLS-1$
 
-            out.print("    DWREngine.execute(callback, '" + pathinfo + "', '" + method.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String path = req.getContextPath() + req.getServletPath();
+
+            out.print("    DWREngine._execute(callback, '" + path + "', '" + scriptname + "', '" + method.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             for (int j = 0; j < paramTypes.length; j++)
             {
                 out.print(", p" + j); //$NON-NLS-1$
@@ -571,7 +573,7 @@ public class DWRServlet extends HttpServlet
                 PrintWriter out = resp.getWriter();
                 out.println(ss.getInitCode());
                 out.println("var reply = " + ss.getAssignCode() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
-                out.println("DWREngine.handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("DWREngine._handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
                 out.flush();
             }
             else
@@ -582,7 +584,7 @@ public class DWRServlet extends HttpServlet
                 out.println("<script type='text/javascript'>"); //$NON-NLS-1$
                 out.println(ss.getInitCode());
                 out.println("var reply = " + ss.getAssignCode() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
-                out.println("window.parent.DWREngine.handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("window.parent.DWREngine._handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
                 out.println("</script>"); //$NON-NLS-1$
                 out.flush();
             }
@@ -606,7 +608,7 @@ public class DWRServlet extends HttpServlet
                     resp.setContentType(MIME_XML);
 
                     PrintWriter out = resp.getWriter();
-                    out.println("DWREngine.handleError(\"" + eq.getId() + "\", \"" + output + "\");"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    out.println("DWREngine._handleError(\"" + eq.getId() + "\", \"" + output + "\");"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     out.flush();
                 }
                 else
@@ -615,7 +617,7 @@ public class DWRServlet extends HttpServlet
 
                     PrintWriter out = resp.getWriter();
                     out.println("<script type='text/javascript'>"); //$NON-NLS-1$
-                    out.println("window.parent.DWREngine.handleError(\"" + eq.getId() + "\", '" + output + "')"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    out.println("window.parent.DWREngine._handleError(\"" + eq.getId() + "\", '" + output + "')"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     out.println("</script>"); //$NON-NLS-1$
                     out.flush();
                 }

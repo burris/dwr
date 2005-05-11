@@ -75,6 +75,10 @@ public class ArrayConverter implements Converter
 
             return array;
         }
+        catch (ConversionException ex)
+        {
+            throw ex;
+        }
         catch (Exception ex)
         {
             throw new ConversionException(ex);

@@ -49,20 +49,6 @@ DWREngine._method = DWREngine.XMLHttpRequest;
 DWREngine._paramCount = 0;
 
 /**
- * The base URL that we use to contact the server. This is dependent on the
- * server on which DWR is deployed so it is dynamic.
- * Warning: if you can see EL-like (${...}) expressions on the next line, don't
- * be fooled into thinking it is EL. Check the DWRServlet source for the hack.
- * Maybe we will do something more EL like in the future.
- * If you can't see the ${...} then you are probably looking at the processed
- * source.
- * Brian Dole used '/dwr/exec;jsessionid=' + u.sid;
- * in order to make DWR work without cookies. I'm nor sure what u is or how this helps
- * @private
- */
-DWREngine._urlBase = '${request.contextPath}${request.servletPath}/exec';
-
-/**
  * The error handler function
  * @param handler A function to call with single an error parameter on failure
  */
@@ -131,7 +117,7 @@ DWREngine._errorHandler = function(data)
  * This method is called by Javascript that is emitted by server
  * @private
  */
-DWREngine.handleResponse = function(id, reply)
+DWREngine._handleResponse = function(id, reply)
 {
     var call = DWREngine._calls[id];
     if (call == null)
@@ -184,7 +170,7 @@ DWREngine.handleResponse = function(id, reply)
  * This method is called by Javascript that is emitted by server
  * @private
  */
-DWREngine.handleError = function(id, reason)
+DWREngine._handleError = function(id, reason)
 {
     var call = DWREngine._calls[id];
     if (call != null)
@@ -216,11 +202,13 @@ DWREngine.handleError = function(id, reason)
  * @private
  * @param func The callback function to which any returned data should be passed
  *             if this is null, any returned data will be ignored
+ * @param path The part of the URL after the host and before the exec bit
+ *             without leading or trailing /s
  * @param classname The class to execute
  * @param methodname The method on said class to execute
  * @param vararg_params The parameters to pass to the above class
  */
-DWREngine.execute = function(func, classname, methodname, vararg_params)
+DWREngine._execute = function(func, path, classname, methodname, vararg_params)
 {
     if (func != null && typeof func != "function" && typeof func != "object")
     {
@@ -255,9 +243,9 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
     // Serialize the parameters into call.map
     DWREngine._addSerializeFunctions();
     var context = new Array();
-    for (var i=3; i<arguments.length; i++)
+    for (var i = 4; i < arguments.length; i++)
     {
-        DWREngine._serializeAll(call.map, context, arguments[i], "param" + (i-3));
+        DWREngine._serializeAll(call.map, context, arguments[i], "param" + (i - 4));
     }
     DWREngine._removeSerializeFunctions();
 
@@ -271,13 +259,7 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
         // IE5 for the mac claims to support window.ActiveXObject, but throws an error when it's used
         else if (window.ActiveXObject && !(navigator.userAgent.indexOf ('Mac') >= 0 && navigator.userAgent.indexOf ("MSIE") >= 0))
         {
-            // I've seen code that asks for the following:
-            // call.req = new ActiveXObject("Msxml2.XMLHTTP");
             call.req = new ActiveXObject("Microsoft.XMLHTTP");
-            if (!call.req)
-            {
-                alert("Creation of Microsoft.XMLHTTP failed. Reverting to iframe method.");
-            }
         }
     }
 
@@ -293,7 +275,7 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
             query += prop + "=" + call.map[prop] + "\n";
         }
 
-        call.url = DWREngine._urlBase;
+        call.url = path + "/exec";
 
         call.req.onreadystatechange = function() { DWREngine._stateChange(call); };
         call.req.open("POST", call.url, true);
@@ -311,7 +293,7 @@ DWREngine.execute = function(func, classname, methodname, vararg_params)
         }
         query = query.substring(0, query.length - 1);
 
-        call.url = DWREngine._urlBase + "?" + query;
+        call.url = path + "/exec?" + query;
 
         call.iframe = document.createElement('iframe');
         call.iframe.setAttribute('id', 'dwr-iframe');
@@ -573,12 +555,12 @@ DWREngine._stateChange = function(call)
             }
             else
             {
-                DWREngine.handleError(call.id, call.req.responseText);
+                DWREngine._handleError(call.id, call.req.responseText);
             }
         }
         catch (ex)
         {
-            DWREngine.handleError(call.id, ex);
+            DWREngine._handleError(call.id, ex);
         }
     }
 }
