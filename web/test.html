@@ -293,9 +293,23 @@
   map2['a.a'] = "a.a";
   map2['b!'] = "b!";
   map2['c$'] = "c$";
+  map2["d'"] = "d'";
+  map2['e"'] = 'e"';
+  map2['f '] = 'f ';
+  map2[' g'] = ' g';
+  map2['h&'] = 'h&';
+  map2['i<'] = 'i<';
+  map2['j>'] = 'j>';
+  map2['k:'] = 'k:';
+  map2['l['] = 'l[';
+  map2['m]'] = 'm]';
 
   tests.push({ code:"Test.stringStringMapParam(testResults, map1)", expected:map1 });
   tests.push({ code:"Test.stringStringMapParam(testResults, map2)", expected:map2 });
+  tests.push({ code:"Test.stringStringHashMapParam(testResults, map1)", expected:map1 });
+  tests.push({ code:"Test.stringStringHashMapParam(testResults, map2)", expected:map2 });
+  tests.push({ code:"Test.stringStringTreeMapParam(testResults, map1)", expected:map1 });
+  tests.push({ code:"Test.stringStringTreeMapParam(testResults, map2)", expected:map2 });
 
   function startTest()
   {
@@ -414,7 +428,7 @@
               var nest = testEquals(actual[prop], expected[prop], depth + 1);
               if (typeof nest != "boolean" || !nest)
               {
-                  return "element " + prop + " does not match: " + nest;
+                  return "element '" + prop + "' does not match: " + nest;
               }
 
               actualLength++;

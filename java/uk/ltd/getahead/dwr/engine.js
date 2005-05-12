@@ -448,7 +448,7 @@ DWREngine._serializeObject = function(output, referto, data, name)
             var childName = "c" + DWREngine._paramCount;
             DWREngine._serializeAll(output, referto, this[element], childName);
 
-            reply += element;
+            reply += encodeURIComponent(element);
             reply += ":reference:";
             reply += childName;
             reply += ", ";

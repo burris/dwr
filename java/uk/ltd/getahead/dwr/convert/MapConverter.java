@@ -16,6 +16,8 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * An implementation of Converter for Maps.
@@ -99,13 +101,14 @@ public class MapConverter implements Converter
                 }
 
                 String key = token.substring(0, colonpos).trim();
-                String val = token.substring(colonpos + 1).trim();
+                key = LocalUtil.decode(key);
 
-                String[] split = ExecuteQuery.splitInbound(val);
+                String ivstr = token.substring(colonpos + 1).trim();
+                String[] split = ExecuteQuery.splitInbound(ivstr);
                 InboundVariable nested = new InboundVariable(incx, split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
-                Object output = config.convertInbound(subtype, nested, inctx);
+                Object val = config.convertInbound(subtype, nested, inctx);
 
-                map.put(key, output);
+                map.put(key, val);
             }
 
             return map;
@@ -145,7 +148,7 @@ public class MapConverter implements Converter
             // And now declare our stuff
             buffer.append(varname);
             buffer.append("['"); //$NON-NLS-1$
-            buffer.append(key);
+            buffer.append(StringEscapeUtils.escapeJavaScript(key));
             buffer.append("'] = "); //$NON-NLS-1$
             buffer.append(nested.getAssignCode());
             buffer.append(';');
