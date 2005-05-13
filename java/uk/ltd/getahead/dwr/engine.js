@@ -31,6 +31,7 @@ DWREngine._postHook = null;
  * @private
  */
 DWREngine._calls = new Object();
+// DWREngine._calls = new Array();
 
 /**
  * What is the default remoting method
@@ -47,6 +48,13 @@ DWREngine._method = DWREngine.XMLHttpRequest;
  * @private
  */
 DWREngine._paramCount = 0;
+
+/**
+ * Each reply made to the server can be forced to happen in turn. This variable
+ * tracks which we are currently executing.
+ * @private
+ */
+//DWREngine._nowServingNumber = 0;
 
 /**
  * The error handler function
@@ -120,22 +128,62 @@ DWREngine._errorHandler = function(data)
 DWREngine._handleResponse = function(id, reply)
 {
     var call = DWREngine._calls[id];
+
+    // For some bizarre reason when the above fails on IE5 the following
+    // sometimes works.
     if (call == null)
     {
-        var known = "";
-        for (call in DWREngine._calls)
+        for (test in DWREngine._calls)
         {
-            known += call + "\n";
+            if (test == id)
+            {
+                call = DWREngine._calls[test];
+            }
         }
-        alert("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
-        return;
     }
 
-    DWREngine._calls[id] = null;
+    // DWREngine._nowServingNumber++;
+    // if (DWREngine._nowServingNumber < DWREngine._calls.length)
+    // {
+    //     DWREngine._sendData(DWREngine._calls[DWREngine._nowServingNumber]);
+    // }
 
-    if (call.iframe != null)
+    if (call != null)
     {
-        call.iframe.parentNode.removeChild(call.iframe);
+        if (call.iframe != null)
+        {
+            call.iframe.parentNode.removeChild(call.iframe);
+        }
+
+        if (call.callback == null)
+        {
+            if (reply != null)
+            {
+                alert("Missing callback for reply "+reply);
+            }
+        }
+        else
+        {
+            // Error handlers inside here indicate an error that is nothing to do
+            // with DWR so we handle them differently.
+            try
+            {
+                call.callback(reply);
+            }
+            catch (ex)
+            {
+                DWREngine._errorHandler(ex);
+            }
+        }
+    }
+    else
+    {
+        for (test in DWREngine._calls)
+        {
+            known += test + "\n";
+        }
+
+        alert("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
     }
 
     if (DWREngine._postHook != null)
@@ -143,26 +191,7 @@ DWREngine._handleResponse = function(id, reply)
         DWREngine._postHook();
     }
 
-    if (call.callback == null)
-    {
-        if (reply != null)
-        {
-            alert("Missing callback for reply "+reply);
-        }
-    }
-    else
-    {
-        // Error handlers inside here indicate an error that is nothing to do
-        // with DWR so we handle them differently.
-        try
-        {
-            call.callback(reply);
-        }
-        catch (ex)
-        {
-            DWREngine._errorHandler(ex);
-        }
-    }
+    DWREngine._calls[id] = null;
 }
 
 /**
@@ -188,6 +217,12 @@ DWREngine._handleError = function(id, reason)
         // alert("Internal Error: Call with id="+id+" unknown.");
     }
 
+    // DWREngine._nowServingNumber++;
+    // if (DWREngine._nowServingNumber < DWREngine._calls.length)
+    // {
+    //     DWREngine._sendData(DWREngine._calls[DWREngine._nowServingNumber]);
+    // }
+
     if (DWREngine._postHook != null)
     {
         DWREngine._postHook();
@@ -199,7 +234,6 @@ DWREngine._handleError = function(id, reason)
 /**
  * Send a request to the server
  * This method is called by Javascript that is emitted by server
- * @private
  * @param func The callback function to which any returned data should be passed
  *             if this is null, any returned data will be ignored
  * @param path The part of the URL after the host and before the exec bit
@@ -207,6 +241,7 @@ DWREngine._handleError = function(id, reason)
  * @param classname The class to execute
  * @param methodname The method on said class to execute
  * @param vararg_params The parameters to pass to the above class
+ * @private
  */
 DWREngine._execute = function(func, path, classname, methodname, vararg_params)
 {
@@ -222,6 +257,7 @@ DWREngine._execute = function(func, path, classname, methodname, vararg_params)
     // Get a unique ID for this call
     var random = Math.floor(Math.random() * 10001);
     call.id = (random + "_" + new Date().getTime()).toString();
+    //call.id = DWREngine._calls.length;
 
     DWREngine._calls[call.id] = call;
 
@@ -231,14 +267,15 @@ DWREngine._execute = function(func, path, classname, methodname, vararg_params)
     }
 
     call.callback = func;
-
-    // Build a map containing all the values to pass to the server.
-    DWREngine._paramCount = 0;
+    call.path = path;
 
     call.map = new Object();
     call.map.classname = classname;
     call.map.methodname = methodname;
     call.map.id = call.id;
+
+    // Build a map containing all the values to pass to the server.
+    DWREngine._paramCount = 0;
 
     // Serialize the parameters into call.map
     DWREngine._addSerializeFunctions();
@@ -249,6 +286,18 @@ DWREngine._execute = function(func, path, classname, methodname, vararg_params)
     }
     DWREngine._removeSerializeFunctions();
 
+    // if (call.id == DWREngine._nowServingNumber)
+    // {
+        DWREngine._sendData(call);
+    // }
+}
+
+/**
+ * Actually send the block of data in the call object.
+ * @private
+ */
+DWREngine._sendData = function(call)
+{
     // Get setup for XMLHttpRequest if possible
     if (DWREngine._method == DWREngine.XMLHttpRequest)
     {
@@ -257,29 +306,44 @@ DWREngine._execute = function(func, path, classname, methodname, vararg_params)
             call.req = new XMLHttpRequest();
         }
         // IE5 for the mac claims to support window.ActiveXObject, but throws an error when it's used
-        else if (window.ActiveXObject && !(navigator.userAgent.indexOf ('Mac') >= 0 && navigator.userAgent.indexOf ("MSIE") >= 0))
+        else if (window.ActiveXObject && !(navigator.userAgent.indexOf('Mac') >= 0 && navigator.userAgent.indexOf("MSIE") >= 0))
         {
             call.req = new ActiveXObject("Microsoft.XMLHTTP");
         }
-    }
-
+    }    
+    
     var query = "";
     var prop;
+
     if (call.req)
     {
         call.map.xml = true;
 
         // Proceed using XMLHttpRequest
-        for (prop in call.map)
-        {
-            query += prop + "=" + call.map[prop] + "\n";
-        }
-
-        call.url = path + "/exec";
 
         call.req.onreadystatechange = function() { DWREngine._stateChange(call); };
-        call.req.open("POST", call.url, true);
-        call.req.send(query);
+
+        if (navigator.userAgent.indexOf('Mac') >= 0)
+        {
+            for (prop in call.map)
+            {
+                query += prop + "=" + call.map[prop] + "&";
+            }
+            query = query.substring(0, query.length - 1);
+
+            call.req.open("GET", call.path + "/exec?" + query);
+            call.req.send(null);
+        }
+        else
+        {
+            for (prop in call.map)
+            {
+                query += prop + "=" + call.map[prop] + "\n";
+            }
+
+            call.req.open("POST", call.path + "/exec", true);
+            call.req.send(query);
+        }
     }
     else
     {
@@ -293,12 +357,10 @@ DWREngine._execute = function(func, path, classname, methodname, vararg_params)
         }
         query = query.substring(0, query.length - 1);
 
-        call.url = path + "/exec?" + query;
-
         call.iframe = document.createElement('iframe');
         call.iframe.setAttribute('id', 'dwr-iframe');
         call.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
-        call.iframe.setAttribute('src', call.url);
+        call.iframe.setAttribute('src', call.path + "/exec?" + query);
         document.body.appendChild(call.iframe);
     }
 }

@@ -96,7 +96,9 @@ public class ArrayConverter implements Converter
         }
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var " + varname + " = new Array();"); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("var "); //$NON-NLS-1$
+        buffer.append(varname);
+        buffer.append(" = new Array();"); //$NON-NLS-1$
 
         int size = Array.getLength(data);
         for (int i = 0; i < size; i++)

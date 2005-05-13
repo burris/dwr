@@ -174,15 +174,15 @@ public class DWRServlet extends HttpServlet
             }
             else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_ENGINE))
             {
-                doFile(req, resp, FILE_ENGINE, MIME_JS);
+                doFile(resp, FILE_ENGINE, MIME_JS);
             }
             else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_UTIL))
             {
-                doFile(req, resp, FILE_UTIL, MIME_JS);
+                doFile(resp, FILE_UTIL, MIME_JS);
             }
             else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_JSCP))
             {
-                doFile(req, resp, FILE_JSCP, MIME_JS);
+                doFile(resp, FILE_JSCP, MIME_JS);
             }
             else if (pathinfo != null && pathinfo.startsWith(PATH_INTERFACE))
             {
@@ -322,7 +322,7 @@ public class DWRServlet extends HttpServlet
 
             out.println(BLANK); //$NON-NLS-1$
             out.println("<li>"); //$NON-NLS-1$
-            out.println("  " + method.getName() + "("); //$NON-NLS-1$ //$NON-NLS-2$
+            out.println("  " + method.getName() + '('); //$NON-NLS-1$
 
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
@@ -332,14 +332,14 @@ public class DWRServlet extends HttpServlet
             }
             out.println("  );"); //$NON-NLS-1$
 
-            String onclick = scriptname + "." + method.getName() + "(reply" + i; //$NON-NLS-1$ //$NON-NLS-2$
+            String onclick = scriptname + '.' + method.getName() + "(reply" + i; //$NON-NLS-1$
             for (int j = 0; j < paramTypes.length; j++)
             {
                 onclick += ",document.getElementById(\"p" + i + j + "\").value"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             onclick += ");"; //$NON-NLS-1$
 
-            out.print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + "." + method.getName() + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            out.print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + '.' + method.getName() + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             out.println("  <script type='text/javascript'>"); //$NON-NLS-1$
             out.println("    var reply" + i + " = function(data)"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -412,7 +412,7 @@ public class DWRServlet extends HttpServlet
                     }
 
                     buffer.append(line);
-                    buffer.append("\n"); //$NON-NLS-1$
+                    buffer.append('\n');
                 }
 
                 output = buffer.toString();
@@ -466,27 +466,27 @@ public class DWRServlet extends HttpServlet
 
             if (i != 0)
             {
-                out.print("\n"); //$NON-NLS-1$
+                out.print('\n');
             }
-            out.print(scriptname + "." + method.getName() + " = function(callback"); //$NON-NLS-1$ //$NON-NLS-2$
+            out.print(scriptname + '.' + method.getName() + " = function(callback"); //$NON-NLS-1$
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
                 out.print(", p" + j); //$NON-NLS-1$
             }
-            out.println(")"); //$NON-NLS-1$
-            out.println("{"); //$NON-NLS-1$
+            out.println(')');
+            out.println('{');
 
             String path = req.getContextPath() + req.getServletPath();
 
-            out.print("    DWREngine._execute(callback, '" + path + "', '" + scriptname + "', '" + method.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            out.print("    DWREngine._execute(callback, '" + path + "', '" + scriptname + "', '" + method.getName() + '\''); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             for (int j = 0; j < paramTypes.length; j++)
             {
                 out.print(", p" + j); //$NON-NLS-1$
             }
             out.println(");"); //$NON-NLS-1$
 
-            out.println("}"); //$NON-NLS-1$
+            out.println('}');
         }
 
         out.flush();
@@ -495,13 +495,12 @@ public class DWRServlet extends HttpServlet
     /**
      * Basically a file servlet component that does some <b>very limitted</b>
      * EL type processing on the file. See the source for the cheat.
-     * @param req The browsers request
      * @param resp The response channel
      * @param path The path to search for, process and output
      * @param mimeType The mime type to use for this output file
      * @throws IOException If writing to the output fails
      */
-    protected void doFile(HttpServletRequest req, HttpServletResponse resp, String path, String mimeType) throws IOException
+    protected void doFile(HttpServletResponse resp, String path, String mimeType) throws IOException
     {
         resp.setContentType(mimeType);
 
@@ -520,11 +519,8 @@ public class DWRServlet extends HttpServlet
                     break;
                 }
 
-                line = LocalUtil.replace(line, "${request.contextPath}", req.getContextPath()); //$NON-NLS-1$
-                line = LocalUtil.replace(line, "${request.servletPath}", req.getServletPath()); //$NON-NLS-1$
-
                 buffer.append(line);
-                buffer.append("\n"); //$NON-NLS-1$
+                buffer.append('\n');
             }
 
             output = buffer.toString();
@@ -562,7 +558,7 @@ public class DWRServlet extends HttpServlet
             Object reply = eq.execute();
             OutboundVariable ss = converterManager.convertOutbound(reply);
 
-            Log.info("Returning: id[" + eq.getId() + "] init[" + ss.getInitCode() + "] assign[" + ss.getAssignCode() + "] xml[" + eq.isXmlMode() + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            Log.info("Returning: id[" + eq.getId() + "] init[" + ss.getInitCode() + "] assign[" + ss.getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
             LocalUtil.addNoCacheHeaders(resp);
 
@@ -572,7 +568,7 @@ public class DWRServlet extends HttpServlet
 
                 PrintWriter out = resp.getWriter();
                 out.println(ss.getInitCode());
-                out.println("var reply = " + ss.getAssignCode() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("var reply = " + ss.getAssignCode() + ';'); //$NON-NLS-1$
                 out.println("DWREngine._handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
                 out.flush();
             }
@@ -583,7 +579,7 @@ public class DWRServlet extends HttpServlet
                 PrintWriter out = resp.getWriter();
                 out.println("<script type='text/javascript'>"); //$NON-NLS-1$
                 out.println(ss.getInitCode());
-                out.println("var reply = " + ss.getAssignCode() + ";"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("var reply = " + ss.getAssignCode() + ';'); //$NON-NLS-1$
                 out.println("window.parent.DWREngine._handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
                 out.println("</script>"); //$NON-NLS-1$
                 out.flush();
@@ -597,7 +593,7 @@ public class DWRServlet extends HttpServlet
                 return;
             }
 
-            Log.warn("Erroring: id[" + eq.getId() + "] message[" + ex.getMessage() + "]", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            Log.warn("Erroring: id[" + eq.getId() + "] message[" + ex.getMessage() + ']', ex); //$NON-NLS-1$ //$NON-NLS-2$
 
             try
             {
