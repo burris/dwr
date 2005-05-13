@@ -558,7 +558,7 @@ public class DWRServlet extends HttpServlet
             Object reply = eq.execute();
             OutboundVariable ss = converterManager.convertOutbound(reply);
 
-            Log.info("Returning: id[" + eq.getId() + "] init[" + ss.getInitCode() + "] assign[" + ss.getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            Log.debug("Returning: id[" + eq.getId() + "] init[" + ss.getInitCode() + "] assign[" + ss.getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
             LocalUtil.addNoCacheHeaders(resp);
 
