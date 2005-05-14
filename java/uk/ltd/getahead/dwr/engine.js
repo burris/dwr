@@ -184,7 +184,7 @@ DWREngine._handleResponse = function(id, reply)
 
         if (call.callback == null)
         {
-            if (reply != null)
+            if (reply != null && DWREngine._warningHandler != null)
             {
                 DWREngine._warningHandler("Missing callback for reply "+reply);
             }
@@ -199,7 +199,10 @@ DWREngine._handleResponse = function(id, reply)
             }
             catch (ex)
             {
-                DWREngine._errorHandler(ex);
+                if (DWREngine._errorHandler != null)
+                {
+                    DWREngine._errorHandler(ex);
+                }
             }
         }
     }
@@ -210,7 +213,10 @@ DWREngine._handleResponse = function(id, reply)
             known += test + "\n";
         }
 
-        DWREngine._warningHandler("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
+        if (DWREngine._warningHandler != null)
+        {
+            DWREngine._warningHandler("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
+        }
     }
 
     if (DWREngine._postHook != null)
@@ -257,7 +263,10 @@ DWREngine._handleError = function(id, reason)
         // DWREngine._warningHandler("Internal Error: Call with id="+id+" unknown.");
     }
 
-    DWREngine._errorHandler(reason);
+    if (DWREngine._errorHandler != null)
+    {
+        DWREngine._errorHandler(reason);
+    }
 
     if (DWREngine._postHook != null)
     {
@@ -289,7 +298,11 @@ DWREngine._execute = function(func, path, classname, methodname, vararg_params)
 {
     if (func != null && typeof func != "function" && typeof func != "object")
     {
-        DWREngine._warningHandler("Supplied callback function is neither null nor a function: "+func);
+        if (DWREngine._warningHandler != null)
+        {
+            DWREngine._warningHandler("Supplied callback function is neither null nor a function: "+func);
+        }
+
         throw func;
     }
 
@@ -484,7 +497,10 @@ DWREngine._serializeAll = function(output, referto, data, name)
         }
         else
         {
-            DWREngine._warningHandler("Object without dwrSerialize: " + typeof data + ", attempting default converter.");
+            if (DWREngine._warningHandler != null)
+            {
+                DWREngine._warningHandler("Object without dwrSerialize: " + typeof data + ", attempting default converter.");
+            }
             output[name] = "default:" + data;
         }
         break;
@@ -494,7 +510,10 @@ DWREngine._serializeAll = function(output, referto, data, name)
         break;
 
     default:
-        DWREngine._warningHandler("Unexpected type: " + typeof data + ", attempting default converter.");
+        if (DWREngine._warningHandler != null)
+        {
+            DWREngine._warningHandler("Unexpected type: " + typeof data + ", attempting default converter.");
+        }
         output[name] = "default:" + data;
         break;
     }
@@ -709,5 +728,8 @@ function dwrSetPostHook(handler)
  */
 function dwrDeprecated()
 {
-    DWREngine._warningHandler("dwrXxx() functions are deprecated. Please convert to DWREngine.xxx()");
+    if (DWREngine._warningHandler != null)
+    {
+        DWREngine._warningHandler("dwrXxx() functions are deprecated. Please convert to DWREngine.xxx()");
+    }
 }
