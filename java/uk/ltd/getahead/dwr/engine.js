@@ -80,13 +80,13 @@ DWREngine.setMethod = function(newmethod)
  * A function to call if something fails.
  * @private
  */
-DWREngine._errorHandler = _defaultMessageHandler;
+DWREngine._errorHandler = DWREngine._defaultMessageHandler;
 
 /**
  * A function to call to alert the user to some breakage.
  * @private
  */
-DWREngine._warningHandler = _defaultMessageHandler;
+DWREngine._warningHandler = DWREngine._defaultMessageHandler;
 
 /**
  * A function to be called before requests are marshalled. Can be null.
@@ -356,6 +356,7 @@ DWREngine._sendData = function(call)
     
     var query = "";
     var prop;
+    var statsInfo = call.map.classname + "." + call.map.methodname;
 
     if (call.req)
     {
@@ -373,7 +374,7 @@ DWREngine._sendData = function(call)
             }
             query = query.substring(0, query.length - 1);
 
-            call.req.open("GET", call.path + "/exec?" + query);
+            call.req.open("GET", call.path + "/exec/" + statsInfo + "?" + query);
             call.req.send(null);
         }
         else
@@ -383,7 +384,7 @@ DWREngine._sendData = function(call)
                 query += prop + "=" + call.map[prop] + "\n";
             }
 
-            call.req.open("POST", call.path + "/exec", true);
+            call.req.open("POST", call.path + "/exec/" + statsInfo, true);
             call.req.send(query);
         }
     }
@@ -401,7 +402,7 @@ DWREngine._sendData = function(call)
         call.iframe = document.createElement('iframe');
         call.iframe.setAttribute('id', 'dwr-iframe');
         call.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
-        call.iframe.setAttribute('src', call.path + "/exec?" + query);
+        call.iframe.setAttribute('src', call.path + "/exec/" + statsInfo + "?" + query);
         document.body.appendChild(call.iframe);
     }
 }
