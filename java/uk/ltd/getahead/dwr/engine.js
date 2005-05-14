@@ -15,6 +15,80 @@ DWREngine.XMLHttpRequest = 1;
 DWREngine.IFrame = 2;
 
 /**
+ * The error handler function
+ * @param handler A function to call with single an error parameter on failure
+ */
+DWREngine.setErrorHandler = function(handler)
+{
+    DWREngine._errorHandler = handler;
+}
+
+/**
+ * The warning handler function, called with a single message parameter whenever
+ * we need to warn the user about something..
+ * @param handler A function to call with single an error parameter on failure
+ */
+DWREngine.setWarningHandler = function(handler)
+{
+    DWREngine._warningHandler = handler;
+}
+
+/**
+ * The Pre-Hook is called before any DWR remoting is done.
+ * Pre hooks can be useful for displaying "please wait" messages.
+ * @param handler A function to call with no params before remoting
+ * @see DWREngine.setPostHook
+ */
+DWREngine.setPreHook = function(handler)
+{
+    DWREngine._preHook = handler;
+}
+
+/**
+ * The Post-Hook is called after any DWR remoting is done.
+ * Pre hooks can be useful for removing "please wait" messages.
+ * @param handler A function to call with no params after remoting
+ * @see DWREngine.setPreHook
+ */
+DWREngine.setPostHook = function(handler)
+{
+    DWREngine._postHook = handler;
+}
+
+/**
+ * Set the preferred remoting method.
+ * setMethod does not guarantee that the selected method will be used, just that
+ * we will try that method first.
+ * @param newmethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame
+ */
+DWREngine.setMethod = function(newmethod)
+{
+    if (newmethod != DWREngine.XMLHttpRequest && newmethod != DWREngine.IFrame)
+    {
+        DWREngine._warningHandler("Remoting method must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame");
+        throw newmethod;
+    }
+
+    DWREngine._method = newmethod;
+}
+
+//==============================================================================
+// Only private stuff below here
+//==============================================================================
+
+/**
+ * A function to call if something fails.
+ * @private
+ */
+DWREngine._errorHandler = _defaultMessageHandler;
+
+/**
+ * A function to call to alert the user to some breakage.
+ * @private
+ */
+DWREngine._warningHandler = _defaultMessageHandler;
+
+/**
  * A function to be called before requests are marshalled. Can be null.
  * @private
  */
@@ -57,66 +131,19 @@ DWREngine._paramCount = 0;
 //DWREngine._nowServingNumber = 0;
 
 /**
- * The error handler function
- * @param handler A function to call with single an error parameter on failure
- */
-DWREngine.setErrorHandler = function(handler)
-{
-    DWREngine._errorHandler = handler;
-}
-
-/**
- * The Pre-Hook is called before any DWR remoting is done.
- * Pre hooks can be useful for displaying "please wait" messages.
- * @param handler A function to call with no params before remoting
- * @see DWREngine.setPostHook
- */
-DWREngine.setPreHook = function(handler)
-{
-    DWREngine._preHook = handler;
-}
-
-/**
- * The Post-Hook is called after any DWR remoting is done.
- * Pre hooks can be useful for removing "please wait" messages.
- * @param handler A function to call with no params after remoting
- * @see DWREngine.setPreHook
- */
-DWREngine.setPostHook = function(handler)
-{
-    DWREngine._postHook = handler;
-}
-
-/**
- * Set the preferred remoting method.
- * setMethod does not guarantee that the selected method will be used, just that
- * we will try that method first.
- * @param newmethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame
- */
-DWREngine.setMethod = function(newmethod)
-{
-    if (newmethod != DWREngine.XMLHttpRequest && newmethod != DWREngine.IFrame)
-    {
-        alert("Remoting method must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame");
-        throw newmethod;
-    }
-
-    DWREngine._method = newmethod;
-}
-
-/**
- * A function to call if something fails.
+ * A default message handler
+ * @param message The message to display to the user somehow
  * @private
  */
-DWREngine._errorHandler = function(data)
+DWREngine._defaultMessageHandler = function(message)
 {
-    if (typeof data == "object" && data.name == "Error" && data.description)
+    if (typeof message == "object" && message.name == "Error" && message.description)
     {
-        alert("Error: " + data.description);
+        alert("Error: " + message.description);
     }
     else
     {
-        alert(data);
+        alert(message);
     }
 }
 
@@ -159,7 +186,7 @@ DWREngine._handleResponse = function(id, reply)
         {
             if (reply != null)
             {
-                alert("Missing callback for reply "+reply);
+                DWREngine._warningHandler("Missing callback for reply "+reply);
             }
         }
         else
@@ -183,7 +210,7 @@ DWREngine._handleResponse = function(id, reply)
             known += test + "\n";
         }
 
-        alert("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
+        DWREngine._warningHandler("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
     }
 
     if (DWREngine._postHook != null)
@@ -202,9 +229,22 @@ DWREngine._handleResponse = function(id, reply)
 DWREngine._handleError = function(id, reason)
 {
     var call = DWREngine._calls[id];
+
+    // For some bizarre reason when the above fails on IE5 the following
+    // sometimes works.
+    if (call == null)
+    {
+        for (test in DWREngine._calls)
+        {
+            if (test == id)
+            {
+                call = DWREngine._calls[test];
+            }
+        }
+    }
+
     if (call != null)
     {
-        DWREngine._calls[id] = null;
 
         if (call.iframe != null)
         {
@@ -214,21 +254,23 @@ DWREngine._handleError = function(id, reason)
     else
     {
         // Things are going wrong so alerting probably does not make sense
-        // alert("Internal Error: Call with id="+id+" unknown.");
+        // DWREngine._warningHandler("Internal Error: Call with id="+id+" unknown.");
     }
 
-    // DWREngine._nowServingNumber++;
-    // if (DWREngine._nowServingNumber < DWREngine._calls.length)
-    // {
-    //     DWREngine._sendData(DWREngine._calls[DWREngine._nowServingNumber]);
-    // }
+    DWREngine._errorHandler(reason);
 
     if (DWREngine._postHook != null)
     {
         DWREngine._postHook();
     }
 
-    DWREngine._errorHandler(reason);
+    DWREngine._calls[id] = null;
+
+    // DWREngine._nowServingNumber++;
+    // if (DWREngine._nowServingNumber < DWREngine._calls.length)
+    // {
+    //     DWREngine._sendData(DWREngine._calls[DWREngine._nowServingNumber]);
+    // }
 }
 
 /**
@@ -247,7 +289,7 @@ DWREngine._execute = function(func, path, classname, methodname, vararg_params)
 {
     if (func != null && typeof func != "function" && typeof func != "object")
     {
-        alert("Supplied callback function is neither null nor a function: "+func);
+        DWREngine._warningHandler("Supplied callback function is neither null nor a function: "+func);
         throw func;
     }
 
@@ -352,8 +394,7 @@ DWREngine._sendData = function(call)
         // Proceed using iframe
         for (prop in call.map)
         {
-            var lookup = call.map[prop];
-            query += lookup.name + "=" + lookup.convert + "&";
+            query += prop + "=" + call.map[prop] + "&";
         }
         query = query.substring(0, query.length - 1);
 
@@ -366,7 +407,9 @@ DWREngine._sendData = function(call)
 }
 
 /**
- *
+ * Hack a polymorphic dwrSerialize() function on all basic types. Yeulch
+ * @see DWREngine._addSerializeFunctions
+ * @private
  */
 DWREngine._addSerializeFunctions = function()
 {
@@ -379,7 +422,9 @@ DWREngine._addSerializeFunctions = function()
 }
 
 /**
- *
+ * Remove the hacked polymorphic dwrSerialize() function on all basic types.
+ * @see DWREngine._removeSerializeFunctions
+ * @private
  */
 DWREngine._removeSerializeFunctions = function()
 {
@@ -438,7 +483,7 @@ DWREngine._serializeAll = function(output, referto, data, name)
         }
         else
         {
-            alert("Object without dwrSerialize: " + typeof data + ", attempting default converter.");
+            DWREngine._warningHandler("Object without dwrSerialize: " + typeof data + ", attempting default converter.");
             output[name] = "default:" + data;
         }
         break;
@@ -448,7 +493,7 @@ DWREngine._serializeAll = function(output, referto, data, name)
         break;
 
     default:
-        alert("Unexpected type: " + typeof data + ", attempting default converter.");
+        DWREngine._warningHandler("Unexpected type: " + typeof data + ", attempting default converter.");
         output[name] = "default:" + data;
         break;
     }
@@ -663,5 +708,5 @@ function dwrSetPostHook(handler)
  */
 function dwrDeprecated()
 {
-    alert("dwrXxx() functions are deprecated. Please convert to DWREngine.xxx()");
+    DWREngine._warningHandler("dwrXxx() functions are deprecated. Please convert to DWREngine.xxx()");
 }
