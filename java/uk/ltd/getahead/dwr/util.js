@@ -360,6 +360,37 @@ DWRUtil.setEnabled = function(id, state)
 }
 
 /**
+ * Select a specific range in a text box.
+ * This is useful for 'google suggest' type functionallity.
+ * @param id The id of the text input area to select a portion of
+ * @param start The beginning index
+ * @param end The end index 
+ */
+DWRUtil.selectRange = function(id, start, end)
+{
+    var ele = DWRUtil.getElementById(id);
+    if (ele == null)
+    {
+        alert("selectRange() can't find an element with id: " + id + ".");
+        throw id;
+    }
+
+    if (ele.setSelectionRange)
+    {
+        ele.setSelectionRange(start, end);
+    }
+    else if (ele.createTextRange)
+    {
+        var range = ele.createTextRange();
+        range.moveStart("character", start);
+        range.moveEnd("character", end - ele.value.length);
+        range.select();
+    }
+
+    DWRSuggest._textbox.focus();
+}
+
+/**
  * Is the given node an HTML element?
  */
 DWRUtil.isHTMLElement = function(ele)
