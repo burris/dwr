@@ -387,7 +387,7 @@ DWRUtil.selectRange = function(id, start, end)
         range.select();
     }
 
-    DWRSuggest._textbox.focus();
+    ele.focus();
 }
 
 /**
