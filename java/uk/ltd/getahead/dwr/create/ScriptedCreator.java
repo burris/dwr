@@ -45,7 +45,7 @@ public class ScriptedCreator implements Creator
             }
             catch (InstantiationException ex)
             {
-                ex.printStackTrace();
+                Log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
                 return Object.class;
             }
         }

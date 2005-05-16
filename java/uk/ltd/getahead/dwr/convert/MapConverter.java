@@ -160,5 +160,5 @@ public class MapConverter implements Converter
     /**
      * To forward marshalling requests
      */
-    private ConverterManager config;
+    private ConverterManager config = null;
 }

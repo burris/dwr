@@ -117,5 +117,5 @@ public class ArrayConverter implements Converter
         return buffer.toString();
     }
 
-    private ConverterManager converterManager;
+    private ConverterManager converterManager = null;
 }

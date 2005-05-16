@@ -18,6 +18,10 @@
     <converter id="collection" class="uk.ltd.getahead.dwr.convert.CollectionConverter"/>
     <converter id="date" class="uk.ltd.getahead.dwr.convert.DateConverter"/>
     <converter id="bean" class="uk.ltd.getahead.dwr.convert.BeanConverter"/>
+    <converter id="dom" class="uk.ltd.getahead.dwr.convert.DOMConverter"/>
+    <converter id="dom4j" class="uk.ltd.getahead.dwr.convert.DOM4JConverter"/>
+    <converter id="jdom" class="uk.ltd.getahead.dwr.convert.JDOMConverter"/>
+    <converter id="xom" class="uk.ltd.getahead.dwr.convert.XOMConverter"/>
   </init>
 
   <allow>
@@ -52,6 +56,17 @@
     <convert converter="array" match="[D"/>
     <convert converter="array" match="[C"/>
     <convert converter="array" match="[L*"/>
+    <convert converter="dom" match="org.w3c.dom.Node"/>
+    <convert converter="dom" match="org.w3c.dom.Element"/>
+    <convert converter="dom" match="org.w3c.dom.Document"/>
+    <convert converter="dom4j" match="org.dom4j.Document"/>
+    <convert converter="dom4j" match="org.dom4j.Element"/>
+    <convert converter="dom4j" match="org.dom4j.Node"/>
+    <convert converter="jdom" match="org.jdom.Document"/>
+    <convert converter="jdom" match="org.jdom.Element"/>
+    <convert converter="xom" match="nu.xom.Document"/>
+    <convert converter="xom" match="nu.xom.Element"/>
+    <convert converter="xom" match="nu.xom.Node"/>
     <!--
     The catch for the next 2 is that we really mean java.util.Collection<String>
     and java.util.Map<String, String> but we need to do more work before this

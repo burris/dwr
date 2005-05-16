@@ -39,7 +39,7 @@ public class ExecutionContext
 
     /**
      * Returns the current session associated with this request,
-     * or if the request does not have a session, creates one. 
+     * or if the request does not have a session, creates one.
      * @return Returns the http session.
      * @see HttpServletRequest#getSession()
      */
@@ -50,7 +50,7 @@ public class ExecutionContext
 
     /**
      * Returns the current HttpSession associated with this request or, if
-     * there is no current session and create is true, returns a new session. 
+     * there is no current session and create is true, returns a new session.
      * If create is false and the request has no valid HttpSession, this method
      * returns null.
      * @param create false to return null if there's no current session
@@ -106,10 +106,10 @@ public class ExecutionContext
      * @throws ServletException if the target resource throws this exception
      * @throws IllegalStateException if the response was already committed
      */
-    public String forwardToString(final String url) throws ServletException, IOException
+    public String forwardToString(String url) throws ServletException, IOException
     {
-        final StringWriter sout = new StringWriter();
-        final StringBuffer buffer = sout.getBuffer();
+        StringWriter sout = new StringWriter();
+        StringBuffer buffer = sout.getBuffer();
 
         HttpServletResponse fakeResponse = new SwallowingHttpServletResponse(getHttpServletResponse(), sout, url);
 

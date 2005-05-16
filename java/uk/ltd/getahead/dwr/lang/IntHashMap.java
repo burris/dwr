@@ -53,7 +53,7 @@
  */
 
 /*
- * Note: originally released under the GNU LGPL v2.1, 
+ * Note: originally released under the GNU LGPL v2.1,
  * but rereleased by the original author under the ASF license (above).
  */
 package uk.ltd.getahead.dwr.lang;
@@ -154,8 +154,8 @@ class IntHashMap {
      * @throws IllegalArgumentException  if the initial capacity is less
      *             than zero, or if the load factor is nonpositive.
      */
-    public IntHashMap(int initialCapacity, float loadFactor) {
-        super();
+    public IntHashMap(int initialCapacity, float loadFactor)
+    {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity); //$NON-NLS-1$
         }
@@ -397,5 +397,5 @@ class IntHashMap {
         }
         count = 0;
     }
-    
+
 }

@@ -61,7 +61,7 @@ public class SpringCreator implements Creator
             }
             catch (InstantiationException ex)
             {
-                ex.printStackTrace();
+                Log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
                 return Object.class;
             }
         }
@@ -123,7 +123,7 @@ public class SpringCreator implements Creator
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            Log.error("Error", ex); //$NON-NLS-1$
             throw new InstantiationException(ex.toString());
         }
     }
@@ -138,11 +138,11 @@ public class SpringCreator implements Creator
 
     private static BeanFactory factory = null;
 
-    private Class clazz;
+    private Class clazz = null;
 
-    private String beanName;
+    private String beanName = null;
 
-    private String resourceName;
+    private String resourceName = null;
 
-    private String[] configLocation;
+    private String[] configLocation = null;
 }

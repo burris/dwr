@@ -30,13 +30,14 @@ import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
  * possible to integrate Velocity or similar I think simplicity is more
  * important, and there are only 2 real pages both script heavy in this servlet
  * anyway.</p>
- * <p>There are 5 things to do, in the order that you come across them:
+ * <p>There are 5 things to do, in the order that you come across them:</p>
+ * <ul>
  * <li>The index test page that points at the classes</li>
  * <li>The class test page that lets you execute methods</li>
  * <li>The interface javascript that uses the engine to send requests</li>
  * <li>The engine javascript to form the iframe request and process replies</li>
  * <li>The exec 'page' that executes the method and returns data to the iframe</li>
- * </p>
+ * </ul>
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DWRServlet extends HttpServlet
@@ -533,7 +534,7 @@ public class DWRServlet extends HttpServlet
     }
 
     /**
-     * Execute a remote Javascript request. 
+     * Execute a remote Javascript request.
      * @param req The browsers request
      * @param resp The response channel
      */

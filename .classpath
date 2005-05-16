@@ -51,5 +51,17 @@
 		<attributes>
 		</attributes>
 	</classpathentry>
+	<classpathentry sourcepath="/jsword-support/othersource/jdom-1.0.zip" kind="lib" path="/common/jar/jdom-1.0/jdom-1.0.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/eliza/jar/dom4j-1.5/dom4j-1.5.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/library/jarlib/xom-1.0/xom-1.0.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="web/WEB-INF/classes"/>
 </classpath>

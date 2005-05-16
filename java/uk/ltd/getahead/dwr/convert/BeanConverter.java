@@ -109,7 +109,7 @@ public class BeanConverter implements Converter
                             all.append(',');
                         }
                     }
-                    Log.warn("Setters exist for (" + all + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+                    Log.warn("Setters exist for (" + all + ')'); //$NON-NLS-1$
                 }
                 else
                 {
@@ -197,5 +197,5 @@ public class BeanConverter implements Converter
     /**
      * To forward marshalling requests
      */
-    private ConverterManager config;
+    private ConverterManager config = null;
 }

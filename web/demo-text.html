@@ -16,7 +16,7 @@
   
   function loadinfo(data)
   {
-      document.getElementById("reply").innerHTML = data;
+      DWRUtil.setValue("reply", data);
   }
   
   function forward()
@@ -26,7 +26,7 @@
 
   function loadforward(data)
   {
-      document.getElementById("forward").innerHTML = data;
+      DWRUtil.setValue("forward", data);
   }
   </script>
 </head>
@@ -107,9 +107,16 @@ public String getServerInfo()
 <pre>
 function loadinfo(data)
 {
-    document.getElementById("reply").innerHTML = data;
+    DWRUtil.setValue("reply", data);
 }
 </pre>
+
+<p>
+  <code>DWRUtil.setValue()</code> is a utility that takes the data you pass in
+  the second parameter and works out how to fit it to go into the HTML element
+  specified by id in the first parameter. This function is one of several neat
+  Javascript utilities that make working with DWR much easier.
+</p>
 
 <p>
   And that's it. In effect we have written much less than 10 lines of code to
@@ -132,7 +139,9 @@ function loadinfo(data)
   contents of <a href="forward.jsp">this JSP page</a>, and using the
   ExecutionContext class to allow us to get data from other pages. There are
   no iframes used in this example - just DWR and a humble div.
-  <br/>
+</p>
+
+<p>
   The code is all very similar to the above example except for slightly
   different Java code:
 </p>

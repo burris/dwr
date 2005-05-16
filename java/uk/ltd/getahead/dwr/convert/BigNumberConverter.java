@@ -55,6 +55,6 @@ public class BigNumberConverter implements Converter
      */
     public String convertOutbound(Object object, String varname, OutboundContext outctx)
     {
-        return "var " + varname + " = " + object.toString() + ";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return "var " + varname + " = " + object.toString() + ';'; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

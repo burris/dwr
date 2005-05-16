@@ -119,9 +119,9 @@ public class StringEscapeUtils {
     /**
      * <p>Escapes the characters in a <code>String</code> using Java String rules to
      * a <code>Writer</code>.</p>
-     * 
+     *
      * <p>A <code>null</code> string input has no effect.</p>
-     * 
+     *
      * @see #escapeJava(java.lang.String)
      * @param out  Writer to write escaped string into
      * @param str  String to escape values in, may be null
@@ -160,9 +160,9 @@ public class StringEscapeUtils {
     /**
      * <p>Escapes the characters in a <code>String</code> using JavaScript String rules
      * to a <code>Writer</code>.</p>
-     * 
+     *
      * <p>A <code>null</code> string input has no effect.</p>
-     * 
+     *
      * @see #escapeJavaScript(java.lang.String)
      * @param out  Writer to write escaped string into
      * @param str  String to escape values in, may be null
@@ -262,7 +262,7 @@ public class StringEscapeUtils {
     /**
      * <p>Returns an upper case hexadecimal <code>String</code> for the given
      * character.</p>
-     * 
+     *
      * @param ch The character to convert.
      * @return An upper case hexadecimal <code>String</code>
      */
@@ -275,7 +275,7 @@ public class StringEscapeUtils {
      * For example, it will turn a sequence of <code>'\'</code> and
      * <code>'n'</code> into a newline character, unless the <code>'\'</code>
      * is preceded by another <code>'\'</code>.</p>
-     * 
+     *
      * @param str  the <code>String</code> to unescape, may be null
      * @return a new unescaped <code>String</code>, <code>null</code> if null string input
      */
@@ -301,9 +301,9 @@ public class StringEscapeUtils {
      * <p>For example, it will turn a sequence of <code>'\'</code> and
      * <code>'n'</code> into a newline character, unless the <code>'\'</code>
      * is preceded by another <code>'\'</code>.</p>
-     * 
+     *
      * <p>A <code>null</code> string input has no effect.</p>
-     * 
+     *
      * @param out  the <code>Writer</code> used to output unescaped characters
      * @param str  the <code>String</code> to unescape, may be null
      * @throws IllegalArgumentException if the Writer is <code>null</code>
@@ -370,11 +370,9 @@ public class StringEscapeUtils {
                         out.write('\b');
                         break;
                     case 'u':
-                        {
-                            // uh-oh, we're in unicode country....
-                            inUnicode = true;
-                            break;
-                        }
+                        // uh-oh, we're in unicode country....
+                        inUnicode = true;
+                        break;
                     default :
                         out.write(ch);
                         break;
@@ -417,7 +415,7 @@ public class StringEscapeUtils {
      * <code>'\'</code>.</p>
      *
      * <p>A <code>null</code> string input has no effect.</p>
-     * 
+     *
      * @see #unescapeJava(Writer,String)
      * @param out  the <code>Writer</code> used to output unescaped characters
      * @param str  the <code>String</code> to unescape, may be null
@@ -438,10 +436,10 @@ public class StringEscapeUtils {
      * </p>
      *
      * <p>Supports all known HTML 4.0 entities, including funky accents.</p>
-     * 
+     *
      * @param str  the <code>String</code> to escape, may be null
      * @return a new escaped <code>String</code>, <code>null</code> if null string input
-     * 
+     *
      * </br><a href="http://hotwired.lycos.com/webmonkey/reference/special_characters/">ISO Entities</a>
      * </br><a href="http://www.w3.org/TR/REC-html32#latin1">HTML 3.2 Character Entities for ISO Latin-1</a>
      * </br><a href="http://www.w3.org/TR/REC-html40/sgml/entities.html">HTML 4.0 Character entity references</a>

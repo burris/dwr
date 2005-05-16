@@ -450,8 +450,7 @@ class Entities {
         }
     }
 
-
-    static abstract class MapIntMap implements Entities.EntityMap {
+    static class MapIntMap implements Entities.EntityMap {
         protected Map mapNameToValue;
         protected Map mapValueToName;
 
@@ -474,9 +473,9 @@ class Entities {
 
     static class HashEntityMap extends MapIntMap {
         /**
-         * 
+         *
          */
-        public HashEntityMap() {
+        HashEntityMap() {
             mapNameToValue = new HashMap();
             mapValueToName = new HashMap();
         }
@@ -487,7 +486,7 @@ class Entities {
      */
     static class TreeEntityMap extends MapIntMap {
         /**
-         * 
+         *
          */
         public TreeEntityMap() {
             mapNameToValue = new TreeMap();
@@ -528,7 +527,7 @@ class Entities {
         protected int[] values;
 
         /**
-         * 
+         *
          */
         public ArrayEntityMap() {
             names = new String[growBy];
@@ -585,7 +584,7 @@ class Entities {
     static class BinaryEntityMap extends ArrayEntityMap {
 
         /**
-         * 
+         *
          */
         public BinaryEntityMap() {
         }

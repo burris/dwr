@@ -72,6 +72,24 @@ DWREngine.setMethod = function(newmethod)
     DWREngine._method = newmethod;
 }
 
+/**
+ * The default message handler.
+ * Useful in calls to setErrorHandler() or setWarningHandler() to allow you to
+ * get the default back.
+ * @param message The message to display to the user somehow
+ */
+DWREngine.defaultMessageHandler = function(message)
+{
+    if (typeof message == "object" && message.name == "Error" && message.description)
+    {
+        alert("Error: " + message.description);
+    }
+    else
+    {
+        alert(message);
+    }
+}
+
 //==============================================================================
 // Only private stuff below here
 //==============================================================================
@@ -80,13 +98,13 @@ DWREngine.setMethod = function(newmethod)
  * A function to call if something fails.
  * @private
  */
-DWREngine._errorHandler = DWREngine._defaultMessageHandler;
+DWREngine._errorHandler = DWREngine.defaultMessageHandler;
 
 /**
  * A function to call to alert the user to some breakage.
  * @private
  */
-DWREngine._warningHandler = DWREngine._defaultMessageHandler;
+DWREngine._warningHandler = DWREngine.defaultMessageHandler;
 
 /**
  * A function to be called before requests are marshalled. Can be null.
@@ -129,23 +147,6 @@ DWREngine._paramCount = 0;
  * @private
  */
 //DWREngine._nowServingNumber = 0;
-
-/**
- * A default message handler
- * @param message The message to display to the user somehow
- * @private
- */
-DWREngine._defaultMessageHandler = function(message)
-{
-    if (typeof message == "object" && message.name == "Error" && message.description)
-    {
-        alert("Error: " + message.description);
-    }
-    else
-    {
-        alert(message);
-    }
-}
 
 /**
  * Called when the replies are received.
@@ -421,6 +422,32 @@ DWREngine._sendData = function(call)
 }
 
 /**
+ * Called by XMLHttpRequest to indicate that something has happened
+ * @private
+ */
+DWREngine._stateChange = function(call)
+{
+    if (call.req.readyState == 4)
+    {
+        try
+        {
+            if (call.req.status && call.req.status == 200)
+            {
+                eval(call.req.responseText);
+            }
+            else
+            {
+                DWREngine._handleError(call.id, call.req.responseText);
+            }
+        }
+        catch (ex)
+        {
+            DWREngine._handleError(call.id, ex);
+        }
+    }
+}
+
+/**
  * Hack a polymorphic dwrSerialize() function on all basic types. Yeulch
  * @see DWREngine._addSerializeFunctions
  * @private
@@ -667,29 +694,24 @@ DWREngine._serializeDate = function(output, referto, data, name)
 }
 
 /**
- * Called by XMLHttpRequest to indicate that something has happened
+ * Convert an XML string into a DOC object.
+ * @param xml The xml string
+ * @return a DOM version of the xml string 
  * @private
  */
-DWREngine._stateChange = function(call)
+DWREngine._unserializeDocument = function(xml)
 {
-    if (call.req.readyState == 4)
+    var parser = new DOMParser();
+    var dom = parser.parseFromString(xml, "text/xml");
+
+    if (!dom.documentElement || dom.documentElement.tagName == "parsererror")
     {
-        try
-        {
-            if (call.req.status && call.req.status == 200)
-            {
-                eval(call.req.responseText);
-            }
-            else
-            {
-                DWREngine._handleError(call.id, call.req.responseText);
-            }
-        }
-        catch (ex)
-        {
-            DWREngine._handleError(call.id, ex);
-        }
+        var message = dom.documentElement.firstChild.data;
+        message += "\n" + dom.documentElement.firstChild.nextSibling.firstChild.data;
+        throw message;
     }
+
+    return dom;
 }
 
 /**

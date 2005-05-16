@@ -4,10 +4,24 @@ Changes for Version 0.6
 Better documentation (Joe Walker)
 Better error messages (Joe Walker)
 New ScriptedCreator (Joe Walker)
-Wider support for browsers (Brian Doyle, Joe Walker)
-Performance fixed (Benjamin Francioni, Joe Walker)
+Wider support for browsers (Brian Doyle, Joe Walker, Mark Goodwin)
+Performance fixes (Benjamin Francioni, Joe Walker)
 Fix to support Jetty (Mark Murphy)
 Better SpringCreator (Joe Walker, Bram Smeets, Marc Logemann)
+Logging via commons-logging if it is avaiable (Joe Walker)
+New ContextCreator (Frank Nestel)
+URL tweak to provide more info to web log analysers (Joe Walker)
+New converters for DOM, JDOM, XOM, DOM4J (Joe Walker)
+Chat demo (Joe Walker)
+Validation demo (Joe Walker)
+Range selection addition to DWRUtil (Mark Goodwin, Joe Walker)
+OnReturn addition to DWRUtil (Joe Walker)
+
+Google suggest demo (Mark Goodwin, Frank Nestel, Joe Walker)
+Better table formatting utility (Attila)
+Optional queuing of requests so they arrive in the correct sequence (John Kleinschmidt)
+Batching of requests so several queries can be sent at the same time
+Finer grained access control
 
 Changes for Version 0.5
 -----------------------
