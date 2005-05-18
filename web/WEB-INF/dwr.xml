@@ -26,7 +26,6 @@
     <create creator="new" javascript="UrlValidator" class="org.apache.commons.validator.UrlValidator"/>
     <create creator="new" javascript="CreditCardValidator" class="org.apache.commons.validator.CreditCardValidator"/>
 
-    <!--
     <create creator="script" javascript="EmailValidator">
       <param name="language" value="beanshell"/>
       <param name="script">
@@ -34,7 +33,6 @@
         return EmailValidator.getInstance();
       </param>
     </create>
-    -->
 
     <convert converter="bean" match="uk.ltd.getahead.dwr.test.*"/>
     <convert converter="testbean" match="uk.ltd.getahead.dwr.test.TestBean2"/>
