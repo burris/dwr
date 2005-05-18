@@ -19,19 +19,11 @@
   var getSalary = function(person) { return person.salary };
   var getEdit = function(person)
   {
-      var input = document.createElement("input");
-      input.setAttribute("type", "button");
-      input.setAttribute("value", "Edit");
-      input.setAttribute("onclick", "readPerson('" + person.id + "')");
-      return input;
+      return "<input type='button' value='Edit' onclick='readPerson(\"" + person.id + "\")'/>";
   };
   var getDelete = function(person)
   {
-      var input = document.createElement("input");
-      input.setAttribute("type", "button");
-      input.setAttribute("value", "Delete");
-      input.setAttribute("onclick", "deletePerson(" + person.id + ", '" + person.name + "')");
-      return input;
+      return "<input type='button' value='Delete' onclick='deletePerson(\"" + person.id + "\", \"" + person.name + "\")'/>";
   };
   function fillTable(people)
   {
