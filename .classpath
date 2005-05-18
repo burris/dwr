@@ -23,6 +23,18 @@
 		<attributes>
 		</attributes>
 	</classpathentry>
+	<classpathentry sourcepath="/library/jarlib/jdom-1.0/jdom-1.0.zip" kind="lib" path="jar/jdom.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/library/jarlib/dom4j-1.5/dom4j-1.5.zip" kind="lib" path="jar/dom4j-1.5.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="/library/jarlib/xom-1.0/xom-1.0.zip" kind="lib" path="jar/xom-1.0.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
 	<classpathentry sourcepath="/library/jarlib/bsf-2.3/bsf-src-2.3.0.zip" kind="lib" path="web/WEB-INF/lib/bsf.jar">
 		<attributes>
 		</attributes>
@@ -48,18 +60,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="test">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="/jsword-support/othersource/jdom-1.0.zip" kind="lib" path="/common/jar/jdom-1.0/jdom-1.0.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/eliza/jar/dom4j-1.5/dom4j-1.5.jar">
-		<attributes>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/library/jarlib/xom-1.0/xom-1.0.jar">
 		<attributes>
 		</attributes>
 	</classpathentry>
