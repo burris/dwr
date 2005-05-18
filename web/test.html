@@ -331,6 +331,9 @@
       starttime = new Date();
       index = 0;
       failcount = 0;
+
+      DWRUtil.showById("reply");
+
       executeTest();
   }
 
@@ -485,8 +488,13 @@
   {
       // which test have we just run?
       var test = tests[index];
+      var code = "Unknown";
+      if (test && test.code)
+      {
+          code = test.code;
+      }
 
-      failures.innerHTML += test.code + "<br/>&nbsp;&nbsp;Error: " + data + "<br/>";
+      failures.innerHTML += code + "<br/>&nbsp;&nbsp;Error: " + data + "<br/>";
       failcount++;
       failreport.innerHTML = failcount;
 
@@ -504,10 +512,63 @@
   {
       Test.getNestingTest(nestReply);
   }
+
+  function report()
+  {
+      Test.reply(showResults, {
+          totals:DWRUtil.getValue("totals"),
+          moreinfo:DWRUtil.getValue("moreinfo"),
+          failures:DWRUtil.getValue("failures"),
+          execreport:DWRUtil.getValue("execreport"),
+          failreport:DWRUtil.getValue("failreport"),
+          useragentReported:DWRUtil.getValue("useragent-reported"),
+          useragentReal:DWRUtil.getValue("useragent-real")
+      });
+  }
+
+  function showResults(data)
+  {
+      DWRUtil.showById("results");
+      DWRUtil.clearChildNodes("resultsTable");
+      DWRUtil.drawTable("resultsTable", data, [
+          function(row)
+          {
+              return row;
+          },
+          function(row)
+          {
+              var results = data[row];
+              var reply = "";
+              for (var report in results)
+              {
+                  reply += report + " failures, reported " + results[report] + " time(s).<br/>";
+              }
+              return reply;
+          }
+      ]);
+  }
+
+  function init()
+  {
+    DWRUtil.setValue("useragent-real", navigator.userAgent);
+    DWRUtil.setValue("useragent-reported", navigator.userAgent);
+  }
   </script>
+  <style>
+  #results td, #results th
+  {
+      border: 1px solid #999999;
+      padding: 2px 5px 2px 5px;
+  }
+
+  #results table
+  {
+      border-collapse: collapse;
+  }
+  </style>
 </head>
 
-<body>
+<body onload="init()">
 <div id="page-logo">DWR</div>
 <div id="page-title">Direct Web Remoting - AJAX and XMLHttpRequest made easy</div>
 <div id="page-portlet-1" class="sidebody">
@@ -537,6 +598,41 @@
 </p>
 <div id="failures" style="border: 1px solid red; max-height:200px; overflow:auto; width:90%;">
   None:
+</div>
+
+<div id="reply" style="display:none;">
+  <h2 style="margin-top:40px;">More Information</h2>
+  <p>
+    Please wait until the tests have finished, and then tell us if they worked
+    so we can make DWR better.
+  </p>
+  <p>
+    If you got any error dialogs, please tell us roughly what they said:
+    <br/>
+    <textarea id="moreinfo" style="width:100%; margin-top:10px; margin-bottom:10px;" rows="5">
+    </textarea>
+    <br/>
+    If your browser is spoofing its identity, please tell us what it really is.
+    Full user agent not required, something like "Opera/4" or "IE/5" is fine. 
+    <br/>
+    <input type="hidden" id="useragent-reported"/>
+    <input type="text" id="useragent-real" style="width:100%; margin-top:10px; margin-bottom:10px;"/>
+    <br/>
+    <input type="button" onclick="report();" value="File report / Get results"/>
+  </p>
+</div>
+
+<div id="results" style="display:none;">
+  <table>
+    <thead>
+      <tr>
+        <th>Browser</th>
+        <th>Results</th>
+      </tr>
+    </thead>
+    <tbody id="resultsTable">
+    </tbody>
+  </table>
 </div>
 
 </div>

@@ -241,15 +241,15 @@ DWRUtil.fillList = function(id, data, valueprop, textprop)
 }
 
 /**
- * Under the tbody (given by id) create a row for each element in the dataArray
+ * Under the tbody (given by id) create a row for each element in the data
  * and for that row create one cell for each function in the cellFuncs array
- * by passing the rows object (from the dataArray) to the given function.
+ * by passing the rows object (from the data) to the given function.
  * The return from the function is used to populate the cell.
  * <p>The pseudo code looks something like this:
  * <pre>
- *   for (var i = 0; i < dataArray.length; i++)
+ *   for (var i = 0; i < data.length; i++)
  *     for (var j = 0; j < cellFuncs.length; j++)
- *       create cell from cellFuncs[j](dataArray[i])
+ *       create cell from cellFuncs[j](data[i])
  * </pre>
  * One slight modification to this is that any members of the cellFuncs array
  * that are strings instead of functions, the strings are used as cell contents
@@ -258,70 +258,91 @@ DWRUtil.fillList = function(id, data, valueprop, textprop)
  * on IE5 Mac. So we might need to rely on typeof == "string" alone. I'm not
  * yet sure if this might be an issue.
  * @param tbodyID The id of the tbody element
- * @param dataArray Array containing one entry for each row in the updated table
+ * @param data Array containing one entry for each row in the updated table
  * @param cellFuncs An array of functions (one per column) for extracting cell
  *    data from the passed row data
  */
-DWRUtil.drawTable = function(tbodyID, dataArray, cellFuncs)
+DWRUtil.drawTable = function(tbodyID, data, cellFuncs)
 {
     // assure bug-free redraw in Gecko engine by
     // letting window show cleared table
     if (navigator.product && navigator.product == "Gecko")
     {
-        setTimeout(function() { DWRUtil._drawTableInner(tbodyID, dataArray, cellFuncs); }, 0);
+        setTimeout(function() { DWRUtil._drawTableInner(tbodyID, data, cellFuncs); }, 0);
     }
     else
     {
-        DWRUtil._drawTableInner(tbodyID, dataArray, cellFuncs);
+        DWRUtil._drawTableInner(tbodyID, data, cellFuncs);
     }
 }
 
+Array.prototype.isArray = true;
+String.prototype.isString = true;
+
 /**
  * Internal function to help rendering tables.
- * @see DWRUtil.drawTable(tbodyID, dataArray, cellFuncs)
+ * @see DWRUtil.drawTable(tbodyID, data, cellFuncs)
  * @private
  */
-DWRUtil._drawTableInner = function(tbodyID, dataArray, cellFuncs)
+DWRUtil._drawTableInner = function(tbodyID, data, cellFuncs)
 {
     var frag = document.createDocumentFragment();
 
-    // loop through data source
-    for (var i = 0; i < dataArray.length; i++)
+    if (data.isArray)
     {
-        var tr = document.createElement("tr");
-
-        for (var j = 0; j < cellFuncs.length; j++)
+        // loop through data source
+        for (var i = 0; i < data.length; i++)
         {
-            var td = document.createElement("td");
-            tr.appendChild(td);
-
-            var func = cellFuncs[j];
-            if (typeof func == "string" || func instanceof String)
-            {
-                var text = document.createTextNode(func);
-                td.appendChild(text);
-            }
-            else
-            {
-                var reply = func(dataArray[i]);
-                if (DWRUtil.isHTMLElement(reply))
-                {
-                    td.appendChild(reply);
-                }
-                else
-                {
-                    td.innerHTML = reply;
-                    //var text = document.createTextNode(reply);
-                    //td.appendChild(text);
-                }
-            }
+            DWRUtil._drawRowInner(frag, data[i], cellFuncs);
         }
-
-        frag.appendChild(tr);
+    }
+    else if (typeof data == "object")
+    {
+        for (var row in data)
+        {
+            DWRUtil._drawRowInner(frag, row, cellFuncs);
+        }
     }
 
     var tbody = DWRUtil.getElementById(tbodyID);
     tbody.appendChild(frag);
+}
+
+/**
+ *
+ */
+DWRUtil._drawRowInner = function(frag, row, cellFuncs)
+{
+    var tr = document.createElement("tr");
+
+    for (var j = 0; j < cellFuncs.length; j++)
+    {
+        var td = document.createElement("td");
+        tr.appendChild(td);
+
+        var func = cellFuncs[j];
+        if (typeof func == "string" || func.isString)
+        {
+            var text = document.createTextNode(func);
+            td.appendChild(text);
+        }
+        else
+        {
+            var reply = func(row);
+            if (DWRUtil.isHTMLElement(reply))
+            {
+                td.appendChild(reply);
+            }
+            else
+            {
+                td.innerHTML = reply;
+                //var text = document.createTextNode(reply);
+                //td.appendChild(text);
+            }
+        }
+    }
+
+    frag.appendChild(tr);
 }
 
 /**
@@ -874,10 +895,10 @@ function fillList(id, data, valueprop, textprop)
 /**
  * @deprecated
  */
-function drawTable(tbodyID, dataArray, cellFuncs)
+function drawTable(tbodyID, data, cellFuncs)
 {
     deprecated("drawTable");
-    DWRUtil.drawTable(tbodyID, dataArray, cellFuncs);
+    DWRUtil.drawTable(tbodyID, data, cellFuncs);
 }
 
 /**

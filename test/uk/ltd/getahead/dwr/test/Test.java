@@ -1,17 +1,27 @@
 package uk.ltd.getahead.dwr.test;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.ArrayList;
-import java.util.Collection;
+
+import javax.servlet.http.HttpServletRequest;
+
+import uk.ltd.getahead.dwr.ExecutionContext;
+import uk.ltd.getahead.dwr.util.Log;
 
 /**
  * Methods to help unit test DWR.
@@ -346,6 +356,135 @@ public class Test
     }
 
     /**
+     * @param data The results of the current test
+     * @return A summary of all the received results
+     */
+    public Map reply(Map data)
+    {
+        String failReport = (String) data.get("failreport"); //$NON-NLS-1$
+
+        HttpServletRequest request = ExecutionContext.get().getHttpServletRequest();
+        String userAgentHttp = request.getHeader("User-Agent"); //$NON-NLS-1$
+        userAgentHttp = simplfyUserAgent(userAgentHttp);
+
+        if (log == null)
+        {
+            try
+            {
+                String home = System.getProperty("user.home"); //$NON-NLS-1$
+                Writer out = new FileWriter(home + File.separator + "test.log", true); //$NON-NLS-1$
+                // URL url = ExecutionContext.get().getServletContext().getResource("/test.log"); //$NON-NLS-1$
+                // OutputStream out = url.openConnection().getOutputStream();
+                log = new PrintWriter(out);
+            }
+            catch (Exception ex)
+            {
+                Log.error("Failed to open test log file", ex); //$NON-NLS-1$
+            }
+        }
+
+        if (log != null)
+        {
+            for (Iterator it = data.keySet().iterator(); it.hasNext();)
+            {
+                String key = (String) it.next();
+                String value = (String) data.get(key);
+                log.write("\n" + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$                
+            }
+            log.write("\nuseragent-http=" + userAgentHttp); //$NON-NLS-1$
+            log.write("\naddr=" + request.getRemoteAddr()); //$NON-NLS-1$
+            log.write("\n"); //$NON-NLS-1$
+            log.flush();
+        }
+
+        // Update the results summary
+        Map failCounts = (Map) results.get(userAgentHttp);
+        if (failCounts == null)
+        {
+            failCounts = new HashMap();
+            results.put(userAgentHttp, failCounts);
+        }
+
+        Integer reports = (Integer) failCounts.get(failReport);
+        if (reports == null)
+        {
+            reports = new Integer(1);
+        }
+        else
+        {
+            reports = new Integer(reports.intValue() + 1);
+        }
+        failCounts.put(failReport, reports);
+
+        return results;
+    }
+
+    /**
+     * Attempt to simplfy a user-agent string
+     * @param sent The user-agent from the browser
+     * @return A user friendly version if possible
+     */
+    public static String simplfyUserAgent(String sent)
+    {
+        // Firefox
+        int offset = sent.indexOf("Firefox"); //$NON-NLS-1$
+        if (offset > 10)
+        {
+            return sent.substring(offset);
+        }
+
+        // IE
+        offset = sent.indexOf("MSIE"); //$NON-NLS-1$
+        if (offset > 10)
+        {
+            int end = sent.indexOf(";", offset); //$NON-NLS-1$
+            if (end == -1)
+            {
+                end = sent.length();
+            }
+            return sent.substring(offset, end);
+        }
+
+        // Konq
+        offset = sent.indexOf("Konqueror"); //$NON-NLS-1$
+        if (offset > 10)
+        {
+            int end = sent.indexOf(";", offset); //$NON-NLS-1$
+            if (end == -1)
+            {
+                end = sent.length();
+            }
+            return sent.substring(offset, end);
+        }
+
+        // Safari
+        offset = sent.indexOf("Konqueror"); //$NON-NLS-1$
+        if (offset > 10)
+        {
+            int end = sent.indexOf(";", offset); //$NON-NLS-1$
+            if (end == -1)
+            {
+                end = sent.length();
+            }
+            return sent.substring(offset, end);
+        }
+
+        // Opera
+        offset = sent.indexOf("Opera"); //$NON-NLS-1$
+        if (offset > 10)
+        {
+            int end = sent.indexOf(" ", offset); //$NON-NLS-1$
+            if (end == -1)
+            {
+                end = sent.length();
+            }
+            return sent.substring(offset, end);
+        }
+
+        return sent;
+    }
+
+    /**
      * @return string
      */
     public String delete()
@@ -394,4 +533,8 @@ public class Test
     {
         return "Test.dangerOverride() says hello."; //$NON-NLS-1$
     }
+
+    private static PrintWriter log = null;
+
+    private static Map results = new HashMap();
 }
