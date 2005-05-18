@@ -366,6 +366,10 @@ public class Test
         HttpServletRequest request = ExecutionContext.get().getHttpServletRequest();
         String userAgentHttp = request.getHeader("User-Agent"); //$NON-NLS-1$
         userAgentHttp = simplfyUserAgent(userAgentHttp);
+        if (userAgentHttp.length() > 100)
+        {
+            userAgentHttp = userAgentHttp.substring(0, 100);
+        }
 
         if (log == null)
         {
@@ -388,7 +392,15 @@ public class Test
             for (Iterator it = data.keySet().iterator(); it.hasNext();)
             {
                 String key = (String) it.next();
+                if (key.length() > 100)
+                {
+                    key = key.substring(0, 100);
+                }
                 String value = (String) data.get(key);
+                if (value.length() > 1000)
+                {
+                    value = value.substring(0, 1000);
+                }
                 log.write("\n" + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$                
             }
             log.write("\nuseragent-http=" + userAgentHttp); //$NON-NLS-1$
@@ -458,7 +470,7 @@ public class Test
         }
 
         // Safari
-        offset = sent.indexOf("Konqueror"); //$NON-NLS-1$
+        offset = sent.indexOf("Safari"); //$NON-NLS-1$
         if (offset > 10)
         {
             int end = sent.indexOf(";", offset); //$NON-NLS-1$
@@ -471,7 +483,7 @@ public class Test
 
         // Opera
         offset = sent.indexOf("Opera"); //$NON-NLS-1$
-        if (offset > 10)
+        if (offset > -1)
         {
             int end = sent.indexOf(" ", offset); //$NON-NLS-1$
             if (end == -1)
