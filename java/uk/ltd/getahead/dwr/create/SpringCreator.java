@@ -12,7 +12,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.UrlResource;
-import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
@@ -108,10 +108,11 @@ public class SpringCreator implements Creator
                 }
                 else
                 {
-                    ContextLoader loader = new ContextLoader();
-                    ServletContext context = ExecutionContext.get().getServletContext();
-
-                    factory = loader.initWebApplicationContext(context);
+                    if (factory == null)
+                    {
+                        ServletContext cx = ExecutionContext.get().getServletContext();
+                        factory = WebApplicationContextUtils.getWebApplicationContext(cx);
+                    }
                 }
             }
 
