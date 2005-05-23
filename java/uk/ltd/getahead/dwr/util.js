@@ -22,15 +22,28 @@ DWRUtil._agent = navigator.userAgent.toLowerCase();
 DWRUtil._isIE  = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.indexOf("opera") == -1));
 
 /**
+ * Array detector.
  * This is an attempt to work around the lack of support for instanceof in
  * some browsers.
+ * @param data The object to test
+ * @returns true iff <code>data</code> is an Array
  */
-Array.prototype.isArray = true;
-Boolean.prototype.isBoolean = true;
-Number.prototype.isNumber = true;
-Date.prototype.isDate = true;
-String.prototype.isString = true;
-Object.prototype.isObject = true;
+DWRUtil.isArray = function(data)
+{
+    return data.join ? true : false;
+}
+
+/**
+ * Date detector.
+ * This is an attempt to work around the lack of support for instanceof in
+ * some browsers.
+ * @param data The object to test
+ * @returns true iff <code>data</code> is a Date
+ */
+DWRUtil.isDate = function(data)
+{
+    return data.toUTCString ? true : false;
+}
 
 /**
  * Like document.getElementById() that works in more browsers.
@@ -302,7 +315,7 @@ DWRUtil._drawTableInner = function(tbodyID, data, cellFuncs)
 {
     var frag = document.createDocumentFragment();
 
-    if (data.isArray)
+    if (DWRUtil.isArray(data))
     {
         // loop through data source
         for (var i = 0; i < data.length; i++)
@@ -336,7 +349,7 @@ DWRUtil._drawRowInner = function(frag, row, cellFuncs)
         tr.appendChild(td);
 
         var func = cellFuncs[j];
-        if (typeof func == "string" || func.isString)
+        if (typeof func == "string")
         {
             var text = document.createTextNode(func);
             td.appendChild(text);
@@ -743,7 +756,7 @@ DWRUtil.toDescriptiveString = function(data)
     var reply = "";
     var i = 0;
 
-    if (data.isArray)
+    if (DWRUtil.isArray(data))
     {
         reply = "[";
         for (i = 0; i < data.length; i++)
@@ -768,12 +781,12 @@ DWRUtil.toDescriptiveString = function(data)
         return reply;
     }
 
-    if (data.isString || data.isNumber || data.isDate)
+    if (typeof data == "string" || typeof data == "number" || DWRUtil.isDate(data))
     {
         return data.toString();
     }
 
-    if (data.isObject)
+    if (typeof data == "object")
     {
         var typename = DWRUtil.detailedTypeOf(data);
         if (typename != "Object")
