@@ -10,7 +10,8 @@ function DWREngine()
 
 /**
  * Constants to pick the XMLHttpRequest remoting method.
- * For example DWREngine.setMethod(DWREngine.XMLHttpRequest);
+ * For example:
+ * <code>DWREngine.setMethod(DWREngine.XMLHttpRequest);</code>
  * @see DWREngine.setMethod() 
  * @see DWREngine.IFrame
  */
@@ -18,7 +19,8 @@ DWREngine.XMLHttpRequest = 1;
 
 /**
  * Constants to pick the iframe remoting method.
- * For example DWREngine.setMethod(DWREngine.IFrame);
+ * For example:
+ * <code>DWREngine.setMethod(DWREngine.IFrame);</code>
  * @see DWREngine.setMethod()
  * @see DWREngine.XMLHttpRequest
  */

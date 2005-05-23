@@ -12,8 +12,13 @@ function DWRUtil()
  * This is eeevil, but the official way [if (window.someFunc) ...] does not
  * work when browsers differ in rendering ability rather than the use of someFunc()
  * For internal use only.
+ * @private
  */
 DWRUtil._agent = navigator.userAgent.toLowerCase();
+
+/**
+ * @private
+ */
 DWRUtil._isIE  = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.indexOf("opera") == -1));
 
 /**
@@ -28,7 +33,7 @@ String.prototype.isString = true;
 Object.prototype.isObject = true;
 
 /**
- * Set the CSS display style to 'block'
+ * Like document.getElementById() that works in more browsers.
  * @param id The id of the element
  */
 DWRUtil.getElementById = function(id)
@@ -105,7 +110,8 @@ DWRUtil.toggleDisplay = function(id)
 
 /**
  * Enables you to react to return being pressed in an input
- * For example <input type="text" onkeypressed="DWRUtil.onReturn(event, methodName)"/>
+ * For example:
+ * <code>&lt;input type="text" onkeypressed="DWRUtil.onReturn(event, methodName)"/&gt;</code>
  * @param event The event object for Netscape browsers
  * @param action Method name to execute when return is pressed
  */
@@ -317,7 +323,8 @@ DWRUtil._drawTableInner = function(tbodyID, data, cellFuncs)
 }
 
 /**
- *
+ * Iternal function to draw a single row of a table.
+ * @private
  */
 DWRUtil._drawRowInner = function(frag, row, cellFuncs)
 {
