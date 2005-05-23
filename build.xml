@@ -11,6 +11,7 @@
   <property name="source.web" value="${source.root}/web"/>
   <property name="target.class" value="${source.web}/WEB-INF/classes"/>
   <property name="target.war" value="${source.root}/target/ant/war"/>
+  <property name="target.jsdoc" value="${source.root}/target/ant/war"/>
 
   <!--=======================================================================-->
   <target name="war" description="Create a WAR directory">
@@ -40,6 +41,14 @@
         <exclude name="**/test/**"/>
       </fileset>
     </jar>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="jsdoc" description="Document the JavaScript">
+    <exec executable="/opt/jsdoc/jsdoc.pl" dir="${target.jsdoc}">
+      <arg file="${source.java}/uk/ltd/getahead/dwr/engine.js"/>
+      <arg file="${source.java}/uk/ltd/getahead/dwr/util.js"/>
+    </exec>
   </target>
 
   <!--=======================================================================-->

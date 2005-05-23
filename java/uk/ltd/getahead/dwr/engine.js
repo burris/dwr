@@ -31,7 +31,7 @@ DWREngine.IFrame = 2;
  * The default error handler is DWREngine.defaultMessageHandler so you can
  * change the error handler back to the original.
  * @param handler A function to call with single an error parameter on failure
- * @see DWREngine.defaultMessageHandler
+ * @see DWREngine.defaultMessageHandler()
  */
 DWREngine.setErrorHandler = function(handler)
 {
@@ -45,7 +45,7 @@ DWREngine.setErrorHandler = function(handler)
  * The default warning handler is DWREngine.defaultMessageHandler so you can
  * change the warning handler back to the original.
  * @param handler A function to call with single an warning parameter on failure
- * @see DWREngine.defaultMessageHandler
+ * @see DWREngine.defaultMessageHandler()
  */
 DWREngine.setWarningHandler = function(handler)
 {
