@@ -276,12 +276,14 @@ public class DWRServlet extends HttpServlet
 
         String interfaceURL = req.getContextPath() + req.getServletPath() + PATH_INTERFACE + scriptname + EXTENSION_JS;
         String engineURL = req.getContextPath() + req.getServletPath() + '/' + FILE_ENGINE;
+        String utilURL = req.getContextPath() + req.getServletPath() + '/' + FILE_UTIL;
 
         out.println("<html>"); //$NON-NLS-1$
         out.println("<head>"); //$NON-NLS-1$
         out.println("  <title>DWR Test</title>"); //$NON-NLS-1$
         out.println("  <script type='text/javascript' src='" + interfaceURL + "'></script>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("  <script type='text/javascript' src='" + engineURL + "'></script>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("  <script type='text/javascript' src='" + utilURL + "'></script>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("  <style>"); //$NON-NLS-1$
         out.println("    input.itext { font-size: smaller; background: #E4E4E4; border: 0; }"); //$NON-NLS-1$
         out.println("    input.ibutton { font-size: xx-small; border: 1px outset; margin: 0px; padding: 0px; }"); //$NON-NLS-1$
@@ -296,6 +298,11 @@ public class DWRServlet extends HttpServlet
         out.println("<pre>"); //$NON-NLS-1$
         out.println("  &lt;script type='text/javascript' src='<a href='" + interfaceURL + "'>" + interfaceURL + "</a>'&gt;&lt;/script&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         out.println("  &lt;script type='text/javascript' src='<a href='" + engineURL + "'>" + engineURL + "</a>'&gt;&lt;/script&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        out.println("</pre>"); //$NON-NLS-1$
+
+        out.println("<p>In addition there is an optional utility script:</p>"); //$NON-NLS-1$
+        out.println("<pre>"); //$NON-NLS-1$
+        out.println("  &lt;script type='text/javascript' src='<a href='" + utilURL + "'>" + utilURL + "</a>'&gt;&lt;/script&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         out.println("</pre>"); //$NON-NLS-1$
 
         out.println("<p>Replies from DWR are shown with a yellow background.<br/>"); //$NON-NLS-1$
@@ -345,7 +352,7 @@ public class DWRServlet extends HttpServlet
             out.println("  <script type='text/javascript'>"); //$NON-NLS-1$
             out.println("    var reply" + i + " = function(data)"); //$NON-NLS-1$ //$NON-NLS-2$
             out.println("    {"); //$NON-NLS-1$
-            out.println("      document.getElementById('d" + i + "').innerHTML = data;"); //$NON-NLS-1$ //$NON-NLS-2$
+            out.println("      DWRUtil.setValue('d" + i + "', DWRUtil.toDescriptiveString(data));"); //$NON-NLS-1$ //$NON-NLS-2$
             out.println("    }"); //$NON-NLS-1$
             out.println("  </script>"); //$NON-NLS-1$
             out.println("  <span id='d" + i + "' class='reply'></span>"); //$NON-NLS-1$ //$NON-NLS-2$

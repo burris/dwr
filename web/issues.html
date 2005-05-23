@@ -53,49 +53,6 @@
   using DWR.
 </p>
 
-<h3>Browser Compatibility</h3>
-<p>
-  DWR is regularly tested against Firefox 1.0, IE 6, and Opera 8 where it
-  appears to work just fine. We need to do more work in supporting other
-  browsers; If you can help testing or fixing these browsers, please join
-  <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList">dwr-dev</a>
-  mailing list.
-  <table>
-    <tr>
-      <th>Browser</th>
-      <th>Status</th>
-    </tr>
-    <tr>
-      <td>Firefox 1.0.x</td>
-      <td>No known issues</td>
-    </tr>
-    <tr>
-      <td>IE 6.0</td>
-      <td>No known issues</td>
-    </tr>
-    <tr>
-      <td>IE 5.x</td>
-      <td>Unknown. Please help us test.</td>
-    </tr>
-    <tr>
-      <td>Opera 8.0</td>
-      <td>Mostly working fine, minor issues with <a href="https://dwr.dev.java.net/issues/show_bug.cgi?id=20">strings containing nulls</a></td>
-    </tr>
-    <tr>
-      <td>Opera 7.x</td>
-      <td>Unknown. Please help us test.</td>
-    </tr>
-    <tr>
-      <td>Safari 1.3</td>
-      <td>Unknown. Please help us test.</td>
-    </tr>
-    <tr>
-      <td>Safari 1.2</td>
-      <td>Unknown. Please help us test.</td>
-    </tr>
-  </table>
-</p>
-
 <h3>Asynchronisity</h3>
 <p>
   It might be nice if DWR could return the data to Javascript without you
@@ -168,11 +125,10 @@ public void debugPeople(List people)
   term the problem could be solved by everyone changing to the JDK 1.5 syntax.
   There is a potential for us to invent an extension to the dwr.xml config
   file that allowed us to say <code>void debugPeople(List people)</code> is the
-  same as <code>void debugPeople(List&lt;Person> people)</code>.
+  same as <code>void debugPeople(List&lt;Person&gt; people)</code>.
 </p>
 
 <h3>JDK 1.3 and Unicode</h3>
-
 <p>
   There is a known issue with the JDK 1.3 version of URLDecoder.decode() not
   being able to handle encodings other than the platform default. So passing
@@ -180,17 +136,11 @@ public void debugPeople(List people)
   being.
 </p>
 
-<h3>Other Issues</h3>
-
+<h4>Multi-Site Usage</h4>
 <p>
-  This section is being used as a dumping ground for potential gotchas that we
-  may get around to investigating one day.
-</p>
-
-<p>
-  Is there any guarantee that the ordering of param-names as read by DWR will
-  be the same as the file ordering? The order in which the files are read is
-  important since the files may depend on each other.
+  Due to security restrictions in browsers the site hosting the HTML pages must
+  be the same as the site with the webapp. You can't have one web-server giving
+  out HTML that directs the browser to request Javascript pages from another.
 </p>
 
 </div>

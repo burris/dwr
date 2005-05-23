@@ -9,14 +9,29 @@ function DWREngine()
 }
 
 /**
- * The constants to pick the remoting method
+ * Constants to pick the XMLHttpRequest remoting method.
+ * For example DWREngine.setMethod(DWREngine.XMLHttpRequest);
+ * @see DWREngine.setMethod() 
+ * @see DWREngine.IFrame
  */
 DWREngine.XMLHttpRequest = 1;
+
+/**
+ * Constants to pick the iframe remoting method.
+ * For example DWREngine.setMethod(DWREngine.IFrame);
+ * @see DWREngine.setMethod()
+ * @see DWREngine.XMLHttpRequest
+ */
 DWREngine.IFrame = 2;
 
 /**
- * The error handler function
+ * The default error handler displays an alert box, but that is not correct
+ * for all applications, so this method allows you to set an alternative
+ * error handler.
+ * The default error handler is DWREngine.defaultMessageHandler so you can
+ * change the error handler back to the original.
  * @param handler A function to call with single an error parameter on failure
+ * @see DWREngine.defaultMessageHandler
  */
 DWREngine.setErrorHandler = function(handler)
 {
@@ -24,9 +39,13 @@ DWREngine.setErrorHandler = function(handler)
 }
 
 /**
- * The warning handler function, called with a single message parameter whenever
- * we need to warn the user about something..
- * @param handler A function to call with single an error parameter on failure
+ * The default warning handler displays an alert box, but that is not correct
+ * for all applications, so this method allows you to set an alternative
+ * warning handler.
+ * The default warning handler is DWREngine.defaultMessageHandler so you can
+ * change the warning handler back to the original.
+ * @param handler A function to call with single an warning parameter on failure
+ * @see DWREngine.defaultMessageHandler
  */
 DWREngine.setWarningHandler = function(handler)
 {
@@ -37,7 +56,7 @@ DWREngine.setWarningHandler = function(handler)
  * The Pre-Hook is called before any DWR remoting is done.
  * Pre hooks can be useful for displaying "please wait" messages.
  * @param handler A function to call with no params before remoting
- * @see DWREngine.setPostHook
+ * @see DWREngine.setPostHook()
  */
 DWREngine.setPreHook = function(handler)
 {
@@ -48,7 +67,7 @@ DWREngine.setPreHook = function(handler)
  * The Post-Hook is called after any DWR remoting is done.
  * Pre hooks can be useful for removing "please wait" messages.
  * @param handler A function to call with no params after remoting
- * @see DWREngine.setPreHook
+ * @see DWREngine.setPreHook()
  */
 DWREngine.setPostHook = function(handler)
 {
@@ -479,21 +498,11 @@ DWREngine._removeSerializeFunctions = function()
 
 /**
  * Marshall a data item
- * @private
  * @param output A map of variables to how they have been marshalled
  * @param referto An array of already marshalled variables to prevent recurrsion
  * @param data The data to be marshalled
  * @param name The name of the data being marshalled
- */
-DWREngine._serializeAll = function(output, referto, data, name)
-{
-    DWREngine._serializeAll(output, referto, data, name)
-}
-
-/**
- * Marshall a data item of unknown type
  * @private
- * @see DWREngine._serializeAll()
  */
 DWREngine._serializeAll = function(output, referto, data, name)
 {
@@ -555,7 +564,7 @@ DWREngine._serializeAll = function(output, referto, data, name)
  * versions of the objects used as keys so all objects count as the same thing.
  * So we need to have referto as an array and go through it sequentially
  * checking for equality with data
- * @para
+ * @private
  */
 DWREngine._lookup = function(referto, data, name)
 {

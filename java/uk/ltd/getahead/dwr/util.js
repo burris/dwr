@@ -17,6 +17,17 @@ DWRUtil._agent = navigator.userAgent.toLowerCase();
 DWRUtil._isIE  = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.indexOf("opera") == -1));
 
 /**
+ * This is an attempt to work around the lack of support for instanceof in
+ * some browsers.
+ */
+Array.prototype.isArray = true;
+Boolean.prototype.isBoolean = true;
+Number.prototype.isNumber = true;
+Date.prototype.isDate = true;
+String.prototype.isString = true;
+Object.prototype.isObject = true;
+
+/**
  * Set the CSS display style to 'block'
  * @param id The id of the element
  */
@@ -275,9 +286,6 @@ DWRUtil.drawTable = function(tbodyID, data, cellFuncs)
         DWRUtil._drawTableInner(tbodyID, data, cellFuncs);
     }
 }
-
-Array.prototype.isArray = true;
-String.prototype.isString = true;
 
 /**
  * Internal function to help rendering tables.
@@ -721,52 +729,79 @@ DWRUtil.alternateRowColors = function()
 
 /**
  * A better toString that the default for an Object
+ * @param data The object to describe
  */
-DWRUtil.toDescriptiveString = function(object)
+DWRUtil.toDescriptiveString = function(data)
 {
-    if (typeof object != "object")
-    {
-        return object.toString();
-    }
-
-    /*
-    if (data instanceof Boolean || data instanceof Number ||
-        data instanceof String || data instanceof Date)
-    {
-        return object.toString();
-    }
-    */
-
-    if (object.toString != Object.prototype.toString)
-    {
-        return object.toString();
-    }
-
-    var reply = "" + DWRUtil.detailedTypeOf(object) + " {";
+    var reply = "";
     var i = 0;
-    for (var prop in object)
+
+    if (data.isArray)
     {
-        var value = "" + object[prop];
-        if (value.length > 13)
+        reply = "[";
+        for (i = 0; i < data.length; i++)
         {
-            value = value.substring(0, 10) + "...";
-        }
+            var value = data[i];
+            if (value.length > 13)
+            {
+                value = value.substring(0, 10) + "...";
+            }
 
-        reply += prop;
-        reply += ":";
-        reply += value;
-        reply += ", ";
+            reply += value;
+            reply += ", ";
 
-        i++;
-        if (i > 5)
-        {
-            reply += "...";
-            break;
+            if (i > 5)
+            {
+                reply += "...";
+                break;
+            }
         }
+        reply += "]";
+
+        return reply;
     }
-    reply += "}";
 
-    return reply;
+    if (data.isString || data.isNumber || data.isDate)
+    {
+        return data.toString();
+    }
+
+    if (data.isObject)
+    {
+        var typename = DWRUtil.detailedTypeOf(data);
+        if (typename != "Object")
+        {
+            reply = typename + " ";
+        }
+        reply += "{";
+
+        for (var prop in data)
+        {
+            var value = "" + data[prop];
+            if (value.length > 13)
+            {
+                value = value.substring(0, 10) + "...";
+            }
+
+            reply += prop;
+            reply += ":";
+            reply += value;
+            reply += ", ";
+
+            i++;
+            if (i > 5)
+            {
+                reply += "...";
+                break;
+            }
+        }
+
+        reply += "}";
+
+        return reply;
+    }
+
+    return data.toString();
 }
 
 /**

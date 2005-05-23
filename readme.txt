@@ -24,7 +24,43 @@ Hype
 ----
 If I post an announcement to some site I record it here, so I can cut and paste next time faster
 
-Java.net 2005-04-30
+Remember TSS does not support https URLs
+
+Java.net: 2005-05-19
+DWR 0.6 Released. AJAX and XMLHttpRequest made easy
+http://www.getahead.ltd.uk/dwr/
+http://www.getahead.ltd.uk/blog/joe/2005/05/19/1116499666404.html
+Joe Walker has just released <a href="http://www.getahead.ltd.uk/dwr/">DWR version 0.6</a>. This release contains lots of new features, including support for automatic marshalling of DOM trees, better Spring support, better browser support and optional commons-logging support.
+The full change list includes:
+- New ScriptedCreator so you can use Groovy (or any other language supported by BSF), etc to configure new interface objects.
+- Wider support for browsers. DWR now works with Firefox, Safari, IE, Konqueror, Opera, and Mozilla.
+- The SpringCreator will now read from bean files configured in web.xml
+- Logging via commons-logging if it is avaiable, or the old Servlet.log method if not.
+- New converters for DOM, JDOM, XOM and DOM4J so you can pass DOM trees between the client and server without thinking
+- Fix to support Jetty
+- URL tweak to provide more info to web log analysers
+- New ContextCreator to allow remoted objects to be stored in the servlet application context
+- 2 New utilities in DWRUtil: Range selection, and return event handling
+- There is also better documentation, error messages that are easier to decipher, better performance and other bug fixes
+You can download the <a href="https://dwr.dev.java.net/servlets/ProjectDocumentList?folderID=3398">jar file and sources from java.net</a>. Or see the <a href="http://www.getahead.ltd.uk/dwr/">main project page.
+
+TSS: 2005-05-19
+DWR 0.6 Released. AJAX and XMLHttpRequest made easy
+Joe Walker has just released <a href="http://www.getahead.ltd.uk/dwr/">DWR version 0.6</a>. This release contains lots of new features, including support for automatic marshalling of DOM trees, better Spring support, better browser support and optional commons-logging support.
+The full change list includes:
+- New ScriptedCreator so you can use Groovy (or any other language supported by BSF), etc to configure new interface objects.
+- Wider support for browsers. DWR now works with Firefox, Safari, IE, Konqueror, Opera, and Mozilla.
+- The SpringCreator will now read from bean files configured in web.xml
+- Logging via commons-logging if it is avaiable, or the old Servlet.log method if not.
+- New converters for DOM, JDOM, XOM and DOM4J so you can pass DOM trees between the client and server without thinking
+- Fix to support Jetty
+- URL tweak to provide more info to web log analysers
+- New ContextCreator to allow remoted objects to be stored in the servlet application context
+- 2 New utilities in DWRUtil: Range selection, and return event handling
+- There is also better documentation, error messages that are easier to decipher, better performance and other bug fixes
+You can download the <a href="https://dwr.dev.java.net/servlets/ProjectDocumentList?folderID=3398">jar file and sources from java.net</a>. Or see the <a href="http://www.getahead.ltd.uk/dwr/">main project page</a>.
+
+Java.net: 2005-04-30
 DWR 0.5 Released: Ajax and XMLHttpRequest made simple
 http://www.getahead.ltd.uk/dwr/
 http://www.getahead.ltd.uk/blog/joe/2005/04/28/1114692652085.html

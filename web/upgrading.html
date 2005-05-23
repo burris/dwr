@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>DWR - Upgrading to DWR 0.4</title>
+  <title>DWR - Upgrading DWR</title>
   <link rel="stylesheet" type="text/css" href="generic.css"/>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
   <script type='text/javascript' src='/dwr/dwr/util.js'></script>
@@ -18,6 +18,13 @@
 
 <div id="page-content">
 
+<h2>Upgrading to DWR 0.6</h2>
+<p>
+  There are plenty of <a href="changelog.html">new features with DWR 0.6</a>,
+  however all changes are backwards compatible so no edits are required to your
+  applications.
+</p>
+
 <h2>Upgrading to DWR 0.5</h2>
 <p>
   All the functions in util.js and engine.js are now 'static class' functions.
@@ -28,7 +35,7 @@
 <p>
   The Spring Creator has been given an overhall. The resourceName parameter is
   deprecated, and will be removed soon. It is probably best to look at the
-  <a href="config-howto.html">configration documentation</a> to see how the new
+  <a href="spring.html">configration documentation</a> to see how the new
   version works.
 </p>
 
@@ -47,8 +54,8 @@
   web folder of this too)
   <br/>
   I suggest starting with the example in the web/WEB-INF folder and removing
-  the &lt;init> section and for each allow have a
-  &lt;create creator="new" javascript="Test" class="full.java.pkg.Test"/> tag.
+  the &lt;init&gt; section and for each allow have a
+  &lt;create creator="new" javascript="Test" class="full.java.pkg.Test"/&gt; tag.
   <br/>
   The different type of creators allow us to have different sources for the
   beans. <code>new</code> was all that existed in dwr 0.3. <code>session</code>
@@ -66,13 +73,13 @@
   There is one other breaking change, where in your html you were doing:
 </p>
 <pre>
-&lt;script type='text/javascript' src='/XXX/dwr/interface/full.java.pkg.Test.js'></script>
+&lt;script type='text/javascript' src='/XXX/dwr/interface/full.java.pkg.Test.js'&gt;&lt;/script&gt;
 </pre>
 <p>
   You would need to do:
 </p>
 <pre>
-&lt;script type='text/javascript' src='/XXX/dwr/interface/Test.js'></script>
+&lt;script type='text/javascript' src='/XXX/dwr/interface/Test.js'&gt;&lt;/script&gt;
 </pre>
 <p>
   Where Test is the value you specify in the javascript attribute in your create tag (see above).
