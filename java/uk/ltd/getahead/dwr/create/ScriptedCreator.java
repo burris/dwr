@@ -6,7 +6,7 @@ import org.apache.bsf.BSFManager;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A creator that simply uses the default constructor each time it is called.
@@ -45,7 +45,7 @@ public class ScriptedCreator implements Creator
             }
             catch (InstantiationException ex)
             {
-                Log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
+                log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
                 return Object.class;
             }
         }
@@ -64,10 +64,15 @@ public class ScriptedCreator implements Creator
         }
         catch (Exception ex)
         {
-            Log.error("Error executing script", ex); //$NON-NLS-1$
+            log.error("Error executing script", ex); //$NON-NLS-1$
             throw new InstantiationException(Messages.getString("Creator.IllegalAccess")); //$NON-NLS-1$
         }
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(ScriptedCreator.class);
 
     /**
      * Our script evaluation environment

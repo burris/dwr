@@ -16,7 +16,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.LogErrorHandler;
 
 /**
@@ -47,7 +47,7 @@ public final class Configuration
         }
         catch (Exception ex)
         {
-            Log.fatal("Failed to parse dwr.xml", ex); //$NON-NLS-1$
+            log.fatal("Failed to parse dwr.xml", ex); //$NON-NLS-1$
         }
     }
 
@@ -120,11 +120,11 @@ public final class Configuration
         }
         catch (Exception ex)
         {
-            Log.warn("Failed to load creator with id=" + id + ". classname=" + classname + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.warn("Failed to load creator with id=" + id + ". classname=" + classname + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (NoClassDefFoundError ex)
         {
-            Log.warn("Dependency failure loading creator with id=" + id + ". classname=" + classname + ": " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.warn("Dependency failure loading creator with id=" + id + ". classname=" + classname + ": " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
@@ -144,11 +144,11 @@ public final class Configuration
         }
         catch (Exception ex)
         {
-            Log.warn("Failed to load converter with id=" + id + ". classname=" + classname + ": " + ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.warn("Failed to load converter with id=" + id + ". classname=" + classname + ": " + ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (NoClassDefFoundError ex)
         {
-            Log.warn("Dependency failure loading converter with id=" + id + ". classname=" + classname + ": " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.warn("Dependency failure loading converter with id=" + id + ". classname=" + classname + ": " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
@@ -192,7 +192,7 @@ public final class Configuration
         }
         catch (Exception ex)
         {
-            Log.error("Failed to add convertor: match=" + match + ", type=" + type, ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Failed to add convertor: match=" + match + ", type=" + type, ex); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -212,7 +212,7 @@ public final class Configuration
         }
         catch (Exception ex)
         {
-            Log.error("Failed to add creator: type=" + type + ", javascript=" + javascript, ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Failed to add creator: type=" + type + ", javascript=" + javascript, ex); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -314,6 +314,11 @@ public final class Configuration
     {
         return converterManager;
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(Configuration.class);
 
     /**
      * The ConverterManager to which we delegate conversion of parameters

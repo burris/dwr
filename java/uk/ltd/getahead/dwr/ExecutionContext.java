@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.SwallowingHttpServletResponse;
 
 /**
@@ -222,7 +222,7 @@ public class ExecutionContext
         }
         catch (Exception ex)
         {
-            Log.fatal("Failed to create an ExecutionContext", ex); //$NON-NLS-1$
+            log.fatal("Failed to create an ExecutionContext", ex); //$NON-NLS-1$
         }
     }
 
@@ -253,4 +253,9 @@ public class ExecutionContext
         // Shut warnings up
         ExecutionContext ignore = ec; ec = ignore;
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(ExecutionContext.class);
 }

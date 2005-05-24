@@ -9,7 +9,7 @@ import java.util.Map;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A class to manage the types of creators and the instansiated creators.
@@ -97,12 +97,17 @@ public class DefaultCreatorManager implements CreatorManager
                 buffer.append(' ');
             }
 
-            Log.warn(buffer.toString());
+            log.warn(buffer.toString());
             throw new SecurityException(Messages.getString("DefaultCreatorManager.MissingName", name)); //$NON-NLS-1$
         }
 
         return creator;
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DefaultCreatorManager.class);
 
     /**
      * The list of the available creators

@@ -12,7 +12,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * This class represents a query made by a client in terms of the data that is
@@ -41,7 +41,7 @@ public final class ExecuteQuery
             parseParameters(parsePost(req));
         }
 
-        Log.debug("Exec: " + toString()); //$NON-NLS-1$
+        log.debug("Exec: " + toString()); //$NON-NLS-1$
     }
 
     /**
@@ -71,7 +71,7 @@ public final class ExecuteQuery
                 int sep = line.indexOf(ConversionConstants.INBOUND_DECL_SEPARATOR);
                 if (sep == -1)
                 {
-                    Log.warn("Missing separator in POST line: " + line); //$NON-NLS-1$
+                    log.warn("Missing separator in POST line: " + line); //$NON-NLS-1$
                 }
                 else
                 {
@@ -186,7 +186,7 @@ public final class ExecuteQuery
             Object object = creator.getInstance();
 
             // Execute
-            Log.info("Executing: " + method.toString()); //$NON-NLS-1$
+            log.info("Executing: " + method.toString()); //$NON-NLS-1$
             return method.invoke(object, converted);
         }
         catch (InvocationTargetException ex)
@@ -309,7 +309,7 @@ public final class ExecuteQuery
         // Pick a method to call
         if (available.size() > 1)
         {
-            Log.warn("Warning multiple matching methods. Using first match."); //$NON-NLS-1$
+            log.warn("Warning multiple matching methods. Using first match."); //$NON-NLS-1$
         }
 
         // At the moment we are just going to take the first match, for a
@@ -350,13 +350,18 @@ public final class ExecuteQuery
         }
         else
         {
-            Log.error("Missing : in conversion data"); //$NON-NLS-1$
+            log.error("Missing : in conversion data"); //$NON-NLS-1$
             reply[INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
             reply[INBOUND_INDEX_VALUE] = data;
         }
 
         return reply;
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(ExecuteQuery.class);
 
     private ConverterManager converterManager;
     private CreatorManager creatorManager;

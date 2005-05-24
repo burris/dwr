@@ -15,7 +15,7 @@ import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * An implementation of Converter for Dates.
@@ -69,7 +69,7 @@ public class DateConverter implements Converter
 
             if (size != 7)
             {
-                Log.warn("Date does not have 7 components: " + value); //$NON-NLS-1$
+                log.warn("Date does not have 7 components: " + value); //$NON-NLS-1$
             }
 
             for (int i = 0; i < size && i < 7; i++)
@@ -165,4 +165,9 @@ public class DateConverter implements Converter
         Calendar.SECOND,
         Calendar.MILLISECOND,
     };
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DateConverter.class);
 }

@@ -186,7 +186,7 @@ public final class LocalUtil
             {
                 if (!warn13)
                 {
-                    Log.warn("URLDecoder.decode(String, String) is not available. Falling back to 1.3 variant."); //$NON-NLS-1$
+                    log.warn("URLDecoder.decode(String, String) is not available. Falling back to 1.3 variant."); //$NON-NLS-1$
                     warn13 = true;
                 }
             }
@@ -202,12 +202,17 @@ public final class LocalUtil
             }
             catch (Exception ex)
             {
-                Log.warn("Failed to use JDK 1.4 decoder", ex); //$NON-NLS-1$
+                log.warn("Failed to use JDK 1.4 decoder", ex); //$NON-NLS-1$
             }
         }
 
         return URLDecoder.decode(value);
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(LocalUtil.class);
 
     private static boolean warn13 = false;
 

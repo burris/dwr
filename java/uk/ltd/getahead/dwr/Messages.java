@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * Internationalization for DWR
@@ -32,7 +32,7 @@ public class Messages
         }
         catch (MissingResourceException ex)
         {
-            Log.error("Missing I18N string: " + key, ex); //$NON-NLS-1$
+            log.error("Missing I18N string: " + key, ex); //$NON-NLS-1$
             return '!' + key + '!';
         }
     }
@@ -102,10 +102,15 @@ public class Messages
         }
         catch (MissingResourceException ex)
         {
-            Log.error("Missing I18N string: " + key, ex); //$NON-NLS-1$
+            log.error("Missing I18N string: " + key, ex); //$NON-NLS-1$
             return '!' + key + '!';
         }
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(Messages.class);
 
     /**
      * The lookup bundle

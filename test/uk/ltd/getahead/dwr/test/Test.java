@@ -21,7 +21,7 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 
 import uk.ltd.getahead.dwr.ExecutionContext;
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * Methods to help unit test DWR.
@@ -371,7 +371,7 @@ public class Test
             userAgentHttp = userAgentHttp.substring(0, 100);
         }
 
-        if (log == null)
+        if (logfile == null)
         {
             try
             {
@@ -379,15 +379,15 @@ public class Test
                 Writer out = new FileWriter(home + File.separator + "test.log", true); //$NON-NLS-1$
                 // URL url = ExecutionContext.get().getServletContext().getResource("/test.log"); //$NON-NLS-1$
                 // OutputStream out = url.openConnection().getOutputStream();
-                log = new PrintWriter(out);
+                logfile = new PrintWriter(out);
             }
             catch (Exception ex)
             {
-                Log.error("Failed to open test log file", ex); //$NON-NLS-1$
+                log.error("Failed to open test log file", ex); //$NON-NLS-1$
             }
         }
 
-        if (log != null)
+        if (logfile != null)
         {
             for (Iterator it = data.keySet().iterator(); it.hasNext();)
             {
@@ -401,12 +401,12 @@ public class Test
                 {
                     value = value.substring(0, 1000);
                 }
-                log.write("\n" + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$                
+                logfile.write("\n" + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$                
             }
-            log.write("\nuseragent-http=" + userAgentHttp); //$NON-NLS-1$
-            log.write("\naddr=" + request.getRemoteAddr()); //$NON-NLS-1$
-            log.write("\n"); //$NON-NLS-1$
-            log.flush();
+            logfile.write("\nuseragent-http=" + userAgentHttp); //$NON-NLS-1$
+            logfile.write("\naddr=" + request.getRemoteAddr()); //$NON-NLS-1$
+            logfile.write("\n"); //$NON-NLS-1$
+            logfile.flush();
         }
 
         // Update the results summary
@@ -546,7 +546,12 @@ public class Test
         return "Test.dangerOverride() says hello."; //$NON-NLS-1$
     }
 
-    private static PrintWriter log = null;
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(Test.class);
+
+    private static PrintWriter logfile = null;
 
     private static Map results = new HashMap();
 }

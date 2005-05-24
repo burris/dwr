@@ -4,13 +4,22 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * This class is intended to be used by Log when commons-logging is available,
- * but to not force Log itself to depend on commons-logging so Log can catch
+ * This class is intended to be used by Logger when commons-logging is available,
+ * but to not force Logger itself to depend on commons-logging so Logger can catch
  * the ClassDefNotFoundError and use other methods.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class CommonsLoggingOutput implements LoggingOutput
 {
+    /**
+     * Create a logger specific to commons-logging
+     * @param base The class to log against.
+     */
+    public CommonsLoggingOutput(Class base)
+    {
+        log = LogFactory.getLog(base);
+    }
+
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.util.LoggingOutput#debug(java.lang.String)
      */
@@ -75,5 +84,5 @@ public class CommonsLoggingOutput implements LoggingOutput
         log.fatal(message, th);
     }
 
-    private static Log log = LogFactory.getLog(uk.ltd.getahead.dwr.util.Log.class);
+    private Log log = LogFactory.getLog(uk.ltd.getahead.dwr.util.Logger.class);
 }

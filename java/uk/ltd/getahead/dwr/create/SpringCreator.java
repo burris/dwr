@@ -17,7 +17,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A creator that relies on a spring bean factory
@@ -61,7 +61,7 @@ public class SpringCreator implements Creator
             }
             catch (InstantiationException ex)
             {
-                Log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
+                log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
                 return Object.class;
             }
         }
@@ -88,14 +88,14 @@ public class SpringCreator implements Creator
                     URL url = getClass().getClassLoader().getResource(resourceName);
                     if (url != null)
                     {
-                        Log.info("Loading spring config via the classloader from " + url.toExternalForm()); //$NON-NLS-1$
+                        log.info("Loading spring config via the classloader from " + url.toExternalForm()); //$NON-NLS-1$
                     }
                     else
                     {
                         url = ExecutionContext.get().getServletContext().getResource(resourceName);
                         if (url != null)
                         {
-                            Log.info("Loading spring config via servlet context from " + url.toExternalForm()); //$NON-NLS-1$
+                            log.info("Loading spring config via servlet context from " + url.toExternalForm()); //$NON-NLS-1$
                         }
                         else
                         {
@@ -124,7 +124,7 @@ public class SpringCreator implements Creator
         }
         catch (Exception ex)
         {
-            Log.error("Error", ex); //$NON-NLS-1$
+            log.error("Error", ex); //$NON-NLS-1$
             throw new InstantiationException(ex.toString());
         }
     }
@@ -136,6 +136,11 @@ public class SpringCreator implements Creator
     {
         SpringCreator.factory = factory;
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(SpringCreator.class);
 
     private static BeanFactory factory = null;
 

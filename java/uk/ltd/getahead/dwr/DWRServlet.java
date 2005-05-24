@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 
 /**
@@ -68,7 +68,7 @@ public class DWRServlet extends HttpServlet
             }
             catch (Exception ex)
             {
-                Log.fatal("Invalid executionContext parameter", ex); //$NON-NLS-1$
+                log.fatal("Invalid executionContext parameter", ex); //$NON-NLS-1$
                 throw new ServletException(Messages.getString("DWRServlet.ExecutionContextInit", execCxName, ex)); //$NON-NLS-1$
             }
         }
@@ -86,7 +86,7 @@ public class DWRServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Log.fatal("Failed to create the creator manager", ex); //$NON-NLS-1$
+            log.fatal("Failed to create the creator manager", ex); //$NON-NLS-1$
             throw new ServletException(Messages.getString("DWRServlet.CreatorManagerInit", creatorMgrName, ex)); //$NON-NLS-1$
         }
 
@@ -103,7 +103,7 @@ public class DWRServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            Log.fatal("Failed to create the converter manager", ex); //$NON-NLS-1$
+            log.fatal("Failed to create the converter manager", ex); //$NON-NLS-1$
             throw new ServletException(Messages.getString("DWRServlet.ConverterManagerInit", converterMgrName, ex)); //$NON-NLS-1$
         }
 
@@ -195,7 +195,7 @@ public class DWRServlet extends HttpServlet
             }
             else
             {
-                Log.warn("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$
+                log.warn("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
         }
@@ -216,7 +216,7 @@ public class DWRServlet extends HttpServlet
     {
         if (!creatorManager.isDebug())
         {
-            Log.warn("Failed attempt to access index page outside of debug mode. Set the debug init-parameter to true to enable."); //$NON-NLS-1$
+            log.warn("Failed attempt to access index page outside of debug mode. Set the debug init-parameter to true to enable."); //$NON-NLS-1$
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
 
@@ -258,7 +258,7 @@ public class DWRServlet extends HttpServlet
     {
         if (!creatorManager.isDebug())
         {
-            Log.warn("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable."); //$NON-NLS-1$
+            log.warn("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable."); //$NON-NLS-1$
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
@@ -405,7 +405,7 @@ public class DWRServlet extends HttpServlet
             InputStream raw = getClass().getResourceAsStream(FILE_HELP);
             if (raw == null)
             {
-                Log.error(Messages.getString("DWRServlet.MissingHelp", FILE_HELP)); //$NON-NLS-1$
+                log.error(Messages.getString("DWRServlet.MissingHelp", FILE_HELP)); //$NON-NLS-1$
                 output = "<p>Failed to read help text from resource file. Check dwr.jar is built to include html files.</p>"; //$NON-NLS-1$
             }
             else
@@ -566,7 +566,7 @@ public class DWRServlet extends HttpServlet
             Object reply = eq.execute();
             OutboundVariable ss = converterManager.convertOutbound(reply);
 
-            Log.debug("Returning: id[" + eq.getId() + "] init[" + ss.getInitCode() + "] assign[" + ss.getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            log.debug("Returning: id[" + eq.getId() + "] init[" + ss.getInitCode() + "] assign[" + ss.getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
             LocalUtil.addNoCacheHeaders(resp);
 
@@ -597,11 +597,11 @@ public class DWRServlet extends HttpServlet
         {
             if (eq.isFailingBrowser())
             {
-                Log.warn("Failed to write to a failing browser.", ex); //$NON-NLS-1$
+                log.warn("Failed to write to a failing browser.", ex); //$NON-NLS-1$
                 return;
             }
 
-            Log.warn("Erroring: id[" + eq.getId() + "] message[" + ex.getMessage() + ']', ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.warn("Erroring: id[" + eq.getId() + "] message[" + ex.getMessage() + ']', ex); //$NON-NLS-1$ //$NON-NLS-2$
 
             try
             {
@@ -628,7 +628,7 @@ public class DWRServlet extends HttpServlet
             }
             catch (IOException ex2)
             {
-                Log.error("IO error: " + eq.getId(), ex2); //$NON-NLS-1$
+                log.error("IO error: " + eq.getId(), ex2); //$NON-NLS-1$
             }
         }
     }
@@ -654,7 +654,7 @@ public class DWRServlet extends HttpServlet
      */
     public int hashCode()
     {
-        Log.error("Warning: DWRServlet has not been designed for use in collections."); //$NON-NLS-1$
+        log.error("Warning: DWRServlet has not been designed for use in collections."); //$NON-NLS-1$
         return super.hashCode();
     }
 
@@ -706,6 +706,11 @@ public class DWRServlet extends HttpServlet
     protected static final String MIME_JS = "text/javascript"; //$NON-NLS-1$
 
     protected static final String BLANK = ""; //$NON-NLS-1$
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DWRServlet.class);
 
     /**
      * The default dwr.xml file path

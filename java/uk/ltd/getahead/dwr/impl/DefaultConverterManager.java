@@ -11,7 +11,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A class to manage the converter types and the instansiated class name matches.
@@ -40,7 +40,7 @@ public class DefaultConverterManager implements ConverterManager
         Class clazz = (Class) converterTypes.get(type);
         if (clazz == null)
         {
-            Log.info("Unable to marshall '" + match + "' because converter '" + type + "' is not available. The converter definition may be missing, or required element may be missing from the CLASSPATH"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Unable to marshall '" + match + "' because converter '" + type + "' is not available. The converter definition may be missing, or required element may be missing from the CLASSPATH"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return;
         }
 
@@ -253,6 +253,11 @@ public class DefaultConverterManager implements ConverterManager
 
         return converter;
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DefaultConverterManager.class);
 
     /**
      * The list of the available converters

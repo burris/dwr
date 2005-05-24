@@ -20,7 +20,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
-import uk.ltd.getahead.dwr.util.Log;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * Convert a Javascript associative array into a JavaBean
@@ -99,7 +99,7 @@ public class BeanConverter implements Converter
                 PropertyDescriptor descriptor = (PropertyDescriptor) props.get(key);
                 if (descriptor == null)
                 {
-                    Log.warn("No setter for " + key); //$NON-NLS-1$
+                    log.warn("No setter for " + key); //$NON-NLS-1$
                     StringBuffer all = new StringBuffer();
                     for (Iterator it = props.keySet().iterator(); it.hasNext();)
                     {
@@ -109,7 +109,7 @@ public class BeanConverter implements Converter
                             all.append(',');
                         }
                     }
-                    Log.warn("Setters exist for (" + all + ')'); //$NON-NLS-1$
+                    log.warn("Setters exist for (" + all + ')'); //$NON-NLS-1$
                 }
                 else
                 {
@@ -177,7 +177,7 @@ public class BeanConverter implements Converter
                     }
                     catch (Exception ex)
                     {
-                        Log.warn("Failed to convert " + name, ex); //$NON-NLS-1$
+                        log.warn("Failed to convert " + name, ex); //$NON-NLS-1$
 
                         buffer.append("alert('Failed to marshall: "); //$NON-NLS-1$
                         buffer.append(name);
@@ -193,6 +193,11 @@ public class BeanConverter implements Converter
 
         return buffer.toString();
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(BeanConverter.class);
 
     /**
      * To forward marshalling requests

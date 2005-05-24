@@ -9,51 +9,51 @@ package uk.ltd.getahead.dwr.util;
 public interface LoggingOutput
 {
     /**
-     * Log a debug message
+     * Logger a debug message
      * @param message The text to log
      */
     public void debug(String message);
 
     /**
-     * Log an info message
+     * Logger an info message
      * @param message The text to log
      */
     public void info(String message);
 
     /**
-     * Log a warning message
+     * Logger a warning message
      * @param message The text to log
      */
     public void warn(String message);
 
     /**
-     * Log a warning message
+     * Logger a warning message
      * @param message The text to log
      * @param th An optional stack trace
      */
     public void warn(String message, Throwable th);
 
     /**
-     * Log an error message
+     * Logger an error message
      * @param message The text to log
      */
     public void error(String message);
 
     /**
-     * Log an error message
+     * Logger an error message
      * @param message The text to log
      * @param th An optional stack trace
      */
     public void error(String message, Throwable th);
 
     /**
-     * Log a fatal error message
+     * Logger a fatal error message
      * @param message The text to log
      */
     public void fatal(String message);
 
     /**
-     * Log a fatal error message
+     * Logger a fatal error message
      * @param message The text to log
      * @param th An optional stack trace
      */

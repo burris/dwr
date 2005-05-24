@@ -34,7 +34,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public ServletOutputStream getOutputStream() throws IOException
     {
-        Log.warn("Potential errors in forwardingRequest converting binary data to string for url: " + url); //$NON-NLS-1$
+        log.warn("Potential errors in forwardingRequest converting binary data to string for url: " + url); //$NON-NLS-1$
         return oout;
     }
 
@@ -59,7 +59,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void sendError(int sc, String msg) throws IOException
     {
-        Log.warn("Ignoring call to sendError(" + sc + ", " + msg + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        log.warn("Ignoring call to sendError(" + sc + ", " + msg + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /* (non-Javadoc)
@@ -67,7 +67,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void sendError(int sc) throws IOException
     {
-        Log.warn("Ignoring call to sendError(" + sc + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        log.warn("Ignoring call to sendError(" + sc + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /* (non-Javadoc)
@@ -75,7 +75,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void sendRedirect(String location) throws IOException
     {
-        Log.warn("Ignoring call to sendRedirect(" + location + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        log.warn("Ignoring call to sendRedirect(" + location + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /* (non-Javadoc)
@@ -83,7 +83,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void setStatus(int sc)
     {
-        Log.warn("Ignoring call to setStatus(" + sc + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        log.warn("Ignoring call to setStatus(" + sc + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /* (non-Javadoc)
@@ -91,7 +91,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void setStatus(int sc, String sm)
     {
-        Log.warn("Ignoring call to setStatus(" + sc + ", " + sm + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        log.warn("Ignoring call to setStatus(" + sc + ", " + sm + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /* (non-Javadoc)
@@ -271,6 +271,11 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
     {
         return response.getLocale();
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(SwallowingHttpServletResponse.class);
 
     /**
      * The forwarding output stream

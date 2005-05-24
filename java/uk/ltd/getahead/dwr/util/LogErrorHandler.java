@@ -5,7 +5,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * An ErrorHandler that writes to the Log class
+ * An ErrorHandler that writes to the Logger class
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public final class LogErrorHandler implements ErrorHandler
@@ -15,7 +15,7 @@ public final class LogErrorHandler implements ErrorHandler
      */
     public void fatalError(SAXParseException ex) throws SAXException
     {
-        Log.fatal(getMessage(ex));
+        log.fatal(getMessage(ex));
     }
 
     /* (non-Javadoc)
@@ -23,7 +23,7 @@ public final class LogErrorHandler implements ErrorHandler
      */
     public void error(SAXParseException ex) throws SAXException
     {
-        Log.error(getMessage(ex));
+        log.error(getMessage(ex));
     }
 
     /* (non-Javadoc)
@@ -31,7 +31,7 @@ public final class LogErrorHandler implements ErrorHandler
      */
     public void warning(SAXParseException ex) throws SAXException
     {
-        Log.warn(getMessage(ex));
+        log.warn(getMessage(ex));
     }
 
     /**
@@ -52,4 +52,9 @@ public final class LogErrorHandler implements ErrorHandler
 
         return "Line=" + ex.getLineNumber() + ' ' + ex.getMessage(); //$NON-NLS-1$
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(LogErrorHandler.class);
 }
