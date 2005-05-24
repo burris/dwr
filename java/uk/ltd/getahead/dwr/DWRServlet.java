@@ -411,39 +411,42 @@ public class DWRServlet extends HttpServlet
         out.println("<li>Up to <a href='" + req.getContextPath() + "/'>top level of web app</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("</ul>"); //$NON-NLS-1$
 
-        String output = (String) scriptCache.get(FILE_HELP);
-        if (output == null)
+        synchronized (scriptCache)
         {
-            StringBuffer buffer = new StringBuffer();
-
-            InputStream raw = getClass().getResourceAsStream(FILE_HELP);
-            if (raw == null)
+            String output = (String) scriptCache.get(FILE_HELP);
+            if (output == null)
             {
-                log.error(Messages.getString("DWRServlet.MissingHelp", FILE_HELP)); //$NON-NLS-1$
-                output = "<p>Failed to read help text from resource file. Check dwr.jar is built to include html files.</p>"; //$NON-NLS-1$
-            }
-            else
-            {
-                BufferedReader in = new BufferedReader(new InputStreamReader(raw));
-                while (true)
+                StringBuffer buffer = new StringBuffer();
+    
+                InputStream raw = getClass().getResourceAsStream(FILE_HELP);
+                if (raw == null)
                 {
-                    String line = in.readLine();
-                    if (line == null)
-                    {
-                        break;
-                    }
-
-                    buffer.append(line);
-                    buffer.append('\n');
+                    log.error(Messages.getString("DWRServlet.MissingHelp", FILE_HELP)); //$NON-NLS-1$
+                    output = "<p>Failed to read help text from resource file. Check dwr.jar is built to include html files.</p>"; //$NON-NLS-1$
                 }
-
-                output = buffer.toString();
+                else
+                {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(raw));
+                    while (true)
+                    {
+                        String line = in.readLine();
+                        if (line == null)
+                        {
+                            break;
+                        }
+    
+                        buffer.append(line);
+                        buffer.append('\n');
+                    }
+    
+                    output = buffer.toString();
+                }
+    
+                scriptCache.put(FILE_HELP, output);
             }
-
-            scriptCache.put(FILE_HELP, output);
+    
+            out.println(output);
         }
-
-        out.println(output);
 
         out.println("</body></html>"); //$NON-NLS-1$
         out.flush();
@@ -532,32 +535,35 @@ public class DWRServlet extends HttpServlet
     {
         resp.setContentType(mimeType);
 
-        String output = (String) scriptCache.get(path);
-        if (output == null)
+        synchronized (scriptCache)
         {
-            StringBuffer buffer = new StringBuffer();
-
-            InputStream raw = getClass().getResourceAsStream(path);
-            BufferedReader in = new BufferedReader(new InputStreamReader(raw));
-            while (true)
+            String output = (String) scriptCache.get(path);
+            if (output == null)
             {
-                String line = in.readLine();
-                if (line == null)
+                StringBuffer buffer = new StringBuffer();
+    
+                InputStream raw = getClass().getResourceAsStream(path);
+                BufferedReader in = new BufferedReader(new InputStreamReader(raw));
+                while (true)
                 {
-                    break;
+                    String line = in.readLine();
+                    if (line == null)
+                    {
+                        break;
+                    }
+    
+                    buffer.append(line);
+                    buffer.append('\n');
                 }
-
-                buffer.append(line);
-                buffer.append('\n');
+    
+                output = buffer.toString();
+                scriptCache.put(path, output);
             }
 
-            output = buffer.toString();
-            scriptCache.put(path, output);
+            PrintWriter out = resp.getWriter();
+            out.println(output);
+            out.flush();
         }
-
-        PrintWriter out = resp.getWriter();
-        out.println(output);
-        out.flush();
     }
 
     /**
