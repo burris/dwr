@@ -40,7 +40,7 @@ public class DefaultConverterManager implements ConverterManager
         Class clazz = (Class) converterTypes.get(type);
         if (clazz == null)
         {
-            log.info("Unable to marshall '" + match + "' because converter '" + type + "' is not available. The converter definition may be missing, or required element may be missing from the CLASSPATH"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Can't marshall " + match + " because converter '" + type + "' is not available. The converter definition may be missing, or required element may be missing from the CLASSPATH"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return;
         }
 

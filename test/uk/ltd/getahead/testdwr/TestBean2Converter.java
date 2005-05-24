@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr.test;
+package uk.ltd.getahead.testdwr;
 
 import uk.ltd.getahead.dwr.convert.BeanConverter;
 

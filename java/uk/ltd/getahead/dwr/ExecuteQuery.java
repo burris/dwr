@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -171,11 +172,40 @@ public final class ExecuteQuery
             throw new IllegalArgumentException(Messages.getString("ExecuteQuery.UnknownMethod", toString())); //$NON-NLS-1$
         }
 
+        // Is it public
+        if (!Modifier.isPublic(method.getModifiers()))
+        {
+            log.error("Attempt to access non-public method: " + method.getName()); //$NON-NLS-1$
+            throw new SecurityException();
+        }
+
+        // Do access controls allow it?
+        if (!creatorManager.isExecutable(className, methodName))
+        {
+            log.error("Attempt to access disallowed method: " + method.getName()); //$NON-NLS-1$
+            throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
+        }
+
+        // Is it disallowed because it is part of DWR?
+        if (creator.getType().getName().startsWith(PACKAGE_DWR))
+        {
+            log.error("Attempt to access method in DWR: " + method.getName()); //$NON-NLS-1$
+            throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
+        }
+
         // Convert all the parameters to the correct types
         Object[] converted = new Object[method.getParameterTypes().length];
         for (int j = 0; j < method.getParameterTypes().length; j++)
         {
             Class paramType = method.getParameterTypes()[j];
+
+            // Is it access to this type disallowed because it is part of DWR?
+            if (paramType.getName().startsWith(PACKAGE_DWR))
+            {
+                log.error("Attempt to access paramter DWR: " + method.getName()); //$NON-NLS-1$
+                throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
+            }
+
             InboundVariable param = inctx.getParameter(j);
             converted[j] = converterManager.convertInbound(paramType, param, inctx);
         }
@@ -357,6 +387,11 @@ public final class ExecuteQuery
 
         return reply;
     }
+
+    /**
+     * My package name, so we can ban DWR classes from being created or marshalled
+     */
+    private static final String PACKAGE_DWR = "uk.ltd.getahead.dwr"; //$NON-NLS-1$
 
     /**
      * The log stream

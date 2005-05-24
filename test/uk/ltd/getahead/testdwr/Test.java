@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr.test;
+package uk.ltd.getahead.testdwr;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,6 +21,7 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 
 import uk.ltd.getahead.dwr.ExecutionContext;
+import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -544,6 +545,16 @@ public class Test
     public String dangerOverride()
     {
         return "Test.dangerOverride() says hello."; //$NON-NLS-1$
+    }
+
+    /**
+     * This method should not be callable
+     * @param cx Illegal param
+     * @return Error message
+     */
+    public String error(InboundContext cx)
+    {
+        return "You should not see this: " + cx; //$NON-NLS-1$
     }
 
     /**

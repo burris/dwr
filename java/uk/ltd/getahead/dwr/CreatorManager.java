@@ -47,14 +47,46 @@ public interface CreatorManager
      * attacker to find out extra information about your system so it is only
      * available if debug is turned on.
      * @return Loop over all the known allowed classes
+     * @throws SecurityException If we are not in debug mode
      * @see CreatorManager#setDebug(boolean)
      */
-    public Collection getCreatorNames();
+    public Collection getCreatorNames() throws SecurityException;
 
     /**
      * Find an <code>Creator</code> by name
      * @param name The name to lookup against
      * @return The found Creator instance, or null if none was found.
+     * @throws SecurityException If the Creator is not known
      */
-    public Creator getCreator(String name);
+    public Creator getCreator(String name) throws SecurityException;
+
+    /**
+     * Add an include rule.
+     * Each creator can have either a list of inclusions or a list of exclusions
+     * but not both. If a creator has a list of inclusions then the default
+     * policy is to deny any method that is not specifically included. If the
+     * creator has a list of exclusions then the default policy is to allow
+     * any method not listed.
+     * If there are no included or excluded rules then the default policy is to
+     * allow all methods
+     * @param type The name of the creator
+     * @param method The method name.
+     */
+    public void addIncludeRule(String type, String method);
+
+    /**
+     * Add an exclude rule.
+     * @param type The name of the creator
+     * @param method The method name.
+     * @see CreatorManager#addIncludeRule(String, String)
+     */
+    public void addExcludeRule(String type, String method);
+
+    /**
+     * @param type The name of the creator
+     * @param method The method name.
+     * @return true if the method is allowed by the rules in addIncludeRule()
+     * @see CreatorManager#addIncludeRule(String, String)
+     */
+    public boolean isExecutable(String type, String method);
 }

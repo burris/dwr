@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr.test;
+package uk.ltd.getahead.testdwr;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]

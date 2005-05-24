@@ -53,7 +53,9 @@ It would be nice to make the creator and IDREF rather than a CDATA, since it
 refers to an element defined elsewhere, however we allow multiple dwr.xml
 files and we might refer to one in another file.
 -->
-<!ELEMENT create (param*)>
+<!ELEMENT create (
+    (param | include | exclude)*
+)>
 <!ATTLIST create
     creator CDATA #REQUIRED
     javascript CDATA #REQUIRED
@@ -85,4 +87,21 @@ can't predict now, and this seems like the only way to do it.
 <!ATTLIST param
     name CDATA #REQUIRED
     value CDATA #IMPLIED
+>
+
+<!--
+A creator can allow and disallow access to the methods of the class that it
+contains. A Creator should specify EITHER a list of include elements (which
+implies that the default policy is denial) OR a list of exclude elements
+(which implies that the default policy is to allow access)
+-->
+<!ELEMENT include EMPTY>
+<!ATTLIST include
+    method CDATA #IMPLIED
+    match CDATA #IMPLIED
+>
+<!ELEMENT exclude EMPTY>
+<!ATTLIST exclude
+    method CDATA #IMPLIED
+    match CDATA #IMPLIED
 >

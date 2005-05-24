@@ -291,7 +291,7 @@ public class DWRServlet extends HttpServlet
         out.println("  </style>"); //$NON-NLS-1$
         out.println("</head>"); //$NON-NLS-1$
         out.println("<body>"); //$NON-NLS-1$
-        out.println(BLANK); //$NON-NLS-1$
+        out.println(BLANK);
 
         out.println("<h2>Methods For: " + scriptname + " (" + creator.getType().getName() + ")</h2>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         out.println("<p>To use this class in your javascript you will need the following script includes:</p>"); //$NON-NLS-1$
@@ -315,20 +315,34 @@ public class DWRServlet extends HttpServlet
             // Is it public
             if (!Modifier.isPublic(method.getModifiers()))
             {
-                out.println(BLANK); //$NON-NLS-1$
+                out.println(BLANK);
                 out.println("<li style='color: #888;'>  " + method.getName() + "() is not available because it is not public.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
-                continue;
+                if (!allowImpossibleTests)
+                {
+                    continue;
+                }
+            }
+
+            // Do access controls allow it?
+            if (!creatorManager.isExecutable(scriptname, method.getName()))
+            {
+                out.println(BLANK);
+                out.println("<li style='color: #888;'>  " + method.getName() + "() is not available due to access rules in dwr.xml.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
+                if (!allowImpossibleTests)
+                {
+                    continue;
+                }
             }
 
             // Is it on the list of banned names
             if (configuration.isReservedWord(method.getName()))
             {
-                out.println(BLANK); //$NON-NLS-1$
+                out.println(BLANK);
                 out.println("<li style='color: #888;'>" + method.getName() + "() is not available because it is a reserved word.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
                 continue;
             }
 
-            out.println(BLANK); //$NON-NLS-1$
+            out.println(BLANK);
             out.println("<li>"); //$NON-NLS-1$
             out.println("  " + method.getName() + '('); //$NON-NLS-1$
 
@@ -336,7 +350,7 @@ public class DWRServlet extends HttpServlet
             for (int j = 0; j < paramTypes.length; j++)
             {
                 out.print("    <input class='itext' type='text' size='10' id='p" + i + j + "' title='Will be converted to: " + paramTypes[j].getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                out.println(j == paramTypes.length - 1 ? BLANK : ", "); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println(j == paramTypes.length - 1 ? BLANK : ", "); //$NON-NLS-1$
             }
             out.println("  );"); //$NON-NLS-1$
 
@@ -388,7 +402,7 @@ public class DWRServlet extends HttpServlet
             out.println("</li>"); //$NON-NLS-1$
         }
 
-        out.println(BLANK); //$NON-NLS-1$
+        out.println(BLANK);
         out.println("</ul></p>"); //$NON-NLS-1$
 
         out.println("<h2>Other Links</h2>"); //$NON-NLS-1$
@@ -461,7 +475,13 @@ public class DWRServlet extends HttpServlet
             Method method = methods[i];
 
             // Is it public
-            if (!Modifier.isPublic(method.getModifiers()))
+            if (!Modifier.isPublic(method.getModifiers()) && !allowImpossibleTests)
+            {
+                continue;
+            }
+
+            // Do access controls allow it?
+            if (!creatorManager.isExecutable(scriptname, method.getName()) && !allowImpossibleTests)
             {
                 continue;
             }
@@ -705,7 +725,15 @@ public class DWRServlet extends HttpServlet
 
     protected static final String MIME_JS = "text/javascript"; //$NON-NLS-1$
 
+    /**
+     * Empty string
+     */
     protected static final String BLANK = ""; //$NON-NLS-1$
+
+    /**
+     * This helps us test that access rules are being followed
+     */
+    private boolean allowImpossibleTests = false;
 
     /**
      * The log stream

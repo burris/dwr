@@ -120,11 +120,11 @@ public final class Configuration
         }
         catch (Exception ex)
         {
-            log.warn("Failed to load creator with id=" + id + ". classname=" + classname + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.warn("Failed to load creator '" + id + "', classname=" + classname + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (NoClassDefFoundError ex)
         {
-            log.warn("Dependency failure loading creator with id=" + id + ". classname=" + classname + ": " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.warn("Missing class for creator '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
@@ -144,11 +144,11 @@ public final class Configuration
         }
         catch (Exception ex)
         {
-            log.warn("Failed to load converter with id=" + id + ". classname=" + classname + ": " + ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.warn("Failed to load converter '" + id + "', classname=" + classname + ": " + ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (NoClassDefFoundError ex)
         {
-            log.warn("Dependency failure loading converter with id=" + id + ". classname=" + classname + ": " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.warn("Missing class for converter '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
@@ -209,6 +209,7 @@ public final class Configuration
         {
             Map params = createParameterMap(allower);
             creatorManager.addCreator(type, javascript, params);
+            processPermissions(javascript, allower);
         }
         catch (Exception ex)
         {
@@ -237,17 +238,17 @@ public final class Configuration
         }
 
         // Go through the param elements in the allower element, adding to the param map
-        NodeList locNodes = parent.getElementsByTagName("param"); //$NON-NLS-1$
+        NodeList locNodes = parent.getElementsByTagName(ELEMENT_PARAM);
         for (int i = 0; i < locNodes.getLength(); i++)
         {
             // Since this comes from getElementsByTagName we can assume that
             // all the nodes are elements.
             Element element = (Element) locNodes.item(i);
 
-            String name = element.getAttribute("name"); //$NON-NLS-1$
+            String name = element.getAttribute(ATTRIBUTE_NAME);
             if (name != null)
             {
-                String value = element.getAttribute("value"); //$NON-NLS-1$
+                String value = element.getAttribute(ATTRIBUTE_VALUE);
                 if (value == null || value.length() == 0)
                 {
                     StringBuffer buffer = new StringBuffer();
@@ -266,6 +267,31 @@ public final class Configuration
         }
 
         return params;
+    }
+
+    /**
+     * Process the include and exclude elements, passing them on to the creator
+     * manager.
+     * @param javascript The name of the creator
+     * @param parent The container of the include and exclude elements.
+     */
+    private void processPermissions(String javascript, Element parent)
+    {
+        NodeList incNodes = parent.getElementsByTagName(ELEMENT_INCLUDE);
+        for (int i = 0; i < incNodes.getLength(); i++)
+        {
+            Element include = (Element) incNodes.item(i);
+            String method = include.getAttribute(ATTRIBUTE_METHOD);
+            creatorManager.addIncludeRule(javascript, method);
+        }
+
+        NodeList excNodes = parent.getElementsByTagName(ELEMENT_EXCLUDE);
+        for (int i = 0; i < excNodes.getLength(); i++)
+        {
+            Element include = (Element) excNodes.item(i);
+            String method = include.getAttribute(ATTRIBUTE_METHOD);
+            creatorManager.addExcludeRule(javascript, method);
+        }
     }
 
     /**
@@ -334,12 +360,19 @@ public final class Configuration
     private static final String ELEMENT_ALLOW = "allow"; //$NON-NLS-1$
     private static final String ELEMENT_CREATE = "create"; //$NON-NLS-1$
     private static final String ELEMENT_CONVERT = "convert"; //$NON-NLS-1$
+    private static final String ELEMENT_PARAM = "param"; //$NON-NLS-1$
+    private static final String ELEMENT_INCLUDE = "include"; //$NON-NLS-1$
+    private static final String ELEMENT_EXCLUDE = "exclude"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
     private static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
     private static final String ATTRIBUTE_CONVERTER = "converter"; //$NON-NLS-1$
     private static final String ATTRIBUTE_MATCH = "match"; //$NON-NLS-1$
     private static final String ATTRIBUTE_JAVASCRIPT = "javascript"; //$NON-NLS-1$
     private static final String ATTRIBUTE_CREATOR = "creator"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_METHOD = "method"; //$NON-NLS-1$
 
     private static SortedSet reserved = new TreeSet();
     private static final String[] RESERVED_ARRAY =  new String[]
