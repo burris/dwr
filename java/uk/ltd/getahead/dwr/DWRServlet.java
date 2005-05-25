@@ -13,10 +13,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
@@ -343,37 +345,46 @@ public class DWRServlet extends HttpServlet
             {
                 Class paramType = paramTypes[j];
 
-                String value = BLANK; //$NON-NLS-1$
-                if (paramType == String.class)
+                // The special type that we handle transparently
+                if (isAutoFilled(paramType))
                 {
-                    value = "\"\""; //$NON-NLS-1$
+                    out.print("AUTO"); //$NON-NLS-1$
                 }
-                else if (paramType == Boolean.class || paramType == Boolean.TYPE)
+                else
                 {
-                    value = "true"; //$NON-NLS-1$
-                }
-                else if (paramType == Integer.class || paramType == Integer.TYPE ||
-                         paramType == Short.class || paramType == Short.TYPE ||
-                         paramType == Long.class || paramType == Long.TYPE ||
-                         paramType == Byte.class || paramType == Byte.TYPE)
-                {
-                    value = "0"; //$NON-NLS-1$
-                }
-                else if (paramType == Float.class || paramType == Float.TYPE ||
-                         paramType == Double.class || paramType == Double.TYPE)
-                {
-                    value = "0.0"; //$NON-NLS-1$
-                }
-                else if (paramType.isArray() || Collection.class.isAssignableFrom(paramType))
-                {
-                    value = "[]"; //$NON-NLS-1$
-                }
-                else if (Map.class.isAssignableFrom(paramType))
-                {
-                    value = "{}"; //$NON-NLS-1$
+                    String value = BLANK; //$NON-NLS-1$
+                    if (paramType == String.class)
+                    {
+                        value = "\"\""; //$NON-NLS-1$
+                    }
+                    else if (paramType == Boolean.class || paramType == Boolean.TYPE)
+                    {
+                        value = "true"; //$NON-NLS-1$
+                    }
+                    else if (paramType == Integer.class || paramType == Integer.TYPE ||
+                             paramType == Short.class || paramType == Short.TYPE ||
+                             paramType == Long.class || paramType == Long.TYPE ||
+                             paramType == Byte.class || paramType == Byte.TYPE)
+                    {
+                        value = "0"; //$NON-NLS-1$
+                    }
+                    else if (paramType == Float.class || paramType == Float.TYPE ||
+                             paramType == Double.class || paramType == Double.TYPE)
+                    {
+                        value = "0.0"; //$NON-NLS-1$
+                    }
+                    else if (paramType.isArray() || Collection.class.isAssignableFrom(paramType))
+                    {
+                        value = "[]"; //$NON-NLS-1$
+                    }
+                    else if (Map.class.isAssignableFrom(paramType))
+                    {
+                        value = "{}"; //$NON-NLS-1$
+                    }
+
+                    out.print("    <input class='itext' type='text' size='10' value='" + value + "' id='p" + i + j + "' title='Will be converted to: " + paramType.getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 }
 
-                out.print("    <input class='itext' type='text' size='10' value='" + value + "' id='p" + i + j + "' title='Will be converted to: " + paramType.getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 out.println(j == paramTypes.length - 1 ? BLANK : ", "); //$NON-NLS-1$
             }
             out.println("  );"); //$NON-NLS-1$
@@ -381,7 +392,10 @@ public class DWRServlet extends HttpServlet
             String onclick = scriptname + '.' + methodName + "(reply" + i; //$NON-NLS-1$
             for (int j = 0; j < paramTypes.length; j++)
             {
-                onclick += ",eval(document.getElementById(\"p" + i + j + "\").value)"; //$NON-NLS-1$ //$NON-NLS-2$
+                if (!isAutoFilled(paramTypes[j]))
+                {
+                    onclick += ",eval(document.getElementById(\"p" + i + j + "\").value)"; //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
             onclick += ");"; //$NON-NLS-1$
 
@@ -522,7 +536,10 @@ public class DWRServlet extends HttpServlet
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print(", p" + j); //$NON-NLS-1$
+                if (!isAutoFilled(paramTypes[j]))
+                {
+                    out.print(", p" + j); //$NON-NLS-1$
+                }
             }
             out.println(')');
             out.println('{');
@@ -532,7 +549,14 @@ public class DWRServlet extends HttpServlet
             out.print("    DWREngine._execute(callback, '" + path + "', '" + scriptname + "', '" + methodName + '\''); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print(", p" + j); //$NON-NLS-1$
+                if (isAutoFilled(paramTypes[j]))
+                {
+                    out.print(", false"); //$NON-NLS-1$
+                }
+                else
+                {
+                    out.print(", p" + j); //$NON-NLS-1$
+                }
             }
             out.println(");"); //$NON-NLS-1$
 
@@ -692,6 +716,20 @@ public class DWRServlet extends HttpServlet
         }
 
         configuration.addConfig(in);
+    }
+
+    /**
+     * Is this class one that we auto fill, so the user can ignore?
+     * @param paramType The type to test
+     * @return true if the type is a Servlet type
+     */
+    private boolean isAutoFilled(Class paramType)
+    {
+        return paramType == HttpServletRequest.class ||
+               paramType == HttpServletResponse.class ||
+               paramType == ServletConfig.class ||
+               paramType == ServletContext.class ||
+               paramType == HttpSession.class;
     }
 
     /* (non-Javadoc)
