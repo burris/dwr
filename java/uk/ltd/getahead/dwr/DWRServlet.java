@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -306,28 +306,20 @@ public class DWRServlet extends HttpServlet
         out.println("</pre>"); //$NON-NLS-1$
 
         out.println("<p>Replies from DWR are shown with a yellow background.<br/>"); //$NON-NLS-1$
-        out.println("There are " + methods.length + " declared methods:<ul>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("The inputs are evaluated as Javascript so strings must be quoted before execution.</p>"); //$NON-NLS-1$
+
+        out.println("<p>There are " + methods.length + " declared methods:</p><ul>"); //$NON-NLS-1$ //$NON-NLS-2$
 
         for (int i = 0; i < methods.length; i++)
         {
             Method method = methods[i];
+            String methodName = method.getName();
 
-            // Is it public
-            if (!Modifier.isPublic(method.getModifiers()))
+            String reason = Factory.getDoorman().getReasonToNotExecute(req, creator, scriptname, method);
+            if (reason != null)
             {
                 out.println(BLANK);
-                out.println("<li style='color: #888;'>  " + method.getName() + "() is not available because it is not public.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
-                if (!allowImpossibleTests)
-                {
-                    continue;
-                }
-            }
-
-            // Do access controls allow it?
-            if (!creatorManager.isExecutable(scriptname, method.getName()))
-            {
-                out.println(BLANK);
-                out.println("<li style='color: #888;'>  " + method.getName() + "() is not available due to access rules in dwr.xml.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("<li style='color: #A88;'>  " + methodName + "() is not available: " + reason + "</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 if (!allowImpossibleTests)
                 {
                     continue;
@@ -335,33 +327,65 @@ public class DWRServlet extends HttpServlet
             }
 
             // Is it on the list of banned names
-            if (configuration.isReservedWord(method.getName()))
+            if (configuration.isReservedWord(methodName))
             {
                 out.println(BLANK);
-                out.println("<li style='color: #888;'>" + method.getName() + "() is not available because it is a reserved word.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("<li style='color: #88A;'>" + methodName + "() is not available because it is a reserved word.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
                 continue;
             }
 
             out.println(BLANK);
             out.println("<li>"); //$NON-NLS-1$
-            out.println("  " + method.getName() + '('); //$NON-NLS-1$
+            out.println("  " + methodName + '('); //$NON-NLS-1$
 
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
-                out.print("    <input class='itext' type='text' size='10' id='p" + i + j + "' title='Will be converted to: " + paramTypes[j].getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                Class paramType = paramTypes[j];
+
+                String value = BLANK; //$NON-NLS-1$
+                if (paramType == String.class)
+                {
+                    value = "\"\""; //$NON-NLS-1$
+                }
+                else if (paramType == Boolean.class || paramType == Boolean.TYPE)
+                {
+                    value = "true"; //$NON-NLS-1$
+                }
+                else if (paramType == Integer.class || paramType == Integer.TYPE ||
+                         paramType == Short.class || paramType == Short.TYPE ||
+                         paramType == Long.class || paramType == Long.TYPE ||
+                         paramType == Byte.class || paramType == Byte.TYPE)
+                {
+                    value = "0"; //$NON-NLS-1$
+                }
+                else if (paramType == Float.class || paramType == Float.TYPE ||
+                         paramType == Double.class || paramType == Double.TYPE)
+                {
+                    value = "0.0"; //$NON-NLS-1$
+                }
+                else if (paramType.isArray() || Collection.class.isAssignableFrom(paramType))
+                {
+                    value = "[]"; //$NON-NLS-1$
+                }
+                else if (Map.class.isAssignableFrom(paramType))
+                {
+                    value = "{}"; //$NON-NLS-1$
+                }
+
+                out.print("    <input class='itext' type='text' size='10' value='" + value + "' id='p" + i + j + "' title='Will be converted to: " + paramType.getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 out.println(j == paramTypes.length - 1 ? BLANK : ", "); //$NON-NLS-1$
             }
             out.println("  );"); //$NON-NLS-1$
 
-            String onclick = scriptname + '.' + method.getName() + "(reply" + i; //$NON-NLS-1$
+            String onclick = scriptname + '.' + methodName + "(reply" + i; //$NON-NLS-1$
             for (int j = 0; j < paramTypes.length; j++)
             {
-                onclick += ",document.getElementById(\"p" + i + j + "\").value"; //$NON-NLS-1$ //$NON-NLS-2$
+                onclick += ",eval(document.getElementById(\"p" + i + j + "\").value)"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             onclick += ");"; //$NON-NLS-1$
 
-            out.print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + '.' + method.getName() + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            out.print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + '.' + methodName + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             out.println("  <script type='text/javascript'>"); //$NON-NLS-1$
             out.println("    var reply" + i + " = function(data)"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -375,7 +399,7 @@ public class DWRServlet extends HttpServlet
             boolean overridden = false;
             for (int j = 0; j < methods.length; j++)
             {
-                if (j != i && methods[j].getName().equals(method.getName()))
+                if (j != i && methods[j].getName().equals(methodName))
                 {
                     overridden = true;
                 }
@@ -403,7 +427,7 @@ public class DWRServlet extends HttpServlet
         }
 
         out.println(BLANK);
-        out.println("</ul></p>"); //$NON-NLS-1$
+        out.println("</ul>"); //$NON-NLS-1$
 
         out.println("<h2>Other Links</h2>"); //$NON-NLS-1$
         out.println("<ul>"); //$NON-NLS-1$
@@ -476,21 +500,16 @@ public class DWRServlet extends HttpServlet
         for (int i = 0; i < methods.length; i++)
         {
             Method method = methods[i];
+            String methodName = method.getName();
 
-            // Is it public
-            if (!Modifier.isPublic(method.getModifiers()) && !allowImpossibleTests)
-            {
-                continue;
-            }
-
-            // Do access controls allow it?
-            if (!creatorManager.isExecutable(scriptname, method.getName()) && !allowImpossibleTests)
+            String reason = Factory.getDoorman().getReasonToNotExecute(req, creator, scriptname, method);
+            if (reason != null && !allowImpossibleTests)
             {
                 continue;
             }
 
             // Is it on the list of banned names
-            if (configuration.isReservedWord(method.getName()))
+            if (configuration.isReservedWord(methodName))
             {
                 continue;
             }
@@ -499,7 +518,7 @@ public class DWRServlet extends HttpServlet
             {
                 out.print('\n');
             }
-            out.print(scriptname + '.' + method.getName() + " = function(callback"); //$NON-NLS-1$
+            out.print(scriptname + '.' + methodName + " = function(callback"); //$NON-NLS-1$
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
@@ -510,7 +529,7 @@ public class DWRServlet extends HttpServlet
 
             String path = req.getContextPath() + req.getServletPath();
 
-            out.print("    DWREngine._execute(callback, '" + path + "', '" + scriptname + "', '" + method.getName() + '\''); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            out.print("    DWREngine._execute(callback, '" + path + "', '" + scriptname + "', '" + methodName + '\''); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             for (int j = 0; j < paramTypes.length; j++)
             {
                 out.print(", p" + j); //$NON-NLS-1$

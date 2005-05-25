@@ -84,5 +84,13 @@ public class CommonsLoggingOutput implements LoggingOutput
         log.fatal(message, th);
     }
 
-    private Log log = LogFactory.getLog(uk.ltd.getahead.dwr.util.Logger.class);
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.util.LoggingOutput#isDebugEnabled()
+     */
+    public boolean isDebugEnabled()
+    {
+        return log.isDebugEnabled();
+    }
+
+    private final Log log;
 }

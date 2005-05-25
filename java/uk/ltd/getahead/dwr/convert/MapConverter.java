@@ -3,6 +3,7 @@ package uk.ltd.getahead.dwr.convert;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -35,9 +36,9 @@ public class MapConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
+     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, List extraTypeInfo, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
         String value = iv.getValue();
 
@@ -106,7 +107,7 @@ public class MapConverter implements Converter
                 String ivstr = token.substring(colonpos + 1).trim();
                 String[] split = ExecuteQuery.splitInbound(ivstr);
                 InboundVariable nested = new InboundVariable(incx, split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
-                Object val = config.convertInbound(subtype, nested, inctx);
+                Object val = config.convertInbound(subtype, -1, nested, inctx);
 
                 map.put(key, val);
             }

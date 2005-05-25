@@ -188,6 +188,14 @@ public class ServletLoggingOutput implements LoggingOutput
         }
     }
 
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.util.LoggingOutput#isDebugEnabled()
+     */
+    public boolean isDebugEnabled()
+    {
+        return level == LEVEL_DEBUG;
+    }
+
     /**
      * @param level The logging level to set.
      */

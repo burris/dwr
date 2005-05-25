@@ -42,7 +42,7 @@ public class ConversionConstants
      * The inbound key to define the class to be used. This will be the
      * javascript version of the full java package name
      */
-    protected static final String INBOUND_KEY_CLASSNAME = "classname"; //$NON-NLS-1$
+    protected static final String INBOUND_KEY_SCRIPTNAME = "classname"; //$NON-NLS-1$
 
     /**
      * Used to define the id of this call

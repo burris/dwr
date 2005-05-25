@@ -265,6 +265,25 @@ public class Test
 
     /**
      * @param test
+     * @return set of beans
+     */
+    public Set testBeanSetParam(Set test)
+    {
+        if (test.size() > 1)
+        {
+            for (Iterator it = test.iterator(); it.hasNext();)
+            {
+                TestBean ele = (TestBean) it.next();
+                TestBean ignore = ele;
+                ele = ignore;
+            }
+        }
+
+        return test;
+    }
+
+    /**
+     * @param test
      * @return string
      */
     // @PMD:REVIEWED:LooseCoupling: by Joe on 09/02/05 08:25
@@ -297,6 +316,15 @@ public class Test
      * @return string
      */
     public Map stringStringMapParam(Map test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public Map charTestBeanMapParam(Map test)
     {
         return test;
     }

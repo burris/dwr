@@ -134,4 +134,13 @@ public final class Logger
     {
         output.fatal(message, th);
     }
+
+    /**
+     * Save CPU time when we are not debugging
+     * @return true if debugging is enabled
+     */
+    public boolean isDebugEnabled()
+    {
+        return output.isDebugEnabled();
+    }
 }

@@ -9,18 +9,40 @@
     <converter id="testbean" priority="1" class="uk.ltd.getahead.testdwr.TestBean2Converter"/>
   </init>
 
-  <allow>
+<!--
+  <signatures>
+  <![CDATA[
+  import java.util.Set;
+  import java.lang.Character;
+  import uk.ltd.getahead.testdwr.TestBean;
+  import uk.ltd.getahead.testdwr.Test;
 
+  Test.testBeanSetParam(Set<TestBean>);
+  Test.charTestBeanMapParam(Map<Character, TestBean>);
+  ]]>
+  </signatures>
+-->
+
+  <allow>
     <!--
     Security testing
     <convert converter="bean" match="uk.ltd.getahead.dwr.*"/>
     <create creator="new" javascript="Error" class="uk.ltd.getahead.dwr.InboundContext"/>
     -->
 
-    <create creator="new" javascript="Test" class="uk.ltd.getahead.testdwr.Test"/>
+    <create creator="new" javascript="Test" class="uk.ltd.getahead.testdwr.Test">
+      <parameter method="testBeanSetParam" number="0" type="uk.ltd.getahead.testdwr.TestBean"/>
+      <parameter method="charTestBeanMapParam" number="0" type="java.lang.Character, uk.ltd.getahead.testdwr.TestBean"/>
+    </create>
+
     <create creator="new" javascript="JDate" class="java.util.Date">
-      <include method="hashCode"/>
+      <include method="getSeconds"/>
+      <include method="getMinutes"/>
+      <include method="getMonth"/>
+      <include method="getHours"/>
       <include method="toString"/>
+      <auth method="toString" role="admin"/>
+      <auth method="toString" role="devel"/>
     </create>
 
     <create creator="session" javascript="TestBean" class="uk.ltd.getahead.testdwr.TestBean"/>

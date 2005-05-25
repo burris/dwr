@@ -36,9 +36,9 @@ public class CollectionConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
+     * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, List extraTypeInfo, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
         String value = iv.getValue();
 
@@ -48,43 +48,25 @@ public class CollectionConverter implements Converter
             return null;
         }
 
-        if (value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
+        if (!value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
         {
-            value = value.substring(1);
+            throw new IllegalArgumentException(Messages.getString("CollectionConverter.MissingOpener", ConversionConstants.INBOUND_ARRAY_START)); //$NON-NLS-1$
         }
-        if (value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
+
+        if (!value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
         {
-            value = value.substring(0, value.length() - 1);
+            throw new IllegalArgumentException(Messages.getString("CollectionConverter.MissingCloser", ConversionConstants.INBOUND_ARRAY_END)); //$NON-NLS-1$
         }
+
+        value = value.substring(1, value.length() - 1);
 
         try
         {
-            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
-            int size = st.countTokens();
-
             Class subtype = String.class;
-            /*
-            // For JDK5 we can probably do something like this:
-            Type type = paramType.getGenericSuperclass();
-            if (type instanceof ParameterizedType)
+            if (extraTypeInfo != null && extraTypeInfo.size() > 0)
             {
-                ParameterizedType ptype = (ParameterizedType) type;
-                Type[] args = ptype.getActualTypeArguments();
-                if (args.length != 1)
-                {
-                    throw new ConversionException("Multiple type arguments for destination type: " + paramType.getName());
-                }
-
-                if (args[0] instanceof Class)
-                {
-                    subtype = (Class) args[0];
-                }
-                else
-                {
-                    throw new ConversionException("Actual type argument of collection is not a class: " + paramType.getName());
-                }
+                subtype = (Class) extraTypeInfo.get(0);
             }
-            */
 
             Collection col = null;
 
@@ -127,6 +109,8 @@ public class CollectionConverter implements Converter
             // is referenced later nested down in the conversion process.
             inctx.addConverted(iv, col);
 
+            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
+            int size = st.countTokens();
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
@@ -134,7 +118,7 @@ public class CollectionConverter implements Converter
                 String[] split = ExecuteQuery.splitInbound(token);
                 InboundVariable nested = new InboundVariable(iv.getLookup(), split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
 
-                Object output = config.convertInbound(subtype, nested, inctx);
+                Object output = config.convertInbound(subtype, -1, nested, inctx);
                 col.add(output);
             }
 

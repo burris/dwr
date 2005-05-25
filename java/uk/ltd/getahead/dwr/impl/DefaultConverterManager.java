@@ -1,6 +1,8 @@
 package uk.ltd.getahead.dwr.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import uk.ltd.getahead.dwr.ConversionException;
@@ -68,7 +70,7 @@ public class DefaultConverterManager implements ConverterManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ConverterManager#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, int paramNo, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
         Object converted = inctx.getConverted(iv);
         if (converted != null)
@@ -87,7 +89,8 @@ public class DefaultConverterManager implements ConverterManager
             return null;
         }
 
-        return converter.convertInbound(paramType, iv, inctx);
+        List extraTypeInfo = getExtraTypeInfo(inctx.getScriptName(), inctx.getMethodName(), paramNo);
+        return converter.convertInbound(paramType, extraTypeInfo, iv, inctx);
     }
 
     /* (non-Javadoc)
@@ -253,6 +256,51 @@ public class DefaultConverterManager implements ConverterManager
 
         return converter;
     }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.CreatorManager#addParameterInfo(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void addParameterInfo(String scriptName, String methodName, int paramNo, Class type)
+    {
+        String key = scriptName + DOT + methodName + DOT + paramNo;
+        List types = (List) extraTypeInfoMap.get(key);
+        if (types == null)
+        {
+            types = new ArrayList();
+            extraTypeInfoMap.put(key, types);
+        }
+
+        types.add(type);
+    }
+
+    /**
+     * The extra type information that we have learnt about a method parameter.
+     * This method will return null if there is nothing extra to know
+     * @param scriptName The name of the creator to Javascript
+     * @param methodName The name of the method (without brackets)
+     * @param paramNo The number of the parameter to edit
+     * @return A list of types to fill out a generic type
+     */
+    private List getExtraTypeInfo(String scriptName, String methodName, int paramNo)
+    {
+        if (paramNo == -1)
+        {
+            return null;
+        }
+
+        String key = scriptName + DOT + methodName + DOT + paramNo;
+        return (List) extraTypeInfoMap.get(key);
+    }
+
+    /**
+     * 'Shortcut' for "."
+     */
+    private static final String DOT = "."; //$NON-NLS-1$
+
+    /**
+     * Where we store real type information behind generic types
+     */
+    private Map extraTypeInfoMap = new HashMap();
 
     /**
      * The log stream

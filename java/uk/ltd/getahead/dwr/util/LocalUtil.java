@@ -52,7 +52,7 @@ public final class LocalUtil
     }
 
     /**
-     * True if c1 is java.lang.Boolean and c2 is boolean
+     * True if c1 is java.lang.Boolean and c2 is boolean, etc.
      * @param c1 the first class to test
      * @param c2 the second class to test
      * @return true if the classes are equivalent

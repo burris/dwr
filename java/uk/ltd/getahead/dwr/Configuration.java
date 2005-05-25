@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -16,8 +17,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.LogErrorHandler;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * The Configuration class has responsibility for reading all config data from
@@ -207,9 +208,11 @@ public final class Configuration
 
         try
         {
-            Map params = createParameterMap(allower);
+            Map params = createSettingMap(allower);
             creatorManager.addCreator(type, javascript, params);
             processPermissions(javascript, allower);
+            processAuth(javascript, allower);
+            processParameters(javascript, allower);
         }
         catch (Exception ex)
         {
@@ -223,7 +226,7 @@ public final class Configuration
      * @param parent The parent element
      * @return A map of parameters
      */
-    private static Map createParameterMap(Element parent)
+    private static Map createSettingMap(Element parent)
     {
         Map params = new HashMap();
 
@@ -282,7 +285,7 @@ public final class Configuration
         {
             Element include = (Element) incNodes.item(i);
             String method = include.getAttribute(ATTRIBUTE_METHOD);
-            creatorManager.addIncludeRule(javascript, method);
+            Factory.getDoorman().addIncludeRule(javascript, method);
         }
 
         NodeList excNodes = parent.getElementsByTagName(ELEMENT_EXCLUDE);
@@ -290,7 +293,56 @@ public final class Configuration
         {
             Element include = (Element) excNodes.item(i);
             String method = include.getAttribute(ATTRIBUTE_METHOD);
-            creatorManager.addExcludeRule(javascript, method);
+            Factory.getDoorman().addExcludeRule(javascript, method);
+        }
+    }
+
+    /**
+     * Collections often have missing information. This helps fill the missing
+     * data in.
+     * @param javascript The name of the creator
+     * @param parent The container of the include and exclude elements.
+     * @throws ClassNotFoundException If the type attribute can't be converted into a Class
+     */
+    private void processParameters(String javascript, Element parent) throws ClassNotFoundException
+    {
+        NodeList nodes = parent.getElementsByTagName(ELEMENT_PARAMETER);
+        for (int i = 0; i < nodes.getLength(); i++)
+        {
+            Element include = (Element) nodes.item(i);
+
+            String method = include.getAttribute(ATTRIBUTE_METHOD);
+
+            String number = include.getAttribute(ATTRIBUTE_NUMBER);
+            int paramNo = Integer.parseInt(number);
+
+            String types = include.getAttribute(ATTRIBUTE_TYPE);
+            StringTokenizer st = new StringTokenizer(types, ","); //$NON-NLS-1$
+            while (st.hasMoreTokens())
+            {
+                String type = st.nextToken();
+                Class clazz = Class.forName(type.trim());
+                converterManager.addParameterInfo(javascript, method, paramNo, clazz);
+            }
+        }
+    }
+
+    /**
+     * J2EE role based method level security added here.
+     * @param javascript The name of the creator
+     * @param parent The container of the include and exclude elements.
+     */
+    private void processAuth(String javascript, Element parent)
+    {
+        NodeList nodes = parent.getElementsByTagName(ELEMENT_AUTH);
+        for (int i = 0; i < nodes.getLength(); i++)
+        {
+            Element include = (Element) nodes.item(i);
+
+            String method = include.getAttribute(ATTRIBUTE_METHOD);
+            String role = include.getAttribute(ATTRIBUTE_ROLE);
+
+            Factory.getDoorman().addRoleRestriction(javascript, method, role);
         }
     }
 
@@ -363,6 +415,8 @@ public final class Configuration
     private static final String ELEMENT_PARAM = "param"; //$NON-NLS-1$
     private static final String ELEMENT_INCLUDE = "include"; //$NON-NLS-1$
     private static final String ELEMENT_EXCLUDE = "exclude"; //$NON-NLS-1$
+    private static final String ELEMENT_PARAMETER = "parameter"; //$NON-NLS-1$
+    private static final String ELEMENT_AUTH = "auth"; //$NON-NLS-1$
 
     private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
     private static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
@@ -373,6 +427,9 @@ public final class Configuration
     private static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
     private static final String ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
     private static final String ATTRIBUTE_METHOD = "method"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_ROLE = "role"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_NUMBER = "number"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_TYPE = "type"; //$NON-NLS-1$
 
     private static SortedSet reserved = new TreeSet();
     private static final String[] RESERVED_ARRAY =  new String[]

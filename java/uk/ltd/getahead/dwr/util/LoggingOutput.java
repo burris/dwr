@@ -58,4 +58,10 @@ public interface LoggingOutput
      * @param th An optional stack trace
      */
     public void fatal(String message, Throwable th);
+
+    /**
+     * Save CPU time when we are not debugging
+     * @return true if debugging is enabled
+     */
+    public boolean isDebugEnabled();
 }

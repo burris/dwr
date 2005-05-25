@@ -74,7 +74,6 @@ public class LocationLookup
         }
         catch (IOException ex)
         {
-            // TODO Auto-generated catch block
             ex.printStackTrace();
         }
     }

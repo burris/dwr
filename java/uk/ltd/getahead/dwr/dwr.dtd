@@ -54,7 +54,7 @@ refers to an element defined elsewhere, however we allow multiple dwr.xml
 files and we might refer to one in another file.
 -->
 <!ELEMENT create (
-    (param | include | exclude)*
+    (param | include | exclude | parameter | auth)*
 )>
 <!ATTLIST create
     creator CDATA #REQUIRED
@@ -105,3 +105,26 @@ implies that the default policy is denial) OR a list of exclude elements
     method CDATA #IMPLIED
     match CDATA #IMPLIED
 >
+
+<!--
+J2EE role based security allows us to restrict methods to only being used by
+people in certain roles.
+-->
+<!ELEMENT auth EMPTY>
+<!ATTLIST auth
+    method CDATA #IMPLIED
+    role CDATA #IMPLIED
+>
+
+<!--
+We don't know enough from a method signature like setUsers(Set s) to be able to
+cast the inbound data to a set of Users. So the parameter element gives us
+this extra information.
+-->
+<!ELEMENT parameter EMPTY>
+<!ATTLIST parameter
+    method CDATA #IMPLIED
+    number CDATA #IMPLIED
+    type CDATA #IMPLIED
+>
+      

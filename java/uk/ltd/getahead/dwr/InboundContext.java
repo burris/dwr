@@ -11,6 +11,16 @@ import java.util.Map;
 public final class InboundContext
 {
     /**
+     * @param scriptName The name of the creator to Javascript
+     * @param methodName The name of the method (without brackets)
+     */
+    public InboundContext(String scriptName, String methodName)
+    {
+        this.scriptName = scriptName;
+        this.methodName = methodName;
+    }
+
+    /**
      * Create an inbound variable.
      * Usually called bu a query parser to setup a list of known variables.
      * This method also check so see if the new variable is a parameter and if
@@ -103,6 +113,36 @@ public final class InboundContext
     {
         return variables.keySet().iterator();
     }
+
+    /**
+     * @return Returns the methodName.
+     */
+    public String getMethodName()
+    {
+        return methodName;
+    }
+
+    /**
+     * @return Returns the scriptName.
+     */
+    public String getScriptName()
+    {
+        return scriptName;
+    }
+
+    /**
+     * The script name that we are converting for.
+     * This is relevant because extra parameter info is logged against scripts
+     * and methods.
+     */
+    private String scriptName;
+
+    /**
+     * The method name that we are converting for.
+     * This is relevant because extra parameter info is logged against scripts
+     * and methods.
+     */
+    private String methodName;
 
     /**
      * How many params are there?.

@@ -761,7 +761,7 @@ DWRUtil.toDescriptiveString = function(data)
         reply = "[";
         for (i = 0; i < data.length; i++)
         {
-            var value = data[i];
+            var value = "" + data[i];
             if (value.length > 13)
             {
                 value = value.substring(0, 10) + "...";
