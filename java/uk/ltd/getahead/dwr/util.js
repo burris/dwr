@@ -345,28 +345,38 @@ DWRUtil._drawRowInner = function(frag, row, cellFuncs)
 
     for (var j = 0; j < cellFuncs.length; j++)
     {
-        var td = document.createElement("td");
-        tr.appendChild(td);
-
         var func = cellFuncs[j];
+        var td;
+
         if (typeof func == "string")
         {
+            td = document.createElement("td");
             var text = document.createTextNode(func);
             td.appendChild(text);
+            tr.appendChild(td);
         }
         else
         {
             var reply = func(row);
-            if (DWRUtil.isHTMLElement(reply))
+
+            if (DWRUtil.isHTMLElement(reply, "td"))
             {
+                td = reply;
+            }
+            else if (DWRUtil.isHTMLElement(reply))
+            {
+                td = document.createElement("td");
                 td.appendChild(reply);
             }
             else
             {
+                td = document.createElement("td");
                 td.innerHTML = reply;
                 //var text = document.createTextNode(reply);
                 //td.appendChild(text);
             }
+
+            tr.appendChild(td);
         }
     }
 
@@ -440,13 +450,27 @@ DWRUtil.selectRange = function(id, start, end)
 }
 
 /**
- * Is the given node an HTML element?
+ * Is the given node an HTML element (optionally of a given type)?
+ * @param ele The element to test
+ * @param nodeName eg input, textarea - optional extra check for node name
  */
-DWRUtil.isHTMLElement = function(ele)
+DWRUtil.isHTMLElement = function(ele, nodeName)
 {
-    // If I.E. worked properly we could use:
-    //  return typeof ele == "object" && ele instanceof HTMLElement;
-    return typeof ele == "object" && ele.nodeName;
+    if (nodeName == null)
+    {
+        // If I.E. worked properly we could use:
+        //  return typeof ele == "object" && ele instanceof HTMLElement;
+        return ele != null &&
+               typeof ele == "object" &&
+               ele.nodeName;
+    }
+    else
+    {
+        return ele != null &&
+               typeof ele == "object" &&
+               ele.nodeName &&
+               ele.nodeName.toLowerCase() == nodeName.toLowerCase();
+    }
 }
 
 /**
@@ -454,9 +478,7 @@ DWRUtil.isHTMLElement = function(ele)
  */
 DWRUtil.isHTMLInputElement = function(ele)
 {
-    // If I.E. worked properly we could use:
-    //   return typeof ele == "object" && ele instanceof HTMLInputElement;
-    return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "input";
+    return DWRUtil.isHTMLElement(ele, "input");
 }
 
 /**
@@ -464,9 +486,7 @@ DWRUtil.isHTMLInputElement = function(ele)
  */
 DWRUtil.isHTMLTextAreaElement = function(ele)
 {
-    // If I.E. worked properly we could use:
-    //   return typeof ele == "object" && ele instanceof HTMLTextAreaElement;
-    return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "textarea";
+    return DWRUtil.isHTMLElement(ele, "textarea");
 }
 
 /**
@@ -474,9 +494,7 @@ DWRUtil.isHTMLTextAreaElement = function(ele)
  */
 DWRUtil.isHTMLSelectElement = function(ele)
 {
-    // If I.E. worked properly we could use:
-    //   return typeof ele == "object" && ele instanceof HTMLSelectElement;
-    return typeof ele == "object" && ele.nodeName && ele.nodeName.toLowerCase() == "select";
+    return DWRUtil.isHTMLElement(ele, "select");
 }
 
 /**
@@ -594,7 +612,13 @@ DWRUtil.getValue = function(id)
         var sel = ele.selectedIndex;
         if (sel != -1)
         {
-            return ele.options[sel].value;
+            var reply = ele.options[sel].value;
+            if (reply == null || reply == "")
+            {
+                reply = ele.options[sel].text;
+            }
+
+            return reply;
         }
         else
         {

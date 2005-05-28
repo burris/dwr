@@ -17,15 +17,40 @@ public class ConversionConstants
     protected static final String TYPE_STRING = "string"; //$NON-NLS-1$
 
     /**
-     * The character that we use to separate types for values in inbound
-     * variables
+     * How many calls are there in this request?
      */
-    protected static final String INBOUND_TYPE_SEPARATOR = ":"; //$NON-NLS-1$
+    protected static final String INBOUND_CALL_COUNT = "callCount"; //$NON-NLS-1$
+
+    /**
+     * The prefix to the call number on inbound calls
+     */
+    protected static final String INBOUND_CALLNUM_PREFIX = "c"; //$NON-NLS-1$
+
+    /**
+     * The suffix to the call number on inbound calls
+     */
+    protected static final String INBOUND_CALLNUM_SUFFIX = "-"; //$NON-NLS-1$
+
+    /**
+     * Used to define the id of this call
+     */
+    protected static final String INBOUND_KEY_ID = "id"; //$NON-NLS-1$
+
+    /**
+     * The inbound key to define the class to be used.
+     * This will be the javascript version of the full java package name.
+     */
+    protected static final String INBOUND_KEY_SCRIPTNAME = "scriptName"; //$NON-NLS-1$
+
+    /**
+     * The inbound key to define the method to be called
+     */
+    protected static final String INBOUND_KEY_METHODNAME = "methodName"; //$NON-NLS-1$
 
     /**
      * What prefix do we put to the input paramters
      */
-    protected static final String PARAM_PREFIX = "param"; //$NON-NLS-1$
+    protected static final String INBOUND_KEY_PARAM = "param"; //$NON-NLS-1$
 
     /**
      * The character to use to distinguish between the variable name and the
@@ -34,20 +59,10 @@ public class ConversionConstants
     protected static final String INBOUND_DECL_SEPARATOR = "="; //$NON-NLS-1$
 
     /**
-     * The inbound key to define the method to be called
+     * The character that we use to separate types for values in inbound
+     * variables
      */
-    protected static final String INBOUND_KEY_METHODNAME = "methodname"; //$NON-NLS-1$
-
-    /**
-     * The inbound key to define the class to be used. This will be the
-     * javascript version of the full java package name
-     */
-    protected static final String INBOUND_KEY_SCRIPTNAME = "classname"; //$NON-NLS-1$
-
-    /**
-     * Used to define the id of this call
-     */
-    protected static final String INBOUND_KEY_ID = "id"; //$NON-NLS-1$
+    protected static final String INBOUND_TYPE_SEPARATOR = ":"; //$NON-NLS-1$
 
     /**
      * The key to define if we are in XMLRPC mode

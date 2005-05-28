@@ -22,22 +22,27 @@ public final class InboundContext
 
     /**
      * Create an inbound variable.
-     * Usually called bu a query parser to setup a list of known variables.
+     * Usually called by a query parser to setup a list of known variables.
      * This method also check so see if the new variable is a parameter and if
      * it is it updates the count of parameters
+     * @param callNum The call number to work on
      * @param key The name of the variable
      * @param type The javascript type of the variable
      * @param value The value of the variable
      */
-    public void createInboundVariable(String key, String type, String value)
+    public void createInboundVariable(int callNum, String key, String type, String value)
     {
         InboundVariable cte = new InboundVariable(this, type, value);
 
         variables.put(key, cte);
 
-        if (key.startsWith(ConversionConstants.PARAM_PREFIX))
+        String paramPrefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + 
+                             ConversionConstants.INBOUND_CALLNUM_SUFFIX +
+                             ConversionConstants.INBOUND_KEY_PARAM;
+
+        if (key.startsWith(paramPrefix))
         {
-            int i = Integer.parseInt(key.substring(ConversionConstants.PARAM_PREFIX.length())) + 1;
+            int i = Integer.parseInt(key.substring(paramPrefix.length())) + 1;
             if (i > paramCount )
             {
                 paramCount = i;
@@ -97,12 +102,17 @@ public final class InboundContext
 
     /**
      * Get a parameter by index
+     * @param callNum The call number to work on
      * @param index The parameter index
      * @return The found parameter
      */
-    protected InboundVariable getParameter(int index)
+    protected InboundVariable getParameter(int callNum, int index)
     {
-        return (InboundVariable) variables.get(ConversionConstants.PARAM_PREFIX + index);
+        String key = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + 
+                     ConversionConstants.INBOUND_CALLNUM_SUFFIX +
+                     ConversionConstants.INBOUND_KEY_PARAM + index;
+
+        return (InboundVariable) variables.get(key);
     }
 
     /**

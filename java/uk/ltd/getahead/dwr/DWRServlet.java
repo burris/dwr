@@ -613,93 +613,92 @@ public class DWRServlet extends HttpServlet
      * Execute a remote Javascript request.
      * @param req The browsers request
      * @param resp The response channel
+     * @throws IOException If an error occurs in writing the output
      */
-    protected void doExec(HttpServletRequest req, HttpServletResponse resp)
+    protected void doExec(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         ExecuteQuery eq = new ExecuteQuery(req, creatorManager, converterManager);
 
-        try
+        if (eq.isFailingBrowser())
         {
-            if (eq.isFailingBrowser())
+            resp.setContentType(MIME_HTML);
+
+            PrintWriter out = resp.getWriter();
+            out.println("//<script type='text/javascript'>"); //$NON-NLS-1$
+            out.println("alert('Your browser sent a request that could not be understood.\\nIf you understand how Javascript works in your browser, please help us fix the problem.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
+            out.println("//</script>"); //$NON-NLS-1$
+            out.flush();
+            return;
+        }
+
+        Call[] calls = eq.execute();
+
+        for (int i = 0; i < calls.length; i++)
+        {
+            if (calls[i].th != null)
             {
-                resp.setContentType(MIME_HTML);
-
-                PrintWriter out = resp.getWriter();
-                out.println("//<script type='text/javascript'>"); //$NON-NLS-1$
-                out.println("alert('Your browser sent a request that could not be understood.\\nIf you understand how Javascript works in your browser, please help us fix the problem.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
-                out.println("//</script>"); //$NON-NLS-1$
-                out.flush();
-                return;
-            }
-
-            Object reply = eq.execute();
-            OutboundVariable ss = converterManager.convertOutbound(reply);
-
-            log.debug("Returning: id[" + eq.getId() + "] init[" + ss.getInitCode() + "] assign[" + ss.getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-
-            LocalUtil.addNoCacheHeaders(resp);
-
-            if (eq.isXmlMode())
-            {
-                resp.setContentType(MIME_XML);
-
-                PrintWriter out = resp.getWriter();
-                out.println(ss.getInitCode());
-                out.println("var reply = " + ss.getAssignCode() + ';'); //$NON-NLS-1$
-                out.println("DWREngine._handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
-                out.flush();
+                log.warn("Erroring: id[" + calls[i].id + "] message[" + calls[i].th.getMessage() + ']', calls[i].th); //$NON-NLS-1$ //$NON-NLS-2$
             }
             else
             {
-                resp.setContentType(MIME_HTML);
-
-                PrintWriter out = resp.getWriter();
-                out.println("<script type='text/javascript'>"); //$NON-NLS-1$
-                out.println(ss.getInitCode());
-                out.println("var reply = " + ss.getAssignCode() + ';'); //$NON-NLS-1$
-                out.println("window.parent.DWREngine._handleResponse(\"" + eq.getId() + "\", reply);"); //$NON-NLS-1$ //$NON-NLS-2$
-                out.println("</script>"); //$NON-NLS-1$
-                out.flush();
+                log.debug("Returning: id[" + calls[i].id + "] init[" + calls[i].reply.getInitCode() + "] assign[" + calls[i].reply.getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             }
         }
-        catch (Throwable ex)
+
+        // We build the answer up in a StringBuffer because that makes is easier
+        // to debug, and because that's only what the compiler does anyway.
+        StringBuffer buffer = new StringBuffer();
+
+        // if we are in html (iframe mode) we need to direct script to the parent
+        String prefix = eq.isXmlMode() ? "" : "window.parent."; //$NON-NLS-1$ //$NON-NLS-2$
+
+        // iframe mode starts as HTML, so get into script mode
+        if (!eq.isXmlMode())
         {
-            if (eq.isFailingBrowser())
+            buffer.append("<script type='text/javascript'>\n"); //$NON-NLS-1$
+        }
+
+        for (int i = 0; i < calls.length; i++)
+        {
+            if (calls[i].th != null)
             {
-                log.warn("Failed to write to a failing browser.", ex); //$NON-NLS-1$
-                return;
+                String output = StringEscapeUtils.escapeJavaScript(calls[i].th.getMessage());
+
+                buffer.append(prefix);
+                buffer.append("DWREngine._handleError('"); //$NON-NLS-1$
+                buffer.append(calls[i].id);
+                buffer.append("', '"); //$NON-NLS-1$
+                buffer.append(output);
+                buffer.append("');\n"); //$NON-NLS-1$
             }
-
-            log.warn("Erroring: id[" + eq.getId() + "] message[" + ex.getMessage() + ']', ex); //$NON-NLS-1$ //$NON-NLS-2$
-
-            try
+            else
             {
-                String output = StringEscapeUtils.escapeJavaScript(ex.getMessage());
+                buffer.append(calls[i].reply.getInitCode());
+                buffer.append('\n');
 
-                if (eq.isXmlMode())
-                {
-                    resp.setContentType(MIME_XML);
-
-                    PrintWriter out = resp.getWriter();
-                    out.println("DWREngine._handleError(\"" + eq.getId() + "\", \"" + output + "\");"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    out.flush();
-                }
-                else
-                {
-                    resp.setContentType(MIME_HTML);
-
-                    PrintWriter out = resp.getWriter();
-                    out.println("<script type='text/javascript'>"); //$NON-NLS-1$
-                    out.println("window.parent.DWREngine._handleError(\"" + eq.getId() + "\", '" + output + "')"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    out.println("</script>"); //$NON-NLS-1$
-                    out.flush();
-                }
-            }
-            catch (IOException ex2)
-            {
-                log.error("IO error: " + eq.getId(), ex2); //$NON-NLS-1$
+                buffer.append(prefix);
+                buffer.append("DWREngine._handleResponse('"); //$NON-NLS-1$
+                buffer.append(calls[i].id);
+                buffer.append("', "); //$NON-NLS-1$
+                buffer.append(calls[i].reply.getAssignCode());
+                buffer.append(");\n"); //$NON-NLS-1$
             }
         }
+
+        // iframe mode needs to get out of script mode
+        if (!eq.isXmlMode())
+        {
+            buffer.append("</script>\n"); //$NON-NLS-1$
+        }
+
+        String reply = buffer.toString();
+        log.debug(reply);
+
+        // LocalUtil.addNoCacheHeaders(resp);
+        resp.setContentType(eq.isXmlMode() ? MIME_XML : MIME_HTML);
+        PrintWriter out = resp.getWriter();
+        out.print(reply);
+        out.flush();
     }
 
     /**

@@ -43,15 +43,6 @@ public interface ConverterManager
     public Object convertInbound(Class paramType, int paramNo, InboundVariable iv, InboundContext inctx) throws ConversionException;
 
     /**
-     * Convert an object into a Javavscript representation of the same
-     * This method is for use by top level objects i.e. DWRServlet
-     * @param object The object to convert
-     * @return A Javascript string version of the object
-     * @throws ConversionException If the conversion failed for some reason
-     */
-    public OutboundVariable convertOutbound(Object object) throws ConversionException;
-
-    /**
      * Convert an object into a Javavscript representation of the same.
      * This method is for use by converters wishing to recurse into some object.
      * @param object The object to convert

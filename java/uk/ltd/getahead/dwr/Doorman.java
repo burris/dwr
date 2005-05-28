@@ -284,7 +284,7 @@ public class Doorman
     /**
      * A struct that contains a method access policy for a Creator
      */
-    class Policy
+    static class Policy
     {
         boolean defaultAllow = true;
         List rules = new ArrayList();

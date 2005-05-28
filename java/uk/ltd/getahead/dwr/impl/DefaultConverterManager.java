@@ -94,14 +94,6 @@ public class DefaultConverterManager implements ConverterManager
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.ConverterManager#convertOutbound(java.lang.Object)
-     */
-    public OutboundVariable convertOutbound(Object object) throws ConversionException
-    {
-        return convertOutbound(object, new OutboundContext());
-    }
-
-    /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ConverterManager#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
     public OutboundVariable convertOutbound(Object object, OutboundContext converted) throws ConversionException

@@ -357,6 +357,15 @@ public class Test
     }
 
     /**
+     * @param req
+     * @return string
+     */
+    public String httpServletRequestParam(HttpServletRequest req)
+    {
+        return req.getRemoteAddr();
+    }
+
+    /**
      * @return nest
      */
     public TestBean[] getNestingTest()

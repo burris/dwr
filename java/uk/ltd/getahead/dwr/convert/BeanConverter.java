@@ -50,14 +50,17 @@ public class BeanConverter implements Converter
             return null;
         }
 
-        if (value.startsWith(ConversionConstants.INBOUND_MAP_START))
+        if (!value.startsWith(ConversionConstants.INBOUND_MAP_START))
         {
-            value = value.substring(1);
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.MissingOpener", ConversionConstants.INBOUND_MAP_START)); //$NON-NLS-1$
         }
-        if (value.endsWith(ConversionConstants.INBOUND_MAP_END))
+
+        if (!value.endsWith(ConversionConstants.INBOUND_MAP_END))
         {
-            value = value.substring(0, value.length() - 1);
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.MissingCloser", ConversionConstants.INBOUND_MAP_START)); //$NON-NLS-1$
         }
+
+        value = value.substring(1, value.length() - 1);
 
         try
         {

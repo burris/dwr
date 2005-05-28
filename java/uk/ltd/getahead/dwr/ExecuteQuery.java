@@ -66,6 +66,7 @@ public final class ExecuteQuery
                     break;
                 }
 
+                log.debug("POST line: " + line); //$NON-NLS-1$
                 int sep = line.indexOf(ConversionConstants.INBOUND_DECL_SEPARATOR);
                 if (sep == -1)
                 {
@@ -97,22 +98,33 @@ public final class ExecuteQuery
      */
     private Map parseGet()
     {
+        Map convertedMap = new HashMap();
         Map paramMap = req.getParameterMap();
 
-        Map convertedMap = new HashMap();
-        for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+        for (Iterator it = paramMap.keySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            Object value = entry.getValue();
+            String key = (String) it.next();
+            Object value = paramMap.get(key);
+            
             if (value != null)
             {
                 if (value instanceof String[])
                 {
-                    convertedMap.put(entry.getKey(), ((String[]) value)[0]);
+                    String[] array = (String[]) value;
+                    convertedMap.put(key, array[0]);
+
+                    if (log.isDebugEnabled())
+                    {
+                        for (int i = 0; i < array.length; i++)
+                        {
+                            log.debug("GET line[" + i + "]: " + key + '=' + value); //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                    }
                 }
                 else
                 {
-                    convertedMap.put(entry.getKey(), value);
+                    convertedMap.put(key, value);
+                    log.debug("GET line: " + key + '=' + value); //$NON-NLS-1$
                 }
             }
         }
@@ -126,37 +138,76 @@ public final class ExecuteQuery
      */
     private void parseParameters(Map paramMap)
     {
-        // The special values
-        id = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_ID);
-        scriptName = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_SCRIPTNAME);
-        methodName = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_METHODNAME);
+        // XML mode is common to all calls
         xmlMode = Boolean.valueOf((String) paramMap.remove(ConversionConstants.INBOUND_KEY_XMLMODE)).booleanValue();
 
-        inctx = new InboundContext(scriptName, methodName);
-
-        // Look through the params and convert to InboundVariable.
-        for (Iterator it = paramMap.keySet().iterator(); it.hasNext();)
+        // Work out haw many calls are in this packet
+        String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
+        if (callStr == null)
         {
-            String key = (String) it.next();
-            String data = (String) paramMap.get(key);
-            String[] split = splitInbound(data);
+            // If there was no indication of how many inbound calls, then assume 0;
+            callStr = "0"; //$NON-NLS-1$
+        }
+        int callCount = Integer.parseInt(callStr);
+        calls = new Call[callCount];
 
-            inctx.createInboundVariable(key, split[INBOUND_INDEX_TYPE], split[INBOUND_INDEX_VALUE]);
+        // Extract the ids, scriptnames and methodnames
+        for (int callNum = 0; callNum < calls.length; callNum++)
+        {
+            Call call = new Call();
+            calls[callNum] = call;
+
+            String prefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + ConversionConstants.INBOUND_CALLNUM_SUFFIX;
+
+            // The special values
+            call.id = (String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_ID);
+            call.scriptName = (String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_SCRIPTNAME);
+            call.methodName = (String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_METHODNAME);
+            call.inctx = new InboundContext(call.scriptName, call.methodName);
+
+            // Look for parameters to this method
+            for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+                String key = (String) entry.getKey();
+
+                if (key.startsWith(prefix))
+                {
+                    String data = (String) entry.getValue();
+                    String[] split = splitInbound(data);
+
+                    call.inctx.createInboundVariable(callNum, key, split[INBOUND_INDEX_TYPE], split[INBOUND_INDEX_VALUE]);
+                    it.remove();
+                }
+            }
+        }
+        
+        if (paramMap.size() != 0)
+        {
+            log.warn("Entries left over in parameter map"); //$NON-NLS-1$
         }
 
         if (log.isDebugEnabled())
         {
-            log.debug("Executing: " + scriptName + '.' + methodName + "();"); //$NON-NLS-1$ //$NON-NLS-2$
-            for (int i = 0; i < inctx.getParameterCount(); i++)
+            for (int callNum = 0; callNum < calls.length; callNum++)
             {
-                log.debug("  Parameter " + i + '=' + inctx.getParameter(i)); //$NON-NLS-1$
+                Call call = calls[callNum];
+
+                log.debug("Call[" + callNum + "]: " + call.scriptName + '.' + call.methodName + "();"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+                for (int i = 0; i < call.inctx.getParameterCount(); i++)
+                {
+                    log.debug("  Param: " + i + '=' + call.inctx.getParameter(callNum, i)); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
-            for (Iterator it = inctx.getInboundVariableNames(); it.hasNext();)
+
+            // We can just use 0 because they are all shared
+            for (Iterator it = calls[0].inctx.getInboundVariableNames(); it.hasNext();)
             {
                 String key = (String) it.next();
-                InboundVariable value = inctx.getInboundVariable(key);
+                InboundVariable value = calls[0].inctx.getInboundVariable(key);
     
-                log.debug("  Environment " + key + '=' + value.getRawData()); //$NON-NLS-1$
+                log.debug("  Env: " + key + '=' + value.getRawData()); //$NON-NLS-1$
             }
         }
     }
@@ -164,59 +215,79 @@ public final class ExecuteQuery
     /**
      * Check (as far as we can) that the execute method will succeed.
      * @return The return from the method invocation
-     * @throws Throwable Almost anything could go wrong. We're not exception
      * wrapping and we are unwrapping InvocationTargetException
      */
-    public Object execute() throws Throwable
+    public Call[] execute()
     {
         if (delayed != null)
         {
-            throw delayed;
+            for (int callNum = 0; callNum < calls.length; callNum++)
+            {
+                calls[callNum].th = delayed;
+            }
+
+            return calls;
         }
 
-        // Get a list of the available matching methods with the coerced
-        // parameters that we will use to call it if we choose to use that
-        // method.
-        Creator creator = creatorManager.getCreator(scriptName);
+        // Since we are passing all the responses back in one script, there is
+        // only one outbound context.
+        OutboundContext converted = new OutboundContext();
 
-        // Which method are we using?
-        Method method = findMethod();
-        if (method == null)
+        for (int callNum = 0; callNum < calls.length; callNum++)
         {
-            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.UnknownMethod", toString())); //$NON-NLS-1$
+            Call call = calls[callNum];
+
+            try
+            {
+                // Get a list of the available matching methods with the coerced
+                // parameters that we will use to call it if we choose to use that
+                // method.
+                Creator creator = creatorManager.getCreator(call.scriptName);
+
+                // Which method are we using?
+                Method method = findMethod(callNum);
+                if (method == null)
+                {
+                    throw new IllegalArgumentException(Messages.getString("ExecuteQuery.UnknownMethod", toString())); //$NON-NLS-1$
+                }
+
+                // Check this method is accessible
+                String reason = Factory.getDoorman().getReasonToNotExecute(req, creator, call.scriptName, method);
+                if (reason != null)
+                {
+                    log.error("Access denied: " + reason); //$NON-NLS-1$
+                    throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
+                }
+
+                // Convert all the parameters to the correct types
+                Object[] params = new Object[method.getParameterTypes().length];
+                for (int j = 0; j < method.getParameterTypes().length; j++)
+                {
+                    Class paramType = method.getParameterTypes()[j];
+
+                    InboundVariable param = call.inctx.getParameter(callNum, j);
+                    params[j] = converterManager.convertInbound(paramType, j, param, call.inctx);
+                }
+
+                // Create an instance
+                Object object = creator.getInstance();
+
+                // Execute
+                log.info("Executing: " + method.toString()); //$NON-NLS-1$
+                Object reply = method.invoke(object, params);
+                call.reply = converterManager.convertOutbound(reply, converted);
+            }
+            catch (InvocationTargetException ex)
+            {
+                call.th = ex.getTargetException();
+            }
+            catch (Throwable ex)
+            {
+                call.th = ex;
+            }
         }
 
-        // Check this method is accessible
-        String reason = Factory.getDoorman().getReasonToNotExecute(req, creator, scriptName, method);
-        if (reason != null)
-        {
-            log.error("Access denied: " + reason); //$NON-NLS-1$
-            throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
-        }
-
-        // Convert all the parameters to the correct types
-        Object[] converted = new Object[method.getParameterTypes().length];
-        for (int j = 0; j < method.getParameterTypes().length; j++)
-        {
-            Class paramType = method.getParameterTypes()[j];
-
-            InboundVariable param = inctx.getParameter(j);
-            converted[j] = converterManager.convertInbound(paramType, j, param, inctx);
-        }
-
-        try
-        {
-            // Create an instance
-            Object object = creator.getInstance();
-
-            // Execute
-            log.info("Executing: " + method.toString()); //$NON-NLS-1$
-            return method.invoke(object, converted);
-        }
-        catch (InvocationTargetException ex)
-        {
-            throw ex.getTargetException();
-        }
+        return calls;
     }
 
     /**
@@ -227,7 +298,7 @@ public final class ExecuteQuery
      */
     public boolean isFailingBrowser()
     {
-        return id == null && methodName == null && scriptName == null;
+        return calls.length == 0;
     }
 
     /**
@@ -239,64 +310,25 @@ public final class ExecuteQuery
     }
 
     /**
-     * @return The id of this query
-     */
-    public String getId()
-    {
-        return id;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    public String toString()
-    {
-        StringBuffer allParams = new StringBuffer();
-        for (int i = 0; i < inctx.getParameterCount(); i++)
-        {
-            if (i != 0)
-            {
-                allParams.append(',');
-            }
-            allParams.append(inctx.getParameter(i));
-        }
-
-        StringBuffer allData = new StringBuffer();
-        for (Iterator it = inctx.getInboundVariableNames(); it.hasNext();)
-        {
-            String key = (String) it.next();
-            InboundVariable value = inctx.getInboundVariable(key);
-
-            allData.append(key);
-            allData.append('=');
-            allData.append(value.getRawData());
-
-            if (it.hasNext())
-            {
-                allData.append(',');
-            }
-        }
-
-        return scriptName + '.' + methodName + '(' + allParams + "); with " + allData; //$NON-NLS-1$
-    }
-
-    /**
      * Find the method the best matches the method name and parameters
+     * @param callNum The call number to work on
      * @return A matching method, or null if one was not found.
      */
-    private Method findMethod()
+    private Method findMethod(int callNum)
     {
-        if (scriptName == null)
+        Call call = calls[callNum];
+
+        if (call.scriptName == null)
         {
             throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingClassParam")); //$NON-NLS-1$
         }
 
-        if (methodName == null)
+        if (call.methodName == null)
         {
             throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingMethodParam")); //$NON-NLS-1$
         }
 
-        Creator creator = creatorManager.getCreator(scriptName);
+        Creator creator = creatorManager.getCreator(call.scriptName);
         Method[] methods = creator.getType().getMethods();
         List available = new ArrayList();
 
@@ -304,14 +336,14 @@ public final class ExecuteQuery
         for (int i = 0; i < methods.length; i++)
         {
             // Check method name and access
-            if (methods[i].getName().equals(methodName))
+            if (methods[i].getName().equals(call.methodName))
             {
                 // Check number of parameters
-                if (methods[i].getParameterTypes().length == inctx.getParameterCount())
+                if (methods[i].getParameterTypes().length == call.inctx.getParameterCount())
                 {
                     // Clear the previous conversion attempts (the param types
                     // will probably be different)
-                    inctx.clearConverted();
+                    call.inctx.clearConverted();
 
                     // Check parameter types
                     params:
@@ -374,7 +406,7 @@ public final class ExecuteQuery
         }
         else
         {
-            log.error("Missing : in conversion data"); //$NON-NLS-1$
+            log.error("Missing : in conversion data (" + data + ')'); //$NON-NLS-1$
             reply[INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
             reply[INBOUND_INDEX_VALUE] = data;
         }
@@ -392,9 +424,6 @@ public final class ExecuteQuery
     private HttpServletRequest req;
 
     private boolean xmlMode;
-    private String id;
-    private String scriptName;
-    private String methodName;
     private IOException delayed;
-    private InboundContext inctx;
+    private Call[] calls;
 }

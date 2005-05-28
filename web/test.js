@@ -1,277 +1,279 @@
+
 var failures;
 var progress;
 var failreport;
 var execreport;
 var starttime;
 var failcount = 0;
-var index = 0;
 var tests = new Array();
+var parallel = false;
+var batch = 1;
 
-tests[tests.length] = { code:"Test.voidParam(testResults)", expected:null };
+tests[tests.length] = { code:"voidParam", data:null };
 
-tests[tests.length] = { code:"Test.booleanParam(testResults, true)", expected:true };
-tests[tests.length] = { code:"Test.booleanParam(testResults, false)", expected:false };
+tests[tests.length] = { code:"booleanParam", data:true };
+tests[tests.length] = { code:"booleanParam", data:false };
 
-tests[tests.length] = { code:"Test.byteParam(testResults, -128)", expected:-128 };
-tests[tests.length] = { code:"Test.byteParam(testResults, -1)", expected:-1 };
-tests[tests.length] = { code:"Test.byteParam(testResults, 0)", expected:0 };
-tests[tests.length] = { code:"Test.byteParam(testResults, 1)", expected:1 };
-tests[tests.length] = { code:"Test.byteParam(testResults, 127)", expected:127 };
+tests[tests.length] = { code:"byteParam", data:-128 };
+tests[tests.length] = { code:"byteParam", data:-1 };
+tests[tests.length] = { code:"byteParam", data:0 };
+tests[tests.length] = { code:"byteParam", data:1 };
+tests[tests.length] = { code:"byteParam", data:127 };
 
-tests[tests.length] = { code:"Test.shortParam(testResults, -32768)", expected:-32768 };
-tests[tests.length] = { code:"Test.shortParam(testResults, -1)", expected:-1 };
-tests[tests.length] = { code:"Test.shortParam(testResults, 0)", expected:0 };
-tests[tests.length] = { code:"Test.shortParam(testResults, 1)", expected:1 };
-tests[tests.length] = { code:"Test.shortParam(testResults, 32767)", expected:32767 };
+tests[tests.length] = { code:"shortParam", data:-32768 };
+tests[tests.length] = { code:"shortParam", data:-1 };
+tests[tests.length] = { code:"shortParam", data:0 };
+tests[tests.length] = { code:"shortParam", data:1 };
+tests[tests.length] = { code:"shortParam", data:32767 };
 
-tests[tests.length] = { code:"Test.intParam(testResults, -2147483648)", expected:-2147483648 };
-tests[tests.length] = { code:"Test.intParam(testResults, -1)", expected:-1 };
-tests[tests.length] = { code:"Test.intParam(testResults, 0)", expected:0 };
-tests[tests.length] = { code:"Test.intParam(testResults, 1)", expected:1 };
-tests[tests.length] = { code:"Test.intParam(testResults, 2147483647)", expected:2147483647 };
+tests[tests.length] = { code:"intParam", data:-2147483648 };
+tests[tests.length] = { code:"intParam", data:-1 };
+tests[tests.length] = { code:"intParam", data:0 };
+tests[tests.length] = { code:"intParam", data:1 };
+tests[tests.length] = { code:"intParam", data:2147483647 };
 
 // Mozilla rounds 9223372036854775808 to 9223372036854776000 which overflows so we round down
-tests[tests.length] = { code:"Test.longParam(testResults, -9223372036854775000)", expected:-9223372036854775000 };
-tests[tests.length] = { code:"Test.longParam(testResults, -1)", expected:-1 };
-tests[tests.length] = { code:"Test.longParam(testResults, 0)", expected:0 };
-tests[tests.length] = { code:"Test.longParam(testResults, 1)", expected:1 };
-tests[tests.length] = { code:"Test.longParam(testResults, 9223372036854775000)", expected:9223372036854775000 };
+tests[tests.length] = { code:"longParam", data:-9223372036854775000 };
+tests[tests.length] = { code:"longParam", data:-1 };
+tests[tests.length] = { code:"longParam", data:0 };
+tests[tests.length] = { code:"longParam", data:1 };
+tests[tests.length] = { code:"longParam", data:9223372036854775000 };
 
-tests[tests.length] = { code:"Test.floatParam(testResults, -100000000000000000000)", expected:-100000000000000000000 };
-tests[tests.length] = { code:"Test.floatParam(testResults, -1)", expected:-1 };
-tests[tests.length] = { code:"Test.floatParam(testResults, 0)", expected:0 };
-tests[tests.length] = { code:"Test.floatParam(testResults, 1)", expected:1 };
-tests[tests.length] = { code:"Test.floatParam(testResults, 100000000000000000000)", expected:100000000000000000000 };
+tests[tests.length] = { code:"floatParam", data:-100000000000000000000 };
+tests[tests.length] = { code:"floatParam", data:-1 };
+tests[tests.length] = { code:"floatParam", data:0 };
+tests[tests.length] = { code:"floatParam", data:1 };
+tests[tests.length] = { code:"floatParam", data:100000000000000000000 };
 
-tests[tests.length] = { code:"Test.doubleParam(testResults, -100000000000000000000)", expected:-100000000000000000000 };
-tests[tests.length] = { code:"Test.doubleParam(testResults, -1)", expected:-1 };
-tests[tests.length] = { code:"Test.doubleParam(testResults, 0)", expected:0 };
-tests[tests.length] = { code:"Test.doubleParam(testResults, 1)", expected:1 };
-tests[tests.length] = { code:"Test.doubleParam(testResults, 100000000000000000000)", expected:100000000000000000000 };
+tests[tests.length] = { code:"doubleParam", data:-100000000000000000000 };
+tests[tests.length] = { code:"doubleParam", data:-1 };
+tests[tests.length] = { code:"doubleParam", data:0 };
+tests[tests.length] = { code:"doubleParam", data:1 };
+tests[tests.length] = { code:"doubleParam", data:100000000000000000000 };
 
-tests[tests.length] = { code:"Test.bigDecimalParam(testResults, -100000000000000000000)", expected:-100000000000000000000 };
-tests[tests.length] = { code:"Test.bigDecimalParam(testResults, -1)", expected:-1 };
-tests[tests.length] = { code:"Test.bigDecimalParam(testResults, 0)", expected:0 };
-tests[tests.length] = { code:"Test.bigDecimalParam(testResults, 1)", expected:1 };
-tests[tests.length] = { code:"Test.bigDecimalParam(testResults, 100000000000000000000)", expected:100000000000000000000 };
+tests[tests.length] = { code:"bigDecimalParam", data:-100000000000000000000 };
+tests[tests.length] = { code:"bigDecimalParam", data:-1 };
+tests[tests.length] = { code:"bigDecimalParam", data:0 };
+tests[tests.length] = { code:"bigDecimalParam", data:1 };
+tests[tests.length] = { code:"bigDecimalParam", data:100000000000000000000 };
 
-tests[tests.length] = { code:"Test.bigIntegerParam(testResults, -100000000000000000000)", expected:-100000000000000000000 };
-tests[tests.length] = { code:"Test.bigIntegerParam(testResults, -1)", expected:-1 };
-tests[tests.length] = { code:"Test.bigIntegerParam(testResults, 0)", expected:0 };
-tests[tests.length] = { code:"Test.bigIntegerParam(testResults, 1)", expected:1 };
-tests[tests.length] = { code:"Test.bigIntegerParam(testResults, 100000000000000000000)", expected:100000000000000000000 };
+tests[tests.length] = { code:"bigIntegerParam", data:-100000000000000000000 };
+tests[tests.length] = { code:"bigIntegerParam", data:-1 };
+tests[tests.length] = { code:"bigIntegerParam", data:0 };
+tests[tests.length] = { code:"bigIntegerParam", data:1 };
+tests[tests.length] = { code:"bigIntegerParam", data:100000000000000000000 };
 
 // Opera 8 has issues with this one. It appears to not like \0
-tests[tests.length] = { code:"Test.charParam(testResults, '\\0')", expected:"\0" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\t')", expected:"\t" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\n')", expected:"\n" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\v')", expected:"\v" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\f')", expected:"\f" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\r')", expected:"\r" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\x07')", expected:"\x07" };
+tests[tests.length] = { code:"charParam", data:"\0" };
+tests[tests.length] = { code:"charParam", data:"\t" };
+tests[tests.length] = { code:"charParam", data:"\n" };
+tests[tests.length] = { code:"charParam", data:"\v" };
+tests[tests.length] = { code:"charParam", data:"\f" };
+tests[tests.length] = { code:"charParam", data:"\r" };
+tests[tests.length] = { code:"charParam", data:"\x07" };
 
-tests[tests.length] = { code:"Test.charParam(testResults, ' ')", expected:" " };
-tests[tests.length] = { code:"Test.charParam(testResults, '!')", expected:"!" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\"')", expected:'"' };
-tests[tests.length] = { code:"Test.charParam(testResults, '#')", expected:"#" };
-tests[tests.length] = { code:"Test.charParam(testResults, '$')", expected:"$" };
-tests[tests.length] = { code:"Test.charParam(testResults, '%')", expected:"%" };
-tests[tests.length] = { code:"Test.charParam(testResults, '&')", expected:"&" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\'')", expected:"'" }; // double escape because it is evaled twice
-tests[tests.length] = { code:"Test.charParam(testResults, '(')", expected:"(" };
-tests[tests.length] = { code:"Test.charParam(testResults, ')')", expected:")" };
-tests[tests.length] = { code:"Test.charParam(testResults, '*')", expected:"*" };
-tests[tests.length] = { code:"Test.charParam(testResults, '+')", expected:"+" };
-tests[tests.length] = { code:"Test.charParam(testResults, ',')", expected:"," };
-tests[tests.length] = { code:"Test.charParam(testResults, '-')", expected:"-" };
-tests[tests.length] = { code:"Test.charParam(testResults, '.')", expected:"." };
-tests[tests.length] = { code:"Test.charParam(testResults, '/')", expected:"/" };
-tests[tests.length] = { code:"Test.charParam(testResults, '0')", expected:"0" };
-tests[tests.length] = { code:"Test.charParam(testResults, '9')", expected:"9" };
-tests[tests.length] = { code:"Test.charParam(testResults, ':')", expected:":" };
-tests[tests.length] = { code:"Test.charParam(testResults, ';')", expected:";" };
-tests[tests.length] = { code:"Test.charParam(testResults, '<')", expected:"<" };
-tests[tests.length] = { code:"Test.charParam(testResults, '=')", expected:"=" };
-tests[tests.length] = { code:"Test.charParam(testResults, '>')", expected:">" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '@')", expected:"@" };
-tests[tests.length] = { code:"Test.charParam(testResults, 'A')", expected:"A" };
-tests[tests.length] = { code:"Test.charParam(testResults, 'Z')", expected:"Z" };
-tests[tests.length] = { code:"Test.charParam(testResults, '[')", expected:"[" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\\\')", expected:"\\" }; // double escape because it is evaled twice
-tests[tests.length] = { code:"Test.charParam(testResults, ']')", expected:"]" };
-tests[tests.length] = { code:"Test.charParam(testResults, '^')", expected:"^" };
-tests[tests.length] = { code:"Test.charParam(testResults, '_')", expected:"_" };
-tests[tests.length] = { code:"Test.charParam(testResults, '`')", expected:"`" };
-tests[tests.length] = { code:"Test.charParam(testResults, 'a')", expected:"a" };
-tests[tests.length] = { code:"Test.charParam(testResults, 'z')", expected:"z" };
-tests[tests.length] = { code:"Test.charParam(testResults, '{')", expected:"{" };
-tests[tests.length] = { code:"Test.charParam(testResults, '|')", expected:"|" };
-tests[tests.length] = { code:"Test.charParam(testResults, '}')", expected:"}" };
-tests[tests.length] = { code:"Test.charParam(testResults, '~')", expected:"~" };
+tests[tests.length] = { code:"charParam", data:" " };
+tests[tests.length] = { code:"charParam", data:"!" };
+tests[tests.length] = { code:"charParam", data:'"' };
+tests[tests.length] = { code:"charParam", data:"#" };
+tests[tests.length] = { code:"charParam", data:"$" };
+tests[tests.length] = { code:"charParam", data:"%" };
+tests[tests.length] = { code:"charParam", data:"&" };
+tests[tests.length] = { code:"charParam", data:"'" }; // double escape because it is evaled twice
+tests[tests.length] = { code:"charParam", data:"(" };
+tests[tests.length] = { code:"charParam", data:")" };
+tests[tests.length] = { code:"charParam", data:"*" };
+tests[tests.length] = { code:"charParam", data:"+" };
+tests[tests.length] = { code:"charParam", data:"," };
+tests[tests.length] = { code:"charParam", data:"-" };
+tests[tests.length] = { code:"charParam", data:"." };
+tests[tests.length] = { code:"charParam", data:"/" };
+tests[tests.length] = { code:"charParam", data:"0" };
+tests[tests.length] = { code:"charParam", data:"9" };
+tests[tests.length] = { code:"charParam", data:":" };
+tests[tests.length] = { code:"charParam", data:";" };
+tests[tests.length] = { code:"charParam", data:"<" };
+tests[tests.length] = { code:"charParam", data:"=" };
+tests[tests.length] = { code:"charParam", data:">" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"@" };
+tests[tests.length] = { code:"charParam", data:"A" };
+tests[tests.length] = { code:"charParam", data:"Z" };
+tests[tests.length] = { code:"charParam", data:"[" };
+tests[tests.length] = { code:"charParam", data:"\\" }; // double escape because it is evaled twice
+tests[tests.length] = { code:"charParam", data:"]" };
+tests[tests.length] = { code:"charParam", data:"^" };
+tests[tests.length] = { code:"charParam", data:"_" };
+tests[tests.length] = { code:"charParam", data:"`" };
+tests[tests.length] = { code:"charParam", data:"a" };
+tests[tests.length] = { code:"charParam", data:"z" };
+tests[tests.length] = { code:"charParam", data:"{" };
+tests[tests.length] = { code:"charParam", data:"|" };
+tests[tests.length] = { code:"charParam", data:"}" };
+tests[tests.length] = { code:"charParam", data:"~" };
 
-tests[tests.length] = { code:"Test.stringParam(testResults, ' ')", expected:" " };
-tests[tests.length] = { code:"Test.stringParam(testResults, '!')", expected:"!" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '\"')", expected:'"' };
-tests[tests.length] = { code:"Test.stringParam(testResults, '#')", expected:"#" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '$')", expected:"$" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '%')", expected:"%" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '&')", expected:"&" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '\\'')", expected:"'" }; // double escape because it is evaled twice
-tests[tests.length] = { code:"Test.stringParam(testResults, '(')", expected:"(" };
-tests[tests.length] = { code:"Test.stringParam(testResults, ')')", expected:")" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '*')", expected:"*" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '+')", expected:"+" };
-tests[tests.length] = { code:"Test.stringParam(testResults, ',')", expected:"," };
-tests[tests.length] = { code:"Test.stringParam(testResults, '-')", expected:"-" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '.')", expected:"." };
-tests[tests.length] = { code:"Test.stringParam(testResults, '/')", expected:"/" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '0')", expected:"0" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '9')", expected:"9" };
-tests[tests.length] = { code:"Test.stringParam(testResults, ':')", expected:":" };
-tests[tests.length] = { code:"Test.stringParam(testResults, ';')", expected:";" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '<')", expected:"<" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '=')", expected:"=" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '>')", expected:">" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '@')", expected:"@" };
-tests[tests.length] = { code:"Test.stringParam(testResults, 'A')", expected:"A" };
-tests[tests.length] = { code:"Test.stringParam(testResults, 'Z')", expected:"Z" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '[')", expected:"[" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '\\\\')", expected:"\\" }; // double escape because it is evaled twice
-tests[tests.length] = { code:"Test.stringParam(testResults, ']')", expected:"]" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '^')", expected:"^" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '_')", expected:"_" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '`')", expected:"`" };
-tests[tests.length] = { code:"Test.stringParam(testResults, 'a')", expected:"a" };
-tests[tests.length] = { code:"Test.stringParam(testResults, 'z')", expected:"z" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '{')", expected:"{" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '|')", expected:"|" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '}')", expected:"}" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '~')", expected:"~" };
+tests[tests.length] = { code:"stringParam", data:" " };
+tests[tests.length] = { code:"stringParam", data:"!" };
+tests[tests.length] = { code:"stringParam", data:'"' };
+tests[tests.length] = { code:"stringParam", data:"#" };
+tests[tests.length] = { code:"stringParam", data:"$" };
+tests[tests.length] = { code:"stringParam", data:"%" };
+tests[tests.length] = { code:"stringParam", data:"&" };
+tests[tests.length] = { code:"stringParam", data:"'" }; // double escape because it is evaled twice
+tests[tests.length] = { code:"stringParam", data:"(" };
+tests[tests.length] = { code:"stringParam", data:")" };
+tests[tests.length] = { code:"stringParam", data:"*" };
+tests[tests.length] = { code:"stringParam", data:"+" };
+tests[tests.length] = { code:"stringParam", data:"," };
+tests[tests.length] = { code:"stringParam", data:"-" };
+tests[tests.length] = { code:"stringParam", data:"." };
+tests[tests.length] = { code:"stringParam", data:"/" };
+tests[tests.length] = { code:"stringParam", data:"0" };
+tests[tests.length] = { code:"stringParam", data:"9" };
+tests[tests.length] = { code:"stringParam", data:":" };
+tests[tests.length] = { code:"stringParam", data:";" };
+tests[tests.length] = { code:"stringParam", data:"<" };
+tests[tests.length] = { code:"stringParam", data:"=" };
+tests[tests.length] = { code:"stringParam", data:">" };
+tests[tests.length] = { code:"stringParam", data:"?" };
+tests[tests.length] = { code:"stringParam", data:"@" };
+tests[tests.length] = { code:"stringParam", data:"A" };
+tests[tests.length] = { code:"stringParam", data:"Z" };
+tests[tests.length] = { code:"stringParam", data:"[" };
+tests[tests.length] = { code:"stringParam", data:"\\" }; // double escape because it is evaled twice
+tests[tests.length] = { code:"stringParam", data:"]" };
+tests[tests.length] = { code:"stringParam", data:"^" };
+tests[tests.length] = { code:"stringParam", data:"_" };
+tests[tests.length] = { code:"stringParam", data:"`" };
+tests[tests.length] = { code:"stringParam", data:"a" };
+tests[tests.length] = { code:"stringParam", data:"z" };
+tests[tests.length] = { code:"stringParam", data:"{" };
+tests[tests.length] = { code:"stringParam", data:"|" };
+tests[tests.length] = { code:"stringParam", data:"}" };
+tests[tests.length] = { code:"stringParam", data:"~" };
 
-tests[tests.length] = { code:"Test.stringParam(testResults, '')", expected:"" };
-tests[tests.length] = { code:"Test.stringParam(testResults, null)", expected:null };
-tests[tests.length] = { code:"Test.stringParam(testResults, 'null')", expected:"null" };
+tests[tests.length] = { code:"stringParam", data:"" };
+tests[tests.length] = { code:"stringParam", data:null };
+tests[tests.length] = { code:"stringParam", data:"null" };
 
-tests[tests.length] = { code:"Test.stringParam(testResults, ' !\"#$%&\\'()*+,-/')", expected:" !\"#$%&\'()*+,-/" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '0123456789')", expected:"0123456789" };
-tests[tests.length] = { code:"Test.stringParam(testResults, ':;<=>?@')", expected:":;<=>?@" };
-tests[tests.length] = { code:"Test.stringParam(testResults, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')", expected:"ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '[\\\\]^_`')", expected:"[\\]^_`" };
-tests[tests.length] = { code:"Test.stringParam(testResults, 'abcdefghijklmnopqrstuvwxyz')", expected:"abcdefghijklmnopqrstuvwxyz" };
-tests[tests.length] = { code:"Test.stringParam(testResults, '{|}~')", expected:"{|}~" };
+tests[tests.length] = { code:"stringParam", data:" !\"#$%&\'()*+,-/" };
+tests[tests.length] = { code:"stringParam", data:"0123456789" };
+tests[tests.length] = { code:"stringParam", data:":;<=>?@" };
+tests[tests.length] = { code:"stringParam", data:"ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
+tests[tests.length] = { code:"stringParam", data:"[\\]^_`" };
+tests[tests.length] = { code:"stringParam", data:"abcdefghijklmnopqrstuvwxyz" };
+tests[tests.length] = { code:"stringParam", data:"{|}~" };
 
-tests[tests.length] = { code:"Test.stringParam(testResults, 'call.callback = null')", expected:"call.callback = null" };
-tests[tests.length] = { code:"Test.stringStringParam(testResults, ' !\"#$%&\\'()*+,-/0123456789', ':;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ')", expected:"param1=' !\"#$%&\'()*+,-/0123456789' param2=':;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ'" };
-tests[tests.length] = { code:"Test.stringStringParam(testResults, '[\\\\]^_`', 'abcdefghijklmnopqrstuvwxyz{|}~')", expected:"param1='[\\]^_`' param2='abcdefghijklmnopqrstuvwxyz{|}~'" };
-tests[tests.length] = { code:"Test.booleanArrayParam(testResults, [ true, false, true, false ])", expected:[ true, false, true, false ] };
-tests[tests.length] = { code:"Test.charArrayParam(testResults, [ 'a', ',', '[', ']' ])", expected:[ 'a', ',', '[', ']' ] };
-tests[tests.length] = { code:"Test.byteArrayParam(testResults, [ -128, -128, -128, -128, -127 ])", expected:[ -128, -128, -128, -128, -127 ] };
-tests[tests.length] = { code:"Test.byteArrayParam(testResults, [ -128, -1, 0, 1, 127 ])", expected:[ -128, -1, 0, 1, 127 ] };
-tests[tests.length] = { code:"Test.shortArrayParam(testResults, [ -32768, -1, 0, 1, 32767 ])", expected:[ -32768, -1, 0, 1, 32767 ] };
-tests[tests.length] = { code:"Test.intArrayParam(testResults, [ -2147483648, -1, 0, 1, 2147483647 ])", expected:[ -2147483648, -1, 0, 1, 2147483647 ] };
-tests[tests.length] = { code:"Test.longArrayParam(testResults, [ -9223372036854775000, -1, 0, 1, 9223372036854775000 ])", expected:[ -9223372036854775000, -1, 0, 1, 9223372036854775000 ] };
-tests[tests.length] = { code:"Test.floatArrayParam(testResults, [ -100000000000000000000, -1, 0, 1, 100000000000000000000 ])", expected:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] };
-tests[tests.length] = { code:"Test.doubleArrayParam(testResults, [ -100000000000000000000, -1, 0, 1, 100000000000000000000 ])", expected:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] };
+tests[tests.length] = { code:"stringParam", data:"call.callback = null" };
+//tests[tests.length] = { code:"stringStringParam", data:"param1=' !\"#$%&\'()*+,-/0123456789' param2=':;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ'" };
+//tests[tests.length] = { code:"stringStringParam", data:"param1='[\\]^_`' param2='abcdefghijklmnopqrstuvwxyz{|}~'" };
+tests[tests.length] = { code:"booleanArrayParam", data:[ true, false, true, false ] };
+tests[tests.length] = { code:"charArrayParam", data:[ 'a', ',', '[', ']' ] };
+tests[tests.length] = { code:"byteArrayParam", data:[ -128, -128, -128, -128, -127 ] };
+tests[tests.length] = { code:"byteArrayParam", data:[ -128, -1, 0, 1, 127 ] };
+tests[tests.length] = { code:"shortArrayParam", data:[ -32768, -1, 0, 1, 32767 ] };
+tests[tests.length] = { code:"intArrayParam", data:[ -2147483648, -1, 0, 1, 2147483647 ] };
+tests[tests.length] = { code:"longArrayParam", data:[ -9223372036854775000, -1, 0, 1, 9223372036854775000 ] };
+tests[tests.length] = { code:"floatArrayParam", data:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] };
+tests[tests.length] = { code:"doubleArrayParam", data:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] };
 
 // Unicode: we could be here for some time, so I just picked some commmon ones
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
-tests[tests.length] = { code:"Test.charParam(testResults, '?')", expected:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
+tests[tests.length] = { code:"charParam", data:"?" };
 
 // Many of these are duplicates, maybe this tests encoding differently?
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u0080')", expected:"\u0080" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u0091')", expected:"\u0091" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u0092')", expected:"\u0092" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u0093')", expected:"\u0093" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u0094')", expected:"\u0094" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u0095')", expected:"\u0095" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u0098')", expected:"\u0098" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u0099')", expected:"\u0099" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00A0')", expected:"\u00A0" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00A3')", expected:"\u00A3" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00A5')", expected:"\u00A5" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00A6')", expected:"\u00A6" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00A9')", expected:"\u00A9" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00AC')", expected:"\u00AC" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00C7')", expected:"\u00C7" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00C6')", expected:"\u00C6" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00DF')", expected:"\u00DF" };
-tests[tests.length] = { code:"Test.charParam(testResults, '\\u00FF')", expected:"\u00FF" };
+tests[tests.length] = { code:"charParam", data:"\u0080" };
+tests[tests.length] = { code:"charParam", data:"\u0091" };
+tests[tests.length] = { code:"charParam", data:"\u0092" };
+tests[tests.length] = { code:"charParam", data:"\u0093" };
+tests[tests.length] = { code:"charParam", data:"\u0094" };
+tests[tests.length] = { code:"charParam", data:"\u0095" };
+tests[tests.length] = { code:"charParam", data:"\u0098" };
+tests[tests.length] = { code:"charParam", data:"\u0099" };
+tests[tests.length] = { code:"charParam", data:"\u00A0" };
+tests[tests.length] = { code:"charParam", data:"\u00A3" };
+tests[tests.length] = { code:"charParam", data:"\u00A5" };
+tests[tests.length] = { code:"charParam", data:"\u00A6" };
+tests[tests.length] = { code:"charParam", data:"\u00A9" };
+tests[tests.length] = { code:"charParam", data:"\u00AC" };
+tests[tests.length] = { code:"charParam", data:"\u00C7" };
+tests[tests.length] = { code:"charParam", data:"\u00C6" };
+tests[tests.length] = { code:"charParam", data:"\u00DF" };
+tests[tests.length] = { code:"charParam", data:"\u00FF" };
 
 var nested = { integer:0, string:'0123456789' };
 nested.testBean = nested;
 
-tests[tests.length] = { code:"Test.byteArrayParam(testResults, [ -128, -128, -128, -128, -127 ])", expected:[ -128, -128, -128, -128, -127 ] };
+tests[tests.length] = { code:"byteArrayParam", data:[ -128, -128, -128, -128, -127 ] };
 
-tests[tests.length] = { code:"Test.testBeanParam(testResults, { integer:-2147483648, string:'!\"$%^&*()', testBean:null })", expected:{ integer:-2147483648, string:'!"$%^&*()', testBean:null } };
-tests[tests.length] = { code:"Test.testBeanParam(testResults, { integer:-1, string:'Null', testBean:null })", expected:{ integer:-1, string:'Null', testBean:null } };
-tests[tests.length] = { code:"Test.testBeanParam(testResults, { integer:0, string:'null', testBean:null })", expected:{ integer:0, string:'null', testBean:null } };
-tests[tests.length] = { code:"Test.testBeanParam(testResults, { integer:1, string:'0987654321', testBean:nested })", expected:{ integer:1, string:'0987654321', testBean:nested } };
+tests[tests.length] = { code:"testBeanParam", data:{ integer:-2147483648, string:'!"$%^&*()', testBean:null } };
+tests[tests.length] = { code:"testBeanParam", data:{ integer:-1, string:'Null', testBean:null } };
+tests[tests.length] = { code:"testBeanParam", data:{ integer:0, string:'null', testBean:null } };
+tests[tests.length] = { code:"testBeanParam", data:{ integer:1, string:'0987654321', testBean:nested } };
 
-tests[tests.length] = { code:"Test.stringCollectionParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
-tests[tests.length] = { code:"Test.stringLinkedListParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
-tests[tests.length] = { code:"Test.stringArrayListParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
-tests[tests.length] = { code:"Test.stringListParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
+tests[tests.length] = { code:"stringLinkedListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
+tests[tests.length] = { code:"stringArrayListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
+tests[tests.length] = { code:"stringListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
 // Note the next 2 are unordered so we cheat by only having 1 element
-tests[tests.length] = { code:"Test.stringSetParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]};
-tests[tests.length] = { code:"Test.stringHashSetParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]};
-tests[tests.length] = { code:"Test.stringTreeSetParam(testResults, [ 'abcdef', 'hgijklm', 'nopqrst' ])", expected:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
+tests[tests.length] = { code:"stringSetParam", data:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringHashSetParam", data:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringTreeSetParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
 
-tests[tests.length] = { code:"Test.stringCollectionParam(testResults, [ ])", expected:[ ]};
-tests[tests.length] = { code:"Test.stringLinkedListParam(testResults, [ ])", expected:[ ]};
-tests[tests.length] = { code:"Test.stringArrayListParam(testResults, [ ])", expected:[ ]};
-tests[tests.length] = { code:"Test.stringListParam(testResults, [ ])", expected:[ ]};
-tests[tests.length] = { code:"Test.stringSetParam(testResults, [ ])", expected:[ ]};
-tests[tests.length] = { code:"Test.stringHashSetParam(testResults, [ ])", expected:[ ]};
-tests[tests.length] = { code:"Test.stringTreeSetParam(testResults, [ ])", expected:[ ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ ]};
+tests[tests.length] = { code:"stringLinkedListParam", data:[ ]};
+tests[tests.length] = { code:"stringArrayListParam", data:[ ]};
+tests[tests.length] = { code:"stringListParam", data:[ ]};
+tests[tests.length] = { code:"stringSetParam", data:[ ]};
+tests[tests.length] = { code:"stringHashSetParam", data:[ ]};
+tests[tests.length] = { code:"stringTreeSetParam", data:[ ]};
 
-tests[tests.length] = { code:"Test.stringCollectionParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]};
-tests[tests.length] = { code:"Test.stringLinkedListParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]};
-tests[tests.length] = { code:"Test.stringArrayListParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]};
-tests[tests.length] = { code:"Test.stringListParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]};
-tests[tests.length] = { code:"Test.stringSetParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]};
-tests[tests.length] = { code:"Test.stringHashSetParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]};
-tests[tests.length] = { code:"Test.stringTreeSetParam(testResults, [ 'abcdef' ])", expected:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringLinkedListParam", data:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringArrayListParam", data:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringListParam", data:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringSetParam", data:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringHashSetParam", data:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringTreeSetParam", data:[ 'abcdef' ]};
 
-tests[tests.length] = { code:"Test.stringCollectionParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]};
-tests[tests.length] = { code:"Test.stringLinkedListParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]};
-tests[tests.length] = { code:"Test.stringArrayListParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]};
-tests[tests.length] = { code:"Test.stringListParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]};
-tests[tests.length] = { code:"Test.stringSetParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]};
-tests[tests.length] = { code:"Test.stringHashSetParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]};
-tests[tests.length] = { code:"Test.stringTreeSetParam(testResults, [ ',\\'{}[]' ])", expected:[ ",'{}[]" ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ ",'{}[]" ]};
+tests[tests.length] = { code:"stringLinkedListParam", data:[ ",'{}[]" ]};
+tests[tests.length] = { code:"stringArrayListParam", data:[ ",'{}[]" ]};
+tests[tests.length] = { code:"stringListParam", data:[ ",'{}[]" ]};
+tests[tests.length] = { code:"stringSetParam", data:[ ",'{}[]" ]};
+tests[tests.length] = { code:"stringHashSetParam", data:[ ",'{}[]" ]};
+tests[tests.length] = { code:"stringTreeSetParam", data:[ ",'{}[]" ]};
 
-tests[tests.length] = { code:"Test.stringCollectionParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]};
-tests[tests.length] = { code:"Test.stringLinkedListParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]};
-tests[tests.length] = { code:"Test.stringArrayListParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]};
-tests[tests.length] = { code:"Test.stringListParam(testResults, [ ',\\'{}[]', 'null', ',\\'{}[]' ])", expected:[ ",'{}[]", 'null', ",'{}[]" ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ ",'{}[]", 'null', ",'{}[]" ]};
+tests[tests.length] = { code:"stringLinkedListParam", data:[ ",'{}[]", 'null', ",'{}[]" ]};
+tests[tests.length] = { code:"stringArrayListParam", data:[ ",'{}[]", 'null', ",'{}[]" ]};
+tests[tests.length] = { code:"stringListParam", data:[ ",'{}[]", 'null', ",'{}[]" ]};
 
 var map1 = { a:'a', b:'b', c:'c' };
 var map2 = { };
@@ -293,12 +295,12 @@ map2['p}'] = 'p}';
 map2['q;~#'] = 'q;~#';
 map2['r?/,'] = 'r?/,';
 
-tests[tests.length] = { code:"Test.stringStringMapParam(testResults, map1)", expected:map1 };
-tests[tests.length] = { code:"Test.stringStringMapParam(testResults, map2)", expected:map2 };
-tests[tests.length] = { code:"Test.stringStringHashMapParam(testResults, map1)", expected:map1 };
-tests[tests.length] = { code:"Test.stringStringHashMapParam(testResults, map2)", expected:map2 };
-tests[tests.length] = { code:"Test.stringStringTreeMapParam(testResults, map1)", expected:map1 };
-tests[tests.length] = { code:"Test.stringStringTreeMapParam(testResults, map2)", expected:map2 };
+tests[tests.length] = { code:"stringStringMapParam", data:map1 };
+tests[tests.length] = { code:"stringStringMapParam", data:map2 };
+tests[tests.length] = { code:"stringStringHashMapParam", data:map1 };
+tests[tests.length] = { code:"stringStringHashMapParam", data:map2 };
+tests[tests.length] = { code:"stringStringTreeMapParam", data:map1 };
+tests[tests.length] = { code:"stringStringTreeMapParam", data:map2 };
 
 function startTest()
 {
@@ -314,68 +316,156 @@ function startTest()
     failures.innerHTML = "";
     failreport.innerHTML = "0";
     execreport.innerHTML = "0";
-    progress.style.background = "green";
+    progress.style.backgroundColor = "green";
     progress.style.width = "0%";
+    for (var i = 0; i < tests.length; i++)
+    {
+        var numele = DWRUtil.getElementById("t" + i + "-num");
+        numele.style.backgroundColor = "white";
+        DWRUtil.setValue("t" + i + "-results", "");
+    }
+    DWRUtil.setValue("totals", "");
 
     starttime = new Date();
-    index = 0;
     failcount = 0;
 
-    DWRUtil.showById("reply");
+    // We were trying to get others to contribute test results
+    //DWRUtil.showById("reply");
 
-    executeTest();
+    // Set the method
+    var method = DWRUtil.getValue("method");
+    if (method == "iframe")
+    {
+        DWREngine.setMethod(DWREngine.IFrame);
+    }
+    else
+    {
+        DWREngine.setMethod(DWREngine.XMLHttpRequest);
+    }
+
+    // Set the verb
+    var verb = DWRUtil.getValue("verb");
+    DWREngine.setVerb(verb);
+
+    // Are we in ordered mode
+    var ordered = DWRUtil.getValue("ordered");
+    DWREngine.setOrdered(ordered == "Yes");
+
+    // What is the firing rate
+    var rate = DWRUtil.getValue("rate");
+
+    // How many in a batch
+    var size = DWRUtil.getValue("size");
+
+    sendBatch(0, size, rate);
 }
 
-function executeTest()
+function sendBatch(start, size, rate)
 {
-    if (index >= tests.length)
+    var incr = size;
+    if (size == 0)
     {
-        DWRUtil.getElementById("start").disabled = false;
+        // otherwise we never progress
+        incr = 1;
 
-        var mslen = new Date().getTime() - starttime.getTime();
-        var tps = Math.round((10000 * tests.length) / mslen) / 10;
-        var totals = "Tests executed in " + (mslen / 1000) + " seconds at an average of " + tps + " tests per second.";
-        DWRUtil.getElementById("totals").innerHTML = totals;
+        var test = tests[start];
+        var callback = function(data) { testResults(data, start); };
+        var param = test.data;
 
+        Test[test.code](callback, param);
+    }
+    else
+    {
+        DWREngine.beginBatch();
+
+        for (var i = start; i < start + size && i < tests.length; i++)
+        {
+            var test = tests[i];
+            //var num = i;
+            //var callback = function(data) { testResults(data, num); };
+            var callback = new Function("data", "testResults(data, " + i + ");");
+            var param = test.data;
+
+            Test[test.code](callback, param);
+        }
+
+        DWREngine.endBatch();
+    }
+
+    var percent = Math.ceil((start / tests.length) * 100);
+    progress.style.width = percent + "%";
+
+    if (start + incr >= tests.length)
+    {
+        tidyUp();
+    }
+    else
+    {
+        setTimeout("sendBatch(" + (start + incr) + ", " + size + ", " + rate + ")", rate);
+    }
+}
+
+function tidyUp()
+{
+    DWRUtil.getElementById("start").disabled = false;
+
+    var mslen = new Date().getTime() - starttime.getTime();
+    var tps = Math.round((10000 * tests.length) / mslen) / 10;
+    var totals = "Tests executed in " + (mslen / 1000) + " seconds at an average of " + tps + " tests per second.";
+    DWRUtil.setValue("totals", totals);
+}
+
+function testResults(data, index)
+{
+    var test = tests[index];
+
+    if (test == null)
+    {
+        alert("no test found: index=" + index + ", tests.length=" + tests.length);
         return;
     }
 
-    var test = tests[index];
-    eval(test.code); // this results in the calling of testResults()
-}
+    var passed = testEquals(data, test.data, 0);
+    var numele = DWRUtil.getElementById("t" + index + "-num");
 
-function testResults(data)
-{
-    // which test have we just run?
-    var test = tests[index];
-
-    //var progress = DWRUtil.getElementById("progress");
-
-    // TODO: maybe make a separate function for testing equality
-    var passed = testEquals(data, test.expected, 0);
     if (typeof passed == "boolean" && passed)
     {
         //passes.innerHTML += test.code + "<br/>";
         execreport.innerHTML = (index + 1);
+
+        numele.style.backgroundColor = "AAFFAA";
+        DWRUtil.setValue("t" + index + "-results", "Passed");
     }
     else
     {
-        failures.innerHTML += test.code + "<br/>&nbsp;&nbsp;" + passed + "<br/>&nbsp;&nbsp;Expected: " + DWRUtil.toDescriptiveString(test.expected) + " Actual: " + DWRUtil.toDescriptiveString(data) + "<br/>";
+        var report = test.code + "<br/>&nbsp;&nbsp;" + passed + "<br/>&nbsp;&nbsp;Expected: " + DWRUtil.toDescriptiveString(test.data) + " Actual: " + DWRUtil.toDescriptiveString(data) + "<br/>"
+        failures.innerHTML += report;
         failcount++;
         failreport.innerHTML = failcount;
 
         if (failcount == 1)
         {
             // This is the first failure - make the bar go red
-            progress.style.background = "red";
+            progress.style.backgroundColor = "red";
         }
+
+        numele.style.backgroundColor = "FFAAAA";
+        DWRUtil.setValue("t" + index + "-results", report);
     }
+}
 
-    index++;
-    var percent = Math.ceil((index / tests.length) * 100);
-    progress.style.width = percent + "%";
+function catchFailure(data)
+{
+    // which test have we just run?
+    failures.innerHTML += "Unknown Test<br/>&nbsp;&nbsp;Error: " + data + "<br/>";
+    failcount++;
+    failreport.innerHTML = failcount;
 
-    executeTest();
+    if (failcount == 1)
+    {
+        // This is the first failure - make the bar go red
+        progress.style.backgroundColor = "red";
+    }
 }
 
 function testEquals(actual, expected, depth)
@@ -476,35 +566,6 @@ function testEquals(actual, expected, depth)
     return true;
 }
 
-function catchFailure(data)
-{
-    // which test have we just run?
-    var test = tests[index];
-    var code = "Unknown";
-    if (test && test.code)
-    {
-        code = test.code;
-    }
-
-    failures.innerHTML += code + "<br/>&nbsp;&nbsp;Error: " + data + "<br/>";
-    failcount++;
-    failreport.innerHTML = failcount;
-
-    if (failcount == 1)
-    {
-        // This is the first failure - make the bar go red
-        progress.style.background = "red";
-    }
-
-    index++;
-    executeTest();
-}
-
-function nestTest()
-{
-    Test.getNestingTest(nestReply);
-}
-
 function report()
 {
     Test.reply(showResults, {
@@ -520,7 +581,9 @@ function report()
 
 function showResults(data)
 {
-    DWRUtil.showById("results");
+    // We were trying to get others involved in testing
+    // DWRUtil.showById("results");
+
     DWRUtil.clearChildNodes("resultsTable");
     DWRUtil.drawTable("resultsTable", data, [
         function(row)
@@ -544,5 +607,48 @@ function init()
 {
     DWRUtil.setValue("useragent-real", navigator.userAgent);
     DWRUtil.setValue("useragent-reported", navigator.userAgent);
+
+    var rownum = 0;
+    DWRUtil.drawTable("chart", tests, [
+        function createNumCell(row)
+        {
+            var td = document.createElement("td");
+            td.setAttribute("id", "t" + rownum + "-num");
+            td.innerHTML = "" + rownum;
+            return td;
+        },
+
+        function createCodeCell(row)
+        {
+            var td = document.createElement("td");
+            td.setAttribute("id", "t" + rownum + "-code");
+            td.innerHTML = "" + row.code;
+            return td;
+        },
+
+        function createDataCell(row)
+        {
+            var td = document.createElement("td");
+            td.setAttribute("id", "t" + rownum + "-data");
+            var display = "" + row.data;
+            if (display.length > 30)
+            {
+                display = display.substring(0, 27) + "...";
+            }
+            td.innerHTML = display;
+            return td;
+        },
+
+        function createResultsCell(row)
+        {
+            var td = document.createElement("td");
+            td.setAttribute("id", "t" + rownum + "-results");
+            td.innerHTML = "";
+
+            rownum++;
+
+            return td;
+        }
+    ]);
 }
 

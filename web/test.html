@@ -10,15 +10,20 @@
   <script type='text/javascript' src='/dwr/dwr/jscp.js'></script>
   <script type='text/javascript' src='test.js'></script>
   <style>
-  #results td, #results th
+  .showborder td, .showborder th
   {
       border: 1px solid #999999;
       padding: 2px 5px 2px 5px;
   }
 
-  #results table
+  .showborder
   {
       border-collapse: collapse;
+  }
+
+  #chart
+  {
+      font-size: 70%;
   }
   </style>
 </head>
@@ -34,6 +39,57 @@
 <div id="page-content">
 
 <h2>Unit Test Page</h2>
+
+<div style="margin-bottom:5px">
+  Style:
+  <select id="method">
+    <option value="iframe">IFRAME</option>
+    <option value="xhr" selected="selected">XMLHttpRequest</option>
+  </select>
+  &nbsp;
+  Verb:
+  <select id="verb">
+    <option>GET</option>
+    <option selected="selected">POST</option>
+  </select>
+</div>
+<div>
+  Rate:
+  <select id="rate">
+    <option value="0">0ms (No delay)</option>
+    <option value="5">5ms (Very Fast)</option>
+    <option value="10">10ms</option>
+    <option value="15" selected="selected">15ms (Normal)</option>
+    <option value="20">20ms</option>
+    <option value="25">25ms</option>
+    <option value="30">30ms</option>
+    <option value="40">40ms</option>
+    <option value="50">50ms</option>
+    <option value="100">100ms (Slow)</option>
+  </select>
+  &nbsp;
+  Batch size:
+  <select id="size">
+    <option value="0" selected="selected">0 (None)</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="6">6</option>
+    <option value="12">12</option>
+    <option value="25">25</option>
+    <option value="50">50</option>
+    <option value="100">100</option>
+    <option value="200">200</option>
+    <option value="400">400</option>
+  </select>
+  &nbsp;
+  Ordered:
+  <select id="ordered">
+    <option>Yes</option>
+    <option selected="selected">No</option>
+  </select>
+</div>
 
 <p>
   Found <script>document.write(tests.length)</script> unit tests.<br/>
@@ -53,6 +109,22 @@
 </p>
 <div id="failures" style="border: 1px solid red; max-height:200px; overflow:auto; width:90%;">
   None:
+</div>
+
+<div id="table">
+  <h2 style="margin-top:40px;">Results</h2>
+  <table class="showborder">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Function</th>
+        <th>Data</th>
+        <th>Result</th>
+      </tr>
+    </thead>
+    <tbody id="chart">
+    </tbody>
+  </table>
 </div>
 
 <div id="reply" style="display:none;">
@@ -78,7 +150,7 @@
 </div>
 
 <div id="results" style="display:none;">
-  <table>
+  <table class="showborder">
     <thead>
       <tr>
         <th>Browser</th>

@@ -94,6 +94,33 @@ DWREngine.setMethod = function(newmethod)
 }
 
 /**
+ * Which HTTP verb do we use so send results?
+ * Must be one of "GET" or "POST".
+ * @param verb the new HTTP verb.
+ */
+DWREngine.setVerb = function(verb)
+{
+    if (verb != "GET" && verb != "POST")
+    {
+        DWREngine._warningHandler("Remoting verb must be one of GET or POST");
+        throw newmethod;
+    }
+
+    DWREngine._verb = verb;
+}
+
+/**
+ * Do we attempt to ensure that remote calls happen in the order in which they
+ * were sent? (Default: false)
+ * Warning: Setting this to true will significantly slow down you application
+ * @param ordered true or false
+ */
+DWREngine.setOrdered = function(ordered)
+{
+    DWREngine._ordered = ordered;
+}
+
+/**
  * The default message handler.
  * Useful in calls to setErrorHandler() or setWarningHandler() to allow you to
  * get the default back.
@@ -109,6 +136,36 @@ DWREngine.defaultMessageHandler = function(message)
     {
         alert(message);
     }
+}
+
+/**
+ * You can group several remote calls together using a batch.
+ * This saves on round trips to the server so there is much less latency involved.
+ * @see DWREngine.endBatch()
+ */
+DWREngine.beginBatch = function()
+{
+    // Setup a batch
+    DWREngine._batch = {};
+    DWREngine._batch.map = {};
+    DWREngine._batch.paramCount = 0;
+    DWREngine._batch.map.callCount = 0;
+
+    DWREngine._batches[DWREngine._batches.length] = DWREngine._batch;
+}
+
+/**
+ * We are finished grouping a set of remote calls together, now go and execute
+ * them all.
+ */
+DWREngine.endBatch = function()
+{
+    // if (call.id == DWREngine._nowServingNumber)
+    // {
+        DWREngine._sendData(DWREngine._batch);
+    // }
+
+    DWREngine._batch = null;
 }
 
 //==============================================================================
@@ -140,11 +197,16 @@ DWREngine._preHook = null;
 DWREngine._postHook = null;
 
 /**
- * A map of all the known current calls
+ * A map of all the known current batches
  * @private
  */
-DWREngine._calls = new Object();
-// DWREngine._calls = new Array();
+DWREngine._batches = new Array();
+
+/**
+ * A map of all the known current batches
+ * @private
+ */
+DWREngine._callbacks = {};
 
 /**
  * What is the default remoting method
@@ -153,14 +215,23 @@ DWREngine._calls = new Object();
 DWREngine._method = DWREngine.XMLHttpRequest;
 
 /**
- * When we are dreaming up variable names, this is a number that we use
- * as a basis to ensure uniqueness.
- * WARNING: if it is possible for execute to be called again before
- * marshalling has finished on the first then this will break, but I
- * think that is not possible.
+ * What is the default remoting verb (ie GET or POST)
  * @private
  */
-DWREngine._paramCount = 0;
+DWREngine._verb = "POST";
+
+/**
+ * Do we attempt to ensure that remote calls happen in the order in which they
+ * were sent?
+ * @private
+ */
+DWREngine._ordered = false;
+
+/**
+ * The current batch (if we are in batch mode)
+ * @private
+ */
+DWREngine._batch = null;
 
 /**
  * Each reply made to the server can be forced to happen in turn. This variable
@@ -172,81 +243,61 @@ DWREngine._paramCount = 0;
 /**
  * Called when the replies are received.
  * This method is called by Javascript that is emitted by server
+ * @param id The identifier of the call that we are handling a response for
+ * @param reply The data to pass to the callback function
  * @private
  */
 DWREngine._handleResponse = function(id, reply)
 {
-    var call = DWREngine._calls[id];
+    var func = DWREngine._callbacks[id];
 
     // For some bizarre reason when the above fails on IE5 the following
     // sometimes works.
-    if (call == null)
+    if (func == null)
     {
-        for (test in DWREngine._calls)
+        for (test in DWREngine._callbacks)
         {
             if (test == id)
             {
-                call = DWREngine._calls[test];
+                func = DWREngine._callbacks[test];
             }
         }
     }
 
-    // DWREngine._nowServingNumber++;
-    // if (DWREngine._nowServingNumber < DWREngine._calls.length)
-    // {
-    //     DWREngine._sendData(DWREngine._calls[DWREngine._nowServingNumber]);
-    // }
+    // Clear this callback out of the list - we don't need it any more
+    DWREngine._callbacks[id] = null;
 
-    if (call != null)
+    if (func != null)
     {
-        if (call.iframe != null)
+        // Error handlers inside here indicate an error that is nothing to do
+        // with DWR so we handle them differently.
+        try
         {
-            call.iframe.parentNode.removeChild(call.iframe);
+            func(reply);
         }
-
-        if (call.callback == null)
+        catch (ex)
         {
-            if (reply != null && DWREngine._warningHandler != null)
+            if (DWREngine._errorHandler != null)
             {
-                DWREngine._warningHandler("Missing callback for reply "+reply);
-            }
-        }
-        else
-        {
-            // Error handlers inside here indicate an error that is nothing to do
-            // with DWR so we handle them differently.
-            try
-            {
-                call.callback(reply);
-            }
-            catch (ex)
-            {
-                if (DWREngine._errorHandler != null)
-                {
-                    DWREngine._errorHandler(ex);
-                }
+                DWREngine._errorHandler(ex);
             }
         }
     }
     else
     {
-        for (test in DWREngine._calls)
+        if (reply != null)
         {
-            known += test + "\n";
-        }
+            for (test in DWREngine._calls)
+            {
+                known += test + "\n";
+            }
 
-        if (DWREngine._warningHandler != null)
-        {
-            DWREngine._warningHandler("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
+            if (DWREngine._warningHandler != null)
+            {
+                DWREngine._warningHandler("Internal Error: Call with id='"+id+"' unknown.\nI do know about the following:\n"+known);
+            }
         }
     }
-
-    if (DWREngine._postHook != null)
-    {
-        DWREngine._postHook();
-    }
-
-    DWREngine._calls[id] = null;
 }
 
 /**
@@ -256,38 +307,27 @@ DWREngine._handleResponse = function(id, reply)
  */
 DWREngine._handleError = function(id, reason)
 {
-    var call = DWREngine._calls[id];
-
-    // For some bizarre reason when the above fails on IE5 the following
-    // sometimes works.
-    if (call == null)
-    {
-        for (test in DWREngine._calls)
-        {
-            if (test == id)
-            {
-                call = DWREngine._calls[test];
-            }
-        }
-    }
-
-    if (call != null)
-    {
-
-        if (call.iframe != null)
-        {
-            call.iframe.parentNode.removeChild(call.iframe);
-        }
-    }
-    else
-    {
-        // Things are going wrong so alerting probably does not make sense
-        // DWREngine._warningHandler("Internal Error: Call with id="+id+" unknown.");
-    }
-
     if (DWREngine._errorHandler != null)
     {
         DWREngine._errorHandler(reason);
+    }
+}
+
+/**
+ * Call right at the end of a batch being executed to clear up
+ * @param batch The batch to tidy up after
+ * @private
+ */
+DWREngine._finalize = function(batch)
+{
+    if (batch.iframe != null)
+    {
+        batch.iframe.parentNode.removeChild(batch.iframe);
+    }
+
+    if (batch.form != null)
+    {
+        batch.form.parentNode.removeChild(batch.form);
     }
 
     if (DWREngine._postHook != null)
@@ -295,12 +335,19 @@ DWREngine._handleError = function(id, reason)
         DWREngine._postHook();
     }
 
-    DWREngine._calls[id] = null;
+    // TODO: There must be a better way???
+    for (var i = 0; i < DWREngine._batches.length; i++)
+    {
+        if (DWREngine._batches[i] == batch)
+        {
+            DWREngine._batches[i] = null;
+        }
+    }
 
     // DWREngine._nowServingNumber++;
-    // if (DWREngine._nowServingNumber < DWREngine._calls.length)
+    // if (DWREngine._nowServingNumber < DWREngine._batches.length)
     // {
-    //     DWREngine._sendData(DWREngine._calls[DWREngine._nowServingNumber]);
+    //     DWREngine._sendData(DWREngine._batches[DWREngine._nowServingNumber]);
     // }
 }
 
@@ -311,134 +358,192 @@ DWREngine._handleError = function(id, reason)
  *             if this is null, any returned data will be ignored
  * @param path The part of the URL after the host and before the exec bit
  *             without leading or trailing /s
- * @param classname The class to execute
- * @param methodname The method on said class to execute
+ * @param scriptName The class to execute
+ * @param methodName The method on said class to execute
  * @param vararg_params The parameters to pass to the above class
  * @private
  */
-DWREngine._execute = function(func, path, classname, methodname, vararg_params)
+DWREngine._execute = function(func, path, scriptName, methodName, vararg_params)
 {
+    var singleShot = false;
+    if (DWREngine._batch == null)
+    {
+        DWREngine.beginBatch();
+        singleShot = true;
+    }
+
+    // All the paths MUST be to the same servlet
+    if (DWREngine._batch.path == undefined)
+    {
+        DWREngine._batch.path = path;
+    }
+    else
+    {
+        if (DWREngine._batch.path != path)
+        {
+            if (DWREngine._errorHandler != null)
+            {
+                DWREngine._errorHandler("Can't batch requests to multiple DWR Servlets.");
+            }
+
+            return;
+        }
+    }
+
+    // Check on the function
     if (func != null && typeof func != "function" && typeof func != "object")
     {
         if (DWREngine._warningHandler != null)
         {
-            DWREngine._warningHandler("Supplied callback function is neither null nor a function: "+func);
+            DWREngine._warningHandler("Supplied callback function is neither null nor a function: " + func);
         }
 
         throw func;
     }
 
-    var call = new Object();
-    call.callback = func
-
     // Get a unique ID for this call
-    var random = Math.floor(Math.random() * 10001);
-    call.id = (random + "_" + new Date().getTime()).toString();
-    //call.id = DWREngine._calls.length;
+    // var random = Math.floor(Math.random() * 10001);
+    // var id = (random + "_" + new Date().getTime()).toString();
+    // var id = DWREngine._batches.length;
+    var id = idbase++;
 
-    DWREngine._calls[call.id] = call;
+    DWREngine._callbacks[id] = func
 
+    var prefix = "c" + DWREngine._batch.map.callCount + "-";
+
+    DWREngine._batch.map[prefix + "scriptName"] = scriptName;
+    DWREngine._batch.map[prefix + "methodName"] = methodName;
+    DWREngine._batch.map[prefix + "id"] = id;
+
+    // Serialize the parameters into batch.map
+    DWREngine._addSerializeFunctions();
+    for (var i = 4; i < arguments.length; i++)
+    {
+        DWREngine._serializeAll(DWREngine._batch, [], arguments[i], prefix + "param" + (i - 4));
+    }
+    DWREngine._removeSerializeFunctions();
+
+    // Now we have finished remembering the call, we incr the call count
+    DWREngine._batch.map.callCount++;
+
+    if (singleShot)
+    {
+        DWREngine.endBatch();
+    }
+}
+var idbase = 0;
+/**
+ * Actually send the block of data in the batch object.
+ * @param batch Block of data about the calls we are making on the server
+ * @private
+ */
+DWREngine._sendData = function(batch)
+{
+    // Actually make the call
     if (DWREngine._preHook != null)
     {
         DWREngine._preHook();
     }
 
-    call.callback = func;
-    call.path = path;
-
-    call.map = new Object();
-    call.map.classname = classname;
-    call.map.methodname = methodname;
-    call.map.id = call.id;
-
-    // Build a map containing all the values to pass to the server.
-    DWREngine._paramCount = 0;
-
-    // Serialize the parameters into call.map
-    DWREngine._addSerializeFunctions();
-    var context = new Array();
-    for (var i = 4; i < arguments.length; i++)
-    {
-        DWREngine._serializeAll(call.map, context, arguments[i], "param" + (i - 4));
-    }
-    DWREngine._removeSerializeFunctions();
-
-    // if (call.id == DWREngine._nowServingNumber)
-    // {
-        DWREngine._sendData(call);
-    // }
-}
-
-/**
- * Actually send the block of data in the call object.
- * @private
- */
-DWREngine._sendData = function(call)
-{
     // Get setup for XMLHttpRequest if possible
     if (DWREngine._method == DWREngine.XMLHttpRequest)
     {
         if (window.XMLHttpRequest)
         {
-            call.req = new XMLHttpRequest();
+            batch.req = new XMLHttpRequest();
         }
         // IE5 for the mac claims to support window.ActiveXObject, but throws an error when it's used
         else if (window.ActiveXObject && !(navigator.userAgent.indexOf('Mac') >= 0 && navigator.userAgent.indexOf("MSIE") >= 0))
         {
-            call.req = new ActiveXObject("Microsoft.XMLHTTP");
+            batch.req = new ActiveXObject("Microsoft.XMLHTTP");
         }
     }    
-    
+
+    // A quick string to help people that use web log analysers
+    var statsInfo;
+    if (batch.map.callCount == 1)
+    {
+        statsInfo = batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"];
+    }
+    else
+    {
+        statsInfo = "Multiple." + batch.length;
+    }
+
     var query = "";
     var prop;
-    var statsInfo = call.map.classname + "." + call.map.methodname;
 
-    if (call.req)
+    if (batch.req)
     {
-        call.map.xml = true;
+        batch.map.xml = true;
 
         // Proceed using XMLHttpRequest
+        batch.req.onreadystatechange = function() { DWREngine._stateChange(batch); };
 
-        call.req.onreadystatechange = function() { DWREngine._stateChange(call); };
-
-        if (navigator.userAgent.indexOf('Mac') >= 0)
+        if (DWREngine._verb == "GET" || navigator.userAgent.indexOf('Mac') >= 0)
         {
-            for (prop in call.map)
+            for (prop in batch.map)
             {
-                query += prop + "=" + call.map[prop] + "&";
+                query += prop + "=" + batch.map[prop] + "&";
             }
             query = query.substring(0, query.length - 1);
 
-            call.req.open("GET", call.path + "/exec/" + statsInfo + "?" + query);
-            call.req.send(null);
+            batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query);
+            batch.req.send(null);
         }
         else
         {
-            for (prop in call.map)
+            for (prop in batch.map)
             {
-                query += prop + "=" + call.map[prop] + "\n";
+                query += prop + "=" + batch.map[prop] + "\n";
             }
 
-            call.req.open("POST", call.path + "/exec/" + statsInfo, true);
-            call.req.send(query);
+            batch.req.open("POST", batch.path + "/exec/" + statsInfo, true);
+            batch.req.send(query);
         }
     }
     else
     {
-        call.map.xml = false;
+        batch.map.xml = false;
 
         // Proceed using iframe
-        for (prop in call.map)
+        for (prop in batch.map)
         {
-            query += prop + "=" + call.map[prop] + "&";
+            query += prop + "=" + batch.map[prop] + "&";
         }
         query = query.substring(0, query.length - 1);
 
-        call.iframe = document.createElement('iframe');
-        call.iframe.setAttribute('id', 'dwr-iframe');
-        call.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
-        call.iframe.setAttribute('src', call.path + "/exec/" + statsInfo + "?" + query);
-        document.body.appendChild(call.iframe);
+        var div = document.createElement('div');
+        div.innerHTML = "<iframe id='dwr-iframe' name='dwr-iframetarget'></iframe>";
+        document.body.appendChild(div);
+        batch.iframe = document.getElementById('dwr-iframe');
+        batch.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
+
+        if (DWREngine._verb == "GET")
+        {
+            batch.iframe.setAttribute('src', batch.path + "/exec/" + statsInfo + "?" + query);
+            document.body.appendChild(batch.iframe);
+        }
+        else
+        {
+            batch.form = document.createElement('form');
+            batch.form.setAttribute('id', 'dwr-form');
+            batch.form.setAttribute('action', batch.path + "/exec" + statsInfo);
+            batch.form.setAttribute('target', 'dwr-iframetarget');
+            batch.form.target='dwr-iframetarget';
+            batch.form.setAttribute('method', 'post');
+            for (prop in batch.map)
+            {
+                var formInput = document.createElement('input');
+                formInput.setAttribute('type', 'hidden');
+                formInput.setAttribute('name', prop);
+                formInput.setAttribute('value', batch.map[prop]);
+                batch.form.appendChild(formInput);
+            }
+
+            document.body.appendChild(batch.form);
+            batch.form.submit();
+        }
     }
 }
 
@@ -446,26 +551,34 @@ DWREngine._sendData = function(call)
  * Called by XMLHttpRequest to indicate that something has happened
  * @private
  */
-DWREngine._stateChange = function(call)
+DWREngine._stateChange = function(batch)
 {
-    if (call.req.readyState == 4)
+    if (batch.req.readyState == 4)
     {
         try
         {
-            if (call.req.status && call.req.status == 200)
+            if (batch.req.status && batch.req.status == 200)
             {
-                eval(call.req.responseText);
+                eval(batch.req.responseText);
             }
             else
             {
-                DWREngine._handleError(call.id, call.req.responseText);
+                if (DWREngine._errorHandler != null)
+                {
+                    DWREngine._errorHandler(batch.req.responseText);
+                }
             }
         }
         catch (ex)
         {
-            DWREngine._handleError(call.id, ex);
+            if (DWREngine._errorHandler != null)
+            {
+                DWREngine._errorHandler(ex);
+            }
         }
     }
+
+    DWREngine._finalize(batch);
 }
 
 /**
@@ -500,38 +613,38 @@ DWREngine._removeSerializeFunctions = function()
 
 /**
  * Marshall a data item
- * @param output A map of variables to how they have been marshalled
+ * @param batch A map of variables to how they have been marshalled
  * @param referto An array of already marshalled variables to prevent recurrsion
  * @param data The data to be marshalled
  * @param name The name of the data being marshalled
  * @private
  */
-DWREngine._serializeAll = function(output, referto, data, name)
+DWREngine._serializeAll = function(batch, referto, data, name)
 {
     if (data == null)
     {
-        output[name] = "null:null";
+        batch.map[name] = "null:null";
         return;
     }
 
     switch (typeof data)
     {
     case "boolean":
-        output[name] = "boolean:" + data;
+        batch.map[name] = "boolean:" + data;
         break;
 
     case "number":
-        output[name] = "number:" + data;
+        batch.map[name] = "number:" + data;
         break;
 
     case "string":
-        output[name] = "string:" + encodeURIComponent(data);
+        batch.map[name] = "string:" + encodeURIComponent(data);
         break;
 
     case "object":
         if (data.dwrSerialize)
         {
-            output[name] = data.dwrSerialize(output, referto, data, name);
+            batch.map[name] = data.dwrSerialize(batch, referto, data, name);
         }
         else
         {
@@ -539,7 +652,7 @@ DWREngine._serializeAll = function(output, referto, data, name)
             {
                 DWREngine._warningHandler("Object without dwrSerialize: " + typeof data + ", attempting default converter.");
             }
-            output[name] = "default:" + data;
+            batch.map[name] = "default:" + data;
         }
         break;
 
@@ -552,7 +665,7 @@ DWREngine._serializeAll = function(output, referto, data, name)
         {
             DWREngine._warningHandler("Unexpected type: " + typeof data + ", attempting default converter.");
         }
-        output[name] = "default:" + data;
+        batch.map[name] = "default:" + data;
         break;
     }
 }
@@ -594,7 +707,7 @@ DWREngine._lookup = function(referto, data, name)
  * @private
  * @see DWREngine._serializeAll()
  */
-DWREngine._serializeObject = function(output, referto, data, name)
+DWREngine._serializeObject = function(batch, referto, data, name)
 {
     var ref = DWREngine._lookup(referto, this, name);
     if (ref != null)
@@ -609,9 +722,9 @@ DWREngine._serializeObject = function(output, referto, data, name)
     {
         if (element != "dwrSerialize")
         {
-            DWREngine._paramCount++;
-            var childName = "c" + DWREngine._paramCount;
-            DWREngine._serializeAll(output, referto, this[element], childName);
+            batch.paramCount++;
+            var childName = "c" + DWREngine._batch.map.callCount + "-e" + batch.paramCount;
+            DWREngine._serializeAll(batch, referto, this[element], childName);
 
             reply += encodeURIComponent(element);
             reply += ":reference:";
@@ -630,7 +743,7 @@ DWREngine._serializeObject = function(output, referto, data, name)
  * @private
  * @see DWREngine._serializeAll()
  */
-DWREngine._serializeArray = function(output, referto, data, name)
+DWREngine._serializeArray = function(batch, referto, data, name)
 {
     var ref = DWREngine._lookup(referto, this, name);
     if (ref != null)
@@ -646,9 +759,9 @@ DWREngine._serializeArray = function(output, referto, data, name)
             reply += ",";
         }
 
-        DWREngine._paramCount++;
-        var childName = "c" + DWREngine._paramCount;
-        DWREngine._serializeAll(output, referto, this[i], childName);
+        batch.paramCount++;
+        var childName = "c" + DWREngine._batch.map.callCount + "-e" + batch.paramCount;
+        DWREngine._serializeAll(batch, referto, this[i], childName);
         reply += "reference:";
         reply += childName;
     }
@@ -662,7 +775,7 @@ DWREngine._serializeArray = function(output, referto, data, name)
  * @private
  * @see DWREngine._serializeAll()
  */
-DWREngine._serializeBoolean = function(output, referto, data, name)
+DWREngine._serializeBoolean = function(batch, referto, data, name)
 {
     return "Boolean:" + this;
 }
@@ -672,7 +785,7 @@ DWREngine._serializeBoolean = function(output, referto, data, name)
  * @private
  * @see DWREngine._serializeAll()
  */
-DWREngine._serializeNumber = function(output, referto, data, name)
+DWREngine._serializeNumber = function(batch, referto, data, name)
 {
     return "Number:" + this;
 }
@@ -682,7 +795,7 @@ DWREngine._serializeNumber = function(output, referto, data, name)
  * @private
  * @see DWREngine._serializeAll()
  */
-DWREngine._serializeString = function(output, referto, data, name)
+DWREngine._serializeString = function(batch, referto, data, name)
 {
     return "String:" + encodeURIComponent(this);
 }
@@ -692,7 +805,7 @@ DWREngine._serializeString = function(output, referto, data, name)
  * @private
  * @see DWREngine._serializeAll()
  */
-DWREngine._serializeDate = function(output, referto, data, name)
+DWREngine._serializeDate = function(batch, referto, data, name)
 {
     return "Date:[ " +
         this.getUTCFullYear() + ", " +

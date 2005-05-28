@@ -30,8 +30,9 @@ public class SpringCreator implements Creator
      */
     public void init(Map params) throws IllegalArgumentException
     {
-        this.beanName = (String) params.get("beanName"); //$NON-NLS-1$
+        this.scriptName = (String) params.get("beanName"); //$NON-NLS-1$
         this.resourceName = (String) params.get("resourceName"); //$NON-NLS-1$
+        this.perSession = Boolean.parseBoolean((String) params.get("session")); //$NON-NLS-1$
 
         List locValues = new ArrayList();
 
@@ -76,6 +77,17 @@ public class SpringCreator implements Creator
     {
         try
         {
+            Object reply = null;
+
+            if (perSession)
+            {
+                reply = ExecutionContext.get().getSession().getAttribute(scriptName);
+                if (reply != null)
+                {
+                    return reply;
+                }
+            }
+
             if (factory == null)
             {
                 // If someone has set a resource name then we need to load that.
@@ -116,7 +128,13 @@ public class SpringCreator implements Creator
                 }
             }
 
-            return factory.getBean(beanName);
+            reply = factory.getBean(scriptName);
+            if (perSession)
+            {
+                ExecutionContext.get().getSession().setAttribute(scriptName, reply);
+            }
+
+            return reply;
         }
         catch (RuntimeException ex)
         {
@@ -142,13 +160,34 @@ public class SpringCreator implements Creator
      */
     private static final Logger log = Logger.getLogger(SpringCreator.class);
 
+    /**
+     * The Spring beans factory from which we get our beans
+     */
     private static BeanFactory factory = null;
 
+    /**
+     * If the bean factory is handing out prototype objects then we might want
+     * to store them in the users session.
+     */
+    private boolean perSession = false;
+
+    /**
+     * The cached type of bean that we are creating
+     */
     private Class clazz = null;
 
-    private String beanName = null;
+    /**
+     * The name to lookup in the bean factory
+     */
+    private String scriptName = null;
 
+    /**
+     * An optional place to look for a beans.xml file
+     */
     private String resourceName = null;
 
+    /**
+     * An array of locations to search through for a beans.xml file
+     */
     private String[] configLocation = null;
 }
