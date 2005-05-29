@@ -612,7 +612,7 @@ function init()
 
     var rownum = 0;
     DWRUtil.drawTable("chart", tests, [
-        function createNumCell(row)
+        function(row)
         {
             var td = document.createElement("td");
             td.setAttribute("id", "t" + rownum + "-num");
@@ -620,7 +620,7 @@ function init()
             return td;
         },
 
-        function createCodeCell(row)
+        function(row)
         {
             var td = document.createElement("td");
             td.setAttribute("id", "t" + rownum + "-code");
@@ -628,7 +628,7 @@ function init()
             return td;
         },
 
-        function createDataCell(row)
+        function(row)
         {
             var td = document.createElement("td");
             td.setAttribute("id", "t" + rownum + "-data");
@@ -641,7 +641,7 @@ function init()
             return td;
         },
 
-        function createResultsCell(row)
+        function(row)
         {
             var td = document.createElement("td");
             td.setAttribute("id", "t" + rownum + "-results");
