@@ -33,7 +33,7 @@ public final class ExecuteQuery
         this.converterManager = converterManager;
         this.req = req;
 
-        if (req.getParameter(ConversionConstants.INBOUND_KEY_ID) != null)
+        if (req.getMethod().equals("GET")) //$NON-NLS-1$
         {
             parseParameters(parseGet());
         }

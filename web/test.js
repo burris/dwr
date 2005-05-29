@@ -433,13 +433,12 @@ function testResults(data, index)
         //passes.innerHTML += test.code + "<br/>";
         execreport.innerHTML = (index + 1);
 
-        numele.style.backgroundColor = "AAFFAA";
+        numele.style.backgroundColor = "lightgreen";
         DWRUtil.setValue("t" + index + "-results", "Passed");
     }
     else
     {
-        var report = test.code + "<br/>&nbsp;&nbsp;" + passed + "<br/>&nbsp;&nbsp;Expected: " + DWRUtil.toDescriptiveString(test.data) + " Actual: " + DWRUtil.toDescriptiveString(data) + "<br/>"
-        failures.innerHTML += report;
+        var report = test.code + "<br/>&nbsp;&nbsp;" + passed + "<br/>&nbsp;&nbsp;Expected: " + DWRUtil.toDescriptiveString(test.data) + " Actual: " + DWRUtil.toDescriptiveString(data);
         failcount++;
         failreport.innerHTML = failcount;
 
@@ -449,7 +448,7 @@ function testResults(data, index)
             progress.style.backgroundColor = "red";
         }
 
-        numele.style.backgroundColor = "FFAAAA";
+        numele.style.backgroundColor = "lightpink";
         DWRUtil.setValue("t" + index + "-results", report);
     }
 }
@@ -607,6 +606,9 @@ function init()
 {
     DWRUtil.setValue("useragent-real", navigator.userAgent);
     DWRUtil.setValue("useragent-reported", navigator.userAgent);
+
+    DWREngine.setErrorHandler(DWREngine.defaultMessageHandler);
+    DWREngine.setWarningHandler(DWREngine.defaultMessageHandler);
 
     var rownum = 0;
     DWRUtil.drawTable("chart", tests, [
