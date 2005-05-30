@@ -39,6 +39,84 @@
 </ul>
 -->
 
+<h2>Changes for Version 0.8</h2>
+<p>
+  The changes planned for version 0.7 were rolled into version 0.8, so 0.7 never
+  existed as a separate release.
+</p>
+<ul>
+  <li>
+    <b>Batch sending of remote calls:</b><br/>
+    DWR will now send a group of remote calls together in a single batch to
+    reduce network latency. See <code>DWREngine.beginBatch()</code> and
+    <code>DWREngine.endBatch()</code> for more information.
+  </li>
+  <li>
+    <b>Provision of call ordering promises:</b><br/>
+    DWR can return results in the order in which they were sent using
+    <code>DWREngine.setOrdered()</code>. Warning: Setting this to true will slow
+    down your application, and it expose you to timeouts if a message gets lost.
+    In addition and it may well mean that you are being lazy and not thinking
+    about the asynchronous model properly.    
+  </li>
+  <li>
+    <b>Fine grained access control:</b><br/>
+    You can now specify exactly which methods are allowed and disallowed using
+    the include and exclude elements in dwr.xml:
+<pre>
+&lt;create creator="new" javascript="JDate" class="java.util.Date"&gt;
+  &lt;include method="getSeconds"/&gt;
+  &lt;include method="getMinutes"/&gt;
+&lt;/create&gt;
+</pre>
+    The alternative is to <code>&lt;exclude .../&gt;</code>. You can do one or the
+    other but not both.
+  </li>
+  <li>
+    <b>J2EE role based authorization:</b><br/>
+    You can now specify that certain methods are only available to users with
+    certain roles:
+<pre>
+&lt;create creator="new" javascript="JDate" class="java.util.Date"&gt;
+  &lt;auth method="toString" role="devel"/&gt;
+&lt;/create&gt;
+</pre>
+    This requires you to have added J2EE security turned on in your web.xml.
+  </li>
+  <li>
+    <b>Methods on java.lang.Object (like <code>wait()</code>) are now disallowed.</b>
+  </li>
+  <li>
+    <b>Enhanced debug pages:</b><br/>
+    The debug pages at <code>http://localhost:8080/[YOUR-WEB-APP]/dwr</code>
+    have been enhanced to allow you to enter parameters other than strings, to
+    show more detail on returned objects and to give more feedback on why
+    methods are unavailable.<br/>
+  </li>
+  <li>
+    <b>Auto-fill of Servlet Spec parameters:</b><br/>
+    If you have a DWR remoted method that has an HttpServletRequest parameter
+    then DWR will automatically fill it in for you. This gives you a way of
+    accessing HttpServletRequest like ExecutionContext except that you don't get
+    the dependency on DWR. It also works for HttpServletResponse etc.
+  </li>
+  <li>
+    <b>Logging is now fine grained, and there is more of it:</b><br/>
+    If you were turning DWR debug on globally, you probably don't want to any more!
+  </li>
+  <li>
+    <b>You can specify detailed type information for collections:</b><br/>
+    List, Set etc don't have type info (and even under 1.5 it seems you can't
+    get at it) so you can specify the types in dwr.xml:
+<pre>
+&lt;create creator="new" javascript="Test" class="uk.ltd.getahead.testdwr.Test"&gt;
+  &lt;parameter method="testBeanSetParam" number="0" type="uk.ltd.getahead.testdwr.TestBean"/&gt;
+&lt;/create&gt;
+</pre>
+    This solution is not perfect, and there is an update planned post 1.0
+  </li>
+</ul>
+
 <h2>Changes for Version 0.6.1</h2>
 <ul>
 <li>Spring fix to only create 1 Factory <span class="contrib">(Marc Logemann, Roustem Karimov, Joe Walker)</span></li>
