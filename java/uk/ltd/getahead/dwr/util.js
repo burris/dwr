@@ -900,7 +900,7 @@ DWRUtil.useLoadingMessage = function()
     var text = document.createTextNode('Loading');
     messageZone.appendChild(text);
 
-    DWREngine.hidePleaseWait();
+    DWRUtil.hidePleaseWait();
 
     DWREngine.setPreHook(DWRUtil.showPleaseWait);
     DWREngine.setPostHook(DWRUtil.hidePleaseWait);
