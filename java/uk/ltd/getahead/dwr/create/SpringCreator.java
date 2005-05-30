@@ -32,7 +32,7 @@ public class SpringCreator implements Creator
     {
         this.scriptName = (String) params.get("beanName"); //$NON-NLS-1$
         this.resourceName = (String) params.get("resourceName"); //$NON-NLS-1$
-        this.perSession = Boolean.parseBoolean((String) params.get("session")); //$NON-NLS-1$
+        this.perSession = Boolean.valueOf((String) params.get("session")).booleanValue(); //$NON-NLS-1$
 
         List locValues = new ArrayList();
 
