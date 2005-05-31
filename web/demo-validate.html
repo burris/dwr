@@ -2,15 +2,17 @@
 <html>
 <head>
   <title>DWR - Dynamic Address Entry</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-  <link rel="stylesheet" type="text/css" href="generic.css"/>
   <script type='text/javascript' src='/dwr/dwr/interface/UrlValidator.js'></script>
   <script type='text/javascript' src='/dwr/dwr/interface/CreditCardValidator.js'></script>
   <script type='text/javascript' src='/dwr/dwr/interface/EmailValidator.js'></script>
   <script type='text/javascript' src='/dwr/dwr/engine.js'></script>
   <script type='text/javascript' src='/dwr/dwr/util.js'></script>
-  <script type='text/javascript' src='/dwr/dwr/jscp.js'></script>
   <script>
+  function init()
+  {
+      DWRUtil.useLoadingMessage();
+  }
+
   function checkURL()
   {
       UrlValidator.isValid(replyURL, DWRUtil.getValue("url"));
@@ -60,15 +62,7 @@
   </style>
 </head>
 
-<body>
-<div id="page-logo">DWR</div>
-<div id="page-title">Direct Web Remoting - AJAX and XMLHttpRequest made easy</div>
-<div id="page-portlet-1" class="sidebody">
-  <a href="sidebar.html">Site-Map</a>
-  <script type='text/javascript'>JSCP.insert("page-portlet-1", "sidebar.html");</script>
-</div>
-
-<div id="page-content">
+<body onload="init()">
 
 <h1>In-Form Server-Side Validation</h1>
 
@@ -140,6 +134,5 @@
   Check-out the source of this page to see how simple the Javascript is.
 </p>
 
-</div>
 </body>
 </html>

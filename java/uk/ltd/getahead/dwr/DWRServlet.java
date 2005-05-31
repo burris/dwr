@@ -635,13 +635,14 @@ public class DWRServlet extends HttpServlet
 
         for (int i = 0; i < calls.length; i++)
         {
-            if (calls[i].th != null)
+            Call call = calls[i];
+            if (call.getThrowable() != null)
             {
-                log.warn("Erroring: id[" + calls[i].id + "] message[" + calls[i].th.getMessage() + ']', calls[i].th); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("Erroring: id[" + call.getId() + "] message[" + call.getThrowable().getMessage() + ']', call.getThrowable()); //$NON-NLS-1$ //$NON-NLS-2$
             }
             else
             {
-                log.debug("Returning: id[" + calls[i].id + "] init[" + calls[i].reply.getInitCode() + "] assign[" + calls[i].reply.getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                log.debug("Returning: id[" + call.getId() + "] init[" + call.getReply().getInitCode() + "] assign[" + call.getReply().getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             }
         }
 
@@ -660,27 +661,28 @@ public class DWRServlet extends HttpServlet
 
         for (int i = 0; i < calls.length; i++)
         {
-            if (calls[i].th != null)
+            Call call = calls[i];
+            if (call.getThrowable() != null)
             {
-                String output = StringEscapeUtils.escapeJavaScript(calls[i].th.getMessage());
+                String output = StringEscapeUtils.escapeJavaScript(call.getThrowable().getMessage());
 
                 buffer.append(prefix);
                 buffer.append("DWREngine._handleError('"); //$NON-NLS-1$
-                buffer.append(calls[i].id);
+                buffer.append(call.getId());
                 buffer.append("', '"); //$NON-NLS-1$
                 buffer.append(output);
                 buffer.append("');\n"); //$NON-NLS-1$
             }
             else
             {
-                buffer.append(calls[i].reply.getInitCode());
+                buffer.append(call.getReply().getInitCode());
                 buffer.append('\n');
 
                 buffer.append(prefix);
                 buffer.append("DWREngine._handleResponse('"); //$NON-NLS-1$
-                buffer.append(calls[i].id);
+                buffer.append(call.getId());
                 buffer.append("', "); //$NON-NLS-1$
-                buffer.append(calls[i].reply.getAssignCode());
+                buffer.append(call.getReply().getAssignCode());
                 buffer.append(");\n"); //$NON-NLS-1$
             }
         }

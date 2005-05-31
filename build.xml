@@ -11,7 +11,10 @@
   <property name="source.web" value="${source.root}/web"/>
   <property name="target.class" value="${source.web}/WEB-INF/classes"/>
   <property name="target.war" value="${source.root}/target/ant/war"/>
+  <property name="target.javadoc" value="${source.root}/target/ant/war/javadoc"/>
   <property name="target.jsdoc" value="${source.root}/target/ant/war"/>
+  <property name="target.dtddoc" value="${source.root}/target/ant/war/dtddoc"/>
+  <property file="${source.java}/dwr-version.properties"/>
 
   <!--=======================================================================-->
   <target name="war" description="Create a WAR directory">
@@ -52,9 +55,58 @@
   </target>
 
   <!--=======================================================================-->
+  <target name="javadoc">
+    <mkdir dir="${target.javadoc}"/>
+    <javadoc access="public"
+        author="true"
+        destdir="${target.javadoc}"
+        doctitle="DWR Version ${version}"
+        use="true"
+        splitindex="true"
+        version="true">
+      <sourcepath path="${source.java}"/>
+      <classpath>
+        <fileset dir="${source.jar}" includes="**/*.jar"/>
+        <fileset dir="${source.lib}" includes="**/*.jar"/>
+      </classpath>
+      <package name="uk.ltd.getahead.dwr.*"/>
+      <footer>Copyright &#168; 2005</footer>
+    </javadoc>
+  </target>
+
+  <!--=======================================================================-->
+  <taskdef name="DTDDoc" classname="DTDDoc.DTDDocTask">
+    <classpath>
+      <fileset dir="${source.jar}" includes="**/*.jar"/>
+    </classpath>
+  </taskdef>
+  <target name="dtddoc">
+    <DTDDoc showHiddenTags="true"
+        showFixmeTags="false"
+        sourceDir="${basedir}/${source.java}"
+        destDir="${basedir}/${target.dtddoc}"
+        docTitle="DWR Version ${version}">
+      <include name="**/*.dtd"/>
+    </DTDDoc>
+  </target>
+
+  <!--=======================================================================-->
   <target name="targetwar" depends="war" description="Create a separate WAR directory">
+    <style basedir="${source.web}"
+        extension=".html"
+        style="${source.web}/template.xsl"
+        destdir="${target.war}">
+      <outputproperty name="method" value="html"/>
+      <outputproperty name="omit-xml-declaration" value="yes"/>
+      <include name="**/*.html"/>
+      <exclude name="javadoc-ExecutionContext.html"/>
+      <exclude name="WEB-INF/classes/**"/>
+    </style>
     <copy todir="${target.war}">
-      <fileset dir="${source.web}"/>
+      <fileset dir="${source.web}">
+        <exclude name="*.xsl"/>
+        <exclude name="*.html"/>
+      </fileset>
     </copy>
   </target>
 

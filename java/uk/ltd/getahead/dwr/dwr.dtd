@@ -20,6 +20,10 @@ We don't just allow access to any object and some may need special code to
 get a reference to them.
 -->
 <!ELEMENT creator EMPTY>
+<!--
+@attr id The unique name by which create elements refer to us.
+@attr class The fully qualified name of a class that implements Creator.
+-->
 <!ATTLIST creator
     id ID #REQUIRED
     class CDATA #REQUIRED
@@ -31,10 +35,13 @@ Many classes can have default conversion mechanisms but some require more
 custom conversion
 -->
 <!ELEMENT converter EMPTY>
+<!--
+@attr id The unique name by which create elements refer to us.
+@attr class The fully qualified name of a class that implements Converter.
+-->
 <!ATTLIST converter
     id ID #REQUIRED
     class CDATA #REQUIRED
-    priority CDATA #IMPLIED
 >
 
 <!--
@@ -54,14 +61,17 @@ refers to an element defined elsewhere, however we allow multiple dwr.xml
 files and we might refer to one in another file.
 -->
 <!ELEMENT create (
-    (param | include | exclude | parameter | auth)*
+    (param | include | exclude)*
 )>
+<!--
+@attr creator The id of the creator to use
+@attr javascript The name of the object to export to the browser
+@attr class Some creators require a class to be specified
+-->
 <!ATTLIST create
     creator CDATA #REQUIRED
     javascript CDATA #REQUIRED
     class CDATA #IMPLIED
-    beanName CDATA #IMPLIED
-    resourceName CDATA #IMPLIED
 >
 
 <!--
@@ -73,6 +83,10 @@ refers to an element defined elsewhere, however we allow multiple dwr.xml
 files and we might refer to one in another file.
 -->
 <!ELEMENT convert EMPTY>
+<!--
+@attr converter The id of the converter to use
+@attr match A class name to match for conversion
+-->
 <!ATTLIST convert
     converter CDATA #REQUIRED
     match CDATA #REQUIRED
@@ -84,6 +98,10 @@ convert elements should not be the same) need customization in ways that we
 can't predict now, and this seems like the only way to do it.
 -->
 <!ELEMENT param (#PCDATA)>
+<!--
+@attr name The name of the parameter to this creator
+@attr value The value to set to the names parameter
+-->
 <!ATTLIST param
     name CDATA #REQUIRED
     value CDATA #IMPLIED
@@ -96,35 +114,20 @@ implies that the default policy is denial) OR a list of exclude elements
 (which implies that the default policy is to allow access)
 -->
 <!ELEMENT include EMPTY>
+<!--
+@attr method The method to include
+-->
 <!ATTLIST include
     method CDATA #IMPLIED
-    match CDATA #IMPLIED
 >
+
+<!--
+See the include element
+-->
 <!ELEMENT exclude EMPTY>
+<!--
+@attr method The method to exclude
+-->
 <!ATTLIST exclude
     method CDATA #IMPLIED
-    match CDATA #IMPLIED
 >
-
-<!--
-J2EE role based security allows us to restrict methods to only being used by
-people in certain roles.
--->
-<!ELEMENT auth EMPTY>
-<!ATTLIST auth
-    method CDATA #IMPLIED
-    role CDATA #IMPLIED
->
-
-<!--
-We don't know enough from a method signature like setUsers(Set s) to be able to
-cast the inbound data to a set of Users. So the parameter element gives us
-this extra information.
--->
-<!ELEMENT parameter EMPTY>
-<!ATTLIST parameter
-    method CDATA #IMPLIED
-    number CDATA #IMPLIED
-    type CDATA #IMPLIED
->
-      

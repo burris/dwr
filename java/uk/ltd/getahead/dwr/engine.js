@@ -512,7 +512,7 @@ DWREngine._sendData = function(batch)
     }
     else
     {
-        statsInfo = "Multiple." + batch.length;
+        statsInfo = "Multiple." + batch.map.callCount;
     }
 
     var query = "";
@@ -552,21 +552,23 @@ DWREngine._sendData = function(batch)
     {
         batch.map.xml = false;
 
-        // Proceed using iframe
-        for (prop in batch.map)
-        {
-            query += prop + "=" + batch.map[prop] + "&";
-        }
-        query = query.substring(0, query.length - 1);
+        var idname = "dwr-if-" + batch.map["c0-id"];
 
+        // Proceed using iframe
         batch.div = document.createElement('div');
-        batch.div.innerHTML = "<iframe id='dwr-iframe' name='dwr-iframetarget'></iframe>";
+        batch.div.innerHTML = "<iframe id='" + idname + "' name='" + idname + "'></iframe>";
         document.body.appendChild(batch.div);
-        batch.iframe = document.getElementById('dwr-iframe');
+        batch.iframe = document.getElementById(idname);
         batch.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
 
         if (DWREngine._verb == "GET")
         {
+            for (prop in batch.map)
+            {
+                query += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
+            }
+            query = query.substring(0, query.length - 1);
+
             batch.iframe.setAttribute('src', batch.path + "/exec/" + statsInfo + "?" + query);
             document.body.appendChild(batch.iframe);
         }
@@ -575,8 +577,8 @@ DWREngine._sendData = function(batch)
             batch.form = document.createElement('form');
             batch.form.setAttribute('id', 'dwr-form');
             batch.form.setAttribute('action', batch.path + "/exec" + statsInfo);
-            batch.form.setAttribute('target', 'dwr-iframetarget');
-            batch.form.target='dwr-iframetarget';
+            batch.form.setAttribute('target', idname);
+            batch.form.target = idname;
             batch.form.setAttribute('method', 'post');
             for (prop in batch.map)
             {
@@ -622,9 +624,9 @@ DWREngine._stateChange = function(batch)
                 DWREngine._errorHandler(ex);
             }
         }
-    }
 
-    DWREngine._finalize(batch);
+        DWREngine._finalize(batch);
+    }
 };
 
 /**

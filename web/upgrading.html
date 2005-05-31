@@ -2,21 +2,9 @@
 <html>
 <head>
   <title>DWR - Upgrading DWR</title>
-  <link rel="stylesheet" type="text/css" href="generic.css"/>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-  <script type='text/javascript' src='/dwr/dwr/util.js'></script>
-  <script type='text/javascript' src='/dwr/dwr/jscp.js'></script>
 </head>
 
 <body>
-<div id="page-logo">DWR</div>
-<div id="page-title">Direct Web Remoting - AJAX and XMLHttpRequest made easy</div>
-<div id="page-portlet-1" class="sidebody">
-  <a href="sidebar.html">Site-Map</a>
-  <script type='text/javascript'>JSCP.insert("page-portlet-1", "sidebar.html");</script>
-</div>
-
-<div id="page-content">
 
 <h2>Upgrading to DWR 0.8</h2>
 <p>
@@ -24,6 +12,10 @@
   release. The biggest backwards incompatible change is to logging where the
   output is now more fine grained then before, so you might need to change
   your logging configuration to avoid being swamped.
+</p>
+<p>
+  Also the Converter interface changed slightly to help pass on extra type info
+  for Collections.
 </p>
 
 <h2>Upgrading to DWR 0.6</h2>
@@ -93,6 +85,5 @@
   Where Test is the value you specify in the javascript attribute in your create tag (see above).
 </p>
 
-</div>
 </body>
 </html>

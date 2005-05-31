@@ -26,6 +26,13 @@ If I post an announcement to some site I record it here, so I can cut and paste 
 
 Remember TSS does not support https URLs
 
+Java.net: 2005-05-30
+New features in DWR 0.8
+http://www.getahead.ltd.uk/dwr/
+http://www.getahead.ltd.uk/blog/joe/2005/05/30/1117455081304.html
+<a href="http://www.getahead.ltd.uk/dwr/">DWR</a> version 0.8 contains a big list of new features. You can <a href="https://dwr.dev.java.net/servlets/ProjectDocumentList?folderID=3450&expandFolder=3450&folderID=0">download version 0.8 from java.net</a>. The change log includes: batch sending of remote calls, fine grained access control, J2EE role based authorization, and enhanced debug pages.
+We are working on a smaller list for the next version so we are not that far from 1.0.
+
 Java.net: 2005-05-19
 DWR 0.6 Released. AJAX and XMLHttpRequest made easy
 http://www.getahead.ltd.uk/dwr/
@@ -101,6 +108,21 @@ DWR (Direct Web Remoting) is a very simple way to call server-side Java code dir
 DWR comes as a simple jar file and a few lines to add to your web.xml file to configure the remoted classes. In a web page you add a couple of &lt;script&gt; tags to indicate which classes you wish to import and can then call your Java code directly from Javascript.
 The Javascript works, depending on your browser, either using XMLHttpRequest or by dynamically creating an iframe. Through this it calls the DWR servlet with instructions about what Java code to call. The DWR servlet marshals the parameters, calls the server-side Java code and returns the reply, which returns the reply to the calling Javascript.
 More detailed instructions are available on the DWR site: http://dwr.dev.java.net/
+
+                 traffic rank  reach/mil
+developer.com        11,000      120
+sys-con.com          12,000      110 (java dev journal)
+javaworld.com        13,000       65
+theserverside.com    15,000       90
+javalobby.org        17,000       60
+onjava.com           25,000       70
+java.net             24,000       70
+raibledesigns.com    50,000       28
+fawcette.com         57,000       25 (java pro)
+cafeaulait.org       86,000       16
+javablogs.com       114,000       12
+javacoffeebreak.com 115,000       12
+getahead.ltd.uk     315,000        8
 
 
 License

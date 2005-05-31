@@ -395,24 +395,23 @@ function sendBatch(start, size, rate)
     var percent = Math.ceil((start / tests.length) * 100);
     progress.style.width = percent + "%";
 
-    if (start + incr >= tests.length)
-    {
-        tidyUp();
-    }
-    else
+    if (start + incr < tests.length)
     {
         setTimeout("sendBatch(" + (start + incr) + ", " + size + ", " + rate + ")", rate);
     }
 }
 
-function tidyUp()
+function checkTidyUp(index)
 {
-    DWRUtil.getElementById("start").disabled = false;
+    if (index == tests.length)
+    {
+        DWRUtil.getElementById("start").disabled = false;
 
-    var mslen = new Date().getTime() - starttime.getTime();
-    var tps = Math.round((10000 * tests.length) / mslen) / 10;
-    var totals = "Tests executed in " + (mslen / 1000) + " seconds at an average of " + tps + " tests per second.";
-    DWRUtil.setValue("totals", totals);
+        var mslen = new Date().getTime() - starttime.getTime();
+        var tps = Math.round((10000 * tests.length) / mslen) / 10;
+        var totals = "Tests executed in " + (mslen / 1000) + " seconds at an average of " + tps + " tests per second.";
+        DWRUtil.setValue("totals", totals);
+    }
 }
 
 function testResults(data, index)
@@ -428,11 +427,10 @@ function testResults(data, index)
     var passed = testEquals(data, test.data, 0);
     var numele = DWRUtil.getElementById("t" + index + "-num");
 
+    execreport.innerHTML = (index + 1);
+
     if (typeof passed == "boolean" && passed)
     {
-        //passes.innerHTML += test.code + "<br/>";
-        execreport.innerHTML = (index + 1);
-
         numele.style.backgroundColor = "lightgreen";
         DWRUtil.setValue("t" + index + "-results", "Passed");
     }
@@ -451,6 +449,8 @@ function testResults(data, index)
         numele.style.backgroundColor = "lightpink";
         DWRUtil.setValue("t" + index + "-results", report);
     }
+
+    checkTidyUp(index + 1);
 }
 
 function catchFailure(data)

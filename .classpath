@@ -21,18 +21,22 @@
 	</classpathentry>
 	<classpathentry sourcepath="/library/jarlib/spring-1.1.2/spring-framework-1.1.2-with-dependencies.zip" kind="lib" path="jar/spring.jar">
 		<attributes>
+			<attribute value="http://www.springframework.org/docs/api/" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="/library/jarlib/jdom-1.0/jdom-1.0.zip" kind="lib" path="jar/jdom.jar">
 		<attributes>
+			<attribute value="http://www.jdom.org/docs/apidocs" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="/library/jarlib/dom4j-1.5/dom4j-1.5.zip" kind="lib" path="jar/dom4j-1.5.jar">
 		<attributes>
+			<attribute value="http://www.dom4j.org/apidocs/" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="/library/jarlib/xom-1.0/xom-1.0.zip" kind="lib" path="jar/xom-1.0.jar">
 		<attributes>
+			<attribute value="http://www.cafeconleche.org/XOM/apidocs" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="/library/jarlib/bsf-2.3/bsf-src-2.3.0.zip" kind="lib" path="web/WEB-INF/lib/bsf.jar">
@@ -45,14 +49,17 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="web/WEB-INF/lib/commons-validator-1.1.4.jar">
 		<attributes>
+			<attribute value="http://jakarta.apache.org/commons/validator/apidocs" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry sourcepath="/library/jarlib/logging-1.0.4/commons-logging-1.0.4.zip" kind="lib" path="web/WEB-INF/lib/commons-logging.jar">
 		<attributes>
+			<attribute value="http://jakarta.apache.org/commons/logging/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="web/WEB-INF/lib/jakarta-oro-2.0.8.jar">
 		<attributes>
+			<attribute value="http://jakarta.apache.org/oro/api/" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="java">
