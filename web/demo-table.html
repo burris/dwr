@@ -6,6 +6,7 @@
   <script type='text/javascript' src='/dwr/dwr/engine.js'></script>
   <script type='text/javascript' src='/dwr/dwr/util.js'></script>
   <script>
+  //<![CDATA[
   function init()
   {
       DWRUtil.useLoadingMessage();
@@ -22,11 +23,11 @@
   var getSalary = function(person) { return person.salary };
   var getEdit = function(person)
   {
-      return "&lt;input type=\"button\" value=\"Edit\" onclick=\"readPerson('" + person.id + "')\"/&gt;";
+      return "<input type=\"button\" value=\"Edit\" onclick=\"readPerson('" + person.id + "')\"/>";
   };
   var getDelete = function(person)
   {
-      return "&lt;input type=\"button\" value=\"Delete\" onclick=\"deletePerson('" + person.id + "', '" + person.name + "')\"/&gt;";
+      return "<input type=\"button\" value=\"Delete\" onclick=\"deletePerson('" + person.id + "', '" + person.name + "')\"/>";
   };
   function fillTable(people)
   {
@@ -76,6 +77,7 @@
       DWRUtil.setValue("dateOfBirth", person.dateOfBirth);
       DWRUtil.setValue("salary", person.salary);
   }
+  //]]>
   </script>
 </head>
 

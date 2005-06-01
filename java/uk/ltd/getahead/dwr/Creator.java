@@ -14,7 +14,7 @@ public interface Creator
      * @param params The map of paramters to configure the creator
      * @throws IllegalArgumentException If the config data in the Element is invalid
      */
-    public void init(Map params) throws IllegalArgumentException;
+    public void setProperties(Map params) throws IllegalArgumentException;
 
     /**
      * Accessor for the <code>java.lang.Class</code> that this Creator

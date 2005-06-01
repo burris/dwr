@@ -1,48 +1,28 @@
 package uk.ltd.getahead.testdwr;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-/**
- * @author Joe Walker [joe at getahead dot ltd dot uk]
- */
 public class Chat
 {
-    /**
-     * @param message A new message to add to the list
-     * @return The last 10 messages
-     */
-    public Map[] addMessage(String message)
+    public List addMessage(String text)
     {
-        if (message != null && message.trim().length() > 0)
+        if (text != null && text.trim().length() > 0)
         {
-            if (message.length() > 256) message = message.substring(0, 256);
-
-            Map data = new HashMap();
-            data.put("message", message.replace('<', '[')); //$NON-NLS-1$
-            data.put("id", new Long(System.currentTimeMillis())); //$NON-NLS-1$
-            messages.add(data);
-
+            messages.addFirst(new Message(text));
             while (messages.size() > 10)
             {
-                messages.remove(0);
+                messages.removeLast();
             }
-            cache = (Map[]) messages.toArray(new Map[messages.size()]);
         }
 
-        return cache;
+        return messages;
     }
 
-    /**
-     * @return The last 10 messages
-     */
-    public Map[] getMessages()
+    public List getMessages()
     {
-        return cache;
+        return messages;
     }
 
-    private static List messages = new ArrayList();
-    private static Map[] cache = new Map[0];
+    private static LinkedList messages = new LinkedList();
 }

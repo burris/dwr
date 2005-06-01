@@ -18,7 +18,7 @@ public class NullConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
      */
-    public void init(ConverterManager config)
+    public void setConverterManager(ConverterManager config)
     {
     }
 

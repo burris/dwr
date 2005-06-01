@@ -47,7 +47,7 @@ public class DefaultConverterManager implements ConverterManager
         }
 
         Converter converter = (Converter) clazz.newInstance();
-        converter.init(this);
+        converter.setConverterManager(this);
 
         // Check that we don't have this one already
         Converter other = (Converter) converters.get(match);

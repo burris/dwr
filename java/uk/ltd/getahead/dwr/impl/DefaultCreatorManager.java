@@ -56,7 +56,7 @@ public class DefaultCreatorManager implements CreatorManager
         Creator creator = (Creator) clazz.newInstance();
 
         // Initialize the creator with the parameters that we know of.
-        creator.init(params);
+        creator.setProperties(params);
 
         // Check that we don't have this one already
         Creator other = (Creator) creators.get(javascript);

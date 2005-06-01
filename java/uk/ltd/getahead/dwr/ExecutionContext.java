@@ -212,7 +212,7 @@ public class ExecutionContext
      * @param context The servlet context
      * @see ExecutionContext#unset()
      */
-    protected static void setExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context)
+    public static void setExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context)
     {
         try
         {
@@ -231,7 +231,7 @@ public class ExecutionContext
      * This method is only for use internally to DWR.
      * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext)
      */
-    protected static void unset()
+    public static void unset()
     {
         user.set(null);
     }

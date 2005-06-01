@@ -17,7 +17,7 @@ public class SessionCreator implements Creator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.create.Creator#init(org.w3c.dom.Element)
      */
-    public void init(Map params) throws IllegalArgumentException
+    public void setProperties(Map params) throws IllegalArgumentException
     {
         String classname = (String) params.get("class"); //$NON-NLS-1$
         scriptname = (String) params.get("javascript"); //$NON-NLS-1$

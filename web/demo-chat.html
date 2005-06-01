@@ -6,10 +6,9 @@
   <script type='text/javascript' src='/dwr/dwr/engine.js'></script>
   <script type='text/javascript' src='/dwr/dwr/util.js'></script>
   <script>
-  <![CDATA[
+  //<![CDATA[
   function init()
   {
-      DWRUtil.useLoadingMessage();
       timeout = setTimeout("checkMessages()", 1000);
   }
 
@@ -31,12 +30,12 @@
       {
           var style = "new";
           if (seen[messages[data].id]) style = "old";
-          chatlog += "<div class='" + style + "' id='" + messages[data].id + "'>" + messages[data].message + "</div>";
+          chatlog = "<div class='" + style + "' id='" + messages[data].id + "'>" + messages[data].text + "</div>" + chatlog;
       }
       // Cache the messages so we can compare against them next time to see what is new
       seen = {};
-      for (var data in messages)
-          seen[messages[data].id] = messages[data].message;
+      for (data in messages)
+          seen[messages[data].id] = messages[data].text;
       // Only update the UI if something has changed
       if (chatlog != last)
       {
@@ -48,21 +47,15 @@
       setTimeout("checkMessages()", waits[waitIndex]);
   }
 
-  function checkSubmit(event)
-  {
-      if (!event) event = window.event;
-      if (event && event.keyCode && event.keyCode == 13) sendMessage();
-  }
-
   function sendMessage()
   {
-      var line = DWRUtil.getValue("message");
-      DWRUtil.setValue("message", "");
-      Chat.addMessage(gotMessages, line);
+      var text = DWRUtil.getValue("text");
+      DWRUtil.setValue("text", "");
+      Chat.addMessage(gotMessages, text);
       if (timeout != null) clearTimeout(timeout);
       waitIndex = 0;
   }
-  ]]>
+  //]]>
   </script>
   <style>
   .old { background: #FEFEFE; }
@@ -73,19 +66,17 @@
 <body onload="init()">
 
 <h1>Simple Chat Application</h1>
-<h2>Demo</h2>
 <p>
+  This demo was explained in detail at OnJava, check-out the write-up.<br/>
   This example displays a very simple multi-user chat application. The entire
   app is less than 50 line of server-side Java and less than 100 lines of HTML.
 </p>
 <div id="chatlog" style="border:1px solid black; padding:5px;"></div>
 <p>
   Message:
-  <input id="message" onkeypress="checkSubmit(event)"/>
+  <input id="text" onkeypress="DWRUtil.onReturn(event, sendMessage)"/>
   <input type="button" value="Send" onclick="sendMessage()"/>
 </p>
-<h2>How it works</h2>
-<p>Check-out the source to this page to see how simple the Javascript is.</p>
 
 </body>
 </html>

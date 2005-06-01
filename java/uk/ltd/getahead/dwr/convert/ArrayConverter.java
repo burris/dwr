@@ -25,7 +25,7 @@ public class ArrayConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
      */
-    public void init(ConverterManager newConfig)
+    public void setConverterManager(ConverterManager newConfig)
     {
         this.converterManager = newConfig;
     }

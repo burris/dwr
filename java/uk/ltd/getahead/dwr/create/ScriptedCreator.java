@@ -17,7 +17,7 @@ public class ScriptedCreator implements Creator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.create.Creator#init(java.lang.String, org.w3c.dom.Element)
      */
-    public void init(Map params) throws IllegalArgumentException
+    public void setProperties(Map params) throws IllegalArgumentException
     {
         this.language = (String) params.get("language"); //$NON-NLS-1$
         // if (BSFManager.isLanguageRegistered(language))

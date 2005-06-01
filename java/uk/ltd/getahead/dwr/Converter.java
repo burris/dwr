@@ -13,7 +13,7 @@ public interface Converter
      * to other converters then you farm the conversion out via a configuration.
      * @param config The confiuration object
      */
-    public void init(ConverterManager config);
+    public void setConverterManager(ConverterManager config);
 
     /**
      * Attempt to coerce the data from a string to an Object

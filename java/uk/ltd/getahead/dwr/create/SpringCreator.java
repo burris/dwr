@@ -28,7 +28,7 @@ public class SpringCreator implements Creator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.create.Creator#init(org.w3c.dom.Element)
      */
-    public void init(Map params) throws IllegalArgumentException
+    public void setProperties(Map params) throws IllegalArgumentException
     {
         this.scriptName = (String) params.get("beanName"); //$NON-NLS-1$
         this.resourceName = (String) params.get("resourceName"); //$NON-NLS-1$
