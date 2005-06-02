@@ -1,35 +1,56 @@
 package uk.ltd.getahead.dwr.create;
 
-import java.util.Map;
-
 import org.apache.bsf.BSFManager;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.impl.AbstractCreator;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A creator that simply uses the default constructor each time it is called.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ScriptedCreator implements Creator
+public class ScriptedCreator extends AbstractCreator implements Creator
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.create.Creator#init(java.lang.String, org.w3c.dom.Element)
+    /**
+     * @return Returns the language.
      */
-    public void setProperties(Map params) throws IllegalArgumentException
+    public String getLanguage()
     {
-        this.language = (String) params.get("language"); //$NON-NLS-1$
+        return language;
+    }
+
+    /**
+     * @param language The language to set.
+     */
+    public void setLanguage(String language)
+    {
         // if (BSFManager.isLanguageRegistered(language))
         // {
         //     throw new IllegalArgumentException(Messages.getString("ScriptedCreator.IllegalLanguage", language)); //$NON-NLS-1$
         // }
+        this.language = language;
+    }
 
-        this.script = (String) params.get("script"); //$NON-NLS-1$
+    /**
+     * @return Returns the script.
+     */
+    public String getScript()
+    {
+        return script;
+    }
+
+    /**
+     * @param script The script to set.
+     */
+    public void setScript(String script)
+    {
         if (script == null || script.trim().length() == 0)
         {
             throw new IllegalArgumentException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
         }
+        this.script = script;
     }
 
     /* (non-Javadoc)

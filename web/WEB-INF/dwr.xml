@@ -6,7 +6,7 @@
 <dwr>
 
   <init>
-    <converter id="testbean" priority="1" class="uk.ltd.getahead.testdwr.TestBean2Converter"/>
+    <converter id="testbean" class="uk.ltd.getahead.testdwr.TestBean2Converter"/>
   </init>
 
 <!--
@@ -30,12 +30,14 @@
     <create creator="new" javascript="Error" class="uk.ltd.getahead.dwr.InboundContext"/>
     -->
 
-    <create creator="new" javascript="Test" class="uk.ltd.getahead.testdwr.Test">
+    <create creator="new" javascript="Test">
+      <param name="class" value="uk.ltd.getahead.testdwr.Test"/>
       <parameter method="testBeanSetParam" number="0" type="uk.ltd.getahead.testdwr.TestBean"/>
       <parameter method="charTestBeanMapParam" number="0" type="java.lang.Character, uk.ltd.getahead.testdwr.TestBean"/>
     </create>
 
-    <create creator="new" javascript="JDate" class="java.util.Date">
+    <create creator="new" javascript="JDate">
+      <param name="class" value="java.util.Date"/>
       <include method="getSeconds"/>
       <include method="getMinutes"/>
       <include method="getMonth"/>
@@ -45,17 +47,31 @@
       <auth method="toString" role="devel"/>
     </create>
 
-    <create creator="session" javascript="TestBean" class="uk.ltd.getahead.testdwr.TestBean"/>
-    <create creator="session" javascript="Demo" class="uk.ltd.getahead.testdwr.Demo"/>
+    <create creator="session" javascript="TestBean">
+      <param name="class" value="uk.ltd.getahead.testdwr.TestBean"/>
+    </create>
 
-    <create creator="new" javascript="Chat" class="uk.ltd.getahead.testdwr.Chat"/>
+    <create creator="session" javascript="Demo">
+      <param name="class" value="uk.ltd.getahead.testdwr.Demo"/>
+    </create>
+
+    <create creator="new" javascript="Chat">
+      <param name="class" value="uk.ltd.getahead.testdwr.Chat"/>
+    </create>
 
     <!--
-    <create creator="spring" javascript="SpringBean" beanName="SpringBean"/>
+    <create creator="spring" javascript="SpringBean">
+      <param name="beanName" value="SpringBean"/>
+    </create>
     -->
 
-    <create creator="new" javascript="UrlValidator" class="org.apache.commons.validator.UrlValidator"/>
-    <create creator="new" javascript="CreditCardValidator" class="org.apache.commons.validator.CreditCardValidator"/>
+    <create creator="new" javascript="UrlValidator">
+      <param name="class" value="org.apache.commons.validator.UrlValidator"/>
+    </create>
+
+    <create creator="new" javascript="CreditCardValidator">
+      <param name="class" value="org.apache.commons.validator.CreditCardValidator"/>
+    </create>
 
     <create creator="script" javascript="EmailValidator">
       <param name="language" value="beanshell"/>
@@ -67,6 +83,7 @@
 
     <convert converter="bean" match="uk.ltd.getahead.testdwr.*"/>
     <convert converter="testbean" match="uk.ltd.getahead.testdwr.TestBean2"/>
+
   </allow>
 
 </dwr>

@@ -1,5 +1,6 @@
 package uk.ltd.getahead.dwr;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,12 +11,14 @@ import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import uk.ltd.getahead.dwr.util.LogErrorHandler;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -30,26 +33,22 @@ public final class Configuration
     /**
      * Add to the current configuration by reading a DOM tree from a IO stream.
      * @param in The InputStream to parse from
+     * @throws ParserConfigurationException If there are XML setup problems
+     * @throws IOException Error parsing dwr.xml
+     * @throws SAXException Error parsing dwr.xml 
      */
-    public void addConfig(InputStream in)
+    public void addConfig(InputStream in) throws ParserConfigurationException, IOException, SAXException
     {
-        try
-        {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setValidating(true);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setValidating(true);
 
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            db.setEntityResolver(new DTDEntityResolver());
-            db.setErrorHandler(new LogErrorHandler());
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        db.setEntityResolver(new DTDEntityResolver());
+        db.setErrorHandler(new LogErrorHandler());
 
-            Document doc = db.parse(in);
+        Document doc = db.parse(in);
 
-            addConfig(doc);
-        }
-        catch (Exception ex)
-        {
-            log.fatal("Failed to parse dwr.xml", ex); //$NON-NLS-1$
-        }
+        addConfig(doc);
     }
 
     /**

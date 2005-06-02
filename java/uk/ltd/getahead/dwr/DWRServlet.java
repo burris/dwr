@@ -81,6 +81,7 @@ public class DWRServlet extends HttpServlet
         {
             creatorMgrName = INIT_DEFAULT_CREATOR;
         }
+
         try
         {
             Class creatorMgrClass = Class.forName(creatorMgrName);
@@ -98,6 +99,7 @@ public class DWRServlet extends HttpServlet
         {
             converterMgrName = INIT_DEFAULT_CONVERTER;
         }
+
         try
         {
             Class converterMgrClass = Class.forName(converterMgrName);
@@ -120,7 +122,14 @@ public class DWRServlet extends HttpServlet
 
         // Load the system config file
         InputStream in = getClass().getResourceAsStream(FILE_DWR_XML);
-        configuration.addConfig(in);
+        try
+        {
+            configuration.addConfig(in);
+        }
+        catch (Exception ex)
+        {
+            throw new ServletException(Messages.getString("DWRServlet.ConfigError", FILE_DWR_XML), ex); //$NON-NLS-1$
+        }
 
         // Find all the init params
         Enumeration en = config.getInitParameterNames();
@@ -532,33 +541,33 @@ public class DWRServlet extends HttpServlet
             {
                 out.print('\n');
             }
-            out.print(scriptname + '.' + methodName + " = function(callback"); //$NON-NLS-1$
+            out.print(scriptname + '.' + methodName + " = function("); //$NON-NLS-1$
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
                 if (!isAutoFilled(paramTypes[j]))
                 {
-                    out.print(", p" + j); //$NON-NLS-1$
+                    out.print("p" + j + ", "); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
-            out.println(')');
+            out.println("callback)"); //$NON-NLS-1$
             out.println('{');
 
             String path = req.getContextPath() + req.getServletPath();
 
-            out.print("    DWREngine._execute(callback, '" + path + "', '" + scriptname + "', '" + methodName + '\''); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            out.print("    DWREngine._execute('" + path + "', '" + scriptname + "', '" + methodName + "\', "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             for (int j = 0; j < paramTypes.length; j++)
             {
                 if (isAutoFilled(paramTypes[j]))
                 {
-                    out.print(", false"); //$NON-NLS-1$
+                    out.print("false, "); //$NON-NLS-1$
                 }
                 else
                 {
-                    out.print(", p" + j); //$NON-NLS-1$
+                    out.print("p" + j + ", "); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
-            out.println(");"); //$NON-NLS-1$
+            out.println("callback);"); //$NON-NLS-1$
 
             out.println('}');
         }
@@ -710,13 +719,20 @@ public class DWRServlet extends HttpServlet
      */
     protected void readFile(String configFile) throws ServletException
     {
-        InputStream in = getServletContext().getResourceAsStream(configFile);
-        if (in == null)
+        try
         {
-            throw new ServletException(Messages.getString("DWRServlet.MissingFile", configFile)); //$NON-NLS-1$
+            InputStream in = getServletContext().getResourceAsStream(configFile);
+            if (in == null)
+            {
+                throw new ServletException(Messages.getString("DWRServlet.MissingFile", configFile)); //$NON-NLS-1$
+            }
+    
+            configuration.addConfig(in);
         }
-
-        configuration.addConfig(in);
+        catch (Exception ex)
+        {
+            throw new ServletException(Messages.getString("DWRServlet.ConfigError", configFile), ex); //$NON-NLS-1$
+        }
     }
 
     /**

@@ -34,7 +34,7 @@ public interface ConverterManager
      * Convert an object from being a string into an object of some type.
      * Designed for use with converters that have a working map passed to them
      * @param paramType The type that you want the object to be
-     * @param paramNo TODO
+     * @param paramNo The parameter number - TODO: get rid of this?
      * @param iv The string version of the object
      * @param inctx The map of data that we are working on
      * @return The coerced object or null if the object could not be coerced

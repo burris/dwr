@@ -9,11 +9,11 @@ var tests = new Array();
 var parallel = false;
 var batch = 1;
 
-tests[tests.length] = { code:"voidParam", data:null };
+// tests[tests.length] = { code:"voidParam", data:null };
 
 tests[tests.length] = { code:"booleanParam", data:true };
 tests[tests.length] = { code:"booleanParam", data:false };
-
+/*
 tests[tests.length] = { code:"byteParam", data:-128 };
 tests[tests.length] = { code:"byteParam", data:-1 };
 tests[tests.length] = { code:"byteParam", data:0 };
@@ -301,7 +301,7 @@ tests[tests.length] = { code:"stringStringHashMapParam", data:map1 };
 tests[tests.length] = { code:"stringStringHashMapParam", data:map2 };
 tests[tests.length] = { code:"stringStringTreeMapParam", data:map1 };
 tests[tests.length] = { code:"stringStringTreeMapParam", data:map2 };
-
+*/
 function startTest()
 {
     failures = DWRUtil.getElementById("failures");
@@ -363,16 +363,18 @@ function startTest()
 function sendBatch(start, size, rate)
 {
     var incr = size;
+    var test, callback, param;
+
     if (size == 0)
     {
         // otherwise we never progress
         incr = 1;
 
-        var test = tests[start];
-        var callback = function(data) { testResults(data, start); };
-        var param = test.data;
+        test = tests[start];
+        callback = function(data) { testResults(data, start); };
+        param = test.data;
 
-        Test[test.code](callback, param);
+        Test[test.code](param, { callback:callback });
     }
     else
     {
@@ -380,13 +382,13 @@ function sendBatch(start, size, rate)
 
         for (var i = start; i < start + size && i < tests.length; i++)
         {
-            var test = tests[i];
+            test = tests[i];
             //var num = i;
             //var callback = function(data) { testResults(data, num); };
-            var callback = new Function("data", "testResults(data, " + i + ");");
-            var param = test.data;
+            callback = new Function("data", "testResults(data, " + i + ");");
+            param = test.data;
 
-            Test[test.code](callback, param);
+            Test[test.code](param, callback);
         }
 
         DWREngine.endBatch();
@@ -411,6 +413,8 @@ function checkTidyUp(index)
         var tps = Math.round((10000 * tests.length) / mslen) / 10;
         var totals = "Tests executed in " + (mslen / 1000) + " seconds at an average of " + tps + " tests per second.";
         DWRUtil.setValue("totals", totals);
+
+        progress.style.width = "100%";
     }
 }
 

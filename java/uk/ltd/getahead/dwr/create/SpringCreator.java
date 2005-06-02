@@ -17,23 +17,48 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.impl.AbstractCreator;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A creator that relies on a spring bean factory
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class SpringCreator implements Creator
+public class SpringCreator extends AbstractCreator implements Creator
 {
+    /**
+     * @return Returns the resourceName.
+     */
+    public String getResourceName()
+    {
+        return resourceName;
+    }
+
+    /**
+     * @param resourceName The resourceName to set.
+     */
+    public void setResourceName(String resourceName)
+    {
+        this.resourceName = resourceName;
+    }
+
+    /**
+     * @param session true if we should use a session
+     * @deprecated Use scope instead of the session param
+     */
+    public void setSession(String session)
+    {
+        if (Boolean.valueOf(session).booleanValue())
+        {
+            setScope("session"); //$NON-NLS-1$
+        }
+    }
+
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.create.Creator#init(org.w3c.dom.Element)
      */
     public void setProperties(Map params) throws IllegalArgumentException
     {
-        this.scriptName = (String) params.get("beanName"); //$NON-NLS-1$
-        this.resourceName = (String) params.get("resourceName"); //$NON-NLS-1$
-        this.perSession = Boolean.valueOf((String) params.get("session")).booleanValue(); //$NON-NLS-1$
-
         List locValues = new ArrayList();
 
         for (Iterator it = params.keySet().iterator(); it.hasNext();)
@@ -79,15 +104,6 @@ public class SpringCreator implements Creator
         {
             Object reply = null;
 
-            if (perSession)
-            {
-                reply = ExecutionContext.get().getSession().getAttribute(scriptName);
-                if (reply != null)
-                {
-                    return reply;
-                }
-            }
-
             if (factory == null)
             {
                 // If someone has set a resource name then we need to load that.
@@ -128,11 +144,7 @@ public class SpringCreator implements Creator
                 }
             }
 
-            reply = factory.getBean(scriptName);
-            if (perSession)
-            {
-                ExecutionContext.get().getSession().setAttribute(scriptName, reply);
-            }
+            reply = factory.getBean(getJavascript());
 
             return reply;
         }
@@ -166,20 +178,9 @@ public class SpringCreator implements Creator
     private static BeanFactory factory = null;
 
     /**
-     * If the bean factory is handing out prototype objects then we might want
-     * to store them in the users session.
-     */
-    private boolean perSession = false;
-
-    /**
      * The cached type of bean that we are creating
      */
     private Class clazz = null;
-
-    /**
-     * The name to lookup in the bean factory
-     */
-    private String scriptName = null;
 
     /**
      * An optional place to look for a beans.xml file

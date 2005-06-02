@@ -6,6 +6,15 @@
 
 <body>
 
+<h2>Upgrading to DWR 0.8.5</h2>
+<p>
+  It has been true for a while, but it is worth noting the only attributes that
+  are 100% correct for a <code>&lt;create ...</code> element are
+  <code>creator="..."</code> and <code>javascript="..."</code>. Other common
+  attributes like <code>class="..."</code> should be put as a nested param
+  elements. E.g. <code>&lt;param name="class" value="..."/&gt;</code>
+</p>
+
 <h2>Upgrading to DWR 0.8</h2>
 <p>
   There are even more <a href="changelog.html">new features</a> with this

@@ -1,23 +1,21 @@
 package uk.ltd.getahead.dwr.create;
 
-import java.util.Map;
-
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.impl.AbstractCreator;
 
 /**
  * A creator that simply uses the default constructor each time it is called.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class NewCreator implements Creator
+public class NewCreator extends AbstractCreator implements Creator
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.create.Creator#init(java.lang.String, org.w3c.dom.Element)
+    /**
+     * What sort of class do we create?
+     * @param classname The name of the class
      */
-    public void setProperties(Map params) throws IllegalArgumentException
+    public void setClass(String classname)
     {
-        String classname = (String) params.get("class"); //$NON-NLS-1$
-
         try
         {
             this.clazz = Class.forName(classname);

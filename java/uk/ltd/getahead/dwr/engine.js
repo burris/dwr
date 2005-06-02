@@ -399,22 +399,29 @@ DWREngine._removeNode = function(node)
 /**
  * Send a request to the server
  * This method is called by Javascript that is emitted by server
- * @param func The callback function to which any returned data should be passed
- *             if this is null, any returned data will be ignored
  * @param path The part of the URL after the host and before the exec bit
  *             without leading or trailing /s
  * @param scriptName The class to execute
  * @param methodName The method on said class to execute
+ * @param func The callback function to which any returned data should be passed
+ *             if this is null, any returned data will be ignored
  * @param vararg_params The parameters to pass to the above class
  * @private
  */
-DWREngine._execute = function(func, path, scriptName, methodName, vararg_params)
+DWREngine._execute = function(path, scriptName, methodName, vararg_params)
 {
     var singleShot = false;
     if (DWREngine._batch == null)
     {
         DWREngine.beginBatch();
         singleShot = true;
+    }
+
+    // To make them easy to manipulate we copy the arguments into an args array
+    var args = [];
+    for (var i = 0; i < arguments.length - 3; i++)
+    {
+        args[i] = arguments[i + 3];
     }
 
     // All the paths MUST be to the same servlet
@@ -435,12 +442,38 @@ DWREngine._execute = function(func, path, scriptName, methodName, vararg_params)
         }
     }
 
-    // Check on the function
-    if (func && typeof func != "function" && typeof func != "object")
+    // From the other params, work out which is the function (or object with
+    // call meta-data) and which is the call parameters
+    var func;
+    var params;
+    var metadata;
+
+    var firstArg = args[0];
+    var lastArg = args[args.length - 1];
+
+    if (typeof firstArg == "function")
+    {
+        func = args.shift();
+        params = args;
+        metadata = {};
+    }
+    else if (typeof lastArg == "function")
+    {
+        func = args.pop();
+        params = args;
+        metadata = {};
+    }
+    else if (typeof lastArg == "object" && lastArg.callback != null)
+    {
+        metadata = args.pop();
+        params = args;
+        func = metadata.callback;
+    }
+    else
     {
         if (DWREngine._warningHandler)
         {
-            DWREngine._warningHandler("Supplied callback function is neither null nor a function: " + func);
+            DWREngine._warningHandler("Missing callback function or metadata object.");
         }
 
         return;
@@ -462,9 +495,9 @@ DWREngine._execute = function(func, path, scriptName, methodName, vararg_params)
 
     // Serialize the parameters into batch.map
     DWREngine._addSerializeFunctions();
-    for (var i = 4; i < arguments.length; i++)
+    for (var i = 0; i < params.length; i++)
     {
-        DWREngine._serializeAll(DWREngine._batch, [], arguments[i], prefix + "param" + (i - 4));
+        DWREngine._serializeAll(DWREngine._batch, [], params[i], prefix + "param" + i);
     }
     DWREngine._removeSerializeFunctions();
 

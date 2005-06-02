@@ -1,27 +1,24 @@
 package uk.ltd.getahead.dwr.create;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.impl.AbstractCreator;
 
 /**
  * A creator that records created objects in the users session.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class SessionCreator implements Creator
+public class SessionCreator extends AbstractCreator implements Creator
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.create.Creator#init(org.w3c.dom.Element)
+    /**
+     * What sort of class do we create?
+     * @param classname The name of the class
      */
-    public void setProperties(Map params) throws IllegalArgumentException
+    public void setClass(String classname)
     {
-        String classname = (String) params.get("class"); //$NON-NLS-1$
-        scriptname = (String) params.get("javascript"); //$NON-NLS-1$
-
         try
         {
             this.clazz = Class.forName(classname);
@@ -46,7 +43,7 @@ public class SessionCreator implements Creator
     public Object getInstance() throws InstantiationException
     {
         HttpSession session = ExecutionContext.get().getSession();
-        Object reply = session.getAttribute(scriptname);
+        Object reply = session.getAttribute(getJavascript());
 
         if (reply == null)
         {
@@ -59,7 +56,7 @@ public class SessionCreator implements Creator
                 throw new InstantiationException(Messages.getString("Creator.IllegalAccess")); //$NON-NLS-1$
             }
             
-            session.setAttribute(scriptname, reply);
+            session.setAttribute(getJavascript(), reply);
         }
 
         return reply;
@@ -69,9 +66,4 @@ public class SessionCreator implements Creator
      * The class type that we generate by default
      */
     private Class clazz;
-
-    /**
-     * The javascript name for the class
-     */
-    private String scriptname;
 }

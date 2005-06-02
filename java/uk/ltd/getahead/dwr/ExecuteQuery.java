@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -298,13 +299,58 @@ public final class ExecuteQuery
                     params[j] = converterManager.convertInbound(paramType, j, param, call.getInboundContext());
                 }
 
-                // Create an instance
-                Object object = creator.getInstance();
+                // Get ourselves an object to execute a method on unless the
+                // method is static
+                Object object = null;
+                if (!Modifier.isStatic(method.getModifiers()))
+                {
+                    String scope = creator.getScope();
+                    ExecutionContext execCtx = ExecutionContext.get();
+
+                    // Check the various scopes to see if it is there
+                    if (scope.equals(Creator.APPLICATION))
+                    {
+                        object = execCtx.getServletContext().getAttribute(call.getScriptName());
+                    }
+                    else if (scope.equals(Creator.SESSION))
+                    {
+                        object = execCtx.getSession().getAttribute(call.getScriptName());
+                    }
+                    else if (scope.equals(Creator.REQUEST))
+                    {
+                        object = execCtx.getHttpServletRequest().getAttribute(call.getScriptName());
+                    }
+                    // Creator.PAGE scope means we create one every time anyway
+
+                    // If we don't have an object the call the creator
+                    if (object == null)
+                    {
+                        // Create an instance
+                        object = creator.getInstance();
+                    }
+
+                    // We might need to remember it for next time
+                    if (scope.equals(Creator.APPLICATION))
+                    {
+                        execCtx.getServletContext().setAttribute(call.getScriptName(), object);
+                    }
+                    else if (scope.equals(Creator.SESSION))
+                    {
+                        execCtx.getSession().setAttribute(call.getScriptName(), object);
+                    }
+                    else if (scope.equals(Creator.REQUEST))
+                    {
+                        execCtx.getHttpServletRequest().setAttribute(call.getScriptName(), object);
+                    }
+                    // Creator.PAGE scope means we create one every time anyway
+                }
 
                 // Execute
                 log.info("Executing: " + method.toString()); //$NON-NLS-1$
                 Object reply = method.invoke(object, params);
-                call.setReply(converterManager.convertOutbound(reply, converted));
+
+                OutboundVariable ov = converterManager.convertOutbound(reply, converted);
+                call.setReply(ov);
             }
             catch (InvocationTargetException ex)
             {

@@ -61,35 +61,17 @@ refers to an element defined elsewhere, however we allow multiple dwr.xml
 files and we might refer to one in another file.
 -->
 <!ELEMENT create (
-    (param | include | exclude)*
+    (param | include | exclude | auth | parameter)*
 )>
 <!--
 @attr creator The id of the creator to use
 @attr javascript The name of the object to export to the browser
-@attr class Some creators require a class to be specified
+@attr scope The scope of the created variable. The default is page.
 -->
 <!ATTLIST create
     creator CDATA #REQUIRED
     javascript CDATA #REQUIRED
-    class CDATA #IMPLIED
->
-
-<!--
-Allow conversion of a class between Java and Javascript.
-A convert element uses a previously defined converter and gives a class match
-pattern (which can end with *) to define the classes it allows conversion of
-It would be nice to make the converter and IDREF rather than a CDATA, since it
-refers to an element defined elsewhere, however we allow multiple dwr.xml
-files and we might refer to one in another file.
--->
-<!ELEMENT convert EMPTY>
-<!--
-@attr converter The id of the converter to use
-@attr match A class name to match for conversion
--->
-<!ATTLIST convert
-    converter CDATA #REQUIRED
-    match CDATA #REQUIRED
+    scope (application|session|request|page) #IMPLIED
 >
 
 <!--
@@ -130,4 +112,22 @@ See the include element
 -->
 <!ATTLIST exclude
     method CDATA #IMPLIED
+>
+
+<!--
+Allow conversion of a class between Java and Javascript.
+A convert element uses a previously defined converter and gives a class match
+pattern (which can end with *) to define the classes it allows conversion of
+It would be nice to make the converter and IDREF rather than a CDATA, since it
+refers to an element defined elsewhere, however we allow multiple dwr.xml
+files and we might refer to one in another file.
+-->
+<!ELEMENT convert EMPTY>
+<!--
+@attr converter The id of the converter to use
+@attr match A class name to match for conversion
+-->
+<!ATTLIST convert
+    converter CDATA #REQUIRED
+    match CDATA #REQUIRED
 >

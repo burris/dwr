@@ -3,8 +3,15 @@ package uk.ltd.getahead.testdwr;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
+ */
 public class Chat
 {
+    /**
+     * @param text
+     * @return A list of the currently viewed messages
+     */
     public List addMessage(String text)
     {
         if (text != null && text.trim().length() > 0)
@@ -19,6 +26,9 @@ public class Chat
         return messages;
     }
 
+    /**
+     * @return A list of the currently viewed messages
+     */
     public List getMessages()
     {
         return messages;

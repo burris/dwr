@@ -1,7 +1,13 @@
 package uk.ltd.getahead.testdwr;
 
+/**
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
+ */
 public class Message
 {
+    /**
+     * @param newtext
+     */
     public Message(String newtext)
     {
         text = newtext;
@@ -12,11 +18,17 @@ public class Message
         text = text.replace('<', '[').replace('&', '_');
     }
 
+    /**
+     * @return The ID
+     */
     public long getId()
     {
         return id;
     }
 
+    /**
+     * @return The text of this message
+     */
     public String getText()
     {
         return text;
