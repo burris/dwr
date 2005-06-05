@@ -24,6 +24,7 @@ import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
+import uk.ltd.getahead.dwr.util.SourceUtil;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -464,7 +465,7 @@ public class DWRServlet extends HttpServlet
             if (output == null)
             {
                 StringBuffer buffer = new StringBuffer();
-    
+
                 InputStream raw = getClass().getResourceAsStream(FILE_HELP);
                 if (raw == null)
                 {
@@ -481,17 +482,17 @@ public class DWRServlet extends HttpServlet
                         {
                             break;
                         }
-    
+
                         buffer.append(line);
                         buffer.append('\n');
                     }
-    
+
                     output = buffer.toString();
                 }
-    
+
                 scriptCache.put(FILE_HELP, output);
             }
-    
+
             out.println(output);
         }
 
@@ -593,7 +594,7 @@ public class DWRServlet extends HttpServlet
             if (output == null)
             {
                 StringBuffer buffer = new StringBuffer();
-    
+
                 InputStream raw = getClass().getResourceAsStream(path);
                 BufferedReader in = new BufferedReader(new InputStreamReader(raw));
                 while (true)
@@ -603,12 +604,18 @@ public class DWRServlet extends HttpServlet
                     {
                         break;
                     }
-    
+
                     buffer.append(line);
                     buffer.append('\n');
                 }
-    
+
                 output = buffer.toString();
+
+                if (mimeType.equals(MIME_JS) && compress)
+                {
+                    output = SourceUtil.compress(output);
+                }
+
                 scriptCache.put(path, output);
             }
 
@@ -726,7 +733,7 @@ public class DWRServlet extends HttpServlet
             {
                 throw new ServletException(Messages.getString("DWRServlet.MissingFile", configFile)); //$NON-NLS-1$
             }
-    
+
             configuration.addConfig(in);
         }
         catch (Exception ex)
@@ -814,6 +821,11 @@ public class DWRServlet extends HttpServlet
      * This helps us test that access rules are being followed
      */
     private boolean allowImpossibleTests = false;
+
+    /**
+     * Do we retain comments and unneeded spaces in Javascript code?
+     */
+    private boolean compress = true;
 
     /**
      * The log stream

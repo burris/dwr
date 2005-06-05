@@ -1,8 +1,5 @@
 package uk.ltd.getahead.dwr;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +9,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.SourceUtil;
 
 /**
  * A parser for type info in a dwr.xml signature.
@@ -36,7 +34,7 @@ public class SignatureParser
     {
         try
         {
-            String process = stripComments(sigtext);
+            String process = SourceUtil.stripComments(sigtext);
     
             process = process.replace('\n', ' ');
             process = process.replace('\r', ' ');
@@ -342,152 +340,6 @@ public class SignatureParser
         return (String[]) params.toArray(new String[params.size()]);
     }
 
-    /**
-     * Remove all the single and multi-line comments from a block of text
-     * @param text The text to remove comments from
-     * @return The comment free text
-     */
-    public static String stripComments(String text)
-    {
-        String reply = stripMultiLineComments(text);
-        reply = stripSingleLineComments(reply);
-        return reply;
-    }
-
-    /**
-     * Remove all the single-line comments from a block of text
-     * @param text The text to remove single-line comments from
-     * @return The single-line comment free text
-     */
-    public static String stripSingleLineComments(String text)
-    {
-        try
-        {
-            StringBuffer output = new StringBuffer();
-
-            // First we strip multi line comments. I think this is important:
-            BufferedReader in = new BufferedReader(new StringReader(text));
-            while (true)
-            {
-                String line = in.readLine();
-                if (line == null)
-                {
-                    break;
-                }
-
-                int cstart = line.indexOf(COMMENT_SL_START);
-                if (cstart >= 0)
-                {
-                    line = line.substring(0, cstart);
-                }
-
-                output.append(line);
-                output.append('\n');
-            }
-
-            return output.toString();
-        }
-        catch (IOException ex)
-        {
-            log.error("IOExecption unexpected.", ex); //$NON-NLS-1$
-            throw new IllegalArgumentException("IOExecption unexpected."); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Remove all the multi-line comments from a block of text
-     * @param text The text to remove multi-line comments from
-     * @return The multi-line comment free text
-     */
-    public static String stripMultiLineComments(String text)
-    {
-        try
-        {
-            StringBuffer output = new StringBuffer();
-
-            // Comment rules:
-            /*/           This is still a comment
-            /* /* */      // Comments do not nest
-            // /* */      This is in a comment
-            /* // */      // The second // is needed to make this a comment.
-
-            // First we strip multi line comments. I think this is important:
-            boolean inMultiLine = false;
-            BufferedReader in = new BufferedReader(new StringReader(text));
-            while (true)
-            {
-                String line = in.readLine();
-                if (line == null)
-                {
-                    break;
-                }
-
-                if (!inMultiLine)
-                {
-                    // We are not in a multi-line comment, check for a start
-                    int cstart = line.indexOf(COMMENT_ML_START);
-                    if (cstart >= 0)
-                    {
-                        // This could be a MLC on one line ...
-                        int cend = line.indexOf(COMMENT_ML_END, cstart + COMMENT_ML_START.length());
-                        if (cend >= 0)
-                        {
-                            // A comment that starts and ends on one line
-                            // BUG: you can have more than 1 multi-line comment on a line
-                            line = line.substring(0, cstart) + SPACE + line.substring(cend);
-                        }
-                        else
-                        {
-                            // A real multi-line comment 
-                            inMultiLine = true;
-                            line = line.substring(0, cstart) + SPACE;
-                        }
-                    }
-                    else
-                    {
-                        // We are not in a multi line comment and we havn't
-                        // started one so we are going to ignore closing
-                        // comments even if they exist.
-                    }
-                }
-                else
-                {
-                    // We are in a multi-line comment, check for the end
-                    int cend = line.indexOf(COMMENT_ML_END);
-                    if (cend >= 0)
-                    {
-                        // End of comment
-                        line = line.substring(cend + COMMENT_ML_END.length());
-                        inMultiLine = false;
-                    }
-                    else
-                    {
-                        // The comment continues
-                        line = SPACE;
-                    }
-                }
-
-                output.append(line);
-                output.append('\n');
-            }
-
-            return output.toString();
-        }
-        catch (IOException ex)
-        {
-            log.error("IOExecption unexpected.", ex); //$NON-NLS-1$
-            throw new IllegalArgumentException("IOExecption unexpected."); //$NON-NLS-1$
-        }
-    }
-
-    private static final String SPACE = " "; //$NON-NLS-1$
-
-    private static final String COMMENT_ML_START = "/*"; //$NON-NLS-1$
-
-    private static final String COMMENT_ML_END = "*/"; //$NON-NLS-1$
-
-    private static final String COMMENT_SL_START = "//"; //$NON-NLS-1$
-
     private Map classImports = new HashMap();
     
     private List packageImports = new ArrayList();
@@ -500,5 +352,5 @@ public class SignatureParser
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(SignatureParser.class);
+    static public final Logger log = Logger.getLogger(SignatureParser.class);
 }
