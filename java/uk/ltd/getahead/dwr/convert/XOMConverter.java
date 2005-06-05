@@ -1,7 +1,6 @@
 package uk.ltd.getahead.dwr.convert;
 
 import java.io.StringReader;
-import java.util.List;
 
 import nu.xom.Builder;
 import nu.xom.Document;
@@ -33,7 +32,7 @@ public class XOMConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, List extraTypeInfo, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
         String value = iv.getValue();
 

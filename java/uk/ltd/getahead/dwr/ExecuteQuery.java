@@ -192,7 +192,6 @@ public final class ExecuteQuery
             call.setId((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_ID));
             call.setScriptName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_SCRIPTNAME));
             call.setMethodName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_METHODNAME));
-            call.setInboundContext(new InboundContext(call.getScriptName(), call.getMethodName()));
 
             // Look for parameters to this method
             for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
@@ -265,6 +264,7 @@ public final class ExecuteQuery
         for (int callNum = 0; callNum < calls.length; callNum++)
         {
             Call call = calls[callNum];
+            InboundContext inctx = call.getInboundContext();
 
             try
             {
@@ -295,8 +295,10 @@ public final class ExecuteQuery
                 {
                     Class paramType = method.getParameterTypes()[j];
 
-                    InboundVariable param = call.getInboundContext().getParameter(callNum, j);
-                    params[j] = converterManager.convertInbound(paramType, j, param, call.getInboundContext());
+                    InboundVariable param = inctx.getParameter(callNum, j);
+                    inctx.pushContext(method, j);
+                    params[j] = converterManager.convertInbound(paramType, param, inctx);
+                    inctx.popContext(method, j);
                 }
 
                 // Get ourselves an object to execute a method on unless the

@@ -9,20 +9,6 @@
     <converter id="testbean" class="uk.ltd.getahead.testdwr.TestBean2Converter"/>
   </init>
 
-<!--
-  <signatures>
-  <![CDATA[
-  import java.util.Set;
-  import java.lang.Character;
-  import uk.ltd.getahead.testdwr.TestBean;
-  import uk.ltd.getahead.testdwr.Test;
-
-  Test.testBeanSetParam(Set<TestBean>);
-  Test.charTestBeanMapParam(Map<Character, TestBean>);
-  ]]>
-  </signatures>
--->
-
   <allow>
     <!--
     Security testing
@@ -32,8 +18,6 @@
 
     <create creator="new" javascript="Test">
       <param name="class" value="uk.ltd.getahead.testdwr.Test"/>
-      <parameter method="testBeanSetParam" number="0" type="uk.ltd.getahead.testdwr.TestBean"/>
-      <parameter method="charTestBeanMapParam" number="0" type="java.lang.Character, uk.ltd.getahead.testdwr.TestBean"/>
     </create>
 
     <create creator="new" javascript="JDate">
@@ -82,8 +66,20 @@
     </create>
 
     <convert converter="bean" match="uk.ltd.getahead.testdwr.*"/>
+    <convert converter="bean" match="$Proxy*"/>
+
     <convert converter="testbean" match="uk.ltd.getahead.testdwr.TestBean2"/>
 
   </allow>
+
+  <signatures>
+  <![CDATA[
+  import java.util.Set;
+  import uk.ltd.getahead.testdwr.*;
+
+  Test.testBeanSetParam(Set<TestBean>);
+  Test.charTestBeanMapParam(Map<Character, TestBean>);
+  ]]>
+  </signatures>
 
 </dwr>

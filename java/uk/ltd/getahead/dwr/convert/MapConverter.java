@@ -1,9 +1,9 @@
 package uk.ltd.getahead.dwr.convert;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -18,7 +18,7 @@ import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
-import uk.ltd.getahead.dwr.util.LocalUtil;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * An implementation of Converter for Maps.
@@ -38,7 +38,7 @@ public class MapConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, List extraTypeInfo, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
         String value = iv.getValue();
 
@@ -80,7 +80,32 @@ public class MapConverter implements Converter
                 map = new HashMap();
             }
 
-            Class subtype = String.class;
+            Method method = inctx.getCurrentMethod();
+            int paramNum = inctx.getCurrentParameterNum();
+
+            // Get type info for keys
+            Class keyType = config.getExtraTypeInfo(method, paramNum, 0);
+            if (keyType == null)
+            {
+                log.warn("Missing type info for " + method.getName() + "(), param=" + paramNum + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                keyType = String.class;
+            }
+            else
+            {
+                log.debug("Using extra type info for " + method.getName() + "(), param=" + paramNum + " of " + keyType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+
+            // Get type info for values
+            Class valType = config.getExtraTypeInfo(method, paramNum, 1);
+            if (valType == null)
+            {
+                log.warn("Missing type info for " + method.getName() + "(), param=" + paramNum + ". Assuming this is a map with String values. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                valType = String.class;
+            }
+            else
+            {
+                log.debug("Using extra type info for " + method.getName() + "(), param=" + paramNum + " of " + valType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
@@ -104,13 +129,21 @@ public class MapConverter implements Converter
                     throw new ConversionException(Messages.getString("MapConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token)); //$NON-NLS-1$
                 }
 
-                String key = token.substring(0, colonpos).trim();
-                key = LocalUtil.decode(key);
+                // Convert the value part of the token by splitting it into the
+                // type and value (as passed in by Javascript)
+                String valStr = token.substring(colonpos + 1).trim();
+                String[] splitIv = ExecuteQuery.splitInbound(valStr);
+                InboundVariable valIv = new InboundVariable(incx, splitIv[ExecuteQuery.INBOUND_INDEX_TYPE], splitIv[ExecuteQuery.INBOUND_INDEX_VALUE]);
+                Object val = config.convertInbound(valType, valIv, inctx);
 
-                String ivstr = token.substring(colonpos + 1).trim();
-                String[] split = ExecuteQuery.splitInbound(ivstr);
-                InboundVariable nested = new InboundVariable(incx, split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
-                Object val = config.convertInbound(subtype, -1, nested, inctx);
+                // Keys (unlike values) do not have type info passed with them
+                // TODO: bug? we could have recurrsive key?
+                String keyStr = token.substring(0, colonpos).trim();
+                //String[] keySplit = ExecuteQuery.splitInbound(keyStr);
+                //InboundVariable keyIv = new InboundVariable(incx, splitIv[ExecuteQuery.INBOUND_INDEX_TYPE], splitIv[ExecuteQuery.INBOUND_INDEX_VALUE]);
+                InboundVariable keyIv = new InboundVariable(incx, ConversionConstants.TYPE_STRING, keyStr);
+                Object key = config.convertInbound(keyType, keyIv, inctx);
+                // TODO: remove note: String key = LocalUtil.decode(keyStr);
 
                 map.put(key, val);
             }
@@ -165,4 +198,9 @@ public class MapConverter implements Converter
      * To forward marshalling requests
      */
     private ConverterManager config = null;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(MapConverter.class);
 }

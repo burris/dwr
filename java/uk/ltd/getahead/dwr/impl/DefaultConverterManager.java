@@ -1,8 +1,7 @@
 package uk.ltd.getahead.dwr.impl;
 
-import java.util.ArrayList;
+import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import uk.ltd.getahead.dwr.ConversionException;
@@ -70,7 +69,7 @@ public class DefaultConverterManager implements ConverterManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ConverterManager#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, int paramNo, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
         Object converted = inctx.getConverted(iv);
         if (converted != null)
@@ -89,8 +88,7 @@ public class DefaultConverterManager implements ConverterManager
             return null;
         }
 
-        List extraTypeInfo = getExtraTypeInfo(inctx.getScriptName(), inctx.getMethodName(), paramNo);
-        return converter.convertInbound(paramType, extraTypeInfo, iv, inctx);
+        return converter.convertInbound(paramType, iv, inctx);
     }
 
     /* (non-Javadoc)
@@ -162,6 +160,17 @@ public class DefaultConverterManager implements ConverterManager
         }
 
         String lookup = paramType.getName();
+
+        // Before we start trying for a match on package parts we check for
+        // dynamic proxies
+        if (lookup.startsWith("$Proxy")) //$NON-NLS-1$
+        {
+            converter = (Converter) converters.get("$Proxy*"); //$NON-NLS-1$
+            if (converter != null)
+            {
+                return converter;
+            }
+        }
 
         while (true)
         {
@@ -250,44 +259,102 @@ public class DefaultConverterManager implements ConverterManager
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.CreatorManager#addParameterInfo(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see uk.ltd.getahead.dwr.ConverterManager#addParameterInfo(java.lang.reflect.Method, int, int, java.lang.Class)
      */
-    public void addParameterInfo(String scriptName, String methodName, int paramNo, Class type)
+    public void setExtraTypeInfo(Method method, int paramNo, int index, Class type)
     {
-        String key = scriptName + DOT + methodName + DOT + paramNo;
-        List types = (List) extraTypeInfoMap.get(key);
-        if (types == null)
-        {
-            types = new ArrayList();
-            extraTypeInfoMap.put(key, types);
-        }
+        ParamInfoKey key = new ParamInfoKey(method, paramNo, index);
+        extraTypeInfoMap.put(key, type);
+    }
 
-        types.add(type);
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.ConverterManager#getExtraTypeInfo(java.lang.reflect.Method, int, int)
+     */
+    public Class getExtraTypeInfo(Method method, int paramNo, int index)
+    {
+        ParamInfoKey key = new ParamInfoKey(method, paramNo, index);
+        return (Class) extraTypeInfoMap.get(key);
     }
 
     /**
-     * The extra type information that we have learnt about a method parameter.
-     * This method will return null if there is nothing extra to know
-     * @param scriptName The name of the creator to Javascript
-     * @param methodName The name of the method (without brackets)
-     * @param paramNo The number of the parameter to edit
-     * @return A list of types to fill out a generic type
+     * Something to hold the method, paramNo and index together as an object
+     * that can be a key in a Map.
      */
-    private List getExtraTypeInfo(String scriptName, String methodName, int paramNo)
+    private class ParamInfoKey
     {
-        if (paramNo == -1)
+        /**
+         * Setup this object
+         * @param method The method to annotate
+         * @param paramNo The number of the parameter to edit (counts from 0)
+         * @param index The index of the item between &lt; and &gt;.
+         */
+        ParamInfoKey(Method method, int paramNo, int index)
         {
-            return null;
+            this.method = method;
+            this.paramNo = paramNo;
+            this.index = index;
         }
 
-        String key = scriptName + DOT + methodName + DOT + paramNo;
-        return (List) extraTypeInfoMap.get(key);
-    }
+        /* (non-Javadoc)
+         * @see java.lang.Object#hashCode()
+         */
+        public int hashCode()
+        {
+            return method.hashCode() + paramNo + index;
+        }
 
-    /**
-     * 'Shortcut' for "."
-     */
-    private static final String DOT = "."; //$NON-NLS-1$
+        /* (non-Javadoc)
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            if (!this.getClass().equals(obj.getClass()))
+            {
+                return false;
+            }
+
+            if (obj == this)
+            {
+                return true;
+            }
+
+            ParamInfoKey that = (ParamInfoKey) obj;
+
+            if (!this.method.equals(that.method))
+            {
+                return false;
+            }
+
+            if (this.paramNo != that.paramNo)
+            {
+                return false;
+            }
+
+            if (this.index != that.index)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        public String toString()
+        {
+            return method.getName() + '[' + paramNo + "]<" + index + '>'; //$NON-NLS-1$
+        }
+
+        Method method;
+        int paramNo;
+        int index;
+    }
 
     /**
      * Where we store real type information behind generic types

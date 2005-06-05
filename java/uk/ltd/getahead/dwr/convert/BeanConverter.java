@@ -7,7 +7,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -40,7 +39,7 @@ public class BeanConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, List extraTypeInfo, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
         String value = iv.getValue();
 
@@ -122,8 +121,11 @@ public class BeanConverter implements Converter
                     String[] split = ExecuteQuery.splitInbound(val);
                     InboundVariable nested = new InboundVariable(iv.getLookup(), split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
 
-                    Object output = config.convertInbound(propType, -1, nested, inctx);
-                    descriptor.getWriteMethod().invoke(bean, new Object[] { output });
+                    Method setter = descriptor.getWriteMethod();
+                    inctx.pushContext(setter, 0);
+                    Object output = config.convertInbound(propType, nested, inctx);
+                    inctx.popContext(setter, 0);
+                    setter.invoke(bean, new Object[] { output });
                 }
             }
 

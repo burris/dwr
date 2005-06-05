@@ -9,12 +9,12 @@ public class ConversionConstants
     /**
      * The name for reference types from javascript
      */
-    protected static final String TYPE_REFERENCE = "reference"; //$NON-NLS-1$
+    public static final String TYPE_REFERENCE = "reference"; //$NON-NLS-1$
 
     /**
      * The name for string types from javascript
      */
-    protected static final String TYPE_STRING = "string"; //$NON-NLS-1$
+    public static final String TYPE_STRING = "string"; //$NON-NLS-1$
 
     /**
      * How many calls are there in this request?

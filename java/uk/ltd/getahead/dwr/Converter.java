@@ -1,6 +1,5 @@
 package uk.ltd.getahead.dwr;
 
-import java.util.List;
 
 /**
  * An interface for converting types from a string to some other type.
@@ -18,14 +17,12 @@ public interface Converter
     /**
      * Attempt to coerce the data from a string to an Object
      * @param paramType The type to convert to
-     * @param extraTypeInfo Optional list of types that we should be able to get
-     *                      from generic type info, but can't even on 1.5
      * @param data The data to convert
      * @param inctx The map of data that we are working on
      * @return The convered data, or null if the conversion was not possible
      * @throws ConversionException If the conversion failed for some reason
      */
-    public Object convertInbound(Class paramType, List extraTypeInfo, InboundVariable data, InboundContext inctx) throws ConversionException;
+    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException;
 
     /**
      * Return a javascript string that defines the variable named varName to

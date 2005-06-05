@@ -1,7 +1,9 @@
 package uk.ltd.getahead.dwr;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -11,13 +13,59 @@ import java.util.Map;
 public final class InboundContext
 {
     /**
-     * @param scriptName The name of the creator to Javascript
-     * @param methodName The name of the method (without brackets)
+     * Someone wants to tell us about a new conversion context.
+     * @param method The method that will be called with the results
+     * @param paramNum The parameter number on the given method
      */
-    public InboundContext(String scriptName, String methodName)
+    public void pushContext(Method method, int paramNum)
     {
-        this.scriptName = scriptName;
-        this.methodName = methodName;
+        contexts.addFirst(new DecodeContext(method, paramNum));
+    }
+
+    /**
+     * Someone wants to tell us about a finished conversion context.
+     * @param method The method that has been called with the results
+     * @param paramNum The parameter number on the given method
+     */
+    public void popContext(Method method, int paramNum)
+    {
+        DecodeContext ctx = (DecodeContext) contexts.removeFirst();
+        if (ctx.method != method)
+        {
+            throw new IllegalArgumentException("Non-matching method"); //$NON-NLS-1$
+        }
+        if (ctx.paramNum != paramNum)
+        {
+            throw new IllegalArgumentException("Non-matching paramNum"); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * @return The method that we are currently converting data for
+     */
+    public Method getCurrentMethod()
+    {
+        DecodeContext ctx = (DecodeContext) contexts.getFirst();
+        if (ctx == null)
+        {
+            return null;
+        }
+
+        return ctx.method;
+    }
+
+    /**
+     * @return The parameter number that we are currently converting data for
+     */
+    public int getCurrentParameterNum()
+    {
+        DecodeContext ctx = (DecodeContext) contexts.getFirst();
+        if (ctx == null)
+        {
+            return -1;
+        }
+
+        return ctx.paramNum;
     }
 
     /**
@@ -125,34 +173,25 @@ public final class InboundContext
     }
 
     /**
-     * @return Returns the methodName.
+     * A very simple struct that holds a Method and parameter number together 
      */
-    public String getMethodName()
+    class DecodeContext
     {
-        return methodName;
+        DecodeContext(Method method, int paramNum)
+        {
+            this.method = method;
+            this.paramNum = paramNum;
+        }
+
+        Method method;
+        int paramNum;
     }
 
     /**
-     * @return Returns the scriptName.
+     * The stack of pushed conversion contexts.
+     * i.e. What is the context of this type conversion.
      */
-    public String getScriptName()
-    {
-        return scriptName;
-    }
-
-    /**
-     * The script name that we are converting for.
-     * This is relevant because extra parameter info is logged against scripts
-     * and methods.
-     */
-    private String scriptName;
-
-    /**
-     * The method name that we are converting for.
-     * This is relevant because extra parameter info is logged against scripts
-     * and methods.
-     */
-    private String methodName;
+    private LinkedList contexts = new LinkedList();
 
     /**
      * How many params are there?.

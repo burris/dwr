@@ -1,7 +1,6 @@
 package uk.ltd.getahead.dwr.convert;
 
 import java.lang.reflect.Constructor;
-import java.util.List;
 
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
@@ -27,7 +26,7 @@ public class ConstructorConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, List extraTypeInfo, InboundVariable iv, InboundContext inctx)
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx)
     {
         try
         {

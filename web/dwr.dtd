@@ -4,7 +4,7 @@
 Top level conviguration element.
 -->
 <!ELEMENT dwr (
-    (init?), (allow?)
+    (init?), (allow?), (signatures?)
 )>
 
 <!--
@@ -61,7 +61,7 @@ refers to an element defined elsewhere, however we allow multiple dwr.xml
 files and we might refer to one in another file.
 -->
 <!ELEMENT create (
-    (param | include | exclude | auth | parameter)*
+    (param | include | exclude | auth)*
 )>
 <!--
 @attr creator The id of the creator to use
@@ -115,6 +115,20 @@ See the include element
 >
 
 <!--
+The auth element allows you to specify that the user of a given method must be
+authenticated using J2EE security and authorized under a certain role.
+-->
+<!ELEMENT auth EMPTY>
+<!--
+@attr method The method to add role requirements to
+@attr role The role required to execute the given method
+-->
+<!ATTLIST auth
+    method CDATA #REQUIRED
+    role CDATA #REQUIRED
+>
+
+<!--
 Allow conversion of a class between Java and Javascript.
 A convert element uses a previously defined converter and gives a class match
 pattern (which can end with *) to define the classes it allows conversion of
@@ -131,3 +145,10 @@ files and we might refer to one in another file.
     converter CDATA #REQUIRED
     match CDATA #REQUIRED
 >
+
+<!--
+If we are marshalling to collections, we need to be able to specify extra
+type information to converters that are unable to tell from reflection what to
+do. This element contains some Java mthod definitions
+-->
+<!ELEMENT signatures (#PCDATA)>

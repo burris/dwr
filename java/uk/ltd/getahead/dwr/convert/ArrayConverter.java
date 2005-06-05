@@ -1,7 +1,6 @@
 package uk.ltd.getahead.dwr.convert;
 
 import java.lang.reflect.Array;
-import java.util.List;
 import java.util.StringTokenizer;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
@@ -33,7 +32,7 @@ public class ArrayConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, List extraTypeInfo, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
         if (!paramType.isArray())
         {
@@ -70,7 +69,7 @@ public class ArrayConverter implements Converter
                 String[] split = ExecuteQuery.splitInbound(token);
 
                 InboundVariable nested = new InboundVariable(incx, split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
-                Object output = converterManager.convertInbound(componentType, -1, nested, inctx);
+                Object output = converterManager.convertInbound(componentType, nested, inctx);
                 Array.set(array, i, output);
             }
 

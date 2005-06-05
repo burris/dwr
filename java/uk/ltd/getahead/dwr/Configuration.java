@@ -2,6 +2,7 @@ package uk.ltd.getahead.dwr;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +75,10 @@ public final class Configuration
                 else if (child.getNodeName().equals(ELEMENT_ALLOW))
                 {
                     loadAllows(child);
+                }
+                else if (child.getNodeName().equals(ELEMENT_SIGNATURES))
+                {
+                    loadSignature(child);
                 }
             }
         }
@@ -310,18 +315,48 @@ public final class Configuration
         {
             Element include = (Element) nodes.item(i);
 
-            String method = include.getAttribute(ATTRIBUTE_METHOD);
+            String methodName = include.getAttribute(ATTRIBUTE_METHOD);
+
+            // Try to find the method that we are annotating
+            Creator creator = creatorManager.getCreator(javascript);
+            Class dest = creator.getType();
+
+            Method method = null;
+            Method[] methods = dest.getMethods();
+            for (int j = 0; j < methods.length; j++)
+            {
+                Method test = methods[j];
+                if (test.getName().equals(methodName))
+                {
+                    if (method == null)
+                    {
+                        method = test;
+                    }
+                    else
+                    {
+                        log.warn("Setting extra type info to overloaded methods may fail with <parameter .../>"); //$NON-NLS-1$
+                    }
+                }
+            }
+
+            if (method == null)
+            {
+                log.error("Unable to find method called: " + methodName + " on type: " + dest.getName() + " from creator: " + javascript); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                continue;
+            }
 
             String number = include.getAttribute(ATTRIBUTE_NUMBER);
             int paramNo = Integer.parseInt(number);
 
             String types = include.getAttribute(ATTRIBUTE_TYPE);
             StringTokenizer st = new StringTokenizer(types, ","); //$NON-NLS-1$
+
+            int j = 0;
             while (st.hasMoreTokens())
             {
                 String type = st.nextToken();
                 Class clazz = Class.forName(type.trim());
-                converterManager.addParameterInfo(javascript, method, paramNo, clazz);
+                converterManager.setExtraTypeInfo(method, paramNo, j++, clazz);
             }
         }
     }
@@ -343,6 +378,35 @@ public final class Configuration
 
             Factory.getDoorman().addRoleRestriction(javascript, method, role);
         }
+    }
+
+    /**
+     * Parse and extra type info from method signatures 
+     * @param element The element to read
+     */
+    private void loadSignature(Element element)
+    {
+        StringBuffer sigtext = new StringBuffer();
+
+        // This coagulates text nodes, not sure if we need to do this?
+        element.normalize();
+
+        NodeList nodes = element.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); i++)
+        {
+            Node node = nodes.item(i);
+            short type = node.getNodeType();
+            if (type != Node.TEXT_NODE && type != Node.CDATA_SECTION_NODE)
+            {
+                log.warn("Ignoring illegal node type: " + type); //$NON-NLS-1$
+                continue;
+            }
+
+            sigtext.append(node.getNodeValue());
+        }
+
+        SignatureParser sigp = new SignatureParser(converterManager);
+        sigp.parse(sigtext.toString());
     }
 
     /**
@@ -416,6 +480,7 @@ public final class Configuration
     private static final String ELEMENT_EXCLUDE = "exclude"; //$NON-NLS-1$
     private static final String ELEMENT_PARAMETER = "parameter"; //$NON-NLS-1$
     private static final String ELEMENT_AUTH = "auth"; //$NON-NLS-1$
+    private static final String ELEMENT_SIGNATURES = "signatures"; //$NON-NLS-1$
 
     private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
     private static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -357,6 +360,108 @@ public class Test
     }
 
     /**
+     * @param type
+     * @return test bean
+     */
+    public TestBean inheritanceTest(int type)
+    {
+        switch (type)
+        {
+        case 0:
+            return new TestBean();
+
+        case 1:
+            return new StaticInnerSubTestBean();
+
+        case 2:
+            return new InnerSubTestBean();
+
+        case 3:
+            return new TestBean() { };
+
+        case 4:
+            return (TestBean) Proxy.newProxyInstance(TestBean.class.getClassLoader(), new Class[] { TestBean.class }, new TestBeanInvocationHandler());
+
+        default :
+            throw new IllegalArgumentException("" + type); //$NON-NLS-1$
+        }
+    }
+
+    /** */
+    public class InnerSubTestBean extends TestBean
+    {
+    }
+
+    /** */
+    public static class StaticInnerSubTestBean extends TestBean
+    {
+    }
+
+    static class TestBeanInvocationHandler implements InvocationHandler
+    {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+        {
+            if (method.getName().equals("getInteger")) //$NON-NLS-1$
+            {
+                return new Integer(42);
+            }
+
+            if (method.getName().equals("getString")) //$NON-NLS-1$
+            {
+                return "Slartibartfast"; //$NON-NLS-1$
+            }
+
+            if (method.getName().equals("equals")) //$NON-NLS-1$
+            {
+                return new Boolean(equals(args[0]));
+            }
+
+            if (method.getName().equals("hashCode")) //$NON-NLS-1$
+            {
+                return new Integer(hashCode());
+            }
+
+            log.error("Failed on method: " + method); //$NON-NLS-1$
+            return null;
+        }
+    }
+
+    /**
+     * @param type
+     * @return test bean
+     */
+    public Foo inheritanceFooTest(int type)
+    {
+        switch (type)
+        {
+        case 0:
+            return new InnerFoo();
+
+        case 1:
+            return new Foo() { public String getString() { return "anon foo"; }}; //$NON-NLS-1$
+
+        case 4:
+            return (Foo) Proxy.newProxyInstance(Foo.class.getClassLoader(), new Class[] { Foo.class }, new TestBeanInvocationHandler());
+
+        default :
+            throw new IllegalArgumentException("" + type); //$NON-NLS-1$
+        }
+    }
+
+    /** */
+    public interface Foo
+    {
+        /** @return string */
+        String getString();
+    }
+
+    /** */
+    public class InnerFoo implements Foo
+    {
+        public String getString() { return "inner foo"; } //$NON-NLS-1$
+    }
+
+    /**
      * @param req
      * @return string
      */
@@ -597,7 +702,7 @@ public class Test
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(Test.class);
+    protected static final Logger log = Logger.getLogger(Test.class);
 
     private static PrintWriter logfile = null;
 

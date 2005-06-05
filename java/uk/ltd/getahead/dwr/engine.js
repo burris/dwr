@@ -173,6 +173,7 @@ DWREngine.beginBatch = function()
     DWREngine._batch.map = {};
     DWREngine._batch.paramCount = 0;
     DWREngine._batch.map.callCount = 0;
+    DWREngine._batch.metadata = {};
 };
 
 /**
@@ -489,13 +490,22 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params)
 
     var prefix = "c" + DWREngine._batch.map.callCount + "-";
 
+    // merge the metadata from this call into the batch
+    if (metadata != null)
+    {
+        for (var prop in metadata)
+        {
+            DWREngine._batch.metadata[prop] = metadata[prop];
+        }
+    }
+
     DWREngine._batch.map[prefix + "scriptName"] = scriptName;
     DWREngine._batch.map[prefix + "methodName"] = methodName;
     DWREngine._batch.map[prefix + "id"] = id;
 
     // Serialize the parameters into batch.map
     DWREngine._addSerializeFunctions();
-    for (var i = 0; i < params.length; i++)
+    for (i = 0; i < params.length; i++)
     {
         DWREngine._serializeAll(DWREngine._batch, [], params[i], prefix + "param" + i);
     }
@@ -511,6 +521,42 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params)
 };
 
 /**
+ * Called as a result of a request timeout or an http reply status != 200
+ * @param batch Block of data about the calls we are making on the server
+ * @private
+ */ 
+DWREngine._abortRequest = function(batch)
+{
+    if (batch && batch.metadata && batch.completed != true)
+    {
+        batch.completed = true;
+        if (batch.req != null)
+        {
+            batch.req.abort();
+
+            if (batch.metadata.errorHandler)
+            {
+                if (typeof batch.metadata.errorHandler == "string")
+                {
+                    eval(batch.metadata.errorHandler); 
+                }
+                else if (typeof batch.metadata.errorHandler == "function")
+                {
+                    batch.metadata.errorHandler(); 
+                }
+                else
+                {
+                    if (DWREngine._warningHandler)
+                    {
+                        DWREngine._warningHandler("errorHandler is neither a string (for eval()) or a function.");
+                    }
+                }
+            }
+        }
+    }
+};
+
+/**
  * Actually send the block of data in the batch object.
  * @param batch Block of data about the calls we are making on the server
  * @private
@@ -522,6 +568,13 @@ DWREngine._sendData = function(batch)
     {
         DWREngine._preHook();
     }
+
+    // Set a timeout
+    if (batch.metadata && batch.metadata.timeout)
+    {
+        var funcReq = function() { DWREngine._abortRequest(batch); };
+        setTimeout(funcReq, batch.metadata.timeout);
+	}
 
     // Get setup for XMLHttpRequest if possible
     if (DWREngine._method == DWREngine.XMLHttpRequest)
@@ -640,11 +693,16 @@ DWREngine._stateChange = function(batch)
         {
             if (batch.req.status && batch.req.status == 200)
             {
+                batch.completed = true;
                 eval(batch.req.responseText);
             }
             else
             {
-                if (DWREngine._errorHandler)
+                if (batch.metadata != null)
+                {
+                    DWREngine._abortRequest(batch);
+                }
+                else if (DWREngine._errorHandler)
                 {
                     DWREngine._errorHandler(batch.req.responseText);
                 }
@@ -652,7 +710,11 @@ DWREngine._stateChange = function(batch)
         }
         catch (ex)
         {
-            if (DWREngine._errorHandler)
+            if (batch.metadata != null)
+            {
+                DWREngine._abortRequest(batch);
+            }
+            else if (DWREngine._errorHandler)
             {
                 DWREngine._errorHandler(ex);
             }

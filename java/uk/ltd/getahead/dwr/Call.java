@@ -103,15 +103,15 @@ public class Call
         return th;
     }
 
-    private String id;
+    private String id = null;
 
-    private String scriptName;
+    private String scriptName = null;
 
-    private String methodName;
+    private String methodName = null;
 
-    private InboundContext inctx;
+    private InboundContext inctx = new InboundContext();
 
-    private OutboundVariable reply;
+    private OutboundVariable reply =  null;
 
-    private Throwable th;
+    private Throwable th = null;
 }
