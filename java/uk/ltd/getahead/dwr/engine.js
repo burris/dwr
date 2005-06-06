@@ -122,10 +122,10 @@ DWREngine.setVerb = function(verb)
 /**
  * Do we attempt to ensure that remote calls happen in the order in which they
  * were sent? (Default: false)
- * Warning: Setting this to true will significantly slow down you application,
- * and it exposes you to timeouts if a message gets lost, and it may well mean
- * that you are being lazy and not thinking about the asynchronous model
- * properly. Don't use this method unless you know what you are doing.
+ * Warning: Setting this to true will slow down your application, and could
+ * leave users with an unresponsive browser if a message gets lost.
+ * Sometimes there are better solutions where you make your application use the
+ * asynchronous model properly. Please think before you use this method.
  * @param ordered true or false
  */
 DWREngine.setOrdered = function(ordered)
@@ -378,7 +378,7 @@ DWREngine._finalize = function(batch)
     // gets turned off, we still process *waiting* batches in an ordered way.
     if (DWREngine._batchQueue.length != 0)
     {
-        var batch = DWREngine._batchQueue.pop();
+        var batch = DWREngine._batchQueue.shift();
         DWREngine._sendData(batch);
         DWREngine._batches[DWREngine._batches.length] = batch;
     }
