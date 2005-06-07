@@ -60,6 +60,10 @@ public final class ExecuteQuery
         try
         {
             BufferedReader in = req.getReader();
+            if(in == null) {
+                // it is not a post message
+                throw new RuntimeException("only post messages are supported for the exec method");
+            }
             while (true)
             {
                 String line = in.readLine();
@@ -230,12 +234,15 @@ public final class ExecuteQuery
             }
 
             // We can just use 0 because they are all shared
-            for (Iterator it = calls[0].getInboundContext().getInboundVariableNames(); it.hasNext();)
+            if(calls.length > 0)
             {
-                String key = (String) it.next();
-                InboundVariable value = calls[0].getInboundContext().getInboundVariable(key);
-    
-                log.debug("  Env: " + key + '=' + value.getRawData()); //$NON-NLS-1$
+                for (Iterator it = calls[0].getInboundContext().getInboundVariableNames(); it.hasNext();)
+                {
+                    String key = (String) it.next();
+                    InboundVariable value = calls[0].getInboundContext().getInboundVariable(key);
+
+                    log.debug("  Env: " + key + '=' + value.getRawData()); //$NON-NLS-1$
+                }
             }
         }
     }
