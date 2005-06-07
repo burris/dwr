@@ -203,20 +203,3 @@
 
 </body>
 </html>
-
-
-<!--
-Useful vi macros in converting from util.js to this html:
-To remove the method bodies:
-  /{[RET]
-  d%
-  n.n.n.n.n.n
-To swap function declaration lines for <h3> lines:
-  :%s/^function \(.*\)$/<h3>\1\<\/h3>/
-To remove comments
-  :%s/^\/\*\*/<p>/
-  :%s/^ \*\//<\/p>/
-  :%s/^ \* /  /
-We should probably work out a way to automate moving function names above the
-documentation for the function
--->

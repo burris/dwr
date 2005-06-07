@@ -152,7 +152,7 @@ public class SourceUtil
                         {
                             // A comment that starts and ends on one line
                             // BUG: you can have more than 1 multi-line comment on a line
-                            line = line.substring(0, cstart) + SPACE + line.substring(cend);
+                            line = line.substring(0, cstart) + SPACE + line.substring(cend + COMMENT_ML_END.length());
                         }
                         else
                         {

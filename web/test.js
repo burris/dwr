@@ -13,7 +13,7 @@ var batch = 1;
 
 tests[tests.length] = { code:"booleanParam", data:true };
 tests[tests.length] = { code:"booleanParam", data:false };
-/*
+
 tests[tests.length] = { code:"byteParam", data:-128 };
 tests[tests.length] = { code:"byteParam", data:-1 };
 tests[tests.length] = { code:"byteParam", data:0 };
@@ -301,7 +301,7 @@ tests[tests.length] = { code:"stringStringHashMapParam", data:map1 };
 tests[tests.length] = { code:"stringStringHashMapParam", data:map2 };
 tests[tests.length] = { code:"stringStringTreeMapParam", data:map1 };
 tests[tests.length] = { code:"stringStringTreeMapParam", data:map2 };
-*/
+
 function startTest()
 {
     failures = DWRUtil.getElementById("failures");
