@@ -1,6 +1,5 @@
 package uk.ltd.getahead.dwr.impl;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +10,7 @@ import java.util.Map.Entry;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -56,34 +56,23 @@ public class DefaultCreatorManager implements CreatorManager
         Class clazz = (Class) creatorTypes.get(type);
 
         Creator creator = (Creator) clazz.newInstance();
-        Class real = creator.getClass();
 
         // Initialize the creator with the parameters that we know of.
         for (Iterator it = params.entrySet().iterator(); it.hasNext();)
         {
             Map.Entry entry = (Entry) it.next();
             String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
-
-            String setterName = "set" + key.substring(0, 1).toUpperCase() + key.substring(1); //$NON-NLS-1$
 
             try
             {
-                Method method = real.getMethod(setterName, new Class[] { String.class });
-                if (method == null)
-                {
-                    log.error("Failed to find method: " + setterName + "(String s) on class " + real.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-                    continue;
-                }
-
-                method.invoke(creator, new Object[] { value });
+                LocalUtil.setProperty(creator, key, entry.getValue());
             }
             catch (Exception ex)
             {
                 // No-one has a setCreator method, so don't warn about it
                 if (!key.equals("creator")) //$NON-NLS-1$
                 {
-                    log.debug("No method '" + setterName + "(String s)' on class " + real.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.debug("No property '" + key + "' on class " + creator.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }

@@ -2,7 +2,9 @@ package uk.ltd.getahead.dwr.impl;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
@@ -12,6 +14,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -34,9 +37,9 @@ public class DefaultConverterManager implements ConverterManager
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.ConverterManager#addConverter(java.lang.String, java.lang.String)
+     * @see uk.ltd.getahead.dwr.ConverterManager#addConverter(java.lang.String, java.lang.String, java.util.Map)
      */
-    public void addConverter(String match, String type) throws IllegalArgumentException, InstantiationException, IllegalAccessException
+    public void addConverter(String match, String type, Map params) throws IllegalArgumentException, InstantiationException, IllegalAccessException
     {
         Class clazz = (Class) converterTypes.get(type);
         if (clazz == null)
@@ -48,6 +51,26 @@ public class DefaultConverterManager implements ConverterManager
         Converter converter = (Converter) clazz.newInstance();
         converter.setConverterManager(this);
 
+        // Initialize the creator with the parameters that we know of.
+        for (Iterator it = params.entrySet().iterator(); it.hasNext();)
+        {
+            Map.Entry entry = (Entry) it.next();
+            String key = (String) entry.getKey();
+
+            try
+            {
+                LocalUtil.setProperty(converter, key, entry.getValue());
+            }
+            catch (Exception ex)
+            {
+                // No-one has a setCreator method, so don't warn about it
+                if (!key.equals("converter") && !key.equals("match")) //$NON-NLS-1$ //$NON-NLS-2$
+                {
+                    log.debug("No property '" + key + "' on class " + converter.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        }
+        
         // Check that we don't have this one already
         Converter other = (Converter) converters.get(match);
         if (other != null)

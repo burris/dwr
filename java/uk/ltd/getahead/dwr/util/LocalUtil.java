@@ -1,5 +1,6 @@
 package uk.ltd.getahead.dwr.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 
@@ -207,6 +208,32 @@ public final class LocalUtil
         }
 
         return URLDecoder.decode(value);
+    }
+
+    /**
+     * Set a property on an object using reflection
+     * @param object The object to call the setter on
+     * @param key The name of the property to set.
+     * @param value The new value to use for the property
+     * @throws NoSuchMethodException Passed on from reflection code
+     * @throws SecurityException Passed on from reflection code
+     * @throws IllegalAccessException Passed on from reflection code
+     * @throws IllegalArgumentException Passed on from reflection code
+     * @throws InvocationTargetException Passed on from reflection code
+     */
+    public static void setProperty(Object object, String key, Object value) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        Class real = object.getClass();
+
+        String setterName = "set" + key.substring(0, 1).toUpperCase() + key.substring(1); //$NON-NLS-1$
+        Method method = real.getMethod(setterName, new Class[] { value.getClass() });
+
+        if (method == null)
+        {
+            throw new NoSuchMethodException("Missing property: "  + key); //$NON-NLS-1$
+        }
+
+        method.invoke(object, new Object[] { value });
     }
 
     /**

@@ -39,37 +39,37 @@ public class Doorman
     public String getReasonToNotExecute(HttpServletRequest req, Creator creator, String className, Method method)
     {
         String methodName = method.getName();
-    
+
         // Is it public
         if (!Modifier.isPublic(method.getModifiers()))
         {
             return Messages.getString("ExecuteQuery.DeniedNonPublic"); //$NON-NLS-1$
         }
-    
+
         // Do access controls allow it?
         if (!isExecutable(className, methodName))
         {
             return Messages.getString("ExecuteQuery.DeniedByAccessRules"); //$NON-NLS-1$
         }
-    
+
         // Is it disallowed because it is part of DWR?
         if (creator.getType().getName().startsWith(PACKAGE_DWR))
         {
             return Messages.getString("ExecuteQuery.DeniedCoreDWR"); //$NON-NLS-1$
         }
-    
+
         // Check the parameters are not DWR internal either
         for (int j = 0; j < method.getParameterTypes().length; j++)
         {
             Class paramType = method.getParameterTypes()[j];
-    
+
             // Is it access to this type disallowed because it is part of DWR?
             if (paramType.getName().startsWith(PACKAGE_DWR))
             {
                 return Messages.getString("ExecuteQuery.DeniedParamDWR"); //$NON-NLS-1$
             }
         }
-    
+
         // We ban some methods from Object too
         if (method.getDeclaringClass() == Object.class)
         {
@@ -78,7 +78,7 @@ public class Doorman
                 return Messages.getString("ExecuteQuery.DeniedObjectMethod"); //$NON-NLS-1$
             }
         }
-    
+
         // What if there is some J2EE role based restriction?
         Set roles = getRoleRestrictions(className, methodName);
         if (roles != null)
@@ -123,7 +123,7 @@ public class Doorman
      */
     public void addRoleRestriction(String scriptName, String methodName, String role)
     {
-        String key = scriptName + "." + methodName; //$NON-NLS-1$
+        String key = scriptName + '.' + methodName;
         Set roles = (Set) roleRestrictMap.get(key);
         if (roles == null)
         {
@@ -141,7 +141,7 @@ public class Doorman
      */
     private Set getRoleRestrictions(String scriptName, String methodName)
     {
-        String key = scriptName + "." + methodName; //$NON-NLS-1$
+        String key = scriptName + '.' + methodName;
         return (Set) roleRestrictMap.get(key);
     }
 

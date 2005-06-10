@@ -136,7 +136,9 @@ It would be nice to make the converter and IDREF rather than a CDATA, since it
 refers to an element defined elsewhere, however we allow multiple dwr.xml
 files and we might refer to one in another file.
 -->
-<!ELEMENT convert EMPTY>
+<!ELEMENT convert (
+    (param)*
+)>
 <!--
 @attr converter The id of the converter to use
 @attr match A class name to match for conversion

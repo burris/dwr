@@ -6,128 +6,16 @@
  * Declare a constructor function to which we can add real functions.
  * @constructor
  */
-function DWRUtil()
-{
-}
+function DWRUtil() { }
 
-/**
- * Browser detection code.
- * This is eeevil, but the official way [if (window.someFunc) ...] does not
- * work when browsers differ in rendering ability rather than the use of someFunc()
- * For internal use only.
- * @private
- */
-DWRUtil._agent = navigator.userAgent.toLowerCase();
-
-/**
- * @private
- */
-DWRUtil._isIE = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.indexOf("opera") == -1));
-
-/**
- * Array detector.
- * This is an attempt to work around the lack of support for instanceof in
- * some browsers.
- * @param data The object to test
- * @returns true iff <code>data</code> is an Array
- */
-DWRUtil.isArray = function(data)
-{
-    return data.join ? true : false;
-};
-
-/**
- * Date detector.
- * This is an attempt to work around the lack of support for instanceof in
- * some browsers.
- * @param data The object to test
- * @returns true iff <code>data</code> is a Date
- */
-DWRUtil.isDate = function(data)
-{
-    return data.toUTCString ? true : false;
-};
-
-/**
- * Like document.getElementById() that works in more browsers.
- * @param id The id of the element
- */
-DWRUtil.getElementById = function(id)
-{
-    if (document.getElementById)
-    {
-        return document.getElementById(id);
-    }
-
-    if (document.all)
-    {
-        return document.all[id];
-    }
-
-    throw "Can't use document.getElementById or document.all";
-};
-
-/**
- * Set the CSS display style to 'block'
- * @param id The id of the element
- */
-DWRUtil.showById = function(id)
-{
-    var ele = DWRUtil.getElementById(id);
-    if (ele == null)
-    {
-        alert("showById() can't find an element with id: " + id + ".");
-        throw id;
-    }
-
-    // Apparently this works better that display = 'block'; ???
-    ele.style.display = '';
-};
-
-/**
- * Set the CSS display style to 'none'
- * @param id The id of the element
- */
-DWRUtil.hideById = function(id)
-{
-    var ele = DWRUtil.getElementById(id);
-    if (ele == null)
-    {
-        alert("hideById() can't find an element with id: " + id + ".");
-        throw id;
-    }
-
-    ele.style.display = 'none';
-};
-
-/**
- * Toggle an elements visibility
- * @param id The id of the element
- */
-DWRUtil.toggleDisplay = function(id)
-{
-    var ele = DWRUtil.getElementById(id);
-    if (ele == null)
-    {
-        alert("toggleDisplay() can't find an element with id: " + id + ".");
-        throw id;
-    }
-
-    if (ele.style.display == 'none')
-    {
-        // Apparently this works better that display = 'block'; ???
-        ele.style.display = '';
-    }
-    else
-    {
-        ele.style.display = 'none';
-    }
-};
+////////////////////////////////////////////////////////////////////////////////
+// The following functions are described in util-compat.html
 
 /**
  * Enables you to react to return being pressed in an input
  * For example:
  * <code>&lt;input type="text" onkeypressed="DWRUtil.onReturn(event, methodName)"/&gt;</code>
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
  * @param event The event object for Netscape browsers
  * @param action Method name to execute when return is pressed
  */
@@ -145,89 +33,566 @@ DWRUtil.onReturn = function(event, action)
 };
 
 /**
- * Set the CSS class for an element
- * @param id The id of the element
+ * Select a specific range in a text box.
+ * This is useful for 'google suggest' type functionallity.
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param ele The id of the text input element or the HTML element itself
+ * @param start The beginning index
+ * @param end The end index 
  */
-DWRUtil.setCSSClass = function(id, cssclass)
+DWRUtil.selectRange = function(ele, start, end)
 {
-    var ele = DWRUtil.getElementById(id);
+    var orig = ele;
+    ele = $(ele);
     if (ele == null)
     {
-        alert("setCSSClass() can't find an element with id: " + id + ".");
-        throw id;
+        alert("selectRange() can't find an element with id: " + orig + ".");
+        return;
     }
 
-    if (ele)
+    if (ele.setSelectionRange)
     {
-        ele.className = cssclass;
+        ele.setSelectionRange(start, end);
+    }
+    else if (ele.createTextRange)
+    {
+        var range = ele.createTextRange();
+        range.moveStart("character", start);
+        range.moveEnd("character", end - ele.value.length);
+        range.select();
+    }
+
+    ele.focus();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// The following functions are described in util-general.html
+
+/**
+ * Find the element in the current HTML document with the given id, or if more
+ * than one parameter is passed, return an array containing the found elements.
+ * Any non-string arguments are left as is in the reply.
+ * This function is inspired by the prototype library however it probably works
+ * on more browsers than the original.
+ * @see http://www.getahead.ltd.uk/dwr/util-general.html
+ */
+function $()
+{
+    var elements = new Array();
+
+    for (var i = 0; i < arguments.length; i++)
+    {
+        var element = arguments[i];
+        if (typeof element == 'string')
+        {
+            if (document.getElementById)
+            {
+                element = document.getElementById(element);
+            }
+            else if (document.all)
+            {
+                element = document.all[element];
+            }
+        }
+
+        if (arguments.length == 1) 
+        {
+            return element;
+        }
+
+        elements.push(element);
+    }
+
+    return elements;
+}
+
+/**
+ * A better toString than the default for an Object
+ * @param data The object to describe
+ * @param level 0 = Single line of debug, 1 = Multi-line debug that does not
+ *              dig into child objects, 2 = Multi-line debug that digs into the
+ *              2nd layer of child objects
+ * @see http://www.getahead.ltd.uk/dwr/util-general.html
+ */
+DWRUtil.toDescriptiveString = function(data, level)
+{
+    var reply = "";
+    var i = 0;
+    var value;
+
+    if (DWRUtil.isArray(data))
+    {
+        reply = "[";
+        for (i = 0; i < data.length; i++)
+        {
+            try
+            {
+                obj = data[i];
+
+                if (obj == null || typeof obj == "function")
+                {
+                    continue;
+                }
+                else if (typeof obj == "object" && level > 0)
+                {
+                    value = DWRUtil.toDescriptiveString(obj, level - 1);
+                }
+                else
+                {
+                    value = "" + obj;
+                    value = value.replace(/\/n/g, "\\n");
+                    value = value.replace(/\/t/g, "\\t");
+                }
+            }
+            catch (ex)
+            {
+                value = "" + ex;
+            }
+
+            if (value.length > 13)
+            {
+                value = value.substring(0, 10) + "...";
+            }
+
+            reply += value;
+            reply += ", ";
+
+            if (level != 0)
+            {
+                reply += "\n";
+            }
+
+            if (level == 0 && i > 5)
+            {
+                reply += "...";
+                break;
+            }
+        }
+        reply += "]";
+
+        return reply;
+    }
+
+    if (typeof data == "string" || typeof data == "number" || DWRUtil.isDate(data))
+    {
+        return data.toString();
+    }
+
+    if (typeof data == "object")
+    {
+        var typename = DWRUtil.detailedTypeOf(data);
+        if (typename != "Object")
+        {
+            reply = typename + " ";
+        }
+        reply += "{";
+
+        var isHtml = DWRUtil.isHTMLElement(data);
+
+        for (var prop in data)
+        {
+            if (isHtml)
+            {
+                if (prop.toUpperCase() == prop || prop == "title" ||
+                    prop == "lang" || prop == "dir" || prop == "className" ||
+                    prop == "form" || prop == "name" || prop == "prefix" ||
+                    prop == "namespaceURI" || prop == "nodeType" ||
+                    prop == "firstChild" || prop == "lastChild" ||
+                    prop.match(/^offset/))
+                {
+                    // HTML nodes have far too much stuff. Chop out the constants
+                    continue;
+                }
+            }
+
+            value = "";
+
+            try
+            {
+                obj = data[prop];
+
+                if (obj == null || typeof obj == "function")
+                {
+                    continue;
+                }
+                else if (typeof obj == "object" && level > 0)
+                {
+                    value = DWRUtil.toDescriptiveString(obj, level - 1);
+                }
+                else
+                {
+                    value = "" + obj;
+                    value = value.replace(/\/n/g, "\\n");
+                    value = value.replace(/\/t/g, "\\t");
+                }
+            }
+            catch (ex)
+            {
+                value = "" + ex;
+            }
+
+            if (level == 0 && value.length > 13)
+            {
+                value = value.substring(0, 10) + "...";
+            }
+
+            reply += prop;
+            reply += ":";
+            reply += value;
+            reply += ", ";
+
+            if (level != 0)
+            {
+                reply += "\n";
+            }
+
+            i++;
+            if (level == 0 && i > 5)
+            {
+                reply += "...";
+                break;
+            }
+        }
+
+        reply += "}";
+
+        return reply;
+    }
+
+    return data.toString();
+};
+
+/**
+ * Setup a GMail style loading message.
+ * @see http://www.getahead.ltd.uk/dwr/util-general.html
+ */
+DWRUtil.useLoadingMessage = function()
+{
+    var disabledZone = document.createElement('div');
+    disabledZone.setAttribute('id', 'disabledZone');
+    disabledZone.style.position = "absolute";
+    disabledZone.style.zIndex = "1000";
+    disabledZone.style.left = "0px";
+    disabledZone.style.top = "0px";
+    disabledZone.style.width = "100%";
+    disabledZone.style.height = "100%";
+    document.body.appendChild(disabledZone);
+
+    var messageZone = document.createElement('div');
+    messageZone.setAttribute('id', 'messageZone');
+    messageZone.style.position = "absolute";
+    messageZone.style.top = "0px";
+    messageZone.style.right = "0px";
+    messageZone.style.background = "red";
+    messageZone.style.color = "white";
+    messageZone.style.fontFamily = "Arial,Helvetica,sans-serif";
+    messageZone.style.padding = "4px";
+    disabledZone.appendChild(messageZone);
+
+    var text = document.createTextNode('Loading');
+    messageZone.appendChild(text);
+
+    $('disabledZone').style.visibility = 'hidden';
+
+    DWREngine.setPreHook(function() { $('disabledZone').style.visibility = 'visible'; });
+    DWREngine.setPostHook(function() { $('disabledZone').style.visibility = 'hidden'; });
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// The following functions are described in util-simple.html
+
+/**
+ * Set the value for the given id to the specified val.
+ * This method works for selects (where the option with a matching value and
+ * not text is selected), input elements (including textareas) divs and spans.
+ * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @param ele The id of the element or the HTML element itself
+ */
+DWRUtil.setValue = function(ele, val)
+{
+    if (val == null)
+    {
+        val = "";
+    }
+
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
+    {
+        alert("setValue() can't find an element with id: " + orig + ".");
+        return;
+    }
+
+    if (DWRUtil.isHTMLElement(ele, "select"))
+    {
+        // search through the values
+        var found  = false;
+        var i;
+
+        for (i = 0; i < ele.options.length; i++)
+        {
+            if (ele.options[i].value == val)
+            {
+                ele.options[i].selected = true;
+                found = true;
+            }
+            else
+            {
+                ele.options[i].selected = false;
+            }
+        }
+
+        // If that fails then try searching through the visible text
+        if (found)
+        {
+            return;
+        }
+
+        for (i = 0; i < ele.options.length; i++)
+        {
+            if (ele.options[i].text == val)
+            {
+                ele.options[i].selected = true;
+                break;
+            }
+        }
+
+        return;
+    }
+
+    if (DWRUtil.isHTMLElement(ele, "input"))
+    {
+        switch (ele.type)
+        {
+        case "checkbox":
+        case "check-box":
+        case "radio":
+            ele.checked = (val == true);
+            return;
+
+        default:
+            ele.value = val;
+            return;
+        }
+    }
+
+    if (DWRUtil.isHTMLElement(ele, "textarea"))
+    {
+        ele.value = val;
+        return;
+    }
+
+    ele.innerHTML = val;
+};
+
+/**
+ * The counterpart to setValue() - read the current value for a given element.
+ * This method works for selects (where the option with a matching value and
+ * not text is selected), input elements (including textareas) divs and spans.
+ * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @param ele The id of the element or the HTML element itself
+ */
+DWRUtil.getValue = function(ele)
+{
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
+    {
+        alert("getValue() can't find an element with id: " + orig + ".");
+        return;
+    }
+
+    if (DWRUtil.isHTMLElement(ele, "select"))
+    {
+        // This is a bit of a scam because it assumes single select
+        // but I'm not sure how we should treat multi-select.
+        var sel = ele.selectedIndex;
+        if (sel != -1)
+        {
+            var reply = ele.options[sel].value;
+            if (reply == null || reply == "")
+            {
+                reply = ele.options[sel].text;
+            }
+
+            return reply;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
+    if (DWRUtil.isHTMLElement(ele, "input"))
+    {
+        switch (ele.type)
+        {
+        case "checkbox":
+        case "check-box":
+        case "radio":
+            return ele.checked;
+
+        default:
+            return ele.value;
+        }
+    }
+
+    if (DWRUtil.isHTMLElement(ele, "textarea"))
+    {
+        return ele.value;
+    }
+
+    return ele.innerHTML;
+};
+
+/**
+ * getText() is like getValue() with the except that it only works for selects
+ * where it reads the text of an option and not it's value.
+ * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @param ele The id of the element or the HTML element itself
+ */
+DWRUtil.getText = function(ele)
+{
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
+    {
+        alert("getText() can't find an element with id: " + orig + ".");
+        return;
+    }
+
+    if (!DWRUtil.isHTMLElement(ele, "select"))
+    {
+        alert("getText() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele) + " from  id: " + orig + ".");
+        return;
+    }
+
+    // This is a bit of a scam because it assumes single select
+    // but I'm not sure how we should treat multi-select.
+    var sel = ele.selectedIndex;
+    if (sel != -1)
+    {
+        return ele.options[sel].text;
+    }
+    else
+    {
+        return "";
     }
 };
 
 /**
- * Remove all the children of a given node.
- * Most useful for dynamic tables where you clearChildNodes() on the tbody
- * element.
- * @param id The id of the element
+ * Given a map, call setValue() for all the entries in the map using the key
+ * of each entry as an id.
+ * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @param map The map of values to set to various elements
  */
-DWRUtil.clearChildNodes = function(id)
+DWRUtil.setValues = function(map)
 {
-    var ele = DWRUtil.getElementById(id);
-    if (ele == null)
+    for (var property in map)
     {
-        alert("clearChildNodes() can't find an element with id: " + id + ".");
-        throw id;
-    }
-
-    while (ele.childNodes.length > 0)
-    {
-        ele.removeChild(ele.firstChild);
+        var ele = $(property);
+        if (ele != null)
+        {
+            var value = map[property];
+            DWRUtil.setValue(property, value);
+        }
     }
 };
 
 /**
- * Remove all the options from a select list (specified by id) and replace with
- * elements in an array of objects.
- * If valueprop and textprop are null then each member of the data array will
- * be converted to a string and used as both the value and the text.
- * (The text is what is displayed in an option and the value what is passed to
- * the server and used in scripts)
- * So without valueprop or textprop the pseudo code goes:
- * <pre>
- *   for (var i = 0; i < data.length; i++)
- *     list.addOption( text = value = DWRUtil.toDescriptiveString(data[i]) );
- * </pre>
- * If only valueprop is specified then both the text and value will be set to
- * the specified property. i.e.:
- * <pre>
- *   for (var i = 0; i < data.length; i++)
- *     list.addOption( text = value = data[i][valueprop] );
- * </pre>
- * If both are specified, then value prop used used to set the value and
- * textprop (unsurprisingly) is used to set the text.
- * @param id A string containing the id of the list element
- * @param data An array of data items to populate the list with
- * @param valueprop (optional) If property name as an index into each data item
- *     for use as an option value
- * @param textprop (optional) If property name as an index into each data item
- *     for use as the option text
+ * Given a map, call getValue() for all the entries in the map using the key
+ * of each entry as an id.
+ * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @param map The map of values to set to various elements
  */
-DWRUtil.fillList = function(id, data, valueprop, textprop)
+DWRUtil.getValues = function(map)
 {
-    var ele = DWRUtil.getElementById(id);
+    for (var property in map)
+    {
+        var ele = $(property);
+        if (ele != null)
+        {
+            map[property] = DWRUtil.getValue(property);
+        }
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// The following functions are described in util-list.html
+
+/**
+ * Remove all the options from a select list (specified by id)
+ * @see http://www.getahead.ltd.uk/dwr/util-list.html
+ * @param ele The id of the list element or the HTML element itself
+ */
+DWRUtil.removeAllOptions = function(ele)
+{
+    var orig = ele;
+    ele = $(ele);
     if (ele == null)
     {
-        alert("fillList() can't find an element with id: " + id + ".");
-        throw id;
+        alert("removeAllOptions() can't find an element with id: " + orig + ".");
+        return;
     }
 
-    if (!DWRUtil.isHTMLSelectElement(ele))
+    if (!DWRUtil.isHTMLElement(ele, "select"))
     {
-        alert("fillList() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
-        throw ele;
+        alert("removeAllOptions() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
+        return;
     }
 
     // Empty the list
     ele.options.length = 0;
+};
+
+/**
+ * Add options to a list from an array or map.
+ * DWRUtil.addOptions has 4 modes:
+ * <p><b>Array</b><br/>
+ * DWRUtil.addOptions(selectid, data) and a set of options are created with the
+ * text and value set to the string version of each array element.
+ * </p>
+ * <p><b>Array of objects, using option text = option value</b><br/>
+ * DWRUtil.addOptions(selectid, data, prop) creates an option for each array
+ * element, with the value and text of the option set to the given property of
+ * each object in the array.
+ * </p>
+ * <p><b>Array of objects, with differing option text and value</b><br/>
+ * DWRUtil.addOptions(selectid, data, valueprop, textprop) creates an option for
+ * each object in the array, with the value of the option set to the given
+ * valueprop property of the object, and the option text set to the textprop
+ * property.
+ * </p>
+ * <p><b>Map (object)</b><br/>
+ * DWRUtil.addOptions(selectid, map, reverse) creates an option for each
+ * property. The property names are used as option values, and the property
+ * values are used as option text, which sounds wrong, but is actually normally
+ * the right way around. If reverse evaluates to true then the property values
+ * are used as option values.
+ * @see http://www.getahead.ltd.uk/dwr/util-list.html
+ * @param ele The id of the list element or the HTML element itself
+ * @param data An array or map of data items to populate the list
+ * @param valuerev (optional) If data is an array of objects, an optional
+ *        property name to use for option values. If the data is a map then this
+ *        boolean property allows you to swap keys and values.
+ * @param textprop (optional) Only for use with arrays of objects - an optional
+ *        property name for use as the text of an option.
+ */
+DWRUtil.addOptions = function(ele, data, valuerev, textprop)
+{
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
+    {
+        alert("fillList() can't find an element with id: " + orig + ".");
+        return;
+    }
+
+    if (!DWRUtil.isHTMLElement(ele, "select"))
+    {
+        alert("fillList() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
+        return;
+    }
 
     // Bail if we have no data
     if (data == null)
@@ -235,43 +600,68 @@ DWRUtil.fillList = function(id, data, valueprop, textprop)
         return;
     }
 
-    // Loop through the data that we do have
-    for (var i = 0; i < data.length; i++)
+    var text;
+    var value;
+
+    if (DWRUtil.isArray(data))
     {
-        var text;
-        var value;
-
-        if (valueprop != null)
+        // Loop through the data that we do have
+        for (var i = 0; i < data.length; i++)
         {
-            if (textprop != null)
+            if (valuerev != null)
             {
-                text = data[i][textprop];
-                value = data[i][valueprop];
+                if (textprop != null)
+                {
+                    text = data[i][textprop];
+                    value = data[i][valuerev];
+                }
+                else
+                {
+                    value = data[i][valuerev];
+                    text = value;
+                }
             }
             else
             {
-                value = data[i][valueprop];
-                text = value;
+                if (textprop != null)
+                {
+                    text = data[i][textprop];
+                    value = text;
+                }
+                else
+                {
+                    text = DWRUtil.toDescriptiveString(data[i]);
+                    value = text;
+                }
             }
+
+            var opt = new Option(text, value);
+            ele.options[ele.options.length] = opt;
         }
-        else
+    }
+    else
+    {
+        for (var prop in data)
         {
-            if (textprop != null)
+            if (valuerev)
             {
-                text = data[i][textprop];
-                value = text;
+                text = prop;
+                value = data[prop];
             }
             else
             {
-                text = DWRUtil.toDescriptiveString(data[i]);
-                value = text;
+                text = data[prop];
+                value = prop;
             }
-        }
 
-        var opt = new Option(text, value);
-        ele.options[ele.options.length] = opt;
+            var opt = new Option(text, value);
+            ele.options[ele.options.length] = opt;
+        }
     }
 };
+
+////////////////////////////////////////////////////////////////////////////////
+// The following functions are described in util-table.html
 
 /**
  * Under the tbody (given by id) create a row for each element in the data
@@ -280,9 +670,9 @@ DWRUtil.fillList = function(id, data, valueprop, textprop)
  * The return from the function is used to populate the cell.
  * <p>The pseudo code looks something like this:
  * <pre>
- *   for (var i = 0; i < data.length; i++)
- *     for (var j = 0; j < cellFuncs.length; j++)
- *       create cell from cellFuncs[j](data[i])
+ *   for each member of the data array
+ *     for function in the cellFuncs array
+ *       create cell from cellFunc(data[i])
  * </pre>
  * One slight modification to this is that any members of the cellFuncs array
  * that are strings instead of functions, the strings are used as cell contents
@@ -290,31 +680,47 @@ DWRUtil.fillList = function(id, data, valueprop, textprop)
  * <p>Note that this function uses instanceof to detect strings which may break
  * on IE5 Mac. So we might need to rely on typeof == "string" alone. I'm not
  * yet sure if this might be an issue.
- * @param tbodyID The id of the tbody element
+ * @see http://www.getahead.ltd.uk/dwr/util-table.html
+ * @param ele The id of the tbody element
  * @param data Array containing one entry for each row in the updated table
  * @param cellFuncs An array of functions (one per column) for extracting cell
  *    data from the passed row data
  */
-DWRUtil.drawTable = function(tbodyID, data, cellFuncs)
+DWRUtil.addRows = function(ele, data, cellFuncs)
 {
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
+    {
+        alert("addRows() can't find an element with id: " + orig + ".");
+        return;
+    }
+
+    if (!DWRUtil.isHTMLElement(ele, "table") && !DWRUtil.isHTMLElement(ele, "tbody") &&
+        !DWRUtil.isHTMLElement(ele, "thead") && !DWRUtil.isHTMLElement(ele, "tfoot"))
+    {
+        alert("addRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
+        return;
+    }
+
     // assure bug-free redraw in Gecko engine by
     // letting window show cleared table
     if (navigator.product && navigator.product == "Gecko")
     {
-        setTimeout(function() { DWRUtil._drawTableInner(tbodyID, data, cellFuncs); }, 0);
+        setTimeout(function() { DWRUtil._addRowsInner(ele, data, cellFuncs); }, 0);
     }
     else
     {
-        DWRUtil._drawTableInner(tbodyID, data, cellFuncs);
+        DWRUtil._addRowsInner(ele, data, cellFuncs);
     }
 };
 
 /**
  * Internal function to help rendering tables.
- * @see DWRUtil.drawTable(tbodyID, data, cellFuncs)
+ * @see DWRUtil.addRows(ele, data, cellFuncs)
  * @private
  */
-DWRUtil._drawTableInner = function(tbodyID, data, cellFuncs)
+DWRUtil._addRowsInner = function(ele, data, cellFuncs)
 {
     var frag = document.createDocumentFragment();
 
@@ -323,26 +729,25 @@ DWRUtil._drawTableInner = function(tbodyID, data, cellFuncs)
         // loop through data source
         for (var i = 0; i < data.length; i++)
         {
-            DWRUtil._drawRowInner(frag, data[i], cellFuncs);
+            DWRUtil._addRowInner(frag, data[i], cellFuncs);
         }
     }
     else if (typeof data == "object")
     {
         for (var row in data)
         {
-            DWRUtil._drawRowInner(frag, row, cellFuncs);
+            DWRUtil._addRowInner(frag, row, cellFuncs);
         }
     }
 
-    var tbody = DWRUtil.getElementById(tbodyID);
-    tbody.appendChild(frag);
+    ele.appendChild(frag);
 };
 
 /**
  * Iternal function to draw a single row of a table.
  * @private
  */
-DWRUtil._drawRowInner = function(frag, row, cellFuncs)
+DWRUtil._addRowInner = function(frag, row, cellFuncs)
 {
     var tr = document.createElement("tr");
 
@@ -387,75 +792,51 @@ DWRUtil._drawRowInner = function(frag, row, cellFuncs)
 };
 
 /**
- * Visually enable or diable an element.
- * @param id The id of the element
- * @param state Boolean true/false to set if the element should be enabled
+ * Remove all the children of a given node.
+ * Most useful for dynamic tables where you clearChildNodes() on the tbody
+ * element.
+ * @see http://www.getahead.ltd.uk/dwr/util-table.html
+ * @param ele The id of the element or the HTML element itself
  */
-DWRUtil.setEnabled = function(id, state)
+DWRUtil.removeAllRows = function(ele)
 {
-    var ele = DWRUtil.getElementById(id);
+    var orig = ele;
+    ele = $(ele);
     if (ele == null)
     {
-        alert("setEnabled() can't find an element with id: " + id + ".");
-        throw id;
+        alert("clearChildNodes() can't find an element with id: " + orig + ".");
+        return;
     }
 
-    // If we want to get funky and disable divs and spans by changing the font
-    // colour or something then we might want to check the element type before
-    // we make assumptions, but in the mean time ...
-    // if (DWRUtil.isHTMLInputElement(ele)) { ... }
-
-    ele.disabled = !state;
-    ele.readonly = !state;
-    if (DWRUtil._isIE)
+    while (ele.childNodes.length > 0)
     {
-        if (state)
-        {
-            ele.style.backgroundColor = "White";
-        }
-        else
-        {
-            // This is WRONG but the hack will do for now.
-            ele.style.backgroundColor = "Scrollbar";
-        }
+        ele.removeChild(ele.firstChild);
     }
 };
+
+////////////////////////////////////////////////////////////////////////////////
+// Private functions only below here
 
 /**
- * Select a specific range in a text box.
- * This is useful for 'google suggest' type functionallity.
- * @param id The id of the text input area to select a portion of
- * @param start The beginning index
- * @param end The end index 
+ * Browser detection code.
+ * This is eeevil, but the official way [if (window.someFunc) ...] does not
+ * work when browsers differ in rendering ability rather than the use of someFunc()
+ * For internal use only.
+ * @private
  */
-DWRUtil.selectRange = function(id, start, end)
-{
-    var ele = DWRUtil.getElementById(id);
-    if (ele == null)
-    {
-        alert("selectRange() can't find an element with id: " + id + ".");
-        throw id;
-    }
+DWRUtil._agent = navigator.userAgent.toLowerCase();
 
-    if (ele.setSelectionRange)
-    {
-        ele.setSelectionRange(start, end);
-    }
-    else if (ele.createTextRange)
-    {
-        var range = ele.createTextRange();
-        range.moveStart("character", start);
-        range.moveEnd("character", end - ele.value.length);
-        range.select();
-    }
-
-    ele.focus();
-};
+/**
+ * @private
+ */
+DWRUtil._isIE = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.indexOf("opera") == -1));
 
 /**
  * Is the given node an HTML element (optionally of a given type)?
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
  * @param ele The element to test
  * @param nodeName eg input, textarea - optional extra check for node name
+ * @private
  */
 DWRUtil.isHTMLElement = function(ele, nodeName)
 {
@@ -477,7 +858,31 @@ DWRUtil.isHTMLElement = function(ele, nodeName)
 };
 
 /**
+ * Like typeOf except that more information for an object is returned other
+ * than "object"
+ * @private
+ */
+DWRUtil.detailedTypeOf = function(x)
+{
+    var reply = typeof x;
+
+    if (reply == "object")
+    {
+        reply = Object.prototype.toString.apply(x);  // Returns "[object class]"
+        reply = reply.substring(8, reply.length-1);  // Just get the class bit
+    }
+
+    return reply;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Deprecated functions only below here
+
+/**
  * Is the given node an HTML input element?
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param ele The element to test
+ * @deprecated Use isHTMLElement with a type field
  */
 DWRUtil.isHTMLInputElement = function(ele)
 {
@@ -486,6 +891,9 @@ DWRUtil.isHTMLInputElement = function(ele)
 
 /**
  * Is the given node an HTML textarea element?
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param ele The element to test
+ * @deprecated Use isHTMLElement with a type field
  */
 DWRUtil.isHTMLTextAreaElement = function(ele)
 {
@@ -494,6 +902,9 @@ DWRUtil.isHTMLTextAreaElement = function(ele)
 
 /**
  * Is the given node an HTML select element?
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param ele The element to test
+ * @deprecated Use isHTMLElement with a type field
  */
 DWRUtil.isHTMLSelectElement = function(ele)
 {
@@ -501,240 +912,149 @@ DWRUtil.isHTMLSelectElement = function(ele)
 };
 
 /**
- * Set the value for the given id to the specified val.
- * This method works for selects (where the option with a matching value and
- * not text is selected), input elements (including textareas) divs and spans.
- * @param id The id of the element
+ * Array detector.
+ * This is an attempt to work around the lack of support for instanceof in
+ * some browsers.
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param data The object to test
+ * @returns true iff <code>data</code> is an Array
+ * @deprecated Not sure if DWR is the right place for this or if we support old browsers
  */
-DWRUtil.setValue = function(id, val)
+DWRUtil.isArray = function(data)
 {
-    if (val == null)
-    {
-        val = "";
-    }
-
-    var ele = DWRUtil.getElementById(id);
-    if (ele == null)
-    {
-        alert("setValue() can't find an element with id: " + id + ".");
-        throw id;
-    }
-
-    if (DWRUtil.isHTMLSelectElement(ele))
-    {
-        // search through the values
-        var found  = false;
-        var i;
-
-        for (i = 0; i < ele.options.length; i++)
-        {
-            if (ele.options[i].value == val)
-            {
-                ele.options[i].selected = true;
-                found = true;
-            }
-            else
-            {
-                ele.options[i].selected = false;
-            }
-        }
-
-        // If that fails then try searching through the visible text
-        if (found)
-        {
-            return;
-        }
-
-        for (i = 0; i < ele.options.length; i++)
-        {
-            if (ele.options[i].text == val)
-            {
-                ele.options[i].selected = true;
-                break;
-            }
-        }
-
-        return;
-    }
-
-    if (DWRUtil.isHTMLInputElement(ele))
-    {
-        switch (ele.type)
-        {
-        case "checkbox":
-        case "check-box":
-        case "radio":
-            ele.checked = (val == true);
-            return;
-
-        case "hidden":
-        case "text":
-            ele.value = val;
-            return;
-
-        default:
-            alert("Not sure how to setValue on a input element of type " + ele.type);
-            ele.value = val;
-            return;
-        }
-    }
-
-    if (DWRUtil.isHTMLTextAreaElement(ele))
-    {
-        ele.value = val;
-        return;
-    }
-
-    if (DWRUtil.isHTMLElement(ele))
-    {
-        ele.innerHTML = val;
-        return;
-    }
-
-    alert("Not sure how to setValue on a " + ele);
-    ele.innerHTML = val;
+    return (data && data.join) ? true : false;
 };
 
 /**
- * The counterpart to setValue() - read the current value for a given element.
- * This method works for selects (where the option with a matching value and
- * not text is selected), input elements (including textareas) divs and spans.
- * @param id The id of the element
+ * Date detector.
+ * This is an attempt to work around the lack of support for instanceof in
+ * some browsers.
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param data The object to test
+ * @returns true iff <code>data</code> is a Date
+ * @deprecated Not sure if DWR is the right place for this or if we support old browsers
  */
-DWRUtil.getValue = function(id)
+DWRUtil.isDate = function(data)
 {
-    var ele = DWRUtil.getElementById(id);
-    if (ele == null)
+    return (data && data.toUTCString) ? true : false;
+};
+
+/**
+ * Like document.getElementById() that works in more browsers.
+ * @param id The id of the element
+ * @deprecated Use $()
+ */
+DWRUtil.getElementById = function(id)
+{
+    if (document.getElementById)
     {
-        alert("getValue() can't find an element with id: " + id + ".");
-        throw id;
+        return document.getElementById(id);
+    }
+    else if (document.all)
+    {
+        return document.all[id];
     }
 
-    if (DWRUtil.isHTMLSelectElement(ele))
-    {
-        // This is a bit of a scam because it assumes single select
-        // but I'm not sure how we should treat multi-select.
-        var sel = ele.selectedIndex;
-        if (sel != -1)
-        {
-            var reply = ele.options[sel].value;
-            if (reply == null || reply == "")
-            {
-                reply = ele.options[sel].text;
-            }
+    return null;
+};
 
-            return reply;
+/**
+ * Visually enable or diable an element.
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param ele The id of the element or the HTML element itself
+ * @param state Boolean true/false to set if the element should be enabled
+ */
+DWRUtil.setEnabled = function(ele, state)
+{
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
+    {
+        alert("setEnabled() can't find an element with id: " + orig + ".");
+        return;
+    }
+
+    // If we want to get funky and disable divs and spans by changing the font
+    // colour or something then we might want to check the element type before
+    // we make assumptions, but in the mean time ...
+    // if (DWRUtil.isHTMLElement(ele, "input")) { ... }
+
+    ele.disabled = !state;
+    ele.readonly = !state;
+    if (DWRUtil._isIE)
+    {
+        if (state)
+        {
+            ele.style.backgroundColor = "White";
         }
         else
         {
-            return "";
+            // This is WRONG but the hack will do for now.
+            ele.style.backgroundColor = "Scrollbar";
         }
     }
-
-    if (DWRUtil.isHTMLInputElement(ele))
-    {
-        switch (ele.type)
-        {
-        case "checkbox":
-        case "check-box":
-        case "radio":
-            return ele.checked;
-
-        case "hidden":
-        case "text":
-            return ele.value;
-
-        default:
-            alert("Not sure how to getValue on a input element of type " + ele.type);
-            return ele.value;
-        }
-    }
-
-    if (DWRUtil.isHTMLTextAreaElement(ele))
-    {
-        return ele.value;
-    }
-
-    if (DWRUtil.isHTMLElement(ele))
-    {
-        return ele.innerHTML;
-    }
-
-    alert("Not sure how to getValue from a " + ele);
-    return ele.innerHTML;
 };
 
 /**
- * getText() is like getValue() with the except that it only works for selects
- * where it reads the text of an option and not it's value.
- * @param id The id of the element
+ * Set the CSS display style to 'block'
+ * @param ele The id of the element or the HTML element itself
+ * @deprecated DWR isn't a generic Javascript library
  */
-DWRUtil.getText = function(id)
+DWRUtil.showById = function(ele)
 {
-    var ele = DWRUtil.getElementById(id);
+    var orig = ele;
+    ele = $(ele);
     if (ele == null)
     {
-        alert("getText() can't find an element with id: " + id + ".");
-        throw id;
+        alert("showById() can't find an element with id: " + orig + ".");
+        return;
     }
 
-    if (!DWRUtil.isHTMLSelectElement(ele))
-    {
-        alert("getText() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
-        throw ele;
-    }
-
-    // This is a bit of a scam because it assumes single select
-    // but I'm not sure how we should treat multi-select.
-    var sel = ele.selectedIndex;
-    if (sel != -1)
-    {
-        return ele.options[sel].text;
-    }
-    else
-    {
-        return "";
-    }
+    // Apparently this works better that display = 'block'; ???
+    ele.style.display = '';
 };
 
 /**
- * Given a map, call setValue() for all the entries in the map using the key
- * of each entry as an id.
+ * Set the CSS display style to 'none'
+ * @param ele The id of the element or the HTML element itself
+ * @deprecated DWR isn't a generic Javascript library
  */
-DWRUtil.setValues = function(map)
+DWRUtil.hideById = function(ele)
 {
-    for (var property in map)
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
     {
-        // This is done by setValue, but we can provide better debug by doing
-        // it here.
-        var ele = DWRUtil.getElementById(property);
-        if (ele == null)
-        {
-            alert("setValues() can't find an element with id: " + property + ".");
-            throw property;
-        }
-
-        var value = map[property];
-        DWRUtil.setValue(property, value);
+        alert("hideById() can't find an element with id: " + orig + ".");
+        return;
     }
+
+    ele.style.display = 'none';
 };
 
 /**
- * Ensure a function is called when the page is loaded
+ * Toggle an elements visibility
+ * @param ele The id of the element or the HTML element itself
+ * @deprecated DWR isn't a generic Javascript library
  */
-DWRUtil.callOnLoad = function(load)
+DWRUtil.toggleDisplay = function(ele)
 {
-    if (window.addEventListener)
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
     {
-        window.addEventListener("load", load, false);
+        alert("toggleDisplay() can't find an element with id: " + orig + ".");
+        return;
     }
-    else if (window.attachEvent)
+
+    if (ele.style.display == 'none')
     {
-        window.attachEvent("onload", load);
+        // Apparently this works better that display = 'block'; ???
+        ele.style.display = '';
     }
     else
     {
-        window.onload = load;
+        ele.style.display = 'none';
     }
 };
 
@@ -743,6 +1063,7 @@ DWRUtil.callOnLoad = function(load)
  * oddrow or evenrow alternately.
  * This is probably not the best place for this method, but I dont want to have
  * to fight with multiple onload functions.
+ * @deprecated DWR isn't a generic Javascript library
  */
 DWRUtil.alternateRowColors = function()
 {
@@ -777,151 +1098,62 @@ DWRUtil.alternateRowColors = function()
 };
 
 /**
- * A better toString that the default for an Object
- * @param data The object to describe
+ * Set the CSS class for an element
+ * @param ele The id of the element or the HTML element itself
+ * @deprecated DWR isn't a generic Javascript library
  */
-DWRUtil.toDescriptiveString = function(data)
+DWRUtil.setCSSClass = function(ele, cssclass)
 {
-    var reply = "";
-    var i = 0;
-    var value;
-
-    if (DWRUtil.isArray(data))
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
     {
-        reply = "[";
-        for (i = 0; i < data.length; i++)
-        {
-            value = "" + data[i];
-            if (value.length > 13)
-            {
-                value = value.substring(0, 10) + "...";
-            }
-
-            reply += value;
-            reply += ", ";
-
-            if (i > 5)
-            {
-                reply += "...";
-                break;
-            }
-        }
-        reply += "]";
-
-        return reply;
+        alert("setCSSClass() can't find an element with id: " + orig + ".");
+        return;
     }
 
-    if (typeof data == "string" || typeof data == "number" || DWRUtil.isDate(data))
-    {
-        return data.toString();
-    }
-
-    if (typeof data == "object")
-    {
-        var typename = DWRUtil.detailedTypeOf(data);
-        if (typename != "Object")
-        {
-            reply = typename + " ";
-        }
-        reply += "{";
-
-        for (var prop in data)
-        {
-            value = "" + data[prop];
-            if (value.length > 13)
-            {
-                value = value.substring(0, 10) + "...";
-            }
-
-            reply += prop;
-            reply += ":";
-            reply += value;
-            reply += ", ";
-
-            i++;
-            if (i > 5)
-            {
-                reply += "...";
-                break;
-            }
-        }
-
-        reply += "}";
-
-        return reply;
-    }
-
-    return data.toString();
+    ele.className = cssclass;
 };
 
 /**
- * Like typeOf except that more information for an object is returned other
- * than "object"
+ * Ensure a function is called when the page is loaded
+ * @param load The function to call when the page has been loaded
+ * @deprecated DWR isn't a generic Javascript library
  */
-DWRUtil.detailedTypeOf = function(x)
+DWRUtil.callOnLoad = function(load)
 {
-    var reply = typeof x;
-
-    if (reply == "object")
+    if (window.addEventListener)
     {
-        reply = Object.prototype.toString.apply(x);  // Returns "[object class]"
-        reply = reply.substring(8, reply.length-1);  // Just get the class bit
+        window.addEventListener("load", load, false);
     }
-
-    return reply;
+    else if (window.attachEvent)
+    {
+        window.attachEvent("onload", load);
+    }
+    else
+    {
+        window.onload = load;
+    }
 };
 
 /**
- * Setup a GMail style loading message.
+ * Remove all the options from a select list (specified by id) and replace with
+ * elements in an array of objects.
+ * @deprecated Use DWRUtil.removeAllOptions(ele); DWRUtil.addOptions(ele, data, valueprop, textprop);
  */
-DWRUtil.useLoadingMessage = function()
+DWRUtil.fillList = function(ele, data, valueprop, textprop)
 {
-    var disabledZone = document.createElement('div');
-    disabledZone.setAttribute('id', 'disabledZone');
-    disabledZone.style.position = "absolute";
-    disabledZone.style.zIndex = "1000";
-    disabledZone.style.left = "0px";
-    disabledZone.style.top = "0px";
-    disabledZone.style.width = "100%";
-    disabledZone.style.height = "100%";
-    document.body.appendChild(disabledZone);
-
-    var messageZone = document.createElement('div');
-    messageZone.setAttribute('id', 'messageZone');
-    messageZone.style.position = "absolute";
-    messageZone.style.top = "0px";
-    messageZone.style.right = "0px";
-    messageZone.style.background = "red";
-    messageZone.style.color = "white";
-    messageZone.style.fontFamily = "Arial,Helvetica,sans-serif";
-    messageZone.style.padding = "4px";
-    disabledZone.appendChild(messageZone);
-
-    var text = document.createTextNode('Loading');
-    messageZone.appendChild(text);
-
-    DWRUtil.hidePleaseWait();
-
-    DWREngine.setPreHook(DWRUtil.showPleaseWait);
-    DWREngine.setPostHook(DWRUtil.hidePleaseWait);
+    DWRUtil.removeAllOptions(ele);
+    DWRUtil.addOptions(ele, data, valueprop, textprop);
 };
 
 /**
- * Call back function used to show the "please wait" message
- * @private
+ * Add rows to a table
+ * @deprecated Use addRows()
  */
-DWRUtil.showPleaseWait = function()
+DWRUtil.drawTable = function(ele, data, cellFuncs)
 {
-    DWRUtil.getElementById('disabledZone').style.visibility = 'visible';
-};
-
-/**
- * Call back function used to remove the "please wait" message
- * @private
- */
-DWRUtil.hidePleaseWait = function()
-{
-    DWRUtil.getElementById('disabledZone').style.visibility = 'hidden';
+    DWRUtil.addRows(ele, data, cellFuncs);
 };
 
 /**
@@ -933,4 +1165,3 @@ DWRUtil._deprecated = function(fname)
 {
     alert("Utility functions like " + fname + "() are deprecated. Please convert to the DWRUtil.xxx() versions");
 };
-

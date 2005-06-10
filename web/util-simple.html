@@ -1,11 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title id="title">DWR - Util.js</title>
+  <title>DWR - Util.js</title>
+  <link rel="stylesheet" type="text/css" href="tabs.css" />
   <script type='text/javascript' src='/dwr/dwr/util.js'></script>
+  <script type="text/javascript" src="tabs.js"></script>
+  <script type="text/javascript">
+    var initialtab = [1, "tabSetValue"];
+  </script>
   <style>
 .close { margin:0px; padding:0px; }
-.reply { background:#DDF; }
+.reply { background:#FFFFDD; }
 .fake { text-decoration:underline; color:green; cursor:pointer; }
   </style>
   <script type="text/javascript">
@@ -30,143 +35,207 @@ function objectEval(text)
 
 <body>
 
-<h1>util.js</h1>
-
-<h2>Manipulating Simple Elements</h2>
-
-<p><b>Text Elements</b>: <code>h*, p, pre, div, saddress, blockquote, a, span,
-b, big, i, small, sub, sup, tt, em, strong, code, acronym, bdo, cite, dfn, kbd,
-q, samp, var</code>
-</p>
-
-<p><b>Input Elements</b>: <code>textarea, select, option, input[type=text],
-input[type=password], input[type=hidden], input[type=radio],
-input[type=checkbox]</code>
-</p>
-
-<p><b>Functions</b>:</p>
-<ul>
-  <li><code>DWRUtil.setValue(element, value);</code></li>
-  <li><code>DWRUtil.setValues(object)</code></li>
-  <li><code>DWRUtil.getValue(element)</code></li>
-  <li><code>DWRUtil.getText(element)</code></li>
-  <li style="color:gray;"><code>DWRUtil.getValues(object)</code> (needs writing)</li>
-</ul>
+<h1>util.js: Manipulating Simple Elements</h1>
 
 <p>
-These elements simply house some text. We can set the text of any of these
-elements using <code>setValue(element, value);</code> or clear them using
-<code>setValue(element, null)</code>. If we attempt to set the value of any of
-these elements using an object or an array then nothing happens.
-Maybe at some time in the future we should be creating new elements based on the
-specified element for arrays, or something similar for objects.
+There are 5 basic page manipulation functions <code>DWRUtil.setValue()</code>,
+<code>getValue()</code>, <code>setValues()</code>, <code>getValues()</code> and
+<code>getText()</code>. They work on most HTML elements except tables, lists and
+images.
 </p>
 
 <p>
-We do not check that the element is one of the listed types - currently we just
-set innerHTML on anything that we don't recognise as being something that we
-should treat in an other way. Input elements of type checkbox, and select/option
-elements work by selecting the item with the named value. Radio input elements
-work by converting the value to a boolean and selecting based on that.
+In general use DWR retrieves data from a server and returns a Javascript object
+or array depending on the function called on the server. These demo pages allow
+you to create the data in the web page for testing purposes.
 </p>
 
 <p>
-Data can be read with <code>DWRUtil.getValue(element)</code>. This is not much
-use for non-editable fields, but very useful for input elements.
-</p>
-
-<h2>Examples</h2>
-
-<p>
-The section with the yellow-ish background below has example of most HTML
-elements each with an id containing its own tag name - for example:
-<code>&lt;b id="b"&gt;means bold&lt;/b&gt;</code>. These elements can be
-altered and read using the test functions below:
+The results section in yellow has example of most HTML elements.
+These elements can be altered and read using the test functions below.
+All the elements have their tag name as an id - eg: <code>&lt;b id="b"&gt;</code>.
+Form input elements are distinguished by appending the input type -
+eg: <code>&lt;input type="text" id="input-text" ...&gt;</code>
 </p>
 
 <h3>Functions</h3>
 
-<h4>DWRUtil.setValue</h4>
-<p>
-  Find the element with the id specified in the first parameter and
-  alter its contents to be the value in the second parameter.
-</p>
-<script type="text/javascript">
-function doSetValue()
-{
-    DWRUtil.setValue($('setvalueele').value, $('setvalueval').value);
-}
-</script>
-<p>
-  <code>DWRUtil.setValue</code>(
-    element id = <input id="setvalueele" onchange="DWRUtil.onReturn(event, doSetValue)" value="b"/>, 
-    value = <input id="setvalueval" onchange="DWRUtil.onReturn(event, doSetValue)" value="BOLD TEXT"/> )
-  <input type="button" value="setValue" onclick="doSetValue()"/>
-</p>
+<ul id="tablist">
+  <li><a href="#" onclick="Tabs.expandContent('tabSetValue', this)" class="current">setValue()</a></li>
+  <li><a href="#" onclick="Tabs.expandContent('tabGetValue', this)">getValue()</a></li>
+  <li><a href="#" onclick="Tabs.expandContent('tabSetValues', this)">setValues()</a></li>
+  <li><a href="#" onclick="Tabs.expandContent('tabGetValues', this)">getValues()</a></li>
+  <li><a href="#" onclick="Tabs.expandContent('tabGetText', this)">getText()</a></li>
+</ul>
 
-<h4>DWRUtil.setValues</h4>
-<p>
-Similar to setValue except that the input is a Javascript object that contains
-name/value pairs. The names are assumed to be the IDs of HTML elements, and the
-values, what we should set the contents of the elements.
-</p>
-<script type="text/javascript">
-function inlineExample()
-{
-    DWRUtil.setValue("setvalues", "{\n  b:'this is b content',\n  strong:'this is strong content',\n  i:'this is i content',\n  em:'this is em content',\n  cite:'this is cite content',\n  dfn:'this is dfn content',\n  u:'this is u content',\n  big:'this is big content',\n  small:'this is small content',\n  sub:'this is sub content',\n  sup:'this is sup content',\n  span:'this is span content',\n  tt:'this is tt content',\n  code:'this is code content',\n  kbd:'this is kbd content',\n  samp:'this is samp content',\n  acronym:'this is acronym content',\n  bdo:'this is bdo content',\n  q:'this is q content'\n}");
-}
-function inlineClear()
-{
-    DWRUtil.setValue("setvalues", "{\n  b:null,\n  strong:null,\n  i:null,\n  em:null,\n  cite:null,\n  dfn:null,\n  u:null,\n  big:null,\n  small:null,\n  sub:null,\n  sup:null,\n  span:null,\n  tt:null,\n  code:null,\n  kbd:null,\n  samp:null,\n  acronym:null,\n  bdo:null,\n  q:null\n}");
-}
-function blockExample()
-{
-    DWRUtil.setValue("setvalues", "{\n  p:'this is p content',\n  div:'this is div content',\n  h1:'h1',\n  h2:'h2',\n  h3:'h3',\n  h4:'h4',\n  h5:'h5',\n}");
-}
-function doSetValues()
-{
-    var text = DWRUtil.getValue('setvalues');
-    var object = objectEval(text);
-    DWRUtil.setValues(object);
-}
-</script>
-<p>
-<code>DWRUtil.setValues</code>(
-  object =
-  <textarea rows="5" cols="40" id="setvalues" style="vertical-align:top;" onchange="DWRUtil.onReturn(event, doSetValues)">{
+<div id="tabcontentcontainer">
+
+  <div id="tabSetValue" class="tabcontent">
+    <p>
+      Find the element with the id specified in the first parameter and
+      alter its contents to be the value in the second parameter.
+    </p>
+    <script type="text/javascript">
+    function doSetValue()
+    {
+        DWRUtil.setValue($('setvalueele').value, $('setvalueval').value);
+    }
+    </script>
+    <p>
+      <code>DWRUtil.setValue</code>(
+        element id = <input id="setvalueele" onchange="DWRUtil.onReturn(event, doSetValue)" value="b"/>, 
+        value = <input id="setvalueval" onchange="DWRUtil.onReturn(event, doSetValue)" value="BOLD TEXT"/> )
+      <input type="button" value="setValue" onclick="doSetValue()"/>
+    </p>
+  </div>
+
+  <div id="tabGetValue" class="tabcontent">
+    <p>
+      The read version of <code>setValue()</code>. This gets the values out of
+      the HTML elements without you needing to worry about how a selection list
+      differs from a div.
+    </p>
+    <script type="text/javascript">
+    function doGetValue()
+    {
+        var ret = DWRUtil.getValue($('getvalue').value);
+        DWRUtil.setValue("getvalueret", ret);
+    }
+    </script>
+    <p>
+      <code>DWRUtil.getValue</code>(
+        element id = <input id="getvalue" onchange="DWRUtil.onReturn(event, doGetValue)" value="b"/> )
+      <input type="button" value="getValue" onclick="doGetValue()"/>
+      returns = "<span id="getvalueret" class="reply"></span>"
+    </p>
+  </div>
+
+  <div id="tabSetValues" class="tabcontent">
+    <p>
+      Similar to setValue except that the input is a Javascript object that
+      contains name/value pairs. The names are assumed to be the IDs of HTML
+      elements, and the values, what we should set the contents of the elements.
+    </p>
+    <script type="text/javascript">
+    function inlineExample()
+    {
+        DWRUtil.setValue("setvalues", "{\n  b:'this is b content',\n  strong:'this is strong content',\n  i:'this is i content',\n  em:'this is em content',\n  cite:'this is cite content',\n  dfn:'this is dfn content',\n  u:'this is u content',\n  big:'this is big content',\n  small:'this is small content',\n  sub:'this is sub content',\n  sup:'this is sup content',\n  span:'this is span content',\n  tt:'this is tt content',\n  code:'this is code content',\n  kbd:'this is kbd content',\n  samp:'this is samp content',\n  acronym:'this is acronym content',\n  bdo:'this is bdo content',\n  q:'this is q content'\n}");
+    }
+    function inlineClear()
+    {
+        DWRUtil.setValue("setvalues", "{\n  b:null,\n  strong:null,\n  i:null,\n  em:null,\n  cite:null,\n  dfn:null,\n  u:null,\n  big:null,\n  small:null,\n  sub:null,\n  sup:null,\n  span:null,\n  tt:null,\n  code:null,\n  kbd:null,\n  samp:null,\n  acronym:null,\n  bdo:null,\n  q:null\n}");
+    }
+    function blockExample()
+    {
+        DWRUtil.setValue("setvalues", "{\n  p:'this is p content',\n  div:'this is div content',\n  h1:'h1',\n  h2:'h2',\n  h3:'h3',\n  h4:'h4',\n  h5:'h5',\n}");
+    }
+    function doSetValues()
+    {
+        var text = DWRUtil.getValue('setvalues');
+        var object = objectEval(text);
+        DWRUtil.setValues(object);
+    }
+    </script>
+    <p>
+      <code>DWRUtil.setValues</code>(
+        object =
+        <textarea rows="5" cols="40" id="setvalues" style="vertical-align:top;" onchange="DWRUtil.onReturn(event, doSetValues)">{
   p: "this is p content",
   b: "this is b content",
 }</textarea> )
-<input type="button" value="setValues" onclick="doSetValues()"/><br />
-Examples:
-inline elements [<a class="fake" onclick="inlineExample()">text</a>, <a class="fake" onclick="inlineClear()">blank</a>]
-block elements [<a class="fake" onclick="blockExample()">text</a>, <a class="fake" onclick="blockClear()">blank</a>]
-form elements [<a class="fake" onclick="formExample()">text</a>, <a class="fake" onclick="formClear()">blank</a>]
-</p>
+      <input type="button" value="setValues" onclick="doSetValues()"/><br />
+      Examples:
+      inline elements [<a class="fake" onclick="inlineExample()">text</a>, <a class="fake" onclick="inlineClear()">blank</a>]
+      block elements [<a class="fake" onclick="blockExample()">text</a>, <a class="fake" onclick="blockClear()">blank</a>]
+      form elements [<a class="fake" onclick="formExample()">text</a>, <a class="fake" onclick="formClear()">blank</a>]
+    </p>
+  </div>
 
-<h4>DWRUtil.getValue</h4>
-<p>
-The read version of <code>setValue()</code>. This gets the values out of the
-HTML elements without you needing to worry about how a selection list differs
-from a div.
-</p>
-<script type="text/javascript">
-function doGetValue()
-{
-    var ret = DWRUtil.getValue($('setvalueele').value, $('setvalueval').value);
-    DWRUtil.setValue("getvalueret", ret);
-}
-</script>
-<p>
-  <code>DWRUtil.getValue</code>(
-    element id = <input id="getvalue" onchange="DWRUtil.onReturn(event, doGetValue)" value="b"/> )
-  <input type="button" value="getValue" onclick="doGetValue()"/>
-  returns = "<span id="getvalueret" class="reply"></span>"
-</p>
+  <div id="tabGetValues" class="tabcontent">
+    <p>
+      Similar to getValue except that the input is a Javascript object that
+      contains name/value pairs. The names are assumed to be the IDs of HTML
+      elements, and the values are altered to relfect the contents of those IDs.
+    </p>
+    <script type="text/javascript">
+    function doGetValues()
+    {
+        var text = DWRUtil.getValue('getvalues');
+        var object = objectEval(text);
+        DWRUtil.getValues(object);
+        var reply = DWRUtil.toDescriptiveString(object);
+        DWRUtil.setValue("getvaluesret", reply);
+    }
+    </script>
+    <p>
+      <code>DWRUtil.setValues</code>(
+        object =
+        <textarea rows="5" cols="20" id="getvalues" style="vertical-align:top;" onchange="DWRUtil.onReturn(event, doSetValues)">{
+  b:null,
+  strong:null,
+  i:null,
+  em:null,
+  cite:null,
+  dfn:null,
+  u:null,
+  big:null,
+  small:null,
+  sub:null,
+  sup:null,
+  span:null,
+  tt:null,
+  code:null,
+  kbd:null,
+  samp:null,
+  acronym:null,
+  bdo:null,
+  q:null
+}</textarea> )
+      <input type="button" value="getValues" onclick="doGetValues()"/>
+      returns = <textarea readonly="readonly" rows="5" cols="20" id="getvaluesret" class="reply" style="border:0px; vertical-align:top;"></textarea>
+    </p>
+  </div>
 
-<h3>Text Elements</h3>
+  <div id="tabGetText" class="tabcontent">
+    <p>
+      <code>setText()</code> is similar to <code>getValue()</code>, except that
+      it is designed for <code>&lt;select ...</code> lists where you need to get
+      the displayed text rather than the value of the current option.
+    </p>
+    <script type="text/javascript">
+    function doGetText()
+    {
+        var ret = DWRUtil.getText($('gettext').value);
+        DWRUtil.setValue("gettextret", ret);
+    }
+    function doGetText2()
+    {
+        var ret = DWRUtil.getValue($('gettext2').value);
+        DWRUtil.setValue("gettextret2", ret);
+    }
+    </script>
+    <p>
+      <code>&nbsp;DWRUtil.getText</code>(
+        element id = <input id="gettext" value="select"/> )
+      <input type="button" value="getText" onclick="doGetText()"/>
+      returns = "<span id="gettextret" class="reply"></span>"
+      <br/>
+      And for comparison:
+      <br/>
+      <code>DWRUtil.getValue</code>(
+        element id = <input id="gettext2" value="select"/> )
+      <input type="button" value="getValue" onclick="doGetText2()"/>
+      returns = "<span id="gettextret2" class="reply"></span>"
+    </p>
 
-<div style="background:#FFFFDD; padding:10px;">
+
+  </div>
+
+</div>
+
+<h3>HTML Test Elements</h3>
+
+<div style="background:#FFFFDD; padding:10px; border:1px solid #DDDDBB;">
 
 <table>
   <tr>
@@ -228,9 +297,9 @@ function doGetValue()
     <td>Selection list:</td>
     <td>
       <select id="select">
-        <option selected="selected" value="one">one</option>
-        <option value="two">two</option>
-        <option value="three">three</option>
+        <option selected="selected" value="value one">text one</option>
+        <option value="value two">text two</option>
+        <option value="value three">text three</option>
       </select>
     </td>
   </tr>
@@ -265,6 +334,16 @@ function doGetValue()
 
 </div>
 
+<h2>Notes</h2>
+
+<p>
+We do not check that the element is one of the listed types - currently we just
+set innerHTML on anything that we don't recognise as being something that we
+should treat in an other way. Input elements of type checkbox, and select/option
+elements work by selecting the item with the named value. Radio input elements
+work by converting the value to a boolean and selecting based on that.
+</p>
+
 <h2>For the Future</h2>
 
 <p>
@@ -290,6 +369,13 @@ text although this might get confusing, maybe a new function is required.
 <p>
 The elements <code>hr, br, base, meta, map and area</code> are probably not
 worth any further attention.
+</p>
+
+<p>
+If we attempt to set the value of any of these elements using an object or an
+array then nothing happens. Maybe at some time in the future we should be
+creating new elements based on the specified element for arrays, or something
+similar for objects.
 </p>
 
 </body>

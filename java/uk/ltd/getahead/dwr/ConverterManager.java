@@ -1,6 +1,7 @@
 package uk.ltd.getahead.dwr;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * A class to manage the converter types and the instansiated class name matches.
@@ -19,11 +20,12 @@ public interface ConverterManager
      * Add a new converter
      * @param match The class name(s) to match
      * @param type The name of the converter type
+     * @param params The extra parameters to allow the creator to configure itself
      * @throws InstantiationException If reflection based creation fails
      * @throws IllegalAccessException If reflection based creation fails
      * @throws IllegalArgumentException If we have a duplicate name
      */
-    public void addConverter(String match, String type) throws IllegalArgumentException, InstantiationException, IllegalAccessException;
+    public void addConverter(String match, String type, Map params) throws IllegalArgumentException, InstantiationException, IllegalAccessException;
 
     /**
      * Check if we can coerce the given type

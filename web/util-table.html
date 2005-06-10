@@ -1,44 +1,110 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>DWR - Util.js</title>
+  <title>DWR - util.js - Generating Tables</title>
+  <script type='text/javascript' src='/dwr/dwr/util.js'></script>
 </head>
 
 <body>
 
-<h1>util.js</h1>
+<h1>util.js: Generating Tables</h1>
 
-<h2>Generating Tables</h2>
-
-<p><b>Elements</b>: table, thead, tbody, tfoot, tr, th, td
+<p>
+DWR helps you to manipulate tables using 2 functions:
+<code>DWRUtil.addRows()</code> and <code>DWRUtil.removeAllRows()</code>.
+The first parameter to both is the id of the table, tbody, thead or tfoot to
+edit. Commonly it will be the tbody element so you can keep your header rows
+unaltered.
 </p>
 
 <p>
-<b>See</b>: <code>DWRUtil.drawTable(tbodyID, data, cellFuncs)</code> and
-<code>DWRUtil.clearChildNodes(tbodyID)</code>.
+<code>DWRUtil.addRows()</code> takes it's data from an array (2nd parameter).
+There is currently no support for building a table from an object or string.
+DWR creates a row for each array entry, and a column for each function in the
+cellfuncs array. The cells are created by passing each array entry to each
+'cellfunc' in turn.
 </p>
 
 <p>
-Tables can be cleared as above and added to using
-<code>DWRUtil.drawTable(tbodyID, data, cellFuncs)</code>. DWRUtil.drawTable
-encourages you to use tbody elements to support people that wish to have headers
-or footers that are unchanged. Table rows can be created from arrays, but not
-from strings, objects or numbers.
+For simplicity in this demo we will be using a simple array of strings, however
+it is more common to use an array of objects.
+</p>
+
+<script>
+function direct(data) { return data; }
+function altered(data) { return data.toUpperCase(); }
+function dom(data)
+{
+    var input = document.createElement("input");
+    input.setAttribute("type", "button");
+    input.setAttribute("value", "DOM Test");
+    input.setAttribute("onclick", "alert('" + data + "');");
+    return input;
+}
+function innerhtml(data)
+{
+    return "<input type='button' value='innerHTML Test' onclick='alert(\"" + data + "\");'>";
+}
+
+function doAddRows()
+{
+    DWRUtil.addRows('demo1', eval($('simple').value), [ direct, altered, dom, innerhtml ]);
+}
+</script>
+<p>
+<code>DWRUtil.addRows( "demo1", 
+  <input id="simple" type="text" value="[ 'Africa', 'America', 'Asia', 'Australasia', 'Europe' ]" size="50"/>,
+  cellFuncs)</code>
+<input type="button" onclick="doAddRows()" value="Show Me"/>
 </p>
 
 <p>
-See the documentation for DWRUtil.drawTable() to see how a row is created for
-each array entry and cells within the row are created by the calling of each
-<code>cellFunc</code> using the array entry as a parameter.
+The cell funcs array in this example contains 4 functions. Each element in the
+data array is passed to each in turn.
 </p>
 
+<ul>
+  <li>The first simply returns the data (in this case a string) as is:<br/>
+    <pre>function direct(data) { return data; }</pre></li>
+  <li>The second performs a simple bit of data manipulation:<br/>
+    <pre>function altered(data) { return data.toUpperCase(); }</pre></li>
+  <li>The 3rd function creates a push button by manipulating the DOM. Note how
+    this method shows up a bug in IE6.<br/>
+    <pre>function dom(data)
+{
+    var input = document.createElement("input");
+    input.setAttribute("type", "button");
+    input.setAttribute("value", "DOM Test");
+    input.setAttribute("onclick", "alert('" + data + "');");
+    return input;
+}</pre></li>
+  <li>By returning a raw string rather than a DOM object we get something that
+    works across Mozilla and IE.<br/>
+    <pre>function innerhtml(data)
+{
+    return "&lt;input type='button' value='innerHTML Test' onclick='alert(\"" + data + "\");'&gt;";
+}</pre></li>
+</ul>
+
 <p>
-Open questions: Should we support creation of tables from objects (using a
-for/in loop?). Currently there is no plan to do this because there is no idea
-of similarity between the properties of an object, but there is some concept
-of this for an object. Similarly creation of a table from a string (via
-innerHTML) may be possible using plain strings and setValue so we will not
-attempt to support it here.
+A table with a tbody element with <code>id="demo1"</code>:
+</p>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Unaltered</th>
+      <th>Altered</th>
+      <th>DOM Button</th>
+      <th>InnerHTML Button</th>
+    </tr>
+  </thead>
+  <tbody id="demo1">
+  </tbody>
+</table>
+
+<p>
+<input type="button" onclick="DWRUtil.removeAllRows('demo1')" value="DWRUtil.removeAllRows('demo1')"/>
 </p>
 
 </body>

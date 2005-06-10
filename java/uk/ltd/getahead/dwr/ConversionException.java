@@ -54,5 +54,5 @@ public class ConversionException extends Exception
     /**
      * Stored exception cause
      */
-    private Throwable ex;
+    private Throwable ex = null;
 }

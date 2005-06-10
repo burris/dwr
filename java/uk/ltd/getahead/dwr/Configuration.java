@@ -36,7 +36,7 @@ public final class Configuration
      * @param in The InputStream to parse from
      * @throws ParserConfigurationException If there are XML setup problems
      * @throws IOException Error parsing dwr.xml
-     * @throws SAXException Error parsing dwr.xml 
+     * @throws SAXException Error parsing dwr.xml
      */
     public void addConfig(InputStream in) throws ParserConfigurationException, IOException, SAXException
     {
@@ -193,7 +193,8 @@ public final class Configuration
 
         try
         {
-            converterManager.addConverter(match, type);
+            Map params = createSettingMap(allower);
+            converterManager.addConverter(match, type, params);
         }
         catch (Exception ex)
         {
@@ -214,6 +215,7 @@ public final class Configuration
         {
             Map params = createSettingMap(allower);
             creatorManager.addCreator(type, javascript, params);
+
             processPermissions(javascript, allower);
             processAuth(javascript, allower);
             processParameters(javascript, allower);
@@ -381,7 +383,7 @@ public final class Configuration
     }
 
     /**
-     * Parse and extra type info from method signatures 
+     * Parse and extra type info from method signatures
      * @param element The element to read
      */
     private void loadSignature(Element element)
@@ -461,15 +463,12 @@ public final class Configuration
      */
     private static final Logger log = Logger.getLogger(Configuration.class);
 
-    /**
-     * The ConverterManager to which we delegate conversion of parameters
-     */
-    private ConverterManager converterManager;
+    private ConverterManager converterManager = null;
 
     /**
      * The CreatorManager to which we delegate creation of new objects.
      */
-    private CreatorManager creatorManager;
+    private CreatorManager creatorManager = null;
 
     private static final String ELEMENT_INIT = "init"; //$NON-NLS-1$
     private static final String ELEMENT_ALLOW = "allow"; //$NON-NLS-1$

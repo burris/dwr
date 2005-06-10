@@ -28,6 +28,22 @@ import uk.ltd.getahead.dwr.util.Logger;
  */
 public class BeanConverter implements Converter
 {
+    /**
+     * @return Returns the instanceType.
+     */
+    public Class getInstanceType()
+    {
+        return instanceType;
+    }
+
+    /**
+     * @param instanceType The instanceType to set.
+     */
+    public void setInstanceType(Class instanceType)
+    {
+        this.instanceType = instanceType;
+    }
+
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
      */
@@ -63,10 +79,19 @@ public class BeanConverter implements Converter
 
         try
         {
-            // We know what we are converting to so we create a map of property
+            Object bean = null;
+            if (instanceType != null)
+            {
+                bean = instanceType.newInstance();
+            }
+            else
+            {
+                bean = paramType.newInstance();
+            }
+
+            // We know what we are converting to, so we create a map of property
             // names against PropertyDescriptors to speed lookup later
-            Object bean = paramType.newInstance();
-            BeanInfo info = Introspector.getBeanInfo(paramType);
+            BeanInfo info = Introspector.getBeanInfo(bean.getClass());
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             Map props = new HashMap();
             for (int i = 0; i < descriptors.length; i++)
@@ -199,6 +224,11 @@ public class BeanConverter implements Converter
 
         return buffer.toString();
     }
+
+    /**
+     * A type that allows us to fulfill an interface or subtype requirement
+     */
+    private Class instanceType = null;
 
     /**
      * The log stream

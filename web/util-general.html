@@ -1,12 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <title>DWR - Util.js</title>
+  <title>DWR - Util.js - General Functions</title>
+  <script type='text/javascript' src='/dwr/dwr/util.js'></script>
 </head>
 
 <body>
 
-<h1>util.js</h1>
+<h1>util.js: General Functions</h1>
 
 <p>
 util.js contains utility functions to do a number of things, some are
@@ -20,6 +21,97 @@ Most of these are fairly easy to understand.
 util.js also contains a number of HTML manipultion functions which need a bit
 more explanation. This document explains what manipulations are possible and
 how to achieve them.
+</p>
+
+<h3>$</h3>
+
+<p>
+The $ function (it is a legal name in Javascript) is an idea stolen from
+<a href="http://prototype.conio.net/">Protoype</a>. Roughly speaking:
+<code>$&nbsp;=&nbsp;document.getElementById</code>. Since in Ajax programming
+you spend so much time on the latter, using the former in its place is quite a
+benefit.
+</p>
+
+<p>
+So it finds the element in the current HTML document with the given id, or if
+more than one parameter is passed, it returns an array containing the found
+elements. Any non-string arguments are left "as-is" in the reply.
+This function is inspired by the prototype library however it probably works
+on more browsers than the original.
+</p>
+
+<p>
+See DWRUtil.toDescriptiveString below for a demo.
+</p>
+
+<h3>DWRUtil.toDescriptiveString</h3>
+
+<p>
+<code>DWRUtil.toDescriptiveString</code> is a better version of the
+<code>toString()</code> than the default. The first parameter is the object to
+debug, and it has an optional second parameter which is the level of detail
+that we go to:
+</p>
+
+<ul>
+  <li><b>0</b>: Single line of debug</li>
+  <li><b>1</b>: Multi-line debug that does not dig into child objects</li>
+  <li><b>2</b>: Multi-line debug that digs into the 2nd layer of child objects</li>
+  <li>And so on. Level 2 and greater probably produce too much output.</li>
+</ul>
+
+<h3>Example of $ and DWRUtil.toDescriptiveString</h3>
+
+<p id="example">
+This paragraph has <code>id="example"</code>, and
+<input type="text" value="this input element" id="text"/> has
+<code>id="text"</code>.
+</p>
+
+<script>
+function debug()
+{
+    alert(DWRUtil.toDescriptiveString($("useid"), $("level").value));
+}
+</script>
+<p>
+<code>DWRUtil.toDescriptiveString(
+  <select id="useid"><option>example</option><option>text</option></select>,
+  <select id="level"><option>0</option><option>1</option><option>2</option></select>
+)</code>
+<input type="button" onclick="debug()" value="Show Me"/>
+</p>
+
+<h3>DWRUtil.useLoadingMessage</h3>
+
+<p>
+Setup a GMail style loading message. All of the demo pages
+(<a href="demo-text.html">dynamic text</a>,
+<a href="demo-list.html">selection lists</a>,
+<a href="demo-table.html">live tables</a>,
+<a href="demo-form.html">live forms</a>,
+<a href="demo-validate.html">dynamic validation</a> and
+<a href="demo-postcode.html">address entry</a>) use the GMail style loading
+message.
+</p>
+
+<p>
+The source to this function is also a useful starting point for implementing
+your own loading message. The majority of this function dynamically creates
+a divs (with <code>id="disabledZone"</code>) which contains the message. The
+important code that makes is appear and disappear whenever Ajax activity is
+going on looks like this:
+</p>
+
+<pre>
+DWREngine.setPreHook(function() { $('disabledZone').style.visibility = 'visible'; });
+DWREngine.setPostHook(function() { $('disabledZone').style.visibility = 'hidden'; });
+</pre>
+
+<p>
+This is fairly simple and makes it quite easy to implement your own "loading"
+message.
 </p>
 
 </body>
