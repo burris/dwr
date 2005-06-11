@@ -380,6 +380,15 @@ public class DefaultConverterManager implements ConverterManager
     }
 
     /**
+     * Sets the converters for this converter manager.
+     *
+     * @param converters the map of match pattern and their converter instances
+     */
+    public void setConverters(Map converters) {
+        this.converters = converters;
+    }
+
+    /**
      * Where we store real type information behind generic types
      */
     private Map extraTypeInfoMap = new HashMap();
