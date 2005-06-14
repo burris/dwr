@@ -84,7 +84,7 @@ public final class InboundContext
 
         variables.put(key, cte);
 
-        String paramPrefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + 
+        String paramPrefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum +
                              ConversionConstants.INBOUND_CALLNUM_SUFFIX +
                              ConversionConstants.INBOUND_KEY_PARAM;
 
@@ -156,7 +156,7 @@ public final class InboundContext
      */
     protected InboundVariable getParameter(int callNum, int index)
     {
-        String key = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + 
+        String key = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum +
                      ConversionConstants.INBOUND_CALLNUM_SUFFIX +
                      ConversionConstants.INBOUND_KEY_PARAM + index;
 
@@ -173,9 +173,9 @@ public final class InboundContext
     }
 
     /**
-     * A very simple struct that holds a Method and parameter number together 
+     * A very simple struct that holds a Method and parameter number together
      */
-    class DecodeContext
+    static class DecodeContext
     {
         DecodeContext(Method method, int paramNum)
         {

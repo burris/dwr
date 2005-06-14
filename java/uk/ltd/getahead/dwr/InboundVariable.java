@@ -85,7 +85,7 @@ public final class InboundVariable
         {
             try
             {
-                return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value + "=(" + getValue() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value + "=(" + getValue() + ')'; //$NON-NLS-1$
             }
             catch (ConversionException ex)
             {
@@ -139,10 +139,10 @@ public final class InboundVariable
     /**
      * The javascript declared variable type
      */
-    private String type;
+    private final String type;
 
     /**
      * The javascript declared variable value
      */
-    private String value;
+    private final String value;
 }

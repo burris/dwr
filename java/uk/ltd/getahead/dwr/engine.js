@@ -470,6 +470,29 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params)
         params = args;
         func = metadata.callback;
     }
+    else if (firstArg == null)
+    {
+        // This could be a null callback function, but if the last arg is also
+        // null then we can't tell which is the function unless there are only
+        // 2 args, in which case we don't care!
+        if (lastArg == null && args.length > 2)
+        {
+            if (DWREngine._warningHandler)
+            {
+                DWREngine._warningHandler("Ambiguous nulls at start and end of parameter list. Which is the callback function?");
+            }
+        }
+
+        func = args.shift();
+        params = args;
+        metadata = {};
+    }
+    else if (lastArg == null)
+    {
+        func = args.pop();
+        params = args;
+        metadata = {};
+    }
     else
     {
         if (DWREngine._warningHandler)

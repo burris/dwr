@@ -304,12 +304,12 @@ tests[tests.length] = { code:"stringStringTreeMapParam", data:map2 };
 
 function startTest()
 {
-    failures = DWRUtil.getElementById("failures");
-    progress = DWRUtil.getElementById("progress");
-    failreport = DWRUtil.getElementById("failreport");
-    execreport = DWRUtil.getElementById("execreport");
+    failures = $("failures");
+    progress = $("progress");
+    failreport = $("failreport");
+    execreport = $("execreport");
 
-    DWRUtil.getElementById("start").disabled = true;
+    $("start").disabled = true;
 
     DWREngine.setErrorHandler(catchFailure);
 
@@ -320,7 +320,7 @@ function startTest()
     progress.style.width = "0%";
     for (var i = 0; i < tests.length; i++)
     {
-        var numele = DWRUtil.getElementById("t" + i + "-num");
+        var numele = $("t" + i + "-num");
         numele.style.backgroundColor = "white";
         DWRUtil.setValue("t" + i + "-results", "");
     }
@@ -407,7 +407,7 @@ function checkTidyUp(index)
 {
     if (index == tests.length)
     {
-        DWRUtil.getElementById("start").disabled = false;
+        $("start").disabled = false;
 
         var mslen = new Date().getTime() - starttime.getTime();
         var tps = Math.round((10000 * tests.length) / mslen) / 10;
@@ -429,7 +429,7 @@ function testResults(data, index)
     }
 
     var passed = testEquals(data, test.data, 0);
-    var numele = DWRUtil.getElementById("t" + index + "-num");
+    var numele = $("t" + index + "-num");
 
     execreport.innerHTML = (index + 1);
 
@@ -587,8 +587,8 @@ function showResults(data)
     // We were trying to get others involved in testing
     // DWRUtil.showById("results");
 
-    DWRUtil.clearChildNodes("resultsTable");
-    DWRUtil.drawTable("resultsTable", data, [
+    DWRUtil.removeAllRows("resultsTable");
+    DWRUtil.addRows("resultsTable", data, [
         function(row)
         {
             return row;
@@ -615,7 +615,7 @@ function init()
     DWREngine.setWarningHandler(DWREngine.defaultMessageHandler);
 
     var rownum = 0;
-    DWRUtil.drawTable("chart", tests, [
+    DWRUtil.addRows("chart", tests, [
         function(row)
         {
             var td = document.createElement("td");

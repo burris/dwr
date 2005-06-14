@@ -1,6 +1,10 @@
 package uk.ltd.getahead.dwr.impl;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import uk.ltd.getahead.dwr.Creator;
@@ -72,7 +76,7 @@ public class DefaultCreatorManager implements CreatorManager
                 }
             }
         }
-        
+
         creator.setProperties(params);
 
         // Check that we don't have this one already
@@ -123,10 +127,10 @@ public class DefaultCreatorManager implements CreatorManager
 
     /**
      * Sets the creators for this creator manager.
-     *
      * @param creators the map of managed beans and their creator instances
      */
-    public void setCreators(Map creators) {
+    public void setCreators(Map creators)
+    {
         this.creators = creators;
     }
 
@@ -148,5 +152,5 @@ public class DefaultCreatorManager implements CreatorManager
     /**
      * Are we in debug mode?
      */
-    private boolean debug;
+    private boolean debug = false;
 }

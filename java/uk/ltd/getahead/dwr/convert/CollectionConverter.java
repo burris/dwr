@@ -196,7 +196,7 @@ public class CollectionConverter implements Converter
     /**
      * For nested conversions
      */
-    private ConverterManager config;
+    private ConverterManager config = null;
 
     /**
      * The log stream

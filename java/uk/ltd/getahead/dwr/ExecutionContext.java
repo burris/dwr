@@ -124,12 +124,15 @@ public class ExecutionContext
      */
     public String getVersion()
     {
-        if (props == null)
+        synchronized (propLock)
         {
-            loadProperties();
-        }
+            if (props == null)
+            {
+                loadProperties();
+            }
 
-        return props.getProperty(KEY_VERSION);
+            return props.getProperty(KEY_VERSION);
+        }
     }
 
     /**
@@ -138,33 +141,37 @@ public class ExecutionContext
      */
     protected String getSourceControlInfo()
     {
-        if (props == null)
+        synchronized (propLock)
         {
-            loadProperties();
-        }
+            if (props == null)
+            {
+                loadProperties();
+            }
 
-        return props.getProperty(KEY_SCCINFO);
+            return props.getProperty(KEY_SCCINFO);
+        }
     }
 
     /**
-     * It's only a matter of time before someone starts to point out the race
-     * condition here, so I might as well point out that we don't care if the
-     * properties file gets loaded twice.
+     * Load the properties from the internal properties file.
      */
-    private synchronized void loadProperties()
+    private void loadProperties()
     {
-        props = new Properties();
+        synchronized (propLock)
+        {
+            props = new Properties();
 
-        try
-        {
-            InputStream in = getClass().getResourceAsStream(FILENAME_VERSION);
-            props.load(in);
-        }
-        catch (Exception ex)
-        {
-            props.put(KEY_VERSION, VALUE_UNKNOWN);
-            props.put(KEY_SCCINFO, VALUE_UNKNOWN);
-            props.put(KEY_ERROR, ex.toString());
+            try
+            {
+                InputStream in = getClass().getResourceAsStream(FILENAME_VERSION);
+                props.load(in);
+            }
+            catch (Exception ex)
+            {
+                props.put(KEY_VERSION, VALUE_UNKNOWN);
+                props.put(KEY_SCCINFO, VALUE_UNKNOWN);
+                props.put(KEY_ERROR, ex.toString());
+            }
         }
     }
 
@@ -174,11 +181,13 @@ public class ExecutionContext
     private static final String KEY_ERROR = "error"; //$NON-NLS-1$
     private static final String VALUE_UNKNOWN = "unknown"; //$NON-NLS-1$
 
-    private HttpServletRequest request;
-    private HttpServletResponse response;
-    private ServletConfig config;
-    private ServletContext context;
-    private Properties props = null;
+    private HttpServletRequest request = null;
+    private HttpServletResponse response = null;
+    private ServletConfig config = null;
+    private ServletContext context = null;
+
+    private static Properties props = null;
+    private static final Object propLock = new Object();
 
     private static ThreadLocal user = new ThreadLocal();
     private static Class implementation = ExecutionContext.class;
@@ -245,7 +254,7 @@ public class ExecutionContext
      */
     protected static void setImplementation(String implname) throws InstantiationException, IllegalAccessException, ClassNotFoundException
     {
-        ExecutionContext.implementation = Class.forName(implname);
+        implementation = Class.forName(implname);
 
         // Check we can create one
         ExecutionContext ec = (ExecutionContext) implementation.newInstance();

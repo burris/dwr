@@ -1,6 +1,5 @@
 package uk.ltd.getahead.dwr.util;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Locale;
@@ -29,10 +28,23 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
         oout = new WriterOutputStream(sout);
     }
 
+    // These 2 methods would be needed for Servlet > 2.2?
+    // Not sure if missing them will break times when DWR is used in a higher context
+
+    //public void setCharacterEncoding(String string)
+    //{
+    //    response.setCharacterEncoding(string);
+    //}
+
+    //public String getContentType()
+    //{
+    //    return response.getContentType();
+    //}
+
     /* (non-Javadoc)
      * @see javax.servlet.ServletResponseWrapper#getOutputStream()
      */
-    public ServletOutputStream getOutputStream() throws IOException
+    public ServletOutputStream getOutputStream()
     {
         log.warn("Potential errors in forwardingRequest converting binary data to string for url: " + url); //$NON-NLS-1$
         return oout;
@@ -41,7 +53,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
     /* (non-Javadoc)
      * @see javax.servlet.ServletResponseWrapper#getWriter()
      */
-    public PrintWriter getWriter() throws IOException
+    public PrintWriter getWriter()
     {
         return pout;
     }
@@ -49,7 +61,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
     /* (non-Javadoc)
      * @see javax.servlet.ServletResponseWrapper#flushBuffer()
      */
-    public void flushBuffer() throws IOException
+    public void flushBuffer()
     {
         pout.flush();
     }
@@ -57,25 +69,25 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
      */
-    public void sendError(int sc, String msg) throws IOException
+    public void sendError(int sc, String msg)
     {
-        log.warn("Ignoring call to sendError(" + sc + ", " + msg + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        log.warn("Ignoring call to sendError(" + sc + ", " + msg + ')'); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletResponse#sendError(int)
      */
-    public void sendError(int sc) throws IOException
+    public void sendError(int sc)
     {
-        log.warn("Ignoring call to sendError(" + sc + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        log.warn("Ignoring call to sendError(" + sc + ')'); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
      */
-    public void sendRedirect(String location) throws IOException
+    public void sendRedirect(String location)
     {
-        log.warn("Ignoring call to sendRedirect(" + location + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        log.warn("Ignoring call to sendRedirect(" + location + ')'); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
@@ -83,7 +95,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void setStatus(int sc)
     {
-        log.warn("Ignoring call to setStatus(" + sc + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        log.warn("Ignoring call to setStatus(" + sc + ')'); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
@@ -91,7 +103,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void setStatus(int sc, String sm)
     {
-        log.warn("Ignoring call to setStatus(" + sc + ", " + sm + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        log.warn("Ignoring call to setStatus(" + sc + ", " + sm + ')'); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /* (non-Javadoc)

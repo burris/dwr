@@ -35,11 +35,11 @@ public class SignatureParser
         try
         {
             String process = SourceUtil.stripComments(sigtext);
-    
+
             process = process.replace('\n', ' ');
             process = process.replace('\r', ' ');
             process = process.replace('\t', ' ');
-    
+
             StringTokenizer st = new StringTokenizer(process, ";"); //$NON-NLS-1$
             while (st.hasMoreTokens())
             {
@@ -49,7 +49,7 @@ public class SignatureParser
                 {
                     continue;
                 }
-    
+
                 if (line.startsWith("import ")) //$NON-NLS-1$
                 {
                     parseImportLine(line);
@@ -74,7 +74,7 @@ public class SignatureParser
     {
         String shortcut = line.substring(7, line.length());
         shortcut = shortcut.trim();
-        
+
         if (line.endsWith(".*")) //$NON-NLS-1$
         {
             shortcut = shortcut.substring(0, shortcut.length() - 2);
@@ -88,7 +88,7 @@ public class SignatureParser
                 log.error("Missing . from import statement: " + line); //$NON-NLS-1$
                 return;
             }
-            
+
             String leaf = line.substring(lastDot + 1);
             classImports.put(leaf, shortcut);
         }
@@ -179,8 +179,8 @@ public class SignatureParser
         for (Iterator it = packageImports.iterator(); it.hasNext();)
         {
             String pkg = (String) it.next();
-            String lookup = pkg + "." + type; //$NON-NLS-1$
-            
+            String lookup = pkg + '.' + type;
+
             try
             {
                 reply = Class.forName(lookup);
@@ -198,7 +198,7 @@ public class SignatureParser
 
     /**
      * Convert a parameter like "Map&lt;Integer, URL&gt;" into an array,
-     * something like [Integer, URL]. 
+     * something like [Integer, URL].
      * @param paramName The parameter declaration string
      * @return The array of generic types as strings
      */
@@ -238,23 +238,25 @@ public class SignatureParser
      */
     private Method findMethod(String classMethod)
     {
+        String classMethodChop = classMethod;
+
         // If there is a return type then it must be before the last space.
-        int lastSpace = classMethod.lastIndexOf(' ');
+        int lastSpace = classMethodChop.lastIndexOf(' ');
         if (lastSpace >= 0)
         {
-            classMethod = classMethod.substring(lastSpace, classMethod.length() - 1);
+            classMethodChop = classMethodChop.substring(lastSpace, classMethodChop.length() - 1);
         }
 
         // The method name comes after the last .
-        int lastDot = classMethod.lastIndexOf('.');
+        int lastDot = classMethodChop.lastIndexOf('.');
         if (lastDot == -1)
         {
-            log.error("Missing . to separate class name and method: " + classMethod); //$NON-NLS-1$
+            log.error("Missing . to separate class name and method: " + classMethodChop); //$NON-NLS-1$
             return null;
         }
 
-        String className = classMethod.substring(0, lastDot);
-        String methodName = classMethod.substring(lastDot + 1);
+        String className = classMethodChop.substring(0, lastDot);
+        String methodName = classMethodChop.substring(lastDot + 1);
 
         Class clazz = findClass(className);
         if (clazz == null)
@@ -341,7 +343,7 @@ public class SignatureParser
     }
 
     private Map classImports = new HashMap();
-    
+
     private List packageImports = new ArrayList();
 
     /**
@@ -352,5 +354,5 @@ public class SignatureParser
     /**
      * The log stream
      */
-    static public final Logger log = Logger.getLogger(SignatureParser.class);
+    public static final Logger log = Logger.getLogger(SignatureParser.class);
 }

@@ -1,6 +1,5 @@
 package uk.ltd.getahead.dwr;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.xml.sax.EntityResolver;
@@ -17,7 +16,7 @@ public final class DTDEntityResolver implements EntityResolver
     /* (non-Javadoc)
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
      */
-    public InputSource resolveEntity(String arg0, String arg1) throws SAXException, IOException
+    public InputSource resolveEntity(String arg0, String arg1) throws SAXException
     {
         if (arg0.equals(XML_PUBLIC_ID))
         {

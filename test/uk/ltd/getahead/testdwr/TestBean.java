@@ -73,7 +73,6 @@ public class TestBean
     }
 
     private String string = "Default initial value"; //$NON-NLS-1$
-    private int integer = 42;
+    private int integer = 0;
     private TestBean testBean = null;
 }
-

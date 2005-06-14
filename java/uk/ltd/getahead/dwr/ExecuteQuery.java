@@ -29,12 +29,14 @@ public final class ExecuteQuery
      * @param req The users request
      * @param creatorManager The way we get an object to call methods on
      * @param converterManager The way we convert javascript to java
+     * @param doorman The security manager
      */
-    public ExecuteQuery(HttpServletRequest req, CreatorManager creatorManager, ConverterManager converterManager)
+    public ExecuteQuery(HttpServletRequest req, CreatorManager creatorManager, ConverterManager converterManager, Doorman doorman)
     {
+        this.req = req;
         this.creatorManager = creatorManager;
         this.converterManager = converterManager;
-        this.req = req;
+        this.doorman = doorman;
 
         if (req.getMethod().equals("GET")) //$NON-NLS-1$
         {
@@ -60,10 +62,13 @@ public final class ExecuteQuery
         try
         {
             BufferedReader in = req.getReader();
-            if(in == null) {
+
+            if (in == null)
+            {
                 // it is not a post message
-                throw new RuntimeException("only post messages are supported for the exec method");
+                throw new RuntimeException("ExecuteQuery.ErrorNullPost"); //$NON-NLS-1$
             }
+
             while (true)
             {
                 String line = in.readLine();
@@ -75,7 +80,12 @@ public final class ExecuteQuery
 
                 // If there are any &s then this must be iframe post and all the
                 // parameters have got dumped on one line.
-                if (line.indexOf('&') != -1)
+                if (line.indexOf('&') == -1)
+                {
+                    log.debug("POST line: " + line); //$NON-NLS-1$
+                    parsePostLine(line, paramMap);
+                }
+                else
                 {
                     StringTokenizer st = new StringTokenizer(line, "&"); //$NON-NLS-1$
                     while (st.hasMoreTokens())
@@ -86,11 +96,6 @@ public final class ExecuteQuery
                         log.debug("iframe POST line: " + part); //$NON-NLS-1$
                         parsePostLine(part, paramMap);
                     }
-                }
-                else
-                {
-                    log.debug("POST line: " + line); //$NON-NLS-1$
-                    parsePostLine(line, paramMap);
                 }
             }
         }
@@ -117,11 +122,11 @@ public final class ExecuteQuery
         {
             String key = line.substring(0, sep);
             String value = line.substring(sep  + ConversionConstants.INBOUND_DECL_SEPARATOR.length());
-   
+
             paramMap.put(key, value);
         }
     }
-    
+
     /**
      * Parse an HTTP GET request to fill out the scriptName, methodName and
      * paramList properties. This method should not fail unless it will not
@@ -138,7 +143,7 @@ public final class ExecuteQuery
         {
             String key = (String) it.next();
             Object value = paramMap.get(key);
-            
+
             if (value != null)
             {
                 if (value instanceof String[])
@@ -213,7 +218,7 @@ public final class ExecuteQuery
                 }
             }
         }
-        
+
         if (paramMap.size() != 0)
         {
             log.warn("Entries left over in parameter map"); //$NON-NLS-1$
@@ -234,7 +239,7 @@ public final class ExecuteQuery
             }
 
             // We can just use 0 because they are all shared
-            if(calls.length > 0)
+            if (calls.length > 0)
             {
                 for (Iterator it = calls[0].getInboundContext().getInboundVariableNames(); it.hasNext();)
                 {
@@ -284,12 +289,12 @@ public final class ExecuteQuery
                 Method method = findMethod(callNum);
                 if (method == null)
                 {
-                    String name = call.getScriptName() + "." + call.getMethodName(); //$NON-NLS-1$
+                    String name = call.getScriptName() + '.' + call.getMethodName();
                     throw new IllegalArgumentException(Messages.getString("ExecuteQuery.UnknownMethod", name)); //$NON-NLS-1$
                 }
 
                 // Check this method is accessible
-                String reason = Factory.getDoorman().getReasonToNotExecute(req, creator, call.getScriptName(), method);
+                String reason = doorman.getReasonToNotExecute(req, creator, call.getScriptName(), method);
                 if (reason != null)
                 {
                     log.error("Access denied: " + reason); //$NON-NLS-1$
@@ -483,16 +488,16 @@ public final class ExecuteQuery
         String[] reply = new String[2];
 
         int colon = data.indexOf(ConversionConstants.INBOUND_TYPE_SEPARATOR);
-        if (colon != -1)
-        {
-            reply[INBOUND_INDEX_TYPE] = data.substring(0, colon);
-            reply[INBOUND_INDEX_VALUE] = data.substring(colon + 1);
-        }
-        else
+        if (colon == -1)
         {
             log.error("Missing : in conversion data (" + data + ')'); //$NON-NLS-1$
             reply[INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
             reply[INBOUND_INDEX_VALUE] = data;
+        }
+        else
+        {
+            reply[INBOUND_INDEX_TYPE] = data.substring(0, colon);
+            reply[INBOUND_INDEX_VALUE] = data.substring(colon + 1);
         }
 
         return reply;
@@ -503,11 +508,24 @@ public final class ExecuteQuery
      */
     private static final Logger log = Logger.getLogger(ExecuteQuery.class);
 
-    private ConverterManager converterManager;
-    private CreatorManager creatorManager;
+    /**
+     * The converter manager that decides how parameters are converted
+     */
+    private ConverterManager converterManager = null;
+
+    /**
+     * The CreatorManager to which we delegate creation of new objects.
+     */
+    private CreatorManager creatorManager = null;
+
+    /**
+     * The security manager
+     */
+    private Doorman doorman = null;
+
     private HttpServletRequest req;
 
-    private boolean xmlMode;
-    private IOException delayed;
-    private Call[] calls;
+    private boolean xmlMode = false;
+    private IOException delayed = null;
+    private Call[] calls = null;
 }

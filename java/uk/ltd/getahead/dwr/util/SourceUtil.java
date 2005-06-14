@@ -11,6 +11,13 @@ import java.io.StringReader;
 public class SourceUtil
 {
     /**
+     * Prevent instansiation
+     */
+    private SourceUtil()
+    {
+    }
+
+    /**
      * Compress the source code by removing java style comments and removing
      * leading and trailing spaces.
      * @param text The javascript (or java) program to compress
@@ -36,7 +43,7 @@ public class SourceUtil
         try
         {
             StringBuffer output = new StringBuffer();
-    
+
             // First we strip multi line comments. I think this is important:
             BufferedReader in = new BufferedReader(new StringReader(text));
             while (true)
@@ -67,8 +74,8 @@ public class SourceUtil
      */
     public static String stripComments(String text)
     {
-        String reply = SourceUtil.stripMultiLineComments(text);
-        reply = SourceUtil.stripSingleLineComments(reply);
+        String reply = stripMultiLineComments(text);
+        reply = stripSingleLineComments(reply);
         return reply;
     }
 
@@ -82,7 +89,7 @@ public class SourceUtil
         try
         {
             StringBuffer output = new StringBuffer();
-    
+
             // First we strip multi line comments. I think this is important:
             BufferedReader in = new BufferedReader(new StringReader(text));
             while (true)
@@ -92,17 +99,17 @@ public class SourceUtil
                 {
                     break;
                 }
-    
+
                 int cstart = line.indexOf(COMMENT_SL_START);
                 if (cstart >= 0)
                 {
                     line = line.substring(0, cstart);
                 }
-    
+
                 output.append(line);
                 output.append('\n');
             }
-    
+
             return output.toString();
         }
         catch (IOException ex)
@@ -122,13 +129,13 @@ public class SourceUtil
         try
         {
             StringBuffer output = new StringBuffer();
-    
+
             // Comment rules:
             /*/           This is still a comment
             /* /* */      // Comments do not nest
             // /* */      This is in a comment
             /* // */      // The second // is needed to make this a comment.
-    
+
             // First we strip multi line comments. I think this is important:
             boolean inMultiLine = false;
             BufferedReader in = new BufferedReader(new StringReader(text));
@@ -139,7 +146,7 @@ public class SourceUtil
                 {
                     break;
                 }
-    
+
                 if (!inMultiLine)
                 {
                     // We are not in a multi-line comment, check for a start
@@ -156,7 +163,7 @@ public class SourceUtil
                         }
                         else
                         {
-                            // A real multi-line comment 
+                            // A real multi-line comment
                             inMultiLine = true;
                             line = line.substring(0, cstart) + SPACE;
                         }
@@ -184,11 +191,11 @@ public class SourceUtil
                         line = SPACE;
                     }
                 }
-    
+
                 output.append(line);
                 output.append('\n');
             }
-    
+
             return output.toString();
         }
         catch (IOException ex)

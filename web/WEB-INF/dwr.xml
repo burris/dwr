@@ -22,20 +22,16 @@
 
     <create creator="new" javascript="JDate">
       <param name="class" value="java.util.Date"/>
-      <include method="getSeconds"/>
-      <include method="getMinutes"/>
-      <include method="getMonth"/>
-      <include method="getHours"/>
-      <include method="toString"/>
+      <exclude method="getHours"/>
       <auth method="toString" role="admin"/>
       <auth method="toString" role="devel"/>
     </create>
 
-    <create creator="session" javascript="TestBean">
+    <create creator="new" javascript="TestBean" scope="session">
       <param name="class" value="uk.ltd.getahead.testdwr.TestBean"/>
     </create>
 
-    <create creator="session" javascript="Demo">
+    <create creator="new" javascript="Demo" scope="session">
       <param name="class" value="uk.ltd.getahead.testdwr.Demo"/>
     </create>
 

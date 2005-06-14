@@ -70,7 +70,7 @@ public class DefaultConverterManager implements ConverterManager
                 }
             }
         }
-        
+
         // Check that we don't have this one already
         Converter other = (Converter) converters.get(match);
         if (other != null)
@@ -303,7 +303,7 @@ public class DefaultConverterManager implements ConverterManager
      * Something to hold the method, paramNo and index together as an object
      * that can be a key in a Map.
      */
-    private class ParamInfoKey
+    private static class ParamInfoKey
     {
         /**
          * Setup this object
@@ -374,17 +374,17 @@ public class DefaultConverterManager implements ConverterManager
             return method.getName() + '[' + paramNo + "]<" + index + '>'; //$NON-NLS-1$
         }
 
-        Method method;
-        int paramNo;
-        int index;
+        final Method method;
+        final int paramNo;
+        final int index;
     }
 
     /**
      * Sets the converters for this converter manager.
-     *
      * @param converters the map of match pattern and their converter instances
      */
-    public void setConverters(Map converters) {
+    public void setConverters(Map converters)
+    {
         this.converters = converters;
     }
 

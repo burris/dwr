@@ -1,7 +1,6 @@
 package uk.ltd.getahead.dwr.util;
 
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -13,7 +12,7 @@ public final class LogErrorHandler implements ErrorHandler
     /* (non-Javadoc)
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
-    public void fatalError(SAXParseException ex) throws SAXException
+    public void fatalError(SAXParseException ex)
     {
         log.fatal(getMessage(ex));
     }
@@ -21,7 +20,7 @@ public final class LogErrorHandler implements ErrorHandler
     /* (non-Javadoc)
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
-    public void error(SAXParseException ex) throws SAXException
+    public void error(SAXParseException ex)
     {
         log.error(getMessage(ex));
     }
@@ -29,7 +28,7 @@ public final class LogErrorHandler implements ErrorHandler
     /* (non-Javadoc)
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
-    public void warning(SAXParseException ex) throws SAXException
+    public void warning(SAXParseException ex)
     {
         log.warn(getMessage(ex));
     }

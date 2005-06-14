@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -137,13 +140,17 @@ public class SpringCreator extends AbstractCreator implements Creator
                     if (factory == null)
                     {
                         ExecutionContext execCtx = ExecutionContext.get();
-                        factory = RequestContextUtils.getWebApplicationContext(
-                                execCtx.getHttpServletRequest(), execCtx.getServletContext());
+                        ServletContext srvCtx = execCtx.getServletContext();
+                        HttpServletRequest req = execCtx.getHttpServletRequest();
+
+                        // factory = WebApplicationContextUtils.getWebApplicationContext(srvCtx);
+                        factory = RequestContextUtils.getWebApplicationContext(req, srvCtx);
                     }
                 }
             }
 
-            if(factory == null) {
+            if (factory == null)
+            {
                 throw new InstantiationException(Messages.getString("SpringCreator.MissingFactory", resourceName)); //$NON-NLS-1$
             }
             

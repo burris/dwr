@@ -112,17 +112,33 @@ function $()
  * @param level 0 = Single line of debug, 1 = Multi-line debug that does not
  *              dig into child objects, 2 = Multi-line debug that digs into the
  *              2nd layer of child objects
+ * @param depth How much do we indent this item?
  * @see http://www.getahead.ltd.uk/dwr/util-general.html
  */
-DWRUtil.toDescriptiveString = function(data, level)
+DWRUtil.toDescriptiveString = function(data, level, depth)
 {
     var reply = "";
     var i = 0;
     var value;
 
-    if (DWRUtil.isArray(data))
+    if (depth == null)
+    {
+        depth = 0;
+    }
+
+    if (data == null)
+    {
+        return "null";
+    }
+
+    if (DWRUtil._isArray(data))
     {
         reply = "[";
+        if (level != 0)
+        {
+            reply += "\n";
+        }
+
         for (i = 0; i < data.length; i++)
         {
             try
@@ -135,7 +151,7 @@ DWRUtil.toDescriptiveString = function(data, level)
                 }
                 else if (typeof obj == "object" && level > 0)
                 {
-                    value = DWRUtil.toDescriptiveString(obj, level - 1);
+                    value = DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
                 }
                 else
                 {
@@ -149,7 +165,7 @@ DWRUtil.toDescriptiveString = function(data, level)
                 value = "" + ex;
             }
 
-            if (value.length > 13)
+            if (level == 0 && value.length > 13)
             {
                 value = value.substring(0, 10) + "...";
             }
@@ -173,21 +189,27 @@ DWRUtil.toDescriptiveString = function(data, level)
         return reply;
     }
 
-    if (typeof data == "string" || typeof data == "number" || DWRUtil.isDate(data))
+    if (typeof data == "string" || typeof data == "number" || DWRUtil._isDate(data))
     {
         return data.toString();
     }
 
     if (typeof data == "object")
     {
-        var typename = DWRUtil.detailedTypeOf(data);
+        var typename = DWRUtil._detailedTypeOf(data);
         if (typename != "Object")
         {
             reply = typename + " ";
         }
-        reply += "{";
 
-        var isHtml = DWRUtil.isHTMLElement(data);
+        reply += DWRUtil._indent(level, depth);
+        reply += "{";
+        if (level != 0)
+        {
+            reply += "\n";
+        }
+
+        var isHtml = DWRUtil._isHTMLElement(data);
 
         for (var prop in data)
         {
@@ -217,7 +239,12 @@ DWRUtil.toDescriptiveString = function(data, level)
                 }
                 else if (typeof obj == "object" && level > 0)
                 {
-                    value = DWRUtil.toDescriptiveString(obj, level - 1);
+                    if (level != 0)
+                    {
+                        value = "\n";
+                    }
+                    value += DWRUtil._indent(level, depth + 2);
+                    value += DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
                 }
                 else
                 {
@@ -236,6 +263,7 @@ DWRUtil.toDescriptiveString = function(data, level)
                 value = value.substring(0, 10) + "...";
             }
 
+            reply += DWRUtil._indent(level, depth + 1);
             reply += prop;
             reply += ":";
             reply += value;
@@ -254,12 +282,31 @@ DWRUtil.toDescriptiveString = function(data, level)
             }
         }
 
+        reply += DWRUtil._indent(level, depth);
         reply += "}";
 
         return reply;
     }
 
     return data.toString();
+};
+
+/**
+ * Indenting for DWRUtil.toDescriptiveString
+ * @private
+ */
+DWRUtil._indent = function(level, depth)
+{
+    var reply = "";
+    if (level != 0)
+    {
+        for (var j = 0; j < depth; j++)
+        {
+            reply += "--";
+        }
+        reply += " ";
+    }
+    return reply;
 };
 
 /**
@@ -323,7 +370,7 @@ DWRUtil.setValue = function(ele, val)
         return;
     }
 
-    if (DWRUtil.isHTMLElement(ele, "select"))
+    if (DWRUtil._isHTMLElement(ele, "select"))
     {
         // search through the values
         var found  = false;
@@ -360,7 +407,7 @@ DWRUtil.setValue = function(ele, val)
         return;
     }
 
-    if (DWRUtil.isHTMLElement(ele, "input"))
+    if (DWRUtil._isHTMLElement(ele, "input"))
     {
         switch (ele.type)
         {
@@ -376,7 +423,7 @@ DWRUtil.setValue = function(ele, val)
         }
     }
 
-    if (DWRUtil.isHTMLElement(ele, "textarea"))
+    if (DWRUtil._isHTMLElement(ele, "textarea"))
     {
         ele.value = val;
         return;
@@ -402,7 +449,7 @@ DWRUtil.getValue = function(ele)
         return;
     }
 
-    if (DWRUtil.isHTMLElement(ele, "select"))
+    if (DWRUtil._isHTMLElement(ele, "select"))
     {
         // This is a bit of a scam because it assumes single select
         // but I'm not sure how we should treat multi-select.
@@ -423,7 +470,7 @@ DWRUtil.getValue = function(ele)
         }
     }
 
-    if (DWRUtil.isHTMLElement(ele, "input"))
+    if (DWRUtil._isHTMLElement(ele, "input"))
     {
         switch (ele.type)
         {
@@ -437,7 +484,7 @@ DWRUtil.getValue = function(ele)
         }
     }
 
-    if (DWRUtil.isHTMLElement(ele, "textarea"))
+    if (DWRUtil._isHTMLElement(ele, "textarea"))
     {
         return ele.value;
     }
@@ -461,9 +508,9 @@ DWRUtil.getText = function(ele)
         return;
     }
 
-    if (!DWRUtil.isHTMLElement(ele, "select"))
+    if (!DWRUtil._isHTMLElement(ele, "select"))
     {
-        alert("getText() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele) + " from  id: " + orig + ".");
+        alert("getText() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele) + " from  id: " + orig + ".");
         return;
     }
 
@@ -535,9 +582,9 @@ DWRUtil.removeAllOptions = function(ele)
         return;
     }
 
-    if (!DWRUtil.isHTMLElement(ele, "select"))
+    if (!DWRUtil._isHTMLElement(ele, "select"))
     {
-        alert("removeAllOptions() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
+        alert("removeAllOptions() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
         return;
     }
 
@@ -588,9 +635,9 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
         return;
     }
 
-    if (!DWRUtil.isHTMLElement(ele, "select"))
+    if (!DWRUtil._isHTMLElement(ele, "select"))
     {
-        alert("fillList() can only be used with select elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
+        alert("fillList() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
         return;
     }
 
@@ -603,7 +650,7 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
     var text;
     var value;
 
-    if (DWRUtil.isArray(data))
+    if (DWRUtil._isArray(data))
     {
         // Loop through the data that we do have
         for (var i = 0; i < data.length; i++)
@@ -630,7 +677,7 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
                 }
                 else
                 {
-                    text = DWRUtil.toDescriptiveString(data[i]);
+                    text = "" + data[i];
                     value = text;
                 }
             }
@@ -664,9 +711,14 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
 // The following functions are described in util-table.html
 
 /**
- * Under the tbody (given by id) create a row for each element in the data
- * and for that row create one cell for each function in the cellFuncs array
- * by passing the rows object (from the data) to the given function.
+ * Create rows inside a the table, tbody, thead or tfoot element (given by id).
+ * The normal case would be to use tbody since that allows you to keep header
+ * lines separate, but this function should work with and table element above
+ * tr.
+ * This function creates a row for each element in the <code>data</code> array
+ * and for that row create one cell for each function in the
+ * <code>cellFuncs</code> array by passing the element from the
+ * <code>data</code> array to the given function.
  * The return from the function is used to populate the cell.
  * <p>The pseudo code looks something like this:
  * <pre>
@@ -677,9 +729,6 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
  * One slight modification to this is that any members of the cellFuncs array
  * that are strings instead of functions, the strings are used as cell contents
  * directly.
- * <p>Note that this function uses instanceof to detect strings which may break
- * on IE5 Mac. So we might need to rely on typeof == "string" alone. I'm not
- * yet sure if this might be an issue.
  * @see http://www.getahead.ltd.uk/dwr/util-table.html
  * @param ele The id of the tbody element
  * @param data Array containing one entry for each row in the updated table
@@ -696,10 +745,10 @@ DWRUtil.addRows = function(ele, data, cellFuncs)
         return;
     }
 
-    if (!DWRUtil.isHTMLElement(ele, "table") && !DWRUtil.isHTMLElement(ele, "tbody") &&
-        !DWRUtil.isHTMLElement(ele, "thead") && !DWRUtil.isHTMLElement(ele, "tfoot"))
+    if (!DWRUtil._isHTMLElement(ele, "table") && !DWRUtil._isHTMLElement(ele, "tbody") &&
+        !DWRUtil._isHTMLElement(ele, "thead") && !DWRUtil._isHTMLElement(ele, "tfoot"))
     {
-        alert("addRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil.detailedTypeOf(ele));
+        alert("addRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
         return;
     }
 
@@ -724,7 +773,7 @@ DWRUtil._addRowsInner = function(ele, data, cellFuncs)
 {
     var frag = document.createDocumentFragment();
 
-    if (DWRUtil.isArray(data))
+    if (DWRUtil._isArray(data))
     {
         // loop through data source
         for (var i = 0; i < data.length; i++)
@@ -767,11 +816,11 @@ DWRUtil._addRowInner = function(frag, row, cellFuncs)
         {
             var reply = func(row);
 
-            if (DWRUtil.isHTMLElement(reply, "td"))
+            if (DWRUtil._isHTMLElement(reply, "td"))
             {
                 td = reply;
             }
-            else if (DWRUtil.isHTMLElement(reply))
+            else if (DWRUtil._isHTMLElement(reply))
             {
                 td = document.createElement("td");
                 td.appendChild(reply);
@@ -804,7 +853,14 @@ DWRUtil.removeAllRows = function(ele)
     ele = $(ele);
     if (ele == null)
     {
-        alert("clearChildNodes() can't find an element with id: " + orig + ".");
+        alert("removeAllRows() can't find an element with id: " + orig + ".");
+        return;
+    }
+
+    if (!DWRUtil._isHTMLElement(ele, "table") && !DWRUtil._isHTMLElement(ele, "tbody") &&
+        !DWRUtil._isHTMLElement(ele, "thead") && !DWRUtil._isHTMLElement(ele, "tfoot"))
+    {
+        alert("removeAllRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
         return;
     }
 
@@ -838,7 +894,7 @@ DWRUtil._isIE = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.index
  * @param nodeName eg input, textarea - optional extra check for node name
  * @private
  */
-DWRUtil.isHTMLElement = function(ele, nodeName)
+DWRUtil._isHTMLElement = function(ele, nodeName)
 {
     if (nodeName == null)
     {
@@ -862,7 +918,7 @@ DWRUtil.isHTMLElement = function(ele, nodeName)
  * than "object"
  * @private
  */
-DWRUtil.detailedTypeOf = function(x)
+DWRUtil._detailedTypeOf = function(x)
 {
     var reply = typeof x;
 
@@ -875,40 +931,83 @@ DWRUtil.detailedTypeOf = function(x)
     return reply;
 };
 
+/**
+ * Array detector.
+ * This is an attempt to work around the lack of support for instanceof in
+ * some browsers.
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param data The object to test
+ * @returns true iff <code>data</code> is an Array
+ * @private
+ */
+DWRUtil._isArray = function(data)
+{
+    return (data && data.join) ? true : false;
+};
+
+/**
+ * Date detector.
+ * This is an attempt to work around the lack of support for instanceof in
+ * some browsers.
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param data The object to test
+ * @returns true iff <code>data</code> is a Date
+ * @private
+ */
+DWRUtil._isDate = function(data)
+{
+    return (data && data.toUTCString) ? true : false;
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 // Deprecated functions only below here
 
 /**
- * Is the given node an HTML input element?
+ * Is the given node an HTML element (optionally of a given type)?
  * @see http://www.getahead.ltd.uk/dwr/util-compat.html
  * @param ele The element to test
- * @deprecated Use isHTMLElement with a type field
+ * @param nodeName eg input, textarea - optional extra check for node name
+ * @deprecated DWR isn't a generic Javascript library
  */
-DWRUtil.isHTMLInputElement = function(ele)
+DWRUtil.isHTMLElement = function(ele, nodeName)
 {
-    return DWRUtil.isHTMLElement(ele, "input");
+    DWRUtil._deprecated("DWRUtil.isHTMLElement");
+
+    if (nodeName == null)
+    {
+        // If I.E. worked properly we could use:
+        //  return typeof ele == "object" && ele instanceof HTMLElement;
+        return ele != null &&
+               typeof ele == "object" &&
+               ele.nodeName != null;
+    }
+    else
+    {
+        return ele != null &&
+               typeof ele == "object" &&
+               ele.nodeName != null &&
+               ele.nodeName.toLowerCase() == nodeName.toLowerCase();
+    }
 };
 
 /**
- * Is the given node an HTML textarea element?
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
- * @param ele The element to test
- * @deprecated Use isHTMLElement with a type field
+ * Like typeOf except that more information for an object is returned other
+ * than "object"
+ * @deprecated DWR isn't a generic Javascript library
  */
-DWRUtil.isHTMLTextAreaElement = function(ele)
+DWRUtil.detailedTypeOf = function(x)
 {
-    return DWRUtil.isHTMLElement(ele, "textarea");
-};
+    DWRUtil._deprecated("DWRUtil.detailedTypeOf");
 
-/**
- * Is the given node an HTML select element?
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
- * @param ele The element to test
- * @deprecated Use isHTMLElement with a type field
- */
-DWRUtil.isHTMLSelectElement = function(ele)
-{
-    return DWRUtil.isHTMLElement(ele, "select");
+    var reply = typeof x;
+
+    if (reply == "object")
+    {
+        reply = Object.prototype.toString.apply(x);  // Returns "[object class]"
+        reply = reply.substring(8, reply.length-1);  // Just get the class bit
+    }
+
+    return reply;
 };
 
 /**
@@ -922,6 +1021,7 @@ DWRUtil.isHTMLSelectElement = function(ele)
  */
 DWRUtil.isArray = function(data)
 {
+    DWRUtil._deprecated("DWRUtil.isArray", "(array.join != null)");
     return (data && data.join) ? true : false;
 };
 
@@ -940,12 +1040,50 @@ DWRUtil.isDate = function(data)
 };
 
 /**
+ * Is the given node an HTML input element?
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param ele The element to test
+ * @deprecated See the documentation for alternatives
+ */
+DWRUtil.isHTMLInputElement = function(ele)
+{
+    DWRUtil._deprecated("DWRUtil.isHTMLInputElement");
+    return DWRUtil.isHTMLElement(ele, "input");
+};
+
+/**
+ * Is the given node an HTML textarea element?
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param ele The element to test
+ * @deprecated See the documentation for alternatives
+ */
+DWRUtil.isHTMLTextAreaElement = function(ele)
+{
+    DWRUtil._deprecated("DWRUtil.isHTMLTextAreaElement");
+    return DWRUtil.isHTMLElement(ele, "textarea");
+};
+
+/**
+ * Is the given node an HTML select element?
+ * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @param ele The element to test
+ * @deprecated See the documentation for alternatives
+ */
+DWRUtil.isHTMLSelectElement = function(ele)
+{
+    DWRUtil._deprecated("DWRUtil.isHTMLSelectElement");
+    return DWRUtil.isHTMLElement(ele, "select");
+};
+
+/**
  * Like document.getElementById() that works in more browsers.
  * @param id The id of the element
  * @deprecated Use $()
  */
 DWRUtil.getElementById = function(id)
 {
+    DWRUtil._deprecated("DWRUtil.getElementById", "$");
+
     if (document.getElementById)
     {
         return document.getElementById(id);
@@ -963,9 +1101,12 @@ DWRUtil.getElementById = function(id)
  * @see http://www.getahead.ltd.uk/dwr/util-compat.html
  * @param ele The id of the element or the HTML element itself
  * @param state Boolean true/false to set if the element should be enabled
+ * @deprecated DWR isn't a generic Javascript library
  */
 DWRUtil.setEnabled = function(ele, state)
 {
+    DWRUtil._deprecated("DWRUtil.setEnabled");
+
     var orig = ele;
     ele = $(ele);
     if (ele == null)
@@ -1002,6 +1143,8 @@ DWRUtil.setEnabled = function(ele, state)
  */
 DWRUtil.showById = function(ele)
 {
+    DWRUtil._deprecated("DWRUtil.showById");
+
     var orig = ele;
     ele = $(ele);
     if (ele == null)
@@ -1021,6 +1164,8 @@ DWRUtil.showById = function(ele)
  */
 DWRUtil.hideById = function(ele)
 {
+    DWRUtil._deprecated("DWRUtil.hideById");
+
     var orig = ele;
     ele = $(ele);
     if (ele == null)
@@ -1039,6 +1184,8 @@ DWRUtil.hideById = function(ele)
  */
 DWRUtil.toggleDisplay = function(ele)
 {
+    DWRUtil._deprecated("DWRUtil.toggleDisplay");
+
     var orig = ele;
     ele = $(ele);
     if (ele == null)
@@ -1067,6 +1214,8 @@ DWRUtil.toggleDisplay = function(ele)
  */
 DWRUtil.alternateRowColors = function()
 {
+    DWRUtil._deprecated("DWRUtil.alternateRowColors");
+
     var tables = document.getElementsByTagName("table");
     var rowCount = 0;
 
@@ -1104,6 +1253,8 @@ DWRUtil.alternateRowColors = function()
  */
 DWRUtil.setCSSClass = function(ele, cssclass)
 {
+    DWRUtil._deprecated("DWRUtil.setCSSClass");
+
     var orig = ele;
     ele = $(ele);
     if (ele == null)
@@ -1122,6 +1273,8 @@ DWRUtil.setCSSClass = function(ele, cssclass)
  */
 DWRUtil.callOnLoad = function(load)
 {
+    DWRUtil._deprecated("DWRUtil.fillList");
+
     if (window.addEventListener)
     {
         window.addEventListener("load", load, false);
@@ -1143,25 +1296,79 @@ DWRUtil.callOnLoad = function(load)
  */
 DWRUtil.fillList = function(ele, data, valueprop, textprop)
 {
+    DWRUtil._deprecated("DWRUtil.fillList", "DWRUtil.addOptions");
     DWRUtil.removeAllOptions(ele);
     DWRUtil.addOptions(ele, data, valueprop, textprop);
 };
 
 /**
  * Add rows to a table
- * @deprecated Use addRows()
+ * @deprecated Use DWRUtil.addRows()
  */
 DWRUtil.drawTable = function(ele, data, cellFuncs)
 {
+    DWRUtil._deprecated("DWRUtil.drawTable", "DWRUtil.addRows");
     DWRUtil.addRows(ele, data, cellFuncs);
 };
+
+/**
+ * Remove all the children of a given node.
+ * Most useful for dynamic tables where you clearChildNodes() on the tbody
+ * element.
+ * @param id The id of the element
+ * @deprecated Use DWRUtil.removeAllRows()
+ */
+DWRUtil.clearChildNodes = function(id)
+{
+    DWRUtil._deprecated("DWRUtil.clearChildNodes", "DWRUtil.removeAllRows");
+
+    var ele = DWRUtil.getElementById(id);
+    if (ele == null)
+    {
+        alert("clearChildNodes() can't find an element with id: " + id + ".");
+        throw id;
+    }
+
+    while (ele.childNodes.length > 0)
+    {
+        ele.removeChild(ele.firstChild);
+    }
+};
+
+/**
+ * Do we alert on deprecation warnings
+ * @private
+ */
+DWRUtil._showDeprecated = true;
 
 /**
  * We can use this function to deprecate things.
  * @deprecated
  * @private
  */
-DWRUtil._deprecated = function(fname)
+DWRUtil._deprecated = function(fname, alternative)
 {
-    alert("Utility functions like " + fname + "() are deprecated. Please convert to the DWRUtil.xxx() versions");
+    var further = "See the deprecation section on the DWR website for more details.\nDo you wish to ignore further deprecation warnings?";
+    var warning;
+
+    if (DWRUtil._showDeprecated)
+    {
+        if (fname == null)
+        {
+            warning = "You have used a deprecated function which could be removed in the future.";
+        }
+        else
+        {
+            if (alternative == null)
+            {
+                warning = "Utility functions like '" + fname + "' are deprecated and could be removed in the future.\nSee the documentation for alternatives.";
+            }
+            else
+            {
+                warning = "Utility functions like '" + fname + "' are deprecated and could be removed in the future.\nFor an alternative see: " + alternative;
+            }
+        }
+
+        DWRUtil._showDeprecated = !confirm(warning + further);
+    }
 };

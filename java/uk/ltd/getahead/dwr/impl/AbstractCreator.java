@@ -55,7 +55,7 @@ public abstract class AbstractCreator implements Creator
     /**
      * The javascript name for the class
      */
-    private String javascript;
+    private String javascript = null;
 
     /**
      * The scope of the objects created by this creator
@@ -64,16 +64,16 @@ public abstract class AbstractCreator implements Creator
 
     /**
      * Is the given scope valid?
-     * @param scope The scope string to match
+     * @param cscope The scope string to match
      */
-    public static void checkScope(String scope)
+    public static void checkScope(String cscope)
     {
-        if (!scope.equals(PAGE) &&
-            !scope.equals(REQUEST) &&
-            !scope.equals(SESSION) &&
-            !scope.equals(APPLICATION))
+        if (!cscope.equals(PAGE) &&
+            !cscope.equals(REQUEST) &&
+            !cscope.equals(SESSION) &&
+            !cscope.equals(APPLICATION))
         {
-            throw new IllegalArgumentException(Messages.getString("AbstractCreator.IllegalScope", scope)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("AbstractCreator.IllegalScope", cscope)); //$NON-NLS-1$
         }
     }
 }

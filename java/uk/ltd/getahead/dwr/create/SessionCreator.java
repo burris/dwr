@@ -55,7 +55,7 @@ public class SessionCreator extends AbstractCreator implements Creator
             {
                 throw new InstantiationException(Messages.getString("Creator.IllegalAccess")); //$NON-NLS-1$
             }
-            
+
             session.setAttribute(getJavascript(), reply);
         }
 

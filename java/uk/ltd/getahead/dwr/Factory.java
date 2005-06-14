@@ -1,25 +1,173 @@
 package uk.ltd.getahead.dwr;
 
+import uk.ltd.getahead.dwr.util.Logger;
+
 /**
+ * Factory is like a mini-IoC container for DWR.
+ * At least it is an IoC container by interface (check: no params that have
+ * anything to do with DWR), but it is hard coded specifically for DWR. If we
+ * want to make more of it we can later, but this is certainly not going to
+ * become a full blow IoC container.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Factory
 {
     /**
-     * Prevent Instansiation
+     * Set the class that should be used to implement the given interface
+     * @param interfaceName The interface to implement
+     * @param implName The new implementation
+     * @throws ClassNotFoundException If <code>impl</code> could not be found.
+     * @throws IllegalAccessException If <code>impl</code> could not be created.
+     * @throws InstantiationException If <code>impl</code> could not be created. 
      */
-    private Factory()
+    public void setImplementation(String interfaceName, String implName) throws ClassNotFoundException, IllegalAccessException, InstantiationException
     {
+        Class iface = Class.forName(interfaceName);
+        Class impl = Class.forName(implName);
+
+        if (iface == CreatorManager.class)
+        {
+            creatorManager = (CreatorManager) impl.newInstance();
+        }
+        else if (iface == ConverterManager.class)
+        {
+            converterManager = (ConverterManager) impl.newInstance();
+        }
+        else if (iface == Doorman.class)
+        {
+            doorman = (Doorman) impl.newInstance();
+        }
+        else if (iface == DWRProcessor.class)
+        {
+            processor = (DWRProcessor) impl.newInstance();
+        }
+        else if (iface == ExecutionContext.class)
+        {
+            ExecutionContext.setImplementation(implName);
+            executionContext = (ExecutionContext) impl.newInstance();
+        }
     }
 
     /**
-     * Singleton accessor for the Doorman
-     * @return The new Doorman
+     * Called to indicate that we finished called setImplementation.
+     * @see Factory#setImplementation(String, String)
      */
-    public static Doorman getDoorman()
+    public void configurationFinished()
     {
-        return doorman;
+        try
+        {
+            if (creatorManager == null)
+            {
+                setImplementation(CreatorManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultCreatorManager"); //$NON-NLS-1$
+            }
+
+            if (converterManager == null)
+            {
+                setImplementation(ConverterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultConverterManager"); //$NON-NLS-1$
+            }
+
+            if (processor == null)
+            {
+                setImplementation(DWRProcessor.class.getName(), "uk.ltd.getahead.dwr.DWRProcessor"); //$NON-NLS-1$
+            }
+
+            if (executionContext == null)
+            {
+                setImplementation(ExecutionContext.class.getName(), "uk.ltd.getahead.dwr.ExecutionContext"); //$NON-NLS-1$
+            }
+
+            if (doorman == null)
+            {
+                setImplementation(Doorman.class.getName(), "uk.ltd.getahead.dwr.Doorman"); //$NON-NLS-1$
+            }
+
+            if (configuration == null)
+            {
+                setImplementation(Configuration.class.getName(), "uk.ltd.getahead.dwr.Configuration"); //$NON-NLS-1$
+            }
+        }
+        catch (Exception ex)
+        {
+            log.fatal("Internal error setting defaults", ex); //$NON-NLS-1$
+            throw new IllegalStateException(ex.getMessage());
+        }
+
+        processor.setConverterManager(converterManager);
+        processor.setCreatorManager(creatorManager);
+        processor.setDoorman(doorman);
+
+        configuration.setConverterManager(converterManager);
+        configuration.setCreatorManager(creatorManager);
+        configuration.setDoorman(doorman);
     }
 
-    private static Doorman doorman = new Doorman();
+    /**
+     * Get an instance of a bean of a given type.
+     * @param type The type to get an instance of
+     * @return The object of the given type
+     */
+    public Object getBean(Class type)
+    {
+        if (type == CreatorManager.class)
+        {
+            return creatorManager;
+        }
+        else if (type == ConverterManager.class)
+        {
+            return converterManager;
+        }
+        else if (type == Doorman.class)
+        {
+            return doorman;
+        }
+        else if (type == DWRProcessor.class)
+        {
+            return processor;
+        }
+        else if (type == ExecutionContext.class)
+        {
+            return executionContext;
+        }
+        else if (type == Configuration.class)
+        {
+            return configuration;
+        }
+
+        throw new IllegalArgumentException("Factory can't create a " + type.getName()); //$NON-NLS-1$
+    }
+
+    /**
+     * How we create new beans
+     */
+    protected CreatorManager creatorManager = null;
+
+    /**
+     * How we convert parameters
+     */
+    protected ConverterManager converterManager = null;
+
+    /**
+     * The security manager
+     */
+    protected Doorman doorman = null;
+
+    /**
+     * The thing that actually does the work
+     */
+    private DWRProcessor processor = null;
+
+    /**
+     * Container for the HTTP objects for deep thread access
+     */
+    private ExecutionContext executionContext = null;
+
+    /**
+     * The dwr.xml parser
+     */
+    private Configuration configuration = new Configuration();
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(Factory.class);
 }

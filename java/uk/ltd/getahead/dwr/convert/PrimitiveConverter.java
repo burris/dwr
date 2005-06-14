@@ -1,6 +1,5 @@
 package uk.ltd.getahead.dwr.convert;
 
-
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;

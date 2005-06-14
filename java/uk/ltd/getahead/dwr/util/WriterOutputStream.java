@@ -42,39 +42,39 @@ public final class WriterOutputStream extends ServletOutputStream
     /* (non-Javadoc)
      * @see java.io.OutputStream#write(byte[])
      */
-    public void write(byte[] b) throws IOException
+    public void write(byte[] ba) throws IOException
     {
         if (encoding == null)
         {
-            writer.write(new String(b));
+            writer.write(new String(ba));
         }
         else
         {
-            writer.write(new String(b, encoding));
+            writer.write(new String(ba, encoding));
         }
     }
 
     /* (non-Javadoc)
      * @see java.io.OutputStream#write(byte[], int, int)
      */
-    public void write(byte[] b, int off, int len) throws IOException
+    public void write(byte[] ba, int off, int len) throws IOException
     {
         if (encoding == null)
         {
-            writer.write(new String(b, off, len));
+            writer.write(new String(ba, off, len));
         }
         else
         {
-            writer.write(new String(b, off, len, encoding));
+            writer.write(new String(ba, off, len, encoding));
         }
     }
 
     /* (non-Javadoc)
      * @see java.io.OutputStream#write(int)
      */
-    public synchronized void write(int b) throws IOException
+    public synchronized void write(int bite) throws IOException
     {
-        buffer[0] = (byte) b;
+        buffer[0] = (byte) bite;
         write(buffer);
     }
 
@@ -104,7 +104,7 @@ public final class WriterOutputStream extends ServletOutputStream
     /**
      * What string encoding should we use
      */
-    private String encoding;
+    private String encoding = null;
 
     /**
      * Buffer for write(int)

@@ -143,7 +143,6 @@ public class MapConverter implements Converter
                 //InboundVariable keyIv = new InboundVariable(incx, splitIv[ExecuteQuery.INBOUND_INDEX_TYPE], splitIv[ExecuteQuery.INBOUND_INDEX_VALUE]);
                 InboundVariable keyIv = new InboundVariable(incx, ConversionConstants.TYPE_STRING, keyStr);
                 Object key = config.convertInbound(keyType, keyIv, inctx);
-                // TODO: remove note: String key = LocalUtil.decode(keyStr);
 
                 map.put(key, val);
             }

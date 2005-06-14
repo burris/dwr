@@ -1,7 +1,5 @@
 package uk.ltd.getahead.testdwr;
 
-import java.util.Date;
-
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
@@ -16,32 +14,32 @@ public class Person
 
     /**
      * @param name
-     * @param dateOfBirth
+     * @param address
      * @param id
      * @param salary
      */
-    public Person(String name, String dateOfBirth, int id, float salary)
+    public Person(String name, String address, int id, float salary)
     {
         this.name = name;
-        this.dateOfBirth = dateOfBirth;
+        this.address = address;
         this.id = id;
         this.salary = salary;
     }
 
     /**
-     * @return Returns the dateOfBirth.
+     * @return Returns the address.
      */
-    public String getDateOfBirth()
+    public String getAddress()
     {
-        return dateOfBirth;
+        return address;
     }
 
     /**
-     * @param dateOfBirth The dateOfBirth to set.
+     * @param address The address to set.
      */
-    public void setDateOfBirth(String dateOfBirth)
+    public void setAddress(String address)
     {
-        this.dateOfBirth = dateOfBirth;
+        this.address = address;
     }
 
     /**
@@ -93,7 +91,7 @@ public class Person
     }
 
     private String name = ""; //$NON-NLS-1$
-    private String dateOfBirth = new Date().toString();
+    private String address = ""; //$NON-NLS-1$
     private float salary = 0.0f;
     private int id = -1;
 }

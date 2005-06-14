@@ -3,12 +3,9 @@ package uk.ltd.getahead.dwr;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.SortedSet;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -291,7 +288,7 @@ public final class Configuration
         {
             Element include = (Element) incNodes.item(i);
             String method = include.getAttribute(ATTRIBUTE_METHOD);
-            Factory.getDoorman().addIncludeRule(javascript, method);
+            doorman.addIncludeRule(javascript, method);
         }
 
         NodeList excNodes = parent.getElementsByTagName(ELEMENT_EXCLUDE);
@@ -299,7 +296,7 @@ public final class Configuration
         {
             Element include = (Element) excNodes.item(i);
             String method = include.getAttribute(ATTRIBUTE_METHOD);
-            Factory.getDoorman().addExcludeRule(javascript, method);
+            doorman.addExcludeRule(javascript, method);
         }
     }
 
@@ -378,7 +375,7 @@ public final class Configuration
             String method = include.getAttribute(ATTRIBUTE_METHOD);
             String role = include.getAttribute(ATTRIBUTE_ROLE);
 
-            Factory.getDoorman().addRoleRestriction(javascript, method, role);
+            doorman.addRoleRestriction(javascript, method, role);
         }
     }
 
@@ -409,17 +406,6 @@ public final class Configuration
 
         SignatureParser sigp = new SignatureParser(converterManager);
         sigp.parse(sigtext.toString());
-    }
-
-    /**
-     * Check to see if the given word is reserved or a bad idea in any known
-     * version of JavaScript.
-     * @param name The word to check
-     * @return false if the word is not reserved
-     */
-    public boolean isReservedWord(String name)
-    {
-        return reserved.contains(name);
     }
 
     /**
@@ -459,10 +445,31 @@ public final class Configuration
     }
 
     /**
+     * Accessor for the security manager
+     * @return Returns the doorman.
+     */
+    public Doorman getDoorman()
+    {
+        return doorman;
+    }
+
+    /**
+     * Accessor for the security manager
+     * @param doorman The doorman to set.
+     */
+    public void setDoorman(Doorman doorman)
+    {
+        this.doorman = doorman;
+    }
+
+    /**
      * The log stream
      */
     private static final Logger log = Logger.getLogger(Configuration.class);
 
+    /**
+     * The converter manager that decides how parameters are converted
+     */
     private ConverterManager converterManager = null;
 
     /**
@@ -470,6 +477,14 @@ public final class Configuration
      */
     private CreatorManager creatorManager = null;
 
+    /**
+     * The security manager
+     */
+    private Doorman doorman = null;
+
+    /*
+     * The element names
+     */
     private static final String ELEMENT_INIT = "init"; //$NON-NLS-1$
     private static final String ELEMENT_ALLOW = "allow"; //$NON-NLS-1$
     private static final String ELEMENT_CREATE = "create"; //$NON-NLS-1$
@@ -481,6 +496,9 @@ public final class Configuration
     private static final String ELEMENT_AUTH = "auth"; //$NON-NLS-1$
     private static final String ELEMENT_SIGNATURES = "signatures"; //$NON-NLS-1$
 
+    /*
+     * The attribute names
+     */
     private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
     private static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
     private static final String ATTRIBUTE_CONVERTER = "converter"; //$NON-NLS-1$
@@ -493,108 +511,4 @@ public final class Configuration
     private static final String ATTRIBUTE_ROLE = "role"; //$NON-NLS-1$
     private static final String ATTRIBUTE_NUMBER = "number"; //$NON-NLS-1$
     private static final String ATTRIBUTE_TYPE = "type"; //$NON-NLS-1$
-
-    private static SortedSet reserved = new TreeSet();
-    private static final String[] RESERVED_ARRAY =  new String[]
-    {
-        // Reserved and used at ECMAScript 4
-        "as", //$NON-NLS-1$
-        "break", //$NON-NLS-1$
-        "case", //$NON-NLS-1$
-        "catch", //$NON-NLS-1$
-        "class", //$NON-NLS-1$
-        "const", //$NON-NLS-1$
-        "continue", //$NON-NLS-1$
-        "default", //$NON-NLS-1$
-        "delete", //$NON-NLS-1$
-        "do", //$NON-NLS-1$
-        "else", //$NON-NLS-1$
-        "export", //$NON-NLS-1$
-        "extends", //$NON-NLS-1$
-        "false", //$NON-NLS-1$
-        "finally", //$NON-NLS-1$
-        "for", //$NON-NLS-1$
-        "function", //$NON-NLS-1$
-        "if", //$NON-NLS-1$
-        "import", //$NON-NLS-1$
-        "in", //$NON-NLS-1$
-        "instanceof", //$NON-NLS-1$
-        "is", //$NON-NLS-1$
-        "namespace", //$NON-NLS-1$
-        "new", //$NON-NLS-1$
-        "null", //$NON-NLS-1$
-        "package", //$NON-NLS-1$
-        "private", //$NON-NLS-1$
-        "public", //$NON-NLS-1$
-        "return", //$NON-NLS-1$
-        "super", //$NON-NLS-1$
-        "switch", //$NON-NLS-1$
-        "this", //$NON-NLS-1$
-        "throw", //$NON-NLS-1$
-        "true", //$NON-NLS-1$
-        "try", //$NON-NLS-1$
-        "typeof", //$NON-NLS-1$
-        "use", //$NON-NLS-1$
-        "var", //$NON-NLS-1$
-        "void",  //$NON-NLS-1$
-        "while", //$NON-NLS-1$
-        "with", //$NON-NLS-1$
-        // Reserved for future use at ECMAScript 4
-        "abstract", //$NON-NLS-1$
-        "debugger", //$NON-NLS-1$
-        "enum", //$NON-NLS-1$
-        "goto", //$NON-NLS-1$
-        "implements", //$NON-NLS-1$
-        "interface", //$NON-NLS-1$
-        "native", //$NON-NLS-1$
-        "protected", //$NON-NLS-1$
-        "synchronized", //$NON-NLS-1$
-        "throws", //$NON-NLS-1$
-        "transient", //$NON-NLS-1$
-        "volatile", //$NON-NLS-1$
-        // Reserved in ECMAScript 3, unreserved at 4 best to avoid anyway
-        "boolean", //$NON-NLS-1$
-        "byte", //$NON-NLS-1$
-        "char", //$NON-NLS-1$
-        "double", //$NON-NLS-1$
-        "final", //$NON-NLS-1$
-        "float", //$NON-NLS-1$
-        "int", //$NON-NLS-1$
-        "long", //$NON-NLS-1$
-        "short", //$NON-NLS-1$
-        "static", //$NON-NLS-1$
-        // I have seen the folowing list as 'best avoided for function names'
-        // but it seems way to all encompassing, so I'm not going to include it
-        /*
-        "alert", "anchor", "area", "arguments", "array", "assign", "blur",
-        "boolean", "button", "callee", "caller", "captureevents", "checkbox",
-        "clearinterval", "cleartimeout", "close", "closed", "confirm",
-        "constructor", "date", "defaultstatus", "document", "element", "escape",
-        "eval", "fileupload", "find", "focus", "form", "frame", "frames",
-        "getclass", "hidden", "history", "home", "image", "infinity",
-        "innerheight", "isfinite", "innerwidth", "isnan", "java", "javaarray",
-        "javaclass", "javaobject", "javapackage", "length", "link", "location",
-        "locationbar", "math", "menubar", "mimetype", "moveby", "moveto",
-        "name", "nan", "navigate", "navigator", "netscape", "number", "object",
-        "onblur", "onerror", "onfocus", "onload", "onunload", "open", "opener",
-        "option", "outerheight", "outerwidth", "packages", "pagexoffset",
-        "pageyoffset", "parent", "parsefloat", "parseint", "password",
-        "personalbar", "plugin", "print", "prompt", "prototype", "radio", "ref",
-        "regexp", "releaseevents", "reset", "resizeby", "resizeto",
-        "routeevent", "scroll", "scrollbars", "scrollby", "scrollto", "select",
-        "self", "setinterval", "settimeout", "status", "statusbar", "stop",
-        "string", "submit", "sun", "taint",  "text", "textarea", "toolbar",
-        "top", "tostring", "unescape", "untaint", "unwatch", "valueof", "watch",
-        "window",
-        */
-    };
-
-    /**
-     * For easy access ...
-     */
-    static
-    {
-        // The Javascript reserved words array so we don't generate illegal javascript
-        reserved.addAll(Arrays.asList(RESERVED_ARRAY));
-    }
 }
