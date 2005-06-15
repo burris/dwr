@@ -4,7 +4,6 @@ import org.apache.bsf.BSFManager;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.impl.AbstractCreator;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**

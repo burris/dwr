@@ -135,7 +135,7 @@ public class DWRServlet extends HttpServlet
             ExecutionContext.setExecutionContext(req, resp, getServletConfig(), getServletContext());
             ServletLoggingOutput.setExecutionContext(this);
 
-            processor.processRequest(req, resp);
+            processor.handle(req, resp);
         }
         finally
         {

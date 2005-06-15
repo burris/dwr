@@ -7,7 +7,7 @@ import uk.ltd.getahead.dwr.util.Logger;
  * At least it is an IoC container by interface (check: no params that have
  * anything to do with DWR), but it is hard coded specifically for DWR. If we
  * want to make more of it we can later, but this is certainly not going to
- * become a full blow IoC container.
+ * become a full blown IoC container.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Factory
@@ -33,9 +33,9 @@ public class Factory
         {
             converterManager = (ConverterManager) impl.newInstance();
         }
-        else if (iface == Doorman.class)
+        else if (iface == AccessControl.class)
         {
-            doorman = (Doorman) impl.newInstance();
+            accessControl = (AccessControl) impl.newInstance();
         }
         else if (iface == DWRProcessor.class)
         {
@@ -43,7 +43,6 @@ public class Factory
         }
         else if (iface == ExecutionContext.class)
         {
-            ExecutionContext.setImplementation(implName);
             executionContext = (ExecutionContext) impl.newInstance();
         }
     }
@@ -54,6 +53,8 @@ public class Factory
      */
     public void configurationFinished()
     {
+        // So supply defaults for any implementations that have not been
+        // configured
         try
         {
             if (creatorManager == null)
@@ -76,9 +77,9 @@ public class Factory
                 setImplementation(ExecutionContext.class.getName(), "uk.ltd.getahead.dwr.ExecutionContext"); //$NON-NLS-1$
             }
 
-            if (doorman == null)
+            if (accessControl == null)
             {
-                setImplementation(Doorman.class.getName(), "uk.ltd.getahead.dwr.Doorman"); //$NON-NLS-1$
+                setImplementation(AccessControl.class.getName(), "uk.ltd.getahead.dwr.AccessControl"); //$NON-NLS-1$
             }
 
             if (configuration == null)
@@ -92,13 +93,16 @@ public class Factory
             throw new IllegalStateException(ex.getMessage());
         }
 
+        // And wire them together
+        ExecutionContext.setImplementation(executionContext.getClass());
+
         processor.setConverterManager(converterManager);
         processor.setCreatorManager(creatorManager);
-        processor.setDoorman(doorman);
+        processor.setAccessControl(accessControl);
 
         configuration.setConverterManager(converterManager);
         configuration.setCreatorManager(creatorManager);
-        configuration.setDoorman(doorman);
+        configuration.setAccessControl(accessControl);
     }
 
     /**
@@ -116,9 +120,9 @@ public class Factory
         {
             return converterManager;
         }
-        else if (type == Doorman.class)
+        else if (type == AccessControl.class)
         {
-            return doorman;
+            return accessControl;
         }
         else if (type == DWRProcessor.class)
         {
@@ -149,7 +153,7 @@ public class Factory
     /**
      * The security manager
      */
-    protected Doorman doorman = null;
+    protected AccessControl accessControl = null;
 
     /**
      * The thing that actually does the work

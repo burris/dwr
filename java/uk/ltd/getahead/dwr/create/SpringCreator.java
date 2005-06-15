@@ -18,7 +18,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.impl.AbstractCreator;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**

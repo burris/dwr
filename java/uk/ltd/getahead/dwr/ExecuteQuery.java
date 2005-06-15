@@ -29,14 +29,14 @@ public final class ExecuteQuery
      * @param req The users request
      * @param creatorManager The way we get an object to call methods on
      * @param converterManager The way we convert javascript to java
-     * @param doorman The security manager
+     * @param accessControl The security manager
      */
-    public ExecuteQuery(HttpServletRequest req, CreatorManager creatorManager, ConverterManager converterManager, Doorman doorman)
+    public ExecuteQuery(HttpServletRequest req, CreatorManager creatorManager, ConverterManager converterManager, AccessControl accessControl)
     {
         this.req = req;
         this.creatorManager = creatorManager;
         this.converterManager = converterManager;
-        this.doorman = doorman;
+        this.accessControl = accessControl;
 
         if (req.getMethod().equals("GET")) //$NON-NLS-1$
         {
@@ -294,7 +294,7 @@ public final class ExecuteQuery
                 }
 
                 // Check this method is accessible
-                String reason = doorman.getReasonToNotExecute(req, creator, call.getScriptName(), method);
+                String reason = accessControl.getReasonToNotExecute(req, creator, call.getScriptName(), method);
                 if (reason != null)
                 {
                     log.error("Access denied: " + reason); //$NON-NLS-1$
@@ -521,7 +521,7 @@ public final class ExecuteQuery
     /**
      * The security manager
      */
-    private Doorman doorman = null;
+    private AccessControl accessControl = null;
 
     private HttpServletRequest req;
 

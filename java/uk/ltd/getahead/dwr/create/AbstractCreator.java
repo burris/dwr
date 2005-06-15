@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr.impl;
+package uk.ltd.getahead.dwr.create;
 
 import java.util.Map;
 

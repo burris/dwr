@@ -114,28 +114,29 @@ public class DWRProcessor
 
     /**
      * Accessor for the security manager
-     * @return Returns the doorman.
+     * @return Returns the accessControl.
      */
-    public Doorman getDoorman()
+    public AccessControl getAccessControl()
     {
-        return doorman;
+        return accessControl;
     }
 
     /**
      * Accessor for the security manager
-     * @param doorman The doorman to set.
+     * @param accessControl The accessControl to set.
      */
-    public void setDoorman(Doorman doorman)
+    public void setAccessControl(AccessControl accessControl)
     {
-        this.doorman = doorman;
+        this.accessControl = accessControl;
     }
 
     /**
-     * @param req
-     * @param resp
+     * The equivalent of doGet and doPost
+     * @param req The browsers request
+     * @param resp The response channel
      * @throws IOException
      */
-    protected void processRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException
+    public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         String pathinfo = req.getPathInfo();
         if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals(PATH_ROOT))
@@ -154,9 +155,9 @@ public class DWRProcessor
         {
             doFile(resp, FILE_UTIL, MIME_JS);
         }
-        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_JSCP))
+        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_DEPRECATED))
         {
-            doFile(resp, FILE_JSCP, MIME_JS);
+            doFile(resp, FILE_DEPRECATED, MIME_JS);
         }
         else if (pathinfo != null && pathinfo.startsWith(PATH_INTERFACE))
         {
@@ -220,7 +221,6 @@ public class DWRProcessor
      * @param req The browsers request
      * @param resp The response channel
      * @throws IOException If writing to the output fails
-     * @PMD:REVIEWED:ExcessiveMethodLength: by Joe on 12/02/05 16:18
      */
     protected void doTest(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
@@ -300,7 +300,7 @@ public class DWRProcessor
             Method method = methods[i];
             String methodName = method.getName();
 
-            String reason = doorman.getReasonToNotExecute(req, creator, scriptname, method);
+            String reason = accessControl.getReasonToNotExecute(req, creator, scriptname, method);
             if (reason != null)
             {
                 out.println(BLANK);
@@ -502,7 +502,7 @@ public class DWRProcessor
             Method method = methods[i];
             String methodName = method.getName();
 
-            String reason = doorman.getReasonToNotExecute(req, creator, scriptname, method);
+            String reason = accessControl.getReasonToNotExecute(req, creator, scriptname, method);
             if (reason != null && !allowImpossibleTests)
             {
                 continue;
@@ -609,7 +609,7 @@ public class DWRProcessor
      */
     protected void doExec(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        ExecuteQuery eq = new ExecuteQuery(req, creatorManager, converterManager, doorman);
+        ExecuteQuery eq = new ExecuteQuery(req, creatorManager, converterManager, accessControl);
 
         if (eq.isFailingBrowser())
         {
@@ -844,7 +844,7 @@ public class DWRProcessor
 
     protected static final String FILE_ENGINE = "engine.js"; //$NON-NLS-1$
 
-    protected static final String FILE_JSCP = "jscp.js"; //$NON-NLS-1$
+    protected static final String FILE_DEPRECATED = "deprecated.js"; //$NON-NLS-1$
 
     protected static final String FILE_HELP = "help.html"; //$NON-NLS-1$
 
@@ -882,7 +882,7 @@ public class DWRProcessor
     /**
      * The security manager
      */
-    protected Doorman doorman = null;
+    protected AccessControl accessControl = null;
 
     /**
      * We cache the script output for speed

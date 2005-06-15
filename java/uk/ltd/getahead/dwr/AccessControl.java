@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Doorman
+public class AccessControl
 {
     /**
      * Only the Factory should be instansiating us
      */
-    protected Doorman()
+    protected AccessControl()
     {
     }
 
@@ -181,7 +181,7 @@ public class Doorman
      * Add an exclude rule.
      * @param scriptName The name of the creator to Javascript
      * @param methodName The name of the method (without brackets)
-     * @see Doorman#addIncludeRule(String, String)
+     * @see AccessControl#addIncludeRule(String, String)
      */
     public void addExcludeRule(String scriptName, String methodName)
     {
@@ -208,7 +208,7 @@ public class Doorman
      * @param scriptName The name of the creator to Javascript
      * @param methodName The name of the method (without brackets)
      * @return true if the method is allowed by the rules in addIncludeRule()
-     * @see Doorman#addIncludeRule(String, String)
+     * @see AccessControl#addIncludeRule(String, String)
      */
     private boolean isExecutable(String scriptName, String methodName)
     {

@@ -288,7 +288,7 @@ public final class Configuration
         {
             Element include = (Element) incNodes.item(i);
             String method = include.getAttribute(ATTRIBUTE_METHOD);
-            doorman.addIncludeRule(javascript, method);
+            accessControl.addIncludeRule(javascript, method);
         }
 
         NodeList excNodes = parent.getElementsByTagName(ELEMENT_EXCLUDE);
@@ -296,7 +296,7 @@ public final class Configuration
         {
             Element include = (Element) excNodes.item(i);
             String method = include.getAttribute(ATTRIBUTE_METHOD);
-            doorman.addExcludeRule(javascript, method);
+            accessControl.addExcludeRule(javascript, method);
         }
     }
 
@@ -375,7 +375,7 @@ public final class Configuration
             String method = include.getAttribute(ATTRIBUTE_METHOD);
             String role = include.getAttribute(ATTRIBUTE_ROLE);
 
-            doorman.addRoleRestriction(javascript, method, role);
+            accessControl.addRoleRestriction(javascript, method, role);
         }
     }
 
@@ -446,20 +446,20 @@ public final class Configuration
 
     /**
      * Accessor for the security manager
-     * @return Returns the doorman.
+     * @return Returns the accessControl.
      */
-    public Doorman getDoorman()
+    public AccessControl getAccessControl()
     {
-        return doorman;
+        return accessControl;
     }
 
     /**
      * Accessor for the security manager
-     * @param doorman The doorman to set.
+     * @param accessControl The accessControl to set.
      */
-    public void setDoorman(Doorman doorman)
+    public void setAccessControl(AccessControl accessControl)
     {
-        this.doorman = doorman;
+        this.accessControl = accessControl;
     }
 
     /**
@@ -480,7 +480,7 @@ public final class Configuration
     /**
      * The security manager
      */
-    private Doorman doorman = null;
+    private AccessControl accessControl = null;
 
     /*
      * The element names

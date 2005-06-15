@@ -193,17 +193,6 @@ public class ExecutionContext
     private static Class implementation = ExecutionContext.class;
 
     /**
-     * This method will be removed in the next release
-     * @return The current ExecutionContext
-     * @deprecated Use ExecutionContext.get();
-     * @see ExecutionContext#get()
-     */
-    public static ExecutionContext getExecutionContext()
-    {
-        return get();
-    }
-
-    /**
      * Accessor for the current ExecutionContext.
      * @return The current ExecutionContext
      */
@@ -247,20 +236,11 @@ public class ExecutionContext
 
     /**
      * Alter the implementation of ExecutionContext to some child class
-     * @param implname The new implementation class name
-     * @throws IllegalAccessException If the given class can not be accessed
-     * @throws InstantiationException If the given class can not be instantiated
-     * @throws ClassNotFoundException If the given class can not be found
+     * @param singletonType The new implementation class
      */
-    protected static void setImplementation(String implname) throws InstantiationException, IllegalAccessException, ClassNotFoundException
+    protected static void setImplementation(Class singletonType)
     {
-        implementation = Class.forName(implname);
-
-        // Check we can create one
-        ExecutionContext ec = (ExecutionContext) implementation.newInstance();
-
-        // Shut warnings up
-        ExecutionContext ignore = ec; ec = ignore;
+        implementation = singletonType;
     }
 
     /**
