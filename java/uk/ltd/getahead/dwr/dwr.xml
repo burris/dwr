@@ -5,9 +5,7 @@
 
   <init>
     <creator id="new" class="uk.ltd.getahead.dwr.create.NewCreator"/>
-    <creator id="session" class="uk.ltd.getahead.dwr.create.SessionCreator"/>
     <creator id="spring" class="uk.ltd.getahead.dwr.create.SpringCreator"/>
-    <creator id="static" class="uk.ltd.getahead.dwr.create.StaticCreator"/>
     <creator id="script" class="uk.ltd.getahead.dwr.create.ScriptedCreator"/>
     <converter id="null" class="uk.ltd.getahead.dwr.convert.NullConverter"/>
     <converter id="primitive" class="uk.ltd.getahead.dwr.convert.PrimitiveConverter"/>

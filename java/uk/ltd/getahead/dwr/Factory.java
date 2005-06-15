@@ -16,34 +16,70 @@ public class Factory
      * Set the class that should be used to implement the given interface
      * @param interfaceName The interface to implement
      * @param implName The new implementation
-     * @throws ClassNotFoundException If <code>impl</code> could not be found.
-     * @throws IllegalAccessException If <code>impl</code> could not be created.
-     * @throws InstantiationException If <code>impl</code> could not be created. 
      */
-    public void setImplementation(String interfaceName, String implName) throws ClassNotFoundException, IllegalAccessException, InstantiationException
+    public void setImplementation(String interfaceName, String implName)
     {
-        Class iface = Class.forName(interfaceName);
-        Class impl = Class.forName(implName);
+        Class iface = null;
+        Class impl = null;
 
-        if (iface == CreatorManager.class)
+        try
         {
-            creatorManager = (CreatorManager) impl.newInstance();
+            iface = Class.forName(interfaceName);
         }
-        else if (iface == ConverterManager.class)
+        catch (ClassNotFoundException ex)
         {
-            converterManager = (ConverterManager) impl.newInstance();
+            log.error("Class not found: " + interfaceName); //$NON-NLS-1$
+            return;
         }
-        else if (iface == AccessControl.class)
+
+        try
         {
-            accessControl = (AccessControl) impl.newInstance();
+            impl = Class.forName(implName);
         }
-        else if (iface == DWRProcessor.class)
+        catch (ClassNotFoundException ex)
         {
-            processor = (DWRProcessor) impl.newInstance();
+            log.error("Class not found: " + implName); //$NON-NLS-1$
+            return;
         }
-        else if (iface == ExecutionContext.class)
+
+        try
         {
-            executionContext = (ExecutionContext) impl.newInstance();
+            if (iface == CreatorManager.class)
+            {
+                creatorManager = (CreatorManager) impl.newInstance();
+            }
+            else if (iface == ConverterManager.class)
+            {
+                converterManager = (ConverterManager) impl.newInstance();
+            }
+            else if (iface == AccessControl.class)
+            {
+                accessControl = (AccessControl) impl.newInstance();
+            }
+            else if (iface == DWRProcessor.class)
+            {
+                processor = (DWRProcessor) impl.newInstance();
+            }
+            else if (iface == ExecutionContext.class)
+            {
+                executionContext = (ExecutionContext) impl.newInstance();
+            }
+            else
+            {
+                log.error("Factory does not manage: " + interfaceName); //$NON-NLS-1$
+            }
+        }
+        catch (ClassCastException ex)
+        {
+            log.error("Can't cast: " + implName + " to " + interfaceName); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        catch (InstantiationException ex)
+        {
+            log.error("Failed to instansiate: " + implName, ex); //$NON-NLS-1$
+        }
+        catch (IllegalAccessException ex)
+        {
+            log.error("Construction denied for: " + implName); //$NON-NLS-1$
         }
     }
 
@@ -59,32 +95,32 @@ public class Factory
         {
             if (creatorManager == null)
             {
-                setImplementation(CreatorManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultCreatorManager"); //$NON-NLS-1$
+                setImplementation(CreatorManager.class.getName(), CreatorManager.class.getName());
             }
 
             if (converterManager == null)
             {
-                setImplementation(ConverterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultConverterManager"); //$NON-NLS-1$
+                setImplementation(ConverterManager.class.getName(), ConverterManager.class.getName());
             }
 
             if (processor == null)
             {
-                setImplementation(DWRProcessor.class.getName(), "uk.ltd.getahead.dwr.DWRProcessor"); //$NON-NLS-1$
+                setImplementation(DWRProcessor.class.getName(), DWRProcessor.class.getName());
             }
 
             if (executionContext == null)
             {
-                setImplementation(ExecutionContext.class.getName(), "uk.ltd.getahead.dwr.ExecutionContext"); //$NON-NLS-1$
+                setImplementation(ExecutionContext.class.getName(), ExecutionContext.class.getName());
             }
 
             if (accessControl == null)
             {
-                setImplementation(AccessControl.class.getName(), "uk.ltd.getahead.dwr.AccessControl"); //$NON-NLS-1$
+                setImplementation(AccessControl.class.getName(), AccessControl.class.getName());
             }
 
             if (configuration == null)
             {
-                setImplementation(Configuration.class.getName(), "uk.ltd.getahead.dwr.Configuration"); //$NON-NLS-1$
+                setImplementation(Configuration.class.getName(), Configuration.class.getName());
             }
         }
         catch (Exception ex)

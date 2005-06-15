@@ -161,7 +161,7 @@ public final class Configuration
     private void loadAllows(Element child)
     {
         NodeList allows = child.getChildNodes();
-        for (int j=0; j<allows.getLength(); j++)
+        for (int j = 0; j < allows.getLength(); j++)
         {
             if (allows.item(j).getNodeType() == Node.ELEMENT_NODE)
             {
@@ -486,29 +486,49 @@ public final class Configuration
      * The element names
      */
     private static final String ELEMENT_INIT = "init"; //$NON-NLS-1$
+
     private static final String ELEMENT_ALLOW = "allow"; //$NON-NLS-1$
+
     private static final String ELEMENT_CREATE = "create"; //$NON-NLS-1$
+
     private static final String ELEMENT_CONVERT = "convert"; //$NON-NLS-1$
+
     private static final String ELEMENT_PARAM = "param"; //$NON-NLS-1$
+
     private static final String ELEMENT_INCLUDE = "include"; //$NON-NLS-1$
+
     private static final String ELEMENT_EXCLUDE = "exclude"; //$NON-NLS-1$
+
     private static final String ELEMENT_PARAMETER = "parameter"; //$NON-NLS-1$
+
     private static final String ELEMENT_AUTH = "auth"; //$NON-NLS-1$
+
     private static final String ELEMENT_SIGNATURES = "signatures"; //$NON-NLS-1$
 
     /*
      * The attribute names
      */
     private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_CONVERTER = "converter"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_MATCH = "match"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_JAVASCRIPT = "javascript"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_CREATOR = "creator"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_METHOD = "method"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_ROLE = "role"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_NUMBER = "number"; //$NON-NLS-1$
+
     private static final String ATTRIBUTE_TYPE = "type"; //$NON-NLS-1$
 }

@@ -18,6 +18,7 @@ import uk.ltd.getahead.dwr.util.SourceUtil;
 public class SignatureParser
 {
     /**
+     * Simple ctor
      * @param converterManager
      */
     public SignatureParser(ConverterManager converterManager)

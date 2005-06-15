@@ -13,7 +13,7 @@ import uk.ltd.getahead.dwr.util.Logger;
  * A class to manage the converter types and the instansiated class name matches.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public abstract class ConverterManager
+public class ConverterManager
 {
     /**
      * Add a new converter type
