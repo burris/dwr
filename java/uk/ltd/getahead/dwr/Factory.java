@@ -1,5 +1,11 @@
 package uk.ltd.getahead.dwr;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -44,29 +50,16 @@ public class Factory
 
         try
         {
-            if (iface == CreatorManager.class)
+            if (iface != AccessControl.class && iface != Configuration.class &&
+                iface != ConverterManager.class && iface != CreatorManager.class && 
+                iface != Processor.class && iface != ExecutionContext.class)
             {
-                creatorManager = (CreatorManager) impl.newInstance();
-            }
-            else if (iface == ConverterManager.class)
-            {
-                converterManager = (ConverterManager) impl.newInstance();
-            }
-            else if (iface == AccessControl.class)
-            {
-                accessControl = (AccessControl) impl.newInstance();
-            }
-            else if (iface == DWRProcessor.class)
-            {
-                processor = (DWRProcessor) impl.newInstance();
-            }
-            else if (iface == ExecutionContext.class)
-            {
-                executionContext = (ExecutionContext) impl.newInstance();
+                log.error("Factory does not manage: " + interfaceName); //$NON-NLS-1$
             }
             else
             {
-                log.error("Factory does not manage: " + interfaceName); //$NON-NLS-1$
+                log.debug("Adding implementation of " + iface.getName() + ": " + impl.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                beans.put(iface, impl.newInstance());
             }
         }
         catch (ClassCastException ex)
@@ -89,56 +82,60 @@ public class Factory
      */
     public void configurationFinished()
     {
-        // So supply defaults for any implementations that have not been
-        // configured
-        try
+        // We try to autowire each bean in turn
+        for (Iterator it = beans.entrySet().iterator(); it.hasNext();)
         {
-            if (creatorManager == null)
-            {
-                setImplementation(CreatorManager.class.getName(), CreatorManager.class.getName());
-            }
+            Map.Entry entry = (Map.Entry) it.next();
+            // Class type = (Class) entry.getKey();
+            Object ovalue = entry.getValue();
 
-            if (converterManager == null)
+            Method[] methods = ovalue.getClass().getMethods();
+            for (int i = 0; i < methods.length; i++)
             {
-                setImplementation(ConverterManager.class.getName(), ConverterManager.class.getName());
-            }
+                Method method = methods[i];
 
-            if (processor == null)
-            {
-                setImplementation(DWRProcessor.class.getName(), DWRProcessor.class.getName());
-            }
+                if (method.getName().startsWith("set") && //$NON-NLS-1$
+                    method.getParameterTypes().length == 1)
+                {
+                    Class paramType = method.getParameterTypes()[0];
 
-            if (executionContext == null)
-            {
-                setImplementation(ExecutionContext.class.getName(), ExecutionContext.class.getName());
-            }
+                    // We like to simply seach for the given parameter:
+                    //   Object instance = beans.get(paramType);
+                    // But that does not take inheritance into account
+                    Object instance = null;
+                    for (Iterator pit = beans.keySet().iterator(); instance == null && pit.hasNext();)
+                    {
+                        Class ptype = (Class) pit.next();
+                        if (ptype.isAssignableFrom(paramType))
+                        {
+                            instance = beans.get(ptype);
+                        }
+                    }
 
-            if (accessControl == null)
-            {
-                setImplementation(AccessControl.class.getName(), AccessControl.class.getName());
-            }
-
-            if (configuration == null)
-            {
-                setImplementation(Configuration.class.getName(), Configuration.class.getName());
+                    // If we have a match
+                    if (instance != null)
+                    {
+                        try
+                        {
+                            log.debug("Autowire: " + ovalue.getClass().getName() + "." + method.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                            method.invoke(ovalue, new Object[] { instance });
+                        }
+                        catch (IllegalArgumentException ex)
+                        {
+                            log.error("Internal error", ex); //$NON-NLS-1$
+                        }
+                        catch (IllegalAccessException ex)
+                        {
+                            log.error("Permission issue invoking " + method.getName()); //$NON-NLS-1$
+                        }
+                        catch (InvocationTargetException ex)
+                        {
+                            log.error("Exception during auto-wire", ex.getTargetException()); //$NON-NLS-1$
+                        }
+                    }
+                }
             }
         }
-        catch (Exception ex)
-        {
-            log.fatal("Internal error setting defaults", ex); //$NON-NLS-1$
-            throw new IllegalStateException(ex.getMessage());
-        }
-
-        // And wire them together
-        ExecutionContext.setImplementation(executionContext.getClass());
-
-        processor.setConverterManager(converterManager);
-        processor.setCreatorManager(creatorManager);
-        processor.setAccessControl(accessControl);
-
-        configuration.setConverterManager(converterManager);
-        configuration.setCreatorManager(creatorManager);
-        configuration.setAccessControl(accessControl);
     }
 
     /**
@@ -148,63 +145,19 @@ public class Factory
      */
     public Object getBean(Class type)
     {
-        if (type == CreatorManager.class)
+        Object reply = beans.get(type);
+        if (reply == null)
         {
-            return creatorManager;
-        }
-        else if (type == ConverterManager.class)
-        {
-            return converterManager;
-        }
-        else if (type == AccessControl.class)
-        {
-            return accessControl;
-        }
-        else if (type == DWRProcessor.class)
-        {
-            return processor;
-        }
-        else if (type == ExecutionContext.class)
-        {
-            return executionContext;
-        }
-        else if (type == Configuration.class)
-        {
-            return configuration;
+            throw new IllegalArgumentException("Factory can't find a " + type.getName()); //$NON-NLS-1$
         }
 
-        throw new IllegalArgumentException("Factory can't create a " + type.getName()); //$NON-NLS-1$
+        return reply;
     }
 
     /**
-     * How we create new beans
+     * The beans that we know of indexed by type
      */
-    protected CreatorManager creatorManager = null;
-
-    /**
-     * How we convert parameters
-     */
-    protected ConverterManager converterManager = null;
-
-    /**
-     * The security manager
-     */
-    protected AccessControl accessControl = null;
-
-    /**
-     * The thing that actually does the work
-     */
-    private DWRProcessor processor = null;
-
-    /**
-     * Container for the HTTP objects for deep thread access
-     */
-    private ExecutionContext executionContext = null;
-
-    /**
-     * The dwr.xml parser
-     */
-    private Configuration configuration = new Configuration();
+    protected Map beans = new HashMap();
 
     /**
      * The log stream

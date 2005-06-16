@@ -46,9 +46,14 @@ public class DWRServlet extends HttpServlet
             ServletLoggingOutput.setLevel(logLevel);
         }
 
+        // Load the factory with implementation information
         Factory factory = new Factory();
+        factory.setImplementation(AccessControl.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultAccessControl"); //$NON-NLS-1$
+        factory.setImplementation(Configuration.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultConfiguration"); //$NON-NLS-1$
+        factory.setImplementation(ConverterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultConverterManager"); //$NON-NLS-1$
+        factory.setImplementation(CreatorManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultCreatorManager"); //$NON-NLS-1$
+        factory.setImplementation(Processor.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultProcessor"); //$NON-NLS-1$
 
-        // Find all the init params
         Enumeration en = config.getInitParameterNames();
         while (en.hasMoreElements())
         {
@@ -69,19 +74,35 @@ public class DWRServlet extends HttpServlet
                 }
             }
         }
-
         factory.configurationFinished();
 
-        CreatorManager creatorManager = (CreatorManager) factory.getBean(CreatorManager.class);
-        Configuration configuration = (Configuration) factory.getBean(Configuration.class);
-        processor = (DWRProcessor) factory.getBean(DWRProcessor.class);
+        // Configure the ExecutionContext
+        // Maybe we want to override the ExecutionContext
+        // This code is un-documented, and experimental. We'll keep it if it
+        // turns out to be useful.
+        String execCxName = config.getInitParameter(ExecutionContext.class.getName());
+        if (execCxName != null)
+        {
+            try
+            {
+                Class type = Class.forName(execCxName);
+                ExecutionContext.setImplementation(type);
+            }
+            catch (Exception ex)
+            {
+                log.fatal("Invalid executionContext parameter", ex); //$NON-NLS-1$
+                throw new ServletException(Messages.getString("DWRServlet.ExecutionContextInit", execCxName, ex), ex); //$NON-NLS-1$
+            }
+        }
 
         // Are we in debug mode?
         String debugStr = config.getInitParameter(INIT_DEBUG);
         boolean debug = Boolean.valueOf(debugStr).booleanValue();
+        CreatorManager creatorManager = (CreatorManager) factory.getBean(CreatorManager.class);
         creatorManager.setDebug(debug);
 
         // Load the system config file
+        Configuration configuration = (Configuration) factory.getBean(Configuration.class);
         InputStream in = getClass().getResourceAsStream(FILE_DWR_XML);
         try
         {
@@ -115,6 +136,9 @@ public class DWRServlet extends HttpServlet
         {
             readFile(DEFAULT_DWR_XML, configuration);
         }
+
+        // Finally the processor that handles doGet and doPost
+        processor = (Processor) factory.getBean(Processor.class);
     }
 
     /* (non-Javadoc)
@@ -177,7 +201,7 @@ public class DWRServlet extends HttpServlet
         return super.hashCode();
     }
 
-    protected DWRProcessor processor;
+    protected Processor processor;
 
     /**
      * Init parameter: Set a dwr.xml config file.

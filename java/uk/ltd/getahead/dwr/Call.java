@@ -1,8 +1,8 @@
 package uk.ltd.getahead.dwr;
 
 /**
- * Call encapsulates the information required to make a single java call.
- * This includes the results (either returned data or exception).
+ * Call is a POJO to encapsulate the information required to make a single java
+ * call, including the result of the call (either returned data or exception).
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Call

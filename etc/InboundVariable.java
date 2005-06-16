@@ -1,7 +1,5 @@
 package uk.ltd.getahead.dwr;
 
-import uk.ltd.getahead.dwr.util.Logger;
-
 /**
  * A simple struct to hold data about a single converted javascript variable.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -17,33 +15,8 @@ public final class InboundVariable
     public InboundVariable(InboundContext context, String type, String value)
     {
         this.context = context;
-
-        if (ConversionConstants.TYPE_REFERENCE.equals(type)) 
-        {
-            String tempType = type;
-            String tempValue = value;
-
-            while (ConversionConstants.TYPE_REFERENCE.equals(tempType))
-            {
-                InboundVariable cd = context.getInboundVariable(tempValue);
-                if (cd == null)
-                {
-                    log.error(Messages.getString("InboundVariable.MissingVariable", tempValue)); //$NON-NLS-1$
-                    break;
-                }
-
-                tempType = cd.type;
-                tempValue = cd.value;
-            }
-
-            this.type = tempType;
-            this.value = tempValue;
-        } 
-        else 
-        {            
-            this.type = type;
-            this.value = value;
-        }
+        this.type = type;
+        this.value = value;
     }
 
     /**
@@ -73,10 +46,26 @@ public final class InboundVariable
 
     /**
      * @return Returns the value.
+     * @throws ConversionException If we can't follow a reference
      */
-    public String getValue()
+    public String getValue() throws ConversionException
     {
-        return value;
+        String tempType = type;
+        String tempValue = value;
+
+        while (ConversionConstants.TYPE_REFERENCE.equals(tempType))
+        {
+            InboundVariable cd = context.getInboundVariable(tempValue);
+            if (cd == null)
+            {
+                throw new ConversionException(Messages.getString("InboundVariable.MissingVariable", tempValue)); //$NON-NLS-1$
+            }
+
+            tempType = cd.type;
+            tempValue = cd.value;
+        }
+
+        return tempValue;
     }
 
     /**
@@ -92,7 +81,21 @@ public final class InboundVariable
      */
     public String toString()
     {
-        return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value;
+        if (ConversionConstants.TYPE_REFERENCE.equals(type))
+        {
+            try
+            {
+                return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value + "=(" + getValue() + ')'; //$NON-NLS-1$
+            }
+            catch (ConversionException ex)
+            {
+                return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value + "=(invalid)"; //$NON-NLS-1$
+            }
+        }
+        else
+        {
+            return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value;
+        }
     }
 
     /* (non-Javadoc)
@@ -142,9 +145,4 @@ public final class InboundVariable
      * The javascript declared variable value
      */
     private final String value;
-
-    /**
-     * The log stream
-     */
-    private static final Logger log = Logger.getLogger(InboundVariable.class);
 }

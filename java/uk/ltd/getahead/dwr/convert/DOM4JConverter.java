@@ -27,7 +27,7 @@ import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 public class DOM4JConverter implements Converter
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
+     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
      */
     public void setConverterManager(ConverterManager newConfig)
     {

@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +20,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.Call;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.ExecuteQuery;
+import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -42,99 +50,10 @@ import uk.ltd.getahead.dwr.util.SourceUtil;
  * </ul>
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DWRProcessor
+public class DefaultProcessor implements Processor
 {
-    /**
-     * @return Returns the allowImpossibleTests.
-     */
-    public boolean isAllowImpossibleTests()
-    {
-        return allowImpossibleTests;
-    }
-
-    /**
-     * @param allowImpossibleTests The allowImpossibleTests to set.
-     */
-    public void setAllowImpossibleTests(boolean allowImpossibleTests)
-    {
-        this.allowImpossibleTests = allowImpossibleTests;
-    }
-
-    /**
-     * Accessor for the CreatorManager that we configure
-     * @param creatorManager The new ConverterManager
-     */
-    public void setCreatorManager(CreatorManager creatorManager)
-    {
-        this.creatorManager = creatorManager;
-    }
-
-    /**
-     * Accessor for the CreatorManager that we configure
-     * @return the configured CreatorManager
-     */
-    public CreatorManager getCreatorManager()
-    {
-        return creatorManager;
-    }
-
-    /**
-     * Accessor for the CreatorManager that we configure
-     * @param converterManager The new ConverterManager
-     */
-    public void setConverterManager(ConverterManager converterManager)
-    {
-        this.converterManager = converterManager;
-    }
-
-    /**
-     * Accessor for the ConverterManager that we configure
-     * @return the configured ConverterManager
-     */
-    public ConverterManager getConverterManager()
-    {
-        return converterManager;
-    }
-
-    /**
-     * @return Returns the scriptCompressed.
-     */
-    public boolean isScriptCompressed()
-    {
-        return scriptCompressed;
-    }
-
-    /**
-     * @param scriptCompressed The scriptCompressed to set.
-     */
-    public void setScriptCompressed(boolean scriptCompressed)
-    {
-        this.scriptCompressed = scriptCompressed;
-    }
-
-    /**
-     * Accessor for the security manager
-     * @return Returns the accessControl.
-     */
-    public AccessControl getAccessControl()
-    {
-        return accessControl;
-    }
-
-    /**
-     * Accessor for the security manager
-     * @param accessControl The accessControl to set.
-     */
-    public void setAccessControl(AccessControl accessControl)
-    {
-        this.accessControl = accessControl;
-    }
-
-    /**
-     * The equivalent of doGet and doPost
-     * @param req The browsers request
-     * @param resp The response channel
-     * @throws IOException
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Processor#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
@@ -445,7 +364,7 @@ public class DWRProcessor
                 InputStream raw = getClass().getResourceAsStream(FILE_HELP);
                 if (raw == null)
                 {
-                    log.error(Messages.getString("DWRServlet.MissingHelp", FILE_HELP)); //$NON-NLS-1$
+                    log.error(Messages.getString("DefaultProcessor.MissingHelp", FILE_HELP)); //$NON-NLS-1$
                     output = "<p>Failed to read help text from resource file. Check dwr.jar is built to include html files.</p>"; //$NON-NLS-1$
                 }
                 else
@@ -571,7 +490,7 @@ public class DWRProcessor
             {
                 StringBuffer buffer = new StringBuffer();
 
-                InputStream raw = getClass().getResourceAsStream(path);
+                InputStream raw = getClass().getResourceAsStream("/uk/ltd/getahead/dwr/" + path); //$NON-NLS-1$
                 BufferedReader in = new BufferedReader(new InputStreamReader(raw));
                 while (true)
                 {
@@ -708,17 +627,105 @@ public class DWRProcessor
             || paramType == ServletContext.class || paramType == HttpSession.class;
     }
 
-    /**
-     * Check to see if the given word is reserved or a bad idea in any known
-     * version of JavaScript.
-     * @param name The word to check
-     * @return false if the word is not reserved
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Processor#isReservedWord(java.lang.String)
      */
     public boolean isReservedWord(String name)
     {
         return reserved.contains(name);
     }
 
+    /**
+     * Accessor for the imossible tests debug setting
+     * @return Do we allow impossible tests
+     */
+    public boolean isAllowImpossibleTests()
+    {
+        return allowImpossibleTests;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Processor#setAllowImpossibleTests(boolean)
+     */
+    public void setAllowImpossibleTests(boolean allowImpossibleTests)
+    {
+        this.allowImpossibleTests = allowImpossibleTests;
+    }
+
+    /**
+     * Accessor for the DefaultCreatorManager that we configure
+     * @param creatorManager The new DefaultConverterManager
+     */
+    public void setCreatorManager(CreatorManager creatorManager)
+    {
+        this.creatorManager = creatorManager;
+    }
+
+    /**
+     * Accessor for the DefaultCreatorManager that we configure
+     * @return the configured DefaultCreatorManager
+     */
+    public CreatorManager getCreatorManager()
+    {
+        return creatorManager;
+    }
+
+    /**
+     * Accessor for the DefaultCreatorManager that we configure
+     * @param converterManager The new DefaultConverterManager
+     */
+    public void setConverterManager(ConverterManager converterManager)
+    {
+        this.converterManager = converterManager;
+    }
+
+    /**
+     * Accessor for the DefaultConverterManager that we configure
+     * @return the configured DefaultConverterManager
+     */
+    public ConverterManager getConverterManager()
+    {
+        return converterManager;
+    }
+
+    /**
+     * Accessor for the script compression setting
+     * @return Returns the scriptCompressed.
+     */
+    public boolean isScriptCompressed()
+    {
+        return scriptCompressed;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Processor#setScriptCompressed(boolean)
+     */
+    public void setScriptCompressed(boolean scriptCompressed)
+    {
+        this.scriptCompressed = scriptCompressed;
+    }
+
+    /**
+     * Accessor for the security manager
+     * @return Returns the accessControl.
+     */
+    public AccessControl getAccessControl()
+    {
+        return accessControl;
+    }
+
+    /**
+     * Accessor for the security manager
+     * @param accessControl The accessControl to set.
+     */
+    public void setAccessControl(AccessControl accessControl)
+    {
+        this.accessControl = accessControl;
+    }
+
+    /**
+     * 
+     */
     private static final String[] RESERVED_ARRAY = new String[]
     {
         // Reserved and used at ECMAScript 4
@@ -892,5 +899,5 @@ public class DWRProcessor
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DWRProcessor.class);
+    private static final Logger log = Logger.getLogger(DefaultProcessor.class);
 }

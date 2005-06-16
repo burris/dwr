@@ -514,7 +514,7 @@ public final class ExecuteQuery
     private ConverterManager converterManager = null;
 
     /**
-     * The CreatorManager to which we delegate creation of new objects.
+     * The DefaultCreatorManager to which we delegate creation of new objects.
      */
     private CreatorManager creatorManager = null;
 

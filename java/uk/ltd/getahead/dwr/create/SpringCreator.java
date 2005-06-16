@@ -138,9 +138,8 @@ public class SpringCreator extends AbstractCreator implements Creator
                 {
                     if (factory == null)
                     {
-                        ExecutionContext execCtx = ExecutionContext.get();
-                        ServletContext srvCtx = execCtx.getServletContext();
-                        HttpServletRequest req = execCtx.getHttpServletRequest();
+                        ServletContext srvCtx = ExecutionContext.get().getServletContext();
+                        HttpServletRequest req = ExecutionContext.get().getHttpServletRequest();
 
                         // factory = WebApplicationContextUtils.getWebApplicationContext(srvCtx);
                         factory = RequestContextUtils.getWebApplicationContext(req, srvCtx);

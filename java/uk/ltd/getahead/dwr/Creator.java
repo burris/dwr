@@ -9,7 +9,7 @@ import java.util.Map;
 public interface Creator
 {
     /**
-     * Configuration is done via access to the DOM Element.
+     * DefaultConfiguration is done via access to the DOM Element.
      * This is not at all ideal, but it will do for the moment.
      * @param params The map of paramters to configure the creator
      * @throws IllegalArgumentException If the config data in the Element is invalid

@@ -175,22 +175,19 @@ public class ExecutionContext
         }
     }
 
+    private HttpServletRequest request = null;
+    private HttpServletResponse response = null;
+    private ServletConfig config = null;
+    private ServletContext context = null;
+
     private static final String FILENAME_VERSION = "/dwr-version.properties"; //$NON-NLS-1$
     private static final String KEY_VERSION = "version"; //$NON-NLS-1$
     private static final String KEY_SCCINFO = "scc-info"; //$NON-NLS-1$
     private static final String KEY_ERROR = "error"; //$NON-NLS-1$
     private static final String VALUE_UNKNOWN = "unknown"; //$NON-NLS-1$
 
-    private HttpServletRequest request = null;
-    private HttpServletResponse response = null;
-    private ServletConfig config = null;
-    private ServletContext context = null;
-
     private static Properties props = null;
     private static final Object propLock = new Object();
-
-    private static ThreadLocal user = new ThreadLocal();
-    private static Class implementation = ExecutionContext.class;
 
     /**
      * Accessor for the current ExecutionContext.
@@ -242,6 +239,10 @@ public class ExecutionContext
     {
         implementation = singletonType;
     }
+
+    private static ThreadLocal user = new ThreadLocal();
+
+    private static Class implementation = ExecutionContext.class;
 
     /**
      * The log stream

@@ -18,7 +18,7 @@ import uk.ltd.getahead.dwr.OutboundContext;
 public class BigNumberConverter implements Converter
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
+     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
      */
     public void setConverterManager(ConverterManager config)
     {

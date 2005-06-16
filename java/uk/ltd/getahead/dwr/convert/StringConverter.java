@@ -18,7 +18,7 @@ import uk.ltd.getahead.dwr.util.LocalUtil;
 public class StringConverter implements Converter
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.Configuration)
+     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
      */
     public void setConverterManager(ConverterManager config)
     {
