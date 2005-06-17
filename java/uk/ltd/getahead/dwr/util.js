@@ -582,9 +582,9 @@ DWRUtil.removeAllOptions = function(ele)
         return;
     }
 
-    if (!DWRUtil._isHTMLElement(ele, "select"))
+    if (!DWRUtil._isHTMLElement(ele, ["select", "ul", "ol"]))
     {
-        alert("removeAllOptions() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
+        alert("removeAllOptions() can only be used with select, ol and ul elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
         return;
     }
 
@@ -594,9 +594,9 @@ DWRUtil.removeAllOptions = function(ele)
 
 /**
  * Add options to a list from an array or map.
- * DWRUtil.addOptions has 4 modes:
+ * DWRUtil.addOptions has 5 modes:
  * <p><b>Array</b><br/>
- * DWRUtil.addOptions(selectid, data) and a set of options are created with the
+ * DWRUtil.addOptions(selectid, array) and a set of options are created with the
  * text and value set to the string version of each array element.
  * </p>
  * <p><b>Array of objects, using option text = option value</b><br/>
@@ -605,8 +605,8 @@ DWRUtil.removeAllOptions = function(ele)
  * each object in the array.
  * </p>
  * <p><b>Array of objects, with differing option text and value</b><br/>
- * DWRUtil.addOptions(selectid, data, valueprop, textprop) creates an option for
- * each object in the array, with the value of the option set to the given
+ * DWRUtil.addOptions(selectid, array, valueprop, textprop) creates an option
+ * for each object in the array, with the value of the option set to the given
  * valueprop property of the object, and the option text set to the textprop
  * property.
  * </p>
@@ -616,6 +616,11 @@ DWRUtil.removeAllOptions = function(ele)
  * values are used as option text, which sounds wrong, but is actually normally
  * the right way around. If reverse evaluates to true then the property values
  * are used as option values.
+ * <p><b>ol or ul list</b><br/>
+ * DWRUtil.addOptions(ulid, array) and a set of li elements are created with the
+ * innerHTML set to the string value of the array elements. This mode works
+ * with ul and ol lists.
+ * </p>
  * @see http://www.getahead.ltd.uk/dwr/util-list.html
  * @param ele The id of the list element or the HTML element itself
  * @param data An array or map of data items to populate the list
@@ -634,8 +639,11 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
         alert("fillList() can't find an element with id: " + orig + ".");
         return;
     }
+    
+    var useOptions = DWRUtil._isHTMLElement(ele, "select");
+    var useLi = DWRUtil._isHTMLElement(ele, ["ul", "ol"]);
 
-    if (!DWRUtil._isHTMLElement(ele, "select"))
+    if (!useOptions && !useLi)
     {
         alert("fillList() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
         return;
@@ -655,41 +663,56 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
         // Loop through the data that we do have
         for (var i = 0; i < data.length; i++)
         {
-            if (valuerev != null)
+            if (useOptions)
             {
-                if (textprop != null)
+                if (valuerev != null)
                 {
-                    text = data[i][textprop];
-                    value = data[i][valuerev];
+                    if (textprop != null)
+                    {
+                        text = data[i][textprop];
+                        value = data[i][valuerev];
+                    }
+                    else
+                    {
+                        value = data[i][valuerev];
+                        text = value;
+                    }
                 }
                 else
                 {
-                    value = data[i][valuerev];
-                    text = value;
+                    if (textprop != null)
+                    {
+                        text = data[i][textprop];
+                        value = text;
+                    }
+                    else
+                    {
+                        text = "" + data[i];
+                        value = text;
+                    }
                 }
+
+                var opt = new Option(text, value);
+                ele.options[ele.options.length] = opt;
             }
             else
             {
-                if (textprop != null)
-                {
-                    text = data[i][textprop];
-                    value = text;
-                }
-                else
-                {
-                    text = "" + data[i];
-                    value = text;
-                }
+                li = document.createElement("li");
+                li.innerHTML = "" + data[i];
+                ele.appendChild(li);
             }
-
-            var opt = new Option(text, value);
-            ele.options[ele.options.length] = opt;
         }
     }
     else
     {
         for (var prop in data)
         {
+            if (!useOptions)
+            {
+                alert("DWRUtil.addOptions can only create select lists from objects.");
+                return;
+            }
+
             if (valuerev)
             {
                 text = prop;
@@ -745,8 +768,7 @@ DWRUtil.addRows = function(ele, data, cellFuncs)
         return;
     }
 
-    if (!DWRUtil._isHTMLElement(ele, "table") && !DWRUtil._isHTMLElement(ele, "tbody") &&
-        !DWRUtil._isHTMLElement(ele, "thead") && !DWRUtil._isHTMLElement(ele, "tfoot"))
+    if (!DWRUtil._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"]))
     {
         alert("addRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
         return;
@@ -857,8 +879,7 @@ DWRUtil.removeAllRows = function(ele)
         return;
     }
 
-    if (!DWRUtil._isHTMLElement(ele, "table") && !DWRUtil._isHTMLElement(ele, "tbody") &&
-        !DWRUtil._isHTMLElement(ele, "thead") && !DWRUtil._isHTMLElement(ele, "tfoot"))
+    if (!DWRUtil._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"]))
     {
         alert("removeAllRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
         return;
@@ -891,25 +912,41 @@ DWRUtil._isIE = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.index
  * Is the given node an HTML element (optionally of a given type)?
  * @see http://www.getahead.ltd.uk/dwr/util-compat.html
  * @param ele The element to test
- * @param nodeName eg input, textarea - optional extra check for node name
+ * @param nodeName eg "input", "textarea" - optional extra check for node name
+ *                 or an array of valid node names.
  * @private
  */
 DWRUtil._isHTMLElement = function(ele, nodeName)
 {
-    if (nodeName == null)
+    if (ele == null || typeof ele != "object" || ele.nodeName == null)
     {
-        // If I.E. worked properly we could use:
-        //  return typeof ele == "object" && ele instanceof HTMLElement;
-        return ele != null &&
-               typeof ele == "object" &&
-               ele.nodeName != null;
+        return false;
     }
-    else
+
+    if (nodeName != null)
     {
-        return ele != null &&
-               typeof ele == "object" &&
-               ele.nodeName != null &&
-               ele.nodeName.toLowerCase() == nodeName.toLowerCase();
+        var test = ele.nodeName.toLowerCase();
+
+        if (typeof nodeName == "string")
+        {
+            return test == nodeName.toLowerCase();
+        }
+
+        if (DWRUtil._isArray(nodeName))
+        {
+            var match = false;
+            for (var i = 0; i < nodeName.length && !match; i++)
+            {
+                if (test == nodeName[i].toLowerCase())
+                {
+                    match =  true;
+                }
+            }
+
+            return match;
+        }
+
+        alert("DWRUtil._isHTMLElement was passed test node name that is neither a string or array of strings");
     }
 };
 
@@ -969,6 +1006,8 @@ DWRUtil._isDate = function(data)
  * @param nodeName eg input, textarea - optional extra check for node name
  * @deprecated DWR isn't a generic Javascript library
  */
+if (!DWRUtil.isHTMLElement)
+{
 DWRUtil.isHTMLElement = function(ele, nodeName)
 {
     DWRUtil._deprecated("DWRUtil.isHTMLElement");
@@ -989,12 +1028,15 @@ DWRUtil.isHTMLElement = function(ele, nodeName)
                ele.nodeName.toLowerCase() == nodeName.toLowerCase();
     }
 };
+}
 
 /**
  * Like typeOf except that more information for an object is returned other
  * than "object"
  * @deprecated DWR isn't a generic Javascript library
  */
+if (!DWRUtil.detailedTypeOf)
+{
 DWRUtil.detailedTypeOf = function(x)
 {
     DWRUtil._deprecated("DWRUtil.detailedTypeOf");
@@ -1009,6 +1051,7 @@ DWRUtil.detailedTypeOf = function(x)
 
     return reply;
 };
+}
 
 /**
  * Array detector.
@@ -1019,11 +1062,14 @@ DWRUtil.detailedTypeOf = function(x)
  * @returns true iff <code>data</code> is an Array
  * @deprecated Not sure if DWR is the right place for this or if we support old browsers
  */
+if (!DWRUtil.isArray)
+{
 DWRUtil.isArray = function(data)
 {
     DWRUtil._deprecated("DWRUtil.isArray", "(array.join != null)");
     return (data && data.join) ? true : false;
 };
+}
 
 /**
  * Date detector.
@@ -1034,10 +1080,13 @@ DWRUtil.isArray = function(data)
  * @returns true iff <code>data</code> is a Date
  * @deprecated Not sure if DWR is the right place for this or if we support old browsers
  */
+if (!DWRUtil.isDate)
+{
 DWRUtil.isDate = function(data)
 {
     return (data && data.toUTCString) ? true : false;
 };
+}
 
 /**
  * Is the given node an HTML input element?
@@ -1045,11 +1094,14 @@ DWRUtil.isDate = function(data)
  * @param ele The element to test
  * @deprecated See the documentation for alternatives
  */
+if (!DWRUtil.isHTMLInputElement)
+{
 DWRUtil.isHTMLInputElement = function(ele)
 {
     DWRUtil._deprecated("DWRUtil.isHTMLInputElement");
     return DWRUtil.isHTMLElement(ele, "input");
 };
+}
 
 /**
  * Is the given node an HTML textarea element?
@@ -1057,11 +1109,14 @@ DWRUtil.isHTMLInputElement = function(ele)
  * @param ele The element to test
  * @deprecated See the documentation for alternatives
  */
+if (!DWRUtil.isHTMLTextAreaElement)
+{
 DWRUtil.isHTMLTextAreaElement = function(ele)
 {
     DWRUtil._deprecated("DWRUtil.isHTMLTextAreaElement");
     return DWRUtil.isHTMLElement(ele, "textarea");
 };
+}
 
 /**
  * Is the given node an HTML select element?
@@ -1069,17 +1124,22 @@ DWRUtil.isHTMLTextAreaElement = function(ele)
  * @param ele The element to test
  * @deprecated See the documentation for alternatives
  */
+if (!DWRUtil.isHTMLSelectElement)
+{
 DWRUtil.isHTMLSelectElement = function(ele)
 {
     DWRUtil._deprecated("DWRUtil.isHTMLSelectElement");
     return DWRUtil.isHTMLElement(ele, "select");
 };
+}
 
 /**
  * Like document.getElementById() that works in more browsers.
  * @param id The id of the element
  * @deprecated Use $()
  */
+if (!DWRUtil.getElementById)
+{
 DWRUtil.getElementById = function(id)
 {
     DWRUtil._deprecated("DWRUtil.getElementById", "$");
@@ -1095,6 +1155,7 @@ DWRUtil.getElementById = function(id)
 
     return null;
 };
+}
 
 /**
  * Visually enable or diable an element.
@@ -1103,6 +1164,8 @@ DWRUtil.getElementById = function(id)
  * @param state Boolean true/false to set if the element should be enabled
  * @deprecated DWR isn't a generic Javascript library
  */
+if (!DWRUtil.setEnabled)
+{
 DWRUtil.setEnabled = function(ele, state)
 {
     DWRUtil._deprecated("DWRUtil.setEnabled");
@@ -1135,12 +1198,15 @@ DWRUtil.setEnabled = function(ele, state)
         }
     }
 };
+}
 
 /**
  * Set the CSS display style to 'block'
  * @param ele The id of the element or the HTML element itself
  * @deprecated DWR isn't a generic Javascript library
  */
+if (!DWRUtil.showById)
+{
 DWRUtil.showById = function(ele)
 {
     DWRUtil._deprecated("DWRUtil.showById");
@@ -1156,12 +1222,15 @@ DWRUtil.showById = function(ele)
     // Apparently this works better that display = 'block'; ???
     ele.style.display = '';
 };
+}
 
 /**
  * Set the CSS display style to 'none'
  * @param ele The id of the element or the HTML element itself
  * @deprecated DWR isn't a generic Javascript library
  */
+if (!DWRUtil.hideById)
+{
 DWRUtil.hideById = function(ele)
 {
     DWRUtil._deprecated("DWRUtil.hideById");
@@ -1176,12 +1245,15 @@ DWRUtil.hideById = function(ele)
 
     ele.style.display = 'none';
 };
+}
 
 /**
  * Toggle an elements visibility
  * @param ele The id of the element or the HTML element itself
  * @deprecated DWR isn't a generic Javascript library
  */
+if (!DWRUtil.toggleDisplay)
+{
 DWRUtil.toggleDisplay = function(ele)
 {
     DWRUtil._deprecated("DWRUtil.toggleDisplay");
@@ -1204,6 +1276,7 @@ DWRUtil.toggleDisplay = function(ele)
         ele.style.display = 'none';
     }
 };
+}
 
 /**
  * Alter an rows in a table that have a class of zebra to have classes of either
@@ -1212,6 +1285,8 @@ DWRUtil.toggleDisplay = function(ele)
  * to fight with multiple onload functions.
  * @deprecated DWR isn't a generic Javascript library
  */
+if (!DWRUtil.alternateRowColors)
+{
 DWRUtil.alternateRowColors = function()
 {
     DWRUtil._deprecated("DWRUtil.alternateRowColors");
@@ -1245,12 +1320,15 @@ DWRUtil.alternateRowColors = function()
         rowCount = 0;
     }
 };
+}
 
 /**
  * Set the CSS class for an element
  * @param ele The id of the element or the HTML element itself
  * @deprecated DWR isn't a generic Javascript library
  */
+if (!DWRUtil.setCSSClass)
+{
 DWRUtil.setCSSClass = function(ele, cssclass)
 {
     DWRUtil._deprecated("DWRUtil.setCSSClass");
@@ -1265,12 +1343,15 @@ DWRUtil.setCSSClass = function(ele, cssclass)
 
     ele.className = cssclass;
 };
+}
 
 /**
  * Ensure a function is called when the page is loaded
  * @param load The function to call when the page has been loaded
  * @deprecated DWR isn't a generic Javascript library
  */
+if (!DWRUtil.callOnLoad)
+{
 DWRUtil.callOnLoad = function(load)
 {
     DWRUtil._deprecated("DWRUtil.fillList");
@@ -1288,28 +1369,35 @@ DWRUtil.callOnLoad = function(load)
         window.onload = load;
     }
 };
+}
 
 /**
  * Remove all the options from a select list (specified by id) and replace with
  * elements in an array of objects.
  * @deprecated Use DWRUtil.removeAllOptions(ele); DWRUtil.addOptions(ele, data, valueprop, textprop);
  */
+if (!DWRUtil.fillList)
+{
 DWRUtil.fillList = function(ele, data, valueprop, textprop)
 {
     DWRUtil._deprecated("DWRUtil.fillList", "DWRUtil.addOptions");
     DWRUtil.removeAllOptions(ele);
     DWRUtil.addOptions(ele, data, valueprop, textprop);
 };
+}
 
 /**
  * Add rows to a table
  * @deprecated Use DWRUtil.addRows()
  */
+if (!DWRUtil.drawTable)
+{
 DWRUtil.drawTable = function(ele, data, cellFuncs)
 {
     DWRUtil._deprecated("DWRUtil.drawTable", "DWRUtil.addRows");
     DWRUtil.addRows(ele, data, cellFuncs);
 };
+}
 
 /**
  * Remove all the children of a given node.
@@ -1318,6 +1406,8 @@ DWRUtil.drawTable = function(ele, data, cellFuncs)
  * @param id The id of the element
  * @deprecated Use DWRUtil.removeAllRows()
  */
+if (!DWRUtil.clearChildNodes)
+{
 DWRUtil.clearChildNodes = function(id)
 {
     DWRUtil._deprecated("DWRUtil.clearChildNodes", "DWRUtil.removeAllRows");
@@ -1334,6 +1424,7 @@ DWRUtil.clearChildNodes = function(id)
         ele.removeChild(ele.firstChild);
     }
 };
+}
 
 /**
  * Do we alert on deprecation warnings

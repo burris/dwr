@@ -122,13 +122,13 @@ public class DefaultConfiguration implements Configuration
             Class clazz = Class.forName(classname);
             creatorManager.addCreatorType(id, clazz);
         }
-        catch (Exception ex)
-        {
-            log.warn("Failed to load creator '" + id + "', classname=" + classname + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
         catch (NoClassDefFoundError ex)
         {
             log.warn("Missing class for creator '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        catch (Exception ex)
+        {
+            log.warn("Failed to load creator '" + id + "', classname=" + classname + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
@@ -146,13 +146,13 @@ public class DefaultConfiguration implements Configuration
             Class clazz = Class.forName(classname);
             converterManager.addConverterType(id, clazz);
         }
-        catch (Exception ex)
-        {
-            log.warn("Failed to load converter '" + id + "', classname=" + classname + ": " + ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
         catch (NoClassDefFoundError ex)
         {
             log.warn("Missing class for converter '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        catch (Exception ex)
+        {
+            log.warn("Failed to load converter '" + id + "', classname=" + classname + ": " + ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
@@ -195,6 +195,10 @@ public class DefaultConfiguration implements Configuration
             Map params = createSettingMap(allower);
             converterManager.addConverter(match, type, params);
         }
+        catch (NoClassDefFoundError ex)
+        {
+            log.warn("Missing class for convertor '" + type + "'. (match='" + match + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
         catch (Exception ex)
         {
             log.error("Failed to add convertor: match=" + match + ", type=" + type, ex); //$NON-NLS-1$ //$NON-NLS-2$
@@ -218,6 +222,10 @@ public class DefaultConfiguration implements Configuration
             processPermissions(javascript, allower);
             processAuth(javascript, allower);
             processParameters(javascript, allower);
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            log.warn("Missing class for creator '" + type + "'. (javascript='" + javascript + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (Exception ex)
         {

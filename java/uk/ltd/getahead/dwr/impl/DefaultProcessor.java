@@ -121,8 +121,7 @@ public class DefaultProcessor implements Processor
         {
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
-            out
-                .println("<li><a href='" + req.getContextPath() + req.getServletPath() + PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            out.println("<li><a href='" + req.getContextPath() + req.getServletPath() + PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
         out.println("</ul>"); //$NON-NLS-1$
 
@@ -281,8 +280,7 @@ public class DefaultProcessor implements Processor
                         value = "{}"; //$NON-NLS-1$
                     }
 
-                    out
-                        .print("    <input class='itext' type='text' size='10' value='" + value + "' id='p" + i + j + "' title='Will be converted to: " + paramType.getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    out.print("    <input class='itext' type='text' size='10' value='" + value + "' id='p" + i + j + "' title='Will be converted to: " + paramType.getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 }
 
                 out.println(j == paramTypes.length - 1 ? BLANK : ", "); //$NON-NLS-1$
@@ -299,8 +297,7 @@ public class DefaultProcessor implements Processor
             }
             onclick += ");"; //$NON-NLS-1$
 
-            out
-                .print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + '.' + methodName + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            out.print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + '.' + methodName + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             out.println("  <script type='text/javascript'>"); //$NON-NLS-1$
             out.println("    var reply" + i + " = function(data)"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -322,8 +319,7 @@ public class DefaultProcessor implements Processor
             }
             if (overridden)
             {
-                out
-                    .println("<br/><span style='font-size: smaller; color: red;'>(Warning: overridden methods are not recommended. See <a href='#overriddenMethod'>below</a>)</span>"); //$NON-NLS-1$
+                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: overridden methods are not recommended. See <a href='#overriddenMethod'>below</a>)</span>"); //$NON-NLS-1$
             }
 
             // Print a warning if the method uses un-marshallable types
@@ -331,15 +327,13 @@ public class DefaultProcessor implements Processor
             {
                 if (!converterManager.isConvertable(paramTypes[j]))
                 {
-                    out
-                        .println("<br/><span style='font-size: smaller; color: red;'>(Warning: " + paramTypes[j].getName() + " param not marshallable. See <a href='#paramNotMarshallable'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: " + paramTypes[j].getName() + " param not marshallable. See <a href='#paramNotMarshallable'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
 
             if (!converterManager.isConvertable(method.getReturnType()))
             {
-                out
-                    .println("<br/><span style='font-size: smaller; color: red;'>(Warning: " + method.getReturnType().getName() + " return type not marshallable. See <a href='#returnNotMarshallable'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: " + method.getReturnType().getName() + " return type not marshallable. See <a href='#returnNotMarshallable'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             out.println("</li>"); //$NON-NLS-1$
@@ -536,8 +530,7 @@ public class DefaultProcessor implements Processor
 
             PrintWriter out = resp.getWriter();
             out.println("//<script type='text/javascript'>"); //$NON-NLS-1$
-            out
-                .println("alert('Your browser sent a request that could not be understood.\\nIf you understand how Javascript works in your browser, please help us fix the problem.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
+            out.println("alert('Your browser sent a request that could not be understood.\\nIf you understand how Javascript works in your browser, please help us fix the problem.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
             out.println("//</script>"); //$NON-NLS-1$
             out.flush();
             return;
@@ -554,8 +547,7 @@ public class DefaultProcessor implements Processor
             }
             else
             {
-                log
-                    .debug("Returning: id[" + call.getId() + "] init[" + call.getReply().getInitCode() + "] assign[" + call.getReply().getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                log.debug("Returning: id[" + call.getId() + "] init[" + call.getReply().getInitCode() + "] assign[" + call.getReply().getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             }
         }
 
@@ -623,8 +615,11 @@ public class DefaultProcessor implements Processor
      */
     private boolean isAutoFilled(Class paramType)
     {
-        return paramType == HttpServletRequest.class || paramType == HttpServletResponse.class || paramType == ServletConfig.class
-            || paramType == ServletContext.class || paramType == HttpSession.class;
+        return paramType == HttpServletRequest.class ||
+               paramType == HttpServletResponse.class ||
+               paramType == ServletConfig.class ||
+               paramType == ServletContext.class ||
+               paramType == HttpSession.class;
     }
 
     /* (non-Javadoc)
@@ -724,7 +719,7 @@ public class DefaultProcessor implements Processor
     }
 
     /**
-     * 
+     * The array of javascript reserved words
      */
     private static final String[] RESERVED_ARRAY = new String[]
     {

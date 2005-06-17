@@ -69,8 +69,8 @@ public class DefaultCreatorManager implements CreatorManager
             }
             catch (Exception ex)
             {
-                // No-one has a setCreator method, so don't warn about it
-                if (!key.equals("creator")) //$NON-NLS-1$
+                // No-one has setCreator or setClass, so don't warn about it
+                if (!key.equals("creator") && !key.equals("class")) //$NON-NLS-1$ //$NON-NLS-2$
                 {
                     log.debug("No property '" + key + "' on class " + creator.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
