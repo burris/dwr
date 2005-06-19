@@ -178,36 +178,6 @@ tests[tests.length] = { code:"floatArrayParam", data:[ -100000000000000000000, -
 tests[tests.length] = { code:"doubleArrayParam", data:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] };
 
 // Unicode: we could be here for some time, so I just picked some commmon ones
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-tests[tests.length] = { code:"charParam", data:"?" };
-
-// Many of these are duplicates, maybe this tests encoding differently?
 tests[tests.length] = { code:"charParam", data:"\u0080" };
 tests[tests.length] = { code:"charParam", data:"\u0091" };
 tests[tests.length] = { code:"charParam", data:"\u0092" };
@@ -236,6 +206,14 @@ tests[tests.length] = { code:"testBeanParam", data:{ integer:-2147483648, string
 tests[tests.length] = { code:"testBeanParam", data:{ integer:-1, string:'Null', testBean:null } };
 tests[tests.length] = { code:"testBeanParam", data:{ integer:0, string:'null', testBean:null } };
 tests[tests.length] = { code:"testBeanParam", data:{ integer:1, string:'0987654321', testBean:nested } };
+
+tests[tests.length] = { code:"testBeanSetParam", data:[{ integer:1, string:'0987654321', testBean:nested }] };
+tests[tests.length] = { code:"testBeanSetParam", data:[ nested ] };
+tests[tests.length] = { code:"testBeanListParam", data:[ nested ] };
+tests[tests.length] = { code:"testBeanListParam", data:[ nested, nested ] };
+tests[tests.length] = { code:"testBeanListParam", data:[ nested, nested, nested ] };
+
+tests[tests.length] = { code:"charTestBeanMapParam", data:{ d:{ integer:1, string:'0987654321', testBean:nested } } };
 
 tests[tests.length] = { code:"stringCollectionParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
 tests[tests.length] = { code:"stringLinkedListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
@@ -483,7 +461,7 @@ function testEquals(actual, expected, depth)
     {
         if (actual != null)
         {
-            return "expected: null, actual non-null: " + typeof actual + ":" + actual;
+            return "expected: null, actual non-null: " + DWRUtil.toDescriptiveString(actual);
         }
 
         return true;
@@ -493,7 +471,7 @@ function testEquals(actual, expected, depth)
     {
         if (expected != null)
         {
-            return "actual: null, expected non-null: " + typeof expected + ":" + expected;
+            return "actual: null, expected non-null: " + DWRUtil.toDescriptiveString(expected);
         }
 
         // wont get here of course ...
@@ -636,7 +614,7 @@ function init()
         {
             var td = document.createElement("td");
             td.setAttribute("id", "t" + rownum + "-data");
-            var display = "" + row.data;
+            var display = DWRUtil.toDescriptiveString(row.data);
             if (display.length > 30)
             {
                 display = display.substring(0, 27) + "...";

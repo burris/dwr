@@ -173,9 +173,20 @@ public class MapConverter implements Converter
 
         for (Iterator it = map.keySet().iterator(); it.hasNext();)
         {
-            String key = (String) it.next();
-            Object value = map.get(key);
+            Object key = it.next();
+            String outkey;
+            if (key instanceof String)
+            {
+                outkey = '\'' + StringEscapeUtils.escapeJavaScript((String) key) + '\'';
+            }
+            else
+            {
+                OutboundVariable ovkey = config.convertOutbound(key, outctx);
+                buffer.append(ovkey.getInitCode());
+                outkey = ovkey.getAssignCode();
+            }
 
+            Object value = map.get(key);
             OutboundVariable nested = config.convertOutbound(value, outctx);
 
             // Make sure the nested thing is declared
@@ -183,9 +194,9 @@ public class MapConverter implements Converter
 
             // And now declare our stuff
             buffer.append(varname);
-            buffer.append("['"); //$NON-NLS-1$
-            buffer.append(StringEscapeUtils.escapeJavaScript(key));
-            buffer.append("'] = "); //$NON-NLS-1$
+            buffer.append('[');
+            buffer.append(outkey);
+            buffer.append("] = "); //$NON-NLS-1$
             buffer.append(nested.getAssignCode());
             buffer.append(';');
         }

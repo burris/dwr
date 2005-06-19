@@ -121,6 +121,11 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
     var i = 0;
     var value;
 
+    if (level == null)
+    {
+        level = 0;
+    }
+
     if (depth == null)
     {
         depth = 0;
@@ -149,9 +154,16 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
                 {
                     continue;
                 }
-                else if (typeof obj == "object" && level > 0)
+                else if (typeof obj == "object")
                 {
-                    value = DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
+                    if (level > 0)
+                    {
+                        value = DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
+                    }
+                    else
+                    {
+                        value = DWRUtil._detailedTypeOf(obj);
+                    }
                 }
                 else
                 {
@@ -202,7 +214,10 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
             reply = typename + " ";
         }
 
-        reply += DWRUtil._indent(level, depth);
+        if (level != 0)
+        {
+            reply += DWRUtil._indent(level, depth);
+        }
         reply += "{";
         if (level != 0)
         {
@@ -237,14 +252,18 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
                 {
                     continue;
                 }
-                else if (typeof obj == "object" && level > 0)
+                else if (typeof obj == "object")
                 {
-                    if (level != 0)
+                    if (level > 0)
                     {
                         value = "\n";
+                        value += DWRUtil._indent(level, depth + 2);
+                        value = DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
                     }
-                    value += DWRUtil._indent(level, depth + 2);
-                    value += DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
+                    else
+                    {
+                        value = DWRUtil._detailedTypeOf(obj);
+                    }
                 }
                 else
                 {
@@ -263,7 +282,10 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
                 value = value.substring(0, 10) + "...";
             }
 
-            reply += DWRUtil._indent(level, depth + 1);
+            if (level != 0)
+            {
+                reply += DWRUtil._indent(level, depth + 1);
+            }
             reply += prop;
             reply += ":";
             reply += value;

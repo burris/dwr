@@ -3,6 +3,10 @@
 
 <dwr>
 
+  <init>
+    <converter id="testbean" class="uk.ltd.getahead.testdwr.TestBean2Converter"/>
+  </init>
+
   <allow>
 
     <create creator="new" javascript="Test">
@@ -20,6 +24,10 @@
       <param name="class" value="uk.ltd.getahead.testdwr.TestBean"/>
     </create>
 
+    <!-- convert converter="bean" match="uk.ltd.getahead.testdwr.*"/  -->
+
+    <convert converter="testbean" match="uk.ltd.getahead.testdwr.TestBean"/>
+
   </allow>
 
   <signatures>
@@ -28,6 +36,7 @@
   import uk.ltd.getahead.testdwr.*;
 
   Test.testBeanSetParam(Set<TestBean>);
+  Test.testBeanListParam(List<TestBean>);
   Test.charTestBeanMapParam(Map<Character, TestBean>);
   ]]>
   </signatures>
