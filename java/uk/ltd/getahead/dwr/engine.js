@@ -32,8 +32,7 @@ DWREngine.IFrame = 2;
  * The default error handler displays an alert box, but that is not correct
  * for all applications, so this method allows you to set an alternative
  * error handler.
- * The default error handler is DWREngine.defaultMessageHandler so you can
- * change the error handler back to the original.
+ * By default there is no error handler set.
  * @param handler A function to call with single an error parameter on failure
  * @see DWREngine.defaultMessageHandler()
  */
@@ -46,8 +45,7 @@ DWREngine.setErrorHandler = function(handler)
  * The default warning handler displays an alert box, but that is not correct
  * for all applications, so this method allows you to set an alternative
  * warning handler.
- * The default warning handler is DWREngine.defaultMessageHandler so you can
- * change the warning handler back to the original.
+ * By default there is no error handler set.
  * @param handler A function to call with single an warning parameter on failure
  * @see DWREngine.defaultMessageHandler()
  */

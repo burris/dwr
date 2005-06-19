@@ -151,7 +151,7 @@ public class SpringCreator extends AbstractCreator implements Creator
             {
                 throw new InstantiationException(Messages.getString("SpringCreator.MissingFactory", resourceName)); //$NON-NLS-1$
             }
-            
+
             reply = factory.getBean(getJavascript());
 
             return reply;
