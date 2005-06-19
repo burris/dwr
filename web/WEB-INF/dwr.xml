@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE dwr PUBLIC
-    "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN"
-    "http://www.getahead.ltd.uk/dwr/dwr.dtd">
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN" "http://www.getahead.ltd.uk/dwr/dwr10.dtd">
 
 <dwr>
 
@@ -20,22 +18,6 @@
 
     <create creator="new" javascript="TestBean" scope="session">
       <param name="class" value="uk.ltd.getahead.testdwr.TestBean"/>
-    </create>
-
-    <create creator="new" javascript="Demo" scope="session">
-      <param name="class" value="uk.ltd.getahead.testdwr.Demo"/>
-    </create>
-
-    <create creator="new" javascript="Chat">
-      <param name="class" value="uk.ltd.getahead.testdwr.Chat"/>
-    </create>
-
-    <create creator="new" javascript="UrlValidator">
-      <param name="class" value="org.apache.commons.validator.UrlValidator"/>
-    </create>
-
-    <create creator="new" javascript="CreditCardValidator">
-      <param name="class" value="org.apache.commons.validator.CreditCardValidator"/>
     </create>
 
   </allow>

@@ -1,5 +1,6 @@
 package uk.ltd.getahead.dwr.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,18 +57,27 @@ public class DefaultConverterManager implements ConverterManager
         {
             Map.Entry entry = (Entry) it.next();
             String key = (String) entry.getKey();
+            Object value = entry.getValue();
 
             try
             {
-                LocalUtil.setProperty(converter, key, entry.getValue());
+                LocalUtil.setProperty(converter, key, value);
             }
-            catch (Exception ex)
+            catch (NoSuchMethodException ex)
             {
                 // No-one has a setCreator method, so don't warn about it
                 if (!key.equals("converter") && !key.equals("match")) //$NON-NLS-1$ //$NON-NLS-2$
                 {
-                    log.debug("No property '" + key + "' on class " + converter.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.debug("No property '" + key + "' on " + converter.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
+            }
+            catch (InvocationTargetException ex)
+            {
+                log.warn("Error setting " + key + "=" + value + " on " + converter.getClass().getName(), ex.getTargetException()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            catch (Exception ex)
+            {
+                log.warn("Error setting " + key + "=" + value + " on " + converter.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         }
 

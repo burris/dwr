@@ -4,9 +4,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * This class is intended to be used by Logger when commons-logging is available,
- * but to not force Logger itself to depend on commons-logging so Logger can catch
- * the ClassDefNotFoundError and use other methods.
+ * This class is intended to be used by Logger when commons-logging is
+ * available, but to not force Logger itself to depend on commons-logging so
+ * Logger can catch the ClassDefNotFoundError and use other methods.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class CommonsLoggingOutput implements LoggingOutput

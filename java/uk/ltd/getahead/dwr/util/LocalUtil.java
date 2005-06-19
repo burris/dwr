@@ -6,6 +6,8 @@ import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletResponse;
 
+import uk.ltd.getahead.dwr.ConversionConstants;
+
 /**
  * Various utilities, mostly to make up for JDK 1.4 functionallity that is not
  * in JDK 1.3
@@ -13,6 +15,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 public final class LocalUtil
 {
+    /**
+     * splitInbound() returns the type info in this parameter
+     */
+    public static final int INBOUND_INDEX_TYPE = 0;
+
+    /**
+     * splitInbound() returns the value info in this parameter
+     */
+    public static final int INBOUND_INDEX_VALUE = 1;
+
     /**
      * Prevent instansiation
      */
@@ -234,6 +246,32 @@ public final class LocalUtil
         }
 
         method.invoke(object, new Object[] { value });
+    }
+
+    /**
+     * The javascript outbound marshaller prefixes the toString value with a
+     * colon and the original type information. This undoes that.
+     * @param data The string to be split up
+     * @return A string array containing the split data
+     */
+    public static String[] splitInbound(String data)
+    {
+        String[] reply = new String[2];
+    
+        int colon = data.indexOf(ConversionConstants.INBOUND_TYPE_SEPARATOR);
+        if (colon == -1)
+        {
+            log.error("Missing : in conversion data (" + data + ')'); //$NON-NLS-1$
+            reply[LocalUtil.INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
+            reply[LocalUtil.INBOUND_INDEX_VALUE] = data;
+        }
+        else
+        {
+            reply[LocalUtil.INBOUND_INDEX_TYPE] = data.substring(0, colon);
+            reply[LocalUtil.INBOUND_INDEX_VALUE] = data.substring(colon + 1);
+        }
+    
+        return reply;
     }
 
     /**

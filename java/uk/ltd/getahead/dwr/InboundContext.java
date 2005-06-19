@@ -103,7 +103,7 @@ public final class InboundContext
      * @param name The name of the variable to lookup
      * @return The found variable
      */
-    protected InboundVariable getInboundVariable(String name)
+    public InboundVariable getInboundVariable(String name)
     {
         return (InboundVariable) variables.get(name);
     }
@@ -143,7 +143,7 @@ public final class InboundContext
      * How many parameters are there?
      * @return The parameter count
      */
-    protected int getParameterCount()
+    public int getParameterCount()
     {
         return paramCount;
     }
@@ -154,7 +154,7 @@ public final class InboundContext
      * @param index The parameter index
      * @return The found parameter
      */
-    protected InboundVariable getParameter(int callNum, int index)
+    public InboundVariable getParameter(int callNum, int index)
     {
         String key = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum +
                      ConversionConstants.INBOUND_CALLNUM_SUFFIX +
@@ -167,7 +167,7 @@ public final class InboundContext
      * A debug method so people can get a list of all the variable names
      * @return an iterator over the known variable names
      */
-    protected Iterator getInboundVariableNames()
+    public Iterator getInboundVariableNames()
     {
         return variables.keySet().iterator();
     }

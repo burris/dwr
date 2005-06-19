@@ -643,8 +643,18 @@ DWREngine._sendData = function(batch)
             }
             query = query.substring(0, query.length - 1);
 
-            batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query);
-            batch.req.send(null);
+            try
+            {
+                batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query);
+                batch.req.send(null);
+            }
+            catch (ex)
+            {
+                if (DWREngine._errorHandler)
+                {
+                    DWREngine._errorHandler(ex);
+                }
+            }
         }
         else
         {
@@ -653,8 +663,18 @@ DWREngine._sendData = function(batch)
                 query += prop + "=" + batch.map[prop] + "\n";
             }
 
-            batch.req.open("POST", batch.path + "/exec/" + statsInfo, true);
-            batch.req.send(query);
+            try
+            {
+                batch.req.open("POST", batch.path + "/exec/" + statsInfo, true);
+                batch.req.send(query);
+            }
+            catch (ex)
+            {
+                if (DWREngine._errorHandler)
+                {
+                    DWREngine._errorHandler(ex);
+                }
+            }
         }
     }
     else

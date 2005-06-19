@@ -25,7 +25,7 @@ import uk.ltd.getahead.dwr.Call;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.ExecuteQuery;
+import uk.ltd.getahead.dwr.DWRServlet;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
@@ -484,7 +484,7 @@ public class DefaultProcessor implements Processor
             {
                 StringBuffer buffer = new StringBuffer();
 
-                InputStream raw = getClass().getResourceAsStream("/uk/ltd/getahead/dwr/" + path); //$NON-NLS-1$
+                InputStream raw = getClass().getResourceAsStream(DWRServlet.PACKAGE + path);
                 BufferedReader in = new BufferedReader(new InputStreamReader(raw));
                 while (true)
                 {

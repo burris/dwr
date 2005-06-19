@@ -7,12 +7,12 @@ import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.ExecuteQuery;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * An implementation of Converter for Arrays.
@@ -66,9 +66,9 @@ public class ArrayConverter implements Converter
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
-                String[] split = ExecuteQuery.splitInbound(token);
+                String[] split = LocalUtil.splitInbound(token);
 
-                InboundVariable nested = new InboundVariable(incx, split[ExecuteQuery.INBOUND_INDEX_TYPE], split[ExecuteQuery.INBOUND_INDEX_VALUE]);
+                InboundVariable nested = new InboundVariable(incx, split[LocalUtil.INBOUND_INDEX_TYPE], split[LocalUtil.INBOUND_INDEX_VALUE]);
                 Object output = converterManager.convertInbound(componentType, nested, inctx);
                 Array.set(array, i, output);
             }

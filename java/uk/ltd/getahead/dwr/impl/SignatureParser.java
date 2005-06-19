@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.impl;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.SourceUtil;
 

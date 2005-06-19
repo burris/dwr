@@ -700,6 +700,17 @@ public class Test
     }
 
     /**
+     * Get some text that has been fetched from a JSP page.
+     * @return A part of a web page
+     */
+    public String getInsert()
+    {
+        return "<h1>DWR is working properly</h1><p>To see how DWR is configured in this web application see:</p>" + //$NON-NLS-1$
+               "<ul><li>The generated <a href='dwr/'>configuration/test pages</a>.</li>" + //$NON-NLS-1$
+               "<li><a href='test.html'>The unit test suite</a>.</li></ul>"; //$NON-NLS-1$
+    }
+
+    /**
      * The log stream
      */
     protected static final Logger log = Logger.getLogger(Test.class);

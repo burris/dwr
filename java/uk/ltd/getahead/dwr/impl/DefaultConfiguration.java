@@ -23,8 +23,6 @@ import uk.ltd.getahead.dwr.Configuration;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.DTDEntityResolver;
-import uk.ltd.getahead.dwr.SignatureParser;
 import uk.ltd.getahead.dwr.util.LogErrorHandler;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -124,7 +122,7 @@ public class DefaultConfiguration implements Configuration
         }
         catch (NoClassDefFoundError ex)
         {
-            log.warn("Missing class for creator '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Missing class for creator '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (Exception ex)
         {
@@ -148,7 +146,7 @@ public class DefaultConfiguration implements Configuration
         }
         catch (NoClassDefFoundError ex)
         {
-            log.warn("Missing class for converter '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Missing class for converter '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (Exception ex)
         {
@@ -197,7 +195,7 @@ public class DefaultConfiguration implements Configuration
         }
         catch (NoClassDefFoundError ex)
         {
-            log.warn("Missing class for convertor '" + type + "'. (match='" + match + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Missing class for convertor '" + type + "'. (match='" + match + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (Exception ex)
         {
@@ -214,6 +212,19 @@ public class DefaultConfiguration implements Configuration
         String type = allower.getAttribute(ATTRIBUTE_CREATOR);
         String javascript = allower.getAttribute(ATTRIBUTE_JAVASCRIPT);
 
+        // DEPRECATED: Remove when confusion about creators has gone away
+        if (type.equals("session") || type.equals("static")) //$NON-NLS-1$ //$NON-NLS-2$
+        {
+            log.error("The 'session' and 'static' creators are deprecated. Use the 'new' creator"); //$NON-NLS-1$
+            log.error("  For more information see the DWR website"); //$NON-NLS-1$
+            type = "new"; //$NON-NLS-1$
+
+            if (type.equals("session")) //$NON-NLS-1$
+            {
+                allower.setAttribute("scope", "session"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+
         try
         {
             Map params = createSettingMap(allower);
@@ -225,7 +236,7 @@ public class DefaultConfiguration implements Configuration
         }
         catch (NoClassDefFoundError ex)
         {
-            log.warn("Missing class for creator '" + type + "'. (javascript='" + javascript + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Missing class for creator '" + type + "'. (javascript='" + javascript + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (Exception ex)
         {

@@ -56,6 +56,9 @@
     </jar>
     <war destfile="${target.files}/dwr.war" webxml="${source.web}/WEB-INF/web.xml">
       <lib file="${target.files}/dwr.jar"/>
+      <classes dir="${target.class}">
+        <include name="**/testdwr/**"/>
+      </classes>
       <fileset dir="${source.web}">
         <exclude name="web.iml"/>
         <exclude name="WEB-INF/web.xml"/>
@@ -63,15 +66,15 @@
       </fileset>
     </war>
     <zip destfile="${target.files}/dwr-${version}-src.zip">
+      <fileset dir="${source.root}">
+        <exclude name="target/**"/>
+      </fileset>
       <fileset dir="${target.files}">
         <include name="dwr.jar"/>
         <include name="dwr.war"/>
       </fileset>
-      <zipfileset dir="${target.javadoc}" prefix="javadoc">
-      </zipfileset>
-      <fileset dir="${source.root}">
-        <exclude name="target/**"/>
-      </fileset>
+      <!-- The DWR website extracts javadoc from here -->
+      <zipfileset dir="${target.javadoc}" prefix="javadoc"/>
     </zip>
   </target>
 

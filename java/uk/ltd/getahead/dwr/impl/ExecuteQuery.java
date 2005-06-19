@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +14,18 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.Call;
+import uk.ltd.getahead.dwr.ConversionConstants;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.ExecutionContext;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -22,7 +34,7 @@ import uk.ltd.getahead.dwr.util.Logger;
  * passed in to be converted to Java objects.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public final class ExecuteQuery
+public class ExecuteQuery
 {
     /**
      * Simple ctor
@@ -211,9 +223,9 @@ public final class ExecuteQuery
                 if (key.startsWith(prefix))
                 {
                     String data = (String) entry.getValue();
-                    String[] split = splitInbound(data);
+                    String[] split = LocalUtil.splitInbound(data);
 
-                    call.getInboundContext().createInboundVariable(callNum, key, split[INBOUND_INDEX_TYPE], split[INBOUND_INDEX_VALUE]);
+                    call.getInboundContext().createInboundVariable(callNum, key, split[LocalUtil.INBOUND_INDEX_TYPE], split[LocalUtil.INBOUND_INDEX_VALUE]);
                     it.remove();
                 }
             }
@@ -470,42 +482,6 @@ public final class ExecuteQuery
     }
 
     /**
-     * splitInbound() returns the type info in this parameter
-     */
-    public static final int INBOUND_INDEX_TYPE = 0;
-
-    /**
-     * splitInbound() returns the value info in this parameter
-     */
-    public static final int INBOUND_INDEX_VALUE = 1;
-
-    /**
-     * The javascript outbound marshaller prefixes the toString value with a
-     * colon and the original type information. This undoes that.
-     * @param data The string to be split up
-     * @return A string array containing the split data
-     */
-    public static String[] splitInbound(String data)
-    {
-        String[] reply = new String[2];
-
-        int colon = data.indexOf(ConversionConstants.INBOUND_TYPE_SEPARATOR);
-        if (colon == -1)
-        {
-            log.error("Missing : in conversion data (" + data + ')'); //$NON-NLS-1$
-            reply[INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
-            reply[INBOUND_INDEX_VALUE] = data;
-        }
-        else
-        {
-            reply[INBOUND_INDEX_TYPE] = data.substring(0, colon);
-            reply[INBOUND_INDEX_VALUE] = data.substring(colon + 1);
-        }
-
-        return reply;
-    }
-
-    /**
      * The log stream
      */
     private static final Logger log = Logger.getLogger(ExecuteQuery.class);
@@ -525,9 +501,23 @@ public final class ExecuteQuery
      */
     private AccessControl accessControl = null;
 
+    /**
+     * 
+     */
     private HttpServletRequest req;
 
+    /**
+     * 
+     */
     private boolean xmlMode = false;
+
+    /**
+     * 
+     */
     private IOException delayed = null;
+
+    /**
+     * 
+     */
     private Call[] calls = null;
 }

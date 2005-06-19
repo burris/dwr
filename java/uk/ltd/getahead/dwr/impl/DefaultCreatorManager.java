@@ -1,5 +1,6 @@
 package uk.ltd.getahead.dwr.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,6 +56,12 @@ public class DefaultCreatorManager implements CreatorManager
     {
         Class clazz = (Class) creatorTypes.get(typename);
 
+        if (clazz == null)
+        {
+            log.error("Missing creator: " + typename + " (while initializing creator for: " + scriptName + ".js)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return;
+        }
+
         Creator creator = (Creator) clazz.newInstance();
 
         // Initialize the creator with the parameters that we know of.
@@ -62,18 +69,27 @@ public class DefaultCreatorManager implements CreatorManager
         {
             Map.Entry entry = (Entry) it.next();
             String key = (String) entry.getKey();
+            Object value = entry.getValue();
 
             try
             {
-                LocalUtil.setProperty(creator, key, entry.getValue());
+                LocalUtil.setProperty(creator, key, value);
             }
-            catch (Exception ex)
+            catch (NoSuchMethodException ex)
             {
                 // No-one has setCreator or setClass, so don't warn about it
                 if (!key.equals("creator") && !key.equals("class")) //$NON-NLS-1$ //$NON-NLS-2$
                 {
-                    log.debug("No property '" + key + "' on class " + creator.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.debug("No property '" + key + "' on " + creator.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
+            }
+            catch (InvocationTargetException ex)
+            {
+                log.warn("Error setting " + key + "=" + value + " on " + creator.getClass().getName(), ex.getTargetException()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            catch (Exception ex)
+            {
+                log.warn("Error setting " + key + "=" + value + " on " + creator.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         }
 
@@ -86,7 +102,27 @@ public class DefaultCreatorManager implements CreatorManager
             throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.DuplicateName", scriptName, other.getType().getName(), typename)); //$NON-NLS-1$
         }
 
-        creators.put(scriptName, creator);
+        // Check that it can at least tell us what type of thing we will be getting
+        try
+        {
+            Class test = creator.getType();
+            if (test == null)
+            {
+                log.error("Creator: '" + typename + "' for " + scriptName + ".js is returning null for type queries."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            else
+            {
+                creators.put(scriptName, creator);
+            }
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            log.error("Missing class for creator '" + typename + "'. Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        catch (Exception ex)
+        {
+            log.error("Error loading class for creator '" + typename + "'.", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
     }
 
     /* (non-Javadoc)

@@ -110,7 +110,8 @@ public class DWRServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            throw new ServletException(Messages.getString("DWRServlet.ConfigError", FILE_DWR_XML), ex); //$NON-NLS-1$
+            log.fatal("Failed to load system config file from dwr.jar", ex); //$NON-NLS-1$
+            throw new ServletException(Messages.getString("DWRServlet.SystemConfigError"), ex); //$NON-NLS-1$
         }
 
         // Find all the init params
@@ -202,6 +203,11 @@ public class DWRServlet extends HttpServlet
     }
 
     protected Processor processor;
+
+    /**
+     * The package name because people need to load resources in this package.  
+     */
+    public static final String PACKAGE = "/uk/ltd/getahead/dwr/"; //$NON-NLS-1$
 
     /**
      * Init parameter: Set a dwr.xml config file.
