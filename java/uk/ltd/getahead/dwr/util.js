@@ -590,31 +590,6 @@ DWRUtil.getValues = function(map)
 // The following functions are described in util-list.html
 
 /**
- * Remove all the options from a select list (specified by id)
- * @see http://www.getahead.ltd.uk/dwr/util-list.html
- * @param ele The id of the list element or the HTML element itself
- */
-DWRUtil.removeAllOptions = function(ele)
-{
-    var orig = ele;
-    ele = $(ele);
-    if (ele == null)
-    {
-        alert("removeAllOptions() can't find an element with id: " + orig + ".");
-        return;
-    }
-
-    if (!DWRUtil._isHTMLElement(ele, ["select", "ul", "ol"]))
-    {
-        alert("removeAllOptions() can only be used with select, ol and ul elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
-        return;
-    }
-
-    // Empty the list
-    ele.options.length = 0;
-};
-
-/**
  * Add options to a list from an array or map.
  * DWRUtil.addOptions has 5 modes:
  * <p><b>Array</b><br/>
@@ -658,10 +633,10 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
     ele = $(ele);
     if (ele == null)
     {
-        alert("fillList() can't find an element with id: " + orig + ".");
+        alert("addOptions() can't find an element with id: " + orig + ".");
         return;
     }
-    
+
     var useOptions = DWRUtil._isHTMLElement(ele, "select");
     var useLi = DWRUtil._isHTMLElement(ele, ["ul", "ol"]);
 
@@ -748,6 +723,44 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
 
             var opt = new Option(text, value);
             ele.options[ele.options.length] = opt;
+        }
+    }
+};
+
+/**
+ * Remove all the options from a select list (specified by id)
+ * @see http://www.getahead.ltd.uk/dwr/util-list.html
+ * @param ele The id of the list element or the HTML element itself
+ */
+DWRUtil.removeAllOptions = function(ele)
+{
+    var orig = ele;
+    ele = $(ele);
+    if (ele == null)
+    {
+        alert("removeAllOptions() can't find an element with id: " + orig + ".");
+        return;
+    }
+
+    var useOptions = DWRUtil._isHTMLElement(ele, "select");
+    var useLi = DWRUtil._isHTMLElement(ele, ["ul", "ol"]);
+
+    if (!useOptions && !useLi)
+    {
+        alert("removeAllOptions() can only be used with select, ol and ul elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
+        return;
+    }
+
+    if (useOptions)
+    {
+        // Empty the list
+        ele.options.length = 0;
+    }
+    else
+    {
+        while (ele.childNodes.length > 0)
+        {
+            ele.removeChild(ele.firstChild);
         }
     }
 };
@@ -1376,7 +1389,7 @@ if (!DWRUtil.callOnLoad)
 {
 DWRUtil.callOnLoad = function(load)
 {
-    DWRUtil._deprecated("DWRUtil.fillList");
+    DWRUtil._deprecated("DWRUtil.callOnLoad", "window.addEventListener or window.onload");
 
     if (window.addEventListener)
     {
@@ -1459,29 +1472,34 @@ DWRUtil._showDeprecated = true;
  * @deprecated
  * @private
  */
-DWRUtil._deprecated = function(fname, alternative)
+DWRUtil._deprecated = function(fname, altfunc)
 {
-    var further = "See the deprecation section on the DWR website for more details.\nDo you wish to ignore further deprecation warnings?";
-    var warning;
-
     if (DWRUtil._showDeprecated)
     {
+        var warning;
+        var alternative;
+
         if (fname == null)
         {
             warning = "You have used a deprecated function which could be removed in the future.";
+            alternative = "";
         }
         else
         {
-            if (alternative == null)
+            warning = "Utility functions like '" + fname + "' are deprecated and could be removed in the future.";
+
+            if (altfunc == null)
             {
-                warning = "Utility functions like '" + fname + "' are deprecated and could be removed in the future.\nSee the documentation for alternatives.";
+                alternative = "\nSee the documentation for alternatives.";
             }
             else
             {
-                warning = "Utility functions like '" + fname + "' are deprecated and could be removed in the future.\nFor an alternative see: " + alternative;
+                alternative = "\nFor an alternative see: " + altfunc;
             }
         }
 
-        DWRUtil._showDeprecated = !confirm(warning + further);
+        var further = "\nImport deprecated.js to get rid of this warning.\nDo you wish to ignore further deprecation warnings on this page?";
+
+        DWRUtil._showDeprecated = !confirm(warning + alternative + further);
     }
 };

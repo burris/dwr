@@ -355,7 +355,7 @@ public class DefaultProcessor implements Processor
             {
                 StringBuffer buffer = new StringBuffer();
 
-                InputStream raw = getClass().getResourceAsStream(FILE_HELP);
+                InputStream raw = getClass().getResourceAsStream(DWRServlet.PACKAGE + FILE_HELP);
                 if (raw == null)
                 {
                     log.error(Messages.getString("DefaultProcessor.MissingHelp", FILE_HELP)); //$NON-NLS-1$

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.UrlResource;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import uk.ltd.getahead.dwr.Creator;
@@ -139,10 +140,16 @@ public class SpringCreator extends AbstractCreator implements Creator
                     if (factory == null)
                     {
                         ServletContext srvCtx = ExecutionContext.get().getServletContext();
-                        HttpServletRequest req = ExecutionContext.get().getHttpServletRequest();
+                        HttpServletRequest request = ExecutionContext.get().getHttpServletRequest();
 
-                        // factory = WebApplicationContextUtils.getWebApplicationContext(srvCtx);
-                        factory = RequestContextUtils.getWebApplicationContext(req, srvCtx);
+                        if (request != null)
+                        {
+                            factory = RequestContextUtils.getWebApplicationContext(request, srvCtx);
+                        }
+                        else
+                        {
+                            factory = WebApplicationContextUtils.getWebApplicationContext(srvCtx);
+                        }
                     }
                 }
             }
