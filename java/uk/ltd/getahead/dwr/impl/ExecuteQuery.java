@@ -352,7 +352,12 @@ public class ExecuteQuery
                     if (object == null)
                     {
                         // Create an instance
+                        log.debug("Create Object: script=" + call.getScriptName() + ", scope=" + scope + ", creator=" + creator.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         object = creator.getInstance();
+                    }
+                    else
+                    {
+                        log.debug("Fetched Object: script=" + call.getScriptName() + ", scope=" + scope + ", creator=" + creator.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     }
 
                     // We might need to remember it for next time

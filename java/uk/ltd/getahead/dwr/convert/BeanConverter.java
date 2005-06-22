@@ -91,7 +91,7 @@ public class BeanConverter implements Converter
 
             // We know what we are converting to, so we create a map of property
             // names against PropertyDescriptors to speed lookup later
-            BeanInfo info = Introspector.getBeanInfo(bean.getClass());
+            BeanInfo info = getBeanInfo(bean);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             Map props = new HashMap();
             for (int i = 0; i < descriptors.length; i++)
@@ -178,7 +178,7 @@ public class BeanConverter implements Converter
 
         try
         {
-            BeanInfo info = Introspector.getBeanInfo(data.getClass());
+            BeanInfo info = getBeanInfo(data);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             for (int i = 0; i < descriptors.length; i++)
             {
@@ -191,28 +191,27 @@ public class BeanConverter implements Converter
                     try
                     {
                         Method getter = descriptor.getReadMethod();
-                        Object value = getter.invoke(data, new Object[0]);
+                        if (getter != null)
+                        {
+                            Object value = getter.invoke(data, new Object[0]);
 
-                        OutboundVariable nested = config.convertOutbound(value, outctx);
+                            OutboundVariable nested = config.convertOutbound(value, outctx);
 
-                        // Make sure the nested thing is declared
-                        buffer.append(nested.getInitCode());
+                            // Make sure the nested thing is declared
+                            buffer.append(nested.getInitCode());
 
-                        // And now declare our stuff
-                        buffer.append(varname);
-                        buffer.append('.');
-                        buffer.append(name);
-                        buffer.append(" = "); //$NON-NLS-1$
-                        buffer.append(nested.getAssignCode());
-                        buffer.append(';');
+                            // And now declare our stuff
+                            buffer.append(varname);
+                            buffer.append('.');
+                            buffer.append(name);
+                            buffer.append(" = "); //$NON-NLS-1$
+                            buffer.append(nested.getAssignCode());
+                            buffer.append(';');
+                        }
                     }
                     catch (Exception ex)
                     {
                         log.warn("Failed to convert " + name, ex); //$NON-NLS-1$
-
-                        buffer.append("alert('Failed to marshall: "); //$NON-NLS-1$
-                        buffer.append(name);
-                        buffer.append(".');"); //$NON-NLS-1$
                     }
                 }
             }
@@ -223,6 +222,19 @@ public class BeanConverter implements Converter
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * HibernateBeanConverter (and maybe others) may want to provide alternate
+     * versions of bean.getClass()
+     * @param bean The class to find bean info from
+     * @return BeanInfo for the given class
+     * @throws IntrospectionException
+     */
+    protected BeanInfo getBeanInfo(Object bean) throws IntrospectionException
+    {
+        BeanInfo info = Introspector.getBeanInfo(bean.getClass());
+        return info;
     }
 
     /**

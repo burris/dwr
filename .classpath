@@ -44,5 +44,10 @@
 	</classpathentry>
 	<classpathentry kind="src" path="java"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry sourcepath="/library/jarlib/hibernate-3.0.5/hibernate-3.0.5.zip" kind="lib" path="jar/hibernate3.jar">
+		<attributes>
+			<attribute value="http://www.hibernate.org/hib_docs/v3/api/" name="javadoc_location"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="web/WEB-INF/classes"/>
 </classpath>

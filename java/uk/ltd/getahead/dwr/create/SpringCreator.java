@@ -1,5 +1,6 @@
 package uk.ltd.getahead.dwr.create;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +29,24 @@ import uk.ltd.getahead.dwr.util.Logger;
 public class SpringCreator extends AbstractCreator implements Creator
 {
     /**
+     * @return Returns the beanName.
+     */
+    public String getBeanName()
+    {
+            return beanName;
+    }
+
+    /**
+     * @param beanName The beanName to set.
+     */
+    public void setBeanName(String beanName)
+    {
+            this.beanName = beanName;
+    }
+
+    /**
      * @return Returns the resourceName.
+     * @deprecated Use location* instead
      */
     public String getResourceName()
     {
@@ -37,6 +55,7 @@ public class SpringCreator extends AbstractCreator implements Creator
 
     /**
      * @param resourceName The resourceName to set.
+     * @deprecated Use location* instead
      */
     public void setResourceName(String resourceName)
     {
@@ -68,6 +87,7 @@ public class SpringCreator extends AbstractCreator implements Creator
             String value = (String) params.get(key);
             if (key.startsWith("location")) //$NON-NLS-1$
             {
+                log.debug("Adding configLocation: " + value + " from parameter: " + key); //$NON-NLS-1$ //$NON-NLS-2$
                 locValues.add(value);
             }
         }
@@ -103,64 +123,12 @@ public class SpringCreator extends AbstractCreator implements Creator
     {
         try
         {
-            Object reply = null;
-
             if (factory == null)
             {
-                // If someone has set a resource name then we need to load that.
-                if (configLocation != null && configLocation.length > 0)
-                {
-                    factory = new ClassPathXmlApplicationContext(configLocation);
-                }
-                else if (resourceName != null)
-                {
-                    URL url = getClass().getClassLoader().getResource(resourceName);
-                    if (url != null)
-                    {
-                        log.info("Loading spring config via the classloader from " + url.toExternalForm()); //$NON-NLS-1$
-                    }
-                    else
-                    {
-                        url = ExecutionContext.get().getServletContext().getResource(resourceName);
-                        if (url != null)
-                        {
-                            log.info("Loading spring config via servlet context from " + url.toExternalForm()); //$NON-NLS-1$
-                        }
-                        else
-                        {
-                            throw new InstantiationException(Messages.getString("SpringCreator.ResourceNameInvalid", resourceName)); //$NON-NLS-1$
-                        }
-                    }
-
-                    UrlResource resource = new UrlResource(url);
-                    factory = new XmlBeanFactory(resource);
-                }
-                else
-                {
-                    if (factory == null)
-                    {
-                        ServletContext srvCtx = ExecutionContext.get().getServletContext();
-                        HttpServletRequest request = ExecutionContext.get().getHttpServletRequest();
-
-                        if (request != null)
-                        {
-                            factory = RequestContextUtils.getWebApplicationContext(request, srvCtx);
-                        }
-                        else
-                        {
-                            factory = WebApplicationContextUtils.getWebApplicationContext(srvCtx);
-                        }
-                    }
-                }
+                factory = getBeanFactory();
             }
 
-            if (factory == null)
-            {
-                throw new InstantiationException(Messages.getString("SpringCreator.MissingFactory", resourceName)); //$NON-NLS-1$
-            }
-
-            reply = factory.getBean(getJavascript());
-
+            Object reply = factory.getBean(beanName);
             return reply;
         }
         catch (RuntimeException ex)
@@ -175,12 +143,75 @@ public class SpringCreator extends AbstractCreator implements Creator
     }
 
     /**
+     * @return A found BeanFactory configuration
+     * @throws InstantiationException If we failed to create a bean factory
+     */
+    private BeanFactory getBeanFactory() throws InstantiationException
+    {
+        // If someone has set a resource name then we need to load that.
+        if (configLocation != null && configLocation.length > 0)
+        {
+            log.info("Spring BeanFactory via ClassPathXmlApplicationContext using " + configLocation.length + "configLocations."); //$NON-NLS-1$ //$NON-NLS-2$
+            return new ClassPathXmlApplicationContext(configLocation);
+        }
+
+        // DEPRECATED:
+        ServletContext srvCtx = ExecutionContext.get().getServletContext();
+        if (resourceName != null)
+        {
+            URL url = getClass().getClassLoader().getResource(resourceName);
+            if (url != null)
+            {
+                log.info("Loading spring config via the classloader from " + url.toExternalForm()); //$NON-NLS-1$
+            }
+            else
+            {
+                try
+                {
+                    url = srvCtx.getResource(resourceName);
+                }
+                catch (MalformedURLException ex)
+                {
+                    throw new InstantiationException(Messages.getString("SpringCreator.ResourceNameInvalid", resourceName)); //$NON-NLS-1$
+                }
+                if (url != null)
+                {
+                    log.info("Loading spring config via servlet context from " + url.toExternalForm()); //$NON-NLS-1$
+                }
+                else
+                {
+                    throw new InstantiationException(Messages.getString("SpringCreator.ResourceNameInvalid", resourceName)); //$NON-NLS-1$
+                }
+            }
+
+            UrlResource resource = new UrlResource(url);
+            return new XmlBeanFactory(resource);
+        }
+
+        HttpServletRequest request = ExecutionContext.get().getHttpServletRequest();
+
+        if (request != null)
+        {
+            return RequestContextUtils.getWebApplicationContext(request, srvCtx);
+        }
+        else
+        {
+            return WebApplicationContextUtils.getWebApplicationContext(srvCtx);
+        }
+    }
+
+    /**
      * @param factory The factory to set.
      */
     public static void setXmlBeanFactory(BeanFactory factory)
     {
         SpringCreator.factory = factory;
     }
+
+    /**
+     * The name of the spring bean we want to create
+     */
+    private String beanName = null;
 
     /**
      * The log stream

@@ -462,7 +462,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params)
         params = args;
         metadata = {};
     }
-    else if (typeof lastArg == "object" && lastArg.callback != null)
+    else if (typeof lastArg == "object" && lastArg.callback != null && typeof lastArg.callback == "function")
     {
         metadata = args.pop();
         params = args;
