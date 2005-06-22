@@ -15,7 +15,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
 
 /**
- * An implementation of Converter for null and undefined.
+ * A converter that magics up HTTP objects
  * @author Joe Walker [joe at eireneh dot com]
  * @version $Id: StringConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
  */
