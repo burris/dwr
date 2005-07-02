@@ -1,4 +1,4 @@
-#Sat Apr 02 18:56:23 BST 2005
+#Fri Jun 24 15:39:13 BST 2005
 comment_clear_blank_lines=false
 comment_format_comments=false
 comment_format_header=false
@@ -17,3 +17,5 @@ org.eclipse.jdt.ui.ignorelowercasenames=true
 org.eclipse.jdt.ui.importorder=java;javax;org;com;
 org.eclipse.jdt.ui.keywordthis=false
 org.eclipse.jdt.ui.ondemandthreshold=99
+org.eclipse.jdt.ui.overrideannotation=true
+org.eclipse.jdt.ui.text.custom_code_templates=<?xml version\="1.0" encoding\="UTF-8"?><templates/>

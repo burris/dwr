@@ -28,12 +28,4 @@ public interface Processor
      * @throws IOException
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException;
-
-    /**
-     * Check to see if the given word is reserved or a bad idea in any known
-     * version of JavaScript.
-     * @param name The word to check
-     * @return false if the word is not reserved
-     */
-    public boolean isReservedWord(String name);
 }

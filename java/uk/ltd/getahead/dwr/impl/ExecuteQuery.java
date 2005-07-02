@@ -120,11 +120,17 @@ public class ExecuteQuery
     }
 
     /**
-     * @param line
-     * @param paramMap
+     * Sort out a single line in a POST request
+     * @param line The line to parse
+     * @param paramMap The map to add parsed parameters to
      */
     private void parsePostLine(String line, Map paramMap)
     {
+        if (line.length() == 0)
+        {
+            return;
+        }
+
         int sep = line.indexOf(ConversionConstants.INBOUND_DECL_SEPARATOR);
         if (sep == -1)
         {

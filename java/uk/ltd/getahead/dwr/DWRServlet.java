@@ -193,10 +193,12 @@ public class DWRServlet extends HttpServlet
             InputStream in = getServletContext().getResourceAsStream(configFile);
             if (in == null)
             {
-                throw new ServletException(Messages.getString("DWRServlet.MissingFile", configFile)); //$NON-NLS-1$
+                log.error("Missing config file: " + configFile); //$NON-NLS-1$
             }
-
-            configuration.addConfig(in);
+            else
+            {
+                configuration.addConfig(in);
+            }
         }
         catch (Exception ex)
         {

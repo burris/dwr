@@ -10,7 +10,7 @@ import java.util.StringTokenizer;
 
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.SourceUtil;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
  * A parser for type info in a dwr.xml signature.
@@ -36,7 +36,9 @@ public class SignatureParser
     {
         try
         {
-            String process = SourceUtil.stripComments(sigtext);
+            String reply = sourceUtil.stripMultiLineComments(sigtext);
+            reply = sourceUtil.stripSingleLineComments(reply);
+            String process = reply;
 
             process = process.replace('\n', ' ');
             process = process.replace('\r', ' ');
@@ -344,8 +346,19 @@ public class SignatureParser
         return (String[]) params.toArray(new String[params.size()]);
     }
 
+    /**
+     * The means by which we strip comments
+     */
+    private JavascriptUtil sourceUtil = new JavascriptUtil();
+
+    /**
+     * The map of specific class imports that we have parsed.
+     */
     private Map classImports = new HashMap();
 
+    /**
+     * The map of package imports that we have parsed.
+     */
     private List packageImports = new ArrayList();
 
     /**

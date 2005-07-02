@@ -16,9 +16,9 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
-import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
  * An implementation of Converter for Maps.
@@ -177,7 +177,7 @@ public class MapConverter implements Converter
             String outkey;
             if (key instanceof String)
             {
-                outkey = '\'' + StringEscapeUtils.escapeJavaScript((String) key) + '\'';
+                outkey = '\'' + jsutil.escapeJavaScript((String) key) + '\'';
             }
             else
             {
@@ -203,6 +203,11 @@ public class MapConverter implements Converter
 
         return buffer.toString();
     }
+
+    /**
+     * The means by which we strip comments
+     */
+    private JavascriptUtil jsutil = new JavascriptUtil();
 
     /**
      * To forward marshalling requests

@@ -13,7 +13,7 @@ import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
  * An implementation of Converter for DOM objects.
@@ -82,9 +82,9 @@ public class XOMConverter implements Converter
             buffer.append("var "); //$NON-NLS-1$
             buffer.append(varname);
             buffer.append(" = DWREngine._unserializeDocument(\""); //$NON-NLS-1$
-            buffer.append(StringEscapeUtils.escapeJavaScript(output));
+            buffer.append(jsutil.escapeJavaScript(output));
             buffer.append("\");"); //$NON-NLS-1$
-    
+
             return buffer.toString();
         }
         catch (ConversionException ex)
@@ -97,4 +97,8 @@ public class XOMConverter implements Converter
         }
     }
 
+    /**
+     * The means by which we strip comments
+     */
+    private JavascriptUtil jsutil = new JavascriptUtil();
 }

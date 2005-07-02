@@ -1,4 +1,4 @@
-#Mon May 30 16:19:01 BST 2005
+#Fri Jun 24 15:36:25 BST 2005
 eclipse.preferences.version=1
 org.eclipse.jdt.core.builder.cleanOutputFolder=clean
 org.eclipse.jdt.core.builder.duplicateResourceTask=warning
@@ -90,6 +90,7 @@ org.eclipse.jdt.core.formatter.alignment_for_arguments_in_qualified_allocation_e
 org.eclipse.jdt.core.formatter.alignment_for_binary_expression=20
 org.eclipse.jdt.core.formatter.alignment_for_compact_if=52
 org.eclipse.jdt.core.formatter.alignment_for_conditional_expression=52
+org.eclipse.jdt.core.formatter.alignment_for_enum_constants=0
 org.eclipse.jdt.core.formatter.alignment_for_expressions_in_array_initializer=84
 org.eclipse.jdt.core.formatter.alignment_for_multiple_fields=16
 org.eclipse.jdt.core.formatter.alignment_for_parameters_in_constructor_declaration=20
@@ -320,5 +321,6 @@ org.eclipse.jdt.core.formatter.number_of_empty_lines_to_preserve=1
 org.eclipse.jdt.core.formatter.put_empty_statement_on_new_line=true
 org.eclipse.jdt.core.formatter.tabulation.char=space
 org.eclipse.jdt.core.formatter.tabulation.size=4
+org.eclipse.jdt.core.formatter.use_tabs_only_for_leading_indentations=false
 org.eclipse.jdt.core.incompatibleJDKLevel=warning
 org.eclipse.jdt.core.incompleteClasspath=error

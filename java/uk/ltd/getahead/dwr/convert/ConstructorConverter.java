@@ -7,7 +7,7 @@ import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
  * An implementation of Converter for anything with a string constructor.
@@ -44,6 +44,11 @@ public class ConstructorConverter implements Converter
      */
     public String convertOutbound(Object data, String varname, OutboundContext outctx)
     {
-        return "var " + varname + " = \"" + StringEscapeUtils.escapeJavaScript(data.toString()) + "\";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return "var " + varname + " = \"" + jsutil.escapeJavaScript(data.toString()) + "\";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
+
+    /**
+     * The means by which we strip comments
+     */
+    private JavascriptUtil jsutil = new JavascriptUtil();
 }

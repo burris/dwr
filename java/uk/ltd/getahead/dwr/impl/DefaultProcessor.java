@@ -6,13 +6,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -28,10 +25,9 @@ import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DWRServlet;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.Processor;
-import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.SourceUtil;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -230,7 +226,7 @@ public class DefaultProcessor implements Processor
             }
 
             // Is it on the list of banned names
-            if (isReservedWord(methodName))
+            if (jsutil.isReservedWord(methodName))
             {
                 out.println(BLANK);
                 out.println("<li style='color: #88A;'>" + methodName + "() is not available because it is a reserved word.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -422,7 +418,7 @@ public class DefaultProcessor implements Processor
             }
 
             // Is it on the list of banned names
-            if (isReservedWord(methodName))
+            if (jsutil.isReservedWord(methodName))
             {
                 continue;
             }
@@ -502,7 +498,7 @@ public class DefaultProcessor implements Processor
 
                 if (mimeType.equals(MIME_JS) && scriptCompressed)
                 {
-                    output = SourceUtil.compress(output);
+                    output = jsutil.compress(output, JavascriptUtil.LEVEL_NORMAL);
                 }
 
                 scriptCache.put(path, output);
@@ -569,7 +565,7 @@ public class DefaultProcessor implements Processor
             Call call = calls[i];
             if (call.getThrowable() != null)
             {
-                String output = StringEscapeUtils.escapeJavaScript(call.getThrowable().getMessage());
+                String output = jsutil.escapeJavaScript(call.getThrowable().getMessage());
 
                 buffer.append(prefix);
                 buffer.append("DWREngine._handleError('"); //$NON-NLS-1$
@@ -620,14 +616,6 @@ public class DefaultProcessor implements Processor
                paramType == ServletConfig.class ||
                paramType == ServletContext.class ||
                paramType == HttpSession.class;
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Processor#isReservedWord(java.lang.String)
-     */
-    public boolean isReservedWord(String name)
-    {
-        return reserved.contains(name);
     }
 
     /**
@@ -719,115 +707,6 @@ public class DefaultProcessor implements Processor
     }
 
     /**
-     * The array of javascript reserved words
-     */
-    private static final String[] RESERVED_ARRAY = new String[]
-    {
-        // Reserved and used at ECMAScript 4
-        "as", //$NON-NLS-1$
-        "break", //$NON-NLS-1$
-        "case", //$NON-NLS-1$
-        "catch", //$NON-NLS-1$
-        "class", //$NON-NLS-1$
-        "const", //$NON-NLS-1$
-        "continue", //$NON-NLS-1$
-        "default", //$NON-NLS-1$
-        "delete", //$NON-NLS-1$
-        "do", //$NON-NLS-1$
-        "else", //$NON-NLS-1$
-        "export", //$NON-NLS-1$
-        "extends", //$NON-NLS-1$
-        "false", //$NON-NLS-1$
-        "finally", //$NON-NLS-1$
-        "for", //$NON-NLS-1$
-        "function", //$NON-NLS-1$
-        "if", //$NON-NLS-1$
-        "import", //$NON-NLS-1$
-        "in", //$NON-NLS-1$
-        "instanceof", //$NON-NLS-1$
-        "is", //$NON-NLS-1$
-        "namespace", //$NON-NLS-1$
-        "new", //$NON-NLS-1$
-        "null", //$NON-NLS-1$
-        "package", //$NON-NLS-1$
-        "private", //$NON-NLS-1$
-        "public", //$NON-NLS-1$
-        "return", //$NON-NLS-1$
-        "super", //$NON-NLS-1$
-        "switch", //$NON-NLS-1$
-        "this", //$NON-NLS-1$
-        "throw", //$NON-NLS-1$
-        "true", //$NON-NLS-1$
-        "try", //$NON-NLS-1$
-        "typeof", //$NON-NLS-1$
-        "use", //$NON-NLS-1$
-        "var", //$NON-NLS-1$
-        "void", //$NON-NLS-1$
-        "while", //$NON-NLS-1$
-        "with", //$NON-NLS-1$
-        // Reserved for future use at ECMAScript 4
-        "abstract", //$NON-NLS-1$
-        "debugger", //$NON-NLS-1$
-        "enum", //$NON-NLS-1$
-        "goto", //$NON-NLS-1$
-        "implements", //$NON-NLS-1$
-        "interface", //$NON-NLS-1$
-        "native", //$NON-NLS-1$
-        "protected", //$NON-NLS-1$
-        "synchronized", //$NON-NLS-1$
-        "throws", //$NON-NLS-1$
-        "transient", //$NON-NLS-1$
-        "volatile", //$NON-NLS-1$
-        // Reserved in ECMAScript 3, unreserved at 4 best to avoid anyway
-        "boolean", //$NON-NLS-1$
-        "byte", //$NON-NLS-1$
-        "char", //$NON-NLS-1$
-        "double", //$NON-NLS-1$
-        "final", //$NON-NLS-1$
-        "float", //$NON-NLS-1$
-        "int", //$NON-NLS-1$
-        "long", //$NON-NLS-1$
-        "short", //$NON-NLS-1$
-        "static", //$NON-NLS-1$
-
-        // I have seen the folowing list as 'best avoided for function names'
-        // but it seems way to all encompassing, so I'm not going to include it
-        /*
-        "alert", "anchor", "area", "arguments", "array", "assign", "blur",
-        "boolean", "button", "callee", "caller", "captureevents", "checkbox",
-        "clearinterval", "cleartimeout", "close", "closed", "confirm",
-        "constructor", "date", "defaultstatus", "document", "element", "escape",
-        "eval", "fileupload", "find", "focus", "form", "frame", "frames",
-        "getclass", "hidden", "history", "home", "image", "infinity",
-        "innerheight", "isfinite", "innerwidth", "isnan", "java", "javaarray",
-        "javaclass", "javaobject", "javapackage", "length", "link", "location",
-        "locationbar", "math", "menubar", "mimetype", "moveby", "moveto",
-        "name", "nan", "navigate", "navigator", "netscape", "number", "object",
-        "onblur", "onerror", "onfocus", "onload", "onunload", "open", "opener",
-        "option", "outerheight", "outerwidth", "packages", "pagexoffset",
-        "pageyoffset", "parent", "parsefloat", "parseint", "password",
-        "personalbar", "plugin", "print", "prompt", "prototype", "radio", "ref",
-        "regexp", "releaseevents", "reset", "resizeby", "resizeto",
-        "routeevent", "scroll", "scrollbars", "scrollby", "scrollto", "select",
-        "self", "setinterval", "settimeout", "status", "statusbar", "stop",
-        "string", "submit", "sun", "taint",  "text", "textarea", "toolbar",
-        "top", "tostring", "unescape", "untaint", "unwatch", "valueof", "watch",
-        "window",
-        */
-    };
-
-    private static SortedSet reserved = new TreeSet();
-
-    /**
-     * For easy access ...
-     */
-    static
-    {
-        // The Javascript reserved words array so we don't generate illegal javascript
-        reserved.addAll(Arrays.asList(RESERVED_ARRAY));
-    }
-
-    /**
      * Empty string
      */
     protected static final String BLANK = ""; //$NON-NLS-1$
@@ -860,6 +739,11 @@ public class DefaultProcessor implements Processor
     protected static final String MIME_HTML = "text/html"; //$NON-NLS-1$
 
     protected static final String MIME_JS = "text/javascript"; //$NON-NLS-1$
+
+    /**
+     * The means by which we strip comments
+     */
+    private JavascriptUtil jsutil = new JavascriptUtil();
 
     /**
      * This helps us test that access rules are being followed

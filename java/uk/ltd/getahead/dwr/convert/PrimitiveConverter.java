@@ -7,8 +7,8 @@ import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.lang.StringEscapeUtils;
 import uk.ltd.getahead.dwr.util.LocalUtil;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
  * Converter for all primitive types
@@ -132,7 +132,7 @@ public class PrimitiveConverter implements Converter
         else if (paramType == Character.class)
         {
             // Treat characters as strings
-            return "var " + varname + " = \"" + StringEscapeUtils.escapeJavaScript(object.toString()) + "\";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return "var " + varname + " = \"" + jsutil.escapeJavaScript(object.toString()) + "\";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         else
         {
@@ -140,4 +140,9 @@ public class PrimitiveConverter implements Converter
             return "var " + varname + " = " + object.toString() + ";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
+
+    /**
+     * The means by which we strip comments
+     */
+    private JavascriptUtil jsutil = new JavascriptUtil();
 }
