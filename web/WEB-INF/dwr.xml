@@ -24,9 +24,7 @@
       <param name="class" value="uk.ltd.getahead.testdwr.TestBean"/>
     </create>
 
-    <!-- convert converter="bean" match="uk.ltd.getahead.testdwr.*"/  -->
-
-    <convert converter="testbean" match="uk.ltd.getahead.testdwr.TestBean"/>
+    <convert converter="testbean" match="uk.ltd.getahead.testdwr.*"/>
 
   </allow>
 

@@ -83,9 +83,12 @@ public final class WriterOutputStream extends ServletOutputStream
      */
     public void close() throws IOException
     {
-        writer.close();
-        writer = null;
-        encoding = null;
+        if (writer != null)
+        {
+            writer.close();
+            writer = null;
+            encoding = null;
+        }
     }
 
     /* (non-Javadoc)

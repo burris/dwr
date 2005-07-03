@@ -140,7 +140,11 @@ public class DWRServlet extends HttpServlet
             // If there are none then use the default name
             if (!foundConfig)
             {
-                readFile(DEFAULT_DWR_XML, configuration);
+                String skip = config.getInitParameter(INIT_SKIP_DEFAULT);
+                if (!Boolean.valueOf(skip).booleanValue())
+                {
+                    readFile(DEFAULT_DWR_XML, configuration);
+                }
             }
 
             // Finally the processor that handles doGet and doPost
@@ -206,21 +210,20 @@ public class DWRServlet extends HttpServlet
         }
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+    /**
+     * The processor will actually handle the http requests
      */
-    public int hashCode()
-    {
-        log.error("Warning: DWRServlet has not been designed for use in collections."); //$NON-NLS-1$
-        return super.hashCode();
-    }
-
     protected Processor processor;
 
     /**
      * The package name because people need to load resources in this package.  
      */
     public static final String PACKAGE = "/uk/ltd/getahead/dwr/"; //$NON-NLS-1$
+
+    /**
+     * Init parameter: Skip reading the default config file if none are specified.
+     */
+    protected static final String INIT_SKIP_DEFAULT = "skipDefaultConfig"; //$NON-NLS-1$
 
     /**
      * Init parameter: Set a dwr.xml config file.

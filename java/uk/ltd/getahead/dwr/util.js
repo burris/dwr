@@ -9,13 +9,13 @@
 function DWRUtil() { }
 
 ////////////////////////////////////////////////////////////////////////////////
-// The following functions are described in util-compat.html
+// The following functions are described in script-compat.html
 
 /**
  * Enables you to react to return being pressed in an input
  * For example:
  * <code>&lt;input type="text" onkeypressed="DWRUtil.onReturn(event, methodName)"/&gt;</code>
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param event The event object for Netscape browsers
  * @param action Method name to execute when return is pressed
  */
@@ -35,7 +35,7 @@ DWRUtil.onReturn = function(event, action)
 /**
  * Select a specific range in a text box.
  * This is useful for 'google suggest' type functionallity.
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param ele The id of the text input element or the HTML element itself
  * @param start The beginning index
  * @param end The end index 
@@ -66,7 +66,7 @@ DWRUtil.selectRange = function(ele, start, end)
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The following functions are described in util-general.html
+// The following functions are described in script-general.html
 
 /**
  * Find the element in the current HTML document with the given id, or if more
@@ -74,7 +74,7 @@ DWRUtil.selectRange = function(ele, start, end)
  * Any non-string arguments are left as is in the reply.
  * This function is inspired by the prototype library however it probably works
  * on more browsers than the original.
- * @see http://www.getahead.ltd.uk/dwr/util-general.html
+ * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
 function $()
 {
@@ -113,7 +113,7 @@ function $()
  *              dig into child objects, 2 = Multi-line debug that digs into the
  *              2nd layer of child objects
  * @param depth How much do we indent this item?
- * @see http://www.getahead.ltd.uk/dwr/util-general.html
+ * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
 DWRUtil.toDescriptiveString = function(data, level, depth)
 {
@@ -333,7 +333,7 @@ DWRUtil._indent = function(level, depth)
 
 /**
  * Setup a GMail style loading message.
- * @see http://www.getahead.ltd.uk/dwr/util-general.html
+ * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
 DWRUtil.useLoadingMessage = function()
 {
@@ -368,13 +368,13 @@ DWRUtil.useLoadingMessage = function()
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The following functions are described in util-simple.html
+// The following functions are described in script-simple.html
 
 /**
  * Set the value for the given id to the specified val.
  * This method works for selects (where the option with a matching value and
  * not text is selected), input elements (including textareas) divs and spans.
- * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param ele The id of the element or the HTML element itself
  */
 DWRUtil.setValue = function(ele, val)
@@ -458,7 +458,7 @@ DWRUtil.setValue = function(ele, val)
  * The counterpart to setValue() - read the current value for a given element.
  * This method works for selects (where the option with a matching value and
  * not text is selected), input elements (including textareas) divs and spans.
- * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param ele The id of the element or the HTML element itself
  */
 DWRUtil.getValue = function(ele)
@@ -517,7 +517,7 @@ DWRUtil.getValue = function(ele)
 /**
  * getText() is like getValue() with the except that it only works for selects
  * where it reads the text of an option and not it's value.
- * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param ele The id of the element or the HTML element itself
  */
 DWRUtil.getText = function(ele)
@@ -552,7 +552,7 @@ DWRUtil.getText = function(ele)
 /**
  * Given a map, call setValue() for all the entries in the map using the key
  * of each entry as an id.
- * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param map The map of values to set to various elements
  */
 DWRUtil.setValues = function(map)
@@ -571,7 +571,7 @@ DWRUtil.setValues = function(map)
 /**
  * Given a map, call getValue() for all the entries in the map using the key
  * of each entry as an id.
- * @see http://www.getahead.ltd.uk/dwr/util-simple.html
+ * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param map The map of values to set to various elements
  */
 DWRUtil.getValues = function(map)
@@ -587,7 +587,7 @@ DWRUtil.getValues = function(map)
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The following functions are described in util-list.html
+// The following functions are described in script-list.html
 
 /**
  * Add options to a list from an array or map.
@@ -618,7 +618,7 @@ DWRUtil.getValues = function(map)
  * innerHTML set to the string value of the array elements. This mode works
  * with ul and ol lists.
  * </p>
- * @see http://www.getahead.ltd.uk/dwr/util-list.html
+ * @see http://www.getahead.ltd.uk/dwr/script-list.html
  * @param ele The id of the list element or the HTML element itself
  * @param data An array or map of data items to populate the list
  * @param valuerev (optional) If data is an array of objects, an optional
@@ -729,7 +729,7 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
 
 /**
  * Remove all the options from a select list (specified by id)
- * @see http://www.getahead.ltd.uk/dwr/util-list.html
+ * @see http://www.getahead.ltd.uk/dwr/script-list.html
  * @param ele The id of the list element or the HTML element itself
  */
 DWRUtil.removeAllOptions = function(ele)
@@ -766,7 +766,7 @@ DWRUtil.removeAllOptions = function(ele)
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-// The following functions are described in util-table.html
+// The following functions are described in script-table.html
 
 /**
  * Create rows inside a the table, tbody, thead or tfoot element (given by id).
@@ -787,7 +787,7 @@ DWRUtil.removeAllOptions = function(ele)
  * One slight modification to this is that any members of the cellFuncs array
  * that are strings instead of functions, the strings are used as cell contents
  * directly.
- * @see http://www.getahead.ltd.uk/dwr/util-table.html
+ * @see http://www.getahead.ltd.uk/dwr/script-table.html
  * @param ele The id of the tbody element
  * @param data Array containing one entry for each row in the updated table
  * @param cellFuncs An array of functions (one per column) for extracting cell
@@ -901,7 +901,7 @@ DWRUtil._addRowInner = function(frag, row, cellFuncs)
  * Remove all the children of a given node.
  * Most useful for dynamic tables where you clearChildNodes() on the tbody
  * element.
- * @see http://www.getahead.ltd.uk/dwr/util-table.html
+ * @see http://www.getahead.ltd.uk/dwr/script-table.html
  * @param ele The id of the element or the HTML element itself
  */
 DWRUtil.removeAllRows = function(ele)
@@ -945,7 +945,7 @@ DWRUtil._isIE = ((DWRUtil._agent.indexOf("msie") != -1) && (DWRUtil._agent.index
 
 /**
  * Is the given node an HTML element (optionally of a given type)?
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param ele The element to test
  * @param nodeName eg "input", "textarea" - optional extra check for node name
  *                 or an array of valid node names.
@@ -1007,7 +1007,7 @@ DWRUtil._detailedTypeOf = function(x)
  * Array detector.
  * This is an attempt to work around the lack of support for instanceof in
  * some browsers.
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param data The object to test
  * @returns true iff <code>data</code> is an Array
  * @private
@@ -1021,7 +1021,7 @@ DWRUtil._isArray = function(data)
  * Date detector.
  * This is an attempt to work around the lack of support for instanceof in
  * some browsers.
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param data The object to test
  * @returns true iff <code>data</code> is a Date
  * @private
@@ -1036,7 +1036,7 @@ DWRUtil._isDate = function(data)
 
 /**
  * Is the given node an HTML element (optionally of a given type)?
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param ele The element to test
  * @param nodeName eg input, textarea - optional extra check for node name
  * @deprecated DWR isn't a generic Javascript library
@@ -1092,7 +1092,7 @@ DWRUtil.detailedTypeOf = function(x)
  * Array detector.
  * This is an attempt to work around the lack of support for instanceof in
  * some browsers.
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param data The object to test
  * @returns true iff <code>data</code> is an Array
  * @deprecated Not sure if DWR is the right place for this or if we support old browsers
@@ -1110,7 +1110,7 @@ DWRUtil.isArray = function(data)
  * Date detector.
  * This is an attempt to work around the lack of support for instanceof in
  * some browsers.
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param data The object to test
  * @returns true iff <code>data</code> is a Date
  * @deprecated Not sure if DWR is the right place for this or if we support old browsers
@@ -1125,7 +1125,7 @@ DWRUtil.isDate = function(data)
 
 /**
  * Is the given node an HTML input element?
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param ele The element to test
  * @deprecated See the documentation for alternatives
  */
@@ -1140,7 +1140,7 @@ DWRUtil.isHTMLInputElement = function(ele)
 
 /**
  * Is the given node an HTML textarea element?
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param ele The element to test
  * @deprecated See the documentation for alternatives
  */
@@ -1155,7 +1155,7 @@ DWRUtil.isHTMLTextAreaElement = function(ele)
 
 /**
  * Is the given node an HTML select element?
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param ele The element to test
  * @deprecated See the documentation for alternatives
  */
@@ -1194,7 +1194,7 @@ DWRUtil.getElementById = function(id)
 
 /**
  * Visually enable or diable an element.
- * @see http://www.getahead.ltd.uk/dwr/util-compat.html
+ * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param ele The id of the element or the HTML element itself
  * @param state Boolean true/false to set if the element should be enabled
  * @deprecated DWR isn't a generic Javascript library

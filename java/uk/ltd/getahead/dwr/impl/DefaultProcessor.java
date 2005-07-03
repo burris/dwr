@@ -53,38 +53,50 @@ public class DefaultProcessor implements Processor
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        String pathinfo = req.getPathInfo();
-        if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals(PATH_ROOT))
+        try
         {
-            doIndex(req, resp);
+            String pathinfo = req.getPathInfo();
+            if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals(PATH_ROOT))
+            {
+                resp.sendRedirect(req.getContextPath() + req.getServletPath() + '/' + FILE_INDEX);
+            }
+            else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_INDEX))
+            {
+                doIndex(req, resp);
+            }
+            else if (pathinfo != null && pathinfo.startsWith('/' + PATH_TEST))
+            {
+                doTest(req, resp);
+            }
+            else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_ENGINE))
+            {
+                doFile(resp, FILE_ENGINE, MIME_JS);
+            }
+            else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_UTIL))
+            {
+                doFile(resp, FILE_UTIL, MIME_JS);
+            }
+            else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_DEPRECATED))
+            {
+                doFile(resp, FILE_DEPRECATED, MIME_JS);
+            }
+            else if (pathinfo != null && pathinfo.startsWith(PATH_INTERFACE))
+            {
+                doInterface(req, resp);
+            }
+            else if (pathinfo != null && pathinfo.startsWith(PATH_EXEC))
+            {
+                doExec(req, resp);
+            }
+            else
+            {
+                log.warn("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
         }
-        else if (pathinfo != null && pathinfo.startsWith(PATH_TEST))
+        catch (SecurityException ex)
         {
-            doTest(req, resp);
-        }
-        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_ENGINE))
-        {
-            doFile(resp, FILE_ENGINE, MIME_JS);
-        }
-        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_UTIL))
-        {
-            doFile(resp, FILE_UTIL, MIME_JS);
-        }
-        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_DEPRECATED))
-        {
-            doFile(resp, FILE_DEPRECATED, MIME_JS);
-        }
-        else if (pathinfo != null && pathinfo.startsWith(PATH_INTERFACE))
-        {
-            doInterface(req, resp);
-        }
-        else if (pathinfo != null && pathinfo.startsWith(PATH_EXEC))
-        {
-            doExec(req, resp);
-        }
-        else
-        {
-            log.warn("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$
+            log.warn("Security exception: ", ex); //$NON-NLS-1$
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
@@ -117,7 +129,7 @@ public class DefaultProcessor implements Processor
         {
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
-            out.println("<li><a href='" + req.getContextPath() + req.getServletPath() + PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            out.println("<li><a href='" + PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
         out.println("</ul>"); //$NON-NLS-1$
 
@@ -146,7 +158,7 @@ public class DefaultProcessor implements Processor
         }
 
         String scriptname = req.getPathInfo();
-        scriptname = LocalUtil.replace(scriptname, PATH_TEST, BLANK);
+        scriptname = LocalUtil.replace(scriptname, '/' + PATH_TEST, BLANK);
         scriptname = LocalUtil.replace(scriptname, PATH_ROOT, BLANK);
 
         Creator creator = creatorManager.getCreator(scriptname);
@@ -160,12 +172,17 @@ public class DefaultProcessor implements Processor
         String engineURL = req.getContextPath() + req.getServletPath() + '/' + FILE_ENGINE;
         String utilURL = req.getContextPath() + req.getServletPath() + '/' + FILE_UTIL;
 
+        String proxyInterfaceURL = PATH_UP + PATH_INTERFACE + scriptname + EXTENSION_JS;
+        String proxyEngineURL = PATH_UP + '/' + FILE_ENGINE;
+        String proxyUtilURL = PATH_UP + '/' + FILE_UTIL;
+
         out.println("<html>"); //$NON-NLS-1$
         out.println("<head>"); //$NON-NLS-1$
         out.println("  <title>DWR Test</title>"); //$NON-NLS-1$
-        out.println("  <script type='text/javascript' src='" + interfaceURL + "'></script>"); //$NON-NLS-1$ //$NON-NLS-2$
-        out.println("  <script type='text/javascript' src='" + engineURL + "'></script>"); //$NON-NLS-1$ //$NON-NLS-2$
-        out.println("  <script type='text/javascript' src='" + utilURL + "'></script>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("  <!-- These paths use .. so that they still work behind a path mapping proxy. The fully qualified version is more cut and paste friendly. -->"); //$NON-NLS-1$
+        out.println("  <script type='text/javascript' src='" + proxyInterfaceURL + "'></script>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("  <script type='text/javascript' src='" + proxyEngineURL + "'></script>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("  <script type='text/javascript' src='" + proxyUtilURL + "'></script>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("  <script type='text/javascript'>"); //$NON-NLS-1$
         out.println("  function objectEval(text)"); //$NON-NLS-1$
         out.println("  {"); //$NON-NLS-1$
@@ -293,7 +310,7 @@ public class DefaultProcessor implements Processor
             }
             onclick += ");"; //$NON-NLS-1$
 
-            out.print("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + '.' + methodName + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            out.println("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + '.' + methodName + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             out.println("  <script type='text/javascript'>"); //$NON-NLS-1$
             out.println("    var reply" + i + " = function(data)"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -473,9 +490,11 @@ public class DefaultProcessor implements Processor
     {
         resp.setContentType(mimeType);
 
+        String output = null;
+
         synchronized (scriptCache)
         {
-            String output = (String) scriptCache.get(path);
+            output = (String) scriptCache.get(path);
             if (output == null)
             {
                 StringBuffer buffer = new StringBuffer();
@@ -503,11 +522,11 @@ public class DefaultProcessor implements Processor
 
                 scriptCache.put(path, output);
             }
-
-            PrintWriter out = resp.getWriter();
-            out.println(output);
-            out.flush();
         }
+
+        PrintWriter out = resp.getWriter();
+        out.println(output);
+        out.flush();
     }
 
     /**
@@ -717,9 +736,11 @@ public class DefaultProcessor implements Processor
 
     protected static final String PATH_INTERFACE = "/interface/"; //$NON-NLS-1$
 
-    protected static final String PATH_TEST = "/test/"; //$NON-NLS-1$
+    protected static final String PATH_TEST = "test/"; //$NON-NLS-1$
 
-    protected static final String EXTENSION_JS = ".js"; //$NON-NLS-1$
+    protected static final String PATH_UP = ".."; //$NON-NLS-1$
+
+    protected static final String FILE_INDEX = "index.html"; //$NON-NLS-1$
 
     protected static final String FILE_UTIL = "util.js"; //$NON-NLS-1$
 
@@ -728,6 +749,8 @@ public class DefaultProcessor implements Processor
     protected static final String FILE_DEPRECATED = "deprecated.js"; //$NON-NLS-1$
 
     protected static final String FILE_HELP = "help.html"; //$NON-NLS-1$
+
+    protected static final String EXTENSION_JS = ".js"; //$NON-NLS-1$
 
     /*
      * If we need to do more advanced char processing then we should consider
