@@ -34,6 +34,9 @@ import uk.ltd.getahead.dwr.util.Logger;
  */
 public class Test
 {
+    /**
+     * @return obja
+     */
     public ObjA getLooped()
     {
         ObjA objA = new ObjA();
