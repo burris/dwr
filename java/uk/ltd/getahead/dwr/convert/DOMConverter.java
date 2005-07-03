@@ -1,5 +1,6 @@
 package uk.ltd.getahead.dwr.convert;
 
+import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -56,7 +57,7 @@ public class DOMConverter implements Converter
                 builder = buildFactory.newDocumentBuilder();
             }
 
-            Document doc = builder.parse(value);
+            Document doc = builder.parse(new ByteArrayInputStream(value.getBytes()));
 
             if (paramType == Document.class)
             {

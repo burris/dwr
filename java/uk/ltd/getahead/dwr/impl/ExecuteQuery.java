@@ -231,7 +231,9 @@ public class ExecuteQuery
                     String data = (String) entry.getValue();
                     String[] split = LocalUtil.splitInbound(data);
 
-                    call.getInboundContext().createInboundVariable(callNum, key, split[LocalUtil.INBOUND_INDEX_TYPE], split[LocalUtil.INBOUND_INDEX_VALUE]);
+                    String value = split[LocalUtil.INBOUND_INDEX_VALUE];
+                    String type = split[LocalUtil.INBOUND_INDEX_TYPE];
+                    call.getInboundContext().createInboundVariable(callNum, key, type, value);
                     it.remove();
                 }
             }

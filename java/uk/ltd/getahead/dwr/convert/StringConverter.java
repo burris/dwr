@@ -1,13 +1,11 @@
 package uk.ltd.getahead.dwr.convert;
 
-
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
@@ -29,7 +27,7 @@ public class StringConverter implements Converter
      */
     public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
-        return LocalUtil.decode(iv.getValue());
+        return iv.getValue();
     }
 
     /* (non-Javadoc)
