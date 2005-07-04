@@ -74,6 +74,11 @@ DWRUtil.selectRange = function(ele, start, end)
  * Any non-string arguments are left as is in the reply.
  * This function is inspired by the prototype library however it probably works
  * on more browsers than the original.
+ * Technically speaking this will not work on IE5.0 because it uses Array.push
+ * however it is expected that this will only be used in conjunction with
+ * engine.js (which makes up for this omission). If you are using this function
+ * without engine.js and want IE5.0 compatibility then you should arrange for
+ * a replacement for Array.push.
  * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
 function $()

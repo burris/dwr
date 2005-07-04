@@ -52,6 +52,15 @@ public class BeanConverter implements Converter
         this.config = newConfig;
     }
 
+    /**
+     * Accessor for the current ConverterManager
+     * @return the current ConverterManager
+     */
+    public ConverterManager getConverterManager()
+    {
+        return config;
+    }
+
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */

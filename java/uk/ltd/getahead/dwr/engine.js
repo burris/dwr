@@ -1035,3 +1035,223 @@ DWREngine._deprecated = function()
     }
 };
 
+/**
+ * To make up for the lack of encodeURIComponent() on IE5.0
+ * @private
+ */
+if (typeof encodeURIComponent === 'undefined')
+{
+    function utf8(wide)
+    {
+        var c, s;
+        var enc = "";
+        var i = 0;
+
+        while (i < wide.length)
+        {
+            c = wide.charCodeAt(i++);
+            // handle UTF-16 surrogates
+            if (c >= 0xDC00 && c < 0xE000)
+            {
+                continue;
+            }
+
+            if (c >= 0xD800 && c < 0xDC00)
+            {
+                if (i >= wide.length)
+                {
+                    continue;
+                }
+
+                s = wide.charCodeAt(i++);
+                if (s<0xDC00 || c>=0xDE00)
+                {
+                    continue;
+                }
+
+                c = ((c - 0xD800) << 10) + (s - 0xDC00) + 0x10000;
+            }
+
+            // output value
+            if (c < 0x80)
+            {
+                enc += String.fromCharCode(c);
+            }
+            else if (c < 0x800)
+            {
+                enc += String.fromCharCode(0xC0 + (c >> 6), 0x80 + (c & 0x3F));
+            }
+            else if (c < 0x10000)
+            {
+                enc += String.fromCharCode(0xE0 + (c >> 12), 0x80 + (c >> 6 & 0x3F), 0x80 + (c & 0x3F));
+            }
+            else
+            {
+                enc += String.fromCharCode(0xF0 + (c >> 18), 0x80 + (c >> 12 & 0x3F), 0x80 + (c >> 6 & 0x3F), 0x80 + (c & 0x3F));
+            }
+        }
+
+        return enc;
+    }
+
+    var hexchars = "0123456789ABCDEF";
+
+    function toHex(n)
+    {
+        return hexchars.charAt(n>>4)+hexchars.charAt(n & 0xF);
+    }
+
+    var okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+
+    function encodeURIComponent(s)
+    {
+        var s = utf8(s);
+        var c;
+        var enc = "";
+
+        for (var i= 0; i<s.length; i++)
+        {
+            if (okURIchars.indexOf(s.charAt(i)) == -1)
+            {
+                enc += "%" + toHex(s.charCodeAt(i));
+            }
+            else
+            {
+                enc += s.charAt(i);
+            }
+        }
+
+        return enc;
+    }
+}
+
+/**
+ * To make up for the lack of Array.splice() on IE5.0
+ * @private
+ */
+if (typeof Array.prototype.splice === 'undefined')
+{
+    Array.prototype.splice = function(ind, cnt)
+    {
+        if (arguments.length == 0)
+        {
+            return ind;
+        }
+
+        if (typeof ind != "number")
+        {
+            ind = 0;
+        }
+
+        if (ind < 0)
+        {
+            ind = Math.max(0,this.length + ind);
+        }
+
+        if (ind > this.length)
+        {
+            if (arguments.length > 2)
+            {
+                ind = this.length;
+            }
+            else
+            {
+                return [];
+            }
+        }
+
+        if (arguments.length < 2)
+        {
+            cnt = this.length-ind;
+        }
+
+        cnt = (typeof cnt == "number") ? Math.max(0, cnt) : 0;
+        removeArray = this.slice(ind, ind + cnt);
+        endArray = this.slice(ind + cnt);
+        this.length = ind;
+
+        for (var i = 2; i < arguments.length; i++)
+        {
+            this[this.length] = arguments[i];
+        }
+
+        for (var i = 0; i < endArray.length; i++)
+        {
+            this[this.length] = endArray[i];
+        }
+
+        return removeArray;
+    }
+}
+
+/**
+ * To make up for the lack of Array.shift() on IE5.0
+ * @private
+ */
+if (typeof Array.prototype.shift === 'undefined')
+{
+    Array.prototype.shift = function(str)
+    {
+        var val = this[0];
+        for (var i = 1; i < this.length; ++i)
+        {
+            this[i - 1] = this[i];
+        }
+
+        this.length--;
+        return val;
+    }
+}
+
+/**
+ * To make up for the lack of Array.unshift() on IE5.0
+ * @private
+ */
+if (typeof Array.prototype.unshift === 'undefined')
+{
+    Array.prototype.unshift = function()
+    {
+        var i = unshift.arguments.length;
+        for (var j = this.length - 1; j >= 0; --j)
+        {
+            this[j + i] = this[j];
+        }
+
+        for (j = 0; j < i; ++j)
+        {
+            this[j] = unshift.arguments[j];
+        }
+    }
+}
+
+/**
+ * To make up for the lack of Array.push() on IE5.0
+ * @private
+ */
+if (typeof Array.prototype.push === 'undefined')
+{
+    Array.prototype.push = function()
+    {
+        var sub = this.length;
+
+        for (var i = 0; i < push.arguments.length; ++i)
+        {
+            this[sub] = push.arguments[i];
+            sub++;
+        }
+    }
+}
+
+/**
+ * To make up for the lack of Array.pop() on IE5.0
+ * @private
+ */
+if (typeof Array.prototype.pop === 'undefined')
+{
+    Array.prototype.pop = function()
+    {
+        var lastElement = this[this.length - 1];
+        this.length--;
+        return lastElement;
+    }
+}

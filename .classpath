@@ -41,11 +41,6 @@
 			<attribute value="http://jakarta.apache.org/commons/logging/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry sourcepath="/library/jarlib/hibernate-3.0.5/hibernate-3.0.5.zip" kind="lib" path="jar/hibernate3.jar">
-		<attributes>
-			<attribute value="http://www.hibernate.org/hib_docs/v3/api/" name="javadoc_location"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="jar/junit.jar"/>
 	<classpathentry output=".deployables/dwr/WEB-INF/classes" kind="src" path="java"/>
 	<classpathentry kind="src" path="test"/>

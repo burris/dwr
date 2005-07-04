@@ -16,6 +16,7 @@
     <converter id="collection" class="uk.ltd.getahead.dwr.convert.CollectionConverter"/>
     <converter id="date" class="uk.ltd.getahead.dwr.convert.DateConverter"/>
     <converter id="bean" class="uk.ltd.getahead.dwr.convert.BeanConverter"/>
+    <converter id="hibernate" class="uk.ltd.getahead.dwr.convert.HibernateBeanConverter"/>
     <converter id="dom" class="uk.ltd.getahead.dwr.convert.DOMConverter"/>
     <converter id="dom4j" class="uk.ltd.getahead.dwr.convert.DOM4JConverter"/>
     <converter id="jdom" class="uk.ltd.getahead.dwr.convert.JDOMConverter"/>
