@@ -8,6 +8,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * Converter for all primitive types
@@ -57,9 +58,10 @@ public class PrimitiveConverter implements Converter
 
             if (paramType == Character.TYPE || paramType == Character.class)
             {
-                if (value.length() == 1)
+                String decode = LocalUtil.decode(value);
+                if (decode.length() == 1)
                 {
-                    return new Character(value.charAt(0));
+                    return new Character(decode.charAt(0));
                 }
                 else
                 {

@@ -534,10 +534,10 @@ function testEquals(actual, expected, depth)
 
         for (var i = 0; i < actual.length; i++)
         {
-            var nest = testEquals(actual[i], expected[i], depth + 1);
-            if (typeof nest != "boolean" || !nest)
+            var inner = testEquals(actual[i], expected[i], depth + 1);
+            if (typeof inner != "boolean" || !inner)
             {
-                return "element " + i + " does not match: " + nest;
+                return "element " + i + " does not match: " + inner;
             }
         }
 

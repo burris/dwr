@@ -125,6 +125,7 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
     var reply = "";
     var i = 0;
     var value;
+    var obj;
 
     if (level == null)
     {
@@ -399,7 +400,8 @@ DWRUtil.setValue = function(ele, val)
 
     if (DWRUtil._isHTMLElement(ele, "select"))
     {
-        // search through the values
+        // We deal with select list elements by selecting the matching option
+        // Begin by searching through the values
         var found  = false;
         var i;
 
@@ -456,6 +458,21 @@ DWRUtil.setValue = function(ele, val)
         return;
     }
 
+    // If the value to be set is a DOM object then we try importing the node
+    // rather than serializing it out
+    if (val.nodeType)
+    {
+        if (val.nodeType == 9 /*Node.DOCUMENT_NODE*/)
+        {
+            val = val.documentElement;
+        }
+
+        val = DWRUtil._importNode(ele.ownerDocument, val, true);
+        ele.appendChild(val);
+        return;
+    }
+
+    // Fall back to innerHTML
     ele.innerHTML = val;
 };
 
@@ -473,7 +490,7 @@ DWRUtil.getValue = function(ele)
     if (ele == null)
     {
         alert("getValue() can't find an element with id: " + orig + ".");
-        return;
+        return "";
     }
 
     if (DWRUtil._isHTMLElement(ele, "select"))
@@ -532,13 +549,13 @@ DWRUtil.getText = function(ele)
     if (ele == null)
     {
         alert("getText() can't find an element with id: " + orig + ".");
-        return;
+        return "";
     }
 
     if (!DWRUtil._isHTMLElement(ele, "select"))
     {
         alert("getText() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele) + " from  id: " + orig + ".");
-        return;
+        return "";
     }
 
     // This is a bit of a scam because it assumes single select
@@ -659,6 +676,7 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
 
     var text;
     var value;
+    var opt;
 
     if (DWRUtil._isArray(data))
     {
@@ -694,7 +712,7 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
                     }
                 }
 
-                var opt = new Option(text, value);
+                opt = new Option(text, value);
                 ele.options[ele.options.length] = opt;
             }
             else
@@ -726,7 +744,7 @@ DWRUtil.addOptions = function(ele, data, valuerev, textprop)
                 value = prop;
             }
 
-            var opt = new Option(text, value);
+            opt = new Option(text, value);
             ele.options[ele.options.length] = opt;
         }
     }
@@ -987,7 +1005,10 @@ DWRUtil._isHTMLElement = function(ele, nodeName)
         }
 
         alert("DWRUtil._isHTMLElement was passed test node name that is neither a string or array of strings");
+        return false;
     }
+
+    return true;
 };
 
 /**
@@ -1035,6 +1056,56 @@ DWRUtil._isDate = function(data)
 {
     return (data && data.toUTCString) ? true : false;
 };
+
+/**
+ * document.importNode is used by setValue.
+ * This gets around the missing functionallity in IE.
+ * @private
+ */
+DWRUtil._importNode = function(doc, importedNode, deep)
+{
+    var newNode;
+
+    if (importedNode.nodeType == 1 /*Node.ELEMENT_NODE*/)
+    {
+        newNode = doc.createElement(importedNode.nodeName);
+
+        for (var i = 0; i < importedNode.attributes.length; i++)
+        {
+            var attr = importedNode.attributes[i];
+            if (attr.nodeValue != null && attr.nodeValue != '')
+            {
+                newNode.setAttribute(attr.name, attr.nodeValue);
+            }
+        }
+
+        if (typeof importedNode.style != "undefined")
+        {
+            newNode.style.cssText = importedNode.style.cssText;
+        }
+    }
+    else if (importedNode.nodeType == 3 /*Node.TEXT_NODE*/)
+    {
+        newNode = doc.createTextNode(importedNode.nodeValue);
+    }
+
+    if (deep && importedNode.hasChildNodes())
+    {
+        for (i = 0; i < importedNode.childNodes.length; i++)
+        {
+            newNode.appendChild(DWRUtil._importNode(doc, importedNode.childNodes[i], true));
+        }
+    }
+
+    return newNode;
+}
+if (typeof document.importNode != "function")
+{
+    document.importNode = function(importedNode, deep)
+    {
+        DWRUtil._importNode(this, importedNode, deep);
+    };
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Deprecated functions only below here
@@ -1452,11 +1523,12 @@ DWRUtil.clearChildNodes = function(id)
 {
     DWRUtil._deprecated("DWRUtil.clearChildNodes", "DWRUtil.removeAllRows");
 
-    var ele = DWRUtil.getElementById(id);
+    var orig = ele;
+    ele = $(ele);
     if (ele == null)
     {
-        alert("clearChildNodes() can't find an element with id: " + id + ".");
-        throw id;
+        alert("clearChildNodes() can't find an element with id: " + orig + ".");
+        return;
     }
 
     while (ele.childNodes.length > 0)

@@ -105,32 +105,32 @@ public class JavascriptUtil
     {
         String reply = text;
 
-        if ((level & COMPRESS_STRIP_ML_COMMENTS) == 1)
+        if ((level & COMPRESS_STRIP_ML_COMMENTS) != 0)
         {
             reply = stripMultiLineComments(text);
         }
 
-        if ((level & COMPRESS_STRIP_SL_COMMENTS) == 1)
+        if ((level & COMPRESS_STRIP_SL_COMMENTS) != 0)
         {
             reply = stripSingleLineComments(reply);
         }
 
-        if ((level & COMPRESS_TRIM_LINES) == 1)
+        if ((level & COMPRESS_TRIM_LINES) != 0)
         {
             reply = trimLines(reply);
         }
 
-        if ((level & COMPRESS_STRIP_BLANKLINES) == 1)
+        if ((level & COMPRESS_STRIP_BLANKLINES) != 0)
         {
             reply = stripBlankLines(reply);
         }
 
-        if ((level & COMPRESS_SHRINK_VARS) == 1)
+        if ((level & COMPRESS_SHRINK_VARS) != 0)
         {
             reply = shrinkVariableNames(reply);
         }
 
-        if ((level & COMPRESS_REMOVE_NEWLINES) == 1)
+        if ((level & COMPRESS_REMOVE_NEWLINES) != 0)
         {
             reply = stripNewlines(reply);
         }

@@ -23,6 +23,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * An implementation of Converter for DOM objects.
@@ -43,7 +44,7 @@ public class DOMConverter implements Converter
      */
     public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
-        String value = iv.getValue();
+        String value = LocalUtil.decode(iv.getValue());
 
         try
         {
@@ -108,7 +109,7 @@ public class DOMConverter implements Converter
             // Setup the destination
             StringWriter xml = new StringWriter();
             StreamResult result = new StreamResult(xml);
-    
+
             transformer.transform(source, result);
 
             xml.flush();
@@ -119,7 +120,7 @@ public class DOMConverter implements Converter
             buffer.append(" = DWREngine._unserializeDocument(\""); //$NON-NLS-1$
             buffer.append(jsutil.escapeJavaScript(xml.toString()));
             buffer.append("\");"); //$NON-NLS-1$
-    
+
             return buffer.toString();
         }
         catch (ConversionException ex)

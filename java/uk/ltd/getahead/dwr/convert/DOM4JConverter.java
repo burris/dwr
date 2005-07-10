@@ -18,6 +18,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * An implementation of Converter for DOM objects.
@@ -38,7 +39,7 @@ public class DOM4JConverter implements Converter
      */
     public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
-        String value = iv.getValue();
+        String value = LocalUtil.decode(iv.getValue());
 
         try
         {

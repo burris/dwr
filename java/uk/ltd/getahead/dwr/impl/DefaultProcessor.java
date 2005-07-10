@@ -517,7 +517,7 @@ public class DefaultProcessor implements Processor
 
                 if (mimeType.equals(MIME_JS) && scriptCompressed)
                 {
-                    output = jsutil.compress(output, JavascriptUtil.LEVEL_NORMAL);
+                    output = jsutil.compress(output, compressionLevel);
                 }
 
                 scriptCache.put(path, output);
@@ -726,6 +726,22 @@ public class DefaultProcessor implements Processor
     }
 
     /**
+     * @return Returns the compressionLevel.
+     */
+    public int getCompressionLevel()
+    {
+        return compressionLevel;
+    }
+
+    /**
+     * @param compressionLevel The compressionLevel to set.
+     */
+    public void setCompressionLevel(int compressionLevel)
+    {
+        this.compressionLevel = compressionLevel;
+    }
+
+    /**
      * Empty string
      */
     protected static final String BLANK = ""; //$NON-NLS-1$
@@ -762,6 +778,11 @@ public class DefaultProcessor implements Processor
     protected static final String MIME_HTML = "text/html"; //$NON-NLS-1$
 
     protected static final String MIME_JS = "text/javascript"; //$NON-NLS-1$
+
+    /**
+     * How much do we compression javascript by?
+     */
+    private int compressionLevel = JavascriptUtil.LEVEL_DEBUGGABLE;
 
     /**
      * The means by which we strip comments

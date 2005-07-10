@@ -2,6 +2,7 @@ package uk.ltd.getahead.dwr.util;
 
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -15,9 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 public final class SwallowingHttpServletResponse implements HttpServletResponse
 {
     /**
-     * @param response
-     * @param sout
-     * @param url
+     * @param response The real HttpServletResponse
+     * @param sout The place we copy responses to
+     * @param url The thing we are reading
      */
     public SwallowingHttpServletResponse(HttpServletResponse response, Writer sout, String url)
     {
@@ -27,19 +28,6 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
         pout = new PrintWriter(sout);
         oout = new WriterOutputStream(sout);
     }
-
-    // These 2 methods would be needed for Servlet > 2.2?
-    // Not sure if missing them will break times when DWR is used in a higher context
-
-    //public void setCharacterEncoding(String string)
-    //{
-    //    response.setCharacterEncoding(string);
-    //}
-
-    //public String getContentType()
-    //{
-    //    return response.getContentType();
-    //}
 
     /* (non-Javadoc)
      * @see javax.servlet.ServletResponseWrapper#getOutputStream()
@@ -204,6 +192,43 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
         response.addIntHeader(name, value);
     }
 
+    /**
+     * Servlet 2.4 spec method, with some dancing so it will work under 2.3 as
+     * well.
+     * @param enc The new encoding
+     */
+    public void setCharacterEncoding(String enc)
+    {
+        if (!characterEncodingSearched)
+        {
+            try
+            {
+                characterEncodingMethod = response.getClass().getMethod("setCharacterEncoding", new Class[] { String.class }); //$NON-NLS-1$
+            }
+            catch (Exception ex)
+            {
+                log.warn("Failed to find setCharacterEncoding method", ex); //$NON-NLS-1$
+            }
+
+            characterEncodingSearched = true;
+        }
+
+        if (characterEncodingMethod != null)
+        {
+            try
+            {
+                characterEncodingMethod.invoke(response, new Object[] { enc });
+            }
+            catch (Exception ex)
+            {
+                log.warn("Error setting CharacterEncoding", ex); //$NON-NLS-1$
+            }
+        }
+    }
+
+    private Method characterEncodingMethod = null;
+    private boolean characterEncodingSearched = false;
+
     /* (non-Javadoc)
      * @see javax.servlet.ServletResponse#getCharacterEncoding()
      */
@@ -225,8 +250,48 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void setContentType(String type)
     {
+        contentTypeCache = type;
         response.setContentType(type);
     }
+
+    /**
+     * Servlet 2.4 spec method.
+     * @return The content type
+     */
+    public String getContentType()
+    {
+        if (!contentTypeSearched)
+        {
+            try
+            {
+                contentTypeMethod = response.getClass().getMethod("getContentType", null); //$NON-NLS-1$
+            }
+            catch (Exception ex)
+            {
+                log.warn("Failed to find getContentType method", ex); //$NON-NLS-1$
+            }
+
+            contentTypeSearched = true;
+        }
+
+        if (contentTypeMethod != null)
+        {
+            try
+            {
+                return (String) contentTypeMethod.invoke(response, null);
+            }
+            catch (Exception ex)
+            {
+                log.warn("Error getting ContentType", ex); //$NON-NLS-1$
+            }
+        }
+
+        return contentTypeCache;
+    }
+
+    private Method contentTypeMethod = null;
+    private boolean contentTypeSearched = false;
+    private String contentTypeCache = "text/html"; //$NON-NLS-1$
 
     /* (non-Javadoc)
      * @see javax.servlet.ServletResponse#setBufferSize(int)

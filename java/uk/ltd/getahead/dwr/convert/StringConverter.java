@@ -7,6 +7,7 @@ import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * An implementation of Converter for Strings.
@@ -27,7 +28,7 @@ public class StringConverter implements Converter
      */
     public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
     {
-        return iv.getValue();
+        return LocalUtil.decode(iv.getValue());
     }
 
     /* (non-Javadoc)

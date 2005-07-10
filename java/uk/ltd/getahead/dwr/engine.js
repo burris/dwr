@@ -289,6 +289,19 @@ DWREngine._ordered = false;
 DWREngine._batch = null;
 
 /**
+ * The ActiveX objects to use when we want to convert an xml string into a DOM
+ * object.
+ * @private
+ */
+DWREngine._DOMDocument = ["Msxml2.DOMDocument.5.0", "Msxml2.DOMDocument.4.0", "Msxml2.DOMDocument.3.0", "MSXML2.DOMDocument", "MSXML.DOMDocument", "Microsoft.XMLDOM"];
+
+/**
+ * The ActiveX objects to use when we want to do an XMLHttpRequest call.
+ * @private
+ */
+DWREngine._XMLHTTP = ["Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
+
+/**
  * Called when the replies are received.
  * This method is called by Javascript that is emitted by server
  * @param id The identifier of the call that we are handling a response for
@@ -376,9 +389,9 @@ DWREngine._finalize = function(batch)
     // gets turned off, we still process *waiting* batches in an ordered way.
     if (DWREngine._batchQueue.length != 0)
     {
-        var batch = DWREngine._batchQueue.shift();
-        DWREngine._sendData(batch);
-        DWREngine._batches[DWREngine._batches.length] = batch;
+        var sendbatch = DWREngine._batchQueue.shift();
+        DWREngine._sendData(sendbatch);
+        DWREngine._batches[DWREngine._batches.length] = sendbatch;
     }
 };
 
@@ -607,7 +620,7 @@ DWREngine._sendData = function(batch)
         // IE5 for the mac claims to support window.ActiveXObject, but throws an error when it's used
         else if (window.ActiveXObject && !(navigator.userAgent.indexOf('Mac') >= 0 && navigator.userAgent.indexOf("MSIE") >= 0))
         {
-            batch.req = new window.ActiveXObject("Microsoft.XMLHTTP");
+            batch.req = DWREngine._newActiveXObject(DWREngine._XMLHTTP);
         }
     }
 
@@ -663,6 +676,10 @@ DWREngine._sendData = function(batch)
 
             try
             {
+                // Prototype does the following, why?
+                // batch.req.setRequestHeader('Connection', 'close');
+                // batch.req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
                 batch.req.open("POST", batch.path + "/exec/" + statsInfo, true);
                 batch.req.send(query);
             }
@@ -830,6 +847,10 @@ DWREngine._serializeAll = function(batch, referto, data, name)
         {
             batch.map[name] = data.dwrSerialize(batch, referto, data, name);
         }
+        else if (data.nodeName)
+        {
+            batch.map[name] = DWREngine._serializeXml(batch, referto, data, name);
+        }
         else
         {
             if (DWREngine._warningHandler)
@@ -899,6 +920,11 @@ DWREngine._serializeObject = function(batch, referto, data, name)
         return ref;
     }
 
+    if (data.nodeName)
+    {
+        return DWREngine._serializeXml(batch, referto, data, name);
+    }
+
     // treat objects as an associative arrays
     var reply = "Object:{";
     var element;
@@ -920,6 +946,33 @@ DWREngine._serializeObject = function(batch, referto, data, name)
     reply += "}";
 
     return reply;
+};
+
+/**
+ * Marshall an object
+ * @private
+ * @see DWREngine._serializeAll()
+ */
+DWREngine._serializeXml = function(batch, referto, data, name)
+{
+    var ref = DWREngine._lookup(referto, this, name);
+    if (ref)
+    {
+        return ref;
+    }
+
+    var output;
+    if (window.XMLSerializer)
+    {
+        var serializer = new XMLSerializer();
+        output = serializer.serializeToString(data);
+    }
+    else
+    {
+        output = data.toXml;
+    }
+
+    return "XML:" + encodeURIComponent(output);
 };
 
 /**
@@ -1004,22 +1057,61 @@ DWREngine._serializeDate = function(batch, referto, data, name)
 /**
  * Convert an XML string into a DOC object.
  * @param xml The xml string
- * @return a DOM version of the xml string 
+ * @return a DOM version of the xml string
  * @private
  */
 DWREngine._unserializeDocument = function(xml)
 {
-    var parser = new DOMParser();
-    var dom = parser.parseFromString(xml, "text/xml");
+    var dom;
 
-    if (!dom.documentElement || dom.documentElement.tagName == "parsererror")
+    if (window.DOMParser)
     {
-        var message = dom.documentElement.firstChild.data;
-        message += "\n" + dom.documentElement.firstChild.nextSibling.firstChild.data;
-        throw message;
+        var parser = new DOMParser();
+        dom = parser.parseFromString(xml, "text/xml");
+
+        if (!dom.documentElement || dom.documentElement.tagName == "parsererror")
+        {
+            var message = dom.documentElement.firstChild.data;
+            message += "\n" + dom.documentElement.firstChild.nextSibling.firstChild.data;
+            throw message;
+        }
+
+        return dom;
+    }
+    else
+    {
+        dom = DWREngine._newActiveXObject(DWREngine._DOMDocument);
+        //dom.async = false;
+        dom.loadXML(xml);
+
+        // What happens on parse fail with IE?
+
+        return dom;
+    }
+};
+
+/**
+ * Helper to find an ActiveX object that works.
+ * @param axarray An array of strings to attempt to create ActiveX objects from
+ * @return An ActiveX object from the first string in the array not to die
+ * @private
+ */
+DWREngine._newActiveXObject = function(axarray)
+{
+    var returnValue;    
+    for (var i = 0; i < axarray.length; i++)
+    {
+        try
+        {
+            returnValue = new ActiveXObject(axarray[i]);
+            break;
+        }
+        catch (ex)
+        {
+        }
     }
 
-    return dom;
+    return returnValue;
 };
 
 /**
@@ -1039,11 +1131,12 @@ DWREngine._deprecated = function()
  * To make up for the lack of encodeURIComponent() on IE5.0
  * @private
  */
-if (typeof encodeURIComponent === 'undefined')
+//if (typeof Window.encodeURIComponent === 'undefined')
 {
-    function utf8(wide)
+    DWREngine._utf8 = function(wide)
     {
-        var c, s;
+        var c;
+        var s;
         var enc = "";
         var i = 0;
 
@@ -1094,26 +1187,26 @@ if (typeof encodeURIComponent === 'undefined')
         return enc;
     }
 
-    var hexchars = "0123456789ABCDEF";
+    DWREngine._hexchars = "0123456789ABCDEF";
 
-    function toHex(n)
+    DWREngine._toHex = function(n)
     {
-        return hexchars.charAt(n>>4)+hexchars.charAt(n & 0xF);
+        return DWREngine._hexchars.charAt(n >> 4) + DWREngine._hexchars.charAt(n & 0xF);
     }
 
-    var okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+    DWREngine._okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
 
     function encodeURIComponent(s)
     {
-        var s = utf8(s);
+        s = DWREngine._utf8(s);
         var c;
         var enc = "";
 
         for (var i= 0; i<s.length; i++)
         {
-            if (okURIchars.indexOf(s.charAt(i)) == -1)
+            if (DWREngine._okURIchars.indexOf(s.charAt(i)) == -1)
             {
-                enc += "%" + toHex(s.charCodeAt(i));
+                enc += "%" + DWREngine._toHex(s.charCodeAt(i));
             }
             else
             {
@@ -1175,7 +1268,7 @@ if (typeof Array.prototype.splice === 'undefined')
             this[this.length] = arguments[i];
         }
 
-        for (var i = 0; i < endArray.length; i++)
+        for (i = 0; i < endArray.length; i++)
         {
             this[this.length] = endArray[i];
         }

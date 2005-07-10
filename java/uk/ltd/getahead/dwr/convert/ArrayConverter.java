@@ -13,6 +13,7 @@ import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.LocalUtil;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * An implementation of Converter for Arrays.
@@ -103,19 +104,39 @@ public class ArrayConverter implements Converter
         int size = Array.getLength(data);
         for (int i = 0; i < size; i++)
         {
-            OutboundVariable nested = converterManager.convertOutbound(Array.get(data, i), outctx);
+            try
+            {
+                OutboundVariable nested = converterManager.convertOutbound(Array.get(data, i), outctx);
+    
+                buffer.append(nested.getInitCode());
+                buffer.append(varname);
+                buffer.append('[');
+                buffer.append(i);
+                buffer.append("] = "); //$NON-NLS-1$
+                buffer.append(nested.getAssignCode());
+                buffer.append(';');
+            }
+            catch (Exception ex)
+            {
+                buffer.append(varname);
+                buffer.append('[');
+                buffer.append(i);
+                buffer.append("] = 'Conversion Error. See console log.';"); //$NON-NLS-1$
 
-            buffer.append(nested.getInitCode());
-            buffer.append(varname);
-            buffer.append('[');
-            buffer.append(i);
-            buffer.append("] = "); //$NON-NLS-1$
-            buffer.append(nested.getAssignCode());
-            buffer.append(';');
+                log.warn("Failed to convert array member " + i + ". Conversion error for type: " + data.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
 
         return buffer.toString();
     }
 
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(ArrayConverter.class);
+
+    /**
+     * The converter manager to which we forward array members for conversion
+     */
     private ConverterManager converterManager = null;
 }

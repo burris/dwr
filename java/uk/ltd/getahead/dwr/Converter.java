@@ -1,6 +1,5 @@
 package uk.ltd.getahead.dwr;
 
-
 /**
  * An interface for converting types from a string to some other type.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -15,7 +14,10 @@ public interface Converter
     public void setConverterManager(ConverterManager config);
 
     /**
-     * Attempt to coerce the data from a string to an Object
+     * Attempt to coerce the data from a string to an Object.
+     * If anything goes wrong with inbound conversion then we except and die
+     * because we are converting data from the untrusted internet so we take the
+     * assumption that anything wrong is someone having a go and throw.
      * @param paramType The type to convert to
      * @param data The data to convert
      * @param inctx The map of data that we are working on
@@ -27,6 +29,12 @@ public interface Converter
     /**
      * Return a javascript string that defines the variable named varName to
      * have the contents of the converted object data.
+     * In contrast to <code>convertInbound()</code> any failures in converting
+     * data on the way out should not stop processing, and we should carry on
+     * if we can. Failures are probably down to some misconfiguration so as much
+     * information about the error as can be safely generated to console logs is
+     * good. In other words if you need to loop in outbound conversion then it
+     * might be a good idea to catch issues inside the loop, log, and carry on.
      * @param data The data to convert
      * @param varName The variable to define
      * @param outctx Objects already converted and the results
