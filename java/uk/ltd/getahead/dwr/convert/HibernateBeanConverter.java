@@ -45,11 +45,19 @@ public class HibernateBeanConverter extends BeanConverter
         try
         {
             getClass = hibernate.getMethod("getClass", new Class[] { Object.class }); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            throw new ClassNotFoundException(Messages.getString("HibernateBeanConverter.MissingGetClass")); //$NON-NLS-1$
+        }
+
+        try
+        {
             isPropertyInitialized = hibernate.getMethod("isPropertyInitialized", new Class[] { Object.class, String.class }); //$NON-NLS-1$
         }
         catch (Exception ex)
         {
-            throw new ClassNotFoundException(Messages.getString("HibernateBeanConverter.MissingMethod")); //$NON-NLS-1$
+            log.info("Hibernate.isPropertyInitialized() is not available in Hibernate2 so initialization checks will not take place"); //$NON-NLS-1$
         }
     }
 
@@ -113,12 +121,15 @@ public class HibernateBeanConverter extends BeanConverter
                         continue;
                     }
 
-                    // We don't marshall un-initialized properties
-                    Object reply = isPropertyInitialized.invoke(null, new Object[] { data, name });
-                    boolean inited = ((Boolean) reply).booleanValue();
-                    if (!inited)
+                    // We don't marshall un-initialized properties for Hibernate3
+                    if (isPropertyInitialized != null)
                     {
-                        continue;
+                        Object reply = isPropertyInitialized.invoke(null, new Object[] { data, name });
+                        boolean inited = ((Boolean) reply).booleanValue();
+                        if (!inited)
+                        {
+                            continue;
+                        }
                     }
 
                     Object value = getter.invoke(data, new Object[0]);
