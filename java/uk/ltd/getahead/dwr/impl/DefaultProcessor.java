@@ -322,17 +322,17 @@ public class DefaultProcessor implements Processor
             out.println("  <span id='d" + i + "' class='reply'></span>"); //$NON-NLS-1$ //$NON-NLS-2$
 
             // Print a warning if this method is overloaded
-            boolean overridden = false;
+            boolean overloaded = false;
             for (int j = 0; j < methods.length; j++)
             {
                 if (j != i && methods[j].getName().equals(methodName))
                 {
-                    overridden = true;
+                    overloaded = true;
                 }
             }
-            if (overridden)
+            if (overloaded)
             {
-                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: overridden methods are not recommended. See <a href='#overriddenMethod'>below</a>)</span>"); //$NON-NLS-1$
+                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: overloaded methods are not recommended. See <a href='#overloadedMethod'>below</a>)</span>"); //$NON-NLS-1$
             }
 
             // Print a warning if the method uses un-marshallable types

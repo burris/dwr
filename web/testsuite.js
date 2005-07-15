@@ -282,14 +282,7 @@ tests[tests.length] = { code:"stringStringTreeMapParam", data:map2 };
 
 function startTest()
 {
-    failures = $("failures");
-    progress = $("progress");
-    failreport = $("failreport");
-    execreport = $("execreport");
-
     $("start").disabled = true;
-
-    DWREngine.setErrorHandler(catchFailure);
 
     failures.innerHTML = "";
     failreport.innerHTML = "0";
@@ -584,12 +577,30 @@ function showResults(data)
     ]);
 }
 
+function runTest(num)
+{
+    callback = function(data)
+    {
+        testResults(data, num);
+    };
+
+    var method = tests[num].code;
+    var param = tests[num].data;
+
+    Test[method](param, { callback:callback });
+}
+
 function init()
 {
     DWRUtil.setValue("useragent-real", navigator.userAgent);
     DWRUtil.setValue("useragent-reported", navigator.userAgent);
 
-    DWREngine.setErrorHandler(DWREngine.defaultMessageHandler);
+    failures = $("failures");
+    progress = $("progress");
+    failreport = $("failreport");
+    execreport = $("execreport");
+
+    DWREngine.setErrorHandler(catchFailure);
     DWREngine.setWarningHandler(DWREngine.defaultMessageHandler);
 
     var rownum = 0;
@@ -621,6 +632,11 @@ function init()
             }
             td.innerHTML = display;
             return td;
+        },
+
+        function(row)
+        {
+            return "<input type='button' value='Test' onclick='runTest(" + rownum + ")'/>";
         },
 
         function(row)

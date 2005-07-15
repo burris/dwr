@@ -4,9 +4,11 @@
 <dwr>
 
   <init>
+    <creator id="none" class="uk.ltd.getahead.dwr.create.NullCreator"/>
     <creator id="new" class="uk.ltd.getahead.dwr.create.NewCreator"/>
     <creator id="spring" class="uk.ltd.getahead.dwr.create.SpringCreator"/>
     <creator id="script" class="uk.ltd.getahead.dwr.create.ScriptedCreator"/>
+
     <converter id="null" class="uk.ltd.getahead.dwr.convert.NullConverter"/>
     <converter id="primitive" class="uk.ltd.getahead.dwr.convert.PrimitiveConverter"/>
     <converter id="bignumber" class="uk.ltd.getahead.dwr.convert.BigNumberConverter"/>

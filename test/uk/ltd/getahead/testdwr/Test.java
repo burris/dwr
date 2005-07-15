@@ -707,17 +707,17 @@ public class Test
      * @param param1
      * @return string
      */
-    public String dangerOverride(String param1)
+    public String dangerOverload(String param1)
     {
-        return "Test.dangerOverride(" + param1 + ") says hello.";  //$NON-NLS-1$//$NON-NLS-2$
+        return "Test.dangerOverload(" + param1 + ") says hello.";  //$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**
      * @return string
      */
-    public String dangerOverride()
+    public String dangerOverload()
     {
-        return "Test.dangerOverride() says hello."; //$NON-NLS-1$
+        return "Test.dangerOverload() says hello."; //$NON-NLS-1$
     }
 
     /**
