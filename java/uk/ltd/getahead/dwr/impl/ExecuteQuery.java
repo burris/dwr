@@ -393,7 +393,7 @@ public class ExecuteQuery
             }
             catch (InvocationTargetException ex)
             {
-                log.warn("Method execution failed: ", ex); //$NON-NLS-1$
+                log.warn("Method execution failed: ", ex.getTargetException()); //$NON-NLS-1$
                 call.setThrowable(ex.getTargetException());
             }
             catch (Throwable ex)
