@@ -240,7 +240,7 @@ public class DefaultConverterManager implements ConverterManager
                 return converter;
             }
 
-            // Arrays can have wildcards like [L* so we don't require a .
+            // Arrays can have wildcards like [L* so we don't require a '.'
             converter = (Converter) converters.get(lookup + '*');
             if (converter != null)
             {
@@ -255,21 +255,28 @@ public class DefaultConverterManager implements ConverterManager
 
             // Strip of the component after the last .
             int lastdot = lookup.lastIndexOf('.');
-            if (lastdot == -1)
+            if (lastdot != -1)
             {
-                // Cope with arrays
-                if (lookup.charAt(0) == '[')
+                lookup = lookup.substring(0, lastdot);
+            }
+            else
+            {
+                int arrayMarkers = 0;
+                while (lookup.charAt(arrayMarkers) == '[')
                 {
-                    lastdot = 2;
+                    arrayMarkers++;
                 }
-                else
+
+                if (arrayMarkers == 0)
                 {
-                    // bail if no more dots and not an array
+                    // so we are out of dots and out of array markers
+                    // bail out.
                     break;
                 }
-            }
 
-            lookup = lookup.substring(0, lastdot);
+                // We want to keep the type marker too
+                lookup = lookup.substring(arrayMarkers - 1, arrayMarkers + 1);
+            }
         }
 
         return null;
