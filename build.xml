@@ -2,7 +2,7 @@
 <project name="dwr" default="war">
 
   <!--=======================================================================-->
-  <property file="project.properties"/>
+  <property file="build.properties"/>
   <property file="${source.java}/dwr-version.properties"/>
 
   <!--=======================================================================-->
