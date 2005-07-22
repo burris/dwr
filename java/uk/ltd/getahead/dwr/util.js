@@ -288,10 +288,17 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
                 value = value.substring(0, 10) + "...";
             }
 
+            var propStr = prop;
+            if (propStr.length > 30)
+            {
+                propStr = propStr.substring(0, 27) + "...";
+            }
+
             if (level != 0)
             {
                 reply += DWRUtil._indent(level, depth + 1);
             }
+
             reply += prop;
             reply += ":";
             reply += value;
@@ -330,7 +337,7 @@ DWRUtil._indent = function(level, depth)
     {
         for (var j = 0; j < depth; j++)
         {
-            reply += "--";
+            reply += "\u00A0\u00A0";
         }
         reply += " ";
     }
