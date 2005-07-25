@@ -62,10 +62,7 @@ public class DefaultAccessControl implements AccessControl
         // We ban some methods from Object too
         if (method.getDeclaringClass() == Object.class)
         {
-            if (!methodName.equals("toString")) //$NON-NLS-1$
-            {
-                return Messages.getString("ExecuteQuery.DeniedObjectMethod"); //$NON-NLS-1$
-            }
+            return Messages.getString("ExecuteQuery.DeniedObjectMethod"); //$NON-NLS-1$
         }
 
         // What if there is some J2EE role based restriction?
