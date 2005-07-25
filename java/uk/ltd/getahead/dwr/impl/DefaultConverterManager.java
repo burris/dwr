@@ -154,7 +154,8 @@ public class DefaultConverterManager implements ConverterManager
         Converter converter = getConverter(object);
         if (converter == null)
         {
-            throw new ConversionException(Messages.getString("DefaultConverterManager.MissingConverter", object.getClass().getName())); //$NON-NLS-1$
+            log.error(Messages.getString("DefaultConverterManager.MissingConverter", object.getClass().getName())); //$NON-NLS-1$
+            return new OutboundVariable("var " + varName + " = null;", varName); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         ov.setInitCode(converter.convertOutbound(object, ov.getAssignCode(), converted));
