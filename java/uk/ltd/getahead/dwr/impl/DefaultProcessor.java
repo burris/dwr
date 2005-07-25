@@ -206,7 +206,7 @@ public class DefaultProcessor implements Processor
         out.println("    span.reply { background: #ffffdd; white-space: pre; }"); //$NON-NLS-1$
         out.println("  </style>"); //$NON-NLS-1$
         out.println("</head>"); //$NON-NLS-1$
-        out.println("<body>"); //$NON-NLS-1$
+        out.println("<body onload='DWRUtil.useLoadingMessage()'>"); //$NON-NLS-1$
         out.println(BLANK);
 
         out.println("<h2>Methods For: " + scriptname + " (" + creator.getType().getName() + ")</h2>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -340,13 +340,13 @@ public class DefaultProcessor implements Processor
             {
                 if (!converterManager.isConvertable(paramTypes[j]))
                 {
-                    out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: " + paramTypes[j].getName() + " param not marshallable. See <a href='#paramNotMarshallable'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: No Converter for " + paramTypes[j].getName() + ". See <a href='#missingConverter'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
 
             if (!converterManager.isConvertable(method.getReturnType()))
             {
-                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: " + method.getReturnType().getName() + " return type not marshallable. See <a href='#returnNotMarshallable'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: No Converter for " + method.getReturnType().getName() + ". See <a href='#missingConverter'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             out.println("</li>"); //$NON-NLS-1$
