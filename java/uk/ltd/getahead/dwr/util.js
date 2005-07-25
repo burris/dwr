@@ -144,10 +144,13 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
 
     if (DWRUtil._isArray(data))
     {
-        reply = "[";
         if (level != 0)
         {
-            reply += "\n";
+            reply += "[\n";
+        }
+        else
+        {
+            reply = "[";
         }
 
         for (i = 0; i < data.length; i++)
@@ -183,26 +186,35 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
                 value = "" + ex;
             }
 
-            if (level == 0 && value.length > 13)
-            {
-                value = value.substring(0, 10) + "...";
-            }
-
-            reply += value;
-            reply += ", ";
-
             if (level != 0)
             {
-                reply += "\n";
+                reply += DWRUtil._indent(level, depth + 2) + value + ", \n";
             }
-
-            if (level == 0 && i > 5)
+            else
             {
-                reply += "...";
-                break;
+                if (value.length > 13)
+                {
+                    value = value.substring(0, 10) + "...";
+                }
+
+                reply += value + ", ";
+
+                if (i > 5)
+                {
+                    reply += "...";
+                    break;
+                }
             }
         }
-        reply += "]";
+
+        if (level != 0)
+        {
+            reply += DWRUtil._indent(level, depth) + "]";
+        }
+        else
+        {
+            reply += "]";
+        }
 
         return reply;
     }
@@ -222,12 +234,11 @@ DWRUtil.toDescriptiveString = function(data, level, depth)
 
         if (level != 0)
         {
-            reply += DWRUtil._indent(level, depth);
+            reply += "{\n";
         }
-        reply += "{";
-        if (level != 0)
+        else
         {
-            reply += "\n";
+            reply = "{";
         }
 
         var isHtml = DWRUtil._isHTMLElement(data);
