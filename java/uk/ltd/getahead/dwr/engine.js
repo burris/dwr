@@ -331,18 +331,6 @@ DWREngine._handleResponse = function(id, reply)
             }
         }
     }
-    else
-    {
-        // If there is no reply then we don;t worry about warning for a missing
-        // callback function.
-        if (reply)
-        {
-            if (DWREngine._warningHandler)
-            {
-                DWREngine._warningHandler("Internal Error: Missing callback for id='" + id + "'");
-            }
-        }
-    }
 };
 
 /**
