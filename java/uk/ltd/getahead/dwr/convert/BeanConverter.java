@@ -5,8 +5,10 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -28,6 +30,58 @@ import uk.ltd.getahead.dwr.util.Logger;
  */
 public class BeanConverter implements Converter
 {
+    /**
+     * @param excludes
+     */
+    public void setExclude(String excludes)
+    {
+        if (inclusions != null)
+        {
+            throw new IllegalArgumentException(Messages.getString("HibernateBeanConverter.OnlyIncludeOrExclude")); //$NON-NLS-1$
+        }
+
+        exclusions = new ArrayList();
+
+        String toSplit = LocalUtil.replace(excludes, ",", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        StringTokenizer st = new StringTokenizer(toSplit);
+        while (st.hasMoreTokens())
+        {
+            String rule = st.nextToken();
+            if (rule.startsWith("get")) //$NON-NLS-1$
+            {
+                log.warn("Exclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name."); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+            exclusions.add(rule);
+        }
+    }
+
+    /**
+     * @param includes
+     */
+    public void setInclude(String includes)
+    {
+        if (exclusions != null)
+        {
+            throw new IllegalArgumentException(Messages.getString("HibernateBeanConverter.OnlyIncludeOrExclude")); //$NON-NLS-1$
+        }
+
+        inclusions = new ArrayList();
+
+        String toSplit = LocalUtil.replace(includes, ",", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        StringTokenizer st = new StringTokenizer(toSplit);
+        while (st.hasMoreTokens())
+        {
+            String rule = st.nextToken();
+            if (rule.startsWith("get")) //$NON-NLS-1$
+            {
+                log.warn("Inclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name."); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+            inclusions.add(rule);
+        }
+    }
+
     /**
      * @return Returns the instanceType.
      */
@@ -194,34 +248,51 @@ public class BeanConverter implements Converter
                 PropertyDescriptor descriptor = descriptors[i];
                 String name = descriptor.getName();
 
-                // We don't marshall getClass()
-                if (!name.equals("class")) //$NON-NLS-1$
+                try
                 {
-                    try
+                    // We don't marshall things we can't read
+                    Method getter = descriptor.getReadMethod();
+                    if (getter == null)
                     {
-                        Method getter = descriptor.getReadMethod();
-                        if (getter != null)
-                        {
-                            Object value = getter.invoke(data, new Object[0]);
-
-                            OutboundVariable nested = config.convertOutbound(value, outctx);
-
-                            // Make sure the nested thing is declared
-                            buffer.append(nested.getInitCode());
-
-                            // And now declare our stuff
-                            buffer.append(varname);
-                            buffer.append('.');
-                            buffer.append(name);
-                            buffer.append(" = "); //$NON-NLS-1$
-                            buffer.append(nested.getAssignCode());
-                            buffer.append(';');
-                        }
+                        continue;
                     }
-                    catch (Exception ex)
+
+                    // We don't marshall getClass()
+                    if (name.equals("class")) //$NON-NLS-1$
                     {
-                        log.warn("Failed to convert " + name, ex); //$NON-NLS-1$
+                        continue;
                     }
+
+                    // Access rules mean we might not want to do this one
+                    if (!isAllowed(name))
+                    {
+                        log.debug("Skipping marshalling " + name + " due to include/exclude rules"); //$NON-NLS-1$ //$NON-NLS-2$
+                        continue;
+                    }
+
+                    if (!isAvailable(data, name))
+                    {
+                        log.debug("Skipping marshalling " + name + " due to availability rules"); //$NON-NLS-1$ //$NON-NLS-2$
+                        continue;
+                    }
+
+                    Object value = getter.invoke(data, new Object[0]);
+                    OutboundVariable nested = getConverterManager().convertOutbound(value, outctx);
+
+                    // Make sure the nested thing is declared
+                    buffer.append(nested.getInitCode());
+
+                    // And now declare our stuff
+                    buffer.append(varname);
+                    buffer.append('.');
+                    buffer.append(name);
+                    buffer.append(" = "); //$NON-NLS-1$
+                    buffer.append(nested.getAssignCode());
+                    buffer.append(';');
+                }
+                catch (Exception ex)
+                {
+                    log.warn("Failed to convert " + name, ex); //$NON-NLS-1$
                 }
             }
         }
@@ -245,6 +316,77 @@ public class BeanConverter implements Converter
         BeanInfo info = Introspector.getBeanInfo(bean.getClass());
         return info;
     }
+
+    /**
+     * Check with the access rules to see if we are allowed to convert a property
+     * @param property The property to test
+     * @return true if the property may be marshalled
+     */
+    protected boolean isAllowed(String property)
+    {
+        if (exclusions != null)
+        {
+            // Check each exclusions and return false if we get a match
+            for (Iterator it = exclusions.iterator(); it.hasNext();)
+            {
+                String test = (String) it.next();
+                if (property.equals(test))
+                {
+                    return false;
+                }
+            }
+            
+            // So we passed all the exclusions. The setters enforce mutual
+            // exclusion between exclusions and inclusions so we don't need to
+            // 'return true' here, we can carry on. This has the advantage that
+            // we can relax the mutual exclusion at some stage.
+        }
+
+        if (inclusions != null)
+        {
+            // Check each inclusion and return true if we get a match
+            for (Iterator it = inclusions.iterator(); it.hasNext();)
+            {
+                String test = (String) it.next();
+                if (property.equals(test))
+                {
+                    return true;
+                }
+            }
+
+            // Since we are white-listing with inclusions and there was not
+            // match, this property is not allowed.
+            return false;
+        }
+
+        // default to allow if there are no inclusions or exclusions
+        return true;
+    }
+
+    /**
+     * Some child converters (like Hibernate at least) need to check that a
+     * property should be marshalled. This allows them to veto a marshal
+     * @param data The object to check on
+     * @param property The property of the <code>data</code> object
+     * @return true if we should continue and marshall it.
+     */
+    public boolean isAvailable(Object data, String property)
+    {
+        // This just shuts the eclipse lint up
+        if (false) { data = property; property = (String) data; }
+
+        return true;
+    }
+
+    /**
+     * The list of excluded properties
+     */
+    private List exclusions = null;
+
+    /**
+     * The list of included properties
+     */
+    private List inclusions = null;
 
     /**
      * A type that allows us to fulfill an interface or subtype requirement

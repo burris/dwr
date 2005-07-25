@@ -3,13 +3,9 @@ package uk.ltd.getahead.dwr.convert;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 
-import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -88,86 +84,55 @@ public class HibernateBeanConverter extends BeanConverter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
+     * @see uk.ltd.getahead.dwr.convert.BeanConverter#isAvailable(java.lang.Object, java.lang.String)
      */
-    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
+    public boolean isAvailable(Object data, String property)
     {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("var "); //$NON-NLS-1$
-        buffer.append(varname);
-        buffer.append(" = new Object();"); //$NON-NLS-1$
-
         try
         {
-            BeanInfo info = getBeanInfo(data);
-            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
-            for (int i = 0; i < descriptors.length; i++)
+            // We don't marshall un-initialized properties for Hibernate3
+            if (isPropertyInitialized != null)
             {
-                PropertyDescriptor descriptor = descriptors[i];
-                String name = descriptor.getName();
-
-                try
+                Object reply = isPropertyInitialized.invoke(null, new Object[] { data, property });
+                boolean inited = ((Boolean) reply).booleanValue();
+                if (!inited)
                 {
-                    // We don't marshall getClass()
-                    if (name.equals("class")) //$NON-NLS-1$
-                    {
-                        continue;
-                    }
-
-                    // We dont marshall things we can't read
-                    Method getter = descriptor.getReadMethod();
-                    if (getter == null)
-                    {
-                        continue;
-                    }
-
-                    // We don't marshall un-initialized properties for Hibernate3
-                    if (isPropertyInitialized != null)
-                    {
-                        Object reply = isPropertyInitialized.invoke(null, new Object[] { data, name });
-                        boolean inited = ((Boolean) reply).booleanValue();
-                        if (!inited)
-                        {
-                            continue;
-                        }
-                    }
-
-                    Object value = getter.invoke(data, new Object[0]);
-                    OutboundVariable nested = getConverterManager().convertOutbound(value, outctx);
-
-                    // Make sure the nested thing is declared
-                    buffer.append(nested.getInitCode());
-
-                    // And now declare our stuff
-                    buffer.append(varname);
-                    buffer.append('.');
-                    buffer.append(name);
-                    buffer.append(" = "); //$NON-NLS-1$
-                    buffer.append(nested.getAssignCode());
-                    buffer.append(';');
-                }
-                catch (Exception ex)
-                {
-                    log.warn("Failed to convert " + name, ex); //$NON-NLS-1$
+                    return false;
                 }
             }
+    
+            return true;
         }
-        catch (IntrospectionException ex)
+        catch (Exception ex)
         {
-            throw new ConversionException(ex);
+            log.error("Failed in checking Hibernate the availability of " + property, ex); //$NON-NLS-1$
+            return false;
         }
-
-        return buffer.toString();
     }
 
+    /**
+     * The Hibernate utility class under Hibernate2
+     */
     private static final String CLASS_HIBERNATE2 = "net.sf.hibernate.Hibernate"; //$NON-NLS-1$
 
+    /**
+     * The Hibernate utility class under Hibernate3
+     */
     private static final String CLASS_HIBERNATE3 = "org.hibernate.Hibernate"; //$NON-NLS-1$
 
+    /**
+     * The Hibernate utility class (either H2 or H3)
+     */
     private Class hibernate;
 
+    /**
+     * The cached getClass method from Hibernate
+     */
     private Method getClass;
-    
+
+    /**
+     * The cached isPropertyInitialized from Hibernate
+     */
     private Method isPropertyInitialized;
 
     /**
