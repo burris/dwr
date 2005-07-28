@@ -29,6 +29,49 @@ public class DefaultAccessControl implements AccessControl
     {
         String methodName = method.getName();
 
+        // What if there is some J2EE role based restriction?
+        Set roles = getRoleRestrictions(className, methodName);
+        if (roles != null)
+        {
+            boolean allowed = false;
+
+            for (Iterator it = roles.iterator(); it.hasNext() && !allowed;)
+            {
+                String role = (String) it.next();
+                if (req.isUserInRole(role))
+                {
+                    allowed = true;
+                }
+            }
+
+            if (!allowed)
+            {
+                // This just creates a list of allowed roles for better debugging
+                StringBuffer buffer = new StringBuffer();
+                for (Iterator it = roles.iterator(); it.hasNext();)
+                {
+                    String role = (String) it.next();
+                    buffer.append(role);
+                    if (it.hasNext())
+                    {
+                        buffer.append(", "); //$NON-NLS-1$
+                    }
+                }
+
+                return Messages.getString("ExecuteQuery.DeniedByJ2EERoles", buffer.toString()); //$NON-NLS-1$
+            }
+        }
+
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.AccessControl#getReasonToNotDisplay(javax.servlet.http.HttpServletRequest, uk.ltd.getahead.dwr.Creator, java.lang.String, java.lang.reflect.Method)
+     */
+    public String getReasonToNotDisplay(HttpServletRequest req, Creator creator, String className, Method method)
+    {
+        String methodName = method.getName();
+
         // Is it public
         if (!Modifier.isPublic(method.getModifiers()))
         {
@@ -63,38 +106,6 @@ public class DefaultAccessControl implements AccessControl
         if (method.getDeclaringClass() == Object.class)
         {
             return Messages.getString("ExecuteQuery.DeniedObjectMethod"); //$NON-NLS-1$
-        }
-
-        // What if there is some J2EE role based restriction?
-        Set roles = getRoleRestrictions(className, methodName);
-        if (roles != null)
-        {
-            boolean allowed = false;
-
-            for (Iterator it = roles.iterator(); it.hasNext() && !allowed;)
-            {
-                String role = (String) it.next();
-                if (req.isUserInRole(role))
-                {
-                    allowed = true;
-                }
-            }
-
-            if (!allowed)
-            {
-                StringBuffer buffer = new StringBuffer();
-                for (Iterator it = roles.iterator(); it.hasNext();)
-                {
-                    String role = (String) it.next();
-                    buffer.append(role);
-                    if (it.hasNext())
-                    {
-                        buffer.append(", "); //$NON-NLS-1$
-                    }
-                }
-
-                return Messages.getString("ExecuteQuery.DeniedByJ2EERoles", buffer.toString()); //$NON-NLS-1$
-            }
         }
 
         return null;

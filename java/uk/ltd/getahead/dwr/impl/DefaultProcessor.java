@@ -53,50 +53,42 @@ public class DefaultProcessor implements Processor
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        try
+        String pathinfo = req.getPathInfo();
+        if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals(PATH_ROOT))
         {
-            String pathinfo = req.getPathInfo();
-            if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals(PATH_ROOT))
-            {
-                resp.sendRedirect(req.getContextPath() + req.getServletPath() + '/' + FILE_INDEX);
-            }
-            else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_INDEX))
-            {
-                doIndex(req, resp);
-            }
-            else if (pathinfo != null && pathinfo.startsWith('/' + PATH_TEST))
-            {
-                doTest(req, resp);
-            }
-            else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_ENGINE))
-            {
-                doFile(resp, FILE_ENGINE, MIME_JS);
-            }
-            else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_UTIL))
-            {
-                doFile(resp, FILE_UTIL, MIME_JS);
-            }
-            else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_DEPRECATED))
-            {
-                doFile(resp, FILE_DEPRECATED, MIME_JS);
-            }
-            else if (pathinfo != null && pathinfo.startsWith(PATH_INTERFACE))
-            {
-                doInterface(req, resp);
-            }
-            else if (pathinfo != null && pathinfo.startsWith(PATH_EXEC))
-            {
-                doExec(req, resp);
-            }
-            else
-            {
-                log.warn("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            }
+            resp.sendRedirect(req.getContextPath() + req.getServletPath() + '/' + FILE_INDEX);
         }
-        catch (SecurityException ex)
+        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_INDEX))
         {
-            log.warn("Security exception: ", ex); //$NON-NLS-1$
+            doIndex(req, resp);
+        }
+        else if (pathinfo != null && pathinfo.startsWith('/' + PATH_TEST))
+        {
+            doTest(req, resp);
+        }
+        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_ENGINE))
+        {
+            doFile(resp, FILE_ENGINE, MIME_JS);
+        }
+        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_UTIL))
+        {
+            doFile(resp, FILE_UTIL, MIME_JS);
+        }
+        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_DEPRECATED))
+        {
+            doFile(resp, FILE_DEPRECATED, MIME_JS);
+        }
+        else if (pathinfo != null && pathinfo.startsWith(PATH_INTERFACE))
+        {
+            doInterface(req, resp);
+        }
+        else if (pathinfo != null && pathinfo.startsWith(PATH_EXEC))
+        {
+            doExec(req, resp);
+        }
+        else
+        {
+            log.warn("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
@@ -204,6 +196,7 @@ public class DefaultProcessor implements Processor
         out.println("    input.itext { font-size: smaller; background: #E4E4E4; border: 0; }"); //$NON-NLS-1$
         out.println("    input.ibutton { font-size: xx-small; border: 1px outset; margin: 0px; padding: 0px; }"); //$NON-NLS-1$
         out.println("    span.reply { background: #ffffdd; white-space: pre; }"); //$NON-NLS-1$
+        out.println("    span.warning { font-size: smaller; color: red; }"); //$NON-NLS-1$
         out.println("  </style>"); //$NON-NLS-1$
         out.println("</head>"); //$NON-NLS-1$
         out.println("<body onload='DWRUtil.useLoadingMessage()'>"); //$NON-NLS-1$
@@ -231,7 +224,8 @@ public class DefaultProcessor implements Processor
             Method method = methods[i];
             String methodName = method.getName();
 
-            String reason = accessControl.getReasonToNotExecute(req, creator, scriptname, method);
+            // See also the call to getReasonToNotExecute() above
+            String reason = accessControl.getReasonToNotDisplay(req, creator, scriptname, method);
             if (reason != null)
             {
                 out.println(BLANK);
@@ -332,7 +326,7 @@ public class DefaultProcessor implements Processor
             }
             if (overloaded)
             {
-                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: overloaded methods are not recommended. See <a href='#overloadedMethod'>below</a>)</span>"); //$NON-NLS-1$
+                out.println("<br/><span class='warning'>(Warning: overloaded methods are not recommended. See <a href='#overloadedMethod'>below</a>)</span>"); //$NON-NLS-1$
             }
 
             // Print a warning if the method uses un-marshallable types
@@ -340,13 +334,20 @@ public class DefaultProcessor implements Processor
             {
                 if (!converterManager.isConvertable(paramTypes[j]))
                 {
-                    out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: No Converter for " + paramTypes[j].getName() + ". See <a href='#missingConverter'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+                    out.println("<br/><span class='warning'>(Warning: No Converter for " + paramTypes[j].getName() + ". See <a href='#missingConverter'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
 
             if (!converterManager.isConvertable(method.getReturnType()))
             {
-                out.println("<br/><span style='font-size: smaller; color: red;'>(Warning: No Converter for " + method.getReturnType().getName() + ". See <a href='#missingConverter'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+                out.println("<br/><span class='warning'>(Warning: No Converter for " + method.getReturnType().getName() + ". See <a href='#missingConverter'>below</a>)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+            // See also the call to getReasonToNotDisplay() above
+            String warning = accessControl.getReasonToNotExecute(req, creator, scriptname, method);
+            if (warning != null)
+            {
+                out.println("<br/><span class='warning'>(Warning: Role restructions in place: " + warning + ".)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             out.println("</li>"); //$NON-NLS-1$
@@ -428,7 +429,10 @@ public class DefaultProcessor implements Processor
             Method method = methods[i];
             String methodName = method.getName();
 
-            String reason = accessControl.getReasonToNotExecute(req, creator, scriptname, method);
+            // We don't need to check accessControl.getReasonToNotExecute()
+            // because the checks are made by the doExec method, but we do check
+            // if we can display it
+            String reason = accessControl.getReasonToNotDisplay(req, creator, scriptname, method);
             if (reason != null && !allowImpossibleTests)
             {
                 continue;
@@ -558,7 +562,7 @@ public class DefaultProcessor implements Processor
             Call call = calls[i];
             if (call.getThrowable() != null)
             {
-                log.warn("Erroring: id[" + call.getId() + "] message[" + call.getThrowable().getMessage() + ']', call.getThrowable()); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("Erroring: id[" + call.getId() + "] message[" + call.getThrowable().toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
             }
             else
             {
@@ -584,7 +588,7 @@ public class DefaultProcessor implements Processor
             Call call = calls[i];
             if (call.getThrowable() != null)
             {
-                String output = jsutil.escapeJavaScript(call.getThrowable().getMessage());
+                String output = jsutil.escapeJavaScript(call.getThrowable().toString());
 
                 buffer.append(prefix);
                 buffer.append("DWREngine._handleError('"); //$NON-NLS-1$
