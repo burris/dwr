@@ -579,7 +579,7 @@ function showResults(data)
 
 function runTest(num)
 {
-    callback = function(data)
+    var callback = function(data)
     {
         testResults(data, num);
     };
