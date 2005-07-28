@@ -2,32 +2,46 @@
 <html>
 <head>
   <title>DWR - Test Home</title>
-  <script type='text/javascript' src='/dwr/dwr/interface/Test.js'></script>
-  <script type='text/javascript' src='/dwr/dwr/engine.js'></script>
-  <script type='text/javascript' src='/dwr/dwr/util.js'></script>
+  <script type='text/javascript' src='dwr/interface/Test.js'></script>
+  <script type='text/javascript' src='dwr/engine.js'></script>
+  <script type='text/javascript' src='dwr/util.js'></script>
   <script>
     function init()
     {
-        $("startdiv").style.display = "none";
-        $("errordiv").style.display = "";
+        // This turns off the no-javascript message
+        document.getElementById("start").style.display = "none";
 
+        // This checks for file: URLs and loading problems
+        if (window.DWREngine == null || window.DWRUtil == null)
+        {
+            document.getElementById("file").style.display = "block";
+            return;
+        }
+
+        // DWR setup
         DWREngine.setErrorHandler(function(message) { alert(message); });
         DWREngine.setWarningHandler(function(message) { alert(message); });
         DWRUtil.useLoadingMessage();
+
+        // Turn on the generic error div
+        $("error").style.display = "block";
+
+        // Load a message from the server
         Test.getInsert(load);
     }
+
     function load(data)
     {
-        $("errordiv").style.display = "none";
-        DWRUtil.setValue("replydiv", data);
-        $("replydiv").style.display = "";
+        $("error").style.display = "none";
+        DWRUtil.setValue("reply", data);
+        $("reply").style.display = "block";
     }
   </script>
 </head>
 
 <body onload="init()">
 
-<div id="startdiv">
+<div id="start">
   <h1>DWR is testing installation ...</h1>
   <p>
     DWR uses Javascript to make some initial checks. If you can see this message
@@ -40,18 +54,46 @@
   </p>
 </div>
 
-<div id="errordiv" style="display:none;">
+<div id="reply" style="display:none;">
+  <h1>DWR is partially working</h1>
+  <p>
+    DWR has received test data from the server, however for some reason this
+    data was mangled. Please report this error to the
+    <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList">DWR
+    mailing list</a>, including your browser, server, OS configuration and any
+    error messages that appeared either in the browser (including the Javascript
+    console if one exists) and the server console log.
+  </p>
+</div>
+
+<div id="file" style="display:none;">
+  <h1>Missing DWR Javascript Functions</h1>
+  <p>
+    This is a fairly advanced page that tests DWR to check that everything is
+    setup properly for you.
+  </p>
+  <p>
+    It appears that you may be attempting to run DWR outside a servlet container
+    (possibly using a file: URL). We think this because this page has missing
+    Javascript functions that should have been produced by DWR. To fix the
+    problem please use DWR from within a servlet container.
+  </p>
+  <p>
+    If this is not the cause of the problem, please report it to the
+    <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList">DWR
+    mailing list</a>, including your browser, server, OS configuration and any
+    error messages that appeared either in the browser (including the Javascript
+    console if one exists) and the server console log.
+  </p>
+</div>
+
+<div id="error" style="display:none;">
   <h1>DWR is testing installation ...</h1>
   <p>
     This is a fairly advanced page that tests DWR. If you can see this message
     for a prolonged period of time then you should check the following:
   </p>
   <ul>
-    <li>
-      Does the entry in the address bar begin '<code>file:</code>'?<br/>
-      If so you need to view this website through a web server to get the
-      benefit of DWR.
-    </li>
     <li>
       Can you see the <a href="dwr/">test pages</a>?<br/>
       If not it is likely that DWR has not deployed in your web server properly;
@@ -73,28 +115,17 @@
   </p>
 </div>
 
-<div id="replydiv" style="display:none;">
-  <h1>DWR is partially working</h1>
+<div id="more">
   <p>
-    DWR has received test data from the server, however for some reason this
-    data was mangled. Please report this error to the
-    <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList">DWR
-    mailing list</a>, including your browser, server, OS configuration and any
-    error messages that appeared either in the browser (including the Javascript
-    console if one exists) and the server console log.
+    For general information about DWR see:
   </p>
+  <ul>
+    <li>The <a href="http://www.getahead.ltd.uk/dwr/">main DWR website</a>.</li>
+    <li>The <a href="https://dwr.dev.java.net/">Java.net pages</a>.</li>
+    <li><a href="http://www.getahead.ltd.uk/blog/joe/">Joe Walker's blog</a>.</li>
+    <li>The <a href="http://en.wikipedia.org/wiki/DWR">DWR page</a> at Wikipedia.</li>
+  </ul>
 </div>
-
-<p>
-  For general information about DWR see:
-</p>
-
-<ul>
-  <li>The <a href="http://www.getahead.ltd.uk/dwr/">main DWR website</a>.</li>
-  <li>The <a href="https://dwr.dev.java.net/">Java.net pages</a>.</li>
-  <li><a href="http://www.getahead.ltd.uk/blog/joe/">Joe Walker's blog</a>.</li>
-  <li>The <a href="http://en.wikipedia.org/wiki/DWR">DWR page</a> at Wikipedia.</li>
-</ul>
 
 </body>
 </html>
