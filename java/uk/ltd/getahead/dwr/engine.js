@@ -596,7 +596,7 @@ DWREngine._sendData = function(batch)
     {
         var funcReq = function() { DWREngine._abortRequest(batch); };
         setTimeout(funcReq, batch.metadata.timeout);
-	}
+    }
 
     // Get setup for XMLHttpRequest if possible
     if (DWREngine._method == DWREngine.XMLHttpRequest)
@@ -659,7 +659,10 @@ DWREngine._sendData = function(batch)
         {
             for (prop in batch.map)
             {
-                query += prop + "=" + batch.map[prop] + "\n";
+                if (typeof batch.map[prop] != "function")
+                {
+                    query += prop + "=" + batch.map[prop] + "\n";
+                }
             }
 
             try
@@ -737,38 +740,57 @@ DWREngine._stateChange = function(batch)
     {
         try
         {
-            if (batch.req.status && batch.req.status == 200)
+            var reply = batch.req.responseText;
+
+            if (reply != null && reply != "")
             {
-                batch.completed = true;
-                eval(batch.req.responseText);
+                if (batch.req.status && batch.req.status == 200)
+                {
+                    batch.completed = true;
+                    eval(reply);
+                }
+                else
+                {
+                    DWREngine._stateChangeError(reply);
+                }
             }
             else
             {
-                if (batch.metadata != null)
-                {
-                    DWREngine._abortRequest(batch);
-                }
-                else if (DWREngine._errorHandler)
-                {
-                    DWREngine._errorHandler(batch.req.responseText);
-                }
+                DWREngine._stateChangeError("No data received from server");
             }
         }
         catch (ex)
         {
-            if (batch.metadata != null)
-            {
-                DWREngine._abortRequest(batch);
-            }
-            else if (DWREngine._errorHandler)
-            {
-                DWREngine._errorHandler(ex);
-            }
+            DWREngine._stateChangeError(ex);
         }
 
         DWREngine._finalize(batch);
     }
 };
+
+/**
+ * When something has gone wrong with <code>DWREngine._stateChange()</code>
+ * @param message The error text if any
+ * @private
+ */
+DWREngine._stateChangeError = function(message)
+{
+    if (batch.metadata != null)
+    {
+        DWREngine._abortRequest(batch);
+    }
+    else if (DWREngine._errorHandler)
+    {
+        if (message == null)
+        {
+            DWREngine._errorHandler("Unknown error occured");
+        }
+        else
+        {
+            DWREngine._errorHandler(message);
+        }
+    }
+}
 
 /**
  * Hack a polymorphic dwrSerialize() function on all basic types. Yeulch
@@ -930,7 +952,11 @@ DWREngine._serializeObject = function(batch, referto, data, name)
             reply += ", ";
         }
     }
-    reply = reply.substring(0, reply.length - 2);
+
+    if (reply.substring(reply.length - 2) == ", ")
+    {
+        reply = reply.substring(0, reply.length - 2);
+    }
     reply += "}";
 
     return reply;
