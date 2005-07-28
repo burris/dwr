@@ -318,6 +318,7 @@ public class ExecuteQuery
                 if (reason != null)
                 {
                     log.error("Access denied: " + reason); //$NON-NLS-1$
+                    log.error("  From: "  + req.getRemoteAddr() + " asking for: " + req.getRequestURI()); //$NON-NLS-1$ //$NON-NLS-2$
                     throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
                 }
 
