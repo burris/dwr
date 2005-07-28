@@ -16,8 +16,8 @@
     <create creator="new" javascript="JDate">
       <param name="class" value="java.util.Date"/>
       <exclude method="getHours"/>
-      <auth method="toString" role="admin"/>
-      <auth method="toString" role="devel"/>
+      <auth method="getMinutes" role="admin"/>
+      <auth method="getMinutes" role="devel"/>
     </create>
 
     <create creator="new" javascript="TestBean" scope="session">
