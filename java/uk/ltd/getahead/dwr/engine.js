@@ -751,17 +751,17 @@ DWREngine._stateChange = function(batch)
                 }
                 else
                 {
-                    DWREngine._stateChangeError(reply);
+                    DWREngine._stateChangeError(batch, reply);
                 }
             }
             else
             {
-                DWREngine._stateChangeError("No data received from server");
+                DWREngine._stateChangeError(batch, "No data received from server");
             }
         }
         catch (ex)
         {
-            DWREngine._stateChangeError(ex);
+            DWREngine._stateChangeError(batch, ex);
         }
 
         DWREngine._finalize(batch);
@@ -773,7 +773,7 @@ DWREngine._stateChange = function(batch)
  * @param message The error text if any
  * @private
  */
-DWREngine._stateChangeError = function(message)
+DWREngine._stateChangeError = function(batch, message)
 {
     if (batch.metadata != null)
     {
