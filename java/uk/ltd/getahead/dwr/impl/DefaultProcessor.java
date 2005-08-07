@@ -19,15 +19,16 @@ import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.Call;
+import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DWRServlet;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.Processor;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -541,32 +542,66 @@ public class DefaultProcessor implements Processor
      */
     protected void doExec(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        ExecuteQuery eq = new ExecuteQuery(req, creatorManager, converterManager, accessControl);
+        ExecuteQuery eq = new ExecuteQuery(creatorManager, converterManager, accessControl);
 
-        if (eq.isFailingBrowser())
+        Calls calls;
+        try
         {
-            resp.setContentType(MIME_HTML);
+            calls = eq.execute(req);
+        }
+        catch (Exception ex)
+        {
+            // This only catches exceptions parsing the request. All execution
+            // exceptions are returned inside the Call POJOs.
+            if (log.isDebugEnabled())
+            {
+                ex.printStackTrace();
 
+                log.debug("Parse error: " + ex); //$NON-NLS-1$
+                log.debug("- User Agent: " + req.getHeader(HEADER_USER_AGENT)); //$NON-NLS-1$
+                log.debug("- Remote IP:  " + req.getRemoteAddr()); //$NON-NLS-1$
+                log.debug("- Request URL:" + req.getRequestURL()); //$NON-NLS-1$
+                log.debug("- Query:      " + req.getQueryString()); //$NON-NLS-1$
+                log.debug("- Method:     " + req.getMethod()); //$NON-NLS-1$
+                log.debug("- Body: {"); //$NON-NLS-1$
+
+                int lines = 0;
+                BufferedReader in = req.getReader();
+                while (in != null && lines < 100)
+                {
+                    String line = in.readLine();
+
+                    if (line == null)
+                    {
+                        break;
+                    }
+
+                    log.debug("-   " + line); //$NON-NLS-1$
+                    lines++;
+                }
+
+                log.debug("- }" + req.getMethod()); //$NON-NLS-1$
+            }
+
+            resp.setContentType(MIME_HTML);
             PrintWriter out = resp.getWriter();
             out.println("//<script type='text/javascript'>"); //$NON-NLS-1$
-            out.println("alert('Your browser sent a request that could not be understood.\\nIf you understand how Javascript works in your browser, please help us fix the problem.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
+            out.println("DWREngine._handleWarning('Your browser sent a request that could not be understood.\\nIf you understand how Javascript works in your browser, please help us fix the problem.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
             out.println("//</script>"); //$NON-NLS-1$
             out.flush();
             return;
         }
 
-        Call[] calls = eq.execute();
-
-        for (int i = 0; i < calls.length; i++)
+        for (int i = 0; i < calls.getCallCount(); i++)
         {
-            Call call = calls[i];
+            Call call = calls.getCall(i);
             if (call.getThrowable() != null)
             {
                 log.warn("Erroring: id[" + call.getId() + "] message[" + call.getThrowable().toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
             }
             else
             {
-                log.debug("Returning: id[" + call.getId() + "] init[" + call.getReply().getInitCode() + "] assign[" + call.getReply().getAssignCode() + "] xml[" + eq.isXmlMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                log.debug("Returning: id[" + call.getId() + "] init[" + call.getReply().getInitCode() + "] assign[" + call.getReply().getAssignCode() + "] xhr[" + calls.isXhrMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             }
         }
 
@@ -575,17 +610,17 @@ public class DefaultProcessor implements Processor
         StringBuffer buffer = new StringBuffer();
 
         // if we are in html (iframe mode) we need to direct script to the parent
-        String prefix = eq.isXmlMode() ? "" : "window.parent."; //$NON-NLS-1$ //$NON-NLS-2$
+        String prefix = calls.isXhrMode() ? "" : "window.parent."; //$NON-NLS-1$ //$NON-NLS-2$
 
         // iframe mode starts as HTML, so get into script mode
-        if (!eq.isXmlMode())
+        if (!calls.isXhrMode())
         {
             buffer.append("<script type='text/javascript'>\n"); //$NON-NLS-1$
         }
 
-        for (int i = 0; i < calls.length; i++)
+        for (int i = 0; i < calls.getCallCount(); i++)
         {
-            Call call = calls[i];
+            Call call = calls.getCall(i);
             if (call.getThrowable() != null)
             {
                 String output = jsutil.escapeJavaScript(call.getThrowable().toString());
@@ -612,7 +647,7 @@ public class DefaultProcessor implements Processor
         }
 
         // iframe mode needs to get out of script mode
-        if (!eq.isXmlMode())
+        if (!calls.isXhrMode())
         {
             buffer.append("</script>\n"); //$NON-NLS-1$
         }
@@ -621,7 +656,7 @@ public class DefaultProcessor implements Processor
         log.debug(reply);
 
         // LocalUtil.addNoCacheHeaders(resp);
-        resp.setContentType(eq.isXmlMode() ? MIME_XML : MIME_HTML);
+        resp.setContentType(calls.isXhrMode() ? MIME_XML : MIME_HTML);
         PrintWriter out = resp.getWriter();
         out.print(reply);
         out.flush();
@@ -782,6 +817,11 @@ public class DefaultProcessor implements Processor
     protected static final String MIME_HTML = "text/html"; //$NON-NLS-1$
 
     protected static final String MIME_JS = "text/javascript"; //$NON-NLS-1$
+
+    /**
+     * The name of the user agent HTTP header
+     */
+    private static final String HEADER_USER_AGENT = "User-Agent"; //$NON-NLS-1$
 
     /**
      * How much do we compression javascript by?

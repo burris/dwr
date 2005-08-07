@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.Call;
+import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
@@ -38,264 +39,43 @@ public class ExecuteQuery
 {
     /**
      * Simple ctor
-     * @param req The users request
      * @param creatorManager The way we get an object to call methods on
      * @param converterManager The way we convert javascript to java
      * @param accessControl The security manager
      */
-    public ExecuteQuery(HttpServletRequest req, CreatorManager creatorManager, ConverterManager converterManager, AccessControl accessControl)
+    public ExecuteQuery(CreatorManager creatorManager, ConverterManager converterManager, AccessControl accessControl)
     {
-        this.req = req;
         this.creatorManager = creatorManager;
         this.converterManager = converterManager;
         this.accessControl = accessControl;
-
-        if (req.getMethod().equals("GET")) //$NON-NLS-1$
-        {
-            parseParameters(parseGet());
-        }
-        else
-        {
-            parseParameters(parsePost());
-        }
-    }
-
-    /**
-     * Parse an HTTP POST request to fill out the scriptName, methodName and
-     * paramList properties. This method should not fail unless it will not
-     * be possible to return any sort of error to the user. Failure cases should
-     * be handled by the <code>checkParams()</code> method.
-     * @return The equivalent of HttpServletRequest.getParameterMap() for now
-     */
-    private Map parsePost()
-    {
-        Map paramMap = new HashMap();
-
-        try
-        {
-            BufferedReader in = req.getReader();
-
-            if (in == null)
-            {
-                // it is not a post message
-                throw new RuntimeException("ExecuteQuery.ErrorNullPost"); //$NON-NLS-1$
-            }
-
-            while (true)
-            {
-                String line = in.readLine();
-
-                if (line == null)
-                {
-                    break;
-                }
-
-                // If there are any &s then this must be iframe post and all the
-                // parameters have got dumped on one line.
-                if (line.indexOf('&') == -1)
-                {
-                    log.debug("POST line: " + line); //$NON-NLS-1$
-                    parsePostLine(line, paramMap);
-                }
-                else
-                {
-                    StringTokenizer st = new StringTokenizer(line, "&"); //$NON-NLS-1$
-                    while (st.hasMoreTokens())
-                    {
-                        String part = st.nextToken();
-                        part = LocalUtil.decode(part);
-
-                        log.debug("iframe POST line: " + part); //$NON-NLS-1$
-                        parsePostLine(part, paramMap);
-                    }
-                }
-            }
-        }
-        catch (IOException ex)
-        {
-            delayed = ex;
-        }
-
-        return paramMap;
-    }
-
-    /**
-     * Sort out a single line in a POST request
-     * @param line The line to parse
-     * @param paramMap The map to add parsed parameters to
-     */
-    private void parsePostLine(String line, Map paramMap)
-    {
-        if (line.length() == 0)
-        {
-            return;
-        }
-
-        int sep = line.indexOf(ConversionConstants.INBOUND_DECL_SEPARATOR);
-        if (sep == -1)
-        {
-            log.warn("Missing separator in POST line: " + line); //$NON-NLS-1$
-        }
-        else
-        {
-            String key = line.substring(0, sep);
-            String value = line.substring(sep  + ConversionConstants.INBOUND_DECL_SEPARATOR.length());
-
-            paramMap.put(key, value);
-        }
-    }
-
-    /**
-     * Parse an HTTP GET request to fill out the scriptName, methodName and
-     * paramList properties. This method should not fail unless it will not
-     * be possible to return any sort of error to the user. Failure cases should
-     * be handled by the <code>checkParams()</code> method.
-     * @return Simply HttpServletRequest.getParameterMap() for now
-     */
-    private Map parseGet()
-    {
-        Map convertedMap = new HashMap();
-        Map paramMap = req.getParameterMap();
-
-        for (Iterator it = paramMap.keySet().iterator(); it.hasNext();)
-        {
-            String key = (String) it.next();
-            Object value = paramMap.get(key);
-
-            if (value != null)
-            {
-                if (value instanceof String[])
-                {
-                    String[] array = (String[]) value;
-                    convertedMap.put(key, array[0]);
-
-                    if (log.isDebugEnabled())
-                    {
-                        for (int i = 0; i < array.length; i++)
-                        {
-                            log.debug("GET line[" + i + "]: " + key + '=' + value); //$NON-NLS-1$ //$NON-NLS-2$
-                        }
-                    }
-                }
-                else
-                {
-                    convertedMap.put(key, value);
-                    log.debug("GET line: " + key + '=' + value); //$NON-NLS-1$
-                }
-            }
-        }
-
-        return convertedMap;
-    }
-
-    /**
-     * Fish out the important parameters
-     * @param paramMap The string/string map to convert
-     */
-    private void parseParameters(Map paramMap)
-    {
-        // XML mode is common to all calls
-        xmlMode = Boolean.valueOf((String) paramMap.remove(ConversionConstants.INBOUND_KEY_XMLMODE)).booleanValue();
-
-        // Work out haw many calls are in this packet
-        String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
-        if (callStr == null)
-        {
-            // If there was no indication of how many inbound calls, then assume 0;
-            callStr = "0"; //$NON-NLS-1$
-        }
-        int callCount = Integer.parseInt(callStr);
-        calls = new Call[callCount];
-
-        // Extract the ids, scriptnames and methodnames
-        for (int callNum = 0; callNum < calls.length; callNum++)
-        {
-            Call call = new Call();
-            calls[callNum] = call;
-
-            String prefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + ConversionConstants.INBOUND_CALLNUM_SUFFIX;
-
-            // The special values
-            call.setId((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_ID));
-            call.setScriptName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_SCRIPTNAME));
-            call.setMethodName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_METHODNAME));
-
-            // Look for parameters to this method
-            for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
-            {
-                Map.Entry entry = (Map.Entry) it.next();
-                String key = (String) entry.getKey();
-
-                if (key.startsWith(prefix))
-                {
-                    String data = (String) entry.getValue();
-                    String[] split = LocalUtil.splitInbound(data);
-
-                    String value = split[LocalUtil.INBOUND_INDEX_VALUE];
-                    String type = split[LocalUtil.INBOUND_INDEX_TYPE];
-                    call.getInboundContext().createInboundVariable(callNum, key, type, value);
-                    it.remove();
-                }
-            }
-        }
-
-        if (paramMap.size() != 0)
-        {
-            log.warn("Entries left over in parameter map"); //$NON-NLS-1$
-        }
-
-        if (log.isDebugEnabled())
-        {
-            for (int callNum = 0; callNum < calls.length; callNum++)
-            {
-                Call call = calls[callNum];
-
-                log.debug("Call[" + callNum + "]: " + call.getScriptName() + '.' + call.getMethodName() + "();"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-                for (int i = 0; i < call.getInboundContext().getParameterCount(); i++)
-                {
-                    log.debug("  Param: " + i + '=' + call.getInboundContext().getParameter(callNum, i)); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-            }
-
-            // We can just use 0 because they are all shared
-            if (calls.length > 0)
-            {
-                for (Iterator it = calls[0].getInboundContext().getInboundVariableNames(); it.hasNext();)
-                {
-                    String key = (String) it.next();
-                    InboundVariable value = calls[0].getInboundContext().getInboundVariable(key);
-
-                    log.debug("  Env: " + key + '=' + value.getRawData()); //$NON-NLS-1$
-                }
-            }
-        }
     }
 
     /**
      * Check (as far as we can) that the execute method will succeed.
-     * @return The return from the method invocation
-     * wrapping and we are unwrapping InvocationTargetException
+     * @param req The original browser's request
+     * @return The call details the methods we are calling
+     * @throws IOException If reading from the request body stream fails
      */
-    public Call[] execute()
+    public Calls execute(HttpServletRequest req) throws IOException
     {
-        if (delayed != null)
-        {
-            for (int callNum = 0; callNum < calls.length; callNum++)
-            {
-                calls[callNum].setThrowable(delayed);
-            }
+        Calls calls = null;
 
-            return calls;
+        if (req.getMethod().equals("GET")) //$NON-NLS-1$
+        {
+            calls = parseParameters(parseGet(req));
+        }
+        else
+        {
+            calls = parseParameters(parsePost(req));
         }
 
         // Since we are passing all the responses back in one script, there is
         // only one outbound context.
         OutboundContext converted = new OutboundContext();
 
-        for (int callNum = 0; callNum < calls.length; callNum++)
+        for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
         {
-            Call call = calls[callNum];
+            Call call = calls.getCall(callNum);
             InboundContext inctx = call.getInboundContext();
 
             try
@@ -306,7 +86,7 @@ public class ExecuteQuery
                 Creator creator = creatorManager.getCreator(call.getScriptName());
 
                 // Which method are we using?
-                Method method = findMethod(callNum);
+                Method method = findMethod(call);
                 if (method == null)
                 {
                     String name = call.getScriptName() + '.' + call.getMethodName();
@@ -408,33 +188,213 @@ public class ExecuteQuery
     }
 
     /**
-     * Some browsers (i.e. Konq at least) send the request with no data).
-     * Normally we except later on, but that clogs up the log files, so in the
-     * short term we allow detection of requests from 'broken' browsers.
-     * @return Did we get anything from the browser at all
+     * Parse an HTTP POST request to fill out the scriptName, methodName and
+     * paramList properties. This method should not fail unless it will not
+     * be possible to return any sort of error to the user. Failure cases should
+     * be handled by the <code>checkParams()</code> method.
+     * @param req The original browser's request
+     * @return The equivalent of HttpServletRequest.getParameterMap() for now
+     * @throws IOException If reading from the request body stream fails
      */
-    public boolean isFailingBrowser()
+    private Map parsePost(HttpServletRequest req) throws IOException
     {
-        return calls.length == 0;
+        Map paramMap = new HashMap();
+
+        BufferedReader in = req.getReader();
+
+        if (in == null)
+        {
+            // it is not a post message
+            throw new RuntimeException(Messages.getString("ExecuteQuery.ErrorNullPost")); //$NON-NLS-1$
+        }
+
+        while (true)
+        {
+            String line = in.readLine();
+
+            if (line == null)
+            {
+                break;
+            }
+
+            // If there are any &s then this must be iframe post and all the
+            // parameters have got dumped on one line.
+            if (line.indexOf('&') == -1)
+            {
+                log.debug("POST line: " + line); //$NON-NLS-1$
+                parsePostLine(line, paramMap);
+            }
+            else
+            {
+                StringTokenizer st = new StringTokenizer(line, "&"); //$NON-NLS-1$
+                while (st.hasMoreTokens())
+                {
+                    String part = st.nextToken();
+                    part = LocalUtil.decode(part);
+
+                    log.debug("iframe POST line: " + part); //$NON-NLS-1$
+                    parsePostLine(part, paramMap);
+                }
+            }
+        }
+
+        return paramMap;
     }
 
     /**
-     * @return Are we in XMLHttpRequest mode
+     * Sort out a single line in a POST request
+     * @param line The line to parse
+     * @param paramMap The map to add parsed parameters to
      */
-    public boolean isXmlMode()
+    private void parsePostLine(String line, Map paramMap)
     {
-        return xmlMode;
+        if (line.length() == 0)
+        {
+            return;
+        }
+
+        int sep = line.indexOf(ConversionConstants.INBOUND_DECL_SEPARATOR);
+        if (sep == -1)
+        {
+            log.warn("Missing separator in POST line: " + line); //$NON-NLS-1$
+        }
+        else
+        {
+            String key = line.substring(0, sep);
+            String value = line.substring(sep  + ConversionConstants.INBOUND_DECL_SEPARATOR.length());
+
+            paramMap.put(key, value);
+        }
+    }
+
+    /**
+     * Parse an HTTP GET request to fill out the scriptName, methodName and
+     * paramList properties. This method should not fail unless it will not
+     * be possible to return any sort of error to the user. Failure cases should
+     * be handled by the <code>checkParams()</code> method.
+     * @param req The original browser's request
+     * @return Simply HttpServletRequest.getParameterMap() for now
+     * @throws IOException If the parsing fails
+     */
+    private Map parseGet(HttpServletRequest req) throws IOException
+    {
+        Map convertedMap = new HashMap();
+        Map paramMap = req.getParameterMap();
+
+        for (Iterator it = paramMap.keySet().iterator(); it.hasNext();)
+        {
+            String key = (String) it.next();
+            String[] array = (String[]) paramMap.get(key);
+
+            if (array.length == 1)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("GET line: " + key + '=' + array[0]); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+
+                convertedMap.put(key, array[0]);
+            }
+            else
+            {
+                throw new IOException(Messages.getString("ExecuteQuery.MultiValues", key)); //$NON-NLS-1$
+            }
+        }
+
+        return convertedMap;
+    }
+
+    /**
+     * Fish out the important parameters
+     * @param paramMap The string/string map to convert
+     * @return The call details the methods we are calling
+     */
+    private Calls parseParameters(Map paramMap)
+    {
+        Calls calls = new Calls();
+
+        // XML mode is common to all calls
+        calls.setXhrMode(Boolean.valueOf((String) paramMap.remove(ConversionConstants.INBOUND_KEY_XMLMODE)).booleanValue());
+
+        // Work out how many calls are in this packet
+        String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
+        int callCount = Integer.parseInt(callStr);
+
+        // Extract the ids, scriptnames and methodnames
+        for (int callNum = 0; callNum < callCount; callNum++)
+        {
+            Call call = new Call();
+            calls.addCall(call);
+
+            String prefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + ConversionConstants.INBOUND_CALLNUM_SUFFIX;
+
+            // The special values
+            call.setId((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_ID));
+            call.setScriptName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_SCRIPTNAME));
+            call.setMethodName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_METHODNAME));
+
+            // Look for parameters to this method
+            for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+                String key = (String) entry.getKey();
+
+                if (key.startsWith(prefix))
+                {
+                    String data = (String) entry.getValue();
+                    String[] split = LocalUtil.splitInbound(data);
+
+                    String value = split[LocalUtil.INBOUND_INDEX_VALUE];
+                    String type = split[LocalUtil.INBOUND_INDEX_TYPE];
+                    call.getInboundContext().createInboundVariable(callNum, key, type, value);
+                    it.remove();
+                }
+            }
+        }
+
+        if (paramMap.size() != 0)
+        {
+            log.warn("Entries left over in parameter map"); //$NON-NLS-1$
+        }
+
+        if (log.isDebugEnabled())
+        {
+            for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
+            {
+                Call call = calls.getCall(callNum);
+
+                log.debug("Call[" + callNum + "]: " + call.getScriptName() + '.' + call.getMethodName() + "();"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+                for (int i = 0; i < call.getInboundContext().getParameterCount(); i++)
+                {
+                    log.debug("  Param: " + i + '=' + call.getInboundContext().getParameter(callNum, i)); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+
+            // We can just use 0 because they are all shared
+            if (calls.getCallCount() > 0)
+            {
+                InboundContext inctx = calls.getCall(0).getInboundContext();
+                for (Iterator it = inctx.getInboundVariableNames(); it.hasNext();)
+                {
+                    String key = (String) it.next();
+                    InboundVariable value = inctx.getInboundVariable(key);
+
+                    log.debug("  Env: " + key + '=' + value.getRawData()); //$NON-NLS-1$
+                }
+            }
+        }
+
+        return calls;
     }
 
     /**
      * Find the method the best matches the method name and parameters
-     * @param callNum The call number to work on
+     * @param call The function call we are going to make
      * @return A matching method, or null if one was not found.
      */
-    private Method findMethod(int callNum)
+    private Method findMethod(Call call)
     {
-        Call call = calls[callNum];
-
         if (call.getScriptName() == null)
         {
             throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingClassParam")); //$NON-NLS-1$
@@ -514,24 +474,4 @@ public class ExecuteQuery
      * The security manager
      */
     private AccessControl accessControl = null;
-
-    /**
-     * 
-     */
-    private HttpServletRequest req;
-
-    /**
-     * 
-     */
-    private boolean xmlMode = false;
-
-    /**
-     * 
-     */
-    private IOException delayed = null;
-
-    /**
-     * 
-     */
-    private Call[] calls = null;
 }

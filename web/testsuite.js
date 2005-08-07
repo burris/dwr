@@ -651,4 +651,3 @@ function init()
         }
     ]);
 }
-

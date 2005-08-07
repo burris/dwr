@@ -111,7 +111,7 @@ public class ExecutionContext
         StringWriter sout = new StringWriter();
         StringBuffer buffer = sout.getBuffer();
 
-        HttpServletResponse fakeResponse = new SwallowingHttpServletResponse(getHttpServletResponse(), sout, url);
+        HttpServletResponse fakeResponse = new SwallowingHttpServletResponse(getHttpServletResponse(), sout);
 
         getServletContext().getRequestDispatcher(url).forward(getHttpServletRequest(), fakeResponse);
 

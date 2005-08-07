@@ -46,6 +46,19 @@ public class DefaultCreatorManager implements CreatorManager
             throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), Creator.class.getName())); //$NON-NLS-1$
         }
 
+        try
+        {
+            clazz.newInstance();
+        }
+        catch (InstantiationException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotInstantiatable", clazz.getName(), ex.toString())); //$NON-NLS-1$
+        }
+        catch (IllegalAccessException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAccessable", clazz.getName(), ex.toString())); //$NON-NLS-1$
+        }
+
         creatorTypes.put(typename, clazz);
     }
 

@@ -34,6 +34,19 @@ public class DefaultConverterManager implements ConverterManager
             throw new IllegalArgumentException(Messages.getString("DefaultConverterManager.ConverterNotAssignable", clazz, Converter.class.getName())); //$NON-NLS-1$
         }
 
+        try
+        {
+            clazz.newInstance();
+        }
+        catch (InstantiationException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultConverterManager.ConverterNotInstantiatable", clazz.getName(), ex.toString())); //$NON-NLS-1$
+        }
+        catch (IllegalAccessException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultConverterManager.ConverterNotAccessable", clazz.getName(), ex.toString())); //$NON-NLS-1$
+        }
+
         converterTypes.put(id, clazz);
     }
 

@@ -132,13 +132,24 @@ public class SignatureParser
         Method method = findMethod(classMethod);
         if (method == null)
         {
-            // Assume debug has already be done.
+            // Debug is done by findMethod()
             return;
         }
 
         // Now we need to get a list of all the parameters
         String paramDecl = line.substring(openBrace + 1, closeBrace);
         String[] paramNames = split(paramDecl);
+
+        // Check that we have the right number
+        if (method.getParameterTypes().length != paramNames.length)
+        {
+            log.error("Parameter mismatch parsing signatures section in dwr.xml on line: " + line); //$NON-NLS-1$
+            log.info("- Reflected method had: " + method.getParameterTypes().length + " parameters: " + method.toString()); //$NON-NLS-1$ //$NON-NLS-2$
+            log.info("- Signatures section had: " + paramNames.length + " parameters"); //$NON-NLS-1$ //$NON-NLS-2$
+            log.info("- This can be caused by method overloading which is not supported by Javascript or DWR"); //$NON-NLS-1$ //$NON-NLS-2$
+            return;
+        }
+
         for (int i = 0; i < paramNames.length; i++)
         {
             String[] genericList = getGenericParameterTypeList(paramNames[i]);
@@ -149,7 +160,16 @@ public class SignatureParser
 
                 if (clazz != null)
                 {
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Extra type info: " + method.getName() + "(), param[" + i + "<" + j + ">] is " + clazz.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    }
+
                     converterManager.setExtraTypeInfo(method, i, j, clazz);
+                }
+                else
+                {
+                    log.warn("Missing class (" + type + ") while parsing signature section on line: " + line); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }
@@ -177,7 +197,7 @@ public class SignatureParser
         }
         catch (Exception ex)
         {
-            log.debug("Trying to find class in package imports"); //$NON-NLS-1$
+            // log.debug("Trying to find class in package imports"); //$NON-NLS-1$
         }
 
         for (Iterator it = packageImports.iterator(); it.hasNext();)
@@ -192,7 +212,7 @@ public class SignatureParser
             }
             catch (Exception ex)
             {
-                log.debug("Not found: " + lookup); //$NON-NLS-1$
+                // log.debug("Not found: " + lookup); //$NON-NLS-1$
             }
         }
 
@@ -265,6 +285,7 @@ public class SignatureParser
         Class clazz = findClass(className);
         if (clazz == null)
         {
+            // Debug is done by findClass()
             return null;
         }
 

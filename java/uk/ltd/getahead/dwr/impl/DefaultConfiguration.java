@@ -122,6 +122,10 @@ public class DefaultConfiguration implements Configuration
         }
         catch (NoClassDefFoundError ex)
         {
+            log.info("Missing classdef for creator '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        catch (ClassNotFoundException ex)
+        {
             log.info("Missing class for creator '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (Exception ex)
@@ -145,6 +149,10 @@ public class DefaultConfiguration implements Configuration
             converterManager.addConverterType(id, clazz);
         }
         catch (NoClassDefFoundError ex)
+        {
+            log.info("Missing classdef for converter '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        catch (ClassNotFoundException ex)
         {
             log.info("Missing class for converter '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }

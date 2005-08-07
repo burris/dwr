@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -455,6 +456,24 @@ public class Test
             log.error("Failed on method: " + method); //$NON-NLS-1$
             return null;
         }
+    }
+
+    /**
+     * @param client 
+     * @return Debugging map
+     */
+    public Map dateTest(Date client)
+    {
+        Date server = new Date();
+
+        Map reply = new HashMap();
+
+        reply.put("client-object", client); //$NON-NLS-1$
+        reply.put("client-string", client.toString()); //$NON-NLS-1$
+        reply.put("server-object", server); //$NON-NLS-1$
+        reply.put("server-string", server.toString()); //$NON-NLS-1$
+
+        return reply;
     }
 
     /**

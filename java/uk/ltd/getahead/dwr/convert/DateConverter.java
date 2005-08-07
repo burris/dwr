@@ -2,10 +2,7 @@ package uk.ltd.getahead.dwr.convert;
 
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.StringTokenizer;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
@@ -15,7 +12,6 @@ import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * An implementation of Converter for Dates.
@@ -44,49 +40,15 @@ public class DateConverter implements Converter
             return null;
         }
 
-        /*
-        if (!(data instanceof Date))
-        {
-            throw new ConversionException("Class: " + data.getClass() + " is not a java.util.Date");
-        }
-        */
-
-        if (value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
-        {
-            value = value.substring(1);
-        }
-        if (value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
-        {
-            value = value.substring(0, value.length() - 1);
-        }
-
-        Calendar calendar = new GregorianCalendar();
-
         try
         {
-            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
-            int size = st.countTokens();
-
-            if (size != 7)
+            long millis = 0;
+            if (value.length() > 0)
             {
-                log.warn("Date does not have 7 components: " + value); //$NON-NLS-1$
+                millis = Long.parseLong(value);
             }
 
-            for (int i = 0; i < size && i < 7; i++)
-            {
-                try
-                {
-                    String token = st.nextToken();
-                    int intval = Integer.parseInt(token.trim());
-                    calendar.set(FIELDS[i], intval);
-                }
-                catch (NumberFormatException ex)
-                {
-                    throw new ConversionException(ex);
-                }
-            }
-
-            Date date = calendar.getTime();
+            Date date = new Date(millis);
             if (paramType == Date.class)
             {
                 return date;
@@ -129,45 +91,13 @@ public class DateConverter implements Converter
         }
 
         Date date = (Date) data;
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(date);
+        long millis = date.getTime();
 
         StringBuffer buffer = new StringBuffer();
         buffer.append("var " + varname + " = new Date("); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append(calendar.get(Calendar.YEAR));
-        buffer.append(',');
-        buffer.append(calendar.get(Calendar.MONTH));
-        buffer.append(',');
-        buffer.append(calendar.get(Calendar.DAY_OF_MONTH));
-        buffer.append(',');
-        buffer.append(calendar.get(Calendar.HOUR_OF_DAY));
-        buffer.append(',');
-        buffer.append(calendar.get(Calendar.MINUTE));
-        buffer.append(',');
-        buffer.append(calendar.get(Calendar.SECOND));
-        buffer.append(',');
-        buffer.append(calendar.get(Calendar.MILLISECOND));
+        buffer.append(millis);
         buffer.append(");"); //$NON-NLS-1$
 
         return buffer.toString();
     }
-
-    /**
-     * The input field ordering
-     */
-    private static final int[] FIELDS =
-    {
-        Calendar.YEAR,
-        Calendar.MONTH,
-        Calendar.DAY_OF_MONTH,
-        Calendar.HOUR_OF_DAY,
-        Calendar.MINUTE,
-        Calendar.SECOND,
-        Calendar.MILLISECOND,
-    };
-
-    /**
-     * The log stream
-     */
-    private static final Logger log = Logger.getLogger(DateConverter.class);
 }

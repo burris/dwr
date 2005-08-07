@@ -628,7 +628,7 @@ DWREngine._sendData = function(batch)
 
     if (batch.req)
     {
-        batch.map.xml = true;
+        batch.map.xml = "true";
 
         // Proceed using XMLHttpRequest
         batch.req.onreadystatechange = function() { DWREngine._stateChange(batch); };
@@ -636,9 +636,20 @@ DWREngine._sendData = function(batch)
         // Force Mac people to use GET because Safari is broken.
         if (DWREngine._verb == "GET" || navigator.userAgent.indexOf('Safari') >= 0)
         {
+            // Some browsers (Opera/Safari2) seem to fail to convert the value
+            // of batch.map.callCount to a string in the loop below so we do it
+            // manually here.
+            batch.map.callCount = "" + batch.map.callCount;
+
             for (prop in batch.map)
             {
-                query += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
+                var qkey = encodeURIComponent(prop);
+                var qval = encodeURIComponent(batch.map[prop]);
+                if (qval == "")
+                {
+                    alert("found empty qval for qkey=" + qkey);
+                }
+                query += qkey + "=" + qval + "&";
             }
             query = query.substring(0, query.length - 1);
 
@@ -685,7 +696,7 @@ DWREngine._sendData = function(batch)
     }
     else
     {
-        batch.map.xml = false;
+        batch.map.xml = "false";
 
         var idname = "dwr-if-" + batch.map["c0-id"];
 
@@ -1058,14 +1069,7 @@ DWREngine._serializeString = function(batch, referto, data, name)
  */
 DWREngine._serializeDate = function(batch, referto, data, name)
 {
-    return "Date:[ " +
-        this.getUTCFullYear() + ", " +
-        this.getUTCMonth() + ", " +
-        this.getUTCDate() + ", " +
-        this.getUTCHours() + ", " +
-        this.getUTCMinutes() + ", " +
-        this.getUTCSeconds() + ", " +
-        this.getUTCMilliseconds() + "]";
+    return "Date:" + this.getTime();
 };
 
 /**
