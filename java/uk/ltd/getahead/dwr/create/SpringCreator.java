@@ -1,7 +1,5 @@
 package uk.ltd.getahead.dwr.create;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,19 +9,16 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.UrlResource;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
-import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
- * A creator that relies on a spring bean factory
+ * A creator that relies on a spring bean factory.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class SpringCreator extends AbstractCreator implements Creator
@@ -33,7 +28,7 @@ public class SpringCreator extends AbstractCreator implements Creator
      */
     public String getBeanName()
     {
-            return beanName;
+        return beanName;
     }
 
     /**
@@ -41,37 +36,7 @@ public class SpringCreator extends AbstractCreator implements Creator
      */
     public void setBeanName(String beanName)
     {
-            this.beanName = beanName;
-    }
-
-    /**
-     * @return Returns the resourceName.
-     * @deprecated Use location* instead
-     */
-    public String getResourceName()
-    {
-        return resourceName;
-    }
-
-    /**
-     * @param resourceName The resourceName to set.
-     * @deprecated Use location* instead
-     */
-    public void setResourceName(String resourceName)
-    {
-        this.resourceName = resourceName;
-    }
-
-    /**
-     * @param session true if we should use a session
-     * @deprecated Use scope instead of the session param
-     */
-    public void setSession(String session)
-    {
-        if (Boolean.valueOf(session).booleanValue())
-        {
-            setScope("session"); //$NON-NLS-1$
-        }
+        this.beanName = beanName;
     }
 
     /* (non-Javadoc)
@@ -123,6 +88,12 @@ public class SpringCreator extends AbstractCreator implements Creator
     {
         try
         {
+            if (overrideFactory != null)
+            {
+                Object reply = overrideFactory.getBean(beanName);
+                return reply;
+            }
+
             if (factory == null)
             {
                 factory = getBeanFactory();
@@ -144,9 +115,8 @@ public class SpringCreator extends AbstractCreator implements Creator
 
     /**
      * @return A found BeanFactory configuration
-     * @throws InstantiationException If we failed to create a bean factory
      */
-    private BeanFactory getBeanFactory() throws InstantiationException
+    private BeanFactory getBeanFactory()
     {
         // If someone has set a resource name then we need to load that.
         if (configLocation != null && configLocation.length > 0)
@@ -155,39 +125,7 @@ public class SpringCreator extends AbstractCreator implements Creator
             return new ClassPathXmlApplicationContext(configLocation);
         }
 
-        // DEPRECATED:
         ServletContext srvCtx = ExecutionContext.get().getServletContext();
-        if (resourceName != null)
-        {
-            URL url = getClass().getClassLoader().getResource(resourceName);
-            if (url != null)
-            {
-                log.info("Loading spring config via the classloader from " + url.toExternalForm()); //$NON-NLS-1$
-            }
-            else
-            {
-                try
-                {
-                    url = srvCtx.getResource(resourceName);
-                }
-                catch (MalformedURLException ex)
-                {
-                    throw new InstantiationException(Messages.getString("SpringCreator.ResourceNameInvalid", resourceName)); //$NON-NLS-1$
-                }
-                if (url != null)
-                {
-                    log.info("Loading spring config via servlet context from " + url.toExternalForm()); //$NON-NLS-1$
-                }
-                else
-                {
-                    throw new InstantiationException(Messages.getString("SpringCreator.ResourceNameInvalid", resourceName)); //$NON-NLS-1$
-                }
-            }
-
-            UrlResource resource = new UrlResource(url);
-            return new XmlBeanFactory(resource);
-        }
-
         HttpServletRequest request = ExecutionContext.get().getHttpServletRequest();
 
         if (request != null)
@@ -201,11 +139,24 @@ public class SpringCreator extends AbstractCreator implements Creator
     }
 
     /**
+     * Set a web-app wide BeanFactory.
+     * This method is misnamed (The parameter is a BeanFactory and not a
+     * XmlBeanFactory)
      * @param factory The factory to set.
+     * @deprecated This method is misnamed use setOverrideBeanFactory
      */
     public static void setXmlBeanFactory(BeanFactory factory)
     {
-        SpringCreator.factory = factory;
+        SpringCreator.overrideFactory = factory;
+    }
+
+    /**
+     * Set a web-app wide BeanFactory.
+     * @param factory The factory to set.
+     */
+    public static void setOverrideBeanFactory(BeanFactory factory)
+    {
+        SpringCreator.overrideFactory = factory;
     }
 
     /**
@@ -219,19 +170,20 @@ public class SpringCreator extends AbstractCreator implements Creator
     private static final Logger log = Logger.getLogger(SpringCreator.class);
 
     /**
-     * The Spring beans factory from which we get our beans
+     * The Spring beans factory from which we get our beans.
      */
-    private static BeanFactory factory = null;
+    private BeanFactory factory = null;
+
+    /**
+     * An web-app wide BeanFactory that we can use to override any calculated
+     * ones.
+     */
+    private static BeanFactory overrideFactory = null;
 
     /**
      * The cached type of bean that we are creating
      */
     private Class clazz = null;
-
-    /**
-     * An optional place to look for a beans.xml file
-     */
-    private String resourceName = null;
 
     /**
      * An array of locations to search through for a beans.xml file
