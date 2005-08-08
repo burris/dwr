@@ -702,7 +702,7 @@ DWREngine._sendData = function(batch)
 
         // Proceed using iframe
         batch.div = document.createElement('div');
-        batch.div.innerHTML = "<iframe id='" + idname + "' name='" + idname + "'></iframe>";
+        batch.div.innerHTML = "<iframe frameborder='0' width='0' height='0' id='" + idname + "' name='" + idname + "'></iframe>";
         document.body.appendChild(batch.div);
         batch.iframe = document.getElementById(idname);
         batch.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
@@ -790,7 +790,8 @@ DWREngine._stateChangeError = function(batch, message)
     {
         DWREngine._abortRequest(batch);
     }
-    else if (DWREngine._errorHandler)
+
+    if (DWREngine._errorHandler)
     {
         if (message == null)
         {
