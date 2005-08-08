@@ -666,7 +666,7 @@ public class DefaultProcessor implements Processor
         catch (Exception ex)
         {
             log.error("Failure in doExec()",ex); //$NON-NLS-1$
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.toString());
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
