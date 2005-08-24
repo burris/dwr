@@ -1218,7 +1218,7 @@ if (typeof window.encodeURIComponent === 'undefined')
 
     DWREngine._okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
 
-    function encodeURIComponent(s)
+    window.encodeURIComponent = function(s)
     {
         s = DWREngine._utf8(s);
         var c;
