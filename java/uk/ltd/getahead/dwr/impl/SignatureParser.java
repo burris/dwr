@@ -360,7 +360,7 @@ public class SignatureParser
             }
         }
 
-        // An add in the bit at the end:
+        // Add in the bit at the end:
         String param = paramDecl.substring(start, paramDecl.length());
         params.add(param);
 

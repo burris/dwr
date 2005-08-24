@@ -274,5 +274,5 @@ public class DefaultAccessControl implements AccessControl
     /**
      * My package name, so we can ban DWR classes from being created or marshalled
      */
-    private static final String PACKAGE_DWR = "uk.ltd.getahead.dwr"; //$NON-NLS-1$
+    private static final String PACKAGE_DWR = "uk.ltd.getahead.dwr."; //$NON-NLS-1$
 }

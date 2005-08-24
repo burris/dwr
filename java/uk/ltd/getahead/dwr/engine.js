@@ -357,6 +357,9 @@ DWREngine._finalize = function(batch)
     DWREngine._removeNode(batch.iframe);
     DWREngine._removeNode(batch.form);
 
+    // Avoid IE handles increase
+    delete batch.req;
+
     if (DWREngine._postHook)
     {
         DWREngine._postHook();
@@ -1150,7 +1153,7 @@ DWREngine._deprecated = function()
  * To make up for the lack of encodeURIComponent() on IE5.0
  * @private
  */
-//if (typeof Window.encodeURIComponent === 'undefined')
+if (typeof window.encodeURIComponent === 'undefined')
 {
     DWREngine._utf8 = function(wide)
     {

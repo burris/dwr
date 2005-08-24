@@ -2,9 +2,9 @@
 <project>
   <pomVersion>3</pomVersion>
   <id>dwr</id>
-  <groupId>dwr</groupId>
+  <groupId>uk.ltd.getahead</groupId>
   <name>Direct Web Remoting</name>
-  <currentVersion>1.0-rc1</currentVersion>
+  <currentVersion>1.0.M1.pre</currentVersion>
   <package>uk.ltd.getahead.dwr</package>
   <developers>
     <developer>
@@ -102,6 +102,18 @@
       </includes>
       </unitTest>
     -->
+   <resources>
+    <resource>
+     <directory>java</directory>
+      <includes>
+       <include>**/*</include>
+      </includes>
+      <excludes>
+       <exclude>**/*.java</exclude>
+       <exclude>**/package.html</exclude>
+      </excludes>
+     </resource>
+    </resources>
   </build>
   <reports>
     <report>maven-checkstyle-plugin</report>
@@ -109,7 +121,6 @@
     <report>maven-jdepend-plugin</report>
     <report>maven-junit-report-plugin</report>
     <report>maven-pmd-plugin</report>
-    <report>maven-checkstyle-plugin</report>
     <report>maven-simian-plugin</report>
     <report>maven-license-plugin</report>
   </reports>

@@ -22,7 +22,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.InboundContext;
@@ -321,7 +325,6 @@ public class Test
      * @param test
      * @return string
      */
-    // @PMD:REVIEWED:LooseCoupling: by Joe on 09/02/05 08:25
     public HashSet stringHashSetParam(HashSet test)
     {
         return test;
@@ -331,7 +334,6 @@ public class Test
      * @param test
      * @return string
      */
-    // @PMD:REVIEWED:LooseCoupling: by Joe on 09/02/05 08:25
     public TreeSet stringTreeSetParam(TreeSet test)
     {
         return test;
@@ -518,6 +520,23 @@ public class Test
     public String httpServletRequestParam(HttpServletRequest req)
     {
         return req.getRemoteAddr();
+    }
+
+    /**
+     * @param req
+     * @param i
+     * @param resp
+     * @param s
+     * @param session
+     * @param ss
+     * @param scx
+     * @param d
+     * @param scfg
+     * @return string
+     */
+    public String httpObjectParams(HttpServletRequest req, int i, HttpServletResponse resp, String s, HttpSession session, short[] ss, ServletContext scx, Date d, ServletConfig scfg)
+    {
+        return req.getRemoteAddr() + i + resp.hashCode() + s + session.getId() + ss.length + scx.getMajorVersion() + d.getTime() + scfg.getServletName();
     }
 
     /**
