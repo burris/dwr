@@ -24,7 +24,12 @@
       <param name="class" value="uk.ltd.getahead.testdwr.TestBean"/>
     </create>
 
-    <convert converter="testbean" match="uk.ltd.getahead.testdwr.*"/>
+    <convert converter="testbean" match="uk.ltd.getahead.testdwr.TestBean"/>
+
+    <convert converter="bean" match="uk.ltd.getahead.testdwr.ObjB"/>
+    <convert converter="object" match="uk.ltd.getahead.testdwr.ObjA">
+      <param name="force" value="true"/>
+    </convert>
 
   </allow>
 

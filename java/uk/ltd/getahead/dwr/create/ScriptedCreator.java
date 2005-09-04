@@ -52,6 +52,22 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         this.script = script;
     }
 
+    /**
+     * What sort of class do we create?
+     * @param classname The name of the class
+     */
+    public void setClass(String classname)
+    {
+        try
+        {
+            this.clazz = Class.forName(classname);
+        }
+        catch (ClassNotFoundException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
+        }
+    }
+
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Creator#getType()
      */

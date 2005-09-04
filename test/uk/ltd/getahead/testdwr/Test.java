@@ -568,6 +568,24 @@ public class Test
     }
 
     /**
+     * @param param
+     * @param delay
+     * @return string
+     * @throws InterruptedException 
+     */
+    public String slowStringParam(String param, long delay) throws InterruptedException
+    {
+        log.debug("About to wait for: " + delay); //$NON-NLS-1$
+        synchronized (this)
+        {
+            wait(delay);
+        }
+        log.debug("Done waiting for: " + delay); //$NON-NLS-1$
+
+        return param;
+    }
+
+    /**
      * @param data The results of the current test
      * @return A summary of all the received results
      */

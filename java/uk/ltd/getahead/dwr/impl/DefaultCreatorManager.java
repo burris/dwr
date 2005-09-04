@@ -39,7 +39,7 @@ public class DefaultCreatorManager implements CreatorManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.CreatorManager#addCreatorType(java.lang.String, java.lang.Class)
      */
-    public void addCreatorType(String typename, Class clazz)
+    public void addCreatorType(String typeName, Class clazz)
     {
         if (!Creator.class.isAssignableFrom(clazz))
         {
@@ -59,19 +59,19 @@ public class DefaultCreatorManager implements CreatorManager
             throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAccessable", clazz.getName(), ex.toString())); //$NON-NLS-1$
         }
 
-        creatorTypes.put(typename, clazz);
+        creatorTypes.put(typeName, clazz);
     }
 
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.CreatorManager#addCreator(java.lang.String, java.lang.String, java.util.Map)
      */
-    public void addCreator(String typename, String scriptName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
+    public void addCreator(String typeName, String scriptName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
     {
-        Class clazz = (Class) creatorTypes.get(typename);
+        Class clazz = (Class) creatorTypes.get(typeName);
 
         if (clazz == null)
         {
-            log.error("Missing creator: " + typename + " (while initializing creator for: " + scriptName + ".js)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Missing creator: " + typeName + " (while initializing creator for: " + scriptName + ".js)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return;
         }
 
@@ -108,11 +108,20 @@ public class DefaultCreatorManager implements CreatorManager
 
         creator.setProperties(params);
 
+        // add the creator for the script name
+        addCreator(scriptName, creator);
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.CreatorManager#addCreator(java.lang.String, uk.ltd.getahead.dwr.Creator)
+     */
+    public void addCreator(String scriptName, Creator creator) throws IllegalArgumentException
+    {
         // Check that we don't have this one already
         Creator other = (Creator) creators.get(scriptName);
         if (other != null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.DuplicateName", scriptName, other.getType().getName(), typename)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.DuplicateName", scriptName, other.getType().getName(), creator)); //$NON-NLS-1$
         }
 
         // Check that it can at least tell us what type of thing we will be getting
@@ -121,7 +130,7 @@ public class DefaultCreatorManager implements CreatorManager
             Class test = creator.getType();
             if (test == null)
             {
-                log.error("Creator: '" + typename + "' for " + scriptName + ".js is returning null for type queries."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.error("Creator: '" + creator + "' for " + scriptName + ".js is returning null for type queries."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
             else
             {
@@ -130,11 +139,11 @@ public class DefaultCreatorManager implements CreatorManager
         }
         catch (NoClassDefFoundError ex)
         {
-            log.error("Missing class for creator '" + typename + "'. Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Missing class for creator '" + creator + "'. Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (Exception ex)
         {
-            log.error("Error loading class for creator '" + typename + "'.", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Error loading class for creator '" + creator + "'.", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 

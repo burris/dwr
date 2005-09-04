@@ -22,11 +22,11 @@ public interface Configuration
      * @throws IOException Error parsing dwr.xml
      * @throws SAXException Error parsing dwr.xml
      */
-    public void addConfig(InputStream in) throws ParserConfigurationException, IOException, SAXException;
+    void addConfig(InputStream in) throws ParserConfigurationException, IOException, SAXException;
 
     /**
      * Add to the current configuration by reading a DOM tree directly
      * @param doc The DOM tree
      */
-    public void addConfig(Document doc);
+    void addConfig(Document doc);
 }

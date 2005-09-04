@@ -275,13 +275,48 @@ public final class LocalUtil
     }
 
     /**
+     * Get the short class name (i.e. without the package part)
+     * @param clazz the class to get the short name of
+     * @return the class name of the class without the package name
+     */
+    public static String getShortClassName(Class clazz)
+    {
+        String className = clazz.getName();
+
+        char[] chars = className.toCharArray();
+        int lastDot = 0;
+        for (int i = 0; i < chars.length; i++)
+        {
+            if (chars[i] == '.')
+            {
+                lastDot = i + 1;
+            }
+            else if (chars[i] == '$')
+            {
+                chars[i] = '.';
+            }
+        }
+
+        return new String(chars, lastDot, chars.length - lastDot);
+    }
+
+    /**
      * The log stream
      */
     private static final Logger log = Logger.getLogger(LocalUtil.class);
 
+    /**
+     * Have we given a warning about URLDecoder.decode() in jdk 1.3
+     */
     private static boolean warn13 = false;
 
+    /**
+     * Have we tested for the correct URLDecoder.decode()
+     */
     private static boolean testedDecoder = false;
 
+    /**
+     * Are we using the jdk 1.4 version of URLDecoder.decode()
+     */
     private static Method decode14 = null;
 }

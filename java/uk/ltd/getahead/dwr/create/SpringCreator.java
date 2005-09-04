@@ -15,6 +15,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.ExecutionContext;
+import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -37,6 +38,22 @@ public class SpringCreator extends AbstractCreator implements Creator
     public void setBeanName(String beanName)
     {
         this.beanName = beanName;
+    }
+
+    /**
+     * What sort of class do we create?
+     * @param classname The name of the class
+     */
+    public void setClass(String classname)
+    {
+        try
+        {
+            this.clazz = Class.forName(classname);
+        }
+        catch (ClassNotFoundException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
+        }
     }
 
     /* (non-Javadoc)

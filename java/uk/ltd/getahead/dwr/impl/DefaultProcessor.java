@@ -54,36 +54,44 @@ public class DefaultProcessor implements Processor
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        String pathinfo = req.getPathInfo();
-        if (pathinfo == null || pathinfo.length() == 0 || pathinfo.equals(PATH_ROOT))
+        String pathInfo = req.getPathInfo();
+        String servletPath = req.getServletPath();
+        if (pathInfo == null)
         {
-            resp.sendRedirect(req.getContextPath() + req.getServletPath() + '/' + FILE_INDEX);
+            pathInfo = req.getServletPath();
+            servletPath = PATH_ROOT;
+            log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + req.getContextPath() + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
-        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_INDEX))
+
+        if (pathInfo == null || pathInfo.length() == 0 || pathInfo.equals(PATH_ROOT))
+        {
+            resp.sendRedirect(req.getContextPath() + servletPath + '/' + FILE_INDEX);
+        }
+        else if (pathInfo != null && pathInfo.equalsIgnoreCase('/' + FILE_INDEX))
         {
             doIndex(req, resp);
         }
-        else if (pathinfo != null && pathinfo.startsWith('/' + PATH_TEST))
+        else if (pathInfo != null && pathInfo.startsWith('/' + PATH_TEST))
         {
             doTest(req, resp);
         }
-        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_ENGINE))
+        else if (pathInfo != null && pathInfo.equalsIgnoreCase('/' + FILE_ENGINE))
         {
             doFile(resp, FILE_ENGINE, MIME_JS);
         }
-        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_UTIL))
+        else if (pathInfo != null && pathInfo.equalsIgnoreCase('/' + FILE_UTIL))
         {
             doFile(resp, FILE_UTIL, MIME_JS);
         }
-        else if (pathinfo != null && pathinfo.equalsIgnoreCase('/' + FILE_DEPRECATED))
+        else if (pathInfo != null && pathInfo.equalsIgnoreCase('/' + FILE_DEPRECATED))
         {
             doFile(resp, FILE_DEPRECATED, MIME_JS);
         }
-        else if (pathinfo != null && pathinfo.startsWith(PATH_INTERFACE))
+        else if (pathInfo != null && pathInfo.startsWith(PATH_INTERFACE))
         {
             doInterface(req, resp);
         }
-        else if (pathinfo != null && pathinfo.startsWith(PATH_EXEC))
+        else if (pathInfo != null && pathInfo.startsWith(PATH_EXEC))
         {
             doExec(req, resp);
         }
@@ -149,23 +157,30 @@ public class DefaultProcessor implements Processor
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
+        String pathInfo = req.getPathInfo();
+        String servletPath = req.getServletPath();
+        if (pathInfo == null)
+        {
+            pathInfo = req.getServletPath();
+            servletPath = PATH_ROOT;
+        }
+        String scriptName = pathInfo;
 
-        String scriptname = req.getPathInfo();
-        scriptname = LocalUtil.replace(scriptname, '/' + PATH_TEST, BLANK);
-        scriptname = LocalUtil.replace(scriptname, PATH_ROOT, BLANK);
+        scriptName = LocalUtil.replace(scriptName, '/' + PATH_TEST, BLANK);
+        scriptName = LocalUtil.replace(scriptName, PATH_ROOT, BLANK);
 
-        Creator creator = creatorManager.getCreator(scriptname);
+        Creator creator = creatorManager.getCreator(scriptName);
 
         Method[] methods = creator.getType().getMethods();
 
         resp.setContentType(MIME_HTML);
         PrintWriter out = resp.getWriter();
 
-        String interfaceURL = req.getContextPath() + req.getServletPath() + PATH_INTERFACE + scriptname + EXTENSION_JS;
-        String engineURL = req.getContextPath() + req.getServletPath() + '/' + FILE_ENGINE;
-        String utilURL = req.getContextPath() + req.getServletPath() + '/' + FILE_UTIL;
+        String interfaceURL = req.getContextPath() + servletPath + PATH_INTERFACE + scriptName + EXTENSION_JS;
+        String engineURL = req.getContextPath() + servletPath + '/' + FILE_ENGINE;
+        String utilURL = req.getContextPath() + servletPath + '/' + FILE_UTIL;
 
-        String proxyInterfaceURL = PATH_UP + PATH_INTERFACE + scriptname + EXTENSION_JS;
+        String proxyInterfaceURL = PATH_UP + PATH_INTERFACE + scriptName + EXTENSION_JS;
         String proxyEngineURL = PATH_UP + '/' + FILE_ENGINE;
         String proxyUtilURL = PATH_UP + '/' + FILE_UTIL;
 
@@ -203,7 +218,7 @@ public class DefaultProcessor implements Processor
         out.println("<body onload='DWRUtil.useLoadingMessage()'>"); //$NON-NLS-1$
         out.println(BLANK);
 
-        out.println("<h2>Methods For: " + scriptname + " (" + creator.getType().getName() + ")</h2>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        out.println("<h2>Methods For: " + scriptName + " (" + creator.getType().getName() + ")</h2>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         out.println("<p>To use this class in your javascript you will need the following script includes:</p>"); //$NON-NLS-1$
         out.println("<pre>"); //$NON-NLS-1$
         out.println("  &lt;script type='text/javascript' src='<a href='" + interfaceURL + "'>" + interfaceURL + "</a>'&gt;&lt;/script&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -226,7 +241,7 @@ public class DefaultProcessor implements Processor
             String methodName = method.getName();
 
             // See also the call to getReasonToNotExecute() above
-            String reason = accessControl.getReasonToNotDisplay(req, creator, scriptname, method);
+            String reason = accessControl.getReasonToNotDisplay(req, creator, scriptName, method);
             if (reason != null)
             {
                 out.println(BLANK);
@@ -295,7 +310,7 @@ public class DefaultProcessor implements Processor
             }
             out.println("  );"); //$NON-NLS-1$
 
-            String onclick = scriptname + '.' + methodName + "(reply" + i; //$NON-NLS-1$
+            String onclick = scriptName + '.' + methodName + "(reply" + i; //$NON-NLS-1$
             for (int j = 0; j < paramTypes.length; j++)
             {
                 if (!isAutoFilled(paramTypes[j]))
@@ -305,7 +320,7 @@ public class DefaultProcessor implements Processor
             }
             onclick += ");"; //$NON-NLS-1$
 
-            out.println("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptname + '.' + methodName + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            out.println("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptName + '.' + methodName + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             out.println("  <script type='text/javascript'>"); //$NON-NLS-1$
             out.println("    var reply" + i + " = function(data)"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -345,7 +360,7 @@ public class DefaultProcessor implements Processor
             }
 
             // See also the call to getReasonToNotDisplay() above
-            String warning = accessControl.getReasonToNotExecute(req, creator, scriptname, method);
+            String warning = accessControl.getReasonToNotExecute(req, creator, scriptName, method);
             if (warning != null)
             {
                 out.println("<br/><span class='warning'>(Warning: Role restructions in place: " + warning + ".)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -359,7 +374,7 @@ public class DefaultProcessor implements Processor
 
         out.println("<h2>Other Links</h2>"); //$NON-NLS-1$
         out.println("<ul>"); //$NON-NLS-1$
-        out.println("<li>Back to <a href='" + req.getContextPath() + req.getServletPath() + "'>class index</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("<li>Back to <a href='" + req.getContextPath() + servletPath + "'>class index</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("<li>Up to <a href='" + req.getContextPath() + "/'>top level of web app</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("</ul>"); //$NON-NLS-1$
 
@@ -412,7 +427,14 @@ public class DefaultProcessor implements Processor
      */
     protected void doInterface(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        String scriptname = req.getPathInfo();
+        String pathinfo = req.getPathInfo();
+        String servletpath = req.getServletPath();
+        if (pathinfo == null)
+        {
+            pathinfo = req.getServletPath();
+            servletpath = PATH_ROOT;
+        }
+        String scriptname = pathinfo;
         scriptname = LocalUtil.replace(scriptname, PATH_INTERFACE, BLANK);
         scriptname = LocalUtil.replace(scriptname, EXTENSION_JS, BLANK);
         Creator creator = creatorManager.getCreator(scriptname);
@@ -461,7 +483,7 @@ public class DefaultProcessor implements Processor
             out.println("callback)"); //$NON-NLS-1$
             out.println('{');
 
-            String path = req.getContextPath() + req.getServletPath();
+            String path = req.getContextPath() + servletpath;
 
             out.print("    DWREngine._execute('" + path + "', '" + scriptname + "', '" + methodName + "\', "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             for (int j = 0; j < paramTypes.length; j++)
@@ -628,7 +650,7 @@ public class DefaultProcessor implements Processor
                     String output = jsutil.escapeJavaScript(call.getThrowable().toString());
     
                     buffer.append(prefix);
-                    buffer.append("DWREngine._handleError('"); //$NON-NLS-1$
+                    buffer.append("DWREngine._handleServerError('"); //$NON-NLS-1$
                     buffer.append(call.getId());
                     buffer.append("', '"); //$NON-NLS-1$
                     buffer.append(output);

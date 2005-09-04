@@ -2,6 +2,7 @@ package uk.ltd.getahead.dwr;
 
 import java.io.IOException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,18 +15,19 @@ public interface Processor
     /**
      * @param allowImpossibleTests The allowImpossibleTests to set.
      */
-    public void setAllowImpossibleTests(boolean allowImpossibleTests);
+    void setAllowImpossibleTests(boolean allowImpossibleTests);
 
     /**
      * @param scriptCompressed The scriptCompressed to set.
      */
-    public void setScriptCompressed(boolean scriptCompressed);
+    void setScriptCompressed(boolean scriptCompressed);
 
     /**
      * The equivalent of doGet and doPost
      * @param req The browsers request
      * @param resp The response channel
-     * @throws IOException
+     * @throws IOException If an i/o error occurs
+     * @throws ServletException For other processing errors
      */
-    public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException;
+    void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException;
 }

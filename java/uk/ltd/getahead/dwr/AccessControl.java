@@ -25,7 +25,7 @@ public interface AccessControl
      * @return null if nothing is wrong or an error message
      * @see AccessControl#getReasonToNotDisplay(HttpServletRequest, Creator, String, Method)
      */
-    public String getReasonToNotExecute(HttpServletRequest req, Creator creator, String className, Method method);
+    String getReasonToNotExecute(HttpServletRequest req, Creator creator, String className, Method method);
 
     /**
      * Check the method for accessibility at 'compile-time' (i.e. when the app
@@ -45,7 +45,7 @@ public interface AccessControl
      * @return null if nothing is wrong or an error message
      * @see AccessControl#getReasonToNotExecute(HttpServletRequest, Creator, String, Method)
      */
-    public String getReasonToNotDisplay(HttpServletRequest req, Creator creator, String className, Method method);
+    String getReasonToNotDisplay(HttpServletRequest req, Creator creator, String className, Method method);
 
     /**
      * J2EE role based security allows us to restrict methods to only being used
@@ -54,7 +54,7 @@ public interface AccessControl
      * @param methodName The name of the method (without brackets)
      * @param role The new role name to add to the list for the given scriptName and methodName
      */
-    public void addRoleRestriction(String scriptName, String methodName, String role);
+    void addRoleRestriction(String scriptName, String methodName, String role);
 
     /**
      * Add an include rule.
@@ -68,7 +68,7 @@ public interface AccessControl
      * @param scriptName The name of the creator to Javascript
      * @param methodName The name of the method (without brackets)
      */
-    public void addIncludeRule(String scriptName, String methodName);
+    void addIncludeRule(String scriptName, String methodName);
 
     /**
      * Add an exclude rule.
@@ -76,5 +76,5 @@ public interface AccessControl
      * @param methodName The name of the method (without brackets)
      * @see AccessControl#addIncludeRule(String, String)
      */
-    public void addExcludeRule(String scriptName, String methodName);
+    void addExcludeRule(String scriptName, String methodName);
 }

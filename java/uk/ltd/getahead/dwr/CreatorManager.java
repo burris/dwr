@@ -14,21 +14,21 @@ public interface CreatorManager
      * @param debug Are we in debug mode
      * @see CreatorManager#getCreatorNames()
      */
-    public void setDebug(boolean debug);
+    void setDebug(boolean debug);
 
     /**
      * Debug mode allows access to the list of creator names
      * @return Are we in debug mode
      * @see CreatorManager#getCreatorNames()
      */
-    public boolean isDebug();
+    boolean isDebug();
 
     /**
      * In init mode, add a new type of creator
      * @param typename The name of the new creator type
      * @param clazz The class that we create
      */
-    public void addCreatorType(String typename, Class clazz);
+    void addCreatorType(String typename, Class clazz);
 
     /**
      * Add a new creator
@@ -39,7 +39,15 @@ public interface CreatorManager
      * @throws IllegalAccessException If reflection based creation fails
      * @throws IllegalArgumentException If we have a duplicate name
      */
-    public void addCreator(String typename, String scriptName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
+    void addCreator(String typename, String scriptName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
+
+    /**
+     * Add a new creator
+     * @param scriptName The name of the creator to Javascript
+     * @param creator The creator to add
+     * @throws IllegalArgumentException If we have a duplicate name
+     */
+    void addCreator(String scriptName, Creator creator) throws IllegalArgumentException;
 
     /**
      * Get a list of the javascript names of the allowed creators.
@@ -50,7 +58,7 @@ public interface CreatorManager
      * @throws SecurityException If we are not in debug mode
      * @see CreatorManager#setDebug(boolean)
      */
-    public Collection getCreatorNames() throws SecurityException;
+    Collection getCreatorNames() throws SecurityException;
 
     /**
      * Find an <code>Creator</code> by name
@@ -58,11 +66,11 @@ public interface CreatorManager
      * @return The found Creator instance, or null if none was found.
      * @throws SecurityException If the Creator is not known
      */
-    public Creator getCreator(String scriptName) throws SecurityException;
+    Creator getCreator(String scriptName) throws SecurityException;
 
     /**
      * Sets the creators for this creator manager.
      * @param creators the map of managed beans and their creator instances
      */
-    public void setCreators(Map creators);
+    void setCreators(Map creators);
 }

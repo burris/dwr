@@ -4,6 +4,7 @@ import java.util.Map;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * A simple implementation of the basic parts of Creator
@@ -66,7 +67,7 @@ public abstract class AbstractCreator implements Creator
      * Is the given scope valid?
      * @param cscope The scope string to match
      */
-    public static void checkScope(String cscope)
+    protected static void checkScope(String cscope)
     {
         if (!cscope.equals(PAGE) &&
             !cscope.equals(REQUEST) &&
@@ -75,5 +76,13 @@ public abstract class AbstractCreator implements Creator
         {
             throw new IllegalArgumentException(Messages.getString("AbstractCreator.IllegalScope", cscope)); //$NON-NLS-1$
         }
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        return LocalUtil.getShortClassName(getClass()) + "[" + getJavascript() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

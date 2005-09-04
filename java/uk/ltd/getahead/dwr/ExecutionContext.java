@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import uk.ltd.getahead.dwr.impl.DefaultBrowser;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.SwallowingHttpServletResponse;
 
@@ -35,6 +36,24 @@ public class ExecutionContext
         this.response = newResponse;
         this.config = newConfig;
         this.context = newContext;
+    }
+
+    /**
+     * Get a browser object that we can use to identify this user across
+     * separate requests.
+     * @return A browser object for this user
+     */
+    public Browser getBrowser()
+    {
+        HttpSession session = getSession();
+        Browser browser = (Browser) session.getAttribute(SESSION_BROWSER);
+        if (browser == null)
+        {
+            browser = new DefaultBrowser();
+            session.setAttribute(SESSION_BROWSER, browser);
+        }
+
+        return browser;
     }
 
     /**
@@ -185,6 +204,7 @@ public class ExecutionContext
     private static final String KEY_SCCINFO = "scc-info"; //$NON-NLS-1$
     private static final String KEY_ERROR = "error"; //$NON-NLS-1$
     private static final String VALUE_UNKNOWN = "unknown"; //$NON-NLS-1$
+    private static final String SESSION_BROWSER = "uk.ltd.getahead.dwr.browser"; //$NON-NLS-1$
 
     private static Properties props = null;
     private static final Object propLock = new Object();

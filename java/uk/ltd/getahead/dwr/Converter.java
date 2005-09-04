@@ -11,7 +11,7 @@ public interface Converter
      * to other converters then you farm the conversion out via a configuration.
      * @param config The confiuration object
      */
-    public void setConverterManager(ConverterManager config);
+    void setConverterManager(ConverterManager config);
 
     /**
      * Attempt to coerce the data from a string to an Object.
@@ -24,7 +24,7 @@ public interface Converter
      * @return The convered data, or null if the conversion was not possible
      * @throws ConversionException If the conversion failed for some reason
      */
-    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException;
+    Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException;
 
     /**
      * Return a javascript string that defines the variable named varName to
@@ -41,5 +41,5 @@ public interface Converter
      * @return The string that defines the given variable
      * @throws ConversionException If the conversion failed for some reason
      */
-    public String convertOutbound(Object data, String varName, OutboundContext outctx) throws ConversionException;
+    String convertOutbound(Object data, String varName, OutboundContext outctx) throws ConversionException;
 }

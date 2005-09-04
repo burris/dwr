@@ -81,34 +81,55 @@ DWRUtil.selectRange = function(ele, start, end)
  * a replacement for Array.push.
  * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
-function $()
+if (document.getElementById)
 {
-    var elements = new Array();
-
-    for (var i = 0; i < arguments.length; i++)
+    function $()
     {
-        var element = arguments[i];
-        if (typeof element == 'string')
+        var elements = new Array();
+
+        for (var i = 0; i < arguments.length; i++)
         {
-            if (document.getElementById)
+            var element = arguments[i];
+            if (typeof element == 'string')
             {
                 element = document.getElementById(element);
             }
-            else if (document.all)
+
+            if (arguments.length == 1) 
+            {
+                return element;
+            }
+
+            elements.push(element);
+        }
+
+        return elements;
+    }
+}
+else if (document.all)
+{
+    function $()
+    {
+        var elements = new Array();
+
+        for (var i = 0; i < arguments.length; i++)
+        {
+            var element = arguments[i];
+            if (typeof element == 'string')
             {
                 element = document.all[element];
             }
+
+            if (arguments.length == 1) 
+            {
+                return element;
+            }
+
+            elements.push(element);
         }
 
-        if (arguments.length == 1) 
-        {
-            return element;
-        }
-
-        elements.push(element);
+        return elements;
     }
-
-    return elements;
 }
 
 /**
@@ -359,37 +380,75 @@ DWRUtil._indent = function(level, depth)
  * Setup a GMail style loading message.
  * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
-DWRUtil.useLoadingMessage = function()
+DWRUtil.useLoadingMessage = function(message)
 {
-    var disabledZone = document.createElement('div');
-    disabledZone.setAttribute('id', 'disabledZone');
-    disabledZone.style.position = "absolute";
-    disabledZone.style.zIndex = "1000";
-    disabledZone.style.left = "0px";
-    disabledZone.style.top = "0px";
-    disabledZone.style.width = "100%";
-    disabledZone.style.height = "100%";
-    document.body.appendChild(disabledZone);
+    if (message)
+    {
+        DWRUtil._loadingMessage = message;
+    }
+    else
+    {
+        DWRUtil._loadingMessage = "Loading";
+    }
 
-    var messageZone = document.createElement('div');
-    messageZone.setAttribute('id', 'messageZone');
-    messageZone.style.position = "absolute";
-    messageZone.style.top = "0px";
-    messageZone.style.right = "0px";
-    messageZone.style.background = "red";
-    messageZone.style.color = "white";
-    messageZone.style.fontFamily = "Arial,Helvetica,sans-serif";
-    messageZone.style.padding = "4px";
-    disabledZone.appendChild(messageZone);
-
-    var text = document.createTextNode('Loading');
-    messageZone.appendChild(text);
-
-    $('disabledZone').style.visibility = 'hidden';
-
-    DWREngine.setPreHook(function() { $('disabledZone').style.visibility = 'visible'; });
-    DWREngine.setPostHook(function() { $('disabledZone').style.visibility = 'hidden'; });
+    DWREngine.setPreHook(DWRUtil._showLoadingMessage);
+    DWREngine.setPostHook(DWRUtil._hideLoadingMessage);
 };
+
+/**
+ * Internal message to display the loading message
+ * @private
+ */
+DWRUtil._showLoadingMessage = function()
+{
+    var disabledZone = $('disabledZone');
+    if (!disabledZone)
+    {
+        var disabledZone = document.createElement('div');
+        disabledZone.setAttribute('id', 'disabledZone');
+        disabledZone.style.position = "absolute";
+        disabledZone.style.zIndex = "1000";
+        disabledZone.style.left = "0px";
+        disabledZone.style.top = "0px";
+        disabledZone.style.width = "100%";
+        disabledZone.style.height = "100%";
+        document.body.appendChild(disabledZone);
+
+        var messageZone = document.createElement('div');
+        messageZone.setAttribute('id', 'messageZone');
+        messageZone.style.position = "absolute";
+        messageZone.style.top = "0px";
+        messageZone.style.right = "0px";
+        messageZone.style.background = "red";
+        messageZone.style.color = "white";
+        messageZone.style.fontFamily = "Arial,Helvetica,sans-serif";
+        messageZone.style.padding = "4px";
+        disabledZone.appendChild(messageZone);
+
+        var text = document.createTextNode(DWRUtil._loadingMessage);
+        messageZone.appendChild(text);
+    }
+    else
+    {
+        $('messageZone').innerHTML = DWRUtil._loadingMessage;
+        disabledZone.style.visibility = 'visible';
+    }
+}
+
+/**
+ * Internal message to hide the loading message
+ * @private
+ */
+DWRUtil._hideLoadingMessage = function()
+{
+    $('disabledZone').style.visibility = 'hidden';
+}
+
+/**
+ * The loading message
+ * @private
+ */
+DWRUtil._loadingMessage = 'Loading';
 
 ////////////////////////////////////////////////////////////////////////////////
 // The following functions are described in script-simple.html
@@ -852,14 +911,14 @@ DWRUtil.addRows = function(ele, data, cellFuncs)
 
     // assure bug-free redraw in Gecko engine by
     // letting window show cleared table
-    if (navigator.product && navigator.product == "Gecko")
-    {
-        setTimeout(function() { DWRUtil._addRowsInner(ele, data, cellFuncs); }, 0);
-    }
-    else
-    {
+    //if (navigator.product && navigator.product == "Gecko")
+    //{
+    //    setTimeout(function() { DWRUtil._addRowsInner(ele, data, cellFuncs); }, 0);
+    //}
+    //else
+    //{
         DWRUtil._addRowsInner(ele, data, cellFuncs);
-    }
+    //}
 };
 
 /**

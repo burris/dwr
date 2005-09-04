@@ -14,7 +14,7 @@ public interface ConverterManager
      * @param id The name of the converter type
      * @param clazz The class to do the conversion
      */
-    public void addConverterType(String id, Class clazz);
+    void addConverterType(String id, Class clazz);
 
     /**
      * Add a new converter
@@ -25,14 +25,22 @@ public interface ConverterManager
      * @throws IllegalAccessException If reflection based creation fails
      * @throws IllegalArgumentException If we have a duplicate name
      */
-    public void addConverter(String match, String type, Map params) throws IllegalArgumentException, InstantiationException, IllegalAccessException;
+    void addConverter(String match, String type, Map params) throws IllegalArgumentException, InstantiationException, IllegalAccessException;
+
+    /**
+     * Add a new converter
+     * @param match The class name(s) to match
+     * @param converter The converter to add
+     * @throws IllegalArgumentException If we have a duplicate name
+     */
+    void addConverter(String match, Converter converter) throws IllegalArgumentException;
 
     /**
      * Check if we can coerce the given type
      * @param paramType The type to check
      * @return true iff <code>paramType</code> is coercable
      */
-    public boolean isConvertable(Class paramType);
+    boolean isConvertable(Class paramType);
 
     /**
      * Convert an object from being a string into an object of some type.
@@ -43,7 +51,7 @@ public interface ConverterManager
      * @return The coerced object or null if the object could not be coerced
      * @throws ConversionException If the conversion failed for some reason
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException;
+    Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException;
 
     /**
      * Convert an object into a Javavscript representation of the same.
@@ -53,7 +61,7 @@ public interface ConverterManager
      * @return A Javascript string version of the object
      * @throws ConversionException If the conversion failed for some reason
      */
-    public OutboundVariable convertOutbound(Object object, OutboundContext converted) throws ConversionException;
+    OutboundVariable convertOutbound(Object object, OutboundContext converted) throws ConversionException;
 
     /**
      * We don't know enough from a method signature like setUsers(Set s) to be
@@ -64,7 +72,7 @@ public interface ConverterManager
      * @param index The index of the item between &lt; and &gt;.
      * @param type The type of the specified parameter. 
      */
-    public void setExtraTypeInfo(Method method, int paramNo, int index, Class type);
+    void setExtraTypeInfo(Method method, int paramNo, int index, Class type);
 
     /**
      * The extra type information that we have learnt about a method parameter.
@@ -74,11 +82,11 @@ public interface ConverterManager
      * @param index The index of the item between &lt; and &gt;.
      * @return A list of types to fill out a generic type
      */
-    public Class getExtraTypeInfo(Method method, int paramNo, int index);
+    Class getExtraTypeInfo(Method method, int paramNo, int index);
 
     /**
      * Sets the converters for this converter manager.
      * @param converters the map of match pattern and their converter instances
      */
-    public void setConverters(Map converters);
+    void setConverters(Map converters);
 }

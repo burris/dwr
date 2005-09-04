@@ -94,6 +94,15 @@ public class DefaultConverterManager implements ConverterManager
             }
         }
 
+        // add the converter for the specified match
+        addConverter(match, converter);
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.ConverterManager#addConverter(java.lang.String, uk.ltd.getahead.dwr.Converter)
+     */
+    public void addConverter(String match, Converter converter) throws IllegalArgumentException
+    {
         // Check that we don't have this one already
         Converter other = (Converter) converters.get(match);
         if (other != null)
