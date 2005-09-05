@@ -43,7 +43,7 @@ public class ExecutionContext
      * separate requests.
      * @return A browser object for this user
      */
-    public Browser getBrowser()
+    protected Browser getBrowser()
     {
         HttpSession session = getSession();
         Browser browser = (Browser) session.getAttribute(SESSION_BROWSER);
