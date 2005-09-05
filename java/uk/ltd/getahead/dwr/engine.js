@@ -2,6 +2,31 @@
 // See: http://www.crockford.com/javascript/jslint.html
 /*global alert, window, document, navigator, DOMParser, XMLHttpRequest */
 
+/*
+
+TODO: put this documentation somewhere better
+
+                 global   batch
+timeout            Y        Y
+errorHandler       Y        Y
+preHook            Y        Y
+postHook           Y        Y
+method             Y        Y
+verb               Y        Y
+ordered            Y        -
+warningHandler     Y        -
+
+skipBatch          Y(1)     X
+onBackButton       X        X
+onForwardButton    X        X
+synch              X        X
+
+(1) There is no setSkipBatch() method - batching is controlled via beginBatch() and endBatch()
+
+*/
+
+
+
 /**
  * Declare a constructor function to which we can add real functions.
  * @constructor
@@ -945,18 +970,22 @@ DWREngine._unserializeDocument = function(xml) {
     }
     else if (window.ActiveXObject) {
         dom = DWREngine._newActiveXObject(DWREngine._DOMDocument);
-        //dom.async = false;
         dom.loadXML(xml);
         // What happens on parse fail with IE?
         return dom;
     }
-    else if (window.XMLHttpRequest) {
-        // Hack with XHR to get at Safari's parser
-        var req = new XMLHttpRequest;
-        var url = "data:application/xml;charset=utf-8," + encodeURIComponent(xml);
-        req.open("GET", url, false);
-        req.send(null);
-        return req.responseXML;
+    //else if (window.XMLHttpRequest) {
+    //    // Hack with XHR to get at Safari's parser
+    //    var req = new XMLHttpRequest;
+    //    var url = "data:application/xml;charset=utf-8," + encodeURIComponent(xml);
+    //    req.open("GET", url, false);
+    //    req.send(null);
+    //    return req.responseXML;
+    //}
+    else {
+        var div = document.createElement('div');
+        div.innerHTML = xml;
+        return div;
     }
 };
 
