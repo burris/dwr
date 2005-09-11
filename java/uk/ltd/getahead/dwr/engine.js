@@ -13,7 +13,7 @@ preHook            Y        Y
 postHook           Y        Y
 method             Y        Y
 verb               Y        Y
-synch              Y        Y
+asynchronous       Y        Y
 ordered            Y        -
 warningHandler     Y        -
 
@@ -151,10 +151,10 @@ DWREngine.setOrdered = function(ordered) {
  * generally a bad idea to change it to false because it can make your browser
  * slow to respond and prone to hangs. If you do need this option then consider
  * setting a timeout too.
- * @param synch true or false
+ * @param asynchronous true or false
  */
-DWREngine.setAsynchronous = function(asynch) {
-    DWREngine._asynch = asynch;
+DWREngine.setAsynchronous = function(asynchronous) {
+    DWREngine._asynchronous = asynchronous;
 };
 
 /**
@@ -206,7 +206,7 @@ DWREngine.endBatch = function() {
     if (!batch.postHook) batch.postHook = DWREngine._postHook;
     if (!batch.method) batch.method = DWREngine._method;
     if (!batch.verb) batch.verb = DWREngine._verb;
-    if (!batch.asynch) batch.verb = DWREngine._asynch;
+    if (!batch.asynchronous) batch.verb = DWREngine._asynchronous;
 
     // If we are in ordered mode, then we don't send unless the list of sent
     // items is empty
@@ -299,7 +299,7 @@ DWREngine._ordered = false;
  * Do we make the calls asynchronous?
  * @private
  */
-DWREngine._asynch = false;
+DWREngine._asynchronous = false;
 
 /**
  * The current batch (if we are in batch mode)
@@ -589,7 +589,7 @@ DWREngine._sendData = function(batch) {
             query = query.substring(0, query.length - 1);
 
             try {
-                batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query, batch.req.asynch);
+                batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query, batch.req.asynchronous);
                 batch.req.send(null);
             }
             catch (ex) {
@@ -607,7 +607,7 @@ DWREngine._sendData = function(batch) {
                 // Prototype does the following, why?
                 // batch.req.setRequestHeader('Connection', 'close');
                 // batch.req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.req.asynch);
+                batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.req.asynchronous);
                 batch.req.send(query);
             }
             catch (ex) {
