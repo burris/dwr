@@ -41,7 +41,6 @@ public class DWRServlet extends HttpServlet
 
         try
         {
-            ExecutionContext.setExecutionContext(null, null, getServletConfig(), getServletContext());
             ServletLoggingOutput.setExecutionContext(this);
 
             // How much logging do we do?
@@ -58,6 +57,7 @@ public class DWRServlet extends HttpServlet
             factory.setImplementation(ConverterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultConverterManager"); //$NON-NLS-1$
             factory.setImplementation(CreatorManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultCreatorManager"); //$NON-NLS-1$
             factory.setImplementation(Processor.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultProcessor"); //$NON-NLS-1$
+            factory.setImplementation(WebContextBuilder.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder"); //$NON-NLS-1$
 
             Enumeration en = config.getInitParameterNames();
             while (en.hasMoreElements())
@@ -81,24 +81,9 @@ public class DWRServlet extends HttpServlet
             }
             factory.configurationFinished();
 
-            // Configure the ExecutionContext
-            // Maybe we want to override the ExecutionContext
-            // This code is un-documented, and experimental. We'll keep it if it
-            // turns out to be useful.
-            String execCxName = config.getInitParameter(ExecutionContext.class.getName());
-            if (execCxName != null)
-            {
-                try
-                {
-                    Class type = Class.forName(execCxName);
-                    ExecutionContext.setImplementation(type);
-                }
-                catch (Exception ex)
-                {
-                    log.fatal("Invalid executionContext parameter", ex); //$NON-NLS-1$
-                    throw new ServletException(Messages.getString("DWRServlet.ExecutionContextInit", execCxName, ex), ex); //$NON-NLS-1$
-                }
-            }
+            // Now we have set the implementations we can set the WebContext up
+            builder = (WebContextBuilder) factory.getBean(WebContextBuilder.class);
+            builder.set(null, null, getServletConfig(), getServletContext());
 
             // Are we in debug mode?
             String debugStr = config.getInitParameter(INIT_DEBUG);
@@ -152,7 +137,7 @@ public class DWRServlet extends HttpServlet
         }
         finally
         {
-            ExecutionContext.unset();
+            builder.unset();
             ServletLoggingOutput.unsetExecutionContext();
         }
     }
@@ -172,14 +157,14 @@ public class DWRServlet extends HttpServlet
     {
         try
         {
-            ExecutionContext.setExecutionContext(req, resp, getServletConfig(), getServletContext());
+            builder.set(req, resp, getServletConfig(), getServletContext());
             ServletLoggingOutput.setExecutionContext(this);
 
             processor.handle(req, resp);
         }
         finally
         {
-            ExecutionContext.unset();
+            builder.unset();
             ServletLoggingOutput.unsetExecutionContext();
         }
     }
@@ -214,6 +199,11 @@ public class DWRServlet extends HttpServlet
      * The processor will actually handle the http requests
      */
     protected Processor processor;
+
+    /**
+     * The WebContext that keeps http objects local to a thread
+     */
+    protected WebContextBuilder builder;
 
     /**
      * The package name because people need to load resources in this package.  

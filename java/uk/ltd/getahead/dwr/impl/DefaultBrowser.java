@@ -3,23 +3,18 @@ package uk.ltd.getahead.dwr.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+
 import uk.ltd.getahead.dwr.Browser;
 import uk.ltd.getahead.dwr.ClientScript;
 
 /**
- * @author
+ * The default implementation of the Browser interface
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultBrowser implements Browser
+public class DefaultBrowser implements Browser, HttpSessionBindingListener
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Browser#isValid()
-     */
-    public boolean isValid()
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Browser#addScript(uk.ltd.getahead.dwr.ClientScript)
      */
@@ -57,6 +52,35 @@ public class DefaultBrowser implements Browser
 
         return copy;
     }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Browser#isValid()
+     */
+    public boolean isValid()
+    {
+        return bound;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpSessionBindingListener#valueBound(javax.servlet.http.HttpSessionBindingEvent)
+     */
+    public void valueBound(HttpSessionBindingEvent event)
+    {
+        bound = true;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpSessionBindingListener#valueUnbound(javax.servlet.http.HttpSessionBindingEvent)
+     */
+    public void valueUnbound(HttpSessionBindingEvent event)
+    {
+        bound = false;
+    }
+
+    /**
+     * Are we bound to a session?
+     */
+    private boolean bound = false;
 
     /**
      * The list of waiting scripts

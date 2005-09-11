@@ -15,9 +15,9 @@ public interface Converter
 
     /**
      * Attempt to coerce the data from a string to an Object.
-     * If anything goes wrong with inbound conversion then we except and die
-     * because we are converting data from the untrusted internet so we take the
-     * assumption that anything wrong is someone having a go and throw.
+     * If anything goes wrong with inbound conversion then we generally throw
+     * an exception because we are converting data from the untrusted internet
+     * so we take the assumption that anything wrong is someone hacking.
      * @param paramType The type to convert to
      * @param data The data to convert
      * @param inctx The map of data that we are working on

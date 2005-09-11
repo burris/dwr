@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -20,12 +21,14 @@ import javax.servlet.http.HttpSession;
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.Call;
 import uk.ltd.getahead.dwr.Calls;
+import uk.ltd.getahead.dwr.ClientScript;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DWRServlet;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.Processor;
+import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -114,6 +117,7 @@ public class DefaultProcessor implements Processor
         {
             log.warn("Failed attempt to access index page outside of debug mode. Set the debug init-parameter to true to enable."); //$NON-NLS-1$
             resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
         }
 
         resp.setContentType(MIME_HTML);
@@ -628,27 +632,37 @@ public class DefaultProcessor implements Processor
                     log.debug("Returning: id[" + call.getId() + "] init[" + call.getReply().getInitCode() + "] assign[" + call.getReply().getAssignCode() + "] xhr[" + calls.isXhrMode() + ']'); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 }
             }
-    
+
             // We build the answer up in a StringBuffer because that makes is easier
             // to debug, and because that's only what the compiler does anyway.
             StringBuffer buffer = new StringBuffer();
-    
+
             // if we are in html (iframe mode) we need to direct script to the parent
             String prefix = calls.isXhrMode() ? "" : "window.parent."; //$NON-NLS-1$ //$NON-NLS-2$
-    
+
             // iframe mode starts as HTML, so get into script mode
             if (!calls.isXhrMode())
             {
                 buffer.append("<script type='text/javascript'>\n"); //$NON-NLS-1$
             }
-    
+
+            // Are there any outstanding reverse-ajax scripts to be passed on? 
+            List scripts = WebContextFactory.get().getBrowser().removeAllScripts();
+            for (Iterator it = scripts.iterator(); it.hasNext();)
+            {
+                ClientScript script = (ClientScript) it.next();
+                buffer.append(script);
+                buffer.append('\n');
+            }
+
+            // Now pass on the executed method responses
             for (int i = 0; i < calls.getCallCount(); i++)
             {
                 Call call = calls.getCall(i);
                 if (call.getThrowable() != null)
                 {
                     String output = jsutil.escapeJavaScript(call.getThrowable().toString());
-    
+
                     buffer.append(prefix);
                     buffer.append("DWREngine._handleServerError('"); //$NON-NLS-1$
                     buffer.append(call.getId());
@@ -662,7 +676,7 @@ public class DefaultProcessor implements Processor
                 {
                     buffer.append(call.getReply().getInitCode());
                     buffer.append('\n');
-    
+
                     buffer.append(prefix);
                     buffer.append("DWREngine._handleResponse('"); //$NON-NLS-1$
                     buffer.append(call.getId());
@@ -671,16 +685,16 @@ public class DefaultProcessor implements Processor
                     buffer.append(");\n"); //$NON-NLS-1$
                 }
             }
-    
+
             // iframe mode needs to get out of script mode
             if (!calls.isXhrMode())
             {
                 buffer.append("</script>\n"); //$NON-NLS-1$
             }
-    
+
             String reply = buffer.toString();
             log.debug(reply);
-    
+
             // LocalUtil.addNoCacheHeaders(resp);
             resp.setContentType(calls.isXhrMode() ? MIME_XML : MIME_HTML);
             PrintWriter out = resp.getWriter();
@@ -689,7 +703,7 @@ public class DefaultProcessor implements Processor
         }
         catch (Exception ex)
         {
-            log.error("Failure in doExec()",ex); //$NON-NLS-1$
+            log.error("Failure in doExec()", ex); //$NON-NLS-1$
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

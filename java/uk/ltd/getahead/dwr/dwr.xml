@@ -10,6 +10,7 @@
     <creator id="script" class="uk.ltd.getahead.dwr.create.ScriptedCreator"/>
 
     <converter id="null" class="uk.ltd.getahead.dwr.convert.NullConverter"/>
+    <converter id="enum" class="uk.ltd.getahead.dwr.convert.EnumConverter"/>
     <converter id="primitive" class="uk.ltd.getahead.dwr.convert.PrimitiveConverter"/>
     <converter id="bignumber" class="uk.ltd.getahead.dwr.convert.BigNumberConverter"/>
     <converter id="string" class="uk.ltd.getahead.dwr.convert.StringConverter"/>

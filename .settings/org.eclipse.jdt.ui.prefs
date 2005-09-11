@@ -1,4 +1,4 @@
-#Sat Jul 02 12:21:11 BST 2005
+#Sun Sep 11 09:43:20 BST 2005
 comment_clear_blank_lines=false
 comment_format_comments=false
 comment_format_header=false
@@ -16,6 +16,7 @@ org.eclipse.jdt.ui.exception.name=ex
 org.eclipse.jdt.ui.gettersetter.use.is=true
 org.eclipse.jdt.ui.ignorelowercasenames=true
 org.eclipse.jdt.ui.importorder=java;javax;org;com;
+org.eclipse.jdt.ui.javadoc=true
 org.eclipse.jdt.ui.keywordthis=false
 org.eclipse.jdt.ui.ondemandthreshold=99
 org.eclipse.jdt.ui.overrideannotation=true

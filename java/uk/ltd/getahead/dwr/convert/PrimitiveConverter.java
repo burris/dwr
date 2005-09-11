@@ -93,7 +93,7 @@ public class PrimitiveConverter implements Converter
                 {
                     return new Float(0);
                 }
-                return new Float(value.trim());
+                return new Float(LocalUtil.decode(value.trim()));
             }
 
             if (paramType == Double.TYPE || paramType == Double.class)
@@ -102,7 +102,7 @@ public class PrimitiveConverter implements Converter
                 {
                     return new Double(0);
                 }
-                return new Double(value.trim());
+                return new Double(LocalUtil.decode(value.trim()));
             }
 
             throw new ConversionException(Messages.getString("PrimitiveConverter.TypeNotPrimitive", paramType.getName())); //$NON-NLS-1$

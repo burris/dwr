@@ -13,13 +13,13 @@ preHook            Y        Y
 postHook           Y        Y
 method             Y        Y
 verb               Y        Y
+synch              Y        Y
 ordered            Y        -
 warningHandler     Y        -
 
 skipBatch          Y(1)     X
 onBackButton       X        X
 onForwardButton    X        X
-synch              X        X
 
 (1) There is no setSkipBatch() method - batching is controlled via beginBatch() and endBatch()
 
@@ -146,6 +146,18 @@ DWREngine.setOrdered = function(ordered) {
 };
 
 /**
+ * Do we ask the XHR object to be asynchronous? (Default: true)
+ * Warning: This option will be ignored if you are using iframes and is often
+ * generally a bad idea to change it to false because it can make your browser
+ * slow to respond and prone to hangs. If you do need this option then consider
+ * setting a timeout too.
+ * @param synch true or false
+ */
+DWREngine.setAsynchronous = function(asynch) {
+    DWREngine._asynch = asynch;
+};
+
+/**
  * The default message handler.
  * Useful in calls to setErrorHandler() or setWarningHandler() to allow you to
  * get the default back.
@@ -194,6 +206,7 @@ DWREngine.endBatch = function() {
     if (!batch.postHook) batch.postHook = DWREngine._postHook;
     if (!batch.method) batch.method = DWREngine._method;
     if (!batch.verb) batch.verb = DWREngine._verb;
+    if (!batch.asynch) batch.verb = DWREngine._asynch;
 
     // If we are in ordered mode, then we don't send unless the list of sent
     // items is empty
@@ -283,6 +296,12 @@ DWREngine._verb = "POST";
 DWREngine._ordered = false;
 
 /**
+ * Do we make the calls asynchronous?
+ * @private
+ */
+DWREngine._asynch = false;
+
+/**
  * The current batch (if we are in batch mode)
  * @private
  */
@@ -349,41 +368,6 @@ DWREngine._handleServerError = function(id, reason, batch) {
 DWREngine._handleError = function(reason) {
     if (DWREngine._errorHandler) {
         DWREngine._errorHandler(reason);
-    }
-};
-
-/**
- * Call right at the end of a batch being executed to clear up
- * @param batch The batch to tidy up after
- * @private
- */
-DWREngine._finalize = function(batch) {
-    DWREngine._removeNode(batch.div);
-    DWREngine._removeNode(batch.iframe);
-    DWREngine._removeNode(batch.form);
-
-    // Avoid IE handles increase
-    delete batch.req;
-
-    if (batch.postHook) {
-        batch.postHook();
-    }
-
-    // TODO: There must be a better way???
-    for (var i = 0; i < DWREngine._batches.length; i++) {
-        if (DWREngine._batches[i] == batch) {
-            DWREngine._batches.splice(i, 1);
-            break;
-        }
-    }
-
-    // If there is anything on the queue waiting to go out, then send it.
-    // We don't need to check for ordered mode, here because when ordered mode
-    // gets turned off, we still process *waiting* batches in an ordered way.
-    if (DWREngine._batchQueue.length != 0) {
-        var sendbatch = DWREngine._batchQueue.shift();
-        DWREngine._sendData(sendbatch);
-        DWREngine._batches[DWREngine._batches.length] = sendbatch;
     }
 };
 
@@ -517,9 +501,10 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
  * @private
  */ 
 DWREngine._abortRequest = function(batch) {
-    if (batch && batch.metadata && batch.completed != true) {
-        batch.completed = true;
-
+    if (batch && batch.metadata && !batch.completed) {
+        // TODO: we used to do: batch.completed = true;
+        // here, but decided to leave it to DWREngine._stateChange() to handle
+        // when abort is called. This comment can be deleted if this works!
         if (batch.req != null) {
             batch.req.abort();
             if (batch.metadata.errorHandler) {
@@ -604,7 +589,7 @@ DWREngine._sendData = function(batch) {
             query = query.substring(0, query.length - 1);
 
             try {
-                batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query);
+                batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query, batch.req.asynch);
                 batch.req.send(null);
             }
             catch (ex) {
@@ -622,8 +607,7 @@ DWREngine._sendData = function(batch) {
                 // Prototype does the following, why?
                 // batch.req.setRequestHeader('Connection', 'close');
                 // batch.req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-                batch.req.open("POST", batch.path + "/exec/" + statsInfo, true);
+                batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.req.asynch);
                 batch.req.send(query);
             }
             catch (ex) {
@@ -682,7 +666,6 @@ DWREngine._stateChange = function(batch) {
 
             if (reply != null && reply != "") {
                 if (batch.req.status && batch.req.status == 200) {
-                    batch.completed = true;
                     eval(reply);
                 }
                 else {
@@ -696,7 +679,37 @@ DWREngine._stateChange = function(batch) {
         catch (ex) {
             DWREngine._stateChangeError(batch, ex);
         }
-        DWREngine._finalize(batch);
+
+        //  Clear up
+        DWREngine._removeNode(batch.div);
+        DWREngine._removeNode(batch.iframe);
+        DWREngine._removeNode(batch.form);
+
+        // Avoid IE handles increase
+        delete batch.req;
+
+        if (batch.postHook) {
+            batch.postHook();
+        }
+
+        // TODO: There must be a better way???
+        for (var i = 0; i < DWREngine._batches.length; i++) {
+            if (DWREngine._batches[i] == batch) {
+                DWREngine._batches.splice(i, 1);
+                break;
+            }
+        }
+
+        // If there is anything on the queue waiting to go out, then send it.
+        // We don't need to check for ordered mode, here because when ordered mode
+        // gets turned off, we still process *waiting* batches in an ordered way.
+        if (DWREngine._batchQueue.length != 0) {
+            var sendbatch = DWREngine._batchQueue.shift();
+            DWREngine._sendData(sendbatch);
+            DWREngine._batches[DWREngine._batches.length] = sendbatch;
+        }
+
+        batch.completed = true;
     }
 };
 

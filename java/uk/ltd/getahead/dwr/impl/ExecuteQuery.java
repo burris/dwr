@@ -380,7 +380,7 @@ public class ExecuteQuery
                     String key = (String) it.next();
                     InboundVariable value = inctx.getInboundVariable(key);
 
-                    log.debug("  Env: " + key + '=' + value.getRawData()); //$NON-NLS-1$
+                    log.debug("  Env: " + key + '=' + value.toString()); //$NON-NLS-1$
                 }
             }
         }

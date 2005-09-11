@@ -79,14 +79,6 @@ public final class InboundVariable
         return value;
     }
 
-    /**
-     * @return Returns the type and value in one string.
-     */
-    public String getRawData()
-    {
-        return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value;
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */

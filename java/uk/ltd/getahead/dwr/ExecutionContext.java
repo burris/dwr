@@ -1,9 +1,6 @@
 package uk.ltd.getahead.dwr;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.Properties;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -12,202 +9,93 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import uk.ltd.getahead.dwr.impl.DefaultBrowser;
-import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.SwallowingHttpServletResponse;
-
 /**
  * Class to enable us to access servlet parameters.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ExecutionContext
+public class ExecutionContext implements WebContext
 {
     /**
-     * Prevent instansiation outside of setExecutionContext()
-     * @param newRequest The incoming http request
-     * @param newResponse The outgoing http reply
-     * @param newConfig The servlet configuration
-     * @param newContext The servlet context
-     * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext)
+     * Create an ExecutionContext for compatibility purposes with a real
+     * WebContext to proxy to.
+     * @param proxy The WebContext to proxy to.
      */
-    protected void init(HttpServletRequest newRequest, HttpServletResponse newResponse, ServletConfig newConfig, ServletContext newContext)
+    private ExecutionContext(WebContext proxy)
     {
-        this.request = newRequest;
-        this.response = newResponse;
-        this.config = newConfig;
-        this.context = newContext;
+        this.proxy = proxy;
     }
 
-    /**
-     * Get a browser object that we can use to identify this user across
-     * separate requests.
-     * @return A browser object for this user
-     */
-    protected Browser getBrowser()
-    {
-        HttpSession session = getSession();
-        Browser browser = (Browser) session.getAttribute(SESSION_BROWSER);
-        if (browser == null)
-        {
-            browser = new DefaultBrowser();
-            session.setAttribute(SESSION_BROWSER, browser);
-        }
-
-        return browser;
-    }
-
-    /**
-     * Returns the current session associated with this request,
-     * or if the request does not have a session, creates one.
-     * @return Returns the http session.
-     * @see HttpServletRequest#getSession()
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getSession()
      */
     public HttpSession getSession()
     {
-        return request.getSession();
+        return proxy.getSession();
     }
 
-    /**
-     * Returns the current HttpSession associated with this request or, if
-     * there is no current session and create is true, returns a new session.
-     * If create is false and the request has no valid HttpSession, this method
-     * returns null.
-     * @param create false to return null if there's no current session
-     * @return the session associated with this request
-     * @see HttpServletRequest#getSession(boolean)
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getSession(boolean)
      */
     public HttpSession getSession(boolean create)
     {
-        return request.getSession(create);
+        return proxy.getSession(create);
     }
 
-    /**
-     * Accessor for the servlet config.
-     * @return Returns the config.
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getServletConfig()
      */
     public ServletConfig getServletConfig()
     {
-        return config;
+        return proxy.getServletConfig();
     }
 
-    /**
-     * Returns the ServletContext to which this session belongs.
-     * @return The servlet context information.
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getServletContext()
      */
     public ServletContext getServletContext()
     {
-        return context;
+        return proxy.getServletContext();
     }
 
-    /**
-     * Accessor for the http request information.
-     * @return Returns the request.
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getHttpServletRequest()
      */
     public HttpServletRequest getHttpServletRequest()
     {
-        return request;
+        return proxy.getHttpServletRequest();
     }
 
-    /**
-     * Accessor for the http response bean.
-     * @return Returns the response.
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getHttpServletResponse()
      */
     public HttpServletResponse getHttpServletResponse()
     {
-        return response;
+        return proxy.getHttpServletResponse();
     }
 
-    /**
-     * Forward a request to a given URL and catch the data written to it
-     * @param url The URL to forward to
-     * @return The text that results from forwarding to the given URL
-     * @throws IOException if the target resource throws this exception
-     * @throws ServletException if the target resource throws this exception
-     * @throws IllegalStateException if the response was already committed
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#forwardToString(java.lang.String)
      */
     public String forwardToString(String url) throws ServletException, IOException
     {
-        StringWriter sout = new StringWriter();
-        StringBuffer buffer = sout.getBuffer();
-
-        HttpServletResponse fakeResponse = new SwallowingHttpServletResponse(getHttpServletResponse(), sout);
-
-        getServletContext().getRequestDispatcher(url).forward(getHttpServletRequest(), fakeResponse);
-
-        return buffer.toString();
+        return proxy.forwardToString(url);
     }
 
-    /**
-     * Fish the version number out of the dwr.properties file.
-     * @return The current version number.
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getVersion()
      */
     public String getVersion()
     {
-        synchronized (propLock)
-        {
-            if (props == null)
-            {
-                loadProperties();
-            }
-
-            return props.getProperty(KEY_VERSION);
-        }
+        return proxy.getVersion();
     }
 
-    /**
-     * Fish the version number out of the dwr.properties file.
-     * @return The current version number.
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getBrowser()
      */
-    protected String getSourceControlInfo()
+    public Browser getBrowser()
     {
-        synchronized (propLock)
-        {
-            if (props == null)
-            {
-                loadProperties();
-            }
-
-            return props.getProperty(KEY_SCCINFO);
-        }
+        throw new UnsupportedOperationException(""); //$NON-NLS-1$
     }
-
-    /**
-     * Load the properties from the internal properties file.
-     */
-    private void loadProperties()
-    {
-        synchronized (propLock)
-        {
-            props = new Properties();
-
-            try
-            {
-                InputStream in = getClass().getResourceAsStream(FILENAME_VERSION);
-                props.load(in);
-            }
-            catch (Exception ex)
-            {
-                props.put(KEY_VERSION, VALUE_UNKNOWN);
-                props.put(KEY_SCCINFO, VALUE_UNKNOWN);
-                props.put(KEY_ERROR, ex.toString());
-            }
-        }
-    }
-
-    private HttpServletRequest request = null;
-    private HttpServletResponse response = null;
-    private ServletConfig config = null;
-    private ServletContext context = null;
-
-    private static final String FILENAME_VERSION = "/dwr-version.properties"; //$NON-NLS-1$
-    private static final String KEY_VERSION = "version"; //$NON-NLS-1$
-    private static final String KEY_SCCINFO = "scc-info"; //$NON-NLS-1$
-    private static final String KEY_ERROR = "error"; //$NON-NLS-1$
-    private static final String VALUE_UNKNOWN = "unknown"; //$NON-NLS-1$
-    private static final String SESSION_BROWSER = "uk.ltd.getahead.dwr.browser"; //$NON-NLS-1$
-
-    private static Properties props = null;
-    private static final Object propLock = new Object();
 
     /**
      * Accessor for the current ExecutionContext.
@@ -215,57 +103,11 @@ public class ExecutionContext
      */
     public static ExecutionContext get()
     {
-        return (ExecutionContext) user.get();
+        return new ExecutionContext(WebContextFactory.get());
     }
 
     /**
-     * Make the current thread know what the current request is.
-     * This method is only for use internally to DWR.
-     * @param request The incoming http request
-     * @param response The outgoing http reply
-     * @param config The servlet configuration
-     * @param context The servlet context
-     * @see ExecutionContext#unset()
+     * The real WebContext to proxy to
      */
-    public static void setExecutionContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context)
-    {
-        try
-        {
-            ExecutionContext ec = (ExecutionContext) implementation.newInstance();
-            ec.init(request, response, config, context);
-            user.set(ec);
-        }
-        catch (Exception ex)
-        {
-            log.fatal("Failed to create an ExecutionContext", ex); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Unset the current ExecutionContext
-     * This method is only for use internally to DWR.
-     * @see ExecutionContext#setExecutionContext(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext)
-     */
-    public static void unset()
-    {
-        user.set(null);
-    }
-
-    /**
-     * Alter the implementation of ExecutionContext to some child class
-     * @param singletonType The new implementation class
-     */
-    protected static void setImplementation(Class singletonType)
-    {
-        implementation = singletonType;
-    }
-
-    private static ThreadLocal user = new ThreadLocal();
-
-    private static Class implementation = ExecutionContext.class;
-
-    /**
-     * The log stream
-     */
-    private static final Logger log = Logger.getLogger(ExecutionContext.class);
+    private WebContext proxy = null;
 }
