@@ -50,17 +50,8 @@ public class Factory
 
         try
         {
-            if (iface != AccessControl.class && iface != Configuration.class &&
-                iface != ConverterManager.class && iface != CreatorManager.class && 
-                iface != Processor.class && iface != ExecutionContext.class)
-            {
-                log.error("Factory does not manage: " + interfaceName); //$NON-NLS-1$
-            }
-            else
-            {
-                log.debug("Adding implementation of " + iface.getName() + ": " + impl.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-                beans.put(iface, impl.newInstance());
-            }
+            log.debug("Adding implementation of " + iface.getName() + ": " + impl.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            beans.put(iface, impl.newInstance());
         }
         catch (ClassCastException ex)
         {

@@ -3,7 +3,6 @@
 /*global alert, window, document, navigator, DOMParser, XMLHttpRequest */
 
 /*
-
 TODO: put this documentation somewhere better
 
                  global   batch
@@ -22,9 +21,7 @@ onBackButton       X        X
 onForwardButton    X        X
 
 (1) There is no setSkipBatch() method - batching is controlled via beginBatch() and endBatch()
-
 */
-
 
 
 /**
@@ -206,7 +203,7 @@ DWREngine.endBatch = function() {
     if (!batch.postHook) batch.postHook = DWREngine._postHook;
     if (!batch.method) batch.method = DWREngine._method;
     if (!batch.verb) batch.verb = DWREngine._verb;
-    if (!batch.asynchronous) batch.verb = DWREngine._asynchronous;
+    if (!batch.asynchronous) batch.asynchronous = DWREngine._asynchronous;
 
     // If we are in ordered mode, then we don't send unless the list of sent
     // items is empty
@@ -299,7 +296,7 @@ DWREngine._ordered = false;
  * Do we make the calls asynchronous?
  * @private
  */
-DWREngine._asynchronous = false;
+DWREngine._asynchronous = true;
 
 /**
  * The current batch (if we are in batch mode)
@@ -368,17 +365,6 @@ DWREngine._handleServerError = function(id, reason, batch) {
 DWREngine._handleError = function(reason) {
     if (DWREngine._errorHandler) {
         DWREngine._errorHandler(reason);
-    }
-};
-
-/**
- * Remove a node from a document.
- * @param node the node to remove from the document that it's part of.
- * @private
- */
-DWREngine._removeNode = function(node) {
-    if (node) {
-        node.parentNode.removeChild(node);
     }
 };
 
@@ -589,7 +575,7 @@ DWREngine._sendData = function(batch) {
             query = query.substring(0, query.length - 1);
 
             try {
-                batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query, batch.req.asynchronous);
+                batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query, batch.asynchronous);
                 batch.req.send(null);
             }
             catch (ex) {
@@ -607,7 +593,7 @@ DWREngine._sendData = function(batch) {
                 // Prototype does the following, why?
                 // batch.req.setRequestHeader('Connection', 'close');
                 // batch.req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.req.asynchronous);
+                batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.asynchronous);
                 batch.req.send(query);
             }
             catch (ex) {
@@ -681,9 +667,9 @@ DWREngine._stateChange = function(batch) {
         }
 
         //  Clear up
-        DWREngine._removeNode(batch.div);
-        DWREngine._removeNode(batch.iframe);
-        DWREngine._removeNode(batch.form);
+        if (batch.div) batch.div.parentNode.removeChild(batch.div);
+        if (batch.iframe) batch.iframe.parentNode.removeChild(batch.iframe);
+        if (batch.form) batch.form.parentNode.removeChild(batch.form);
 
         // Avoid IE handles increase
         delete batch.req;

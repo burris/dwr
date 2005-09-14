@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 public interface Handler
 {
     /**
-     * Handle a request
+     * Handle a request, the equivalent of doGet and doPost
      * @param req The HTTP request parameters
      * @param resp The HTTP response data
      * @throws IOException If i/o fails

@@ -81,9 +81,10 @@ DWRUtil.selectRange = function(ele, start, end)
  * a replacement for Array.push.
  * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
+var $;
 if (document.getElementById)
 {
-    function $()
+    $ = function()
     {
         var elements = new Array();
 
@@ -108,7 +109,7 @@ if (document.getElementById)
 }
 else if (document.all)
 {
-    function $()
+    $ = function()
     {
         var elements = new Array();
 
@@ -404,7 +405,7 @@ DWRUtil._showLoadingMessage = function()
     var disabledZone = $('disabledZone');
     if (!disabledZone)
     {
-        var disabledZone = document.createElement('div');
+        disabledZone = document.createElement('div');
         disabledZone.setAttribute('id', 'disabledZone');
         disabledZone.style.position = "absolute";
         disabledZone.style.zIndex = "1000";

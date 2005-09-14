@@ -10,7 +10,8 @@ import uk.ltd.getahead.dwr.WebContextBuilder;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
- * @author
+ * A WebContextBuilder that creates DefaultWebContexts.
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultWebContextBuilder implements WebContextBuilder
 {

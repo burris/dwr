@@ -83,6 +83,9 @@ public class DWRServlet extends HttpServlet
 
             // Now we have set the implementations we can set the WebContext up
             builder = (WebContextBuilder) factory.getBean(WebContextBuilder.class);
+            WebContextFactory.setWebContextBuilder(builder);
+
+            // And we lace it with the context so far to help init go smoothly
             builder.set(null, null, getServletConfig(), getServletContext());
 
             // Are we in debug mode?
@@ -137,7 +140,11 @@ public class DWRServlet extends HttpServlet
         }
         finally
         {
-            builder.unset();
+            if (builder != null)
+            {
+                builder.unset();
+            }
+
             ServletLoggingOutput.unsetExecutionContext();
         }
     }

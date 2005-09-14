@@ -17,7 +17,7 @@ import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.util.SwallowingHttpServletResponse;
 
 /**
- * @author
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultWebContext implements WebContext
 {

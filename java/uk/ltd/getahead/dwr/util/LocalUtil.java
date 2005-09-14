@@ -4,7 +4,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
 
@@ -179,6 +183,20 @@ public final class LocalUtil
 
         // Set to expire far in the past. Prevents caching at the proxy server
         resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * Is this class one that we auto fill, so the user can ignore?
+     * @param paramType The type to test
+     * @return true if the type is a Servlet type
+     */
+    public static boolean isServletClass(Class paramType)
+    {
+        return paramType == HttpServletRequest.class ||
+               paramType == HttpServletResponse.class ||
+               paramType == ServletConfig.class ||
+               paramType == ServletContext.class ||
+               paramType == HttpSession.class;
     }
 
     /**
