@@ -98,11 +98,11 @@ public class ExecutionContext implements WebContext
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.WebContext#getFactory()
+     * @see uk.ltd.getahead.dwr.WebContext#getContainer()
      */
-    public Factory getFactory()
+    public Container getContainer()
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().getFactory()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getContainer()"); //$NON-NLS-1$
     }
 
     /**

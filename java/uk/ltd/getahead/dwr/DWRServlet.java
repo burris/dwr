@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uk.ltd.getahead.dwr.impl.DefaultContainer;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 
@@ -51,7 +52,7 @@ public class DWRServlet extends HttpServlet
             }
 
             // Load the factory with implementation information
-            factory = new Factory();
+            DefaultContainer factory = new DefaultContainer();
             factory.addParameter(AccessControl.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultAccessControl"); //$NON-NLS-1$
             factory.addParameter(Configuration.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultConfiguration"); //$NON-NLS-1$
             factory.addParameter(ConverterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultConverterManager"); //$NON-NLS-1$
@@ -61,7 +62,7 @@ public class DWRServlet extends HttpServlet
 
             factory.addParameter("index", "uk.ltd.getahead.dwr.impl.DefaultIndexProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
             factory.addParameter("test", "uk.ltd.getahead.dwr.impl.DefaultTestProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
-            factory.addParameter("iface", "uk.ltd.getahead.dwr.impl.DefaultInterfaceProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
+            factory.addParameter("interface", "uk.ltd.getahead.dwr.impl.DefaultInterfaceProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
             factory.addParameter("exec", "uk.ltd.getahead.dwr.impl.DefaultExecProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
             factory.addParameter("file", "uk.ltd.getahead.dwr.impl.FileProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -78,16 +79,17 @@ public class DWRServlet extends HttpServlet
                 factory.addParameter(name, value);
             }
             factory.configurationFinished();
+            container = factory;
 
             // Now we have set the implementations we can set the WebContext up
-            builder = (WebContextBuilder) factory.getBean(WebContextBuilder.class.getName());
+            builder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
             WebContextFactory.setWebContextBuilder(builder);
 
             // And we lace it with the context so far to help init go smoothly
-            builder.set(null, null, getServletConfig(), getServletContext(), factory);
+            builder.set(null, null, getServletConfig(), getServletContext(), container);
 
             // Load the system config file
-            Configuration configuration = (Configuration) factory.getBean(Configuration.class.getName());
+            Configuration configuration = (Configuration) container.getBean(Configuration.class.getName());
             InputStream in = getClass().getResourceAsStream(FILE_DWR_XML);
             try
             {
@@ -128,7 +130,7 @@ public class DWRServlet extends HttpServlet
             }
 
             // Finally the processor that handles doGet and doPost
-            processor = (Processor) factory.getBean(Processor.class.getName());
+            processor = (Processor) container.getBean(Processor.class.getName());
         }
         catch (ServletException ex)
         {
@@ -165,7 +167,7 @@ public class DWRServlet extends HttpServlet
     {
         try
         {
-            builder.set(req, resp, getServletConfig(), getServletContext(), factory);
+            builder.set(req, resp, getServletConfig(), getServletContext(), container);
             ServletLoggingOutput.setExecutionContext(this);
 
             processor.handle(req, resp);
@@ -216,7 +218,7 @@ public class DWRServlet extends HttpServlet
     /**
      * The IoC container
      */
-    protected Factory factory;
+    protected Container container;
 
     /**
      * The package name because people need to load resources in this package.  

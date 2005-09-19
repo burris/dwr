@@ -5,7 +5,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import uk.ltd.getahead.dwr.Factory;
+import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextBuilder;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -19,11 +19,11 @@ public class DefaultWebContextBuilder implements WebContextBuilder
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContextBuilder#set(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, javax.servlet.ServletConfig, javax.servlet.ServletContext)
      */
-    public void set(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context, Factory factory)
+    public void set(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context, Container container)
     {
         try
         {
-            WebContext ec = new DefaultWebContext(request, response, config, context, factory);
+            WebContext ec = new DefaultWebContext(request, response, config, context, container);
             user.set(ec);
         }
         catch (Exception ex)

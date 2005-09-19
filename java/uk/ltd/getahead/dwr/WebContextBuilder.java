@@ -18,10 +18,10 @@ public interface WebContextBuilder
      * @param response The outgoing http reply
      * @param config The servlet configuration
      * @param context The servlet context
-     * @param factory The IoC container
+     * @param container The IoC container
      * @see WebContextBuilder#unset()
      */
-    void set(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context, Factory factory);
+    void set(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context, Container container);
 
     /**
      * @return The WebContext that is associated with this thread
@@ -31,7 +31,7 @@ public interface WebContextBuilder
     /**
      * Unset the current ExecutionContext
      * This method is only for use internally to DWR.
-     * @see WebContextBuilder#set(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext, Factory)
+     * @see WebContextBuilder#set(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext, Container)
      */
     void unset();
 }

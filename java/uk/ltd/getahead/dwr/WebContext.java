@@ -26,7 +26,7 @@ public interface WebContext
      * Accessor for the IoC container.
      * @return The IoC container that created the interface implementations.
      */
-    Factory getFactory();
+    Container getContainer();
 
     /**
      * Returns the current session associated with this request, or if the

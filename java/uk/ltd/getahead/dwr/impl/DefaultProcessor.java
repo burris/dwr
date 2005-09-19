@@ -100,7 +100,7 @@ public class DefaultProcessor implements Processor
     /**
      * @param iface The iface to set.
      */
-    public void setIface(Processor iface)
+    public void setInterface(Processor iface)
     {
         this.iface = iface;
     }

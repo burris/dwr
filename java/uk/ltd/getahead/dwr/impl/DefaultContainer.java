@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -6,17 +6,18 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
- * Factory is like a mini-IoC container for DWR.
+ * DefaultContainer is like a mini-IoC container for DWR.
  * At least it is an IoC container by interface (check: no params that have
  * anything to do with DWR), but it is hard coded specifically for DWR. If we
  * want to make more of it we can later, but this is certainly not going to
  * become a full blown IoC container.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Factory
+public class DefaultContainer implements Container
 {
     /**
      * Set the class that should be used to implement the given interface
@@ -73,7 +74,7 @@ public class Factory
 
     /**
      * Called to indicate that we finished called setImplementation.
-     * @see Factory#addParameter(String, String)
+     * @see DefaultContainer#addParameter(String, String)
      */
     public void configurationFinished()
     {
@@ -100,16 +101,16 @@ public class Factory
                     {
                         String name = Character.toLowerCase(setter.getName().charAt(3)) + setter.getName().substring(4);
                         Class propertyType = setter.getParameterTypes()[0];
-    
+
                         // First we try auto-wire by name
                         Object setting = beans.get(name);
                         if (setting != null)
                         {
-                            if (propertyType == setting.getClass())
+                            if (propertyType.isAssignableFrom(setting.getClass()))
                             {
                                 log.debug("- autowire-by-name: " + name + "=" + setting); //$NON-NLS-1$ //$NON-NLS-2$
                                 invoke(setter, ovalue, setting);
-    
+
                                 continue methods;
                             }
                             else if (propertyType == Boolean.TYPE && setting.getClass() == String.class)
@@ -117,21 +118,21 @@ public class Factory
                                 Boolean bool = Boolean.valueOf((String) setting);
                                 log.debug("- autowire-by-name: " + name + "=" + bool); //$NON-NLS-1$ //$NON-NLS-2$
                                 invoke(setter, ovalue, bool);
-    
+
                                 continue methods;
                             }
                         }
-    
+
                         // Next we try autowire-by-type
                         Object value = beans.get(propertyType.getName());
                         if (value != null)
                         {
                             log.debug("- autowire-by-type: " + name + "=" + value.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
                             invoke(setter, ovalue, value);
-    
+
                             continue methods;
                         }
-    
+
                         log.debug("- skipped autowire: " + name); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
@@ -165,10 +166,8 @@ public class Factory
         }
     }
 
-    /**
-     * Get an instance of a bean of a given type.
-     * @param id The type to get an instance of
-     * @return The object of the given type
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Container#getBean(java.lang.String)
      */
     public Object getBean(String id)
     {
@@ -183,7 +182,7 @@ public class Factory
                 }
             }
 
-            throw new IllegalArgumentException("Factory can't find a " + id); //$NON-NLS-1$
+            throw new IllegalArgumentException("DefaultContainer can't find a " + id); //$NON-NLS-1$
         }
 
         return reply;
@@ -197,5 +196,5 @@ public class Factory
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(Factory.class);
+    private static final Logger log = Logger.getLogger(DefaultContainer.class);
 }
