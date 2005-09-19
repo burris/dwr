@@ -2,9 +2,9 @@ package uk.ltd.getahead.dwr;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -20,56 +20,60 @@ public class Factory
 {
     /**
      * Set the class that should be used to implement the given interface
-     * @param interfaceName The interface to implement
-     * @param implName The new implementation
+     * @param askFor The interface to implement
+     * @param value The new implementation
+     * @throws IllegalAccessException If the specified beans could not be accessed
+     * @throws InstantiationException If the specified beans could not be created 
      */
-    public void setImplementation(String interfaceName, String implName)
+    public void addParameter(Object askFor, Object value) throws InstantiationException, IllegalAccessException
     {
-        Class iface = null;
-        Class impl = null;
-
-        try
+        // Maybe the value is a classname that needs instansiating
+        if (value instanceof String)
         {
-            iface = Class.forName(interfaceName);
-        }
-        catch (ClassNotFoundException ex)
-        {
-            log.error("Class not found: " + interfaceName); //$NON-NLS-1$
-            return;
-        }
-
-        try
-        {
-            impl = Class.forName(implName);
-        }
-        catch (ClassNotFoundException ex)
-        {
-            log.error("Class not found: " + implName); //$NON-NLS-1$
-            return;
+            try
+            {
+                Class impl = Class.forName((String) value);
+                value = impl.newInstance();
+            }
+            catch (ClassNotFoundException ex)
+            {
+                // it's not a classname, leave it
+            }
         }
 
-        try
+        // If we have an instansiated value object and askFor is an interface
+        // then we can check that one implements the other
+        if (!(value instanceof String) && askFor instanceof String)
         {
-            log.debug("Adding implementation of " + iface.getName() + ": " + impl.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-            beans.put(iface, impl.newInstance());
+            try
+            {
+                Class iface = Class.forName((String) askFor);
+                if (!iface.isAssignableFrom(value.getClass()))
+                {
+                    log.error("Can't cast: " + value + " to " + askFor); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+            catch (ClassNotFoundException ex)
+            {
+                // it's not a classname, leave it
+            }
         }
-        catch (ClassCastException ex)
+
+        if (value instanceof String && log.isDebugEnabled())
         {
-            log.error("Can't cast: " + implName + " to " + interfaceName); //$NON-NLS-1$ //$NON-NLS-2$
+            log.debug("Adding IoC setting: " + askFor + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        catch (InstantiationException ex)
+        else
         {
-            log.error("Failed to instansiate: " + implName, ex); //$NON-NLS-1$
+            log.debug("Adding IoC implementation: " + askFor + "=" + value.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
         }
-        catch (IllegalAccessException ex)
-        {
-            log.error("Construction denied for: " + implName); //$NON-NLS-1$
-        }
+
+        beans.put(askFor, value);
     }
 
     /**
      * Called to indicate that we finished called setImplementation.
-     * @see Factory#setImplementation(String, String)
+     * @see Factory#addParameter(String, String)
      */
     public void configurationFinished()
     {
@@ -80,49 +84,55 @@ public class Factory
             // Class type = (Class) entry.getKey();
             Object ovalue = entry.getValue();
 
-            Method[] methods = ovalue.getClass().getMethods();
-            for (int i = 0; i < methods.length; i++)
+            if (!(ovalue instanceof String))
             {
-                Method method = methods[i];
-
-                if (method.getName().startsWith("set") && //$NON-NLS-1$
-                    method.getParameterTypes().length == 1)
+                log.debug("Trying to autowire: " + ovalue.getClass().getName()); //$NON-NLS-1$
+    
+                Method[] methods = ovalue.getClass().getMethods();
+                methods:
+                for (int i = 0; i < methods.length; i++)
                 {
-                    Class paramType = method.getParameterTypes()[0];
-
-                    // We like to simply seach for the given parameter:
-                    //   Object instance = beans.get(paramType);
-                    // But that does not take inheritance into account
-                    Object instance = null;
-                    for (Iterator pit = beans.keySet().iterator(); instance == null && pit.hasNext();)
+                    Method setter = methods[i];
+    
+                    if (setter.getName().startsWith("set") && //$NON-NLS-1$
+                        setter.getName().length() > 3 &&
+                        setter.getParameterTypes().length == 1)
                     {
-                        Class ptype = (Class) pit.next();
-                        if (ptype.isAssignableFrom(paramType))
+                        String name = Character.toLowerCase(setter.getName().charAt(3)) + setter.getName().substring(4);
+                        Class propertyType = setter.getParameterTypes()[0];
+    
+                        // First we try auto-wire by name
+                        Object setting = beans.get(name);
+                        if (setting != null)
                         {
-                            instance = beans.get(ptype);
+                            if (propertyType == setting.getClass())
+                            {
+                                log.debug("- autowire-by-name: " + name + "=" + setting); //$NON-NLS-1$ //$NON-NLS-2$
+                                invoke(setter, ovalue, setting);
+    
+                                continue methods;
+                            }
+                            else if (propertyType == Boolean.TYPE && setting.getClass() == String.class)
+                            {
+                                Boolean bool = Boolean.valueOf((String) setting);
+                                log.debug("- autowire-by-name: " + name + "=" + bool); //$NON-NLS-1$ //$NON-NLS-2$
+                                invoke(setter, ovalue, bool);
+    
+                                continue methods;
+                            }
                         }
-                    }
-
-                    // If we have a match
-                    if (instance != null)
-                    {
-                        try
+    
+                        // Next we try autowire-by-type
+                        Object value = beans.get(propertyType.getName());
+                        if (value != null)
                         {
-                            log.debug("Autowire: " + ovalue.getClass().getName() + "." + method.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-                            method.invoke(ovalue, new Object[] { instance });
+                            log.debug("- autowire-by-type: " + name + "=" + value.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                            invoke(setter, ovalue, value);
+    
+                            continue methods;
                         }
-                        catch (IllegalArgumentException ex)
-                        {
-                            log.error("Internal error", ex); //$NON-NLS-1$
-                        }
-                        catch (IllegalAccessException ex)
-                        {
-                            log.error("Permission issue invoking " + method.getName()); //$NON-NLS-1$
-                        }
-                        catch (InvocationTargetException ex)
-                        {
-                            log.error("Exception during auto-wire", ex.getTargetException()); //$NON-NLS-1$
-                        }
+    
+                        log.debug("- skipped autowire: " + name); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             }
@@ -130,16 +140,50 @@ public class Factory
     }
 
     /**
+     * A helper to do the reflection
+     * @param setter The method to invoke
+     * @param bean The object to invoke the method on
+     * @param value The value to assign to the property using the setter method
+     */
+    private void invoke(Method setter, Object bean, Object value)
+    {
+        try
+        {
+            setter.invoke(bean, new Object[] { value });
+        }
+        catch (IllegalArgumentException ex)
+        {
+            log.error("- Internal error: " + ex.getMessage()); //$NON-NLS-1$
+        }
+        catch (IllegalAccessException ex)
+        {
+            log.error("- Permission error: " + ex.getMessage()); //$NON-NLS-1$
+        }
+        catch (InvocationTargetException ex)
+        {
+            log.error("- Exception during auto-wire", ex.getTargetException()); //$NON-NLS-1$
+        }
+    }
+
+    /**
      * Get an instance of a bean of a given type.
-     * @param type The type to get an instance of
+     * @param id The type to get an instance of
      * @return The object of the given type
      */
-    public Object getBean(Class type)
+    public Object getBean(String id)
     {
-        Object reply = beans.get(type);
+        Object reply = beans.get(id);
         if (reply == null)
         {
-            throw new IllegalArgumentException("Factory can't find a " + type.getName()); //$NON-NLS-1$
+            if (log.isDebugEnabled())
+            {
+                for (Iterator it = beans.keySet().iterator(); it.hasNext();)
+                {
+                    log.debug("- known bean: " + it.next()); //$NON-NLS-1$
+                }
+            }
+
+            throw new IllegalArgumentException("Factory can't find a " + id); //$NON-NLS-1$
         }
 
         return reply;
@@ -148,7 +192,7 @@ public class Factory
     /**
      * The beans that we know of indexed by type
      */
-    protected Map beans = new HashMap();
+    protected Map beans = new TreeMap();
 
     /**
      * The log stream

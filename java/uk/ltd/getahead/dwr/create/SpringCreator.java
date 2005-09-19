@@ -14,8 +14,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import uk.ltd.getahead.dwr.Creator;
-import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -150,8 +150,8 @@ public class SpringCreator extends AbstractCreator implements Creator
             return new ClassPathXmlApplicationContext(configLocation);
         }
 
-        ServletContext srvCtx = ExecutionContext.get().getServletContext();
-        HttpServletRequest request = ExecutionContext.get().getHttpServletRequest();
+        ServletContext srvCtx = WebContextFactory.get().getServletContext();
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 
         if (request != null)
         {

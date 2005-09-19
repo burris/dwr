@@ -21,12 +21,13 @@ import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.WebContext;
+import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -120,20 +121,20 @@ public class ExecuteQuery
                 if (!Modifier.isStatic(method.getModifiers()))
                 {
                     String scope = creator.getScope();
-                    ExecutionContext execCtx = ExecutionContext.get();
+                    WebContext webcx = WebContextFactory.get();
 
                     // Check the various scopes to see if it is there
                     if (scope.equals(Creator.APPLICATION))
                     {
-                        object = execCtx.getServletContext().getAttribute(call.getScriptName());
+                        object = webcx.getServletContext().getAttribute(call.getScriptName());
                     }
                     else if (scope.equals(Creator.SESSION))
                     {
-                        object = execCtx.getSession().getAttribute(call.getScriptName());
+                        object = webcx.getSession().getAttribute(call.getScriptName());
                     }
                     else if (scope.equals(Creator.REQUEST))
                     {
-                        object = execCtx.getHttpServletRequest().getAttribute(call.getScriptName());
+                        object = webcx.getHttpServletRequest().getAttribute(call.getScriptName());
                     }
                     // Creator.PAGE scope means we create one every time anyway
 
@@ -152,15 +153,15 @@ public class ExecuteQuery
                     // We might need to remember it for next time
                     if (scope.equals(Creator.APPLICATION))
                     {
-                        execCtx.getServletContext().setAttribute(call.getScriptName(), object);
+                        webcx.getServletContext().setAttribute(call.getScriptName(), object);
                     }
                     else if (scope.equals(Creator.SESSION))
                     {
-                        execCtx.getSession().setAttribute(call.getScriptName(), object);
+                        webcx.getSession().setAttribute(call.getScriptName(), object);
                     }
                     else if (scope.equals(Creator.REQUEST))
                     {
-                        execCtx.getHttpServletRequest().setAttribute(call.getScriptName(), object);
+                        webcx.getHttpServletRequest().setAttribute(call.getScriptName(), object);
                     }
                     // Creator.PAGE scope means we create one every time anyway
                 }

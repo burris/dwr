@@ -2,6 +2,7 @@ package uk.ltd.getahead.testdwr;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationHandler;
@@ -24,12 +25,13 @@ import java.util.TreeSet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -593,7 +595,7 @@ public class Test
     {
         String failReport = (String) data.get("failreport"); //$NON-NLS-1$
 
-        HttpServletRequest request = ExecutionContext.get().getHttpServletRequest();
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         String userAgentHttp = request.getHeader("User-Agent"); //$NON-NLS-1$
         userAgentHttp = simplfyUserAgent(userAgentHttp);
         if (userAgentHttp.length() > 100)
@@ -789,12 +791,16 @@ public class Test
     /**
      * Get some text that has been fetched from a JSP page.
      * @return A part of a web page
+     * @throws IOException Forwarded from the insert processing
+     * @throws ServletException Forwarded from the insert processing
      */
-    public String getInsert()
+    public String getInsert() throws ServletException, IOException
     {
-        return "<h1>DWR is working properly</h1><p>To see how DWR is configured in this web application see:</p>" + //$NON-NLS-1$
-               "<ul><li>The generated <a href='dwr/'>configuration/test pages</a>.</li>" + //$NON-NLS-1$
-               "<li><a href='test.html'>The unit test suite</a>.</li></ul>"; //$NON-NLS-1$
+        return WebContextFactory.get().forwardToString("/insert.jsp"); //$NON-NLS-1$
+
+        // return "<h1>DWR is working properly</h1><p>To see how DWR is configured in this web application see:</p>" + //$NON-NLS-1$
+        //        "<ul><li>The generated <a href='dwr/'>configuration/test pages</a>.</li>" + //$NON-NLS-1$
+        //        "<li><a href='test.html'>The unit test suite</a>.</li></ul>"; //$NON-NLS-1$
     }
 
     /**

@@ -11,13 +11,6 @@ public interface CreatorManager
 {
     /**
      * Debug mode allows access to the list of creator names
-     * @param debug Are we in debug mode
-     * @see CreatorManager#getCreatorNames()
-     */
-    void setDebug(boolean debug);
-
-    /**
-     * Debug mode allows access to the list of creator names
      * @return Are we in debug mode
      * @see CreatorManager#getCreatorNames()
      */
@@ -56,7 +49,6 @@ public interface CreatorManager
      * available if debug is turned on.
      * @return Loop over all the known allowed classes
      * @throws SecurityException If we are not in debug mode
-     * @see CreatorManager#setDebug(boolean)
      */
     Collection getCreatorNames() throws SecurityException;
 

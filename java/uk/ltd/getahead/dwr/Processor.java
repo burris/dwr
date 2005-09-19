@@ -1,21 +1,25 @@
 package uk.ltd.getahead.dwr;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
- * This is the main processor that handles all the requests to DWR.
- * TODO: get rid of this interface
+ * Handler is a bit like a servlet except that we don't need to ask users to
+ * put stuff into WEB-INF/web.xml we can configure it ourselves. We also don't
+ * distinguish between GET and POST at a method level.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public interface Processor extends Handler
+public interface Processor
 {
     /**
-     * Do we allow impossible tests for debug purposes
-     * @param allowImpossibleTests The allowImpossibleTests to set.
+     * Handle a request, the equivalent of doGet and doPost
+     * @param req The HTTP request parameters
+     * @param resp The HTTP response data
+     * @throws IOException If i/o fails
+     * @throws ServletException Other failures
      */
-    void setAllowImpossibleTests(boolean allowImpossibleTests);
-
-    /**
-     * To what level do we compress scripts?
-     * @param scriptCompressed The scriptCompressed to set.
-     */
-    void setScriptCompressed(boolean scriptCompressed);
+    void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException;
 }

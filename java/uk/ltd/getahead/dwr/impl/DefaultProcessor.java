@@ -6,9 +6,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import uk.ltd.getahead.dwr.AccessControl;
-import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -47,27 +44,15 @@ public class DefaultProcessor implements Processor
 
         if (pathInfo == null || pathInfo.length() == 0 || pathInfo.equals(HtmlConstants.PATH_ROOT))
         {
-            resp.sendRedirect(req.getContextPath() + servletPath + '/' + HtmlConstants.FILE_INDEX);
+            resp.sendRedirect(req.getContextPath() + servletPath + HtmlConstants.FILE_INDEX);
         }
-        else if (pathInfo != null && pathInfo.equalsIgnoreCase('/' + HtmlConstants.FILE_INDEX))
+        else if (pathInfo != null && pathInfo.startsWith(HtmlConstants.FILE_INDEX))
         {
             index.handle(req, resp);
         }
-        else if (pathInfo != null && pathInfo.startsWith('/' + HtmlConstants.PATH_TEST))
+        else if (pathInfo != null && pathInfo.startsWith(HtmlConstants.PATH_TEST))
         {
             test.handle(req, resp);
-        }
-        else if (pathInfo != null && pathInfo.equalsIgnoreCase('/' + HtmlConstants.FILE_ENGINE))
-        {
-            file.doFile(resp, HtmlConstants.FILE_ENGINE, HtmlConstants.MIME_JS);
-        }
-        else if (pathInfo != null && pathInfo.equalsIgnoreCase('/' + HtmlConstants.FILE_UTIL))
-        {
-            file.doFile(resp, HtmlConstants.FILE_UTIL, HtmlConstants.MIME_JS);
-        }
-        else if (pathInfo != null && pathInfo.equalsIgnoreCase('/' + HtmlConstants.FILE_DEPRECATED))
-        {
-            file.doFile(resp, HtmlConstants.FILE_DEPRECATED, HtmlConstants.MIME_JS);
         }
         else if (pathInfo != null && pathInfo.startsWith(HtmlConstants.PATH_INTERFACE))
         {
@@ -77,6 +62,18 @@ public class DefaultProcessor implements Processor
         {
             exec.handle(req, resp);
         }
+        else if (pathInfo != null && pathInfo.equalsIgnoreCase(HtmlConstants.FILE_ENGINE))
+        {
+            file.doFile(resp, HtmlConstants.FILE_ENGINE, HtmlConstants.MIME_JS);
+        }
+        else if (pathInfo != null && pathInfo.equalsIgnoreCase(HtmlConstants.FILE_UTIL))
+        {
+            file.doFile(resp, HtmlConstants.FILE_UTIL, HtmlConstants.MIME_JS);
+        }
+        else if (pathInfo != null && pathInfo.equalsIgnoreCase(HtmlConstants.FILE_DEPRECATED))
+        {
+            file.doFile(resp, HtmlConstants.FILE_DEPRECATED, HtmlConstants.MIME_JS);
+        }
         else
         {
             log.warn("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$
@@ -84,69 +81,51 @@ public class DefaultProcessor implements Processor
         }
     }
 
-    private DefaultIndexHandler index = new DefaultIndexHandler();
-    private DefaultTestHandler test = new DefaultTestHandler();
-    private DefaultInterfaceHandler iface = new DefaultInterfaceHandler();
-    private DefaultExecHandler exec = new DefaultExecHandler();
-    private FileHandler file = new FileHandler();
-
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Processor#setAllowImpossibleTests(boolean)
+    /**
+     * @param exec The exec to set.
      */
-    public void setAllowImpossibleTests(boolean allowImpossibleTests)
+    public void setExec(Processor exec)
     {
-        test.setAllowImpossibleTests(allowImpossibleTests);
-        iface.setAllowImpossibleTests(allowImpossibleTests);
+        this.exec = exec;
     }
 
     /**
-     * Accessor for the DefaultCreatorManager that we configure
-     * @param creatorManager The new DefaultConverterManager
+     * @param file The file to set.
      */
-    public void setCreatorManager(CreatorManager creatorManager)
+    public void setFile(FileProcessor file)
     {
-        index.setCreatorManager(creatorManager);
-        test.setCreatorManager(creatorManager);
-        iface.setCreatorManager(creatorManager);
-        exec.setCreatorManager(creatorManager);
+        this.file = file;
     }
 
     /**
-     * Accessor for the DefaultCreatorManager that we configure
-     * @param converterManager The new DefaultConverterManager
+     * @param iface The iface to set.
      */
-    public void setConverterManager(ConverterManager converterManager)
+    public void setIface(Processor iface)
     {
-        test.setConverterManager(converterManager);
-        exec.setConverterManager(converterManager);
+        this.iface = iface;
     }
 
     /**
-     * Accessor for the security manager
-     * @param accessControl The accessControl to set.
+     * @param index The index to set.
      */
-    public void setAccessControl(AccessControl accessControl)
+    public void setIndex(Processor index)
     {
-        test.setAccessControl(accessControl);
-        iface.setAccessControl(accessControl);
-        exec.setAccessControl(accessControl);
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Processor#setScriptCompressed(boolean)
-     */
-    public void setScriptCompressed(boolean scriptCompressed)
-    {
-        file.setScriptCompressed(scriptCompressed);
+        this.index = index;
     }
 
     /**
-     * @param compressionLevel The compressionLevel to set.
+     * @param test The test to set.
      */
-    public void setCompressionLevel(int compressionLevel)
+    public void setTest(Processor test)
     {
-        file.setCompressionLevel(compressionLevel);
+        this.test = test;
     }
+
+    private Processor index;
+    private Processor test;
+    private Processor iface;
+    private Processor exec;
+    private FileProcessor file;
 
     /**
      * The log stream

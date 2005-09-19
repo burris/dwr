@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.Handler;
+import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
@@ -19,11 +19,11 @@ import uk.ltd.getahead.dwr.util.LocalUtil;
  * Create some javascript interface code.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultInterfaceHandler implements Handler
+public class DefaultInterfaceProcessor implements Processor
 {
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see uk.ltd.getahead.dwr.Processor#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {

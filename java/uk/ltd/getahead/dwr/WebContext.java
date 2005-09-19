@@ -23,6 +23,12 @@ public interface WebContext
     Browser getBrowser();
 
     /**
+     * Accessor for the IoC container.
+     * @return The IoC container that created the interface implementations.
+     */
+    Factory getFactory();
+
+    /**
      * Returns the current session associated with this request, or if the
      * request does not have a session, creates one.
      * @return Returns the http session.

@@ -20,8 +20,9 @@ import uk.ltd.getahead.dwr.util.Logger;
  */
 public class DefaultCreatorManager implements CreatorManager
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.CreatorManager#setDebug(boolean)
+    /**
+     * Set the debug status
+     * @param debug The new debug setting
      */
     public void setDebug(boolean debug)
     {

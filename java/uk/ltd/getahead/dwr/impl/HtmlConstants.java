@@ -50,7 +50,7 @@ public interface HtmlConstants
      * Path to the generated test pages
      * TODO: make this data
      */
-    static final String PATH_TEST = "test/"; //$NON-NLS-1$
+    static final String PATH_TEST = "/test/"; //$NON-NLS-1$
 
     /**
      * Path upwards
@@ -60,22 +60,22 @@ public interface HtmlConstants
     /**
      * Index page name
      */
-    static final String FILE_INDEX = "index.html"; //$NON-NLS-1$
+    static final String FILE_INDEX = "/index.html"; //$NON-NLS-1$
 
     /**
      * Util script name
      */
-    static final String FILE_UTIL = "util.js"; //$NON-NLS-1$
+    static final String FILE_UTIL = "/util.js"; //$NON-NLS-1$
 
     /**
      * Engine helper name
      */
-    static final String FILE_ENGINE = "engine.js"; //$NON-NLS-1$
+    static final String FILE_ENGINE = "/engine.js"; //$NON-NLS-1$
 
     /**
      * Deprecated script name
      */
-    static final String FILE_DEPRECATED = "deprecated.js"; //$NON-NLS-1$
+    static final String FILE_DEPRECATED = "/deprecated.js"; //$NON-NLS-1$
 
     /**
      * Help page name

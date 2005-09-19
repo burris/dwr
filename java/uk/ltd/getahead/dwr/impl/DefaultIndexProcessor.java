@@ -9,19 +9,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.Handler;
+import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
+ * Create a debug mode only index page to all the available classes
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultIndexHandler implements Handler
+public class DefaultIndexProcessor implements Processor
 {
-    /**
-     * Create a debug mode only index page to all the available classes
-     * @param req The browsers request
-     * @param resp The response channel
-     * @throws IOException If writing to the output fails
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
@@ -46,7 +44,7 @@ public class DefaultIndexHandler implements Handler
         {
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
-            out.println("<li><a href='" + HtmlConstants.PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+            out.println("<li><a href='." + HtmlConstants.PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         }
         out.println("</ul>"); //$NON-NLS-1$
 
@@ -76,5 +74,5 @@ public class DefaultIndexHandler implements Handler
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultIndexHandler.class);
+    private static final Logger log = Logger.getLogger(DefaultIndexProcessor.class);
 }

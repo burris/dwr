@@ -1,6 +1,5 @@
 package uk.ltd.getahead.dwr.convert;
 
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -9,10 +8,11 @@ import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.WebContext;
+import uk.ltd.getahead.dwr.WebContextFactory;
 
 /**
  * A converter that magics up HTTP objects
@@ -33,29 +33,31 @@ public class ServletConverter implements Converter
      */
     public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx)
     {
+        WebContext webcx = WebContextFactory.get();
+
         if (HttpServletRequest.class.isAssignableFrom(paramType))
         {
-            return ExecutionContext.get().getHttpServletRequest();
+            return webcx.getHttpServletRequest();
         }
 
         if (HttpServletResponse.class.isAssignableFrom(paramType))
         {
-            return ExecutionContext.get().getHttpServletResponse();
+            return webcx.getHttpServletResponse();
         }
 
         if (ServletConfig.class.isAssignableFrom(paramType))
         {
-            return ExecutionContext.get().getServletConfig();
+            return webcx.getServletConfig();
         }
 
         if (ServletContext.class.isAssignableFrom(paramType))
         {
-            return ExecutionContext.get().getServletContext();
+            return webcx.getServletContext();
         }
 
         if (HttpSession.class.isAssignableFrom(paramType))
         {
-            return ExecutionContext.get().getSession(true);
+            return webcx.getSession(true);
         }
 
         return null;

@@ -94,7 +94,15 @@ public class ExecutionContext implements WebContext
      */
     public Browser getBrowser()
     {
-        throw new UnsupportedOperationException(""); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getBrowser()"); //$NON-NLS-1$
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getFactory()
+     */
+    public Factory getFactory()
+    {
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getFactory()"); //$NON-NLS-1$
     }
 
     /**

@@ -18,8 +18,8 @@ import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DWRServlet;
-import uk.ltd.getahead.dwr.Handler;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -28,10 +28,10 @@ import uk.ltd.getahead.dwr.util.Logger;
  * Create a debug mode only test page for a single available class.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultTestHandler implements Handler
+public class DefaultTestProcessor implements Processor
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see uk.ltd.getahead.dwr.Processor#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
@@ -51,7 +51,7 @@ public class DefaultTestHandler implements Handler
         }
         String scriptName = pathInfo;
 
-        scriptName = LocalUtil.replace(scriptName, '/' + HtmlConstants.PATH_TEST, HtmlConstants.BLANK);
+        scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_TEST, HtmlConstants.BLANK);
         scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_ROOT, HtmlConstants.BLANK);
 
         Creator creator = creatorManager.getCreator(scriptName);
@@ -62,12 +62,12 @@ public class DefaultTestHandler implements Handler
         PrintWriter out = resp.getWriter();
 
         String interfaceURL = req.getContextPath() + servletPath + HtmlConstants.PATH_INTERFACE + scriptName + HtmlConstants.EXTENSION_JS;
-        String engineURL = req.getContextPath() + servletPath + '/' + HtmlConstants.FILE_ENGINE;
-        String utilURL = req.getContextPath() + servletPath + '/' + HtmlConstants.FILE_UTIL;
+        String engineURL = req.getContextPath() + servletPath + HtmlConstants.FILE_ENGINE;
+        String utilURL = req.getContextPath() + servletPath + HtmlConstants.FILE_UTIL;
 
         String proxyInterfaceURL = HtmlConstants.PATH_UP + HtmlConstants.PATH_INTERFACE + scriptName + HtmlConstants.EXTENSION_JS;
-        String proxyEngineURL = HtmlConstants.PATH_UP + '/' + HtmlConstants.FILE_ENGINE;
-        String proxyUtilURL = HtmlConstants.PATH_UP + '/' + HtmlConstants.FILE_UTIL;
+        String proxyEngineURL = HtmlConstants.PATH_UP + HtmlConstants.FILE_ENGINE;
+        String proxyUtilURL = HtmlConstants.PATH_UP + HtmlConstants.FILE_UTIL;
 
         out.println("<html>"); //$NON-NLS-1$
         out.println("<head>"); //$NON-NLS-1$
@@ -373,5 +373,5 @@ public class DefaultTestHandler implements Handler
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultTestHandler.class);
+    private static final Logger log = Logger.getLogger(DefaultTestProcessor.class);
 }

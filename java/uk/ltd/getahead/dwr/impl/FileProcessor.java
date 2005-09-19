@@ -17,7 +17,7 @@ import uk.ltd.getahead.dwr.util.JavascriptUtil;
  * A file servlet component that does some very limitted.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class FileHandler
+public class FileProcessor
 {
     /**
      * Basically a file servlet component that does some <b>very limitted</b>

@@ -50,7 +50,7 @@ public class BeanConverter implements Converter
             String rule = st.nextToken();
             if (rule.startsWith("get")) //$NON-NLS-1$
             {
-                log.warn("Exclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name."); //$NON-NLS-1$ //$NON-NLS-2$
+                log.info("Exclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name."); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             exclusions.add(rule);
@@ -77,7 +77,7 @@ public class BeanConverter implements Converter
             String rule = st.nextToken();
             if (rule.startsWith("get")) //$NON-NLS-1$
             {
-                log.warn("Inclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name."); //$NON-NLS-1$ //$NON-NLS-2$
+                log.info("Inclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name."); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             inclusions.add(rule);
@@ -207,17 +207,8 @@ public class BeanConverter implements Converter
 
                 if (setter == null)
                 {
-                    log.warn("No visible setter for " + key); //$NON-NLS-1$
-                    StringBuffer all = new StringBuffer();
-                    for (Iterator it = props.keySet().iterator(); it.hasNext();)
-                    {
-                        all.append(it.next());
-                        if (it.hasNext())
-                        {
-                            all.append(',');
-                        }
-                    }
-                    log.warn("Setters exist for (" + all + ") but not all may be visible."); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.warn("setter method for property " + key + " is not visible to DWR."); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.info("You can add a public set" + Character.toTitleCase(key.charAt(0)) + key.substring(1) + "() method, or switch to using the ObjectConverter to read from members directly."); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 else
                 {

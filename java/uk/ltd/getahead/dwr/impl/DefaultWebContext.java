@@ -13,10 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.Browser;
+import uk.ltd.getahead.dwr.Factory;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.util.SwallowingHttpServletResponse;
 
 /**
+ * A default implementation of WebContext
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultWebContext implements WebContext
@@ -27,14 +29,16 @@ public class DefaultWebContext implements WebContext
      * @param response The outgoing http reply
      * @param config The servlet configuration
      * @param context The servlet context
-     * @see uk.ltd.getahead.dwr.WebContextBuilder#set(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext)
-      */
-    public DefaultWebContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context)
+     * @param factory The IoC container
+     * @see uk.ltd.getahead.dwr.WebContextBuilder#set(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext, Factory)
+     */
+    public DefaultWebContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context, Factory factory)
     {
         this.request = request;
         this.response = response;
         this.config = config;
         this.context = context;
+        this.factory = factory;
     }
 
     /* (non-Javadoc)
@@ -51,6 +55,14 @@ public class DefaultWebContext implements WebContext
         }
 
         return browser;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getFactory()
+     */
+    public Factory getFactory()
+    {
+        return factory;
     }
 
     /* (non-Javadoc)
@@ -176,6 +188,7 @@ public class DefaultWebContext implements WebContext
     private HttpServletResponse response = null;
     private ServletConfig config = null;
     private ServletContext context = null;
+    private Factory factory;
 
     private static final String FILENAME_VERSION = "/dwr-version.properties"; //$NON-NLS-1$
     private static final String KEY_VERSION = "version"; //$NON-NLS-1$

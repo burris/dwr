@@ -16,7 +16,7 @@ import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.ClientScript;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.Handler;
+import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -25,10 +25,10 @@ import uk.ltd.getahead.dwr.util.Logger;
  * Execute a remote Javascript request.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultExecHandler implements Handler
+public class DefaultExecProcessor implements Processor
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see uk.ltd.getahead.dwr.Processor#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
@@ -222,5 +222,5 @@ public class DefaultExecHandler implements Handler
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultExecHandler.class);
+    private static final Logger log = Logger.getLogger(DefaultExecProcessor.class);
 }
