@@ -42,9 +42,13 @@ public class DefaultProcessor implements Processor
             log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + req.getContextPath() + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
-        if (pathInfo == null || pathInfo.length() == 0 || pathInfo.equals(HtmlConstants.PATH_ROOT))
+        if (pathInfo == null || pathInfo.length() == 0 || pathInfo.equals(HtmlConstants.PATH_ROOT) || pathInfo.equals(req.getContextPath()))
         {
             resp.sendRedirect(req.getContextPath() + servletPath + HtmlConstants.FILE_INDEX);
+        }
+        else if (pathInfo.equals(req.getContextPath()))
+        {
+            resp.sendRedirect(req.getContextPath() + HtmlConstants.FILE_INDEX);
         }
         else if (pathInfo != null && pathInfo.startsWith(HtmlConstants.FILE_INDEX))
         {
@@ -76,7 +80,7 @@ public class DefaultProcessor implements Processor
         }
         else
         {
-            log.warn("Page not found. In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$
+            log.warn("Page not found (" + pathInfo + "). In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$ //$NON-NLS-2$
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }

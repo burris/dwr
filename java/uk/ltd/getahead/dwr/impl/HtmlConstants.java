@@ -30,25 +30,21 @@ public interface HtmlConstants
 
     /**
      * Path to the root of the web app
-     * TODO: make this data
      */
     static final String PATH_ROOT = "/"; //$NON-NLS-1$
 
     /**
      * Path to the execution handler
-     * TODO: make this data
      */
     static final String PATH_EXEC = "/exec"; //$NON-NLS-1$
 
     /**
      * Path to the interface creator
-     * TODO: make this data
      */
     static final String PATH_INTERFACE = "/interface/"; //$NON-NLS-1$
 
     /**
      * Path to the generated test pages
-     * TODO: make this data
      */
     static final String PATH_TEST = "/test/"; //$NON-NLS-1$
 
@@ -80,7 +76,7 @@ public interface HtmlConstants
     /**
      * Help page name
      */
-    static final String FILE_HELP = "help.html"; //$NON-NLS-1$
+    static final String FILE_HELP = "/help.html"; //$NON-NLS-1$
 
     /**
      * Extension for javascript files

@@ -40,7 +40,13 @@ public class FileProcessor
             {
                 StringBuffer buffer = new StringBuffer();
 
-                InputStream raw = getClass().getResourceAsStream(DWRServlet.PACKAGE + path);
+                String resource = DWRServlet.PACKAGE + path;
+                InputStream raw = getClass().getResourceAsStream(resource);
+                if (raw == null)
+                {
+                    throw new IOException("Failed to find resource: " + resource); //$NON-NLS-1$
+                }
+
                 BufferedReader in = new BufferedReader(new InputStreamReader(raw));
                 while (true)
                 {

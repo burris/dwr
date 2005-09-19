@@ -51,8 +51,8 @@ public final class DTDEntityResolver implements EntityResolver
      */
     private static final String[][] MAPPINGS =
     {
-        { "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN", "dwr10.dtd"}, //$NON-NLS-1$ //$NON-NLS-2$
-        { "-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN", "dwr10.dtd"}, //$NON-NLS-1$ //$NON-NLS-2$
+        { "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN", "/dwr10.dtd"}, //$NON-NLS-1$ //$NON-NLS-2$
+        { "-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN", "/dwr10.dtd"}, //$NON-NLS-1$ //$NON-NLS-2$
     };
 
     /**

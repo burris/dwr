@@ -223,7 +223,7 @@ public class DWRServlet extends HttpServlet
     /**
      * The package name because people need to load resources in this package.  
      */
-    public static final String PACKAGE = "/uk/ltd/getahead/dwr/"; //$NON-NLS-1$
+    public static final String PACKAGE = "/uk/ltd/getahead/dwr"; //$NON-NLS-1$
 
     /**
      * Init parameter: Skip reading the default config file if none are specified.
