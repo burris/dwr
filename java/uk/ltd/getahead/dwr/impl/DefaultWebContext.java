@@ -24,7 +24,7 @@ import uk.ltd.getahead.dwr.util.SwallowingHttpServletResponse;
 public class DefaultWebContext implements WebContext
 {
     /**
-     * Prevent instansiation outside of setExecutionContext()
+     * Create a new DefaultWebContext
      * @param request The incoming http request
      * @param response The outgoing http reply
      * @param config The servlet configuration

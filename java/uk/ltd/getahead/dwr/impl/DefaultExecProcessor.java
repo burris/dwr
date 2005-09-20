@@ -78,7 +78,7 @@ public class DefaultExecProcessor implements Processor
                 resp.setContentType(HtmlConstants.MIME_HTML);
                 PrintWriter out = resp.getWriter();
                 out.println("//<script type='text/javascript'>"); //$NON-NLS-1$
-                out.println("DWREngine._handleWarning('Your browser sent a request that could not be understood.\\nIf you understand how Javascript works in your browser, please help us fix the problem.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
+                out.println("alert('Your browser sent a request that could not be understood.\\nIf you understand how Javascript works in your browser, please help us fix the problem.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
                 out.println("//</script>"); //$NON-NLS-1$
                 out.flush();
                 return;
