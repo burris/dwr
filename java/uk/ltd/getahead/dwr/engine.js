@@ -482,37 +482,6 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
 };
 
 /**
- * Called as a result of a request timeout or an http reply status != 200
- * @param batch Block of data about the calls we are making on the server
- * @private
- */ 
-DWREngine._abortRequest = function(batch) {
-    if (batch && batch.metadata && !batch.completed) {
-        // TODO: we used to do: batch.completed = true;
-        // here, but decided to leave it to DWREngine._stateChange() to handle
-        // when abort is called. This comment can be deleted if this works!
-        if (batch.req != null) {
-            batch.req.abort();
-            if (batch.metadata.errorHandler) {
-                // I'm not keen on the idea of setting error handlers a strings
-                // can we get rid of this at some stage?
-                //if (typeof batch.metadata.errorHandler == "string") {
-                //    eval(batch.metadata.errorHandler); 
-                //}
-                //else if (typeof batch.metadata.errorHandler == "function") {
-                    batch.metadata.errorHandler(); 
-                //}
-                //else {
-                //    if (DWREngine._warningHandler) {
-                //        DWREngine._warningHandler("errorHandler is neither a string (for eval()) or a function.");
-                //    }
-                //}
-            }
-        }
-    }
-};
-
-/**
  * Actually send the block of data in the batch object.
  * @param batch Block of data about the calls we are making on the server
  * @private
@@ -715,6 +684,37 @@ DWREngine._stateChangeError = function(batch, message) {
         batch.metadata.errorHandler(message);
     }
 }
+
+/**
+ * Called as a result of a request timeout or an http reply status != 200
+ * @param batch Block of data about the calls we are making on the server
+ * @private
+ */ 
+DWREngine._abortRequest = function(batch) {
+    if (batch && batch.metadata && !batch.completed) {
+        // TODO: we used to do: batch.completed = true;
+        // here, but decided to leave it to DWREngine._stateChange() to handle
+        // when abort is called. This comment can be deleted if this works!
+        if (batch.req != null) {
+            batch.req.abort();
+            if (batch.metadata.errorHandler) {
+                // I'm not keen on the idea of setting error handlers a strings
+                // can we get rid of this at some stage?
+                //if (typeof batch.metadata.errorHandler == "string") {
+                //    eval(batch.metadata.errorHandler); 
+                //}
+                //else if (typeof batch.metadata.errorHandler == "function") {
+                    batch.metadata.errorHandler(); 
+                //}
+                //else {
+                //    if (DWREngine._warningHandler) {
+                //        DWREngine._warningHandler("errorHandler is neither a string (for eval()) or a function.");
+                //    }
+                //}
+            }
+        }
+    }
+};
 
 /**
  * Hack a polymorphic dwrSerialize() function on all basic types. Yeulch

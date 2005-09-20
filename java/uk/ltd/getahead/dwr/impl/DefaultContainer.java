@@ -74,7 +74,7 @@ public class DefaultContainer implements Container
 
     /**
      * Called to indicate that we finished called setImplementation.
-     * @see DefaultContainer#addParameter(String, String)
+     * @see DefaultContainer#addParameter(Object, Object)
      */
     public void configurationFinished()
     {
