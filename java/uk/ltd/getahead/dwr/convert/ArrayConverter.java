@@ -99,7 +99,7 @@ public class ArrayConverter implements Converter
         StringBuffer buffer = new StringBuffer();
         buffer.append("var "); //$NON-NLS-1$
         buffer.append(varname);
-        buffer.append(" = new Array();"); //$NON-NLS-1$
+        buffer.append("=[];"); //$NON-NLS-1$
 
         int size = Array.getLength(data);
         for (int i = 0; i < size; i++)
@@ -112,16 +112,16 @@ public class ArrayConverter implements Converter
                 buffer.append(varname);
                 buffer.append('[');
                 buffer.append(i);
-                buffer.append("] = "); //$NON-NLS-1$
+                buffer.append("]="); //$NON-NLS-1$
                 buffer.append(nested.getAssignCode());
-                buffer.append(';');
+                buffer.append(";\n"); //$NON-NLS-1$
             }
             catch (Exception ex)
             {
                 buffer.append(varname);
                 buffer.append('[');
                 buffer.append(i);
-                buffer.append("] = 'Conversion Error. See console log.';"); //$NON-NLS-1$
+                buffer.append("]='Conversion Error. See console log.';\n"); //$NON-NLS-1$
 
                 log.warn("Failed to convert array member " + i + ". Conversion error for type: " + data.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$
             }

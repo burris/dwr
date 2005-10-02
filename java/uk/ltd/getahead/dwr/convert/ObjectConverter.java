@@ -264,7 +264,7 @@ public class ObjectConverter implements Converter
         StringBuffer buffer = new StringBuffer();
         buffer.append("var "); //$NON-NLS-1$
         buffer.append(varname);
-        buffer.append(" = new Object();"); //$NON-NLS-1$
+        buffer.append("={};"); //$NON-NLS-1$
 
         try
         {
@@ -318,7 +318,7 @@ public class ObjectConverter implements Converter
                     buffer.append(varname);
                     buffer.append('.');
                     buffer.append(name);
-                    buffer.append(" = "); //$NON-NLS-1$
+                    buffer.append('=');
                     buffer.append(nested.getAssignCode());
                     buffer.append(';');
                 }

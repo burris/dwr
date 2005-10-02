@@ -94,7 +94,7 @@ public class DateConverter implements Converter
         long millis = date.getTime();
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var " + varname + " = new Date("); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("var " + varname + "=new Date("); //$NON-NLS-1$ //$NON-NLS-2$
         buffer.append(millis);
         buffer.append(");"); //$NON-NLS-1$
 

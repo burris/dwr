@@ -244,7 +244,7 @@ public class BeanConverter implements Converter
         StringBuffer buffer = new StringBuffer();
         buffer.append("var "); //$NON-NLS-1$
         buffer.append(varname);
-        buffer.append(" = new Object();"); //$NON-NLS-1$
+        buffer.append("={};"); //$NON-NLS-1$
 
         try
         {
@@ -293,9 +293,16 @@ public class BeanConverter implements Converter
                     buffer.append(varname);
                     buffer.append('.');
                     buffer.append(name);
-                    buffer.append(" = "); //$NON-NLS-1$
+                    buffer.append('=');
                     buffer.append(nested.getAssignCode());
                     buffer.append(';');
+
+                    // TODO: Does this hack want to stay?
+                    // In an attempt to work around a FF1.4 bug we split long lines
+                    if (i % 10 == 0)
+                    {
+                        buffer.append('\n');
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -308,6 +315,7 @@ public class BeanConverter implements Converter
             throw new ConversionException(ex);
         }
 
+        buffer.append('\n');
         return buffer.toString();
     }
 

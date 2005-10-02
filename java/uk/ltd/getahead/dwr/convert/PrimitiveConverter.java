@@ -122,22 +122,21 @@ public class PrimitiveConverter implements Converter
 
         if (object.equals(Boolean.TRUE))
         {
-            // @PMD:REVIEWED:AvoidDuplicateLiterals: by Joe on 02/02/05 10:56
-            return "var " + varname + " = true;"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "var " + varname + "=true;"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         else if (object.equals(Boolean.FALSE))
         {
-            return "var " + varname + " = false;"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "var " + varname + "=false;"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         else if (paramType == Character.class)
         {
             // Treat characters as strings
-            return "var " + varname + " = \"" + jsutil.escapeJavaScript(object.toString()) + "\";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return "var " + varname + "=\"" + jsutil.escapeJavaScript(object.toString()) + "\";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         else
         {
             // We just use the default toString for all numbers
-            return "var " + varname + " = " + object.toString() + ";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return "var " + varname + '=' + object.toString() + ';'; //$NON-NLS-1$
         }
     }
 

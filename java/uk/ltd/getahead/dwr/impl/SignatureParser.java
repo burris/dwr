@@ -216,7 +216,19 @@ public class SignatureParser
             }
         }
 
-        log.error("Failed to find class: " + type); //$NON-NLS-1$
+        log.error("Failed to find class: '" + type  + "' from <signature> block."); //$NON-NLS-1$ //$NON-NLS-2$
+        log.info("- Looked in the following class imports:"); //$NON-NLS-1$
+        for (Iterator it = classImports.entrySet().iterator(); it.hasNext();)
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            log.info("  - " + entry.getKey() + " -> " + entry.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        log.info("- Looked in the following package imports:"); //$NON-NLS-1$
+        for (Iterator it = packageImports.iterator(); it.hasNext();)
+        {
+            log.info("  - " + it.next()); //$NON-NLS-1$
+        }
+
         return null;
     }
 

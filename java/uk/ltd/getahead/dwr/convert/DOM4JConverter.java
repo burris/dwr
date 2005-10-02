@@ -96,7 +96,7 @@ public class DOM4JConverter implements Converter
             StringBuffer buffer = new StringBuffer();
             buffer.append("var "); //$NON-NLS-1$
             buffer.append(varname);
-            buffer.append(" = DWREngine._unserializeDocument(\""); //$NON-NLS-1$
+            buffer.append("=DWREngine._unserializeDocument(\""); //$NON-NLS-1$
             buffer.append(jsutil.escapeJavaScript(xml.toString()));
             buffer.append("\");"); //$NON-NLS-1$
 

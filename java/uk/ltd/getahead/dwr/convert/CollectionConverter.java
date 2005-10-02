@@ -170,7 +170,7 @@ public class CollectionConverter implements Converter
         }
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("var " + varname + " = new Array();"); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("var " + varname + "=[];"); //$NON-NLS-1$ //$NON-NLS-2$
 
         int i = 0;
         while (it.hasNext())
@@ -183,7 +183,7 @@ public class CollectionConverter implements Converter
             buffer.append(varname);
             buffer.append('[');
             buffer.append(i);
-            buffer.append("] = "); //$NON-NLS-1$
+            buffer.append("]="); //$NON-NLS-1$
             buffer.append(nested.getAssignCode());
             buffer.append(';');
 

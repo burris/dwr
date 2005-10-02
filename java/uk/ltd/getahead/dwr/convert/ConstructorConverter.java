@@ -44,7 +44,7 @@ public class ConstructorConverter implements Converter
      */
     public String convertOutbound(Object data, String varname, OutboundContext outctx)
     {
-        return "var " + varname + " = \"" + jsutil.escapeJavaScript(data.toString()) + "\";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return "var " + varname + "=\"" + jsutil.escapeJavaScript(data.toString()) + "\";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     /**

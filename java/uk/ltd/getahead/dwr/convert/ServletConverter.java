@@ -68,6 +68,6 @@ public class ServletConverter implements Converter
      */
     public String convertOutbound(Object data, String varname, OutboundContext outctx)
     {
-        return "var " + varname + " = undefined;";  //$NON-NLS-1$ //$NON-NLS-2$
+        return "var " + varname + "=null;";  //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

@@ -154,7 +154,7 @@ public class DefaultConverterManager implements ConverterManager
         if (object == null)
         {
             String varName = converted.getNextVariableName();
-            return new OutboundVariable("var " + varName + " = null;", varName); //$NON-NLS-1$ //$NON-NLS-2$
+            return new OutboundVariable("var " + varName + "=null;", varName); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         // Check to see if we have done this one already
@@ -177,7 +177,7 @@ public class DefaultConverterManager implements ConverterManager
         if (converter == null)
         {
             log.error(Messages.getString("DefaultConverterManager.MissingConverter", object.getClass().getName())); //$NON-NLS-1$
-            return new OutboundVariable("var " + varName + " = null;", varName); //$NON-NLS-1$ //$NON-NLS-2$
+            return new OutboundVariable("var " + varName + "=null;", varName); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         ov.setInitCode(converter.convertOutbound(object, ov.getAssignCode(), converted));

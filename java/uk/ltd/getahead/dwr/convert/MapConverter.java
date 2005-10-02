@@ -169,7 +169,7 @@ public class MapConverter implements Converter
         StringBuffer buffer = new StringBuffer();
         buffer.append("var "); //$NON-NLS-1$
         buffer.append(varname);
-        buffer.append(" = new Object();"); //$NON-NLS-1$
+        buffer.append("={};"); //$NON-NLS-1$
 
         for (Iterator it = map.keySet().iterator(); it.hasNext();)
         {
@@ -196,7 +196,7 @@ public class MapConverter implements Converter
             buffer.append(varname);
             buffer.append('[');
             buffer.append(outkey);
-            buffer.append("] = "); //$NON-NLS-1$
+            buffer.append("]="); //$NON-NLS-1$
             buffer.append(nested.getAssignCode());
             buffer.append(';');
         }

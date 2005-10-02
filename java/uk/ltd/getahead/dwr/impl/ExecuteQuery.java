@@ -18,6 +18,7 @@ import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.Call;
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.ConversionConstants;
+import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
@@ -28,6 +29,7 @@ import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -176,12 +178,12 @@ public class ExecuteQuery
             catch (InvocationTargetException ex)
             {
                 log.warn("Method execution failed: ", ex.getTargetException()); //$NON-NLS-1$
-                call.setThrowable(ex.getTargetException());
+                call.setThrowable(convertException(converted, ex.getTargetException()));
             }
             catch (Throwable ex)
             {
                 log.warn("Method execution failed: ", ex); //$NON-NLS-1$
-                call.setThrowable(ex);
+                call.setThrowable(convertException(converted, ex));
             }
         }
 
@@ -455,6 +457,41 @@ public class ExecuteQuery
 
         return (Method) available.get(0);
     }
+
+    /**
+     * Convert an exception into an outbound variable
+     * @param converted The conversion context
+     * @param th The exception to be converted
+     * @return A new outbound exception
+     */
+    private OutboundVariable convertException(OutboundContext converted, Throwable th)
+    {
+        try
+        {
+            boolean convertable = converterManager.isConvertable(th.getClass());
+            if (convertable)
+            {
+                return converterManager.convertOutbound(th, converted);
+            }
+        }
+        catch (ConversionException ex)
+        {
+            log.warn("Exception while converting. Exception to be converted: " + th, ex); //$NON-NLS-1$
+        }
+
+        // So we will have to create one for ourselves
+        OutboundVariable ov = new OutboundVariable();
+        String varName = converted.getNextVariableName();
+        ov.setAssignCode(varName);
+        ov.setInitCode("var " + varName + " = \"" + jsutil.escapeJavaScript(th.toString()) + "\";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        return ov;
+    }
+
+    /**
+     * The means by which we strip comments
+     */
+    private JavascriptUtil jsutil = new JavascriptUtil();
 
     /**
      * The log stream

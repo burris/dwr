@@ -90,7 +90,7 @@ public class Call
     /**
      * @param th The th to set.
      */
-    public void setThrowable(Throwable th)
+    public void setThrowable(OutboundVariable th)
     {
         this.th = th;
     }
@@ -98,7 +98,7 @@ public class Call
     /**
      * @return Returns the th.
      */
-    public Throwable getThrowable()
+    public OutboundVariable getThrowable()
     {
         return th;
     }
@@ -113,5 +113,5 @@ public class Call
 
     private OutboundVariable reply =  null;
 
-    private Throwable th = null;
+    private OutboundVariable th = null;
 }
