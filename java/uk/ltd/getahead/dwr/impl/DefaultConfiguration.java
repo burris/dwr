@@ -3,7 +3,9 @@ package uk.ltd.getahead.dwr.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -19,10 +21,13 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.AjaxFilter;
+import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Configuration;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.LogErrorHandler;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -183,6 +188,10 @@ public class DefaultConfiguration implements Configuration
                 {
                     loadConvert(allower);
                 }
+                else if (allower.getNodeName().equals(ELEMENT_FILTER))
+                {
+                    loadFilter(allower);
+                }
             }
         }
     }
@@ -241,6 +250,7 @@ public class DefaultConfiguration implements Configuration
             processPermissions(javascript, allower);
             processAuth(javascript, allower);
             processParameters(javascript, allower);
+            processAjaxFilters(javascript, allower);
         }
         catch (NoClassDefFoundError ex)
         {
@@ -249,6 +259,37 @@ public class DefaultConfiguration implements Configuration
         catch (Exception ex)
         {
             log.error("Failed to add creator: type=" + type + ", javascript=" + javascript, ex); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+    }
+
+    /**
+     * Internal method to load the convert element
+     * @param allower The element to read
+     */
+    private void loadFilter(Element allower)
+    {
+        String type = allower.getAttribute(ATTRIBUTE_CLASS);
+
+        try
+        {
+            Class impl = Class.forName(type);
+            AjaxFilter object = (AjaxFilter) impl.newInstance();
+
+            LocalUtil.setParams(object, createSettingMap(allower), ignore);
+
+            ajaxFilterManager.addAjaxFilter(object);
+        }
+        catch (ClassCastException ex)
+        {
+            log.error(type + " does not implement " + AjaxFilter.class.getName(), ex); //$NON-NLS-1$
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            log.info("Missing class for filter (class='" + type + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        catch (Exception ex)
+        {
+            log.error("Failed to add filter: class=" + type, ex); //$NON-NLS-1$
         }
     }
 
@@ -409,6 +450,44 @@ public class DefaultConfiguration implements Configuration
     }
 
     /**
+     * J2EE role based method level security added here.
+     * @param javascript The name of the creator
+     * @param parent The container of the include and exclude elements.
+     */
+    private void processAjaxFilters(String javascript, Element parent)
+    {
+        NodeList nodes = parent.getElementsByTagName(ELEMENT_FILTER);
+        for (int i = 0; i < nodes.getLength(); i++)
+        {
+            Element include = (Element) nodes.item(i);
+
+            String type = include.getAttribute(ATTRIBUTE_CLASS);
+
+            try
+            {
+                Class impl = Class.forName(type);
+                AjaxFilter object = (AjaxFilter) impl.newInstance();
+
+                LocalUtil.setParams(object, createSettingMap(include), ignore);
+
+                ajaxFilterManager.addAjaxFilter(object, javascript);
+            }
+            catch (ClassCastException ex)
+            {
+                log.error(type + " does not implement " + AjaxFilter.class.getName(), ex); //$NON-NLS-1$
+            }
+            catch (NoClassDefFoundError ex)
+            {
+                log.info("Missing class for filter (class='" + type + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            catch (Exception ex)
+            {
+                log.error("Failed to add filter: class=" + type, ex); //$NON-NLS-1$
+            }
+        }
+    }
+
+    /**
      * Parse and extra type info from method signatures
      * @param element The element to read
      */
@@ -492,9 +571,28 @@ public class DefaultConfiguration implements Configuration
     }
 
     /**
+     * Accessor for the AjaxFilterManager
+     * @param ajaxFilterManager The AjaxFilterManager to set.
+     */
+    public void setAjaxFilterManager(AjaxFilterManager ajaxFilterManager)
+    {
+        this.ajaxFilterManager = ajaxFilterManager;
+    }
+
+    /**
+     * The properties that we don't warn about if they don't exist.
+     */
+    private static List ignore = Arrays.asList(new String[] { "class", }); //$NON-NLS-1$ //$NON-NLS-2$
+
+    /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultConfiguration.class);
+    public static final Logger log = Logger.getLogger(DefaultConfiguration.class);
+
+    /**
+     * What AjaxFilters apply to which Ajax calls?
+     */
+    private AjaxFilterManager ajaxFilterManager = null;
 
     /**
      * The converter manager that decides how parameters are converted
@@ -533,6 +631,8 @@ public class DefaultConfiguration implements Configuration
     private static final String ELEMENT_AUTH = "auth"; //$NON-NLS-1$
 
     private static final String ELEMENT_SIGNATURES = "signatures"; //$NON-NLS-1$
+
+    private static final String ELEMENT_FILTER = "filter"; //$NON-NLS-1$
 
     /*
      * The attribute names

@@ -1,12 +1,12 @@
 package uk.ltd.getahead.dwr.impl;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
@@ -78,35 +78,7 @@ public class DefaultCreatorManager implements CreatorManager
 
         Creator creator = (Creator) clazz.newInstance();
 
-        // Initialize the creator with the parameters that we know of.
-        for (Iterator it = params.entrySet().iterator(); it.hasNext();)
-        {
-            Map.Entry entry = (Entry) it.next();
-            String key = (String) entry.getKey();
-            Object value = entry.getValue();
-
-            try
-            {
-                LocalUtil.setProperty(creator, key, value);
-            }
-            catch (NoSuchMethodException ex)
-            {
-                // No-one has setCreator or setClass, so don't warn about it
-                if (!key.equals("creator") && !key.equals("class")) //$NON-NLS-1$ //$NON-NLS-2$
-                {
-                    log.debug("No property '" + key + "' on " + creator.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-            }
-            catch (InvocationTargetException ex)
-            {
-                log.warn("Error setting " + key + "=" + value + " on " + creator.getClass().getName(), ex.getTargetException()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
-            catch (Exception ex)
-            {
-                log.warn("Error setting " + key + "=" + value + " on " + creator.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
-        }
-
+        LocalUtil.setParams(creator, params, ignore);
         creator.setProperties(params);
 
         // add the creator for the script name
@@ -211,4 +183,10 @@ public class DefaultCreatorManager implements CreatorManager
      * Are we in debug mode?
      */
     private boolean debug = false;
+
+    /**
+     * The properties that we don't warn about if they don't exist.
+     * @see DefaultCreatorManager#addCreator(String, String, Map)
+     */
+    private static List ignore = Arrays.asList(new String[] { "creator", "class" }); //$NON-NLS-1$ //$NON-NLS-2$
 }

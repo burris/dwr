@@ -12,11 +12,11 @@ import org.dom4j.io.XMLWriter;
 
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
@@ -25,15 +25,8 @@ import uk.ltd.getahead.dwr.util.LocalUtil;
  * @author Joe Walker [joe at eireneh dot com]
  * @version $Id: StringConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
  */
-public class DOM4JConverter implements Converter
+public class DOM4JConverter extends BaseV20Converter implements Converter
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
-     */
-    public void setConverterManager(ConverterManager newConfig)
-    {
-    }
-
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
@@ -68,10 +61,13 @@ public class DOM4JConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
+        OutboundVariable ov = outctx.createOutboundVariable(data);
+        String varname = ov.getAssignCode();
+
         try
         {
             // Using XSLT to convert to a stream. Setup the source
@@ -100,7 +96,8 @@ public class DOM4JConverter implements Converter
             buffer.append(jsutil.escapeJavaScript(xml.toString()));
             buffer.append("\");"); //$NON-NLS-1$
 
-            return buffer.toString();
+            ov.setInitCode(buffer.toString());
+            return ov;
         }
         catch (ConversionException ex)
         {

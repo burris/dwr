@@ -48,6 +48,22 @@ public final class OutboundContext
     }
 
     /**
+     * Create a new OutboundVariable along with a variable name and remembered
+     * to avoid recursion.
+     * @param data The data to be converted
+     * @return A new OutboundVariable
+     * @see OutboundContext#put(Object, OutboundVariable)
+     * @see OutboundContext#getNextVariableName()
+     */
+    public OutboundVariable createOutboundVariable(Object data)
+    {
+        OutboundVariable ov = new OutboundVariable();
+        ov.setAssignCode(getNextVariableName());
+        put(data, ov);
+        return ov;
+    }
+
+    /**
      * The map of objects to how we converted them last time
      */
     private final Map map = new HashMap();

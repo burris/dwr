@@ -28,7 +28,7 @@ import uk.ltd.getahead.dwr.util.Logger;
  * Convert a Javascript associative array into a JavaBean
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class BeanConverter implements Converter
+public class BeanConverter extends BaseV20Converter implements Converter
 {
     /**
      * Set a list of properties excluded from conversion
@@ -237,14 +237,15 @@ public class BeanConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("var "); //$NON-NLS-1$
-        buffer.append(varname);
-        buffer.append("={};"); //$NON-NLS-1$
+        // Where we collect out converted children
+        Map ovs = new HashMap();
+
+        // We need to do this before collecing the children to save recurrsion
+        OutboundVariable ov = outctx.createOutboundVariable(data);
 
         try
         {
@@ -259,16 +260,10 @@ public class BeanConverter implements Converter
                 {
                     // We don't marshall things we can't read
                     Method getter = descriptor.getReadMethod();
-                    if (getter == null)
-                    {
-                        continue;
-                    }
+                    if (getter == null) continue;
 
                     // We don't marshall getClass()
-                    if (name.equals("class")) //$NON-NLS-1$
-                    {
-                        continue;
-                    }
+                    if (name.equals("class")) continue; //$NON-NLS-1$
 
                     // Access rules mean we might not want to do this one
                     if (!isAllowed(name))
@@ -286,23 +281,7 @@ public class BeanConverter implements Converter
                     Object value = getter.invoke(data, new Object[0]);
                     OutboundVariable nested = getConverterManager().convertOutbound(value, outctx);
 
-                    // Make sure the nested thing is declared
-                    buffer.append(nested.getInitCode());
-
-                    // And now declare our stuff
-                    buffer.append(varname);
-                    buffer.append('.');
-                    buffer.append(name);
-                    buffer.append('=');
-                    buffer.append(nested.getAssignCode());
-                    buffer.append(';');
-
-                    // TODO: Does this hack want to stay?
-                    // In an attempt to work around a FF1.4 bug we split long lines
-                    if (i % 10 == 0)
-                    {
-                        buffer.append('\n');
-                    }
+                    ovs.put(name, nested);
                 }
                 catch (Exception ex)
                 {
@@ -315,8 +294,8 @@ public class BeanConverter implements Converter
             throw new ConversionException(ex);
         }
 
-        buffer.append('\n');
-        return buffer.toString();
+        ConverterUtil.addMapInit(ov, ovs);
+        return ov;
     }
 
     /**

@@ -15,6 +15,9 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 
 import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.AjaxFilter;
+import uk.ltd.getahead.dwr.AjaxFilterChain;
+import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Call;
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.ConversionConstants;
@@ -45,12 +48,14 @@ public class ExecuteQuery
      * @param creatorManager The way we get an object to call methods on
      * @param converterManager The way we convert javascript to java
      * @param accessControl The security manager
+     * @param ajaxFilterManager What AjaxFilters apply to which Ajax calls?
      */
-    public ExecuteQuery(CreatorManager creatorManager, ConverterManager converterManager, AccessControl accessControl)
+    public ExecuteQuery(CreatorManager creatorManager, ConverterManager converterManager, AccessControl accessControl, AjaxFilterManager ajaxFilterManager)
     {
         this.creatorManager = creatorManager;
         this.converterManager = converterManager;
         this.accessControl = accessControl;
+        this.ajaxFilterManager = ajaxFilterManager;
     }
 
     /**
@@ -168,9 +173,18 @@ public class ExecuteQuery
                     // Creator.PAGE scope means we create one every time anyway
                 }
 
-                // Execute
+                // Execute the filter chain
                 log.info("Executing: " + method.toString()); //$NON-NLS-1$
-                Object reply = method.invoke(object, params);
+                final Iterator it = ajaxFilterManager.getAjaxFilters(call.getScriptName());
+                AjaxFilterChain chain = new AjaxFilterChain()
+                {
+                    public Object doFilter(Object obj, Method meth, Object[] p) throws Exception
+                    {
+                        AjaxFilter next = (AjaxFilter) it.next();
+                        return next.doFilter(obj, meth, p, this);
+                    }
+                };
+                Object reply = chain.doFilter(object, method, params);
 
                 OutboundVariable ov = converterManager.convertOutbound(reply, converted);
                 call.setReply(ov);
@@ -497,6 +511,11 @@ public class ExecuteQuery
      * The log stream
      */
     private static final Logger log = Logger.getLogger(ExecuteQuery.class);
+
+    /**
+     * What AjaxFilters apply to which Ajax calls?
+     */
+    private AjaxFilterManager ajaxFilterManager = null;
 
     /**
      * The converter manager that decides how parameters are converted

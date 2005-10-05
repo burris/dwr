@@ -257,14 +257,14 @@ public class ObjectConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("var "); //$NON-NLS-1$
-        buffer.append(varname);
-        buffer.append("={};"); //$NON-NLS-1$
+        // Where we collect out converted children
+        Map ovs = new HashMap();
+
+        OutboundVariable ov = outctx.createOutboundVariable(data);
 
         try
         {
@@ -311,16 +311,7 @@ public class ObjectConverter implements Converter
                     Object value = field.get(data);
                     OutboundVariable nested = getConverterManager().convertOutbound(value, outctx);
 
-                    // Make sure the nested thing is declared
-                    buffer.append(nested.getInitCode());
-
-                    // And now declare our stuff
-                    buffer.append(varname);
-                    buffer.append('.');
-                    buffer.append(name);
-                    buffer.append('=');
-                    buffer.append(nested.getAssignCode());
-                    buffer.append(';');
+                    ovs.put(name, nested);
                 }
                 catch (Exception ex)
                 {
@@ -333,7 +324,8 @@ public class ObjectConverter implements Converter
             throw new ConversionException(ex);
         }
 
-        return buffer.toString();
+        ConverterUtil.addMapInit(ov, ovs);
+        return ov;
     }
 
     /**

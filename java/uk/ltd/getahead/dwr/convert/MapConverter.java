@@ -162,46 +162,40 @@ public class MapConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
+        // First we just collect our converted children
+        Map ovs = new HashMap();
+
+        OutboundVariable ov = outctx.createOutboundVariable(data);
+
+        // Loop through the map outputting any init code and collecting
+        // converted outbound variables into the ovs map
         Map map = (Map) data;
-
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("var "); //$NON-NLS-1$
-        buffer.append(varname);
-        buffer.append("={};"); //$NON-NLS-1$
-
-        for (Iterator it = map.keySet().iterator(); it.hasNext();)
+        for (Iterator it = map.entrySet().iterator(); it.hasNext();)
         {
-            Object key = it.next();
-            String outkey;
-            if (key instanceof String)
+            Map.Entry entry = (Map.Entry) it.next();
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (!(key instanceof String))
             {
-                outkey = '\'' + jsutil.escapeJavaScript((String) key) + '\'';
-            }
-            else
-            {
-                OutboundVariable ovkey = config.convertOutbound(key, outctx);
-                buffer.append(ovkey.getInitCode());
-                outkey = ovkey.getAssignCode();
+                log.warn("Javascript does not support non string keys. Converting to '" + key.getClass().getName() + "' using toString()"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
-            Object value = map.get(key);
+            String outkey = jsutil.escapeJavaScript(key.toString());
+
+//            OutboundVariable ovkey = config.convertOutbound(key, outctx);
+//            buffer.append(ovkey.getInitCode());
+//            outkey = ovkey.getAssignCode();
+
             OutboundVariable nested = config.convertOutbound(value, outctx);
 
-            // Make sure the nested thing is declared
-            buffer.append(nested.getInitCode());
-
-            // And now declare our stuff
-            buffer.append(varname);
-            buffer.append('[');
-            buffer.append(outkey);
-            buffer.append("]="); //$NON-NLS-1$
-            buffer.append(nested.getAssignCode());
-            buffer.append(';');
+            ovs.put(outkey, nested);
         }
 
-        return buffer.toString();
+        ConverterUtil.addMapInit(ov, ovs);
+        return ov;
     }
 
     /**

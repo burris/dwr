@@ -1,6 +1,8 @@
 package uk.ltd.getahead.dwr.convert;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
@@ -20,7 +22,7 @@ import uk.ltd.getahead.dwr.util.Logger;
  * @author Joe Walker [joe at eireneh dot com]
  * @version $Id: StringConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
  */
-public class ArrayConverter implements Converter
+public class ArrayConverter extends BaseV20Converter implements Converter
 {
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
@@ -89,45 +91,43 @@ public class ArrayConverter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
         if (!data.getClass().isArray())
         {
             throw new ConversionException(Messages.getString("ArrayConverter.ClassIsNotAnArray", data.getClass().getName())); //$NON-NLS-1$
         }
 
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("var "); //$NON-NLS-1$
-        buffer.append(varname);
-        buffer.append("=[];"); //$NON-NLS-1$
-
         int size = Array.getLength(data);
+        if (size == 0)
+        {
+            return new OutboundVariable("", "[]"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        OutboundVariable ov = new OutboundVariable();
+        String varname = outctx.getNextVariableName();
+        ov.setAssignCode(varname);
+        outctx.put(data, ov);
+
+        // Convert all the data members
+        List ovs = new ArrayList();
         for (int i = 0; i < size; i++)
         {
+            OutboundVariable nested;
             try
             {
-                OutboundVariable nested = converterManager.convertOutbound(Array.get(data, i), outctx);
-    
-                buffer.append(nested.getInitCode());
-                buffer.append(varname);
-                buffer.append('[');
-                buffer.append(i);
-                buffer.append("]="); //$NON-NLS-1$
-                buffer.append(nested.getAssignCode());
-                buffer.append(";\n"); //$NON-NLS-1$
+                nested = converterManager.convertOutbound(Array.get(data, i), outctx);
             }
             catch (Exception ex)
             {
-                buffer.append(varname);
-                buffer.append('[');
-                buffer.append(i);
-                buffer.append("]='Conversion Error. See console log.';\n"); //$NON-NLS-1$
-
+                nested = new OutboundVariable("", "'Conversion Error. See console log.'"); //$NON-NLS-1$ //$NON-NLS-2$
                 log.warn("Failed to convert array member " + i + ". Conversion error for type: " + data.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$
             }
+            ovs.add(nested);
         }
 
-        return buffer.toString();
+        ConverterUtil.addListInit(ov, ovs);
+        return ov;
     }
 
     /**

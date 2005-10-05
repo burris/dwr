@@ -1,11 +1,11 @@
 package uk.ltd.getahead.dwr.convert;
 
-
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 
 /**
  * An implementation of Converter for null and undefined.
@@ -30,10 +30,10 @@ public class NullConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public String convertOutbound(Object data, String varname, OutboundContext outctx)
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return "var " + varname + "=null;";  //$NON-NLS-1$ //$NON-NLS-2$
+        return new OutboundVariable("", "null"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

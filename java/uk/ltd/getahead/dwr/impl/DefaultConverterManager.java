@@ -1,11 +1,10 @@
 package uk.ltd.getahead.dwr.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
@@ -65,34 +64,7 @@ public class DefaultConverterManager implements ConverterManager
         Converter converter = (Converter) clazz.newInstance();
         converter.setConverterManager(this);
 
-        // Initialize the creator with the parameters that we know of.
-        for (Iterator it = params.entrySet().iterator(); it.hasNext();)
-        {
-            Map.Entry entry = (Entry) it.next();
-            String key = (String) entry.getKey();
-            Object value = entry.getValue();
-
-            try
-            {
-                LocalUtil.setProperty(converter, key, value);
-            }
-            catch (NoSuchMethodException ex)
-            {
-                // No-one has a setCreator method, so don't warn about it
-                if (!key.equals("converter") && !key.equals("match")) //$NON-NLS-1$ //$NON-NLS-2$
-                {
-                    log.debug("No property '" + key + "' on " + converter.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-            }
-            catch (InvocationTargetException ex)
-            {
-                log.warn("Error setting " + key + "=" + value + " on " + converter.getClass().getName(), ex.getTargetException()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
-            catch (Exception ex)
-            {
-                log.warn("Error setting " + key + "=" + value + " on " + converter.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
-        }
+        LocalUtil.setParams(converter, params, ignore);
 
         // add the converter for the specified match
         addConverter(match, converter);
@@ -153,8 +125,7 @@ public class DefaultConverterManager implements ConverterManager
     {
         if (object == null)
         {
-            String varName = converted.getNextVariableName();
-            return new OutboundVariable("var " + varName + "=null;", varName); //$NON-NLS-1$ //$NON-NLS-2$
+            return new OutboundVariable("", "null"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         // Check to see if we have done this one already
@@ -165,24 +136,16 @@ public class DefaultConverterManager implements ConverterManager
             return new OutboundVariable("", ov.getAssignCode()); //$NON-NLS-1$
         }
 
-        // So we will have to create one for ourselves
-        ov = new OutboundVariable();
-        String varName = converted.getNextVariableName();
-        ov.setAssignCode(varName);
-
-        // Save this for another time so we don't recurse into it
-        converted.put(object, ov);
-
+        // So we will have to do the conversion
         Converter converter = getConverter(object);
         if (converter == null)
         {
             log.error(Messages.getString("DefaultConverterManager.MissingConverter", object.getClass().getName())); //$NON-NLS-1$
+            String varName = converted.getNextVariableName();
             return new OutboundVariable("var " + varName + "=null;", varName); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        ov.setInitCode(converter.convertOutbound(object, ov.getAssignCode(), converted));
-
-        return ov;
+        return converter.convertOutbound(object, converted);
     }
 
     /* (non-Javadoc)
@@ -446,4 +409,10 @@ public class DefaultConverterManager implements ConverterManager
      * The list of the configured converters
      */
     private Map converters = new HashMap();
+
+    /**
+     * The properties that we don't warn about if they don't exist.
+     * @see DefaultConverterManager#addConverter(String, String, Map)
+     */
+    private static List ignore = Arrays.asList(new String[] { "converter", "match" }); //$NON-NLS-1$ //$NON-NLS-2$
 }

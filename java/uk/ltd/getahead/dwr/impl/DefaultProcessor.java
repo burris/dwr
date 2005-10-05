@@ -48,6 +48,11 @@ public class DefaultProcessor implements Processor
         }
         else if (pathInfo.equals(req.getContextPath()))
         {
+            // TODO: sort this out - since the pathInfo hack was added things...
+            // have not been totally right with the various urls that all point
+            // to the index page and we need to get to the bottom of things
+            // properly.
+            // This branch will never be executed because it is duplicated above
             resp.sendRedirect(req.getContextPath() + HtmlConstants.FILE_INDEX);
         }
         else if (pathInfo != null && pathInfo.startsWith(HtmlConstants.FILE_INDEX))

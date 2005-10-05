@@ -2,11 +2,10 @@ package uk.ltd.getahead.dwr.convert;
 
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
@@ -14,15 +13,8 @@ import uk.ltd.getahead.dwr.util.LocalUtil;
  * @author Joe Walker [joe at eireneh dot com]
  * @version $Id: StringConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
  */
-public class StringConverter implements Converter
+public class StringConverter extends BaseV20Converter implements Converter
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
-     */
-    public void setConverterManager(ConverterManager config)
-    {
-    }
-
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
@@ -32,15 +24,11 @@ public class StringConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public String convertOutbound(Object data, String varname, OutboundContext outctx)
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
-        return "var " + varname + "=\"" + jsutil.escapeJavaScript(data.toString()) + "\";";  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        String output = data.toString();
+        return ConverterUtil.addStringInit(output, outctx);
     }
-
-    /**
-     * The means by which we strip comments
-     */
-    private JavascriptUtil jsutil = new JavascriptUtil();
 }

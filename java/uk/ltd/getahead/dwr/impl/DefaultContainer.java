@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import uk.ltd.getahead.dwr.Container;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -113,11 +114,19 @@ public class DefaultContainer implements Container
 
                                 continue methods;
                             }
-                            else if (propertyType == Boolean.TYPE && setting.getClass() == String.class)
+                            else if (setting.getClass() == String.class)
                             {
-                                Boolean bool = Boolean.valueOf((String) setting);
-                                log.debug("- autowire-by-name: " + name + "=" + bool); //$NON-NLS-1$ //$NON-NLS-2$
-                                invoke(setter, ovalue, bool);
+                                try
+                                {
+                                    Object value = LocalUtil.simpleConvert((String) setting, propertyType);
+
+                                    log.debug("- autowire-by-name: " + name + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
+                                    invoke(setter, ovalue, value);
+                                }
+                                catch (IllegalArgumentException ex)
+                                {
+                                    // Ignore - this was a specuative convert anyway
+                                }
 
                                 continue methods;
                             }

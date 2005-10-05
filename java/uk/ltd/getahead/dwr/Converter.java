@@ -29,17 +29,16 @@ public interface Converter
     /**
      * Return a javascript string that defines the variable named varName to
      * have the contents of the converted object data.
-     * In contrast to <code>convertInbound()</code> any failures in converting
+     * <p>In contrast to <code>convertInbound()</code> failures in converting
      * data on the way out should not stop processing, and we should carry on
      * if we can. Failures are probably down to some misconfiguration so as much
      * information about the error as can be safely generated to console logs is
      * good. In other words if you need to loop in outbound conversion then it
      * might be a good idea to catch issues inside the loop, log, and carry on.
      * @param data The data to convert
-     * @param varName The variable to define
      * @param outctx Objects already converted and the results
-     * @return The string that defines the given variable
+     * @return The OutboundVariable that represents the data to convert
      * @throws ConversionException If the conversion failed for some reason
      */
-    String convertOutbound(Object data, String varName, OutboundContext outctx) throws ConversionException;
+    OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException;
 }

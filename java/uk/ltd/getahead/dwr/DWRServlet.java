@@ -59,6 +59,7 @@ public class DWRServlet extends HttpServlet
             factory.addParameter(CreatorManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultCreatorManager"); //$NON-NLS-1$
             factory.addParameter(Processor.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultProcessor"); //$NON-NLS-1$
             factory.addParameter(WebContextBuilder.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder"); //$NON-NLS-1$
+            factory.addParameter(AjaxFilterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager"); //$NON-NLS-1$
 
             factory.addParameter("index", "uk.ltd.getahead.dwr.impl.DefaultIndexProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
             factory.addParameter("test", "uk.ltd.getahead.dwr.impl.DefaultTestProcessor"); //$NON-NLS-1$ //$NON-NLS-2$

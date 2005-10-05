@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN" "http://www.getahead.ltd.uk/dwr/dwr10.dtd">
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://www.getahead.ltd.uk/dwr/dwr20.dtd">
 
 <dwr>
 
@@ -8,6 +8,10 @@
   </init>
 
   <allow>
+
+    <filter class="uk.ltd.getahead.dwr.filter.ExtraLatencyAjaxFilter">
+      <param name="delay" value="200"/>
+    </filter>
 
     <create creator="new" javascript="Test">
       <param name="class" value="uk.ltd.getahead.testdwr.Test"/>
@@ -18,10 +22,13 @@
       <exclude method="getHours"/>
       <auth method="getMinutes" role="admin"/>
       <auth method="getMinutes" role="devel"/>
+      <filter class="uk.ltd.getahead.testdwr.Logging1AjaxFilter"/>
+      <filter class="uk.ltd.getahead.testdwr.Logging2AjaxFilter"/>
     </create>
 
     <create creator="new" javascript="TestBean" scope="session">
       <param name="class" value="uk.ltd.getahead.testdwr.TestBean"/>
+      <filter class="uk.ltd.getahead.testdwr.RandomSecurityAjaxFilter"/>
     </create>
 
     <convert converter="testbean" match="uk.ltd.getahead.testdwr.TestBean"/>

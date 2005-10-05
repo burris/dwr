@@ -7,26 +7,19 @@ import java.util.Date;
 import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 
 /**
  * An implementation of Converter for Dates.
  * @author Joe Walker [joe at eireneh dot com]
  * @version $Id: StringConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
  */
-public class DateConverter implements Converter
+public class DateConverter extends BaseV20Converter implements Converter
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
-     */
-    public void setConverterManager(ConverterManager config)
-    {
-    }
-
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
@@ -81,9 +74,9 @@ public class DateConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public String convertOutbound(Object data, String varname, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
         if (!(data instanceof Date))
         {
@@ -93,11 +86,6 @@ public class DateConverter implements Converter
         Date date = (Date) data;
         long millis = date.getTime();
 
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("var " + varname + "=new Date("); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append(millis);
-        buffer.append(");"); //$NON-NLS-1$
-
-        return buffer.toString();
+        return new OutboundVariable("", "new Date(" + millis + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 }

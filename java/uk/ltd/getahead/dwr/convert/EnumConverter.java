@@ -4,26 +4,19 @@ import java.lang.reflect.Method;
 
 import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * Converter for all primitive types
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class EnumConverter implements Converter
+public class EnumConverter extends BaseV20Converter implements Converter
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
-     */
-    public void setConverterManager(ConverterManager config)
-    {
-    }
-
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
@@ -62,10 +55,10 @@ public class EnumConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, java.lang.String, uk.ltd.getahead.dwr.OutboundContext)
+     * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public String convertOutbound(Object object, String varname, OutboundContext outctx)
+    public OutboundVariable convertOutbound(Object object, OutboundContext outctx)
     {
-        return "var " + varname + "='" + object.toString() + "';"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return new OutboundVariable("", '\'' + object.toString() + '\''); //$NON-NLS-1$
     }
 }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Call;
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.ClientScript;
@@ -34,7 +35,7 @@ public class DefaultExecProcessor implements Processor
     {
         try
         {
-            ExecuteQuery eq = new ExecuteQuery(creatorManager, converterManager, accessControl);
+            ExecuteQuery eq = new ExecuteQuery(creatorManager, converterManager, accessControl, ajaxFilterManager);
             Calls calls = eq.execute(req);
 
             for (int i = 0; i < calls.getCallCount(); i++)
@@ -81,7 +82,7 @@ public class DefaultExecProcessor implements Processor
                     OutboundVariable ov = call.getThrowable();
 
                     buffer.append(ov.getInitCode());
-                    buffer.append('\n');
+                    //buffer.append('\n');
                     buffer.append(prefix);
                     buffer.append("DWREngine._handleServerError('"); //$NON-NLS-1$
                     buffer.append(call.getId());
@@ -96,7 +97,7 @@ public class DefaultExecProcessor implements Processor
                     OutboundVariable ov = call.getReply();
 
                     buffer.append(ov.getInitCode());
-                    buffer.append('\n');
+                    //buffer.append('\n');
                     buffer.append(prefix);
                     buffer.append("DWREngine._handleResponse('"); //$NON-NLS-1$
                     buffer.append(call.getId());
@@ -127,7 +128,7 @@ public class DefaultExecProcessor implements Processor
             // exceptions are returned inside the Call POJOs.
             if (log.isDebugEnabled())
             {
-                log.warn("Error: ", ex); //$NON-NLS-1$
+                log.warn("Error: " + ex); //$NON-NLS-1$
                 log.debug("- User Agent: " + req.getHeader(HtmlConstants.HEADER_USER_AGENT)); //$NON-NLS-1$
                 log.debug("- Remote IP:  " + req.getRemoteAddr()); //$NON-NLS-1$
                 log.debug("- Request URL:" + req.getRequestURL()); //$NON-NLS-1$
@@ -189,6 +190,20 @@ public class DefaultExecProcessor implements Processor
     {
         this.accessControl = accessControl;
     }
+
+    /**
+     * Accessor for the AjaxFilterManager
+     * @param ajaxFilterManager The AjaxFilterManager to set.
+     */
+    public void setAjaxFilterManager(AjaxFilterManager ajaxFilterManager)
+    {
+        this.ajaxFilterManager = ajaxFilterManager;
+    }
+
+    /**
+     * What AjaxFilters apply to which Ajax calls?
+     */
+    private AjaxFilterManager ajaxFilterManager = null;
 
     /**
      * How we convert parameters

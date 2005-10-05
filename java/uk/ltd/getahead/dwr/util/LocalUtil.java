@@ -3,6 +3,10 @@ package uk.ltd.getahead.dwr.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -241,6 +245,44 @@ public final class LocalUtil
     }
 
     /**
+     * Set use reflection to set the setters on the object called by the keys
+     * in the params map with the corresponding values
+     * @param object The object to setup
+     * @param params The settings to use
+     * @param ignore List of keys to not warn about if they are not properties
+     *               Note only the warning is skipped, we still try the setter
+     */
+    public static void setParams(Object object, Map params, List ignore)
+    {
+        for (Iterator it = params.entrySet().iterator(); it.hasNext();)
+        {
+            Map.Entry entry = (Entry) it.next();
+            String key = (String) entry.getKey();
+            Object value = entry.getValue();
+    
+            try
+            {
+                setProperty(object, key, value);
+            }
+            catch (NoSuchMethodException ex)
+            {
+                if (ignore != null && !ignore.contains(key))
+                {
+                    log.warn("No property '" + key + "' on " + object.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+            catch (InvocationTargetException ex)
+            {
+                log.warn("Error setting " + key + "=" + value + " on " + object.getClass().getName(), ex.getTargetException()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+            catch (Exception ex)
+            {
+                log.warn("Error setting " + key + "=" + value + " on " + object.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+        }
+    }
+
+    /**
      * Set a property on an object using reflection
      * @param object The object to call the setter on
      * @param key The name of the property to set.
@@ -256,14 +298,140 @@ public final class LocalUtil
         Class real = object.getClass();
 
         String setterName = "set" + key.substring(0, 1).toUpperCase() + key.substring(1); //$NON-NLS-1$
-        Method method = real.getMethod(setterName, new Class[] { value.getClass() });
 
-        if (method == null)
+        try
         {
-            throw new NoSuchMethodException("Missing property: "  + key); //$NON-NLS-1$
+            // Can we work with whatever type we were given?
+            Method method = real.getMethod(setterName, new Class[] { value.getClass() });
+            method.invoke(object, new Object[] { value });
+        }
+        catch (NoSuchMethodException ex)
+        {
+            // If it is a string then next we try to coerce it to the right type
+            // otherwise we give up.
+            if (!(value instanceof String))
+            {
+                throw ex;
+            }
         }
 
-        method.invoke(object, new Object[] { value });
+        Method[] methods = real.getMethods();
+        methods:
+        for (int i = 0; i < methods.length; i++)
+        {
+            Method setter = methods[i];
+
+            if (setter.getName().equals(setterName) && //$NON-NLS-1$
+                setter.getParameterTypes().length == 1)
+            {
+                Class propertyType = setter.getParameterTypes()[0];
+                try
+                {
+                    Object param = LocalUtil.simpleConvert((String) value, propertyType);
+                    setter.invoke(object, new Object[] { param });
+                    return;
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    // The conversion failed - it was speculative anyway so we
+                    // don't worry now
+                    log.warn("conversion error converting: '" + value + "' into a " + propertyType.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
+        }
+
+        throw new NoSuchMethodException("Failed to find a property called: " + key + " on " + object.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    /**
+     * A very simple conversion function for all the IoC style setup and
+     * reflection that we are doing.
+     * @param value The value to convert
+     * @param paramType The type to convert to. Currently ony primitive types and
+     * String are supported.
+     * @return The converted object.
+     */
+    public static Object simpleConvert(String value, Class paramType)
+    {
+        if (paramType == String.class)
+        {
+            return value;
+        }
+
+        if (paramType == Character.class || paramType == Character.TYPE)
+        {
+            if (value.length() == 1)
+            {
+                return new Character(value.charAt(0));
+            }
+            else
+            {
+                throw new IllegalArgumentException("Can't more than one character in string - can't convert to char: '" + value + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+
+        value = value.trim();
+
+        if (paramType == Boolean.class || paramType == Boolean.TYPE)
+        {
+            return Boolean.valueOf(value);
+        }
+
+        if (paramType == Integer.class || paramType == Integer.TYPE)
+        {
+            if (value.length() == 0)
+            {
+                return new Integer(0);
+            }
+            return Integer.valueOf(value);
+        }
+
+        if (paramType == Short.class || paramType == Short.TYPE)
+        {
+            if (value.length() == 0)
+            {
+                return new Short((short) 0);
+            }
+            return Short.valueOf(value);
+        }
+
+        if (paramType == Byte.class || paramType == Byte.TYPE)
+        {
+            if (value.length() == 0)
+            {
+                return new Byte((byte) 0);
+            }
+            return Byte.valueOf(value);
+        }
+
+        if (paramType == Long.class || paramType == Long.TYPE)
+        {
+            if (value.length() == 0)
+            {
+                return new Long(0);
+            }
+            return Long.valueOf(value);
+        }
+
+        if (paramType == Float.class || paramType == Float.TYPE)
+        {
+            if (value.length() == 0)
+            {
+                return new Float(0);
+            }
+            return Float.valueOf(value);
+        }
+
+        if (paramType == Double.class || paramType == Double.TYPE)
+        {
+            if (value.length() == 0)
+            {
+                return new Double(0);
+            }
+            return Double.valueOf(value);
+        }
+
+        throw new IllegalArgumentException("Unsupported conversion type: " + paramType.getName()); //$NON-NLS-1$
     }
 
     /**
@@ -316,6 +484,26 @@ public final class LocalUtil
         }
 
         return new String(chars, lastDot, chars.length - lastDot);
+    }
+
+    /**
+     * Is this object property one that we can use in a JSON style or do we need
+     * to get fancy. i.e does it contain only letters and numbers with an
+     * initial letter.
+     * @param name The name to test for JSON compatibility
+     * @return true if the name is simple
+     */
+    public static boolean isSimpleName(String name)
+    {
+        boolean isSimple = Character.isLetter(name.charAt(0));
+        for (int i = 1; isSimple && i < name.length(); i++)
+        {
+            if (!Character.isLetterOrDigit(name.charAt(i)))
+            {
+                isSimple = false;
+            }
+        }
+        return isSimple;
     }
 
     /**
