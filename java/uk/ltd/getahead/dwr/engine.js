@@ -559,9 +559,11 @@ DWREngine._sendData = function(batch) {
       }
 
       try {
-        // Prototype does the following, why?
-        // batch.req.setRequestHeader('Connection', 'close');
-        // batch.req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        // This might include Safari too, but it shouldn't do any harm
+        if (navigator.userAgent.indexOf('Gecko') >= 0) {
+          batch.req.setRequestHeader('Connection', 'close');
+        }
+        batch.req.setRequestHeader('Content-type', 'application/x-dwr');
         batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.asynchronous);
         batch.req.send(query);
       }
@@ -619,8 +621,15 @@ DWREngine._stateChange = function(batch) {
     try {
       var reply = batch.req.responseText;
       if (reply != null && reply != "") {
-        if (batch.req.status && batch.req.status == 200) eval(reply);
-        else DWREngine._stateChangeError(batch, reply);
+        if (reply.search("DWREngine._handle") == -1) {
+          DWREngine._stateChangeError(batch, "Invalid reply from server");
+        }
+        else if (batch.req.status && batch.req.status == 200) {
+          eval(reply);
+        }
+        else {
+          DWREngine._stateChangeError(batch, reply);
+        }
       }
       else {
         DWREngine._stateChangeError(batch, "No data received from server");
@@ -681,9 +690,7 @@ DWREngine._stateChangeError = function(batch, message) {
  */ 
 DWREngine._abortRequest = function(batch) {
   if (batch && batch.metadata && !batch.completed) {
-    // TODO: we used to do: batch.completed = true;
-    // here, but decided to leave it to DWREngine._stateChange() to handle
-    // when abort is called. This comment can be deleted if this works!
+    batch.completed = true;
     if (batch.req != null) {
       batch.req.abort();
       if (batch.metadata.errorHandler) {
@@ -693,7 +700,7 @@ DWREngine._abortRequest = function(batch) {
         //  eval(batch.metadata.errorHandler); 
         //}
         //else if (typeof batch.metadata.errorHandler == "function") {
-          batch.metadata.errorHandler(); 
+        batch.metadata.errorHandler(); 
         //}
         //else {
         //  if (DWREngine._warningHandler) {

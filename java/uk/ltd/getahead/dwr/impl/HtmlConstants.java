@@ -1,17 +1,18 @@
 package uk.ltd.getahead.dwr.impl;
 
 /**
+ * Various constants from generating output.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface HtmlConstants
 {
     /**
-     * MIME constant for XML. 
+     * MIME constant for plain text.
      * If we need to do more advanced char processing then we should consider
      * adding "; charset=utf-8" to the end of these 3 strings and altering the
      * marshalling to assume utf-8, which it currently does not.
      */
-    static final String MIME_XML = "text/xml"; //$NON-NLS-1$
+    static final String MIME_PLAIN = "text/plain"; //$NON-NLS-1$
 
     /**
      * MIME constant for HTML

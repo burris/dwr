@@ -6,6 +6,7 @@ import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.compat.BaseV20Converter;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**

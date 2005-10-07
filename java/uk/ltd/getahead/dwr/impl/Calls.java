@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.impl;
 
 import java.util.ArrayList;
 import java.util.List;

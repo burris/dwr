@@ -149,6 +149,27 @@ public final class InboundContext
     }
 
     /**
+     * This is a bit of a hack, needed for debug purposes - it counts the
+     * parameters (including method and script params) for a given call number
+     * @param callNum The Call number to count the parameters of
+     * @return The parameter count for a given Call
+     */
+    public int getParameterCount(int callNum)
+    {
+        int count = 0;
+        String prefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + ConversionConstants.INBOUND_CALLNUM_SUFFIX + ConversionConstants.INBOUND_KEY_PARAM;
+        for (Iterator it = variables.keySet().iterator(); it.hasNext();)
+        {
+            String key = (String) it.next();
+            if (key.startsWith(prefix))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Get a parameter by index
      * @param callNum The call number to work on
      * @param index The parameter index

@@ -64,7 +64,7 @@ public class ConverterUtil
     
             i++;
         }
-        buffer.append("];\n"); //$NON-NLS-1$
+        buffer.append("];\r\n"); //$NON-NLS-1$
     
         // And now the recursive parts
         if (!recurse.isEmpty())
@@ -79,7 +79,7 @@ public class ConverterUtil
                 buffer.append(assignCode);
                 buffer.append(';'); //$NON-NLS-1$
             }
-            buffer.append("\n"); //$NON-NLS-1$
+            buffer.append("\r\n"); //$NON-NLS-1$
         }
     
         ov.setInitCode(buffer.toString());
@@ -161,7 +161,7 @@ public class ConverterUtil
             buffer.append(';');
         }
 
-        buffer.append('\n');
+        buffer.append("\r\n"); //$NON-NLS-1$
 
         ov.setInitCode(buffer.toString());
     }
@@ -189,7 +189,7 @@ public class ConverterUtil
         {
             OutboundVariable ov = outctx.createOutboundVariable(output);
             String varname = ov.getAssignCode();
-            ov.setInitCode("var " + varname + "=\"" + escaped + "\";\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ov.setInitCode("var " + varname + "=\"" + escaped + "\";\r\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return ov;
         }
 
@@ -232,7 +232,7 @@ public class ConverterUtil
             initBody.append(tempvar);
             initBody.append("=\""); //$NON-NLS-1$
             initBody.append(escaped.substring(start, end));
-            initBody.append("\";\n"); //$NON-NLS-1$
+            initBody.append("\";\r\n"); //$NON-NLS-1$
 
             initEnd.append(tempvar);
             if (!last)
@@ -243,7 +243,7 @@ public class ConverterUtil
             start = end;
         }
 
-        initEnd.append(";\n"); //$NON-NLS-1$
+        initEnd.append(";\r\n"); //$NON-NLS-1$
         initBody.append(initEnd.toString());
 
         ov.setInitCode(initBody.toString());

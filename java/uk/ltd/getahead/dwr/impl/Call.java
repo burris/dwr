@@ -1,4 +1,7 @@
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.impl;
+
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 
 /**
  * Call is a POJO to encapsulate the information required to make a single java

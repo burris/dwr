@@ -87,24 +87,16 @@ public class MapConverter implements Converter
             Class keyType = config.getExtraTypeInfo(method, paramNum, 0);
             if (keyType == null)
             {
-                log.warn("Missing type info for " + method.getName() + "(), param=" + paramNum + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.warn("--Missing type info for " + method.getName() + "(), param=" + paramNum + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 keyType = String.class;
-            }
-            else
-            {
-                log.debug("Using extra type info for " + method.getName() + "(), param=" + paramNum + " of " + keyType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
 
             // Get type info for values
             Class valType = config.getExtraTypeInfo(method, paramNum, 1);
             if (valType == null)
             {
-                log.warn("Missing type info for " + method.getName() + "(), param=" + paramNum + ". Assuming this is a map with String values. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.warn("--Missing type info for " + method.getName() + "(), param=" + paramNum + ". Assuming this is a map with String values. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 valType = String.class;
-            }
-            else
-            {
-                log.debug("Using extra type info for " + method.getName() + "(), param=" + paramNum + " of " + valType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
 
             // We should put the new object into the working map in case it
@@ -180,7 +172,7 @@ public class MapConverter implements Converter
 
             if (!(key instanceof String))
             {
-                log.warn("Javascript does not support non string keys. Converting to '" + key.getClass().getName() + "' using toString()"); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("--Javascript does not support non string keys. Converting to '" + key.getClass().getName() + "' using toString()"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             String outkey = jsutil.escapeJavaScript(key.toString());

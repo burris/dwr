@@ -53,6 +53,11 @@ public class ConversionConstants
     public static final String INBOUND_KEY_PARAM = "param"; //$NON-NLS-1$
 
     /**
+     * What prefix do we put to the environment paramters
+     */
+    public static final String INBOUND_KEY_ENV = "e"; //$NON-NLS-1$
+
+    /**
      * The character to use to distinguish between the variable name and the
      * variable value
      */

@@ -13,6 +13,7 @@ import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.compat.BaseV20Converter;
 
 /**
  * A converter that magics up HTTP objects
