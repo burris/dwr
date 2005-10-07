@@ -498,6 +498,15 @@ DWREngine._sendData = function(batch) {
     setTimeout(funcReq, batch.metadata.timeout);
   }
 
+  // A quick string to help people that use web log analysers
+  var statsInfo;
+  if (batch.map.callCount == 1) {
+    statsInfo = batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"];
+  }
+  else {
+    statsInfo = "Multiple." + batch.map.callCount;
+  }
+
   // Get setup for XMLHttpRequest if possible
   if (batch.method == DWREngine.XMLHttpRequest) {
     if (window.XMLHttpRequest) {
@@ -507,15 +516,6 @@ DWREngine._sendData = function(batch) {
     else if (window.ActiveXObject && !(navigator.userAgent.indexOf('Mac') >= 0 && navigator.userAgent.indexOf("MSIE") >= 0)) {
       batch.req = DWREngine._newActiveXObject(DWREngine._XMLHTTP);
     }
-  }
-
-  // A quick string to help people that use web log analysers
-  var statsInfo;
-  if (batch.map.callCount == 1) {
-    statsInfo = batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"];
-  }
-  else {
-    statsInfo = "Multiple." + batch.map.callCount;
   }
 
   var query = "";
@@ -560,10 +560,9 @@ DWREngine._sendData = function(batch) {
 
       try {
         // This might include Safari too, but it shouldn't do any harm
-        if (navigator.userAgent.indexOf('Gecko') >= 0) {
-          batch.req.setRequestHeader('Connection', 'close');
-        }
-        batch.req.setRequestHeader('Content-type', 'application/x-dwr');
+//        if (navigator.userAgent.indexOf('Gecko') >= 0) {
+//          batch.req.setRequestHeader('Connection', 'close');
+//        }
         batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.asynchronous);
         batch.req.send(query);
       }
