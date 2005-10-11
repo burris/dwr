@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
@@ -262,7 +263,7 @@ public class ObjectConverter implements Converter
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
         // Where we collect out converted children
-        Map ovs = new HashMap();
+        Map ovs = new TreeMap();
 
         OutboundVariable ov = outctx.createOutboundVariable(data);
 

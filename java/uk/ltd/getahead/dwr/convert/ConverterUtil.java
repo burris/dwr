@@ -93,9 +93,9 @@ public class ConverterUtil
     public static void addMapInit(OutboundVariable ov, Map ovs)
     {
         String varname = ov.getAssignCode();
-    
+
         StringBuffer buffer = new StringBuffer();
-    
+
         // Make sure the nested things are declared
         for (Iterator it = ovs.values().iterator(); it.hasNext();)
         {
@@ -107,7 +107,7 @@ public class ConverterUtil
         buffer.append("var "); //$NON-NLS-1$
         buffer.append(varname);
         buffer.append("={"); //$NON-NLS-1$
-    
+
         // And now declare our stuff
         boolean first = true;
         for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
@@ -115,9 +115,9 @@ public class ConverterUtil
             Map.Entry entry = (Map.Entry) it.next();
             String name = (String) entry.getKey();
             OutboundVariable nested = (OutboundVariable) entry.getValue();
-    
+
             String assignCode = nested.getAssignCode();
-    
+
             // The compact JSON style syntax is only any good for simple names
             // and when we are not recursive
             if (LocalUtil.isSimpleName(name) && !assignCode.equals(varname))
@@ -126,19 +126,19 @@ public class ConverterUtil
                 {
                     buffer.append(',');
                 }
-    
+
                 buffer.append(name);
                 buffer.append(':');
                 buffer.append(assignCode);
-    
+
                 // we don't need to do this one the hard way
                 it.remove();
-    
+
                 first = false;
             }
         }
         buffer.append("};"); //$NON-NLS-1$
-    
+
         // The next loop through is for everything that will not embed
         for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
         {

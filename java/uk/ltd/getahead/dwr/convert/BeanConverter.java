@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
@@ -243,7 +244,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
         // Where we collect out converted children
-        Map ovs = new HashMap();
+        Map ovs = new TreeMap();
 
         // We need to do this before collecing the children to save recurrsion
         OutboundVariable ov = outctx.createOutboundVariable(data);

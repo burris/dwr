@@ -1,3 +1,18 @@
+/*
+ * Copyright 2005 Joe Walker
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /**
  * Declare a constructor function to which we can add real functions.
@@ -9,7 +24,6 @@ function DWRUtil() { }
  * Enables you to react to return being pressed in an input
  * For example:
  * <code>&lt;input type="text" onkeypressed="DWRUtil.onReturn(event, methodName)"/&gt;</code>
- * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param event The event object for Netscape browsers
  * @param action Method name to execute when return is pressed
  */
@@ -25,7 +39,6 @@ DWRUtil.onReturn = function(event, action) {
 /**
  * Select a specific range in a text box.
  * This is useful for 'google suggest' type functionallity.
- * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param ele The id of the text input element or the HTML element itself
  * @param start The beginning index
  * @param end The end index 
@@ -60,7 +73,6 @@ DWRUtil.selectRange = function(ele, start, end) {
  * engine.js (which makes up for this omission). If you are using this function
  * without engine.js and want IE5.0 compatibility then you should arrange for
  * a replacement for Array.push.
- * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
 var $;
 if (!$ && document.getElementById) {
@@ -103,7 +115,6 @@ else if (!$ && document.all) {
  *        dig into child objects, 2 = Multi-line debug that digs into the
  *        2nd layer of child objects
  * @param depth How much do we indent this item?
- * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
 DWRUtil.toDescriptiveString = function(data, level, depth) {
   var reply = "";
@@ -275,72 +286,52 @@ DWRUtil._indent = function(level, depth) {
 
 /**
  * Setup a GMail style loading message.
- * @see http://www.getahead.ltd.uk/dwr/script-general.html
  */
 DWRUtil.useLoadingMessage = function(message) {
-  if (message) DWRUtil._loadingMessage = message;
-  else DWRUtil._loadingMessage = "Loading";
+  var loadingMessage;
+  if (message) loadingMessage = message;
+  else loadingMessage = "Loading";
 
-  DWREngine.setPreHook(DWRUtil._showLoadingMessage);
-  DWREngine.setPostHook(DWRUtil._hideLoadingMessage);
-};
+  DWREngine.setPreHook(function() {
+    var disabledZone = $('disabledZone');
+    if (!disabledZone) {
+      disabledZone = document.createElement('div');
+      disabledZone.setAttribute('id', 'disabledZone');
+      disabledZone.style.position = "absolute";
+      disabledZone.style.zIndex = "1000";
+      disabledZone.style.left = "0px";
+      disabledZone.style.top = "0px";
+      disabledZone.style.width = "100%";
+      disabledZone.style.height = "100%";
+      document.body.appendChild(disabledZone);
+      var messageZone = document.createElement('div');
+      messageZone.setAttribute('id', 'messageZone');
+      messageZone.style.position = "absolute";
+      messageZone.style.top = "0px";
+      messageZone.style.right = "0px";
+      messageZone.style.background = "red";
+      messageZone.style.color = "white";
+      messageZone.style.fontFamily = "Arial,Helvetica,sans-serif";
+      messageZone.style.padding = "4px";
+      disabledZone.appendChild(messageZone);
+      var text = document.createTextNode(loadingMessage);
+      messageZone.appendChild(text);
+    }
+    else {
+      $('messageZone').innerHTML = loadingMessage;
+      disabledZone.style.visibility = 'visible';
+    }
+  });
 
-/**
- * Internal message to display the loading message
- * @private
- */
-DWRUtil._showLoadingMessage = function() {
-  var disabledZone = $('disabledZone');
-  if (!disabledZone) {
-    disabledZone = document.createElement('div');
-    disabledZone.setAttribute('id', 'disabledZone');
-    disabledZone.style.position = "absolute";
-    disabledZone.style.zIndex = "1000";
-    disabledZone.style.left = "0px";
-    disabledZone.style.top = "0px";
-    disabledZone.style.width = "100%";
-    disabledZone.style.height = "100%";
-    document.body.appendChild(disabledZone);
-
-    var messageZone = document.createElement('div');
-    messageZone.setAttribute('id', 'messageZone');
-    messageZone.style.position = "absolute";
-    messageZone.style.top = "0px";
-    messageZone.style.right = "0px";
-    messageZone.style.background = "red";
-    messageZone.style.color = "white";
-    messageZone.style.fontFamily = "Arial,Helvetica,sans-serif";
-    messageZone.style.padding = "4px";
-    disabledZone.appendChild(messageZone);
-
-    var text = document.createTextNode(DWRUtil._loadingMessage);
-    messageZone.appendChild(text);
-  }
-  else {
-    $('messageZone').innerHTML = DWRUtil._loadingMessage;
-    disabledZone.style.visibility = 'visible';
-  }
+  DWREngine.setPostHook(function() {
+    $('disabledZone').style.visibility = 'hidden';
+  });
 }
-
-/**
- * Internal message to hide the loading message
- * @private
- */
-DWRUtil._hideLoadingMessage = function(){
-  $('disabledZone').style.visibility = 'hidden';
-}
-
-/**
- * The loading message
- * @private
- */
-DWRUtil._loadingMessage = 'Loading';
 
 /**
  * Set the value for the given id to the specified val.
  * This method works for selects (where the option with a matching value and
  * not text is selected), input elements (including textareas) divs and spans.
- * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param ele The id of the element or the HTML element itself
  */
 DWRUtil.setValue = function(ele, val) {
@@ -454,7 +445,6 @@ DWRUtil._selectListItem = function(ele, val) {
  * The counterpart to setValue() - read the current value for a given element.
  * This method works for selects (where the option with a matching value and
  * not text is selected), input elements (including textareas) divs and spans.
- * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param ele The id of the element or the HTML element itself
  */
 DWRUtil.getValue = function(ele) {
@@ -520,7 +510,6 @@ DWRUtil.getValue = function(ele) {
 /**
  * getText() is like getValue() with the except that it only works for selects
  * where it reads the text of an option and not it's value.
- * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param ele The id of the element or the HTML element itself
  */
 DWRUtil.getText = function(ele) {
@@ -550,7 +539,6 @@ DWRUtil.getText = function(ele) {
 /**
  * Given a map, call setValue() for all the entries in the map using the key
  * of each entry as an id.
- * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param map The map of values to set to various elements
  */
 DWRUtil.setValues = function(map) {
@@ -566,7 +554,6 @@ DWRUtil.setValues = function(map) {
 /**
  * Given a map, call getValue() for all the entries in the map using the key
  * of each entry as an id.
- * @see http://www.getahead.ltd.uk/dwr/script-simple.html
  * @param map The map of values to set to various elements
  */
 DWRUtil.getValues = function(map) {
@@ -607,7 +594,6 @@ DWRUtil.getValues = function(map) {
  * innerHTML set to the string value of the array elements. This mode works
  * with ul and ol lists.
  * </p>
- * @see http://www.getahead.ltd.uk/dwr/script-list.html
  * @param ele The id of the list element or the HTML element itself
  * @param data An array or map of data items to populate the list
  * @param valuerev (optional) If data is an array of objects, an optional
@@ -696,7 +682,6 @@ DWRUtil._getValueFrom = function(data, method) {
 
 /**
  * Remove all the options from a select list (specified by id)
- * @see http://www.getahead.ltd.uk/dwr/script-list.html
  * @param ele The id of the list element or the HTML element itself
  */
 DWRUtil.removeAllOptions = function(ele) {
@@ -747,7 +732,6 @@ DWRUtil.removeAllOptions = function(ele) {
  * <li>cellCreator: a function to create a cell, (e.g. to use a th in place of a
  *   td). The default returns document.createElement("td")</li>
  * </ul>
- * @see http://www.getahead.ltd.uk/dwr/script-table.html
  * @param ele The id of the tbody element
  * @param data Array containing one entry for each row in the updated table
  * @param cellFuncs An array of functions (one per column) for extracting cell
@@ -827,7 +811,6 @@ DWRUtil._defaultCellCreator = function(data) {
  * Remove all the children of a given node.
  * Most useful for dynamic tables where you clearChildNodes() on the tbody
  * element.
- * @see http://www.getahead.ltd.uk/dwr/script-table.html
  * @param ele The id of the element or the HTML element itself
  */
 DWRUtil.removeAllRows = function(ele) {
@@ -848,7 +831,6 @@ DWRUtil.removeAllRows = function(ele) {
 
 /**
  * Is the given node an HTML element (optionally of a given type)?
- * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param ele The element to test
  * @param nodeName eg "input", "textarea" - check for node name (optional)
  *         if nodeName is an array then check of a match.
@@ -901,7 +883,6 @@ DWRUtil._detailedTypeOf = function(x) {
  * Array detector.
  * This is an attempt to work around the lack of support for instanceof in
  * some browsers.
- * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param data The object to test
  * @returns true iff <code>data</code> is an Array
  * @private
@@ -914,7 +895,6 @@ DWRUtil._isArray = function(data) {
  * Date detector.
  * This is an attempt to work around the lack of support for instanceof in
  * some browsers.
- * @see http://www.getahead.ltd.uk/dwr/script-compat.html
  * @param data The object to test
  * @returns true iff <code>data</code> is a Date
  * @private
