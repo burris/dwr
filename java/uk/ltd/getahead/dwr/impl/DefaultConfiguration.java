@@ -572,6 +572,15 @@ public class DefaultConfiguration implements Configuration
 
     /**
      * Accessor for the AjaxFilterManager
+     * @return Returns the AjaxFilterManager.
+     */
+    public AjaxFilterManager getAjaxFilterManager()
+    {
+        return ajaxFilterManager;
+    }
+
+    /**
+     * Accessor for the AjaxFilterManager
      * @param ajaxFilterManager The AjaxFilterManager to set.
      */
     public void setAjaxFilterManager(AjaxFilterManager ajaxFilterManager)
