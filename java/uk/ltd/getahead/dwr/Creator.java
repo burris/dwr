@@ -37,6 +37,12 @@ public interface Creator
     String getScope();
 
     /**
+     * Accessor for the javascript name of this creator.
+     * @return Returns the javascript name.
+     */
+    String getJavascript();
+
+    /**
      * Application scope: named reference remains available in the
      * ServletContext until it is reclaimed. 
      */
