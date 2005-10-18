@@ -121,80 +121,59 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
   var i = 0;
   var value;
   var obj;
-
   if (level == null) level = 0;
   if (depth == null) depth = 0;
   if (data == null) return "null";
-
   if (DWRUtil._isArray(data)) {
-    if (level != 0)  reply += "[\n";
-    else reply = "[";
-
-    for (i = 0; i < data.length; i++) {
-      try {
-        obj = data[i];
-
-        if (obj == null || typeof obj == "function") {
-          continue;
-        }
-        else if (typeof obj == "object") {
-          if (level > 0) {
-            value = DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
+    if (data.length == 0) reply += "[]";
+    else {
+      if (level != 0) reply += "[\n";
+      else reply = "[";
+      for (i = 0; i < data.length; i++) {
+        try {
+          obj = data[i];
+          if (obj == null || typeof obj == "function") {
+            continue;
+          }
+          else if (typeof obj == "object") {
+            if (level > 0) value = DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
+            else value = DWRUtil._detailedTypeOf(obj);
           }
           else {
-            value = DWRUtil._detailedTypeOf(obj);
+            value = "" + obj;
+            value = value.replace(/\/n/g, "\\n");
+            value = value.replace(/\/t/g, "\\t");
           }
         }
+        catch (ex) {
+          value = "" + ex;
+        }
+       if (level != 0)  {
+          reply += DWRUtil._indent(level, depth + 2) + value + ", \n";
+       }
         else {
-          value = "" + obj;
-          value = value.replace(/\/n/g, "\\n");
-          value = value.replace(/\/t/g, "\\t");
+          if (value.length > 13) value = value.substring(0, 10) + "...";
+          reply += value + ", ";
+          if (i > 5) {
+            reply += "...";
+            break;
+          }
         }
       }
-      catch (ex) {
-        value = "" + ex;
-      }
-
-      if (level != 0)  {
-        reply += DWRUtil._indent(level, depth + 2) + value + ", \n";
-      }
-      else {
-        if (value.length > 13) {
-          value = value.substring(0, 10) + "...";
-        }
-
-        reply += value + ", ";
-
-        if (i > 5) {
-          reply += "...";
-          break;
-        }
-      }
+      if (level != 0) reply += DWRUtil._indent(level, depth) + "]";
+      else reply += "]";
     }
-
-    if (level != 0) {
-      reply += DWRUtil._indent(level, depth) + "]";
-    }
-    else {
-      reply += "]";
-    }
-
     return reply;
   }
-
   if (typeof data == "string" || typeof data == "number" || DWRUtil._isDate(data)) {
     return data.toString();
   }
-
   if (typeof data == "object") {
     var typename = DWRUtil._detailedTypeOf(data);
     if (typename != "Object")  reply = typename + " ";
-
     if (level != 0) reply += "{\n";
     else reply = "{";
-
     var isHtml = DWRUtil._isHTMLElement(data);
-
     for (var prop in data) {
       if (isHtml) {
         // HTML nodes have far too much stuff. Chop out the constants
@@ -207,12 +186,9 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
           continue;
         }
       }
-
       value = "";
-
       try {
         obj = data[prop];
-
         if (obj == null || typeof obj == "function") {
           continue;
         }
@@ -235,37 +211,22 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
       catch (ex) {
         value = "" + ex;
       }
-
-      if (level == 0 && value.length > 13) {
-        value = value.substring(0, 10) + "...";
-      }
-
+      if (level == 0 && value.length > 13) value = value.substring(0, 10) + "...";
       var propStr = prop;
-      if (propStr.length > 30) {
-        propStr = propStr.substring(0, 27) + "...";
-      }
-
-      if (level != 0) {
-        reply += DWRUtil._indent(level, depth + 1);
-      }
-
+      if (propStr.length > 30) propStr = propStr.substring(0, 27) + "...";
+      if (level != 0) reply += DWRUtil._indent(level, depth + 1);
       reply += prop + ":" + value + ", ";
-
       if (level != 0) reply += "\n";
-
       i++;
       if (level == 0 && i > 5) {
         reply += "...";
         break;
       }
     }
-
     reply += DWRUtil._indent(level, depth);
     reply += "}";
-
     return reply;
   }
-
   return data.toString();
 };
 
@@ -291,7 +252,6 @@ DWRUtil.useLoadingMessage = function(message) {
   var loadingMessage;
   if (message) loadingMessage = message;
   else loadingMessage = "Loading";
-
   DWREngine.setPreHook(function() {
     var disabledZone = $('disabledZone');
     if (!disabledZone) {
@@ -322,7 +282,6 @@ DWRUtil.useLoadingMessage = function(message) {
       disabledZone.style.visibility = 'visible';
     }
   });
-
   DWREngine.setPostHook(function() {
     $('disabledZone').style.visibility = 'hidden';
   });
@@ -639,13 +598,18 @@ DWRUtil.addOptions = function(ele, data) {
           text = DWRUtil._getValueFrom(data[i], arguments[3]);
           value = text;
         }
-        opt = new Option(text, value);
-        ele.options[ele.options.length] = opt;
+        if (text || value) {
+          opt = new Option(text, value);
+          ele.options[ele.options.length] = opt;
+        }
       }
       else {
         li = document.createElement("li");
-        li.innerHTML = DWRUtil._getValueFrom(data[i], arguments[2]);
-        ele.appendChild(li);
+        value = DWRUtil._getValueFrom(data[i], arguments[2]);
+        if (value != null) {
+          li.innerHTML = value;
+          ele.appendChild(li);
+        }
       }
     }
   }
@@ -664,8 +628,10 @@ DWRUtil.addOptions = function(ele, data) {
         text = data[prop];
         value = prop;
       }
-      opt = new Option(text, value);
-      ele.options[ele.options.length] = opt;
+      if (text || value) {
+        opt = new Option(text, value);
+        ele.options[ele.options.length] = opt;
+      }
     }
   }
 };
@@ -781,7 +747,7 @@ DWRUtil._addRowInner = function(row, cellFuncs, options) {
     }
     else {
       var reply = func(row);
-      td = options.cellCreator(reply);
+      td = options.cellCreator(reply, j);
       if (DWRUtil._isHTMLElement(reply, "td")) td = reply;
       else if (DWRUtil._isHTMLElement(reply)) td.appendChild(reply);
       else td.innerHTML = reply;
@@ -795,7 +761,7 @@ DWRUtil._addRowInner = function(row, cellFuncs, options) {
  * Default row creation function
  * @private
  */
-DWRUtil._defaultRowCreator = function(row) {
+DWRUtil._defaultRowCreator = function(row, i) {
   return document.createElement("tr");
 };
 
