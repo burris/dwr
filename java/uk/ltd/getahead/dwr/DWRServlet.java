@@ -245,7 +245,7 @@ public class DWRServlet extends HttpServlet
     /**
      * The system dwr.xml resource name
      */
-    protected static final String FILE_DWR_XML = "dwr.xml"; //$NON-NLS-1$
+    protected static final String FILE_DWR_XML = "/uk/ltd/getahead/dwr/dwr.xml"; //$NON-NLS-1$
 
     /**
      * The default dwr.xml file path
