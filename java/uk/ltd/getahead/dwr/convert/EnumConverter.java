@@ -25,11 +25,10 @@ public class EnumConverter extends BaseV20Converter implements Converter
     {
         String value = LocalUtil.decode(iv.getValue());
 
-        // Object[] values = paramType.getEnumConstants();
         Object[] values = null;
         try
         {
-            Method getter = paramType.getMethod("getEnumConstants", null); //$NON-NLS-1$
+            Method getter = paramType.getMethod("values", new Class[0]); //$NON-NLS-1$
             values = (Object[]) getter.invoke(paramType, null);
         }
         catch (NoSuchMethodException ex)
