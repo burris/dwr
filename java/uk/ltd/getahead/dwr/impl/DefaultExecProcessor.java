@@ -628,8 +628,7 @@ public class DefaultExecProcessor implements Processor
     {
         try
         {
-            boolean convertable = converterManager.isConvertable(th.getClass());
-            if (convertable)
+            if (converterManager.isConvertable(th.getClass()))
             {
                 return converterManager.convertOutbound(th, converted);
             }
