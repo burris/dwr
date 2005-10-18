@@ -90,6 +90,7 @@
     <convert converter="servlet" match="javax.servlet.http.HttpServletRequest"/>
     <convert converter="servlet" match="javax.servlet.http.HttpServletResponse"/>
     <convert converter="servlet" match="javax.servlet.http.HttpSession"/>
+
   </allow>
 
 </dwr>
