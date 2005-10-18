@@ -13,11 +13,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uk.ltd.getahead.dwr.AbstractDWRServlet;
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.DWRServlet;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
@@ -270,7 +270,7 @@ public class DefaultTestProcessor implements Processor
             {
                 StringBuffer buffer = new StringBuffer();
 
-                InputStream raw = getClass().getResourceAsStream(DWRServlet.PACKAGE + HtmlConstants.FILE_HELP);
+                InputStream raw = getClass().getResourceAsStream(AbstractDWRServlet.PACKAGE + HtmlConstants.FILE_HELP);
                 if (raw == null)
                 {
                     log.error(Messages.getString("DefaultProcessor.MissingHelp", HtmlConstants.FILE_HELP)); //$NON-NLS-1$

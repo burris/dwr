@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import uk.ltd.getahead.dwr.DWRServlet;
+import uk.ltd.getahead.dwr.AbstractDWRServlet;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
@@ -40,7 +40,7 @@ public class FileProcessor
             {
                 StringBuffer buffer = new StringBuffer();
 
-                String resource = DWRServlet.PACKAGE + path;
+                String resource = AbstractDWRServlet.PACKAGE + path;
                 InputStream raw = getClass().getResourceAsStream(resource);
                 if (raw == null)
                 {
