@@ -362,13 +362,17 @@ DWREngine._handleResponse = function(id, reply) {
 };
 
 /**
- * Called when errors are received.
  * This method is called by Javascript that is emitted by server
  * @private
  */
-DWREngine._handleServerError = function(id, reason, batch) {
+DWREngine._handleServerError = function(id, error, batch) {
   if (batch.metadata.errorHandler) {
-    batch.metadata.errorHandler(reason);
+    if (error.message) {
+      batch.metadata.errorHandler(error.message, error);
+    }
+    else {
+      batch.metadata.errorHandler(error);
+    }
   }
 };
 
@@ -1017,6 +1021,7 @@ DWREngine._newActiveXObject = function(axarray) {
  */
 if (typeof window.encodeURIComponent === 'undefined') {
   DWREngine._utf8 = function(wide) {
+    wide = "" + wide; // Make sure it is a string
     var c;
     var s;
     var enc = "";
