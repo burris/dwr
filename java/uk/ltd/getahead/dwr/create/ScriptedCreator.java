@@ -1,8 +1,15 @@
 package uk.ltd.getahead.dwr.create;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import javax.servlet.ServletContext;
+
 import org.apache.bsf.BSFManager;
 
 import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -21,6 +28,46 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     }
 
     /**
+     * Are we caching the script (default: false)
+     * @return Returns the cacheScript variable
+     */
+    public String getCacheScript()
+    {
+        return String.valueOf(cacheScript);
+    }
+
+    /**
+     * @param cacheScript Whether or not to cache the script.  
+     * The default is <b>true</b>. This parameter is only
+     * used if scriptPath is used instead of script.
+     */
+    public void setCacheScript(String cacheScript)
+    {
+        this.cacheScript = Boolean.valueOf(cacheScript).booleanValue();
+    }
+
+    /**
+     * @return Returns the path of the script.
+     */
+    public String getScriptPath()
+    {
+        return scriptPath;
+    }
+
+    /**
+     *  @param scriptPath Context reletive path to script.
+     **/
+    public void setScriptPath(String scriptPath)
+    {
+        if (scriptSrc != null)
+        {
+            throw new IllegalArgumentException(Messages.getString("ScriptCreator.MultipleScript")); //$NON-NLS-1$
+        }
+
+        this.scriptPath = scriptPath;
+    }
+
+    /**
      * @param language The language to set.
      */
     public void setLanguage(String language)
@@ -34,22 +81,77 @@ public class ScriptedCreator extends AbstractCreator implements Creator
 
     /**
      * @return Returns the script.
+     * @throws InstantiationException 
      */
-    public String getScript()
+    public String getScript() throws InstantiationException
     {
-        return script;
+        if (scriptSrc != null)
+        {
+            return scriptSrc;
+        }
+
+        if (scriptPath == null)
+        {
+            throw new InstantiationException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
+        }
+
+        // now load the script from the path        
+        log.debug("Loading Script from Path: " + scriptPath); //$NON-NLS-1$
+        InputStream in = null;
+        try
+        {
+            ExecutionContext ec = ExecutionContext.get();
+            ServletContext sc = ec.getServletContext();
+            in = sc.getResourceAsStream(scriptPath);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String line = null;
+            StringBuffer sb = new StringBuffer();
+
+            while ((line = br.readLine()) != null)
+            {
+                sb.append(line);
+            }
+
+            in.close();
+            return sb.toString();
+        }
+        catch (Exception ex)
+        {
+            log.error(ex.getMessage(), ex);
+            throw new InstantiationException(Messages.getString("ScriptCreator.MissingScript")); //$NON-NLS-1$
+        }
+        finally
+        {
+            try
+            {
+                if (null != in)
+                {
+                    in.close();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.warn(ex.getMessage(), ex);
+            }
+        }
     }
 
     /**
-     * @param script The script to set.
+     * @param scriptSrc The script to set.
      */
-    public void setScript(String script)
+    public void setScript(String scriptSrc)
     {
-        if (script == null || script.trim().length() == 0)
+        if (scriptPath != null)
+        {
+            throw new IllegalArgumentException(Messages.getString("ScriptCreator.MultipleScript")); //$NON-NLS-1$
+        }
+
+        if (scriptSrc == null || scriptSrc.trim().length() == 0)
         {
             throw new IllegalArgumentException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
         }
-        this.script = script;
+
+        this.scriptSrc = scriptSrc;
     }
 
     /**
@@ -73,7 +175,8 @@ public class ScriptedCreator extends AbstractCreator implements Creator
      */
     public Class getType()
     {
-        if (clazz == null)
+        log.debug("Cache Script: " + (scriptPath != null && cacheScript)); //$NON-NLS-1$
+        if (clazz == null || (scriptPath != null && !cacheScript))
         {
             try
             {
@@ -96,7 +199,9 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     {
         try
         {
-            return bsfman.eval(language, "dwr.xml", 0, 0, script); //$NON-NLS-1$
+            log.debug("Loaded Script Source: " + getScript()); //$NON-NLS-1$
+
+            return bsfman.eval(language, (null == scriptPath ? "dwr.xml" : scriptPath), 0, 0, getScript()); //$NON-NLS-1$
         }
         catch (Exception ex)
         {
@@ -128,5 +233,16 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     /**
      * The script that we are asking BSF to execute in order to get an object.
      */
-    private String script = null;
+    private String scriptSrc = null;
+    
+    /**
+     * The path of the script we are asking BSF to execute.
+     **/
+    private String scriptPath = null;
+    
+    /**
+     *  Whether or not to cache the script.  Only used if srciptPath is used.
+     *  ie: An inline script is not reloadable
+     **/
+    private boolean cacheScript=true;
 }
