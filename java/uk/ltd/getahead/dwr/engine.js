@@ -210,14 +210,15 @@ DWREngine.endBatch = function() {
     DWREngine._handleError("No batch in progress.");
     return;
   }
-
   // Merge the global batch level properties into the batch meta data
   if (!batch.preHook) batch.preHook = DWREngine._preHook;
   if (!batch.postHook) batch.postHook = DWREngine._postHook;
   if (!batch.method) batch.method = DWREngine._method;
   if (!batch.verb) batch.verb = DWREngine._verb;
   if (!batch.asynchronous) batch.asynchronous = DWREngine._asynchronous;
-
+  if (!batch.errorHandler) batch.errorHandler = DWREngine._errorHandler;
+  if (!batch.warningHandler) batch.warningHandler = DWREngine._warningHandler;
+  if (!batch.timeout) batch.timeout = DWREngine._timeout;
   // If we are in ordered mode, then we don't send unless the list of sent
   // items is empty
   if (!DWREngine._ordered) {
@@ -356,7 +357,7 @@ DWREngine._handleResponse = function(id, reply) {
       metadata.callback(reply);
     }
     catch (ex) {
-      DWREngine._handleError(ex);
+      metadata.errorHandler(ex);
     }
   }
 };
@@ -483,14 +484,6 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   }
   DWREngine._removeSerializeFunctions();
 
-  // Merge in the global values for timeout and errorHandler
-  if (DWREngine._timeout && !DWREngine._batch.timeout) {
-    DWREngine._batch.timeout = DWREngine._timeout;
-  }
-  if (DWREngine._errorHandler && !DWREngine._batch.metadata.errorHandler) {
-    DWREngine._batch.metadata.errorHandler = DWREngine._errorHandler;
-  }
-
   // Now we have finished remembering the call, we incr the call count
   DWREngine._batch.map.callCount++;
   if (singleShot) {
@@ -504,17 +497,15 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
  * @private
  */
 DWREngine._sendData = function(batch) {
-  // Actually make the call
-  if (batch.preHook) {
-    batch.preHook();
-  }
-
+  // If the batch is empty, don't send anything
+  if (batch.map.callCount == 0) return;
+  // Call any pre-hooks
+  if (batch.preHook) batch.preHook();
   // Set a timeout
   if (batch.metadata && batch.metadata.timeout && batch.metadata.timeout != 0) {
     var funcReq = function() { DWREngine._abortRequest(batch); };
     setTimeout(funcReq, batch.metadata.timeout);
   }
-
   // A quick string to help people that use web log analysers
   var statsInfo;
   if (batch.map.callCount == 1) {
@@ -565,7 +556,7 @@ DWREngine._sendData = function(batch) {
         batch.req.send(null);
       }
       catch (ex) {
-        DWREngine._handleError(ex);
+        batch.metadata.errorHandler(ex);
       }
     }
     else {
@@ -584,7 +575,7 @@ DWREngine._sendData = function(batch) {
         batch.req.send(query);
       }
       catch (ex) {
-        DWREngine._handleError(ex);
+        batch.metadata.errorHandler(ex);
       }
     }
   }
