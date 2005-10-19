@@ -719,14 +719,19 @@ DWRUtil.addRows = function(ele, data, cellFuncs, options) {
   if (!options.rowCreator) options.rowCreator = DWRUtil._defaultRowCreator;
   if (!options.cellCreator) options.cellCreator = DWRUtil._defaultCellCreator;
   // TODO: remove the frag if it does not cause bugs: var frag = document.createDocumentFragment();
+  var tr, i;
   if (DWRUtil._isArray(data)) {
-    for (var i = 0; i < data.length; i++) {
-      ele.appendChild(DWRUtil._addRowInner(data[i], cellFuncs, options));
+    for (i = 0; i < data.length; i++) {
+      tr = DWRUtil._addRowInner(data[i], cellFuncs, options);
+      if (tr != null) ele.appendChild(tr);
     }
   }
   else if (typeof data == "object") {
+    i = 0;
     for (var row in data) {
-      ele.appendChild(DWRUtil._addRowInner(row, cellFuncs, options));
+      tr = DWRUtil._addRowInner(row, cellFuncs, options, i);
+      if (tr != null) ele.appendChild(tr);
+      i++;
     }
   }
   //ele.appendChild(frag);
@@ -736,8 +741,9 @@ DWRUtil.addRows = function(ele, data, cellFuncs, options) {
  * Internal function to draw a single row of a table.
  * @private
  */
-DWRUtil._addRowInner = function(row, cellFuncs, options) {
-  var tr = options.rowCreator(row);
+DWRUtil._addRowInner = function(row, cellFuncs, options, i) {
+  var tr = options.rowCreator(row, i);
+  if (tr == null) return null;
   for (var j = 0; j < cellFuncs.length; j++) {
     var func = cellFuncs[j];
     var td;
@@ -769,7 +775,7 @@ DWRUtil._defaultRowCreator = function(row, i) {
  * Default cell creation function
  * @private
  */
-DWRUtil._defaultCellCreator = function(data) {
+DWRUtil._defaultCellCreator = function(data, j) {
   return document.createElement("td");
 };
 
