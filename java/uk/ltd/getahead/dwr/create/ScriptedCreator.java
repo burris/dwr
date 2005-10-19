@@ -15,9 +15,8 @@
  */
 package uk.ltd.getahead.dwr.create;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.RandomAccessFile;
 
 import javax.servlet.ServletContext;
 
@@ -31,6 +30,7 @@ import uk.ltd.getahead.dwr.util.Logger;
 /**
  * A creator that simply uses the default constructor each time it is called.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @author Dennis [devel at muhlesteins dot com]
  */
 public class ScriptedCreator extends AbstractCreator implements Creator
 {
@@ -44,21 +44,23 @@ public class ScriptedCreator extends AbstractCreator implements Creator
 
     /**
      * Are we caching the script (default: false)
-     * @return Returns the cacheScript variable
+     * @return Returns the reloadable variable
      */
-    public String getCacheScript()
+    public String getReloadable()
     {
-        return String.valueOf(cacheScript);
+        return String.valueOf(reloadable);
     }
 
     /**
-     * @param cacheScript Whether or not to cache the script.  
-     * The default is <b>true</b>. This parameter is only
-     * used if scriptPath is used instead of script.
+     * @param reloadable Whether or not to reload the script.  
+     * The default is <b>true</b>. This parameter is only used if scriptPath is
+     * used instead of script.  When reloadable is true, ScriptedCreator will
+     * check to see if the script has been modified before returning the
+     * existing created class.
      */
-    public void setCacheScript(String cacheScript)
+    public void setCacheScript(String reloadable)
     {
-        this.cacheScript = Boolean.valueOf(cacheScript).booleanValue();
+        this.reloadable = Boolean.valueOf(reloadable).booleanValue();
     }
 
     /**
@@ -70,8 +72,8 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     }
 
     /**
-     *  @param scriptPath Context reletive path to script.
-     **/
+     * @param scriptPath Context reletive path to script.
+     */
     public void setScriptPath(String scriptPath)
     {
         if (scriptSrc != null)
@@ -110,44 +112,50 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             throw new InstantiationException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
         }
 
-        // now load the script from the path        
-        log.debug("Loading Script from Path: " + scriptPath); //$NON-NLS-1$
-        InputStream in = null;
+        if (!reloadable && cachedScript != null)
+        {
+            return cachedScript;
+        }
+
         try
         {
-            ExecutionContext ec = ExecutionContext.get();
-            ServletContext sc = ec.getServletContext();
-            in = sc.getResourceAsStream(scriptPath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String line = null;
-            StringBuffer sb = new StringBuffer();
+            // load the script from the path
+            log.debug("Loading Script from Path: " + scriptPath); //$NON-NLS-1$
+            RandomAccessFile in = null;
 
-            while ((line = br.readLine()) != null)
-            {
-                sb.append(line);
-            }
-
-            in.close();
-            return sb.toString();
-        }
-        catch (Exception ex)
-        {
-            log.error(ex.getMessage(), ex);
-            throw new InstantiationException(Messages.getString("ScriptCreator.MissingScript")); //$NON-NLS-1$
-        }
-        finally
-        {
             try
+            {
+                ExecutionContext ec = ExecutionContext.get();
+                ServletContext sc = ec.getServletContext();
+                File scriptFile = new File(sc.getRealPath(scriptPath));
+
+                // check for modified script
+                if (scriptFile.lastModified() <= scriptModified && cachedScript != null)
+                {
+                    log.debug("Script: " + scriptPath + " not modified."); //$NON-NLS-1$ //$NON-NLS-2$
+                    return cachedScript;
+                }
+
+                scriptModified = scriptFile.lastModified();
+                in = new RandomAccessFile(scriptFile, "r"); //$NON-NLS-1$
+                byte bytes[] = new byte[(int) in.length()];
+                in.readFully(bytes);
+                cachedScript = new String(bytes);
+                return cachedScript;
+
+            }
+            finally
             {
                 if (null != in)
                 {
                     in.close();
                 }
             }
-            catch (Exception ex)
-            {
-                log.warn(ex.getMessage(), ex);
-            }
+        }
+        catch (Exception ex)
+        {
+            log.error(ex.getMessage(), ex);
+            throw new InstantiationException(Messages.getString("ScriptCreator.MissingScript")); //$NON-NLS-1$
         }
     }
 
@@ -190,8 +198,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
      */
     public Class getType()
     {
-        log.debug("Cache Script: " + (scriptPath != null && cacheScript)); //$NON-NLS-1$
-        if (clazz == null || (scriptPath != null && !cacheScript))
+        if (clazz == null || (scriptPath != null && reloadable))
         {
             try
             {
@@ -214,8 +221,6 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     {
         try
         {
-            log.debug("Loaded Script Source: " + getScript()); //$NON-NLS-1$
-
             return bsfman.eval(language, (null == scriptPath ? "dwr.xml" : scriptPath), 0, 0, getScript()); //$NON-NLS-1$
         }
         catch (Exception ex)
@@ -249,15 +254,25 @@ public class ScriptedCreator extends AbstractCreator implements Creator
      * The script that we are asking BSF to execute in order to get an object.
      */
     private String scriptSrc = null;
-    
+
     /**
      * The path of the script we are asking BSF to execute.
-     **/
+     */
     private String scriptPath = null;
-    
+
     /**
-     *  Whether or not to cache the script.  Only used if srciptPath is used.
-     *  ie: An inline script is not reloadable
-     **/
-    private boolean cacheScript=true;
+     * Whether or not to reload the script.  Only used if scriptPath is used.
+     * ie: An inline script is not reloadable
+     */
+    private boolean reloadable = true;
+
+    /**
+     * Script modified time. Only used when scriptPath is used.
+     */
+    private long scriptModified = -1;
+
+    /**
+     * Contents of script loaded from scriptPath
+     */
+    private String cachedScript;
 }
