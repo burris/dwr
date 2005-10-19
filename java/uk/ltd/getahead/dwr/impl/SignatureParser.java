@@ -199,6 +199,13 @@ public class SignatureParser
     {
         Class reply = null;
 
+        // Handle inner classes
+        if (type.indexOf('.') != -1)
+        {
+            log.debug("Inner class detected: " + type); //$NON-NLS-1$
+            type = type.replace('.', '$');
+        }
+
         try
         {
             String full = (String) classImports.get(type);

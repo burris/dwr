@@ -15,7 +15,7 @@
  */
 package uk.ltd.getahead.dwr.convert;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,69 +38,102 @@ public class ConverterUtil
      */
     public static void addListInit(OutboundVariable ov, List ovs)
     {
-        String assignCode = ov.getAssignCode();
+        String varname = ov.getAssignCode();
         StringBuffer buffer = new StringBuffer();
 
-        // Declare ourselves so recurrsion works
-        buffer.append("var "); //$NON-NLS-1$
-        buffer.append(assignCode);
-        buffer.append("=[];"); //$NON-NLS-1$
+        String init = getInitCodes(ovs);
 
-        // First we output all the init code
-        for (Iterator it = ovs.iterator(); it.hasNext();)
+        if (init.length() == 0)
         {
-            OutboundVariable nested = (OutboundVariable) it.next();
-            buffer.append(nested.getInitCode());
-        }
-    
-        // If we have an array which contains itself we need declare it later
-        // so we collect the positions at which the array contains itself
-        List recurse = new ArrayList();
-        
-        // Declare the non-recursive parts to the list
-        buffer.append(assignCode);
-        buffer.append(".concat(["); //$NON-NLS-1$
-        boolean first = true;
-        int i = 0;
-        for (Iterator it = ovs.iterator(); it.hasNext();)
-        {
-            OutboundVariable nested = (OutboundVariable) it.next();
-    
-            if (nested.getAssignCode() == assignCode)
+            // Declare ourselves so recurrsion works
+            buffer.append("var "); //$NON-NLS-1$
+            buffer.append(varname);
+            buffer.append("=[;"); //$NON-NLS-1$
+
+            // Declare the non-recursive parts to the list
+            boolean first = true;
+            for (int i = 0; i < ovs.size(); i++)
             {
-                recurse.add(new Integer(i));
-            }
-            else
-            {
+                OutboundVariable nested = (OutboundVariable) ovs.get(i);
+
                 if (!first)
                 {
                     buffer.append(',');
                 }
-    
-                buffer.append(nested.getAssignCode());
+
+                if (nested.getAssignCode() == varname)
+                {
+                    // We'll fill it in later
+                    buffer.append("null"); //$NON-NLS-1$
+                }
+                else
+                {
+                    ovs.set(i, null);
+                    buffer.append(nested.getAssignCode());
+                }
+
                 first = false;
             }
-    
-            i++;
+            buffer.append("];"); //$NON-NLS-1$
         }
-        buffer.append("]);\r\n"); //$NON-NLS-1$
-    
-        // And now the recursive parts
-        if (!recurse.isEmpty())
+        else
         {
-            for (Iterator it = recurse.iterator(); it.hasNext();)
+            // Declare ourselves so recurrsion works
+            buffer.append("var "); //$NON-NLS-1$
+            buffer.append(varname);
+            buffer.append("=[];"); //$NON-NLS-1$
+
+            // First we output all the init code
+            buffer.append(init);
+
+            // Declare the non-recursive parts to the list
+            buffer.append(varname);
+            buffer.append('=');
+            buffer.append(varname);
+            buffer.append(".concat(["); //$NON-NLS-1$
+            boolean first = true;
+            for (int i = 0; i < ovs.size(); i++)
             {
-                Integer loop = (Integer) it.next();
-                buffer.append(assignCode);
-                buffer.append('[');
-                buffer.append(loop);
-                buffer.append("]="); //$NON-NLS-1$
-                buffer.append(assignCode);
-                buffer.append(';'); //$NON-NLS-1$
+                OutboundVariable nested = (OutboundVariable) ovs.get(i);
+
+                if (!first)
+                {
+                    buffer.append(',');
+                }
+
+                if (nested.getAssignCode() == varname)
+                {
+                    // We'll fill it in later
+                    buffer.append("null"); //$NON-NLS-1$
+                }
+                else
+                {
+                    ovs.set(i, null);
+                    buffer.append(nested.getAssignCode());
+                }
+
+                first = false;
             }
-            buffer.append("\r\n"); //$NON-NLS-1$
+            buffer.append("]);"); //$NON-NLS-1$
         }
-    
+
+        // And now the recursive parts
+        for (int i = 0; i < ovs.size(); i++)
+        {
+            OutboundVariable nested = (OutboundVariable) ovs.get(i);
+
+            if (nested != null)
+            {
+                buffer.append(varname);
+                buffer.append('[');
+                buffer.append(i);
+                buffer.append("]="); //$NON-NLS-1$
+                buffer.append(nested.getAssignCode());
+                buffer.append(';');
+            }
+        }
+        buffer.append("\r\n"); //$NON-NLS-1$
+
         ov.setInitCode(buffer.toString());
     }
 
@@ -114,57 +147,79 @@ public class ConverterUtil
         String varname = ov.getAssignCode();
         StringBuffer buffer = new StringBuffer();
 
-        // Declare ourselves so recurrsion works
-        buffer.append("var "); //$NON-NLS-1$
-        buffer.append(varname);
-        buffer.append("={};"); //$NON-NLS-1$
+        String init = getInitCodes(ovs.values());
 
-        // Make sure the nested things are declared
-        for (Iterator it = ovs.values().iterator(); it.hasNext();)
+        // If there is no init code, there is no recursion so we can go into
+        // compact JSON mode
+        if (init.length() == 0)
         {
-            OutboundVariable nested = (OutboundVariable) it.next();
-            buffer.append(nested.getInitCode());
-        }
+            // First loop through is for the stuff we can embed
+            buffer.append("var "); //$NON-NLS-1$
+            buffer.append(varname);
+            buffer.append("={"); //$NON-NLS-1$
 
-        // First loop through is for the stuff we can embed
-        // buffer.append("var "); //$NON-NLS-1$
-        // buffer.append(varname);
-        // buffer.append("={"); //$NON-NLS-1$
-
-        // And now declare our stuff
-        // boolean first = true;
-        for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
-        {
-            Map.Entry entry = (Map.Entry) it.next();
-            String name = (String) entry.getKey();
-            OutboundVariable nested = (OutboundVariable) entry.getValue();
-
-            String assignCode = nested.getAssignCode();
-
-            // The compact JSON style syntax is only any good for simple names
-            // and when we are not recursive
-            if (LocalUtil.isSimpleName(name) && !assignCode.equals(varname))
+            // And now declare our stuff
+            boolean first = true;
+            for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
             {
-                // if (!first)
-                // {
-                //     buffer.append(',');
-                // }
-                // buffer.append(name);
-                // buffer.append(':');
-                // buffer.append(assignCode);
-                // we don't need to do this one the hard way
-                // it.remove();
-                // first = false;
+                Map.Entry entry = (Map.Entry) it.next();
+                String name = (String) entry.getKey();
+                OutboundVariable nested = (OutboundVariable) entry.getValue();
 
-                buffer.append(varname);
-                buffer.append('.');
-                buffer.append(name);
-                buffer.append('=');
-                buffer.append(nested.getAssignCode());
-                buffer.append(';');
+                String assignCode = nested.getAssignCode();
+
+                // The compact JSON style syntax is only any good for simple names
+                // and when we are not recursive
+                if (LocalUtil.isSimpleName(name) && !assignCode.equals(varname))
+                {
+                    if (!first)
+                    {
+                        buffer.append(',');
+                    }
+
+                    buffer.append(name);
+                    buffer.append(':');
+                    buffer.append(assignCode);
+
+                    // we don't need to do this one the hard way
+                    it.remove();
+                    first = false;
+                }
+            }
+            buffer.append("};"); //$NON-NLS-1$
+        }
+        else
+        {
+            // Declare ourselves so recursion works
+            buffer.append("var "); //$NON-NLS-1$
+            buffer.append(varname);
+            buffer.append("={};"); //$NON-NLS-1$
+
+            buffer.append(init);
+
+            // And now declare our stuff
+            for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+                String name = (String) entry.getKey();
+                OutboundVariable nested = (OutboundVariable) entry.getValue();
+
+                String assignCode = nested.getAssignCode();
+
+                // The semi-compact syntax is only any good for simple names
+                if (LocalUtil.isSimpleName(name) && !assignCode.equals(varname))
+                {
+                    buffer.append(varname);
+                    buffer.append('.');
+                    buffer.append(name);
+                    buffer.append('=');
+                    buffer.append(nested.getAssignCode());
+                    buffer.append(';');
+
+                    it.remove();
+                }
             }
         }
-        // buffer.append("};"); //$NON-NLS-1$
 
         // The next loop through is for everything that will not embed
         for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
@@ -184,6 +239,25 @@ public class ConverterUtil
         buffer.append("\r\n"); //$NON-NLS-1$
 
         ov.setInitCode(buffer.toString());
+    }
+
+    /**
+     * Grab all the init codes together
+     * @param ovs The set of variables to marshall
+     * @return An init string
+     */
+    private static String getInitCodes(Collection ovs)
+    {
+        StringBuffer init = new StringBuffer();
+
+        // Make sure the nested things are declared
+        for (Iterator it = ovs.iterator(); it.hasNext();)
+        {
+            OutboundVariable nested = (OutboundVariable) it.next();
+            init.append(nested.getInitCode());
+        }
+
+        return init.toString();
     }
 
     /**
