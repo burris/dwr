@@ -38,8 +38,15 @@ public class ConverterUtil
      */
     public static void addListInit(OutboundVariable ov, List ovs)
     {
-        // First we output all the init code
+        String assignCode = ov.getAssignCode();
         StringBuffer buffer = new StringBuffer();
+
+        // Declare ourselves so recurrsion works
+        buffer.append("var "); //$NON-NLS-1$
+        buffer.append(assignCode);
+        buffer.append("=[];"); //$NON-NLS-1$
+
+        // First we output all the init code
         for (Iterator it = ovs.iterator(); it.hasNext();)
         {
             OutboundVariable nested = (OutboundVariable) it.next();
@@ -49,13 +56,10 @@ public class ConverterUtil
         // If we have an array which contains itself we need declare it later
         // so we collect the positions at which the array contains itself
         List recurse = new ArrayList();
-    
-        String assignCode = ov.getAssignCode();
-    
+        
         // Declare the non-recursive parts to the list
-        buffer.append("var "); //$NON-NLS-1$
         buffer.append(assignCode);
-        buffer.append("=["); //$NON-NLS-1$
+        buffer.append(".concat(["); //$NON-NLS-1$
         boolean first = true;
         int i = 0;
         for (Iterator it = ovs.iterator(); it.hasNext();)
@@ -79,7 +83,7 @@ public class ConverterUtil
     
             i++;
         }
-        buffer.append("];\r\n"); //$NON-NLS-1$
+        buffer.append("]);\r\n"); //$NON-NLS-1$
     
         // And now the recursive parts
         if (!recurse.isEmpty())
@@ -108,8 +112,12 @@ public class ConverterUtil
     public static void addMapInit(OutboundVariable ov, Map ovs)
     {
         String varname = ov.getAssignCode();
-
         StringBuffer buffer = new StringBuffer();
+
+        // Declare ourselves so recurrsion works
+        buffer.append("var "); //$NON-NLS-1$
+        buffer.append(varname);
+        buffer.append("={};"); //$NON-NLS-1$
 
         // Make sure the nested things are declared
         for (Iterator it = ovs.values().iterator(); it.hasNext();)
@@ -119,12 +127,12 @@ public class ConverterUtil
         }
 
         // First loop through is for the stuff we can embed
-        buffer.append("var "); //$NON-NLS-1$
-        buffer.append(varname);
-        buffer.append("={"); //$NON-NLS-1$
+        // buffer.append("var "); //$NON-NLS-1$
+        // buffer.append(varname);
+        // buffer.append("={"); //$NON-NLS-1$
 
         // And now declare our stuff
-        boolean first = true;
+        // boolean first = true;
         for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
         {
             Map.Entry entry = (Map.Entry) it.next();
@@ -137,22 +145,26 @@ public class ConverterUtil
             // and when we are not recursive
             if (LocalUtil.isSimpleName(name) && !assignCode.equals(varname))
             {
-                if (!first)
-                {
-                    buffer.append(',');
-                }
-
-                buffer.append(name);
-                buffer.append(':');
-                buffer.append(assignCode);
-
+                // if (!first)
+                // {
+                //     buffer.append(',');
+                // }
+                // buffer.append(name);
+                // buffer.append(':');
+                // buffer.append(assignCode);
                 // we don't need to do this one the hard way
-                it.remove();
+                // it.remove();
+                // first = false;
 
-                first = false;
+                buffer.append(varname);
+                buffer.append('.');
+                buffer.append(name);
+                buffer.append('=');
+                buffer.append(nested.getAssignCode());
+                buffer.append(';');
             }
         }
-        buffer.append("};"); //$NON-NLS-1$
+        // buffer.append("};"); //$NON-NLS-1$
 
         // The next loop through is for everything that will not embed
         for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
@@ -160,13 +172,6 @@ public class ConverterUtil
             Map.Entry entry = (Map.Entry) it.next();
             String name = (String) entry.getKey();
             OutboundVariable nested = (OutboundVariable) entry.getValue();
-
-//            buffer.append(varname);
-//            buffer.append('.');
-//            buffer.append(name);
-//            buffer.append('=');
-//            buffer.append(nested.getAssignCode());
-//            buffer.append(';');
 
             buffer.append(varname);
             buffer.append("['"); //$NON-NLS-1$
