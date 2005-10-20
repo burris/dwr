@@ -48,7 +48,7 @@ public class ConverterUtil
             // Declare ourselves so recurrsion works
             buffer.append("var "); //$NON-NLS-1$
             buffer.append(varname);
-            buffer.append("=[;"); //$NON-NLS-1$
+            buffer.append("=["); //$NON-NLS-1$
 
             // Declare the non-recursive parts to the list
             boolean first = true;
