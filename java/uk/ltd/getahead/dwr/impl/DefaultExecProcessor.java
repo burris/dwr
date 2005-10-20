@@ -115,8 +115,6 @@ public class DefaultExecProcessor implements Processor
                     buffer.append(call.getId());
                     buffer.append("', "); //$NON-NLS-1$
                     buffer.append(ov.getAssignCode());
-                    buffer.append(", "); //$NON-NLS-1$
-                    buffer.append("batch"); //$NON-NLS-1$
                     buffer.append(");\n"); //$NON-NLS-1$
                 }
                 else
@@ -336,20 +334,20 @@ public class DefaultExecProcessor implements Processor
 
                     if (create)
                     {
-                        buffer.append("--Created"); //$NON-NLS-1$
+                        buffer.append("--Object created, "); //$NON-NLS-1$
                         if (!scope.equals(Creator.PAGE))
                         {
-                            buffer.append(" and put into "); //$NON-NLS-1$
+                            buffer.append(" stored in "); //$NON-NLS-1$
                             buffer.append(scope);
                         }
                         else
                         {
-                            buffer.append(" but not stored"); //$NON-NLS-1$
+                            buffer.append(" no stored"); //$NON-NLS-1$
                         }
                     }
                     else
                     {
-                        buffer.append("--Found in "); //$NON-NLS-1$
+                        buffer.append("--Object found in "); //$NON-NLS-1$
                         buffer.append(scope);
                     }
 
