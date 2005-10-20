@@ -338,55 +338,6 @@ DWREngine._DOMDocument = ["Msxml2.DOMDocument.5.0", "Msxml2.DOMDocument.4.0", "M
 DWREngine._XMLHTTP = ["Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
 
 /**
- * Called when the replies are received.
- * This method is called by Javascript that is emitted by server
- * @param id The identifier of the call that we are handling a response for
- * @param reply The data to pass to the callback function
- * @private
- */
-DWREngine._handleResponse = function(id, reply) {
-  var metadata = DWREngine._metadatas[id];
-
-  // Clear this callback out of the list - we don't need it any more
-  DWREngine._metadatas[id] = null;
-
-  if (metadata) {
-    // Error handlers inside here indicate an error that is nothing to do
-    // with DWR so we handle them differently.
-    try {
-      metadata.callback(reply);
-    }
-    catch (ex) {
-      metadata.errorHandler(ex);
-    }
-  }
-};
-
-/**
- * This method is called by Javascript that is emitted by server
- * @private
- */
-DWREngine._handleServerError = function(id, error, batch) {
-  if (batch.metadata.errorHandler) {
-    if (error.message) {
-      batch.metadata.errorHandler(error.message, error);
-    }
-    else {
-      batch.metadata.errorHandler(error);
-    }
-  }
-};
-
-/**
- * Generic error handling routing to save having null checks everywhere.
- */
-DWREngine._handleError = function(reason) {
-  if (DWREngine._errorHandler) {
-    DWREngine._errorHandler(reason);
-  }
-};
-
-/**
  * Send a request to the server
  * This method is called by Javascript that is emitted by server
  * @param path The part of the URL after the host and before the exec bit
@@ -627,68 +578,87 @@ DWREngine._stateChange = function(batch) {
   if (batch.req.readyState == 4 && !batch.completed) {
     try {
       var reply = batch.req.responseText;
-      if (reply != null && reply != "") {
-        if (reply.search("DWREngine._handle") == -1) {
-          DWREngine._stateChangeError(batch, "Invalid reply from server");
-        }
-        else if (batch.req.status && batch.req.status == 200) {
-          eval(reply);
-        }
-        else {
-          DWREngine._stateChangeError(batch, reply);
-        }
+      var status = batch.req.status;
+
+      // We're done. Clear up
+      DWREngine._clearUp(batch);
+
+      if (reply == null || reply == "") {
+        if (batch.metadata.errorHandler) batch.metadata.errorHandler("No data received from server");
+        return;
       }
-      else {
-        DWREngine._stateChangeError(batch, "No data received from server");
+
+      // This should get us out of 404s etc.
+      if (reply.search("DWREngine._handle") == -1) {
+        if (batch.metadata.errorHandler) batch.metadata.errorHandler("Invalid reply from server");
+        return;
       }
+
+      if (status != 200) {
+        if (reply == null) reply = "Unknown error occured";
+        if (batch.metadata.errorHandler) batch.metadata.errorHandler(reply);
+        return;
+      }
+
+      eval(reply);
     }
     catch (ex) {
-      DWREngine._stateChangeError(batch, ex);
+      if (ex == null) ex = "Unknown error occured";
+      if (batch.metadata.errorHandler) batch.metadata.errorHandler(ex);
     }
-    //  Clear up
-    if (batch.div) batch.div.parentNode.removeChild(batch.div);
-    if (batch.iframe) batch.iframe.parentNode.removeChild(batch.iframe);
-    if (batch.form) batch.form.parentNode.removeChild(batch.form);
-    // Avoid IE handles increase
-    delete batch.req;
-
-    if (batch.postHook) batch.postHook();
-    // TODO: There must be a better way???
-    for (var i = 0; i < DWREngine._batches.length; i++) {
-      if (DWREngine._batches[i] == batch) {
-        DWREngine._batches.splice(i, 1);
-        break;
+    finally {
+      // If there is anything on the queue waiting to go out, then send it.
+      // We don't need to check for ordered mode, here because when ordered mode
+      // gets turned off, we still process *waiting* batches in an ordered way.
+      if (DWREngine._batchQueue.length != 0) {
+        var sendbatch = DWREngine._batchQueue.shift();
+        DWREngine._sendData(sendbatch);
+        DWREngine._batches[DWREngine._batches.length] = sendbatch;
       }
     }
-    // If there is anything on the queue waiting to go out, then send it.
-    // We don't need to check for ordered mode, here because when ordered mode
-    // gets turned off, we still process *waiting* batches in an ordered way.
-    if (DWREngine._batchQueue.length != 0) {
-      var sendbatch = DWREngine._batchQueue.shift();
-      DWREngine._sendData(sendbatch);
-      DWREngine._batches[DWREngine._batches.length] = sendbatch;
-    }
-
-    batch.completed = true;
   }
 };
 
 /**
- * When something has gone wrong with <code>DWREngine._stateChange()</code>
- * @param message The error text if any
+ * Called when the replies are received.
+ * This method is called by Javascript that is emitted by server
+ * @param id The identifier of the call that we are handling a response for
+ * @param reply The data to pass to the callback function
  * @private
  */
-DWREngine._stateChangeError = function(batch, message) {
-  if (batch.metadata != null) {
-    DWREngine._abortRequest(batch);
+DWREngine._handleResponse = function(id, reply) {
+  // Clear this callback out of the list - we don't need it any more
+  var metadata = DWREngine._metadatas[id];
+  DWREngine._metadatas[id] = null;
+  if (metadata) {
+    // Error handlers inside here indicate an error that is nothing to do
+    // with DWR so we handle them differently.
+    try {
+      metadata.callback(reply);
+    }
+    catch (ex) {
+      if (metadata.errorHandler) metadata.errorHandler(ex);
+    }
   }
-  if (message == null) {
-    message = "Unknown error occured";
+};
+
+/**
+ * This method is called by Javascript that is emitted by server
+ * @private
+ */
+DWREngine._handleServerError = function(id, error) {
+  // Clear this callback out of the list - we don't need it any more
+  var metadata = DWREngine._metadatas[id];
+  DWREngine._metadatas[id] = null;
+  if (metadata.errorHandler) {
+    if (error.message) {
+      metadata.errorHandler(error.message, error);
+    }
+    else {
+      metadata.errorHandler(error);
+    }
   }
-  if (batch.metadata.errorHandler) {
-    batch.metadata.errorHandler(message);
-  }
-}
+};
 
 /**
  * Called as a result of a request timeout or an http reply status != 200
@@ -697,25 +667,45 @@ DWREngine._stateChangeError = function(batch, message) {
  */ 
 DWREngine._abortRequest = function(batch) {
   if (batch && batch.metadata && !batch.completed) {
-    batch.completed = true;
-    if (batch.req != null) {
-      batch.req.abort();
-      if (batch.metadata.errorHandler) {
-        // I'm not keen on the idea of setting error handlers a strings
-        // can we get rid of this at some stage?
-        //if (typeof batch.metadata.errorHandler == "string") {
-        //  eval(batch.metadata.errorHandler); 
-        //}
-        //else if (typeof batch.metadata.errorHandler == "function") {
-        batch.metadata.errorHandler(); 
-        //}
-        //else {
-        //  if (DWREngine._warningHandler) {
-        //    DWREngine._warningHandler("errorHandler is neither a string (for eval()) or a function.");
-        //  }
-        //}
-      }
+    DWREngine._clearUp();
+    if (batch.req) batch.req.abort();
+  }
+};
+
+/**
+ * A call has finished by whatever means and we need to shut it all down.
+ * @private
+ */
+DWREngine._clearUp = function(batch) {
+  if (batch.completed) {
+    alert("double complete");
+    return;
+  }
+
+  if (batch.div) batch.div.parentNode.removeChild(batch.div);
+  if (batch.iframe) batch.iframe.parentNode.removeChild(batch.iframe);
+  if (batch.form) batch.form.parentNode.removeChild(batch.form);
+  // Avoid IE handles increase
+  delete batch.req;
+
+  if (batch.postHook) batch.postHook();
+  // TODO: There must be a better way???
+  for (var i = 0; i < DWREngine._batches.length; i++) {
+    if (DWREngine._batches[i] == batch) {
+      DWREngine._batches.splice(i, 1);
+      break;
     }
+  }
+
+  batch.completed = true;
+};
+
+/**
+ * Generic error handling routing to save having null checks everywhere.
+ */
+DWREngine._handleError = function(reason, ex) {
+  if (DWREngine._errorHandler) {
+    DWREngine._errorHandler(reason, ex);
   }
 };
 
