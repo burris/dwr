@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="dwr" default="compile">
+<project name="dwr20" default="compile">
 
   <!--=======================================================================-->
   <property file="build.properties"/>
