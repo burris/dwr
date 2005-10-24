@@ -274,7 +274,7 @@ public class DefaultTestProcessor implements Processor
 
         out.println("<h2>Other Links</h2>"); //$NON-NLS-1$
         out.println("<ul>"); //$NON-NLS-1$
-        out.println("<li>Back to <a href='" + req.getContextPath() + servletPath + "'>class index</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("<li>Back to <a href='" + req.getContextPath() + servletPath + "/'>class index</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("<li>Up to <a href='" + req.getContextPath() + "/'>top level of web app</a>.</li>"); //$NON-NLS-1$ //$NON-NLS-2$
         out.println("</ul>"); //$NON-NLS-1$
 

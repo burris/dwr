@@ -57,46 +57,42 @@ public class DefaultProcessor implements Processor
             log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + req.getContextPath() + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
-        if (pathInfo == null || pathInfo.length() == 0 || pathInfo.equals(HtmlConstants.PATH_ROOT) || pathInfo.equals(req.getContextPath()))
+        // NOTE: I'm not totally happy with the if statment, there doesn't
+        // appear to be logic to it, just hack-till-its-not-broken which feels
+        // like a good way to create latent bugs
+        if (pathInfo.length() == 0 ||
+            pathInfo.equals(HtmlConstants.PATH_ROOT) ||
+            pathInfo.equals(req.getContextPath()))
         {
             resp.sendRedirect(req.getContextPath() + servletPath + HtmlConstants.FILE_INDEX);
         }
-        else if (pathInfo.equals(req.getContextPath()))
-        {
-            // TODO: sort this out - since the pathInfo hack was added things...
-            // have not been totally right with the various urls that all point
-            // to the index page and we need to get to the bottom of things
-            // properly.
-            // This branch will never be executed because it is duplicated above
-            resp.sendRedirect(req.getContextPath() + HtmlConstants.FILE_INDEX);
-        }
-        else if (pathInfo != null && pathInfo.startsWith(HtmlConstants.FILE_INDEX))
+        else if (pathInfo.startsWith(HtmlConstants.FILE_INDEX))
         {
             index.handle(req, resp);
         }
-        else if (pathInfo != null && pathInfo.startsWith(HtmlConstants.PATH_TEST))
+        else if (pathInfo.startsWith(HtmlConstants.PATH_TEST))
         {
             test.handle(req, resp);
         }
-        else if (pathInfo != null && pathInfo.startsWith(HtmlConstants.PATH_INTERFACE))
+        else if (pathInfo.startsWith(HtmlConstants.PATH_INTERFACE))
         {
             iface.handle(req, resp);
         }
-        else if (pathInfo != null && pathInfo.startsWith(HtmlConstants.PATH_EXEC))
+        else if (pathInfo.startsWith(HtmlConstants.PATH_EXEC))
         {
             exec.handle(req, resp);
         }
-        else if (pathInfo != null && pathInfo.equalsIgnoreCase(HtmlConstants.FILE_ENGINE))
+        else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_ENGINE))
         {
-            file.doFile(resp, HtmlConstants.FILE_ENGINE, HtmlConstants.MIME_JS);
+            file.doFile(req, resp, HtmlConstants.FILE_ENGINE, HtmlConstants.MIME_JS);
         }
-        else if (pathInfo != null && pathInfo.equalsIgnoreCase(HtmlConstants.FILE_UTIL))
+        else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_UTIL))
         {
-            file.doFile(resp, HtmlConstants.FILE_UTIL, HtmlConstants.MIME_JS);
+            file.doFile(req, resp, HtmlConstants.FILE_UTIL, HtmlConstants.MIME_JS);
         }
-        else if (pathInfo != null && pathInfo.equalsIgnoreCase(HtmlConstants.FILE_DEPRECATED))
+        else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_DEPRECATED))
         {
-            file.doFile(resp, HtmlConstants.FILE_DEPRECATED, HtmlConstants.MIME_JS);
+            file.doFile(req, resp, HtmlConstants.FILE_DEPRECATED, HtmlConstants.MIME_JS);
         }
         else
         {

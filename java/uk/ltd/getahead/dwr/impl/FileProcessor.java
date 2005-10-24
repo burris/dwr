@@ -23,10 +23,12 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import uk.ltd.getahead.dwr.AbstractDWRServlet;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A file servlet component that does some very limitted.
@@ -37,14 +39,19 @@ public class FileProcessor
     /**
      * Basically a file servlet component that does some <b>very limitted</b>
      * EL type processing on the file. See the source for the cheat.
+     * @param req The request from the browser
      * @param resp The response channel
      * @param path The path to search for, process and output
      * @param mimeType The mime type to use for this output file
      * @throws IOException If writing to the output fails
      */
-    protected void doFile(HttpServletResponse resp, String path, String mimeType) throws IOException
+    protected void doFile(HttpServletRequest req, HttpServletResponse resp, String path, String mimeType) throws IOException
     {
-        resp.setContentType(mimeType);
+        if (isUpToDate(req, path))
+        {
+            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            return;
+        }
 
         String output = null;
 
@@ -86,9 +93,97 @@ public class FileProcessor
             }
         }
 
+        resp.setContentType(mimeType);
+        resp.setDateHeader(HtmlConstants.HEADER_LAST_MODIFIED, servletContainerStartTime);
+        resp.setHeader(HtmlConstants.HEADER_ETAG, etag);
+
         PrintWriter out = resp.getWriter();
         out.println(output);
         out.flush();
+    }
+
+    /**
+     * Do we need to send the conent for this file
+     * @param req The HTTP request
+     * @param path The file path (for debug purposes)
+     * @return true iff the ETags and If-Modified-Since headers say we have not changed
+     */
+    private boolean isUpToDate(HttpServletRequest req, String path)
+    {
+        if (ignoreLastModified)
+        {
+            return false;
+        }
+
+        long modifiedSince = req.getDateHeader(HtmlConstants.HEADER_IF_MODIFIED);
+        if (modifiedSince != -1)
+        {
+            // Browsers are only accurate to the second
+            modifiedSince -= modifiedSince % 1000;
+        }
+        String givenEtag = req.getHeader(HtmlConstants.HEADER_IF_NONE);
+
+        // Deal with missing etags
+        if (givenEtag == null)
+        {
+            // There is no ETag, just go with If-Modified-Since
+            if (modifiedSince > servletContainerStartTime)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Sending 304 for " + path + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + servletContainerStartTime); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+                return true;
+            }
+
+            // There are no modified setttings, carry on
+            return false;
+        }
+
+        // Deal with missing If-Modified-Since
+        if (modifiedSince == -1)
+        {
+            if (!etag.equals(givenEtag))
+            {
+                // There is an ETag, but no If-Modified-Since
+                if (log.isDebugEnabled())
+                {
+                log.debug("Sending 304 for " + path + " Old ETag=" + givenEtag + ", New ETag=" + etag); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+                return true;
+            }
+
+            // There are no modified setttings, carry on
+            return false;
+        }
+
+        // Do both values indicate that we are in-date?
+        if (etag.equals(givenEtag) && modifiedSince <= servletContainerStartTime)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("Sending 304 for " + path); //$NON-NLS-1$
+            }
+            return true;
+        }
+
+            return false;
+        }
+
+    /**
+     * @return Returns the ignoreLastModified.
+     */
+    public boolean isIgnoreLastModified()
+    {
+        return ignoreLastModified;
+    }
+
+    /**
+     * @param ignoreLastModified The ignoreLastModified to set.
+     */
+    public void setIgnoreLastModified(boolean ignoreLastModified)
+    {
+        this.ignoreLastModified = ignoreLastModified;
     }
 
     /**
@@ -109,6 +204,33 @@ public class FileProcessor
     }
 
     /**
+     * The time on the script files
+     */
+    private static final long servletContainerStartTime;
+
+    /**
+     * The etag (=time for us) on the script files
+     */
+    private static final String etag;
+
+    /**
+     * Initialize the container start time
+     */
+    static
+    {
+        // Browsers are only accurate to the second
+        long now = System.currentTimeMillis();
+        servletContainerStartTime = now - (now % 1000);
+
+        etag = "\"" + servletContainerStartTime + '\"'; //$NON-NLS-1$
+    }
+
+    /**
+     * Do we ignore all the Last-Modified/ETags blathering?
+     */
+    private boolean ignoreLastModified = false;
+
+    /**
      * How much do we compression javascript by?
      */
     private int compressionLevel = JavascriptUtil.LEVEL_DEBUGGABLE;
@@ -127,4 +249,9 @@ public class FileProcessor
      * The means by which we strip comments
      */
     private JavascriptUtil jsutil = new JavascriptUtil();
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(FileProcessor.class);
 }
