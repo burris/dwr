@@ -636,7 +636,7 @@ DWREngine._handleResponse = function(id, reply) {
     // Error handlers inside here indicate an error that is nothing to do
     // with DWR so we handle them differently.
     try {
-      callData.callback(reply);
+      if (callData.callback) callData.callback(reply);
     }
     catch (ex) {
       DWREngine._handleMetaDataError(callData, ex);
