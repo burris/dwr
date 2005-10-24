@@ -216,9 +216,7 @@ DWREngine.endBatch = function() {
   if (!batch.method) batch.method = DWREngine._method;
   if (!batch.verb) batch.verb = DWREngine._verb;
   if (!batch.asynchronous) batch.asynchronous = DWREngine._asynchronous;
-  if (!batch.errorHandler) batch.errorHandler = DWREngine._errorHandler;
-  if (!batch.warningHandler) batch.warningHandler = DWREngine._warningHandler;
-  if (!batch.timeout) batch.timeout = DWREngine._timeout;
+
   // If we are in ordered mode, then we don't send unless the list of sent
   // items is empty
   if (!DWREngine._ordered) {
@@ -285,7 +283,7 @@ DWREngine._batchQueue = [];
  * A map of all the known current call metadata objects
  * @private
  */
-DWREngine._metadatas = {};
+DWREngine._callData = {};
 
 /**
  * What is the default remoting method
@@ -373,20 +371,20 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   // From the other params, work out which is the function (or object with
   // call meta-data) and which is the call parameters
   var params;
-  var metadata;
+  var callData;
   var firstArg = args[0];
   var lastArg = args[args.length - 1];
 
   if (typeof firstArg == "function") {
-    metadata = { callback:args.shift() };
+    callData = { callback:args.shift() };
     params = args;
   }
   else if (typeof lastArg == "function") {
-    metadata = { callback:args.pop() };
+    callData = { callback:args.pop() };
     params = args;
   }
   else if (typeof lastArg == "object" && lastArg.callback != null && typeof lastArg.callback == "function") {
-    metadata = args.pop();
+    callData = args.pop();
     params = args;
   }
   else if (firstArg == null) {
@@ -398,11 +396,11 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
         DWREngine._warningHandler("Ambiguous nulls at start and end of parameter list. Which is the callback function?");
       }
     }
-    metadata = { callback:args.shift() };
+    callData = { callback:args.shift() };
     params = args;
   }
   else if (lastArg == null) {
-    metadata = { callback:args.pop() };
+    callData = { callback:args.pop() };
     params = args;
   }
   else {
@@ -415,13 +413,17 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   // Get a unique ID for this call
   var random = Math.floor(Math.random() * 10001);
   var id = (random + "_" + new Date().getTime()).toString();
-  DWREngine._metadatas[id] = metadata;
+  DWREngine._callData[id] = callData;
   var prefix = "c" + DWREngine._batch.map.callCount + "-";
 
+  if (!callData.errorHandler) callData.errorHandler = DWREngine._errorHandler;
+  if (!callData.warningHandler) callData.warningHandler = DWREngine._warningHandler;
+  if (!callData.timeout) callData.timeout = DWREngine._timeout;
+
   // merge the metadata from this call into the batch
-  if (metadata != null)  {
-    for (var prop in metadata) {
-      DWREngine._batch.metadata[prop] = metadata[prop];
+  if (callData != null)  {
+    for (var prop in callData) {
+      DWREngine._batch.metadata[prop] = callData[prop];
     }
   }
   DWREngine._batch.map[prefix + "scriptName"] = scriptName;
@@ -507,7 +509,7 @@ DWREngine._sendData = function(batch) {
         batch.req.send(null);
       }
       catch (ex) {
-        batch.metadata.errorHandler(ex);
+        DWREngine._handleMetaDataError(batch.metadata, ex);
       }
     }
     else {
@@ -526,7 +528,7 @@ DWREngine._sendData = function(batch) {
         batch.req.send(query);
       }
       catch (ex) {
-        batch.metadata.errorHandler(ex);
+        DWREngine._handleMetaDataError(batch.metadata, ex);
       }
     }
   }
@@ -584,19 +586,19 @@ DWREngine._stateChange = function(batch) {
       DWREngine._clearUp(batch);
 
       if (reply == null || reply == "") {
-        if (batch.metadata.errorHandler) batch.metadata.errorHandler("No data received from server");
+        DWREngine._handleMetaDataError(batch.metadata, "No data received from server");
         return;
       }
 
       // This should get us out of 404s etc.
       if (reply.search("DWREngine._handle") == -1) {
-        if (batch.metadata.errorHandler) batch.metadata.errorHandler("Invalid reply from server");
+        DWREngine._handleMetaDataError(batch.metadata, "Invalid reply from server");
         return;
       }
 
       if (status != 200) {
         if (reply == null) reply = "Unknown error occured";
-        if (batch.metadata.errorHandler) batch.metadata.errorHandler(reply);
+        DWREngine._handleMetaDataError(batch.metadata, reply);
         return;
       }
 
@@ -604,7 +606,7 @@ DWREngine._stateChange = function(batch) {
     }
     catch (ex) {
       if (ex == null) ex = "Unknown error occured";
-      if (batch.metadata.errorHandler) batch.metadata.errorHandler(ex);
+      DWREngine._handleMetaDataError(batch.metadata, ex);
     }
     finally {
       // If there is anything on the queue waiting to go out, then send it.
@@ -628,16 +630,16 @@ DWREngine._stateChange = function(batch) {
  */
 DWREngine._handleResponse = function(id, reply) {
   // Clear this callback out of the list - we don't need it any more
-  var metadata = DWREngine._metadatas[id];
-  DWREngine._metadatas[id] = null;
-  if (metadata) {
+  var callData = DWREngine._callData[id];
+  DWREngine._callData[id] = null;
+  if (callData) {
     // Error handlers inside here indicate an error that is nothing to do
     // with DWR so we handle them differently.
     try {
-      metadata.callback(reply);
+      callData.callback(reply);
     }
     catch (ex) {
-      if (metadata.errorHandler) metadata.errorHandler(ex);
+      DWREngine._handleMetaDataError(callData, ex);
     }
   }
 };
@@ -648,15 +650,13 @@ DWREngine._handleResponse = function(id, reply) {
  */
 DWREngine._handleServerError = function(id, error) {
   // Clear this callback out of the list - we don't need it any more
-  var metadata = DWREngine._metadatas[id];
-  DWREngine._metadatas[id] = null;
-  if (metadata.errorHandler) {
-    if (error.message) {
-      metadata.errorHandler(error.message, error);
-    }
-    else {
-      metadata.errorHandler(error);
-    }
+  var callData = DWREngine._callData[id];
+  DWREngine._callData[id] = null;
+  if (error.message) {
+    DWREngine._handleMetaDataError(callData, error.message, error);
+  }
+  else {
+    DWREngine._handleMetaDataError(callData, error);
   }
 };
 
@@ -702,11 +702,24 @@ DWREngine._clearUp = function(batch) {
 
 /**
  * Generic error handling routing to save having null checks everywhere.
+ * @private
  */
 DWREngine._handleError = function(reason, ex) {
   if (DWREngine._errorHandler) {
     DWREngine._errorHandler(reason, ex);
   }
+  else { alert("HE"+reason);}
+};
+
+/**
+ * Generic error handling routing to save having null checks everywhere.
+ * @private
+ */
+DWREngine._handleMetaDataError = function(metadata, reason, ex) {
+  if (metadata.errorHandler) {
+    metadata.errorHandler(reason, ex);
+  }
+  else { alert("HMDE"+reason);}
 };
 
 /**
