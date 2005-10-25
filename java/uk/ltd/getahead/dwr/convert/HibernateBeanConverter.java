@@ -18,7 +18,10 @@ package uk.ltd.getahead.dwr.convert;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -70,6 +73,15 @@ public class HibernateBeanConverter extends BeanConverter
         {
             log.info("Hibernate.isPropertyInitialized() is not available in Hibernate2 so initialization checks will not take place"); //$NON-NLS-1$
         }
+
+        try
+        {
+            isInitialized = hibernate.getMethod("isInitialized", new Class[] { Object.class }); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            log.info("Hibernate.isInitialized() is not available - verify you have the Hibernate jar on your classpath"); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -108,14 +120,35 @@ public class HibernateBeanConverter extends BeanConverter
             // We don't marshall un-initialized properties for Hibernate3
             if (isPropertyInitialized != null)
             {
-                Object reply = isPropertyInitialized.invoke(null, new Object[] { data, property });
-                boolean inited = ((Boolean) reply).booleanValue();
+                PropertyDescriptor[] props = Introspector.getBeanInfo(data.getClass()).getPropertyDescriptors();
+
+                // Cache the method if possible, using the classname and
+                // property name to allow for similar named methods (getName())
+                String key = data.getClass().getName() + property;
+
+                Method method = (Method) methods.get(key);
+                if (method == null)
+                {
+                    for (int i = 0; i < props.length; i++)
+                    {
+                        if (props[i].getName().equalsIgnoreCase(property))
+                        {
+                            method = props[i].getReadMethod();
+                        }
+                    }
+                    methods.put(key, method);
+                }
+
+                Boolean reply = (Boolean) isPropertyInitialized.invoke(null, new Object[] { data, property });
+                Boolean reply2 = (Boolean) isInitialized.invoke(null, new Object[] { method.invoke(data, new Object[]{ }) });
+
+                boolean inited = reply.booleanValue() && reply2.booleanValue();
                 if (!inited)
                 {
                     return false;
                 }
             }
-    
+
             return true;
         }
         catch (Exception ex)
@@ -124,6 +157,11 @@ public class HibernateBeanConverter extends BeanConverter
             return false;
         }
     }
+
+    /**
+     * The cache of method lookups that we've already done
+     */
+    private static Map methods = new HashMap();
 
     /**
      * The Hibernate utility class under Hibernate2
@@ -149,6 +187,11 @@ public class HibernateBeanConverter extends BeanConverter
      * The cached isPropertyInitialized from Hibernate
      */
     private Method isPropertyInitialized;
+
+    /**
+     * The cached isInitialized from Hibernate
+     */
+    private Method isInitialized;
 
     /**
      * The log stream
