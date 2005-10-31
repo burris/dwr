@@ -58,7 +58,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
      * check to see if the script has been modified before returning the
      * existing created class.
      */
-    public void setCacheScript(String reloadable)
+    public void setReloadable(String reloadable)
     {
         this.reloadable = Boolean.valueOf(reloadable).booleanValue();
     }
