@@ -485,8 +485,16 @@ DWREngine._sendData = function(batch) {
     batch.map.xml = "true";
     // Proceed using XMLHttpRequest
     batch.req.onreadystatechange = function() { DWREngine._stateChange(batch); };
-    // Force Mac people to use GET because Safari is broken.
-    if (batch.verb == "GET" || navigator.userAgent.indexOf('Safari') >= 0) {
+    // Workaround for Safari 1.x POST bug
+    var indexSafari = navigator.userAgent.indexOf('Safari/');
+    if (indexSafari >= 0) {
+      // So this is Safari, are we on 1.x? This is nasty
+      var version = navigator.userAgent.substring(indexSafari + 7);
+      if (parseInt(version, 10) < 400) {
+        batch.verb == "GET";
+      }
+    }
+    if (batch.verb == "GET") {
       // Some browsers (Opera/Safari2) seem to fail to convert the value
       // of batch.map.callCount to a string in the loop below so we do it
       // manually here.
