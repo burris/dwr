@@ -8,6 +8,8 @@
     <creator id="new" class="uk.ltd.getahead.dwr.create.NewCreator"/>
     <creator id="spring" class="uk.ltd.getahead.dwr.create.SpringCreator"/>
     <creator id="script" class="uk.ltd.getahead.dwr.create.ScriptedCreator"/>
+    <creator id="struts" class="uk.ltd.getahead.dwr.create.StrutsCreator"/>
+    <creator id="pageflow" class="uk.ltd.getahead.dwr.create.PageFlowCreator"/>
 
     <converter id="null" class="uk.ltd.getahead.dwr.convert.NullConverter"/>
     <converter id="enum" class="uk.ltd.getahead.dwr.convert.EnumConverter"/>
