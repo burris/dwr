@@ -36,7 +36,6 @@ import uk.ltd.getahead.dwr.util.LocalUtil;
  */
 public class DefaultInterfaceProcessor implements Processor
 {
-
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Processor#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
@@ -59,7 +58,13 @@ public class DefaultInterfaceProcessor implements Processor
         out.println();
 
         out.println("function " + scriptname + "() { }"); //$NON-NLS-1$ //$NON-NLS-2$
-        out.println();
+
+        String path = overridePath;
+        if (path == null)
+        {
+            path = req.getContextPath() + servletpath;
+        }
+        out.println(scriptname + "._path = '" + path + "';"); //$NON-NLS-1$ //$NON-NLS-2$
 
         Method[] methods = creator.getType().getMethods();
         for (int i = 0; i < methods.length; i++)
@@ -82,10 +87,7 @@ public class DefaultInterfaceProcessor implements Processor
                 continue;
             }
 
-            if (i != 0)
-            {
-                out.print('\n');
-            }
+            out.print('\n');
             out.print(scriptname + '.' + methodName + " = function("); //$NON-NLS-1$
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
@@ -95,12 +97,9 @@ public class DefaultInterfaceProcessor implements Processor
                     out.print("p" + j + ", "); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
-            out.println("callback)"); //$NON-NLS-1$
-            out.println('{');
+            out.println("callback) {"); //$NON-NLS-1$
 
-            String path = req.getContextPath() + servletpath;
-
-            out.print("    DWREngine._execute('" + path + "', '" + scriptname + "', '" + methodName + "\', "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            out.print("    DWREngine._execute(" + scriptname + "._path, '" + scriptname + "', '" + methodName + "\', "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
             for (int j = 0; j < paramTypes.length; j++)
             {
                 if (LocalUtil.isServletClass(paramTypes[j]))
@@ -146,6 +145,20 @@ public class DefaultInterfaceProcessor implements Processor
     {
         this.allowImpossibleTests = allowImpossibleTests;
     }
+
+    /**
+     * If we need to override the default path
+     * @param overridePath The new override path
+     */
+    public void setOverridePath(String overridePath)
+    {
+        this.overridePath = overridePath;
+    }
+
+    /**
+     * If we need to override the default path
+     */
+    private String overridePath = null;
 
     /**
      * How we create new beans
