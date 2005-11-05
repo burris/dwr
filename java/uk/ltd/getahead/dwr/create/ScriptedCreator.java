@@ -28,18 +28,33 @@ import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
- * A creator that simply uses the default constructor each time it is called.
+ * A creator that uses BeanShell to evaluate some script to create an object.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @author Dennis [devel at muhlesteins dot com]
  */
 public class ScriptedCreator extends AbstractCreator implements Creator
 {
     /**
+     * The language that we are scripting in. Passed to BSF.
      * @return Returns the language.
      */
     public String getLanguage()
     {
         return language;
+    }
+
+    /**
+     * @param language The language to set.
+     */
+    public void setLanguage(String language)
+    {
+        // It would be good to be ablt to check this, but this seems to fail
+        // almost all the time
+        // if (BSFManager.isLanguageRegistered(language))
+        // {
+        //     throw new IllegalArgumentException(Messages.getString("ScriptedCreator.IllegalLanguage", language)); //$NON-NLS-1$
+        // }
+        this.language = language;
     }
 
     /**
@@ -84,16 +99,27 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         this.scriptPath = scriptPath;
     }
 
-    /**
-     * @param language The language to set.
+	/**
+     * @return Whether or not the script (located at scriptPath) has been modified.
      */
-    public void setLanguage(String language)
+    private boolean scriptUpdated()
     {
-        // if (BSFManager.isLanguageRegistered(language))
-        // {
-        //     throw new IllegalArgumentException(Messages.getString("ScriptedCreator.IllegalLanguage", language)); //$NON-NLS-1$
-        // }
-        this.language = language;
+        if (null == scriptPath)
+        {
+            return false;
+        }
+
+        ExecutionContext ec = ExecutionContext.get();
+        ServletContext sc = ec.getServletContext();
+        File scriptFile = new File(sc.getRealPath(scriptPath));
+        if (scriptModified < scriptFile.lastModified())
+        {
+            log.debug("Script has been updated."); //$NON-NLS-1$
+            clazz = null; // make sure that this gets re-compiled.
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -112,7 +138,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             throw new InstantiationException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
         }
 
-        if (!reloadable && cachedScript != null)
+        if (cachedScript != null && (!reloadable || !scriptUpdated()) )
         {
             return cachedScript;
         }
@@ -128,21 +154,14 @@ public class ScriptedCreator extends AbstractCreator implements Creator
                 ExecutionContext ec = ExecutionContext.get();
                 ServletContext sc = ec.getServletContext();
                 File scriptFile = new File(sc.getRealPath(scriptPath));
-
-                // check for modified script
-                if (scriptFile.lastModified() <= scriptModified && cachedScript != null)
-                {
-                    log.debug("Script: " + scriptPath + " not modified."); //$NON-NLS-1$ //$NON-NLS-2$
-                    return cachedScript;
-                }
-
+                
                 scriptModified = scriptFile.lastModified();
                 in = new RandomAccessFile(scriptFile, "r"); //$NON-NLS-1$
                 byte bytes[] = new byte[(int) in.length()];
                 in.readFully(bytes);
                 cachedScript = new String(bytes);
-                return cachedScript;
 
+                return cachedScript;
             }
             finally
             {
@@ -198,7 +217,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
      */
     public Class getType()
     {
-        if (clazz == null || (scriptPath != null && reloadable))
+        if (clazz == null || (reloadable && scriptUpdated()))
         {
             try
             {
@@ -221,6 +240,12 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     {
         try
         {
+			if (clazz != null)
+            {
+                return clazz.newInstance();
+            }
+
+            BSFManager bsfman = new BSFManager();
             return bsfman.eval(language, (null == scriptPath ? "dwr.xml" : scriptPath), 0, 0, getScript()); //$NON-NLS-1$
         }
         catch (Exception ex)
@@ -234,11 +259,6 @@ public class ScriptedCreator extends AbstractCreator implements Creator
      * The log stream
      */
     private static final Logger log = Logger.getLogger(ScriptedCreator.class);
-
-    /**
-     * Our script evaluation environment
-     */
-    private BSFManager bsfman = new BSFManager();
 
     /**
      * The cached type of object that we are creating.
