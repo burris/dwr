@@ -17,6 +17,7 @@ package uk.ltd.getahead.dwr.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -274,7 +275,16 @@ public class DefaultExecProcessor implements Processor
 
                     InboundVariable param = inctx.getParameter(callNum, j);
                     inctx.pushContext(method, j);
-                    params[j] = converterManager.convertInbound(paramType, param, inctx);
+
+                    try
+                    {
+                        params[j] = converterManager.convertInbound(paramType, param, inctx);
+                    }
+                    catch (ConversionException ex)
+                    {
+                        throw new ConversionException(Messages.getString("ExecuteQuery.ConversionError", call.getScriptName(), call.getMethodName(), ex.getMessage())); //$NON-NLS-1$
+                    }
+
                     inctx.popContext(method, j);
                 }
 
@@ -410,7 +420,14 @@ public class DefaultExecProcessor implements Processor
     {
         Map paramMap = new HashMap();
 
-        BufferedReader in = req.getReader();
+        // I've had reports of data loss in Tomcat 5.0 that relate to this bug
+        //   http://issues.apache.org/bugzilla/show_bug.cgi?id=27447
+        // See mails to users@dwr.dev.java.net:
+        //   Subject: "Tomcat 5.x read-ahead problem"
+        //   From: CAKALIC, JAMES P [AG-Contractor/1000]
+        // It would be more normal to do the following:
+        // BufferedReader in = req.getReader();
+        BufferedReader in = new BufferedReader(new InputStreamReader(req.getInputStream()));
 
         if (in == null)
         {
