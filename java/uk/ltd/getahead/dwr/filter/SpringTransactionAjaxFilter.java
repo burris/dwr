@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -131,30 +132,33 @@ public class SpringTransactionAjaxFilter implements AjaxFilter
             tt = getTransactionTemplate();
         }
 
-        final Exception[] caught = new Exception[] { null };
-
-        Object reply = tt.execute(new TransactionCallback()
+        try
         {
-            public Object doInTransaction(TransactionStatus status)
+            Object reply = tt.execute(new TransactionCallback()
             {
-                try
+                public Object doInTransaction(TransactionStatus status)
                 {
-                    return chain.doFilter(object, method, params);
+                    try
+                    {
+                        return chain.doFilter(object, method, params);
+                    }
+                    catch (RuntimeException ex)
+                    {
+                        throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new TransactionSystemException("Transaction Failure", ex); //$NON-NLS-1$
+                    }
                 }
-                catch (Exception ex)
-                {
-                    caught[0] = ex;
-                    return null;
-                }
-            }
-        });
+            });
 
-        if (caught[0] != null)
-        {
-            throw caught[0];
+            return reply;
         }
-
-        return reply;
+        catch (TransactionSystemException ex)
+        {
+            throw (Exception) ex.getCause();
+        }
     }
 
     private TransactionTemplate getTransactionTemplate() throws InstantiationException
