@@ -185,9 +185,11 @@ public class MapConverter implements Converter
             Object key = entry.getKey();
             Object value = entry.getValue();
 
-            if (!(key instanceof String))
+            // It would be nice to check for Enums here
+            if (!(key instanceof String) && !sentNonStringWarning)
             {
                 log.warn("--Javascript does not support non string keys. Converting to '" + key.getClass().getName() + "' using toString()"); //$NON-NLS-1$ //$NON-NLS-2$
+                sentNonStringWarning = true;
             }
 
             String outkey = jsutil.escapeJavaScript(key.toString());
@@ -204,6 +206,11 @@ public class MapConverter implements Converter
         ConverterUtil.addMapInit(ov, ovs);
         return ov;
     }
+
+    /**
+     * We don't want to give the non-string warning too many times.
+     */
+    private static boolean sentNonStringWarning = false;
 
     /**
      * The means by which we strip comments
