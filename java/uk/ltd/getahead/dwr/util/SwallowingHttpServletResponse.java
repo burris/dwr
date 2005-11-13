@@ -39,6 +39,10 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
 
         pout = new PrintWriter(sout);
         oout = new WriterOutputStream(sout);
+
+        // Ignored, but we might as well start with a realistic value in case
+        // anyone wants to work with the buffer size.
+        bufferSize = response.getBufferSize();
     }
 
     /* (non-Javadoc)
@@ -105,6 +109,57 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
         log.warn("Ignoring call to setStatus(" + sc + ", " + sm + ')'); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setContentLength(int)
+     */
+    public void setContentLength(int i)
+    {
+        // The content length of the original document is not likely to be the
+        // same as the content length of the new document.
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#isCommitted()
+     */
+    public boolean isCommitted()
+    {
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#reset()
+     */
+    public void reset()
+    {
+        throw new IllegalStateException();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#resetBuffer()
+     */
+    public void resetBuffer()
+    {
+        throw new IllegalStateException();
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#setBufferSize(int)
+     */
+    public void setBufferSize(int bufferSize)
+    {
+        // We're not writing data to the original source so setting the buffer
+        // size on it isn't really important.
+        this.bufferSize = bufferSize;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#getBufferSize()
+     */
+    public int getBufferSize()
+    {
+        return bufferSize;
+    }
+
     /**
      * The log stream
      */
@@ -119,4 +174,9 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
      * The forwarding output stream
      */
     private final PrintWriter pout;
+
+    /**
+     * The ignored buffer size
+     */
+    private int bufferSize;
 }
