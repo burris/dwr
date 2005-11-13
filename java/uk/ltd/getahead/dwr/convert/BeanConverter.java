@@ -55,7 +55,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
     {
         if (inclusions != null)
         {
-            throw new IllegalArgumentException(Messages.getString("HibernateBeanConverter.OnlyIncludeOrExclude")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.OnlyIncludeOrExclude")); //$NON-NLS-1$
         }
 
         exclusions = new ArrayList();
@@ -82,7 +82,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
     {
         if (exclusions != null)
         {
-            throw new IllegalArgumentException(Messages.getString("HibernateBeanConverter.OnlyIncludeOrExclude")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.OnlyIncludeOrExclude")); //$NON-NLS-1$
         }
 
         inclusions = new ArrayList();
