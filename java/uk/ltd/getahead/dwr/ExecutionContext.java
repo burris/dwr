@@ -122,11 +122,19 @@ public class ExecutionContext implements WebContext
 
     /**
      * Accessor for the current ExecutionContext.
-     * @return The current ExecutionContext
+     * @return The current ExecutionContext or null if the current thread was
+     * not started by DWR.
+     * @deprecated Use WebContextFactory.get() for better results
      */
     public static ExecutionContext get()
     {
-        return new ExecutionContext(WebContextFactory.get());
+        WebContext context = WebContextFactory.get();
+        if (context == null)
+        {
+            return null;
+        }
+
+        return new ExecutionContext(context);
     }
 
     /**

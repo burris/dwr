@@ -23,10 +23,16 @@ public class WebContextFactory
 {
     /**
      * Accessor for the current WebContext.
-     * @return The current WebContext
+     * @return The current WebContext or null if the current thread was not
+     * started by DWR.
      */
     public static WebContext get()
     {
+        if (builder == null)
+        {
+            return null;
+        }
+
         return builder.get();
     }
 
