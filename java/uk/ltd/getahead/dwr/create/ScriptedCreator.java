@@ -23,8 +23,8 @@ import javax.servlet.ServletContext;
 import org.apache.bsf.BSFManager;
 
 import uk.ltd.getahead.dwr.Creator;
-import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -109,8 +109,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             return false;
         }
 
-        ExecutionContext ec = ExecutionContext.get();
-        ServletContext sc = ec.getServletContext();
+        ServletContext sc = WebContextFactory.get().getServletContext();
         File scriptFile = new File(sc.getRealPath(scriptPath));
         if (scriptModified < scriptFile.lastModified())
         {
@@ -151,8 +150,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
 
             try
             {
-                ExecutionContext ec = ExecutionContext.get();
-                ServletContext sc = ec.getServletContext();
+                ServletContext sc = WebContextFactory.get().getServletContext();
                 File scriptFile = new File(sc.getRealPath(scriptPath));
                 
                 scriptModified = scriptFile.lastModified();

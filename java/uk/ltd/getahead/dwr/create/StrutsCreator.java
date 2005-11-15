@@ -20,7 +20,6 @@ import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.util.RequestUtils;
 
 import uk.ltd.getahead.dwr.Creator;
-import uk.ltd.getahead.dwr.ExecutionContext;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
@@ -74,7 +73,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
     public Object getInstance() throws InstantiationException
     {
         // fills for the first time the moduleConfig
-        ActionForm formInstance = (ActionForm) ExecutionContext.get().getSession().getAttribute(formBean);
+        ActionForm formInstance = (ActionForm) WebContextFactory.get().getSession().getAttribute(formBean);
         if (formInstance == null)
         {
             throw new InstantiationException(Messages.getString("Creator.IllegalAccess")); //$NON-NLS-1$
