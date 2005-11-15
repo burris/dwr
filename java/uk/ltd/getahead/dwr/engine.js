@@ -14,35 +14,11 @@
  * limitations under the License.
  */
 
-
-/*
-TODO: put this documentation somewhere better
-
-         global   batch
-timeout      Y    Y
-errorHandler     Y    Y
-preHook      Y    Y
-postHook       Y    Y
-method       Y    Y
-verb         Y    Y
-asynchronous     Y    Y
-ordered      Y    -
-warningHandler   Y    -
-
-skipBatch      Y(1)   X
-onBackButton     X    X
-onForwardButton  X    X
-
-(1) There is no setSkipBatch() method - batching is controlled via beginBatch() and endBatch()
-*/
-
-
 /**
  * Declare a constructor function to which we can add real functions.
  * @constructor
  */
-function DWREngine() {
-}
+function DWREngine() { }
 
 /**
  * Constants to pick the XMLHttpRequest remoting method.
