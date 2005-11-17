@@ -123,7 +123,7 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
      */
     public boolean isCommitted()
     {
-        return true;
+        return false;
     }
 
     /* (non-Javadoc)
