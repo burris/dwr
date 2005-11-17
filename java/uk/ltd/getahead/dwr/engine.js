@@ -566,9 +566,6 @@ DWREngine._stateChange = function(batch) {
       var reply = batch.req.responseText;
       var status = batch.req.status;
 
-      // We're done. Clear up
-      DWREngine._clearUp(batch);
-
       if (reply == null || reply == "") {
         DWREngine._handleMetaDataError(batch.metadata, "No data received from server");
         return;
@@ -587,6 +584,9 @@ DWREngine._stateChange = function(batch) {
       }
 
       eval(reply);
+
+      // We're done. Clear up
+      DWREngine._clearUp(batch);
     }
     catch (ex) {
       if (ex == null) ex = "Unknown error occured";
