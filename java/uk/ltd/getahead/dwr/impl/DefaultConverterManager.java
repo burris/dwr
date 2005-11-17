@@ -94,7 +94,7 @@ public class DefaultConverterManager implements ConverterManager
         Converter other = (Converter) converters.get(match);
         if (other != null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultConverterManager.DuplicateMatches", match)); //$NON-NLS-1$
+            log.warn("Clash of converters for " + match + ". Using " + converter.getClass().getName() + " in place of " + other.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
         converters.put(match, converter);
