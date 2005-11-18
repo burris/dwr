@@ -25,7 +25,8 @@ public interface Container
      * Get an instance of a bean of a given type.
      * @param id The type to get an instance of
      * @return The object of the given type
+     * @throws IllegalArgumentException If the given id does not refer to a bean
      */
-    Object getBean(String id);
+    Object getBean(String id) throws IllegalArgumentException;
 }
 
