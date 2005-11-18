@@ -300,7 +300,7 @@ public class DefaultConfiguration implements Configuration
         }
         catch (NoClassDefFoundError ex)
         {
-            log.info("Missing class for filter (class='" + type + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Missing class for filter (class='" + type + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         catch (Exception ex)
         {
@@ -493,7 +493,7 @@ public class DefaultConfiguration implements Configuration
             }
             catch (NoClassDefFoundError ex)
             {
-                log.info("Missing class for filter (class='" + type + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.info("Missing class for filter (class='" + type + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             }
             catch (Exception ex)
             {
@@ -597,7 +597,7 @@ public class DefaultConfiguration implements Configuration
     /**
      * The properties that we don't warn about if they don't exist.
      */
-    private static List ignore = Arrays.asList(new String[] { "class", }); //$NON-NLS-1$ //$NON-NLS-2$
+    private static List ignore = Arrays.asList(new String[] { "class", }); //$NON-NLS-1$
 
     /**
      * The log stream

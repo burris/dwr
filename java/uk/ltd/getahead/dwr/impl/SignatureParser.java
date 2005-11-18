@@ -161,7 +161,7 @@ public class SignatureParser
             log.error("Parameter mismatch parsing signatures section in dwr.xml on line: " + line); //$NON-NLS-1$
             log.info("- Reflected method had: " + method.getParameterTypes().length + " parameters: " + method.toString()); //$NON-NLS-1$ //$NON-NLS-2$
             log.info("- Signatures section had: " + paramNames.length + " parameters"); //$NON-NLS-1$ //$NON-NLS-2$
-            log.info("- This can be caused by method overloading which is not supported by Javascript or DWR"); //$NON-NLS-1$ //$NON-NLS-2$
+            log.info("- This can be caused by method overloading which is not supported by Javascript or DWR"); //$NON-NLS-1$
             return;
         }
 

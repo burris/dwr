@@ -127,11 +127,11 @@ public class DefaultCreatorManager implements CreatorManager
         }
         catch (NoClassDefFoundError ex)
         {
-            log.error("Missing class for creator '" + creator + "'. Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Missing class for creator '" + creator + "'. Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         catch (Exception ex)
         {
-            log.error("Error loading class for creator '" + creator + "'.", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Error loading class for creator '" + creator + "'.", ex); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

@@ -616,7 +616,6 @@ public class DefaultExecProcessor implements Processor
                     call.getInboundContext().clearConverted();
 
                     // Check parameter types
-                    params:
                     for (int j = 0; j < methods[i].getParameterTypes().length; j++)
                     {
                         Class paramType = methods[i].getParameterTypes()[j];

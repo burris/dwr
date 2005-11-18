@@ -176,7 +176,7 @@ public class DefaultTestProcessor implements Processor
                 }
                 else
                 {
-                    String value = HtmlConstants.BLANK; //$NON-NLS-1$
+                    String value = HtmlConstants.BLANK;
                     if (paramType == String.class)
                     {
                         value = "\"\""; //$NON-NLS-1$
