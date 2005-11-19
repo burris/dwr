@@ -139,7 +139,7 @@
   <!--=======================================================================-->
   <target name="buildtests" depends="compile" description="Compile test source tree java files into class files">
     <mkdir dir="${target.testclass}"/>
-    <javac destdir="${target.testclass}" source="1.3" target="1.3" debug="${debug}"
+    <javac destdir="${target.testclass}" source="1.5" target="1.5" debug="${debug}"
         deprecation="false" optimize="false" failonerror="true">
       <!--src path="${commons.attributes.tempdir.test}"/-->
       <src path="${source.test}"/>
