@@ -131,7 +131,6 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
      */
     public void reset()
     {
-        throw new IllegalStateException();
     }
 
     /* (non-Javadoc)
@@ -139,7 +138,6 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
      */
     public void resetBuffer()
     {
-        throw new IllegalStateException();
     }
 
     /* (non-Javadoc)
