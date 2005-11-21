@@ -174,24 +174,31 @@ DWREngine.beginBatch = function() {
   DWREngine._batch.paramCount = 0;
   DWREngine._batch.map.callCount = 0;
   DWREngine._batch.metadata = {};
+  DWREngine._batch.preHooks = [];
+  DWREngine._batch.postHooks = [];
 };
 
 /**
  * We are finished grouping a set of remote calls together, now go and execute
  * them all.
  */
-DWREngine.endBatch = function() {
+DWREngine.endBatch = function(options) {
   var batch = DWREngine._batch;
   if (batch == null) {
     DWREngine._handleError("No batch in progress.");
     return;
   }
   // Merge the global batch level properties into the batch meta data
-  if (!batch.preHook) batch.preHook = DWREngine._preHook;
-  if (!batch.postHook) batch.postHook = DWREngine._postHook;
+  if (options && options.preHook) batch.preHooks.unshift(options.preHook);
+  if (options && options.postHook) batch.postHooks.push(options.postHook);
+  if (DWREngine._preHook) batch.preHooks.unshift(DWREngine._preHook);
+  if (DWREngine._postHook) batch.postHooks.push(DWREngine._postHook);
+
   if (!batch.method) batch.method = DWREngine._method;
   if (!batch.verb) batch.verb = DWREngine._verb;
   if (!batch.asynchronous) batch.asynchronous = DWREngine._asynchronous;
+
+  batch.completed = false;
 
   // If we are in ordered mode, then we don't send unless the list of sent
   // items is empty
@@ -392,6 +399,8 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   DWREngine._callData[id] = callData;
   var prefix = "c" + DWREngine._batch.map.callCount + "-";
 
+  if (callData.preHook) DWREngine._batch.preHooks.unshift(callData.preHook);
+  if (callData.postHook) DWREngine._batch.postHooks.push(callData.postHook);
   if (!callData.errorHandler) callData.errorHandler = DWREngine._errorHandler;
   if (!callData.warningHandler) callData.warningHandler = DWREngine._warningHandler;
   if (!callData.timeout) callData.timeout = DWREngine._timeout;
@@ -429,7 +438,10 @@ DWREngine._sendData = function(batch) {
   // If the batch is empty, don't send anything
   if (batch.map.callCount == 0) return;
   // Call any pre-hooks
-  if (batch.preHook) batch.preHook();
+  for (var i = 0; i < batch.preHooks.length; i++) {
+    batch.preHooks[i]();
+  }
+  batch.preHooks = null;
   // Set a timeout
   if (batch.metadata && batch.metadata.timeout && batch.metadata.timeout != 0) {
     var funcReq = function() { DWREngine._abortRequest(batch); };
@@ -672,7 +684,11 @@ DWREngine._clearUp = function(batch) {
   // Avoid IE handles increase
   delete batch.req;
 
-  if (batch.postHook) batch.postHook();
+  for (var i = 0; i < batch.postHooks.length; i++) {
+    batch.postHooks[i]();
+  }
+  batch.postHooks = null;
+
   // TODO: There must be a better way???
   for (var i = 0; i < DWREngine._batches.length; i++) {
     if (DWREngine._batches[i] == batch) {
