@@ -57,6 +57,21 @@ import uk.ltd.getahead.dwr.util.Logger;
 public class Test
 {
     /**
+     * 
+     */
+    public void throwNPE()
+    {
+        throw new NullPointerException();
+    }
+
+    /**
+     * 
+     */
+    public void doNothing()
+    {
+    }
+
+    /**
      * @return obja
      */
     public ObjA getLooped()
@@ -224,6 +239,42 @@ public class Test
      * @return string
      */
     public double[] doubleArrayParam(double[] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public double[][] double2DArrayParam(double[][] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public double[][][] double3DArrayParam(double[][][] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public double[][][][] double4DArrayParam(double[][][][] test)
+    {
+        return test;
+    }
+
+    /**
+     * @param test
+     * @return string
+     */
+    public double[][][][][] double5DArrayParam(double[][][][][] test)
     {
         return test;
     }
