@@ -509,6 +509,11 @@ public final class LocalUtil
      */
     public static boolean isSimpleName(String name)
     {
+        if (name.length() == 0)
+        {
+            return false;
+        }
+
         boolean isSimple = Character.isLetter(name.charAt(0));
         for (int i = 1; isSimple && i < name.length(); i++)
         {
