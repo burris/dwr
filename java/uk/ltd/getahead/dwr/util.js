@@ -645,7 +645,12 @@ DWRUtil.addOptions = function(ele, data) {
         DWRUtil.debug("DWRUtil.addOptions can only create select lists from objects.");
         return;
       }
-      if (arguments[2]) {
+      if (typeof data[prop] == "function") {
+        // Skip this one it's a function.
+        text = null;
+        value = null;
+      }
+      else if (arguments[2]) {
         text = prop;
         value = data[prop];
       }
@@ -653,6 +658,7 @@ DWRUtil.addOptions = function(ele, data) {
         text = data[prop];
         value = prop;
       }
+
       if (text || value) {
         opt = new Option(text, value);
         ele.options[ele.options.length] = opt;
