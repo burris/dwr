@@ -63,16 +63,8 @@ DWRUtil.selectRange = function(ele, start, end) {
 };
 
 /**
- * Find the element in the current HTML document with the given id, or if more
- * than one parameter is passed, return an array containing the found elements.
- * Any non-string arguments are left as is in the reply.
- * This function is inspired by the prototype library however it probably works
- * on more browsers than the original.
- * Technically speaking this will not work on IE5.0 because it uses Array.push
- * however it is expected that this will only be used in conjunction with
- * engine.js (which makes up for this omission). If you are using this function
- * without engine.js and want IE5.0 compatibility then you should arrange for
- * a replacement for Array.push.
+ * Find the element in the current HTML document with the given id or ids
+ * @see http://getahead.ltd.uk/dwr/browser/util/$
  */
 var $;
 if (!$ && document.getElementById) {
@@ -573,6 +565,12 @@ DWRUtil.getValues = function(map) {
  * values are used as option text, which sounds wrong, but is actually normally
  * the right way around. If reverse evaluates to true then the property values
  * are used as option values.
+ * <p><b>Map of objects</b><br/>
+ * DWRUtil.addOptions(selectid, map, valueprop, textprop) creates an option
+ * for each object in the map, with the value of the option set to the given
+ * valueprop property of the object, and the option text set to the textprop
+ * property.
+ * </p>
  * <p><b>ol or ul list</b><br/>
  * DWRUtil.addOptions(ulid, array) and a set of li elements are created with the
  * innerHTML set to the string value of the array elements. This mode works
@@ -638,8 +636,21 @@ DWRUtil.addOptions = function(ele, data) {
       }
     }
   }
-  else
-  {
+  else if (arguments[3] != null) {
+    for (var prop in data) {
+      if (!useOptions) {
+        alert("DWRUtil.addOptions can only create select lists from objects.");
+        return;
+      }
+      value = DWRUtil._getValueFrom(data[prop], arguments[2]);
+      text = DWRUtil._getValueFrom(data[prop], arguments[3]);
+      if (text || value) {
+        opt = new Option(text, value);
+        ele.options[ele.options.length] = opt;
+      }
+    }
+  }
+  else {
     for (var prop in data) {
       if (!useOptions) {
         DWRUtil.debug("DWRUtil.addOptions can only create select lists from objects.");
@@ -658,7 +669,6 @@ DWRUtil.addOptions = function(ele, data) {
         text = data[prop];
         value = prop;
       }
-
       if (text || value) {
         opt = new Option(text, value);
         ele.options[ele.options.length] = opt;
