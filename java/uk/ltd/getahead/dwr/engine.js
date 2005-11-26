@@ -708,7 +708,6 @@ DWREngine._handleError = function(reason, ex) {
   if (DWREngine._errorHandler) {
     DWREngine._errorHandler(reason, ex);
   }
-  else { alert("HE"+reason);}
 };
 
 /**
@@ -719,7 +718,6 @@ DWREngine._handleMetaDataError = function(metadata, reason, ex) {
   if (metadata.errorHandler) {
     metadata.errorHandler(reason, ex);
   }
-  else { alert("HMDE"+reason);}
 };
 
 /**
