@@ -210,15 +210,15 @@ public class DefaultTestProcessor implements Processor
             }
             out.println("  );"); //$NON-NLS-1$
 
-            String onclick = scriptName + '.' + methodName + "(reply" + i; //$NON-NLS-1$
+            String onclick = scriptName + '.' + methodName + "("; //$NON-NLS-1$
             for (int j = 0; j < paramTypes.length; j++)
             {
                 if (!LocalUtil.isServletClass(paramTypes[j]))
                 {
-                    onclick += ",objectEval($(\"p" + i + j + "\").value)"; //$NON-NLS-1$ //$NON-NLS-2$
+                    onclick += "objectEval($(\"p" + i + j + "\").value), "; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
-            onclick += ");"; //$NON-NLS-1$
+            onclick += "reply" + i + ");"; //$NON-NLS-1$ //$NON-NLS-2$
 
             out.println("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptName + '.' + methodName + "(). View source for details.'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
