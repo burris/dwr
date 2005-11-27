@@ -350,6 +350,10 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
     callData = { callback:args.pop() };
     params = args;
   }
+  else if (typeof lastArg == "object" && lastArg.callback != null && typeof lastArg.callback == "function") {
+    callData = args.pop();
+    params = args;
+  }
   else if (firstArg == null) {
     // This could be a null callback function, but if the last arg is also
     // null then we can't tell which is the function unless there are only
@@ -364,10 +368,6 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   }
   else if (lastArg == null) {
     callData = { callback:args.pop() };
-    params = args;
-  }
-  else if (typeof lastArg == "object" && lastArg.callback != null && typeof lastArg.callback == "function") {
-    callData = args.pop();
     params = args;
   }
   else {
