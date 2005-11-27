@@ -65,10 +65,10 @@ DWREngine.setWarningHandler = function(handler) {
 /**
  * Set a default timeout value for all DWR calls. A value of 0 (the default)
  * turns call timeouts off.
- * @param newTimeout The new default timeout to be set on all calls
+ * @param timeout The new default timeout to be set on all calls
  */
-DWREngine.setTimeout = function(newTimeout) {
-  DWREngine._timeout = newTimeout;
+DWREngine.setTimeout = function(timeout) {
+  DWREngine._timeout = timeout;
 };
 
 /**
@@ -124,7 +124,7 @@ DWREngine.setVerb = function(verb) {
  * Warning: Setting this to true will slow down your application, and could
  * leave users with an unresponsive browser if a message gets lost.
  * Sometimes there are better solutions where you make your application use the
- * asynchronous model properly. Please think before you use this method.
+ * async model properly. Please think before you use this method.
  * @param ordered true or false
  */
 DWREngine.setOrdered = function(ordered) {
@@ -137,10 +137,10 @@ DWREngine.setOrdered = function(ordered) {
  * generally a bad idea to change it to false because it can make your browser
  * slow to respond and prone to hangs. If you do need this option then consider
  * setting a timeout too.
- * @param asynchronous true or false
+ * @param async true or false
  */
-DWREngine.setAsynchronous = function(asynchronous) {
-  DWREngine._asynchronous = asynchronous;
+DWREngine.setAsync = function(async) {
+  DWREngine._async = async;
 };
 
 /**
@@ -196,7 +196,7 @@ DWREngine.endBatch = function(options) {
 
   if (!batch.method) batch.method = DWREngine._method;
   if (!batch.verb) batch.verb = DWREngine._verb;
-  if (!batch.asynchronous) batch.asynchronous = DWREngine._asynchronous;
+  if (!batch.async) batch.async = DWREngine._async;
 
   batch.completed = false;
 
@@ -227,100 +227,85 @@ DWREngine.endBatch = function(options) {
 
 /**
  * A function to call if something fails.
- * @private
  */
 DWREngine._errorHandler = DWREngine.defaultMessageHandler;
 
 /**
  * A function to call to alert the user to some breakage.
- * @private
  */
 DWREngine._warningHandler = DWREngine.defaultMessageHandler;
 
 /**
  * A function to be called before requests are marshalled. Can be null.
- * @private
  */
 DWREngine._preHook = null;
 
 /**
  * A function to be called after replies are received. Can be null.
- * @private
  */
 DWREngine._postHook = null;
 
 /**
  * An array of the batches that we have sent and are awaiting a reply on.
- * @private
  */
 DWREngine._batches = [];
 
 /**
  * An array of batches that we'd like to send, but because we are in ordered
  * mode we won't until the current batch has been returned.
- * @private
  */
 DWREngine._batchQueue = [];
 
 /**
  * A map of all the known current call metadata objects
- * @private
  */
 DWREngine._callData = {};
 
 /**
  * What is the default remoting method
- * @private
  */
 DWREngine._method = DWREngine.XMLHttpRequest;
 
 /**
  * What is the default remoting verb (ie GET or POST)
- * @private
  */
 DWREngine._verb = "POST";
 
 /**
  * Do we attempt to ensure that remote calls happen in the order in which they
  * were sent?
- * @private
  */
 DWREngine._ordered = false;
 
 /**
- * Do we make the calls asynchronous?
- * @private
+ * Do we make the calls async?
  */
-DWREngine._asynchronous = true;
+DWREngine._async = true;
 
 /**
  * The current batch (if we are in batch mode)
- * @private
  */
 DWREngine._batch = null;
 
 /**
  * The global timeout
- * @private
  */
 DWREngine._timeout = 0;
 
 /**
  * The ActiveX objects to use when we want to convert an xml string into a DOM
  * object.
- * @private
  */
 DWREngine._DOMDocument = ["Msxml2.DOMDocument.5.0", "Msxml2.DOMDocument.4.0", "Msxml2.DOMDocument.3.0", "MSXML2.DOMDocument", "MSXML.DOMDocument", "Microsoft.XMLDOM"];
 
 /**
  * The ActiveX objects to use when we want to do an XMLHttpRequest call.
- * @private
  */
 DWREngine._XMLHTTP = ["Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
 
 /**
  * Send a request to the server
- * This method is called by Javascript that is emitted by server
+ * This method is called by the Javascript that was generated from Java code
  * @param path The part of the URL after the host and before the exec bit
  *       without leading or trailing /s
  * @param scriptName The class to execute
@@ -328,7 +313,6 @@ DWREngine._XMLHTTP = ["Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTT
  * @param func The callback function to which any returned data should be passed
  *       if this is null, any returned data will be ignored
  * @param vararg_params The parameters to pass to the above class
- * @private
  */
 DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   var singleShot = false;
@@ -432,7 +416,6 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
 /**
  * Actually send the block of data in the batch object.
  * @param batch Block of data about the calls we are making on the server
- * @private
  */
 DWREngine._sendData = function(batch) {
   // If the batch is empty, don't send anything
@@ -444,8 +427,10 @@ DWREngine._sendData = function(batch) {
   batch.preHooks = null;
   // Set a timeout
   if (batch.metadata && batch.metadata.timeout && batch.metadata.timeout != 0) {
-    var funcReq = function() { DWREngine._abortRequest(batch); };
-    setTimeout(funcReq, batch.metadata.timeout);
+    batch.interval = setInterval(function() {
+      clearInterval(batch.interval);
+      DWREngine._abortRequest(batch);
+    }, batch.metadata.timeout);
   }
   // A quick string to help people that use web log analysers
   var statsInfo;
@@ -472,7 +457,11 @@ DWREngine._sendData = function(batch) {
   if (batch.req) {
     batch.map.xml = "true";
     // Proceed using XMLHttpRequest
-    batch.req.onreadystatechange = function() { DWREngine._stateChange(batch); };
+    if (batch.async) {
+      batch.req.onreadystatechange = function() {
+        DWREngine._stateChange(batch);
+      };
+    }
     // Workaround for Safari 1.x POST bug
     var indexSafari = navigator.userAgent.indexOf('Safari/');
     if (indexSafari >= 0) {
@@ -501,8 +490,11 @@ DWREngine._sendData = function(batch) {
       query = query.substring(0, query.length - 1);
 
       try {
-        batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query, batch.asynchronous);
+        batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query, batch.async);
         batch.req.send(null);
+        if (!batch.async) {
+          DWREngine._stateChange(batch);
+        }
       }
       catch (ex) {
         DWREngine._handleMetaDataError(batch.metadata, ex);
@@ -520,8 +512,11 @@ DWREngine._sendData = function(batch) {
 //        if (navigator.userAgent.indexOf('Gecko') >= 0) {
 //          batch.req.setRequestHeader('Connection', 'close');
 //        }
-        batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.asynchronous);
+        batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.async);
         batch.req.send(query);
+        if (!batch.async) {
+          DWREngine._stateChange(batch);
+        }
       }
       catch (ex) {
         DWREngine._handleMetaDataError(batch.metadata, ex);
@@ -570,10 +565,9 @@ DWREngine._sendData = function(batch) {
 
 /**
  * Called by XMLHttpRequest to indicate that something has happened
- * @private
  */
 DWREngine._stateChange = function(batch) {
-  if (batch.req.readyState == 4 && !batch.completed) {
+  if (!batch.completed && batch.req.readyState == 4) {
     try {
       var reply = batch.req.responseText;
       var status = batch.req.status;
@@ -622,7 +616,6 @@ DWREngine._stateChange = function(batch) {
  * This method is called by Javascript that is emitted by server
  * @param id The identifier of the call that we are handling a response for
  * @param reply The data to pass to the callback function
- * @private
  */
 DWREngine._handleResponse = function(id, reply) {
   // Clear this callback out of the list - we don't need it any more
@@ -642,7 +635,6 @@ DWREngine._handleResponse = function(id, reply) {
 
 /**
  * This method is called by Javascript that is emitted by server
- * @private
  */
 DWREngine._handleServerError = function(id, error) {
   // Clear this callback out of the list - we don't need it any more
@@ -657,20 +649,18 @@ DWREngine._handleServerError = function(id, error) {
 };
 
 /**
- * Called as a result of a request timeout or an http reply status != 200
- * @param batch Block of data about the calls we are making on the server
- * @private
+ * Called as a result of a request timeout
  */ 
 DWREngine._abortRequest = function(batch) {
-  if (batch && batch.metadata && !batch.completed) {
-    DWREngine._clearUp();
+  if (batch && batch.metadata != null && !batch.completed) {
+    DWREngine._clearUp(batch);
     if (batch.req) batch.req.abort();
+    DWREngine._handleMetaDataError(batch.metadata, "Timeout");
   }
 };
 
 /**
  * A call has finished by whatever means and we need to shut it all down.
- * @private
  */
 DWREngine._clearUp = function(batch) {
   if (batch.completed) {
@@ -702,7 +692,6 @@ DWREngine._clearUp = function(batch) {
 
 /**
  * Generic error handling routing to save having null checks everywhere.
- * @private
  */
 DWREngine._handleError = function(reason, ex) {
   if (DWREngine._errorHandler) {
@@ -712,18 +701,18 @@ DWREngine._handleError = function(reason, ex) {
 
 /**
  * Generic error handling routing to save having null checks everywhere.
- * @private
  */
 DWREngine._handleMetaDataError = function(metadata, reason, ex) {
   if (metadata.errorHandler) {
     metadata.errorHandler(reason, ex);
   }
+  else {
+    DWREngine._handleError(reason, ex);
+  }
 };
 
 /**
  * Hack a polymorphic dwrSerialize() function on all basic types. Yeulch
- * @see DWREngine._addSerializeFunctions
- * @private
  */
 DWREngine._addSerializeFunctions = function() {
   Object.prototype.dwrSerialize = DWREngine._serializeObject;
@@ -736,8 +725,6 @@ DWREngine._addSerializeFunctions = function() {
 
 /**
  * Remove the hacked polymorphic dwrSerialize() function on all basic types.
- * @see DWREngine._removeSerializeFunctions
- * @private
  */
 DWREngine._removeSerializeFunctions = function() {
   delete Object.prototype.dwrSerialize;
@@ -754,7 +741,6 @@ DWREngine._removeSerializeFunctions = function() {
  * @param referto An array of already marshalled variables to prevent recurrsion
  * @param data The data to be marshalled
  * @param name The name of the data being marshalled
- * @private
  */
 DWREngine._serializeAll = function(batch, referto, data, name) {
   if (data == null) {
@@ -804,18 +790,11 @@ DWREngine._serializeAll = function(batch, referto, data, name) {
 };
 
 /**
- * This is for the types that can recurse so we need to check that we've not
- * marshalled this object before.
- * We'd like to do:
- *   var lookup = referto[data];
- * However hashmaps in Javascript appear to use the hash values of the *string*
- * versions of the objects used as keys so all objects count as the same thing.
- * So we need to have referto as an array and go through it sequentially
- * checking for equality with data
- * @private
+ * Have we already converted this object?
  */
 DWREngine._lookup = function(referto, data, name) {
   var lookup;
+  // Can't use a map: http://getahead.ltd.uk/ajax/javascript-gotchas
   for (var i = 0; i < referto.length; i++) {
     if (referto[i].data == data) {
       lookup = referto[i];
@@ -831,8 +810,6 @@ DWREngine._lookup = function(referto, data, name) {
 
 /**
  * Marshall an object
- * @private
- * @see DWREngine._serializeAll()
  */
 DWREngine._serializeObject = function(batch, referto, data, name) {
   var ref = DWREngine._lookup(referto, this, name);
@@ -868,8 +845,6 @@ DWREngine._serializeObject = function(batch, referto, data, name) {
 
 /**
  * Marshall an object
- * @private
- * @see DWREngine._serializeAll()
  */
 DWREngine._serializeXml = function(batch, referto, data, name) {
   var ref = DWREngine._lookup(referto, this, name);
@@ -889,8 +864,6 @@ DWREngine._serializeXml = function(batch, referto, data, name) {
 
 /**
  * Marshall an array
- * @private
- * @see DWREngine._serializeAll()
  */
 DWREngine._serializeArray = function(batch, referto, data, name) {
   var ref = DWREngine._lookup(referto, this, name);
@@ -915,8 +888,6 @@ DWREngine._serializeArray = function(batch, referto, data, name) {
 
 /**
  * Marshall a Boolean
- * @private
- * @see DWREngine._serializeAll()
  */
 DWREngine._serializeBoolean = function(batch, referto, data, name) {
   return "Boolean:" + this;
@@ -924,8 +895,6 @@ DWREngine._serializeBoolean = function(batch, referto, data, name) {
 
 /**
  * Marshall a Number
- * @private
- * @see DWREngine._serializeAll()
  */
 DWREngine._serializeNumber = function(batch, referto, data, name) {
   return "Number:" + this;
@@ -933,8 +902,6 @@ DWREngine._serializeNumber = function(batch, referto, data, name) {
 
 /**
  * Marshall a String
- * @private
- * @see DWREngine._serializeAll()
  */
 DWREngine._serializeString = function(batch, referto, data, name) {
   return "String:" + encodeURIComponent(this);
@@ -942,8 +909,6 @@ DWREngine._serializeString = function(batch, referto, data, name) {
 
 /**
  * Marshall a Date
- * @private
- * @see DWREngine._serializeAll()
  */
 DWREngine._serializeDate = function(batch, referto, data, name) {
   return "Date:" + this.getTime();
@@ -953,7 +918,6 @@ DWREngine._serializeDate = function(batch, referto, data, name) {
  * Convert an XML string into a DOC object.
  * @param xml The xml string
  * @return a DOM version of the xml string
- * @private
  */
 DWREngine._unserializeDocument = function(xml) {
   var dom;
@@ -992,7 +956,6 @@ DWREngine._unserializeDocument = function(xml) {
  * Helper to find an ActiveX object that works.
  * @param axarray An array of strings to attempt to create ActiveX objects from
  * @return An ActiveX object from the first string in the array not to die
- * @private
  */
 DWREngine._newActiveXObject = function(axarray) {
   var returnValue;  
@@ -1009,7 +972,6 @@ DWREngine._newActiveXObject = function(axarray) {
 
 /**
  * To make up for the lack of encodeURIComponent() on IE5.0
- * @private
  */
 if (typeof window.encodeURIComponent === 'undefined') {
   DWREngine._utf8 = function(wide) {
@@ -1071,7 +1033,6 @@ if (typeof window.encodeURIComponent === 'undefined') {
 
 /**
  * To make up for the lack of Array.splice() on IE5.0
- * @private
  */
 if (typeof Array.prototype.splice === 'undefined') {
   Array.prototype.splice = function(ind, cnt)
@@ -1115,7 +1076,6 @@ if (typeof Array.prototype.splice === 'undefined') {
 
 /**
  * To make up for the lack of Array.shift() on IE5.0
- * @private
  */
 if (typeof Array.prototype.shift === 'undefined') {
   Array.prototype.shift = function(str) {
@@ -1130,7 +1090,6 @@ if (typeof Array.prototype.shift === 'undefined') {
 
 /**
  * To make up for the lack of Array.unshift() on IE5.0
- * @private
  */
 if (typeof Array.prototype.unshift === 'undefined') {
   Array.prototype.unshift = function() {
@@ -1146,7 +1105,6 @@ if (typeof Array.prototype.unshift === 'undefined') {
 
 /**
  * To make up for the lack of Array.push() on IE5.0
- * @private
  */
 if (typeof Array.prototype.push === 'undefined') {
   Array.prototype.push = function() {
@@ -1160,7 +1118,6 @@ if (typeof Array.prototype.push === 'undefined') {
 
 /**
  * To make up for the lack of Array.pop() on IE5.0
- * @private
  */
 if (typeof Array.prototype.pop === 'undefined') {
   Array.prototype.pop = function() {
