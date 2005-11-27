@@ -277,6 +277,13 @@ public class DefaultConverterManager implements ConverterManager
 
                 // We want to keep the type marker too
                 lookup = lookup.substring(arrayMarkers - 1, arrayMarkers + 1);
+
+                // Now can we find it?
+                converter = (Converter) converters.get(lookup);
+                if (converter != null)
+                {
+                    return converter;
+                }                
             }
         }
 

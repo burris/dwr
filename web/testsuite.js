@@ -11,6 +11,10 @@ var batch = 1;
 
 // tests[tests.length] = { code:"voidParam", data:null };
 
+tests[tests.length] = { code:"waitFor", data:1000 };
+tests[tests.length] = { code:"waitFor", data:2000 };
+tests[tests.length] = { code:"waitFor", data:3000 };
+
 tests[tests.length] = { code:"booleanParam", data:true };
 tests[tests.length] = { code:"booleanParam", data:false };
 
@@ -295,372 +299,318 @@ tests[tests.length] = { code:"stringStringHashMapParam", data:map2 };
 tests[tests.length] = { code:"stringStringTreeMapParam", data:map1 };
 tests[tests.length] = { code:"stringStringTreeMapParam", data:map2 };
 
-function startTest()
-{
-    $("start").disabled = true;
+function startTest() {
+  $("start").disabled = true;
 
-    failures.innerHTML = "";
-    failreport.innerHTML = "0";
-    execreport.innerHTML = "0";
-    progress.style.backgroundColor = "green";
-    progress.style.width = "0%";
-    for (var i = 0; i < tests.length; i++)
-    {
-        var numele = $("t" + i + "-num");
-        numele.style.backgroundColor = "white";
-        DWRUtil.setValue("t" + i + "-results", "");
-    }
-    DWRUtil.setValue("totals", "");
+  failures.innerHTML = "";
+  failreport.innerHTML = "0";
+  execreport.innerHTML = "0";
+  progress.style.backgroundColor = "green";
+  progress.style.width = "0%";
+  for (var i = 0; i < tests.length; i++) {
+    var numele = $("t" + i + "-num");
+    numele.style.backgroundColor = "white";
+    DWRUtil.setValue("t" + i + "-results", "");
+  }
+  DWRUtil.setValue("totals", "");
 
-    starttime = new Date();
-    failcount = 0;
+  // We were trying to get others to contribute test results
+  //DWRUtil.showById("reply");
 
-    // We were trying to get others to contribute test results
-    //DWRUtil.showById("reply");
+  setSettings();
 
-    // Set the method
-    var method = DWRUtil.getValue("method");
-    if (method == "iframe")
-    {
-        DWREngine.setMethod(DWREngine.IFrame);
-    }
-    else
-    {
-        DWREngine.setMethod(DWREngine.XMLHttpRequest);
-    }
+  // What is the firing rate
+  var rate = DWRUtil.getValue("rate");
 
-    // Set the verb
-    var verb = DWRUtil.getValue("verb");
-    DWREngine.setVerb(verb);
+  // How many in a batch
+  var size = DWRUtil.getValue("size");
 
-    // Are we in ordered mode
-    var ordered = DWRUtil.getValue("ordered");
-    DWREngine.setOrdered(ordered == "Yes");
-
-    // What is the firing rate
-    var rate = DWRUtil.getValue("rate");
-
-    // How many in a batch
-    var size = DWRUtil.getValue("size");
-
-    sendBatch(0, size, rate);
+  sendBatch(0, size, rate);
 }
 
-function sendBatch(start, size, rate)
-{
-    var incr = size;
-    var test, callback, param;
+function setSettings() {
+  starttime = new Date();
+  failcount = 0;
 
-    if (size == 0)
-    {
-        // otherwise we never progress
-        incr = 1;
+  // Set the method
+  var method = DWRUtil.getValue("method");
+  if (method == "iframe") {
+    DWREngine.setMethod(DWREngine.IFrame);
+  }
+  else {
+    DWREngine.setMethod(DWREngine.XMLHttpRequest);
+  }
 
-        test = tests[start];
-        callback = function(data) { testResults(data, start); };
-        param = test.data;
+  // Set the verb
+  var verb = DWRUtil.getValue("verb");
+  DWREngine.setVerb(verb);
 
-        Test[test.code](param, { callback:callback });
-    }
-    else
-    {
-        DWREngine.beginBatch();
+  // Are we in ordered mode
+  var ordered = DWRUtil.getValue("ordered");
+  DWREngine.setOrdered(ordered == "Yes");
 
-        for (var i = start; i < start + size && i < tests.length; i++)
-        {
-            test = tests[i];
-            callback = new Function("data", "testResults(data, " + i + ");");
-            param = test.data;
+  // Sync/Asynch?
+  var async = DWRUtil.getValue("async") == "async";
+  DWREngine.setAsync(async);
 
-            Test[test.code](param, callback);
-        }
-
-        DWREngine.endBatch();
-    }
-
-    var percent = Math.ceil((start / tests.length) * 100);
-    progress.style.width = percent + "%";
-
-    if (start + incr < tests.length)
-    {
-        setTimeout("sendBatch(" + (start + incr) + ", " + size + ", " + rate + ")", rate);
-    }
+  // Sync/Asynch?
+  var timeout = 0 + DWRUtil.getValue("timeout");
+  DWREngine.setTimeout(timeout);
 }
 
-function checkTidyUp(index)
-{
-    if (index == tests.length)
-    {
-        $("start").disabled = false;
+function sendBatch(start, size, rate) {
+  var incr = size;
+  var test, callback, param;
 
-        var mslen = new Date().getTime() - starttime.getTime();
-        var tps = Math.round((10000 * tests.length) / mslen) / 10;
-        var totals = "Tests executed in " + (mslen / 1000) + " seconds at an average of " + tps + " tests per second.";
-        DWRUtil.setValue("totals", totals);
+  if (size == 0) {
+    // otherwise we never progress
+    incr = 1;
 
-        progress.style.width = "100%";
+    test = tests[start];
+    callback = function(data) { testResults(data, start); };
+    param = test.data;
+
+    Test[test.code](param, { callback:callback });
+  }
+  else {
+    DWREngine.beginBatch();
+
+    for (var i = start; i < start + size && i < tests.length; i++) {
+      test = tests[i];
+      callback = new Function("data", "testResults(data, " + i + ");");
+      param = test.data;
+      Test[test.code](param, callback);
     }
+
+    DWREngine.endBatch();
+  }
+
+  var percent = Math.ceil((start / tests.length) * 100);
+  progress.style.width = percent + "%";
+
+  if (start + incr < tests.length) {
+    setTimeout("sendBatch(" + (start + incr) + ", " + size + ", " + rate + ")", rate);
+  }
 }
 
-function testResults(data, index)
-{
-    var test = tests[index];
+function checkTidyUp(index) {
+  if (index == tests.length) {
+    $("start").disabled = false;
 
-    if (test == null)
-    {
-        alert("no test found: index=" + index + ", tests.length=" + tests.length);
-        return;
-    }
+    var mslen = new Date().getTime() - window.starttime.getTime();
+    var tps = Math.round((10000 * tests.length) / mslen) / 10;
+    var totals = "Tests executed in " + (mslen / 1000) + " seconds at an average of " + tps + " tests per second.";
+    DWRUtil.setValue("totals", totals);
 
-    var passed = testEquals(data, test.data, 0);
-    var numele = $("t" + index + "-num");
-
-    execreport.innerHTML = (index + 1);
-
-    if (typeof passed == "boolean" && passed)
-    {
-        numele.style.backgroundColor = "lightgreen";
-        DWRUtil.setValue("t" + index + "-results", "Passed");
-    }
-    else
-    {
-        var report = test.code + "<br/>&nbsp;&nbsp;" + passed + "<br/>&nbsp;&nbsp;Expected: " + DWRUtil.toDescriptiveString(test.data) + " Actual: " + DWRUtil.toDescriptiveString(data);
-        failcount++;
-        failreport.innerHTML = failcount;
-
-        if (failcount == 1)
-        {
-            // This is the first failure - make the bar go red
-            progress.style.backgroundColor = "red";
-        }
-
-        numele.style.backgroundColor = "lightpink";
-        DWRUtil.setValue("t" + index + "-results", report);
-    }
-
-    checkTidyUp(index + 1);
+    progress.style.width = "100%";
+  }
 }
 
-function catchFailure(data)
-{
-    // which test have we just run?
-    failures.innerHTML += "Unknown Test<br/>&nbsp;&nbsp;Error: " + data + "<br/>";
+function testResults(data, index) {
+  var test = tests[index];
+
+  if (test == null) {
+    alert("no test found: index=" + index + ", tests.length=" + tests.length);
+    return;
+  }
+
+  var passed = testEquals(data, test.data, 0);
+  var numele = $("t" + index + "-num");
+
+  execreport.innerHTML = (index + 1);
+
+  if (typeof passed == "boolean" && passed) {
+    numele.style.backgroundColor = "lightgreen";
+    DWRUtil.setValue("t" + index + "-results", "Passed");
+  }
+  else {
+    var report = test.code + "<br/>&nbsp;&nbsp;" + passed + "<br/>&nbsp;&nbsp;Expected: " + DWRUtil.toDescriptiveString(test.data) + " Actual: " + DWRUtil.toDescriptiveString(data);
     failcount++;
     failreport.innerHTML = failcount;
 
-    if (failcount == 1)
-    {
-        // This is the first failure - make the bar go red
-        progress.style.backgroundColor = "red";
+    if (failcount == 1) {
+      // This is the first failure - make the bar go red
+      progress.style.backgroundColor = "red";
     }
+
+    numele.style.backgroundColor = "lightpink";
+    DWRUtil.setValue("t" + index + "-results", report);
+  }
+
+  checkTidyUp(index + 1);
 }
 
-function testEquals(actual, expected, depth)
-{
-    // Rather than failing we assume that it works!
-    if (depth > 10)
-    {
-        return true;
+function catchFailure(data) {
+  // which test have we just run?
+  failures.innerHTML += "Unknown Test<br/>&nbsp;&nbsp;Error: " + data + "<br/>";
+  failcount++;
+  failreport.innerHTML = failcount;
+
+  if (failcount == 1) {
+    // This is the first failure - make the bar go red
+    progress.style.backgroundColor = "red";
+  }
+}
+
+function testEquals(actual, expected, depth) {
+  // Rather than failing we assume that it works!
+  if (depth > 10) {
+    return true;
+  }
+
+  if (expected == null) {
+    if (actual != null) {
+      return "expected: null, actual non-null: " + DWRUtil.toDescriptiveString(actual);
+    }
+    return true;
+  }
+
+  if (actual == null) {
+    if (expected != null) {
+      return "actual: null, expected non-null: " + DWRUtil.toDescriptiveString(expected);
+    }
+    // wont get here of course ...
+    return true;
+  }
+
+  if (expected instanceof Object) {
+    if (!(actual instanceof Object)) {
+      return "expected object, actual not an object";
     }
 
-    if (expected == null)
-    {
-        if (actual != null)
-        {
-            return "expected: null, actual non-null: " + DWRUtil.toDescriptiveString(actual);
+    var actualLength = 0;
+    for (var prop in actual) {
+      if (typeof actual[prop] != "function" || typeof expected[prop] != "function") {
+        var nest = testEquals(actual[prop], expected[prop], depth + 1);
+        if (typeof nest != "boolean" || !nest) {
+          return "element '" + prop + "' does not match: " + nest;
         }
-
-        return true;
+      }
+      actualLength++;
     }
 
-    if (actual == null)
-    {
-        if (expected != null)
-        {
-            return "actual: null, expected non-null: " + DWRUtil.toDescriptiveString(expected);
-        }
-
-        // wont get here of course ...
-        return true;
+    // need to check length too
+    var expectedLength = 0;
+    for (prop in expected) {
+      expectedLength++;
     }
 
-    if (expected instanceof Object)
-    {
-        if (!(actual instanceof Object))
-        {
-            return "expected object, actual not an object";
-        }
-
-        var actualLength = 0;
-        for (var prop in actual)
-        {
-            if (typeof actual[prop] != "function" || typeof expected[prop] != "function")
-            {
-                var nest = testEquals(actual[prop], expected[prop], depth + 1);
-                if (typeof nest != "boolean" || !nest)
-                {
-                    return "element '" + prop + "' does not match: " + nest;
-                }
-            }
-
-            actualLength++;
-        }
-
-        // need to check length too
-        var expectedLength = 0;
-        for (prop in expected)
-        {
-            expectedLength++;
-        }
-
-        if (actualLength != expectedLength)
-        {
-            return "expected object size = " + expectedLength + ", actual object size = " + actualLength;
-        }
-
-        return true;
+    if (actualLength != expectedLength) {
+      return "expected object size = " + expectedLength + ", actual object size = " + actualLength;
     }
+    return true;
+  }
 
-    if (actual != expected)
-    {
-        return "expected = " + expected + " (type=" + typeof expected + "), actual = " + actual + " (type=" + typeof actual + ")";
+  if (actual != expected) {
+    return "expected = " + expected + " (type=" + typeof expected + "), actual = " + actual + " (type=" + typeof actual + ")";
+  }
+
+  if (expected instanceof Array) {
+    if (!(actual instanceof Array)) {
+      return "expected array, actual not an array";
     }
-
-    if (expected instanceof Array)
-    {
-        if (!(actual instanceof Array))
-        {
-            return "expected array, actual not an array";
-        }
-
-        if (actual.length != expected.length)
-        {
-            return "expected array length = " + expected.length + ", actual array length = " + actual.length;
-        }
-
-        for (var i = 0; i < actual.length; i++)
-        {
-            var inner = testEquals(actual[i], expected[i], depth + 1);
-            if (typeof inner != "boolean" || !inner)
-            {
-                return "element " + i + " does not match: " + inner;
-            }
-        }
-
-        return true;
+    if (actual.length != expected.length) {
+      return "expected array length = " + expected.length + ", actual array length = " + actual.length;
+    }
+    for (var i = 0; i < actual.length; i++) {
+      var inner = testEquals(actual[i], expected[i], depth + 1);
+      if (typeof inner != "boolean" || !inner) {
+        return "element " + i + " does not match: " + inner;
+      }
     }
 
     return true;
+  }
+
+  return true;
 }
 
-function report()
-{
-    Test.reply(showResults, {
-        totals:DWRUtil.getValue("totals"),
-        moreinfo:DWRUtil.getValue("moreinfo"),
-        failures:DWRUtil.getValue("failures"),
-        execreport:DWRUtil.getValue("execreport"),
-        failreport:DWRUtil.getValue("failreport"),
-        useragentReported:DWRUtil.getValue("useragent-reported"),
-        useragentReal:DWRUtil.getValue("useragent-real")
-    });
+function report() {
+  Test.reply(showResults, {
+    totals:DWRUtil.getValue("totals"),
+    moreinfo:DWRUtil.getValue("moreinfo"),
+    failures:DWRUtil.getValue("failures"),
+    execreport:DWRUtil.getValue("execreport"),
+    failreport:DWRUtil.getValue("failreport"),
+    useragentReported:DWRUtil.getValue("useragent-reported"),
+    useragentReal:DWRUtil.getValue("useragent-real")
+  });
 }
 
-function showResults(data)
-{
-    // We were trying to get others involved in testing
-    // DWRUtil.showById("results");
+function showResults(data) {
+  // We were trying to get others involved in testing
+  // DWRUtil.showById("results");
 
-    DWRUtil.removeAllRows("resultsTable");
-    DWRUtil.addRows("resultsTable", data, [
-        function(row)
-        {
-            return row;
-        },
-        function(row)
-        {
-            var results = data[row];
-            var reply = "";
-            for (var report in results)
-            {
-                reply += report + " failures, reported " + results[report] + " time(s).<br/>";
-            }
-            return reply;
-        }
-    ]);
+  DWRUtil.removeAllRows("resultsTable");
+  DWRUtil.addRows("resultsTable", data, [
+    function(row) {
+      return row;
+    },
+    function(row) {
+      var results = data[row];
+      var reply = "";
+      for (var report in results) {
+        reply += report + " failures, reported " + results[report] + " time(s).<br/>";
+      }
+      return reply;
+    }
+  ]);
 }
 
-function runTest(num)
-{
-    var callback = function(data)
-    {
-        testResults(data, num);
-    };
-
-    var method = tests[num].code;
-    var param = tests[num].data;
-
-    Test[method](param, { callback:callback });
+function runTest(num) {
+  var callback = function(data) {
+    testResults(data, num);
+  };
+  var method = tests[num].code;
+  var param = tests[num].data;
+  Test[method](param, { callback:callback });
 }
 
-function init()
-{
-    DWRUtil.setValue("useragent-real", navigator.userAgent);
-    DWRUtil.setValue("useragent-reported", navigator.userAgent);
+function init() {
+  DWRUtil.setValue("useragent-real", navigator.userAgent);
+  DWRUtil.setValue("useragent-reported", navigator.userAgent);
 
-    failures = $("failures");
-    progress = $("progress");
-    failreport = $("failreport");
-    execreport = $("execreport");
+  failures = $("failures");
+  progress = $("progress");
+  failreport = $("failreport");
+  execreport = $("execreport");
 
-    DWREngine.setErrorHandler(catchFailure);
-    DWREngine.setWarningHandler(DWREngine.defaultMessageHandler);
+  DWREngine.setErrorHandler(catchFailure);
+  DWREngine.setWarningHandler(catchFailure);
 
-    var rownum = 0;
-    DWRUtil.addRows("chart", tests, [
-        function(row)
-        {
-            var td = document.createElement("td");
-            td.setAttribute("id", "t" + rownum + "-num");
-            td.innerHTML = "" + rownum;
-            return td;
-        },
-
-        function(row)
-        {
-            var td = document.createElement("td");
-            td.setAttribute("id", "t" + rownum + "-code");
-            td.innerHTML = "" + row.code;
-            return td;
-        },
-
-        function(row)
-        {
-            var td = document.createElement("td");
-            td.setAttribute("id", "t" + rownum + "-data");
-            var display = DWRUtil.toDescriptiveString(row.data);
-            if (display.length > 30)
-            {
-                display = display.substring(0, 27) + "...";
-            }
-            td.innerHTML = display;
-            return td;
-        },
-
-        function(row)
-        {
-            return "<input type='button' value='Test' onclick='runTest(" + rownum + ")'/>";
-        },
-
-        function(row)
-        {
-            var td = document.createElement("td");
-            td.setAttribute("id", "t" + rownum + "-results");
-            td.innerHTML = "";
-
-            rownum++;
-
-            return td;
-        }
-    ]);
+  var rownum = 0;
+  DWRUtil.addRows("chart", tests, [
+    function(row) {
+      var td = document.createElement("td");
+      td.setAttribute("id", "t" + rownum + "-num");
+      td.innerHTML = "" + rownum;
+      return td;
+    },
+    function(row) {
+      var td = document.createElement("td");
+      td.setAttribute("id", "t" + rownum + "-code");
+      td.innerHTML = "" + row.code;
+      return td;
+    },
+    function(row) {
+      var td = document.createElement("td");
+      td.setAttribute("id", "t" + rownum + "-data");
+      var display = DWRUtil.toDescriptiveString(row.data);
+      if (display.length > 30) {
+        display = display.substring(0, 27) + "...";
+      }
+      td.innerHTML = display;
+      return td;
+    },
+    function(row) {
+      return "<input type='button' value='Test' onclick='setSettings();runTest(" + rownum + ")'/>";
+    },
+    function(row) {
+      var td = document.createElement("td");
+      td.setAttribute("id", "t" + rownum + "-results");
+      td.innerHTML = "";
+      rownum++;
+      return td;
+    }
+  ]);
 }
