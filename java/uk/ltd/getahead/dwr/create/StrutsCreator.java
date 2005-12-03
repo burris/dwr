@@ -27,6 +27,7 @@ import uk.ltd.getahead.dwr.WebContextFactory;
 /**
  * StrutsCreator
  * @author Ariel O. Falduto
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class StrutsCreator extends AbstractCreator implements Creator
 {
@@ -44,16 +45,13 @@ public class StrutsCreator extends AbstractCreator implements Creator
      */
     public Class getType()
     {
-        if (moduleConfig == null)
+        synchronized (this)
         {
-            synchronized (syncFlag)
+            if (moduleConfig == null)
             {
-                if (moduleConfig == null)
-                {
-                    WebContext wc = WebContextFactory.get();
-                    moduleConfig = RequestUtils.getModuleConfig(wc.getHttpServletRequest(), wc.getServletContext());
-                    //moduleConfig = ModuleUtils.getInstance().getModuleConfig("", ExecutionContext.get().getServletContext());
-                }
+                WebContext wc = WebContextFactory.get();
+                moduleConfig = RequestUtils.getModuleConfig(wc.getHttpServletRequest(), wc.getServletContext());
+                // moduleConfig = ModuleUtils.getInstance().getModuleConfig("", wc.getServletContext()); //$NON-NLS-1$
             }
         }
 
@@ -82,7 +80,13 @@ public class StrutsCreator extends AbstractCreator implements Creator
         return formInstance;
     }
 
+    /**
+     * The FormBean that we lookup to call methods on
+     */
     private String formBean;
+
+    /**
+     * moduleConfig allows us to do the lookup
+     */
     private ModuleConfig moduleConfig;
-    private Object syncFlag = new Object();
 }
