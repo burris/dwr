@@ -101,8 +101,9 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
         log.warn("Ignoring call to setStatus(" + sc + ')'); //$NON-NLS-1$
     }
 
-    /* (non-Javadoc)
+    /**
      * @see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
+     * @deprecated
      */
     public void setStatus(int sc, String sm)
     {
