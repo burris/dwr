@@ -22,10 +22,7 @@ function DWRUtil() { }
 
 /**
  * Enables you to react to return being pressed in an input
- * For example:
- * <code>&lt;input type="text" onkeypressed="DWRUtil.onReturn(event, methodName)"/&gt;</code>
- * @param event The event object for Netscape browsers
- * @param action Method name to execute when return is pressed
+ * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
  */
 DWRUtil.onReturn = function(event, action) {
   if (!event) {
@@ -37,11 +34,8 @@ DWRUtil.onReturn = function(event, action) {
 };
 
 /**
- * Select a specific range in a text box.
- * This is useful for 'google suggest' type functionallity.
- * @param ele The id of the text input element or the HTML element itself
- * @param start The beginning index
- * @param end The end index 
+ * Select a specific range in a text box. Useful for 'google suggest' type functions.
+ * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
  */
 DWRUtil.selectRange = function(ele, start, end) {
   var orig = ele;
@@ -101,12 +95,8 @@ else if (!$ && document.all) {
 }
 
 /**
- * A better toString than the default for an Object
- * @param data The object to describe
- * @param level 0 = Single line of debug, 1 = Multi-line debug that does not
- *        dig into child objects, 2 = Multi-line debug that digs into the
- *        2nd layer of child objects
- * @param depth How much do we indent this item?
+ * Like toString but aimed at debugging
+ * @see http://getahead.ltd.uk/dwr/browser/util/todescriptivestring
  */
 DWRUtil.toDescriptiveString = function(data, level, depth) {
   var reply = "";
@@ -223,8 +213,7 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
 };
 
 /**
- * Indenting for DWRUtil.toDescriptiveString
- * @private
+ * @private Indenting for DWRUtil.toDescriptiveString
  */
 DWRUtil._indent = function(level, depth) {
   var reply = "";
@@ -239,6 +228,7 @@ DWRUtil._indent = function(level, depth) {
 
 /**
  * Setup a GMail style loading message.
+ * @see http://getahead.ltd.uk/dwr/browser/util/useloadingmessage
  */
 DWRUtil.useLoadingMessage = function(message) {
   var loadingMessage;
@@ -280,10 +270,8 @@ DWRUtil.useLoadingMessage = function(message) {
 }
 
 /**
- * Set the value for the given id to the specified val.
- * This method works for selects (where the option with a matching value and
- * not text is selected), input elements (including textareas) divs and spans.
- * @param ele The id of the element or the HTML element itself
+ * Set the value an HTML element to the specified value.
+ * @see http://getahead.ltd.uk/dwr/browser/util/setvalue
  */
 DWRUtil.setValue = function(ele, val) {
   if (val == null) val = "";
@@ -358,7 +346,7 @@ DWRUtil.setValue = function(ele, val) {
 };
 
 /**
- * Find multiple items in a select list and make them selected
+ * @private Find multiple items in a select list and select them. Used by setValue()
  * @param ele The select list item
  * @param val The array of values to select
  */
@@ -389,7 +377,7 @@ DWRUtil._selectListItems = function(ele, val) {
 };
 
 /**
- * Find an item in a select list and make it selected
+ * @private Find an item in a select list and select it. Used by setValue()
  * @param ele The select list item
  * @param val The value to select
  */
@@ -420,10 +408,8 @@ DWRUtil._selectListItem = function(ele, val) {
 }
 
 /**
- * The counterpart to setValue() - read the current value for a given element.
- * This method works for selects (where the option with a matching value and
- * not text is selected), input elements (including textareas) divs and spans.
- * @param ele The id of the element or the HTML element itself
+ * Read the current value for a given HTML element.
+ * @see http://getahead.ltd.uk/dwr/browser/util/getvalue
  */
 DWRUtil.getValue = function(ele) {
   var orig = ele;
@@ -484,9 +470,8 @@ DWRUtil.getValue = function(ele) {
 };
 
 /**
- * getText() is like getValue() with the except that it only works for selects
- * where it reads the text of an option and not it's value.
- * @param ele The id of the element or the HTML element itself
+ * getText() is like getValue() except that it reads the text (and not the value) from select elements
+ * @see http://getahead.ltd.uk/dwr/browser/util/gettext
  */
 DWRUtil.getText = function(ele) {
   var orig = ele;
@@ -513,9 +498,8 @@ DWRUtil.getText = function(ele) {
 };
 
 /**
- * Given a map, call setValue() for all the entries in the map using the key
- * of each entry as an id.
- * @param map The map of values to set to various elements
+ * Given a map, call setValue() for all the entries in the map using the entry key as an element id
+ * @see http://getahead.ltd.uk/dwr/browser/util/setvalues
  */
 DWRUtil.setValues = function(map) {
   for (var property in map) {
@@ -528,61 +512,43 @@ DWRUtil.setValues = function(map) {
 };
 
 /**
- * Given a map, call getValue() for all the entries in the map using the key
- * of each entry as an id.
- * @param map The map of values to set to various elements
+ * Given a map, call getValue() for all the entries in the map using the entry key as an element id.
+ * Given a string or element that refers to a form, create an object from the elements of the form.
+ * @see http://getahead.ltd.uk/dwr/browser/util/getvalues
  */
-DWRUtil.getValues = function(map) {
-  for (var property in map) {
-    var ele = $(property);
-    if (ele != null) {
-      map[property] = DWRUtil.getValue(property);
+DWRUtil.getValues = function(data) {
+  var ele;
+  if (typeof data == "string") ele = $(data);
+  if (DWRUtil._isHTMLElement(data)) ele = data;
+  if (ele != null) {
+    if (ele.elements == null) {
+      alert("getValues() requires an object or reference to a form element.");
+      return;
     }
+    var reply = {};
+    var value;
+    for (var i = 0; i < ele.elements.length; i++) {
+      if (ele[i].id != null) value = ele[i].id;
+      else if (ele[i].value != null) value = ele[i].value;
+      else value = "element" + i;
+      reply[value] = DWRUtil.getValue(ele[i]);
+    }
+    return reply;
+  }
+  else {
+    for (var property in data) {
+      var ele = $(property);
+      if (ele != null) {
+        data[property] = DWRUtil.getValue(property);
+      }
+    }
+    return data;
   }
 };
 
 /**
  * Add options to a list from an array or map.
- * DWRUtil.addOptions has 5 modes:
- * <p><b>Array</b><br/>
- * DWRUtil.addOptions(selectid, array) and a set of options are created with the
- * text and value set to the string version of each array element.
- * </p>
- * <p><b>Array of objects, using option text = option value</b><br/>
- * DWRUtil.addOptions(selectid, data, prop) creates an option for each array
- * element, with the value and text of the option set to the given property of
- * each object in the array.
- * </p>
- * <p><b>Array of objects, with differing option text and value</b><br/>
- * DWRUtil.addOptions(selectid, array, valueprop, textprop) creates an option
- * for each object in the array, with the value of the option set to the given
- * valueprop property of the object, and the option text set to the textprop
- * property.
- * </p>
- * <p><b>Map (object)</b><br/>
- * DWRUtil.addOptions(selectid, map, reverse) creates an option for each
- * property. The property names are used as option values, and the property
- * values are used as option text, which sounds wrong, but is actually normally
- * the right way around. If reverse evaluates to true then the property values
- * are used as option values.
- * <p><b>Map of objects</b><br/>
- * DWRUtil.addOptions(selectid, map, valueprop, textprop) creates an option
- * for each object in the map, with the value of the option set to the given
- * valueprop property of the object, and the option text set to the textprop
- * property.
- * </p>
- * <p><b>ol or ul list</b><br/>
- * DWRUtil.addOptions(ulid, array) and a set of li elements are created with the
- * innerHTML set to the string value of the array elements. This mode works
- * with ul and ol lists.
- * </p>
- * @param ele The id of the list element or the HTML element itself
- * @param data An array or map of data items to populate the list
- * @param valuerev (optional) If data is an array of objects, an optional
- *    property name to use for option values. If the data is a map then this
- *    boolean property allows you to swap keys and values.
- * @param textprop (optional) Only for use with arrays of objects - an optional
- *    property name for use as the text of an option.
+ * @see http://getahead.ltd.uk/dwr/browser/lists
  */
 DWRUtil.addOptions = function(ele, data) {
   var orig = ele;
@@ -678,8 +644,7 @@ DWRUtil.addOptions = function(ele, data) {
 };
 
 /**
- * Get the data from an array function for DWRUtil.addOptions
- * @private
+ * @private Get the data from an array function for DWRUtil.addOptions
  */
 DWRUtil._getValueFrom = function(data, method) {
   if (method == null) return data;
@@ -689,7 +654,7 @@ DWRUtil._getValueFrom = function(data, method) {
 
 /**
  * Remove all the options from a select list (specified by id)
- * @param ele The id of the list element or the HTML element itself
+ * @see http://getahead.ltd.uk/dwr/browser/lists
  */
 DWRUtil.removeAllOptions = function(ele) {
   var orig = ele;
@@ -716,34 +681,7 @@ DWRUtil.removeAllOptions = function(ele) {
 
 /**
  * Create rows inside a the table, tbody, thead or tfoot element (given by id).
- * The normal case would be to use tbody since that allows you to keep header
- * lines separate, but this function should work with and table element above
- * tr.
- * <p>This function creates a row for each element in the <code>data</code>
- * array and for that row create one cell for each function in the
- * <code>cellFuncs</code> array by passing the element from the
- * <code>data</code> array to the given function.
- * <p>The return from the function is used to populate the cell.
- * <p>The pseudo code looks something like this:
- * <pre>
- *   for each member of the data array
- *   for function in the cellFuncs array
- *     create cell from cellFunc(data[i])
- * </pre>
- * <p>One slight modification to this is that any members of the cellFuncs array
- * that are strings instead of functions, the strings are used as cell contents
- * directly.
- * <p>There are 2 current options:<ul>
- * <li>rowCreator: a function that will create a row for you (e.g. you wish to
- *   add css to the tr). The default returns document.createElement("tr")</li>
- * <li>cellCreator: a function to create a cell, (e.g. to use a th in place of a
- *   td). The default returns document.createElement("td")</li>
- * </ul>
- * @param ele The id of the tbody element
- * @param data Array containing one entry for each row in the updated table
- * @param cellFuncs An array of functions (one per column) for extracting cell
- *  data from the passed row data
- * @param options An object containing various options. See above for options.
+ * @see http://getahead.ltd.uk/dwr/browser/tables
  */
 DWRUtil.addRows = function(ele, data, cellFuncs, options) {
   var orig = ele;
@@ -779,8 +717,7 @@ DWRUtil.addRows = function(ele, data, cellFuncs, options) {
 };
 
 /**
- * Internal function to draw a single row of a table.
- * @private
+ * @private Internal function to draw a single row of a table.
  */
 DWRUtil._addRowInner = function(row, cellFuncs, options, i) {
   var tr = options.rowCreator(row, i);
@@ -805,16 +742,14 @@ DWRUtil._addRowInner = function(row, cellFuncs, options, i) {
 };
 
 /**
- * Default row creation function
- * @private
+ * @private Default row creation function
  */
 DWRUtil._defaultRowCreator = function(row, i) {
   return document.createElement("tr");
 };
 
 /**
- * Default cell creation function
- * @private
+ * @private Default cell creation function
  */
 DWRUtil._defaultCellCreator = function(data, j) {
   return document.createElement("td");
@@ -822,9 +757,7 @@ DWRUtil._defaultCellCreator = function(data, j) {
 
 /**
  * Remove all the children of a given node.
- * Most useful for dynamic tables where you clearChildNodes() on the tbody
- * element.
- * @param ele The id of the element or the HTML element itself
+ * @see http://getahead.ltd.uk/dwr/browser/tables
  */
 DWRUtil.removeAllRows = function(ele) {
   var orig = ele;
@@ -843,11 +776,10 @@ DWRUtil.removeAllRows = function(ele) {
 };
 
 /**
- * Is the given node an HTML element (optionally of a given type)?
+ * @private Is the given node an HTML element (optionally of a given type)?
  * @param ele The element to test
  * @param nodeName eg "input", "textarea" - check for node name (optional)
- *         if nodeName is an array then check of a match.
- * @private
+ *         if nodeName is an array then check all for a match.
  */
 DWRUtil._isHTMLElement = function(ele, nodeName) {
   if (ele == null || typeof ele != "object" || ele.nodeName == null) {
@@ -879,9 +811,7 @@ DWRUtil._isHTMLElement = function(ele, nodeName) {
 };
 
 /**
- * Like typeOf except that more information for an object is returned other
- * than "object"
- * @private
+ * @private Like typeOf except that more information for an object is returned other than "object"
  */
 DWRUtil._detailedTypeOf = function(x) {
   var reply = typeof x;
@@ -893,33 +823,21 @@ DWRUtil._detailedTypeOf = function(x) {
 };
 
 /**
- * Array detector.
- * This is an attempt to work around the lack of support for instanceof in
- * some browsers.
- * @param data The object to test
- * @returns true iff <code>data</code> is an Array
- * @private
+ * @private Array detector. Work around the lack of instanceof in some browsers.
  */
 DWRUtil._isArray = function(data) {
   return (data && data.join) ? true : false;
 };
 
 /**
- * Date detector.
- * This is an attempt to work around the lack of support for instanceof in
- * some browsers.
- * @param data The object to test
- * @returns true iff <code>data</code> is a Date
- * @private
+ * @private Date detector. Work around the lack of instanceof in some browsers.
  */
 DWRUtil._isDate = function(data) {
   return (data && data.toUTCString) ? true : false;
 };
 
 /**
- * document.importNode is used by setValue.
- * This gets around the missing functionallity in IE.
- * @private
+ * @private Used by setValue. Gets around the missing functionallity in IE.
  */
 DWRUtil._importNode = function(doc, importedNode, deep) {
   var newNode;
