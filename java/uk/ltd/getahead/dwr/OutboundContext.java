@@ -27,9 +27,28 @@ import java.util.Map;
 public final class OutboundContext
 {
     /**
-     * The prefix for outbound variable names the we generate
+     * Since map needs to have referencial equality rather than object equality
+     * this constructor tries to use java.util.IdentityHashMap (>=1.4), and
+     * failing that falls back on wrapper objects in a HashMap.
      */
-    public static final String OUTBOUND_VARIABLE_PREFIX = "s"; //$NON-NLS-1$
+    public OutboundContext()
+    {
+        // We can only assign to map once, so we use this as a staging post.
+        Map assign;
+
+        try
+        {
+            assign = (Map) Class.forName("java.util.IdentityHashMap").newInstance(); //$NON-NLS-1$
+            referenceWrappers = false;
+        }
+        catch (Exception ex)
+        {
+            assign = new HashMap();
+            referenceWrappers = true;
+        }
+
+        map = assign;
+    }
 
     /**
      * Have we already converted an object?
@@ -38,6 +57,11 @@ public final class OutboundContext
      */
     public OutboundVariable get(Object object)
     {
+        if (referenceWrappers)
+        {
+            object = new ReferenceWrapper(object);
+        }
+
         return (OutboundVariable) map.get(object);
     }
 
@@ -47,6 +71,11 @@ public final class OutboundContext
      */
     public void put(Object object, OutboundVariable ss)
     {
+        if (referenceWrappers)
+        {
+            object = new ReferenceWrapper(object);
+        }
+
         map.put(object, ss);
     }
 
@@ -63,28 +92,65 @@ public final class OutboundContext
     }
 
     /**
-     * Create a new OutboundVariable along with a variable name and remembered
-     * to avoid recursion.
-     * @param data The data to be converted
-     * @return A new OutboundVariable
-     * @see OutboundContext#put(Object, OutboundVariable)
-     * @see OutboundContext#getNextVariableName()
+     * The prefix for outbound variable names the we generate
      */
-    public OutboundVariable createOutboundVariable(Object data)
-    {
-        OutboundVariable ov = new OutboundVariable();
-        ov.setAssignCode(getNextVariableName());
-        put(data, ov);
-        return ov;
-    }
+    public static final String OUTBOUND_VARIABLE_PREFIX = "s"; //$NON-NLS-1$
 
     /**
      * The map of objects to how we converted them last time
      */
-    private final Map map = new HashMap();
+    private final Map map;
+
+    /**
+     * Tells if we are to wrap objects in the map to get referencial equality.
+     */
+    private boolean referenceWrappers;
 
     /**
      * What index do we tack on the next variable name that we generate
      */
     private int nextVarIndex = 0;
+
+    /**
+     * Wrapper class that makes sure that equals() and hashCode() uses
+     * referencial equality on the wrapped object. This is used when
+     * we can't have a IdentityHashMap in map.
+     */
+    private static class ReferenceWrapper
+    {
+        /**
+         * @param object The object to wrap
+         */
+        private ReferenceWrapper(Object object)
+        {
+            this.object = object;
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#hashCode()
+         */
+        public int hashCode()
+        {
+            return System.identityHashCode(object);
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object obj)
+        {
+            if (!(obj instanceof ReferenceWrapper))
+            {
+                return false;
+            }
+
+            ReferenceWrapper that = (ReferenceWrapper) obj;
+            return this.object == that.object;
+        }
+
+        /**
+         * My wrapped object.
+         */
+        private Object object;
+    }
 }
