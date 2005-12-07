@@ -41,7 +41,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Creator#getType()q
+     * @see uk.ltd.getahead.dwr.Creator#getType()
      */
     public Class getType()
     {
