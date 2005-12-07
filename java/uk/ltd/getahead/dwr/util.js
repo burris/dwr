@@ -523,7 +523,7 @@ DWRUtil.getValues = function(data) {
   if (ele != null) {
     if (ele.elements == null) {
       alert("getValues() requires an object or reference to a form element.");
-      return;
+      return null;
     }
     var reply = {};
     var value;
