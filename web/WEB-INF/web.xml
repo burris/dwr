@@ -11,9 +11,19 @@
     <display-name>DWR Servlet</display-name>
     <description>Direct Web Remoter Servlet</description>
     <servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
+    <!--
+    <init-param>
+      <param-name>config</param-name>
+      <param-value>WEB-INF/dwr.xml</param-value>
+    </init-param>
+    -->
     <init-param>
       <param-name>debug</param-name>
       <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>scriptCompressed</param-name>
+      <param-value>false</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
