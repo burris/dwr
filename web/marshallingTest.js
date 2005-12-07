@@ -1,6 +1,5 @@
 
 var failures;
-var progress;
 var failreport;
 var execreport;
 var starttime;
@@ -305,17 +304,12 @@ function startTest() {
   failures.innerHTML = "";
   failreport.innerHTML = "0";
   execreport.innerHTML = "0";
-  progress.style.backgroundColor = "green";
-  progress.style.width = "0%";
   for (var i = 0; i < tests.length; i++) {
     var numele = $("t" + i + "-num");
     numele.style.backgroundColor = "white";
     DWRUtil.setValue("t" + i + "-results", "");
   }
   DWRUtil.setValue("totals", "");
-
-  // We were trying to get others to contribute test results
-  //DWRUtil.showById("reply");
 
   setSettings();
 
@@ -385,8 +379,7 @@ function sendBatch(start, size, rate) {
     DWREngine.endBatch();
   }
 
-  var percent = Math.ceil((start / tests.length) * 100);
-  progress.style.width = percent + "%";
+  DWRUtil.setValue("testsDispatched", start + 1);
 
   if (start + incr < tests.length) {
     setTimeout("sendBatch(" + (start + incr) + ", " + size + ", " + rate + ")", rate);
@@ -399,10 +392,7 @@ function checkTidyUp(index) {
 
     var mslen = new Date().getTime() - window.starttime.getTime();
     var tps = Math.round((10000 * tests.length) / mslen) / 10;
-    var totals = "Tests executed in " + (mslen / 1000) + " seconds at an average of " + tps + " tests per second.";
-    DWRUtil.setValue("totals", totals);
-
-    progress.style.width = "100%";
+    DWRUtil.setValue("timePerTest", tps);
   }
 }
 
@@ -428,11 +418,6 @@ function testResults(data, index) {
     failcount++;
     failreport.innerHTML = failcount;
 
-    if (failcount == 1) {
-      // This is the first failure - make the bar go red
-      progress.style.backgroundColor = "red";
-    }
-
     numele.style.backgroundColor = "lightpink";
     DWRUtil.setValue("t" + index + "-results", report);
   }
@@ -445,11 +430,6 @@ function catchFailure(data) {
   failures.innerHTML += "Unknown Test<br/>&nbsp;&nbsp;Error: " + data + "<br/>";
   failcount++;
   failreport.innerHTML = failcount;
-
-  if (failcount == 1) {
-    // This is the first failure - make the bar go red
-    progress.style.backgroundColor = "red";
-  }
 }
 
 function testEquals(actual, expected, depth) {
@@ -525,38 +505,6 @@ function testEquals(actual, expected, depth) {
   return true;
 }
 
-function report() {
-  Test.reply(showResults, {
-    totals:DWRUtil.getValue("totals"),
-    moreinfo:DWRUtil.getValue("moreinfo"),
-    failures:DWRUtil.getValue("failures"),
-    execreport:DWRUtil.getValue("execreport"),
-    failreport:DWRUtil.getValue("failreport"),
-    useragentReported:DWRUtil.getValue("useragent-reported"),
-    useragentReal:DWRUtil.getValue("useragent-real")
-  });
-}
-
-function showResults(data) {
-  // We were trying to get others involved in testing
-  // DWRUtil.showById("results");
-
-  DWRUtil.removeAllRows("resultsTable");
-  DWRUtil.addRows("resultsTable", data, [
-    function(row) {
-      return row;
-    },
-    function(row) {
-      var results = data[row];
-      var reply = "";
-      for (var report in results) {
-        reply += report + " failures, reported " + results[report] + " time(s).<br/>";
-      }
-      return reply;
-    }
-  ]);
-}
-
 function runTest(num) {
   var callback = function(data) {
     testResults(data, num);
@@ -567,11 +515,7 @@ function runTest(num) {
 }
 
 function init() {
-  DWRUtil.setValue("useragent-real", navigator.userAgent);
-  DWRUtil.setValue("useragent-reported", navigator.userAgent);
-
   failures = $("failures");
-  progress = $("progress");
   failreport = $("failreport");
   execreport = $("execreport");
 
