@@ -33,21 +33,21 @@ public interface CreatorManager
 
     /**
      * In init mode, add a new type of creator
-     * @param typename The name of the new creator type
-     * @param clazz The class that we create
+     * @param id The name of the new creator type
+     * @param className The class that we create
      */
-    void addCreatorType(String typename, Class clazz);
+    void addCreatorType(String id, String className);
 
     /**
      * Add a new creator
-     * @param typename The class to use as a creator
      * @param scriptName The name of the creator to Javascript
+     * @param typename The class to use as a creator
      * @param params The extra parameters to allow the creator to configure itself
      * @throws InstantiationException If reflection based creation fails
      * @throws IllegalAccessException If reflection based creation fails
      * @throws IllegalArgumentException If we have a duplicate name
      */
-    void addCreator(String typename, String scriptName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
+    void addCreator(String scriptName, String typename, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
 
     /**
      * Add a new creator

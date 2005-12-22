@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ltd.getahead.dwr.impl.test;
 
 import java.util.List;
@@ -21,8 +20,10 @@ import java.util.List;
 /**
  * @author Bram Smeets
  */
-public class SignatureTestsObject {
-    public void setLotteryResults(List<Integer> nos) {
+public class SignatureTestsObject
+{
+    public void setLotteryResults(List nos)
+    {
         // do nothing
     }
 }

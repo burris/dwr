@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.impl;
+package uk.ltd.getahead.dwr.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,13 +28,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import uk.ltd.getahead.dwr.AbstractDWRServlet;
 import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -141,7 +140,7 @@ public class DefaultTestProcessor implements Processor
             String methodName = method.getName();
 
             // See also the call to getReasonToNotExecute() above
-            String reason = accessControl.getReasonToNotDisplay(req, creator, scriptName, method);
+            String reason = accessControl.getReasonToNotDisplay(creator, scriptName, method);
             if (reason != null)
             {
                 out.println(HtmlConstants.BLANK);
@@ -260,7 +259,7 @@ public class DefaultTestProcessor implements Processor
             }
 
             // See also the call to getReasonToNotDisplay() above
-            String warning = accessControl.getReasonToNotExecute(req, creator, scriptName, method);
+            String warning = accessControl.getReasonToNotExecute(creator, scriptName, method);
             if (warning != null)
             {
                 out.println("<br/><span class='warning'>(Warning: Role restructions in place: " + warning + ".)</span>"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -285,7 +284,7 @@ public class DefaultTestProcessor implements Processor
             {
                 StringBuffer buffer = new StringBuffer();
 
-                InputStream raw = getClass().getResourceAsStream(AbstractDWRServlet.PACKAGE + HtmlConstants.FILE_HELP);
+                InputStream raw = getClass().getResourceAsStream(Constants.PACKAGE + HtmlConstants.FILE_HELP);
                 if (raw == null)
                 {
                     log.error(Messages.getString("DefaultProcessor.MissingHelp", HtmlConstants.FILE_HELP)); //$NON-NLS-1$

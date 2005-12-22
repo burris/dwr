@@ -30,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
+import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.Messages;
 
 /**
  * Various utilities, mostly to make up for JDK 1.4 functionallity that is not
@@ -523,6 +525,116 @@ public final class LocalUtil
             }
         }
         return isSimple;
+    }
+
+    /**
+     * Utility to essentially do Class.forName with the assumption that the
+     * environment expects failures for missing jar files and can carry on if
+     * this process fails.
+     * @param name The name for debugging purposes
+     * @param className The class to create
+     * @param impl The implementation class - what should className do?
+     * @return The class if it is safe or null otherwise.
+     */
+    public static Class classForName(String name, String className, Class impl)
+    {
+        Class clazz;
+
+        try
+        {
+            clazz = Class.forName(className);
+        }
+        catch (ClassNotFoundException ex)
+        {
+            log.info("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            log.info("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+
+        // Check it is of the right type
+        if (!impl.isAssignableFrom(clazz))
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), Creator.class.getName())); //$NON-NLS-1$
+        }
+
+        // Check we can create it
+        try
+        {
+            clazz.newInstance();
+        }
+        catch (InstantiationException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotInstantiatable", className, ex.toString())); //$NON-NLS-1$
+        }
+        catch (IllegalAccessException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAccessable", className, ex.toString())); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            log.warn("Failed to load creator '" + name + "', classname=" + className + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+
+        return clazz;
+    }
+
+    /**
+     * Utility to essentially do Class.forName and newInstance with the
+     * assumption that the environment expects failures for missing jar files
+     * and can carry on if this process fails.
+     * @param name The name for debugging purposes
+     * @param className The class to create
+     * @param impl The implementation class - what should className do?
+     * @return The new instance if it is safe or null otherwise.
+     */
+    public static Object classNewInstance(String name, String className, Class impl)
+    {
+        Class clazz;
+
+        try
+        {
+            clazz = Class.forName(className);
+        }
+        catch (ClassNotFoundException ex)
+        {
+            log.info("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            log.info("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+
+        // Check it is of the right type
+        if (!impl.isAssignableFrom(clazz))
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), Creator.class.getName())); //$NON-NLS-1$
+        }
+
+        // Check we can create it
+        try
+        {
+            return clazz.newInstance();
+        }
+        catch (InstantiationException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotInstantiatable", className, ex.toString())); //$NON-NLS-1$
+        }
+        catch (IllegalAccessException ex)
+        {
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAccessable", className, ex.toString())); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            log.warn("Failed to load creator '" + name + "', classname=" + className + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
     }
 
     /**

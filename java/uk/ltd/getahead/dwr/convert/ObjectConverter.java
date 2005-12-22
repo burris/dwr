@@ -253,9 +253,7 @@ public class ObjectConverter implements Converter
                         }
                     }
 
-                    //inctx.pushContext(setter, 0);
-                    Object output = config.convertInbound(propType, nested, inctx);
-                    //inctx.popContext(setter, 0);
+                    Object output = config.convertInbound(propType, nested, inctx, inctx.getCurrentTypeHintContext());
                     field.set(bean, new Object[] { output });
                 }
             }

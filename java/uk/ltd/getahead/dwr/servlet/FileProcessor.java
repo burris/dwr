@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.impl;
+package uk.ltd.getahead.dwr.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import uk.ltd.getahead.dwr.AbstractDWRServlet;
+import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -62,7 +62,7 @@ public class FileProcessor
             {
                 StringBuffer buffer = new StringBuffer();
 
-                String resource = AbstractDWRServlet.PACKAGE + path;
+                String resource = Constants.PACKAGE + path;
                 InputStream raw = getClass().getResourceAsStream(resource);
                 if (raw == null)
                 {

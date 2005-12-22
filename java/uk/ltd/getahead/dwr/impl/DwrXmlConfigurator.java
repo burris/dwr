@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,23 +39,129 @@ import org.xml.sax.SAXException;
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.AjaxFilter;
 import uk.ltd.getahead.dwr.AjaxFilterManager;
-import uk.ltd.getahead.dwr.Configuration;
+import uk.ltd.getahead.dwr.Configurator;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.StartupState;
+import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.LogErrorHandler;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
- * The DefaultConfiguration class has responsibility for reading all config data from
- * web.xml and dwr.xml
+ * A configurator that gets its configuration by reading a dwr.xml file.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultConfiguration implements Configuration
+public class DwrXmlConfigurator implements Configurator
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Configuration#addConfig(java.io.InputStream)
+     * @see uk.ltd.getahead.dwr.Configurator#configure(uk.ltd.getahead.dwr.StartupState)
+     */
+    public void configure(StartupState startupState)
+    {
+        addConfig(document);
+    }
+
+    /**
+     * Accessor for the servlet context
+     * @param servletContext the new servlet context
+     */
+    public void setServletContext(ServletContext servletContext)
+    {
+        this.servletContext = servletContext;
+    }
+
+    /**
+     * Setter for the resource name that we can use to read a file from the
+     * servlet context
+     * @param resourceName The name to lookup
+     * @throws IOException On file read failure
+     * @throws ParserConfigurationException On XML setup failure
+     * @throws SAXException On XML parse failure
+     */
+    public void setServletResourceName(String resourceName) throws IOException, ParserConfigurationException, SAXException
+    {
+        InputStream in = servletContext.getResourceAsStream(resourceName);
+        if (in == null)
+        {
+            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", resourceName)); //$NON-NLS-1$
+        }
+
+        setInputStream(in);
+    }
+
+    /**
+     * Setter for a classpath based lookup
+     * @param resourceName The resource to lookup in the classpath
+     * @throws IOException On file read failure
+     * @throws ParserConfigurationException On XML setup failure
+     * @throws SAXException On XML parse failure
+     */
+    public void setClassResourceName(String resourceName) throws IOException, ParserConfigurationException, SAXException
+    {
+        InputStream in = getClass().getResourceAsStream(resourceName);
+        if (in == null)
+        {
+            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", resourceName)); //$NON-NLS-1$
+        }
+
+        setInputStream(in);
+    }
+
+    /**
+     * Setter for a direct input stream to configure from
+     * @param in The input stream to read from.
+     * @throws IOException On file read failure
+     * @throws ParserConfigurationException On XML setup failure
+     * @throws SAXException On XML parse failure
+     */
+    public void setInputStream(InputStream in) throws ParserConfigurationException, SAXException, IOException
+    {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setValidating(true);
+
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        db.setEntityResolver(new DTDEntityResolver());
+        db.setErrorHandler(new LogErrorHandler());
+
+        document = db.parse(in);
+    }
+
+    /**
+     * To set the configuration document directly
+     * @param document The new configuration document
+     */
+    public void setDocument(Document document)
+    {
+        this.document = document;
+    }
+
+    /**
+     * The stored servlet context
+     */
+    private ServletContext servletContext;
+
+    /**
+     * The parsed document
+     */
+    private Document document;
+
+
+
+
+
+
+
+
+
+    /**
+     * Add to the current configuration by reading a DOM tree from a IO stream.
+     * @param in The InputStream to parse from
+     * @throws ParserConfigurationException If there are XML setup problems
+     * @throws IOException Error parsing dwr.xml
+     * @throws SAXException Error parsing dwr.xml
      */
     public void addConfig(InputStream in) throws ParserConfigurationException, IOException, SAXException
     {
@@ -70,8 +177,9 @@ public class DefaultConfiguration implements Configuration
         addConfig(doc);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Configuration#addConfig(org.w3c.dom.Document)
+    /**
+     * Add to the current configuration by reading a DOM tree directly
+     * @param doc The DOM tree
      */
     public void addConfig(Document doc)
     {
@@ -116,69 +224,17 @@ public class DefaultConfiguration implements Configuration
 
                 if (initer.getNodeName().equals(ATTRIBUTE_CREATOR))
                 {
-                    loadCreator(initer);
+                    String id = initer.getAttribute(ATTRIBUTE_ID);
+                    String className = initer.getAttribute(ATTRIBUTE_CLASS);
+                    creatorManager.addCreatorType(id, className);
                 }
                 else if (initer.getNodeName().equals(ATTRIBUTE_CONVERTER))
                 {
-                    loadConverter(initer);
+                    String id = initer.getAttribute(ATTRIBUTE_ID);
+                    String className = initer.getAttribute(ATTRIBUTE_CLASS);
+                    converterManager.addConverterType(id, className);
                 }
             }
-        }
-    }
-
-    /**
-     * Internal method to load the creator element
-     * @param initer The element to read
-     */
-    private void loadCreator(Element initer)
-    {
-        String id = initer.getAttribute(ATTRIBUTE_ID);
-        String classname = initer.getAttribute(ATTRIBUTE_CLASS);
-
-        try
-        {
-            Class clazz = Class.forName(classname);
-            creatorManager.addCreatorType(id, clazz);
-        }
-        catch (NoClassDefFoundError ex)
-        {
-            log.info("Missing classdef for creator '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-        catch (ClassNotFoundException ex)
-        {
-            log.info("Missing class for creator '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-        catch (Exception ex)
-        {
-            log.warn("Failed to load creator '" + id + "', classname=" + classname + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-    }
-
-    /**
-     * Internal method to load the converter element
-     * @param initer The element to read
-     */
-    private void loadConverter(Element initer)
-    {
-        String id = initer.getAttribute(ATTRIBUTE_ID);
-        String classname = initer.getAttribute(ATTRIBUTE_CLASS);
-
-        try
-        {
-            Class clazz = Class.forName(classname);
-            converterManager.addConverterType(id, clazz);
-        }
-        catch (NoClassDefFoundError ex)
-        {
-            log.info("Missing classdef for converter '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-        catch (ClassNotFoundException ex)
-        {
-            log.info("Missing class for converter '" + id + "'. Failed to load " + classname + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        }
-        catch (Exception ex)
-        {
-            log.warn("Failed to load converter '" + id + "', classname=" + classname + ": " + ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
     }
 
@@ -260,7 +316,7 @@ public class DefaultConfiguration implements Configuration
         try
         {
             Map params = createSettingMap(allower);
-            creatorManager.addCreator(type, javascript, params);
+            creatorManager.addCreator(javascript, type, params);
 
             processPermissions(javascript, allower);
             processAuth(javascript, allower);
@@ -440,7 +496,8 @@ public class DefaultConfiguration implements Configuration
             {
                 String type = st.nextToken();
                 Class clazz = Class.forName(type.trim());
-                converterManager.setExtraTypeInfo(method, paramNo, j++, clazz);
+                TypeHintContext thc = new TypeHintContext(method, paramNo).createChildContext(j++);
+                converterManager.setExtraTypeInfo(thc, clazz);
             }
         }
     }
@@ -477,27 +534,11 @@ public class DefaultConfiguration implements Configuration
             Element include = (Element) nodes.item(i);
 
             String type = include.getAttribute(ATTRIBUTE_CLASS);
-
-            try
+            AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(javascript, type, AjaxFilter.class);
+            if (filter != null)
             {
-                Class impl = Class.forName(type);
-                AjaxFilter object = (AjaxFilter) impl.newInstance();
-
-                LocalUtil.setParams(object, createSettingMap(include), ignore);
-
-                ajaxFilterManager.addAjaxFilter(object, javascript);
-            }
-            catch (ClassCastException ex)
-            {
-                log.error(type + " does not implement " + AjaxFilter.class.getName(), ex); //$NON-NLS-1$
-            }
-            catch (NoClassDefFoundError ex)
-            {
-                log.info("Missing class for filter (class='" + type + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            catch (Exception ex)
-            {
-                log.error("Failed to add filter: class=" + type, ex); //$NON-NLS-1$
+                LocalUtil.setParams(filter, createSettingMap(include), ignore);
+                ajaxFilterManager.addAjaxFilter(filter, javascript);
             }
         }
     }
@@ -602,7 +643,7 @@ public class DefaultConfiguration implements Configuration
     /**
      * The log stream
      */
-    public static final Logger log = Logger.getLogger(DefaultConfiguration.class);
+    public static final Logger log = Logger.getLogger(DwrXmlConfigurator.class);
 
     /**
      * What AjaxFilters apply to which Ajax calls?

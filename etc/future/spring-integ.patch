@@ -1,0 +1,291 @@
+Index: java/uk/ltd/getahead/dwr/Creator.java
+===================================================================
+RCS file: /cvs/dwr/java/uk/ltd/getahead/dwr/Creator.java,v
+retrieving revision 1.11
+diff -d -Fdwr.patch -r1.11 Creator.java
+54a55,66
+>      * Accessor for the javascript name of this creator.
+>      * @return Returns the javascript name.
+>      */
+>     String getJavascript();
+> 
+>     /**
+>      * Accessor for the configuration for this creator.
+>      * @return Returns the creator configuration.
+>      */
+>     CreatorConfig getConfig();
+> 
+>     /**
+Index: java/uk/ltd/getahead/dwr/CreatorManager.java
+===================================================================
+RCS file: /cvs/dwr/java/uk/ltd/getahead/dwr/CreatorManager.java,v
+retrieving revision 1.15
+diff -d -Fdwr.patch -r1.15 CreatorManager.java
+34a35,42
+>      * Set the debug status. <br>
+>      * Debug mode allows access to the list of creator names
+>      * @param debug The new debug setting
+>      * @see CreatorManager#getCreatorNames()
+>      */
+>     void setDebug(boolean debug);
+> 
+>     /**
+42c50
+<      * Add a new creator
+---
+>      * Creates a new creator.
+45a54
+>      * @return the created creator instance
+50c59,60
+<     void addCreator(String typename, String scriptName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
+---
+>     Creator instantiateCreator(String typename, String scriptName, Map params)
+>     throws InstantiationException, IllegalAccessException, IllegalArgumentException;
+Index: java/uk/ltd/getahead/dwr/create/AbstractCreator.java
+===================================================================
+RCS file: /cvs/dwr/java/uk/ltd/getahead/dwr/create/AbstractCreator.java,v
+retrieving revision 1.4
+diff -d -Fdwr.patch -r1.4 AbstractCreator.java
+21a22
+> import uk.ltd.getahead.dwr.CreatorConfig;
+71a73,90
+>      * Gets the configuration of this creator.
+>      *
+>      * @return The configuration of this creator.
+>      */
+>     public CreatorConfig getConfig() {
+>         return config;
+>     }
+> 
+>     /**
+>      * Sets the configuration of this creator.
+>      *
+>      * @param config The configuration of this creator.
+>      */
+>     public void setConfig(CreatorConfig config) {
+>         this.config = config;
+>     }
+> 
+>     /**
+81a101,105
+>      * The configuration of this creator
+>      */
+>     private CreatorConfig config = new CreatorConfig();
+> 
+>     /**
+103c127
+< }
+---
+> }
+\ No newline at end of file
+Index: java/uk/ltd/getahead/dwr/impl/DefaultConfiguration.java
+===================================================================
+RCS file: /cvs/dwr/java/uk/ltd/getahead/dwr/impl/DefaultConfiguration.java,v
+retrieving revision 1.8
+diff -d -Fdwr.patch -r1.8 DefaultConfiguration.java
+21,25c21
+< import java.util.Arrays;
+< import java.util.HashMap;
+< import java.util.List;
+< import java.util.Map;
+< import java.util.StringTokenizer;
+---
+> import java.util.*;
+38,44c34,35
+< import uk.ltd.getahead.dwr.AccessControl;
+< import uk.ltd.getahead.dwr.AjaxFilter;
+< import uk.ltd.getahead.dwr.AjaxFilterManager;
+< import uk.ltd.getahead.dwr.Configuration;
+< import uk.ltd.getahead.dwr.ConverterManager;
+< import uk.ltd.getahead.dwr.Creator;
+< import uk.ltd.getahead.dwr.CreatorManager;
+---
+> import uk.ltd.getahead.dwr.*;
+> import uk.ltd.getahead.dwr.CreatorConfig;
+104a96,112
+>      * Adds a creator for the specified javascript name. <br>
+>      * It adds the creator to the creator manager and processes the creator
+>      * configuration.
+>      * @param javascript The javascript name to add the creator for.
+>      * @param creator The creator to add.
+>      * @see CreatorManager#addCreator(String, uk.ltd.getahead.dwr.Creator)
+>      * @see uk.ltd.getahead.dwr.Creator#getConfig()
+>      */
+>     protected void addCreator(String javascript, Creator creator) {
+>         // add the creator to the creator manager
+>         creatorManager.addCreator(javascript, creator);
+> 
+>         // process the creator configuration
+>         processCreatorConfig(javascript, creator.getConfig());
+>     }
+> 
+>     /**
+263c271
+<             creatorManager.addCreator(type, javascript, params);
+---
+>             Creator creator = creatorManager.instantiateCreator(type, javascript, params);
+265,266c273
+<             processPermissions(javascript, allower);
+<             processAuth(javascript, allower);
+---
+>             // process any additional parameters
+268c275,282
+<             processAjaxFilters(javascript, allower);
+---
+> 
+>             // make sure to incorporate any permissions, auth rules and filters to the config
+>             processPermissions(creator.getConfig(), allower);
+>             processAuth(creator.getConfig(), allower);
+>             processAjaxFilters(creator.getConfig(), allower);
+> 
+>             // add the creator
+>             addCreator(javascript, creator);
+366c380
+<      * @param javascript The name of the creator
+---
+>      * @param config The creator configuration.
+369c383
+<     private void processPermissions(String javascript, Element parent)
+---
+>     private void processPermissions(CreatorConfig config, Element parent)
+376c390
+<             accessControl.addIncludeRule(javascript, method);
+---
+>             config.addInclude(method);
+384c398
+<             accessControl.addExcludeRule(javascript, method);
+---
+>             config.addExclude(method);
+450c464
+<      * @param javascript The name of the creator
+---
+>      * @param config The creator configuration.
+453c467
+<     private void processAuth(String javascript, Element parent)
+---
+>     private void processAuth(CreatorConfig config, Element parent)
+463c477
+<             accessControl.addRoleRestriction(javascript, method, role);
+---
+>             config.addAuth(method, role);
+469c483
+<      * @param javascript The name of the creator
+---
+>      * @param config The creator configuration.
+472c486
+<     private void processAjaxFilters(String javascript, Element parent)
+---
+>     private void processAjaxFilters(CreatorConfig config, Element parent)
+484c498
+<                 AjaxFilter object = (AjaxFilter) impl.newInstance();
+---
+>                 AjaxFilter filter = (AjaxFilter) impl.newInstance();
+486c500
+<                 LocalUtil.setParams(object, createSettingMap(include), ignore);
+---
+>                 LocalUtil.setParams(filter, createSettingMap(include), ignore);
+488c502
+<                 ajaxFilterManager.addAjaxFilter(object, javascript);
+---
+>                 config.addFilter(filter);
+534a549,593
+>      * Process the creator configuration for the specified javascript name.
+>      * @param javascript The javascript name to process the config for.
+>      * @param config The creator configuration to process.
+>      */
+>     private void processCreatorConfig(String javascript, CreatorConfig config) {
+>         if(config == null) {
+>             // there is nothing to configure, just return
+>             return;
+>         }
+> 
+>         if(config.getIncludes() != null) {
+>             Iterator it = config.getIncludes().iterator();
+>             while (it.hasNext()) {
+>                 String method = (String) it.next();
+>                 getAccessControl().addIncludeRule(javascript, method);
+>             }
+>         }
+> 
+>         if(config.getExcludes() != null) {
+>             Iterator it = config.getExcludes().iterator();
+>             while (it.hasNext()) {
+>                 String method = (String) it.next();
+>                 getAccessControl().addExcludeRule(javascript, method);
+>             }
+>         }
+> 
+>         if(config.getAuth() != null) {
+>             Iterator it = config.getAuth().keySet().iterator();
+>             while (it.hasNext()) {
+>                 String method = (String) it.next();
+>                 String role = config.getAuth().getProperty(method);
+>                 getAccessControl().addRoleRestriction(javascript, method, role);
+>             }
+>         }
+> 
+>         if(config.getFilters() != null) {
+>             Iterator it = config.getFilters().iterator();
+>             while (it.hasNext()) {
+>                 AjaxFilter filter = (AjaxFilter) it.next();
+>                 getAjaxFilterManager().addAjaxFilter(filter, javascript);
+>             }
+>         }
+>     }
+> 
+>     /**
+597a657,665
+>      * Accessor for the AjaxFilterManager
+>      * @return The AjaxFilterManager for this configuration.
+>      */
+>     public AjaxFilterManager getAjaxFilterManager()
+>     {
+>         return ajaxFilterManager;
+>     }
+> 
+>     /**
+678c746
+< }
+---
+> }
+\ No newline at end of file
+Index: java/uk/ltd/getahead/dwr/impl/DefaultCreatorManager.java
+===================================================================
+RCS file: /cvs/dwr/java/uk/ltd/getahead/dwr/impl/DefaultCreatorManager.java,v
+retrieving revision 1.20
+diff -d -Fdwr.patch -r1.20 DefaultCreatorManager.java
+84c84,85
+<     public void addCreator(String typeName, String scriptName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
+---
+>     public Creator instantiateCreator(String typeName, String scriptName, Map params)
+>     throws InstantiationException, IllegalAccessException, IllegalArgumentException
+91c92
+<             return;
+---
+>             return null;
+95c96
+< 
+---
+>         
+99,100c100
+<         // add the creator for the script name
+<         addCreator(scriptName, creator);
+---
+>         return creator;
+204c204
+<      * @see DefaultCreatorManager#addCreator(String, String, Map)
+---
+>      * @see DefaultCreatorManager#instantiateCreator(String, String, Map)
+207c207
+< }
+---
+> }
+\ No newline at end of file
+Index: web/web.iml
+===================================================================
+RCS file: /cvs/dwr/web/web.iml,v
+retrieving revision 1.1
+diff -d -Fdwr.patch -r1.1 web.iml
+11d10
+<     <orderEntry type="library" name="tomcat-5.5" level="application_server_libraries" />
+

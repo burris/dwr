@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ltd.getahead.dwr.impl;
 
-import junit.framework.*;
-import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.AccessControl;
-import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
-import uk.ltd.getahead.dwr.create.NewCreator;
+import java.lang.reflect.Method;
+
+import javax.servlet.http.HttpServletRequest;
+
+import junit.framework.TestCase;
+
+import org.easymock.EasyMock;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static org.easymock.EasyMock.*;
-import java.lang.reflect.Method;
+import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.create.NewCreator;
+import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
+import uk.ltd.getahead.dwr.servlet.DefaultInterfaceProcessor;
 
 /**
  * @author Bram Smeets
  */
-public class DefaultInterfaceProcessorTests extends TestCase {
+public class DefaultInterfaceProcessorTests extends TestCase
+{
     private DefaultInterfaceProcessor defaultInterfaceProcessor = new DefaultInterfaceProcessor();
 
     private CreatorManager creatorManager;
@@ -38,78 +44,86 @@ public class DefaultInterfaceProcessorTests extends TestCase {
     private AccessControl accessControl;
 
     private MockHttpServletRequest request;
+
     private MockHttpServletResponse response;
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
 
-        creatorManager = createMock(CreatorManager.class);
+        creatorManager = (CreatorManager) EasyMock.createMock(CreatorManager.class);
         defaultInterfaceProcessor.setCreatorManager(creatorManager);
 
-        accessControl = createMock(AccessControl.class);
+        accessControl = (AccessControl) EasyMock.createMock(AccessControl.class);
         defaultInterfaceProcessor.setAccessControl(accessControl);
 
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
 
-    public void testHandle() throws Exception {
+    public void testHandle() throws Exception
+    {
         request.setPathInfo("/interface/creatorName.js");
 
         creatorManager.getCreator("creatorName");
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
-        expectLastCall().andReturn(creator);
+        EasyMock.expectLastCall().andReturn(creator);
 
         // expect 9 method calls to 'getReasonToNotDisplay' for each method on Object
-        expect(accessControl.getReasonToNotDisplay(eq(request), eq(creator), eq("creatorName"), (Method)isA(Method.class)));
-        expectLastCall().andReturn(null).times(11);
+        EasyMock.expect(accessControl.getReasonToNotDisplay((Creator) EasyMock.eq(creator), (String) EasyMock.eq("creatorName"), (Method) EasyMock.isA(Method.class)));
+        EasyMock.expectLastCall().andReturn(null).times(11);
 
-        replay(creatorManager);
-        replay(accessControl);
+        EasyMock.replay(creatorManager);
+        EasyMock.replay(accessControl);
 
         defaultInterfaceProcessor.handle(request, response);
 
-        verify(creatorManager);
-        verify(accessControl);
+        EasyMock.verify(creatorManager);
+        EasyMock.verify(accessControl);
 
         // check the response
         String result = response.getContentAsString();
-        assertTrue(result.contains("function creatorName() { }"));
-        assertTrue(result.contains("creatorName.hashCode = function(callback)"));
-        assertTrue(result.contains("creatorName.getClass = function(callback)"));
-        assertTrue(result.contains("creatorName.wait = function(callback)"));
-        assertTrue(result.contains("creatorName.wait = function(p0, p1, callback)"));
-        assertTrue(result.contains("creatorName.wait = function(p0, callback)"));
-        assertTrue(result.contains("creatorName.equals = function(p0, callback)"));
-        assertTrue(result.contains("creatorName.notify = function(callback)"));
-        assertTrue(result.contains("creatorName.notifyAll = function(callback)"));
-        assertTrue(result.contains("creatorName.toString = function(callback)"));
-        assertTrue(result.contains("creatorName.testMethodWithServletParameters = function(callback)"));
+        assertTrue(result.indexOf("function creatorName() { }") != -1);
+        assertTrue(result.indexOf("creatorName.hashCode = function(callback)") != -1);
+        assertTrue(result.indexOf("creatorName.getClass = function(callback)") != -1);
+        assertTrue(result.indexOf("creatorName.wait = function(callback)") != -1);
+        assertTrue(result.indexOf("creatorName.wait = function(p0, p1, callback)") != -1);
+        assertTrue(result.indexOf("creatorName.wait = function(p0, callback)") != -1);
+        assertTrue(result.indexOf("creatorName.equals = function(p0, callback)") != -1);
+        assertTrue(result.indexOf("creatorName.notify = function(callback)") != -1);
+        assertTrue(result.indexOf("creatorName.notifyAll = function(callback)") != -1);
+        assertTrue(result.indexOf("creatorName.toString = function(callback)") != -1);
+        assertTrue(result.indexOf("creatorName.testMethodWithServletParameters = function(callback)") != -1);
 
         // make sure no entry is generated for the reserved javvascript word 'namespace'
-        assertFalse(result.contains("creatorName.namespace = function(callback)"));
+        assertFalse(result.indexOf("creatorName.namespace = function(callback)") != -1);
     }
 
-    public void testHandleWithoutInterface() throws Exception {
+    public void testHandleWithoutInterface() throws Exception
+    {
         creatorManager.getCreator("");
-        expectLastCall().andThrow(new SecurityException());
+        EasyMock.expectLastCall().andThrow(new SecurityException());
 
-        replay(creatorManager);
-        replay(accessControl);
+        EasyMock.replay(creatorManager);
+        EasyMock.replay(accessControl);
 
-        try {
+        try
+        {
             defaultInterfaceProcessor.handle(request, response);
             fail("a security exception was expected");
-        } catch(SecurityException e) {
+        }
+        catch (SecurityException e)
+        {
             // do nothing, was expected
         }
 
-        verify(creatorManager);
-        verify(accessControl);
+        EasyMock.verify(creatorManager);
+        EasyMock.verify(accessControl);
     }
 
-    public void testHandleWithReasonsNotToDisplay() throws Exception {
+    public void testHandleWithReasonsNotToDisplay() throws Exception
+    {
         // make sure not to allow an impossible test
         defaultInterfaceProcessor.setAllowImpossibleTests(false);
 
@@ -118,33 +132,33 @@ public class DefaultInterfaceProcessorTests extends TestCase {
         creatorManager.getCreator("creatorName");
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
-        expectLastCall().andReturn(creator);
+        EasyMock.expectLastCall().andReturn(creator);
 
         // expect 9 method calls to 'getReasonToNotDisplay' for each method on Object
-        expect(accessControl.getReasonToNotDisplay(eq(request), eq(creator), eq("creatorName"), (Method)isA(Method.class)));
-        expectLastCall().andReturn("myReason").times(11);
+        EasyMock.expect(accessControl.getReasonToNotDisplay((Creator) EasyMock.eq(creator), (String) EasyMock.eq("creatorName"), (Method) EasyMock.isA(Method.class)));
+        EasyMock.expectLastCall().andReturn("myReason").times(11);
 
-        replay(creatorManager);
-        replay(accessControl);
+        EasyMock.replay(creatorManager);
+        EasyMock.replay(accessControl);
 
         defaultInterfaceProcessor.handle(request, response);
 
-        verify(creatorManager);
-        verify(accessControl);
+        EasyMock.verify(creatorManager);
+        EasyMock.verify(accessControl);
 
         // check the response
         String result = response.getContentAsString();
-        assertTrue(result.contains("function creatorName() { }"));
-        assertFalse(result.contains("creatorName.hashCode = function(callback)"));
-        assertFalse(result.contains("creatorName.getClass = function(callback)"));
-        assertFalse(result.contains("creatorName.wait = function(callback)"));
-        assertFalse(result.contains("creatorName.wait = function(p0, p1, callback)"));
-        assertFalse(result.contains("creatorName.wait = function(p0, callback)"));
-        assertFalse(result.contains("creatorName.equals = function(p0, callback)"));
-        assertFalse(result.contains("creatorName.notify = function(callback)"));
-        assertFalse(result.contains("creatorName.notifyAll = function(callback)"));
-        assertFalse(result.contains("creatorName.toString = function(callback)"));
-        assertFalse(result.contains("creatorName.testMethodWithServletParameters = function(callback)"));
-        assertFalse(result.contains("creatorName.namespace = function(callback)"));
+        assertTrue(result.indexOf("function creatorName() { }") != -1);
+        assertFalse(result.indexOf("creatorName.hashCode = function(callback)") != -1);
+        assertFalse(result.indexOf("creatorName.getClass = function(callback)") != -1);
+        assertFalse(result.indexOf("creatorName.wait = function(callback)") != -1);
+        assertFalse(result.indexOf("creatorName.wait = function(p0, p1, callback)") != -1);
+        assertFalse(result.indexOf("creatorName.wait = function(p0, callback)") != -1);
+        assertFalse(result.indexOf("creatorName.equals = function(p0, callback)") != -1);
+        assertFalse(result.indexOf("creatorName.notify = function(callback)") != -1);
+        assertFalse(result.indexOf("creatorName.notifyAll = function(callback)") != -1);
+        assertFalse(result.indexOf("creatorName.toString = function(callback)") != -1);
+        assertFalse(result.indexOf("creatorName.testMethodWithServletParameters = function(callback)") != -1);
+        assertFalse(result.indexOf("creatorName.namespace = function(callback)") != -1);
     }
 }

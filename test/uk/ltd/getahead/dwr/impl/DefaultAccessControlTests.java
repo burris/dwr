@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ltd.getahead.dwr.impl;
 
 import junit.framework.TestCase;
@@ -28,103 +27,121 @@ import uk.ltd.getahead.dwr.Creator;
 /**
  * @author Bram Smeets
  */
-public class DefaultAccessControlTests extends TestCase {
-
+public class DefaultAccessControlTests extends TestCase
+{
     private DefaultAccessControl accessControl = new DefaultAccessControl();
 
     private MockHttpServletRequest request;
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
 
         request = new MockHttpServletRequest();
     }
 
-    public void testReasonToNotDisplayDwrObject() throws Exception {
+    public void testReasonToNotDisplayDwrObject() throws Exception
+    {
         NewCreator creator = new NewCreator();
         creator.setClass("uk.ltd.getahead.dwr.Messages");
 
-        String result = accessControl.getReasonToNotDisplay(request, creator, "", getMethod());
+        String result = accessControl.getReasonToNotDisplay(creator, "", getMethod());
         assertEquals(Messages.getString("ExecuteQuery.DeniedCoreDWR"), result);
     }
 
-    public void testReasonToNotDisplay() throws Exception {
+    public void testReasonToNotDisplay() throws Exception
+    {
         NewCreator creator = new NewCreator();
         creator.setClass("java.lang.Object");
 
-        String result = accessControl.getReasonToNotDisplay(request, creator, "", getMethod());
+        String result = accessControl.getReasonToNotDisplay(creator, "", getMethod());
         assertNull(result);
     }
 
-    public void testReasonToNotDisplayWithNonPublicMethod() throws Exception {
-        String result = accessControl.getReasonToNotDisplay(request, null, null, getPrivateMethod());
+    public void testReasonToNotDisplayWithNonPublicMethod() throws Exception
+    {
+        String result = accessControl.getReasonToNotDisplay(null, null, getPrivateMethod());
         assertNotNull(result);
     }
 
-    public void testReasonToNotDisplayWithNonExecutableMethod() throws Exception {
+    public void testReasonToNotDisplayWithNonExecutableMethod() throws Exception
+    {
         accessControl.addExcludeRule("className", "someMethod");
 
-        String result = accessControl.getReasonToNotDisplay(request, null, "className", getMethod());
+        String result = accessControl.getReasonToNotDisplay(null, "className", getMethod());
         assertNotNull(result);
     }
 
-    public void testReasonToNotDisplayWithMethodWithDwrParameter() throws Exception {
+    public void testReasonToNotDisplayWithMethodWithDwrParameter() throws Exception
+    {
         NewCreator creator = new NewCreator();
         creator.setClass("java.lang.Object");
 
-        String result = accessControl.getReasonToNotDisplay(request, creator, "className", getMethodWithDwrParameter());
+        String result = accessControl.getReasonToNotDisplay(creator, "className", getMethodWithDwrParameter());
         assertNotNull(result);
     }
 
-    public void testReasonToNotDisplayWithObjectMethod() throws Exception {
+    public void testReasonToNotDisplayWithObjectMethod() throws Exception
+    {
         NewCreator creator = new NewCreator();
         creator.setClass("java.lang.Object");
 
-        String result = accessControl.getReasonToNotDisplay(request, creator, "className", getHashCodeMethod());
+        String result = accessControl.getReasonToNotDisplay(creator, "className", getHashCodeMethod());
         assertNotNull(result);
     }
 
-    public void testReasonToNotExecute() throws Exception {
+    public void testReasonToNotExecute() throws Exception
+    {
         NewCreator creator = new NewCreator();
 
-        String result = accessControl.getReasonToNotExecute(request, creator, "className", getMethod());
+        String result = accessControl.getReasonToNotExecute(creator, "className", getMethod());
         assertNull(result);
 
         accessControl.addRoleRestriction("className", "someMethod", "someRole");
         accessControl.addRoleRestriction("className", "someMethod", "someOtherRole");
-        result = accessControl.getReasonToNotExecute(request, creator, "className", getMethod());
+        result = accessControl.getReasonToNotExecute(creator, "className", getMethod());
         assertNotNull(result);
 
         request.addUserRole("someRole");
-        result = accessControl.getReasonToNotExecute(request, creator, "className", getMethod());
+        result = accessControl.getReasonToNotExecute(creator, "className", getMethod());
         assertNull(result);
     }
 
-    public void someMethod() {
+    public void someMethod()
+    {
         // do nothing
     }
 
-    public void someMethodWithDwrParameter(String someString, Creator creator) {
+    public void someMethodWithDwrParameter(String someString, Creator creator)
+    {
         // do nothing
     }
 
-    private void somePrivateMethod() {
+    private void somePrivateMethod()
+    {
         // do nothing
     }
 
-    private Method getMethod() throws NoSuchMethodException {
+    private Method getMethod() throws NoSuchMethodException
+    {
         return getClass().getMethod("someMethod", new Class[0]);
     }
 
-    private Method getMethodWithDwrParameter() throws NoSuchMethodException {
-        return getClass().getMethod("someMethodWithDwrParameter", new Class[] { String.class, Creator.class });
+    private Method getMethodWithDwrParameter() throws NoSuchMethodException
+    {
+        return getClass().getMethod("someMethodWithDwrParameter", new Class[]
+        {
+            String.class, Creator.class
+        });
     }
 
-    private Method getPrivateMethod() throws NoSuchMethodException {
+    private Method getPrivateMethod() throws NoSuchMethodException
+    {
         return getClass().getDeclaredMethod("somePrivateMethod", new Class[0]);
     }
 
-    private Method getHashCodeMethod() throws NoSuchMethodException {
+    private Method getHashCodeMethod() throws NoSuchMethodException
+    {
         return getClass().getMethod("hashCode", new Class[0]);
     }
 }

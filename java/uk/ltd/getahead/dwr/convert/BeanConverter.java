@@ -33,6 +33,7 @@ import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
@@ -234,9 +235,9 @@ public class BeanConverter extends BaseV20Converter implements Converter
                     String[] split = LocalUtil.splitInbound(val);
                     InboundVariable nested = new InboundVariable(iv.getLookup(), split[LocalUtil.INBOUND_INDEX_TYPE], split[LocalUtil.INBOUND_INDEX_VALUE]);
 
-                    inctx.pushContext(setter, 0);
-                    Object output = config.convertInbound(propType, nested, inctx);
-                    inctx.popContext(setter, 0);
+                    TypeHintContext incc = new TypeHintContext(setter, 0);
+                    Object output = config.convertInbound(propType, nested, inctx, incc);
+
                     setter.invoke(bean, new Object[] { output });
                 }
             }

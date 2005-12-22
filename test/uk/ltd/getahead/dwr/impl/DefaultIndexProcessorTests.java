@@ -16,67 +16,74 @@
 
 package uk.ltd.getahead.dwr.impl;
 
-import junit.framework.*;
-import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
-import uk.ltd.getahead.dwr.create.NewCreator;
-
 import java.util.ArrayList;
 
+import junit.framework.TestCase;
+
+import org.easymock.EasyMock;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import static org.easymock.EasyMock.*;
 
-public class DefaultIndexProcessorTests extends TestCase {
+import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.create.NewCreator;
+import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
+import uk.ltd.getahead.dwr.servlet.DefaultIndexProcessor;
+
+public class DefaultIndexProcessorTests extends TestCase
+{
     private DefaultIndexProcessor defaultIndexProcessor = new DefaultIndexProcessor();
 
     private CreatorManager creatorManager;
 
     private MockHttpServletRequest request;
+
     private MockHttpServletResponse response;
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
 
-        creatorManager = createMock(CreatorManager.class);
+        creatorManager = (CreatorManager) EasyMock.createMock(CreatorManager.class);
         defaultIndexProcessor.setCreatorManager(creatorManager);
 
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
 
-    public void testHandleWithoutDebug() throws Exception {
+    public void testHandleWithoutDebug() throws Exception
+    {
         creatorManager.isDebug();
-        expectLastCall().andReturn(false);
+        EasyMock.expectLastCall().andReturn(Boolean.FALSE);
 
-        replay(creatorManager);
+        EasyMock.replay(creatorManager);
 
         defaultIndexProcessor.handle(request, response);
 
-        verify(creatorManager);
+        EasyMock.verify(creatorManager);
 
         assertEquals(403, response.getStatus());
     }
 
-    public void testHandle() throws Exception {
+    public void testHandle() throws Exception
+    {
         creatorManager.isDebug();
-        expectLastCall().andReturn(true);
+        EasyMock.expectLastCall().andReturn(Boolean.TRUE);
 
         creatorManager.getCreatorNames();
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList names = new ArrayList();
         names.add("creatorName");
-        expectLastCall().andReturn(names);
+        EasyMock.expectLastCall().andReturn(names);
 
         creatorManager.getCreator("creatorName");
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
-        expectLastCall().andReturn(creator);
+        EasyMock.expectLastCall().andReturn(creator);
 
-        replay(creatorManager);
+        EasyMock.replay(creatorManager);
 
         defaultIndexProcessor.handle(request, response);
 
-        verify(creatorManager);
+        EasyMock.verify(creatorManager);
 
         String result = response.getContentAsString();
         assertNotNull(result);

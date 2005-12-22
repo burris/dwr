@@ -16,14 +16,29 @@
 
 package uk.ltd.getahead.dwr.spring;
 
-import uk.ltd.getahead.dwr.*;
-import uk.ltd.getahead.dwr.impl.*;
-
-import java.util.Map;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.InitializingBean;
+
+import uk.ltd.getahead.dwr.Converter;
+import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.Processor;
+import uk.ltd.getahead.dwr.WebContextBuilder;
+import uk.ltd.getahead.dwr.impl.DefaultAccessControl;
+import uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager;
+import uk.ltd.getahead.dwr.impl.DefaultConfiguration;
+import uk.ltd.getahead.dwr.impl.DefaultConverterManager;
+import uk.ltd.getahead.dwr.impl.DefaultCreatorManager;
+import uk.ltd.getahead.dwr.impl.DefaultExecProcessor;
+import uk.ltd.getahead.dwr.impl.DefaultIndexProcessor;
+import uk.ltd.getahead.dwr.impl.DefaultInterfaceProcessor;
+import uk.ltd.getahead.dwr.impl.DefaultProcessor;
+import uk.ltd.getahead.dwr.impl.DefaultTestProcessor;
+import uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder;
+import uk.ltd.getahead.dwr.impl.FileProcessor;
 
 /**
  * The <code>Configuration</code> implementation for use in the Spring IoC container. <br>
@@ -61,16 +76,20 @@ import org.springframework.beans.factory.InitializingBean;
  *
  * @author Bram Smeets
  */
-public class DwrConfiguration extends DefaultConfiguration implements InitializingBean {
+public class DwrConfiguration extends DefaultConfiguration implements InitializingBean
+{
     /** The web context builder for this configuration. */
     private WebContextBuilder webContextBuilder;
+
     /** The processor for this configuration. */
     private Processor processor;
 
     /** The indication of the debug mode for this configuration. */
     private boolean debug = false;
+
     /** The map containing all match patterns and their corrosponding converters to register. */
     private Map converters;
+
     /** The list containing all creators to register. */
     private List creators;
 
@@ -81,7 +100,8 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
      *
      * @see CreatorManager#setDebug(boolean)
      */
-    public void setDebug(boolean debug) {
+    public void setDebug(boolean debug)
+    {
         this.debug = debug;
     }
 
@@ -90,7 +110,8 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
      *
      * @param converters the map containing match patterns and their corrospondig converters
      */
-    public void setConverters(Map converters) {
+    public void setConverters(Map converters)
+    {
         this.converters = converters;
     }
 
@@ -99,7 +120,8 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
      *
      * @param creators the list containing all creators
      */
-    public void setCreators(List creators) {
+    public void setCreators(List creators)
+    {
         this.creators = creators;
     }
 
@@ -108,7 +130,8 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
      *
      * @return the web context builder
      */
-    public WebContextBuilder getWebContextBuilder() {
+    public WebContextBuilder getWebContextBuilder()
+    {
         return webContextBuilder;
     }
 
@@ -117,7 +140,8 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
      *
      * @param webContextBuilder the web context builder
      */
-    public void setWebContextBuilder(WebContextBuilder webContextBuilder) {
+    public void setWebContextBuilder(WebContextBuilder webContextBuilder)
+    {
         this.webContextBuilder = webContextBuilder;
     }
 
@@ -126,7 +150,8 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
      *
      * @return the processor for this configuration
      */
-    public Processor getProcessor() {
+    public Processor getProcessor()
+    {
         return processor;
     }
 
@@ -135,7 +160,8 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
      *
      * @param processor the processor for this configuration
      */
-    public void setProcessor(Processor processor) {
+    public void setProcessor(Processor processor)
+    {
         this.processor = processor;
     }
 
@@ -146,24 +172,31 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
      * <p>It is implemented to provide sensible defaults for required properties
      * and process the registered converters and creators.
      */
-    public void afterPropertiesSet() {
+    public void afterPropertiesSet()
+    {
         // make sure to set all the default implementations in case they are not set
-        if(getCreatorManager() == null) {
+        if (getCreatorManager() == null)
+        {
             setCreatorManager(new DefaultCreatorManager());
         }
-        if(getConverterManager() == null) {
+        if (getConverterManager() == null)
+        {
             setConverterManager(new DefaultConverterManager());
         }
-        if(getAccessControl() == null) {
+        if (getAccessControl() == null)
+        {
             setAccessControl(new DefaultAccessControl());
         }
-        if(getAjaxFilterManager() == null) {
+        if (getAjaxFilterManager() == null)
+        {
             setAjaxFilterManager(new DefaultAjaxFilterManager());
         }
-        if(webContextBuilder == null) {
+        if (webContextBuilder == null)
+        {
             webContextBuilder = new DefaultWebContextBuilder();
         }
-        if(processor == null) {
+        if (processor == null)
+        {
             processor = createDefaultProcessor();
         }
 
@@ -171,9 +204,11 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
         getCreatorManager().setDebug(debug);
 
         // process all registered converters
-        if(converters != null) {
+        if (converters != null)
+        {
             Iterator it = converters.keySet().iterator();
-            while (it.hasNext()) {
+            while (it.hasNext())
+            {
                 String match = (String) it.next();
                 Converter converter = (Converter) converters.get(match);
                 // make sure all converters have the correct converter manager
@@ -183,17 +218,22 @@ public class DwrConfiguration extends DefaultConfiguration implements Initializi
         }
 
         // process all registered creators
-        if(creators != null) {
+        if (creators != null)
+        {
             Iterator it = creators.iterator();
-            while (it.hasNext()) {
+            while (it.hasNext())
+            {
                 Creator creator = (Creator) it.next();
                 addCreator(creator.getJavascript(), creator);
             }
         }
     }
 
-    /** Create and configure the default processor. */
-    private Processor createDefaultProcessor() {
+    /**
+     * Create and configure the default processor.
+     */
+    private Processor createDefaultProcessor()
+    {
         DefaultProcessor defaultProcessor = new DefaultProcessor();
 
         DefaultExecProcessor execProcessor = new DefaultExecProcessor();

@@ -25,17 +25,19 @@ import javax.servlet.ServletContext;
 /**
  * @author Bram Smeets
  */
-public class TestCreatedObject {
-    public void testMethodWithServletParameters(HttpServletRequest request,
-                                                HttpServletResponse response,
-                                                ServletConfig config,
-                                                ServletContext context,
-                                                HttpSession session) {
+public class TestCreatedObject
+{
+    public void testMethodWithServletParameters(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context,
+        HttpSession session)
+    {
         // do nothing
     }
 
-    /** A method with a reserved javascript word as name. */
-    public void namespace() {
+    /**
+     * A method with a reserved javascript word as name.
+     */
+    public void namespace()
+    {
         // do nothing
     }
 }

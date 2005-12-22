@@ -17,22 +17,25 @@
 package uk.ltd.getahead.dwr.convert;
 
 import junit.framework.TestCase;
-import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 
 /**
  * The tests for the <code>ObjectConverter</code> class.
- *
  * @see ObjectConverter
- *
  * @author Bram Smeets
  */
-public class ObjectConverterTests extends TestCase {
+public class ObjectConverterTests extends TestCase
+{
     private ObjectConverter converter = new ObjectConverter();
 
-    public void testConvertOutbound() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertOutbound() throws Exception
+    {
         OutboundContext ctx = new OutboundContext();
 
         OutboundVariable result = converter.convertOutbound(this, ctx);
@@ -42,7 +45,11 @@ public class ObjectConverterTests extends TestCase {
         assertTrue(result.getInitCode().startsWith("var s0={};"));
     }
 
-    public void testConvertInbound() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertInbound() throws Exception
+    {
         InboundContext ctx = new InboundContext();
         InboundVariable iv = new InboundVariable(ctx, "type", "{ value : value }");
 

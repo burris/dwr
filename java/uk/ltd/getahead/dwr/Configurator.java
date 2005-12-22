@@ -13,30 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package uk.ltd.getahead.dwr.convert.test;
+package uk.ltd.getahead.dwr;
 
 /**
- * @author Bram Smeets
+ * Provides a way to add bits of configuration to the system.
+ * Predominantly created for Spring, however I can see that other systems and
+ * particularly IoC containers may be glad of a system like this.
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class MyBeanImpl
+public interface Configurator
 {
-    private String property;
-
-    private String nonReadableProperty;
-
-    public String getProperty()
-    {
-        return property;
-    }
-
-    public void setProperty(String property)
-    {
-        this.property = property;
-    }
-
-    public void setNonReadableProperty(String nonReadableProperty)
-    {
-        this.nonReadableProperty = nonReadableProperty;
-    }
+    /**
+     * Do the Configuration actions
+     * @param system The object that contains the system objects to configure
+     */
+    void configure(StartupState system);
 }

@@ -29,10 +29,15 @@ import java.math.BigDecimal;
  *
  * @author Bram Smeets
  */
-public class BigNumberConverterTests extends TestCase {
+public class BigNumberConverterTests extends TestCase
+{
     private BigNumberConverter converter = new BigNumberConverter();
 
-    public void testConvertOutbound() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertOutbound() throws Exception
+    {
         OutboundContext ctx = new OutboundContext();
 
         OutboundVariable result = converter.convertOutbound(new BigInteger("23"), ctx);
@@ -42,7 +47,11 @@ public class BigNumberConverterTests extends TestCase {
         assertEquals("", result.getInitCode());
     }
 
-    public void testConvertInboundBigInteger() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertInboundBigInteger() throws Exception
+    {
         InboundContext ctx = new InboundContext();
         InboundVariable iv = new InboundVariable(ctx, "type", "23");
 
@@ -53,7 +62,11 @@ public class BigNumberConverterTests extends TestCase {
         assertEquals(new BigInteger("23"), result);
     }
 
-    public void testConvertInboundBigDecimal() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertInboundBigDecimal() throws Exception
+    {
         InboundContext ctx = new InboundContext();
         InboundVariable iv = new InboundVariable(ctx, "type", "23");
 
@@ -64,26 +77,40 @@ public class BigNumberConverterTests extends TestCase {
         assertEquals(new BigDecimal("23"), result);
     }
 
-    public void testConvertInboundNotANumber() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertInboundNotANumber() throws Exception
+    {
         InboundContext ctx = new InboundContext();
         InboundVariable iv = new InboundVariable(ctx, "type", "a23");
 
-        try {
+        try
+        {
             converter.convertInbound(BigDecimal.class, iv, ctx);
             fail("a conversion exception was expected");
-        } catch (ConversionException e) {
+        }
+        catch (ConversionException e)
+        {
             // do nothing, was expected
         }
     }
 
-    public void testConvertInboundNotAPrimitive() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertInboundNotAPrimitive() throws Exception
+    {
         InboundContext ctx = new InboundContext();
         InboundVariable iv = new InboundVariable(ctx, "type", "23");
 
-        try {
+        try
+        {
             converter.convertInbound(String.class, iv, ctx);
             fail("a conversion exception was expected");
-        } catch (ConversionException e) {
+        }
+        catch (ConversionException e)
+        {
             // do nothing, was expected
         }
     }

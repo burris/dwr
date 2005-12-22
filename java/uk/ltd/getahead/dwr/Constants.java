@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package uk.ltd.getahead.dwr.convert.test;
+package uk.ltd.getahead.dwr;
 
 /**
- * @author Bram Smeets
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class MyBeanImpl
+public interface Constants
 {
-    private String property;
-
-    private String nonReadableProperty;
-
-    public String getProperty()
-    {
-        return property;
-    }
-
-    public void setProperty(String property)
-    {
-        this.property = property;
-    }
-
-    public void setNonReadableProperty(String nonReadableProperty)
-    {
-        this.nonReadableProperty = nonReadableProperty;
-    }
+    /**
+     * The package name because people need to load resources in this package.
+     */
+    public static final String PACKAGE = "/uk/ltd/getahead/dwr"; //$NON-NLS-1$
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ltd.getahead.dwr.impl;
 
 import junit.framework.TestCase;
@@ -27,69 +26,92 @@ import uk.ltd.getahead.dwr.convert.StringConverter;
 /**
  * @author Bram Smeets
  */
-public class DefaultConverterManagerTests extends TestCase {
+public class DefaultConverterManagerTests extends TestCase
+{
     private DefaultConverterManager manager = new DefaultConverterManager();
 
-    public void testAddConverterType() {
-        try {
+    public void testAddConverterType()
+    {
+        try
+        {
             manager.addConverterType(null, null);
             fail("a null pointer exception was expected");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e)
+        {
             // do nothing, was expected
         }
 
-        try {
-            manager.addConverterType(null, Converter.class);
+        try
+        {
+            manager.addConverterType(null, Converter.class.getName());
             fail("an illegal argument exception was expected");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e)
+        {
             // do nothing, was expected
         }
 
-        manager.addConverterType(null, BeanConverter.class);
+        manager.addConverterType(null, BeanConverter.class.getName());
     }
 
-    public void testAddConverter() throws Exception {
+    public void testAddConverter() throws Exception
+    {
         manager.addConverter(null, null);
 
         manager.addConverter(null, null, null);
     }
 
-    public void testConvertInbound() throws Exception {
-        try {
-            manager.convertInbound(null, null, null);
+    public void testConvertInbound() throws Exception
+    {
+        try
+        {
+            manager.convertInbound(null, null, null, null);
             fail("a null pointer exception was expected");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e)
+        {
             // do nothing, was expected
         }
 
         InboundContext ctx = new InboundContext();
-        try {
-            manager.convertInbound(null, null, ctx);
+        try
+        {
+            manager.convertInbound(null, null, ctx, null);
             fail("a null pointer exception was expected");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e)
+        {
             // do nothing, was expected
         }
 
-        try {
-            manager.convertInbound(String.class, null, ctx);
+        try
+        {
+            manager.convertInbound(String.class, null, ctx, null);
             fail("a conversion exception was expected");
-        } catch (ConversionException e) {
+        }
+        catch (ConversionException e)
+        {
             // do nothing, was expected
         }
 
         manager.addConverter("java.lang.String", new StringConverter());
-        try {
-            manager.convertInbound(String.class, null, ctx);
+        try
+        {
+            manager.convertInbound(String.class, null, ctx, null);
             fail("a null pointer exception was expected");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e)
+        {
             // do nothing, was expected
         }
 
         InboundVariable var = new InboundVariable(ctx, "java.lang.String", "bla");
-        manager.convertInbound(String.class, var, ctx);
+        manager.convertInbound(String.class, var, ctx, null);
     }
 
-    public void testConvertOutbound() throws Exception {
+    public void testConvertOutbound() throws Exception
+    {
         manager.convertOutbound(null, null);
     }
 }

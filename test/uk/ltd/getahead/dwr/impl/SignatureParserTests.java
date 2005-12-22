@@ -13,58 +13,72 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ltd.getahead.dwr.impl;
 
+import java.lang.reflect.Method;
+
 import junit.framework.TestCase;
-import static org.easymock.EasyMock.*;
+
+import org.easymock.EasyMock;
 
 import uk.ltd.getahead.dwr.ConverterManager;
-
-import java.lang.reflect.Method;
+import uk.ltd.getahead.dwr.TypeHintContext;
 
 /**
  * @author Bram Smeets
  */
-public class SignatureParserTests extends TestCase {
+public class SignatureParserTests extends TestCase
+{
     private SignatureParser parser;
 
     private ConverterManager converterManager;
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
 
-        converterManager = createMock(ConverterManager.class);
+        converterManager = (ConverterManager) EasyMock.createMock(ConverterManager.class);
 
         parser = new SignatureParser(converterManager);
     }
 
-    public void testParseEmptyString() throws Exception {
-        replay(converterManager);
+    /**
+     * @throws Exception
+     */
+    public void testParseEmptyString() throws Exception
+    {
+        EasyMock.replay(converterManager);
 
         parser.parse("");
 
-        verify(converterManager);
+        EasyMock.verify(converterManager);
     }
 
-    public void testParse1() {
-        converterManager.setExtraTypeInfo((Method)isA(Method.class), eq(0), eq(0), eq(Integer.class));
+    /**
+     * 
+     */
+    public void testParse1()
+    {
+        TypeHintContext thc = new TypeHintContext((Method) EasyMock.isA(Method.class), EasyMock.eq(0));
+        converterManager.setExtraTypeInfo(thc, (Class) EasyMock.eq(Integer.class));
 
-        replay(converterManager);
+        EasyMock.replay(converterManager);
 
-        parser.parse("import java.util.*;\n" +
-                "  import uk.ltd.getahead.dwr.impl.test.SignatureTestsObject;\n" +
-                "  public void SignatureTestsObject.setLotteryResults(List<Integer> nos);");
+        parser.parse("import java.util.*;\n" + "  import uk.ltd.getahead.dwr.impl.test.SignatureTestsObject;\n"
+            + "  public void SignatureTestsObject.setLotteryResults(List<Integer> nos);");
 
-        verify(converterManager);
+        EasyMock.verify(converterManager);
     }
 
-     public void testParse2() {
-        replay(converterManager);
+    /**
+     * 
+     */
+    public void testParse2()
+    {
+        EasyMock.replay(converterManager);
 
-        parser.parse("import java.util.List;\n" +
-               "   SignatureTestsObject.setLotteryResults(List<Integer>);");
+        parser.parse("import java.util.List;\n" + "   SignatureTestsObject.setLotteryResults(List<Integer>);");
 
-        verify(converterManager);
+        EasyMock.verify(converterManager);
     }
 }

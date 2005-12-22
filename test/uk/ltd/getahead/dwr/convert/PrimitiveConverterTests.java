@@ -26,10 +26,15 @@ import uk.ltd.getahead.dwr.*;
  *
  * @author Bram Smeets
  */
-public class PrimitiveConverterTests extends TestCase {
+public class PrimitiveConverterTests extends TestCase
+{
     private PrimitiveConverter converter = new PrimitiveConverter();
 
-    public void testConvertOutbound() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertOutbound() throws Exception
+    {
         OutboundContext ctx = new OutboundContext();
 
         OutboundVariable result = converter.convertOutbound("varName", ctx);
@@ -39,13 +44,17 @@ public class PrimitiveConverterTests extends TestCase {
         assertEquals("", result.getInitCode());
     }
 
-    public void testConvertInbound() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertInbound() throws Exception
+    {
         InboundContext ctx = new InboundContext();
         InboundVariable iv = new InboundVariable(ctx, "type", "true");
 
         Object result = converter.convertInbound(Boolean.class, iv, ctx);
         assertNotNull(result);
-        assertEquals(true, result);
+        assertEquals(true, ((Boolean) result).booleanValue());
 
         iv = new InboundVariable(ctx, "type", "8");
         result = converter.convertInbound(Byte.class, iv, ctx);
@@ -69,13 +78,13 @@ public class PrimitiveConverterTests extends TestCase {
         result = converter.convertInbound(Character.class, iv, ctx);
         assertNotNull(result);
         assertTrue(result instanceof Character);
-        assertEquals('t', result);
+        assertEquals('t', ((Character) result).charValue());
 
         iv = new InboundVariable(ctx, "type", "2");
         result = converter.convertInbound(Integer.class, iv, ctx);
         assertNotNull(result);
         assertTrue(result instanceof Integer);
-        assertEquals(2, result);
+        assertEquals(2, ((Integer) result).intValue());
 
         iv = new InboundVariable(ctx, "type", "2");
         result = converter.convertInbound(Long.class, iv, ctx);

@@ -43,7 +43,7 @@ public final class InboundVariable
                 InboundVariable cd = context.getInboundVariable(tempValue);
                 if (cd == null)
                 {
-                    log.error(Messages.getString("InboundVariable.MissingVariable", tempValue)); //$NON-NLS-1$
+                    // log.error(Messages.getString("InboundVariable.MissingVariable", tempValue)); //$NON-NLS-1$
                     break;
                 }
 

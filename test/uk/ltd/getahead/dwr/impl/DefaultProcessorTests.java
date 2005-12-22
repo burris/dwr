@@ -13,33 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ltd.getahead.dwr.impl;
 
 import junit.framework.TestCase;
+
+import org.easymock.EasyMock;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import uk.ltd.getahead.dwr.*;
 
-import static org.easymock.EasyMock.*;
+import uk.ltd.getahead.dwr.servlet.DefaultProcessor;
+import uk.ltd.getahead.dwr.servlet.FileProcessor;
+import uk.ltd.getahead.dwr.servlet.Processor;
 
 /**
  * @author Bram Smeets
  */
-public class DefaultProcessorTests extends TestCase {
+public class DefaultProcessorTests extends TestCase
+{
     private DefaultProcessor processor;
 
     private Processor mockProcessor;
 
     private MockHttpServletRequest request;
+
     private MockHttpServletResponse response;
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
 
         processor = new DefaultProcessor();
 
-        mockProcessor = createMock(Processor.class);
+        mockProcessor = (Processor) EasyMock.createMock(Processor.class);
         processor.setExec(mockProcessor);
         processor.setIndex(mockProcessor);
         processor.setInterface(mockProcessor);
@@ -50,7 +55,8 @@ public class DefaultProcessorTests extends TestCase {
         response = new MockHttpServletResponse();
     }
 
-    public void testRootRedirection() throws Exception {
+    public void testRootRedirection() throws Exception
+    {
         request.setPathInfo(null);
         request.setServletPath("/");
 
@@ -59,108 +65,116 @@ public class DefaultProcessorTests extends TestCase {
         assertEquals("//index.html", response.getRedirectedUrl());
     }
 
-    public void testDoIndex() throws Exception {
+    public void testDoIndex() throws Exception
+    {
         request.setPathInfo("/index.html");
 
         mockProcessor.handle(request, response);
 
-        replay(mockProcessor);
+        EasyMock.replay(mockProcessor);
 
         processor.handle(request, response);
 
-        verify(mockProcessor);
+        EasyMock.verify(mockProcessor);
     }
 
-    public void testDoTest() throws Exception {
+    public void testDoTest() throws Exception
+    {
         // test to see if we get a 403 in case the creator manager is not in debug mode
         request.setPathInfo("/test/index.html");
 
         mockProcessor.handle(request, response);
 
-        replay(mockProcessor);
+        EasyMock.replay(mockProcessor);
 
         processor.handle(request, response);
 
-        verify(mockProcessor);
+        EasyMock.verify(mockProcessor);
     }
 
-    public void testGetEngineFile() throws Exception {
+    public void testGetEngineFile() throws Exception
+    {
         request.setPathInfo("/engine.js");
 
-        replay(mockProcessor);
-        
+        EasyMock.replay(mockProcessor);
+
         processor.handle(request, response);
 
-        verify(mockProcessor);
+        EasyMock.verify(mockProcessor);
 
         String result = response.getContentAsString();
         assertNotNull(result);
         assertTrue(result.indexOf("function DWREngine()") != -1);
     }
 
-    public void testGetUtilFile() throws Exception {
+    public void testGetUtilFile() throws Exception
+    {
         request.setPathInfo("/util.js");
 
-        replay(mockProcessor);
+        EasyMock.replay(mockProcessor);
 
         processor.handle(request, response);
 
-        verify(mockProcessor);
+        EasyMock.verify(mockProcessor);
 
         String result = response.getContentAsString();
         assertNotNull(result);
         assertTrue(result.indexOf("function DWRUtil()") != -1);
     }
 
-    public void testGetDeprecatedFile() throws Exception {
+    public void testGetDeprecatedFile() throws Exception
+    {
         request.setPathInfo("/deprecated.js");
 
-        replay(mockProcessor);
+        EasyMock.replay(mockProcessor);
 
         processor.handle(request, response);
 
-        verify(mockProcessor);
+        EasyMock.verify(mockProcessor);
 
         String result = response.getContentAsString();
         assertNotNull(result);
         assertTrue(result.indexOf("function") != -1);
     }
 
-    public void testDoInterface() throws Exception {
+    public void testDoInterface() throws Exception
+    {
         request.setPathInfo("/interface/testCreatorName.js");
 
         mockProcessor.handle(request, response);
 
-        replay(mockProcessor);
+        EasyMock.replay(mockProcessor);
 
         processor.handle(request, response);
 
-        verify(mockProcessor);
+        EasyMock.verify(mockProcessor);
     }
 
-    public void testDoExec() throws Exception {
+    public void testDoExec() throws Exception
+    {
         request.setPathInfo("/exec/testCreatorName.doTest");
 
         mockProcessor.handle(request, response);
 
-        replay(mockProcessor);
+        EasyMock.replay(mockProcessor);
 
         processor.handle(request, response);
 
-        verify(mockProcessor);
+        EasyMock.verify(mockProcessor);
 
         String result = response.getContentAsString();
         assertNotNull(result);
     }
 
-    public void testNonExitingRequest() throws Exception {
+    public void testNonExitingRequest() throws Exception
+    {
         request.setPathInfo("/nonExistingPath");
 
-        replay(mockProcessor);
+        EasyMock.replay(mockProcessor);
 
         processor.handle(request, response);
 
-        verify(mockProcessor);
+        EasyMock.verify(mockProcessor);
 
         assertEquals(404, response.getStatus());
     }

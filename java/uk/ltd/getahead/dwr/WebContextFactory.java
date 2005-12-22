@@ -38,10 +38,11 @@ public class WebContextFactory
 
     /**
      * Internal method to allow us to get the WebContextBuilder from which we
-     * will get WebContext objects
-     * @param builder The factory object (from DWRServlet)
+     * will get WebContext objects.
+     * Do not call this method from outside of DWR.
+     * @param builder The factory object (from DwrServlet)
      */
-    protected static void setWebContextBuilder(WebContextBuilder builder)
+    public static void setWebContextBuilder(WebContextBuilder builder)
     {
         WebContextFactory.builder = builder;
     }

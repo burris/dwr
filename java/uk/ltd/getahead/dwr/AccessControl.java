@@ -17,8 +17,6 @@ package uk.ltd.getahead.dwr;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Control who should be accessing which methods on which classes.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -33,14 +31,13 @@ public interface AccessControl
      * <p>This is not a great becuase it mixes 2 bits of information in the same
      * variable (is it wrong, and what is wrong) but without multi-value returns
      * in Java this seems like the most simple implementation.
-     * @param req The request from which we work out roles
      * @param creator Where does the method come from?
      * @param className The Javascript name of the class
      * @param method What is the method to execute?
      * @return null if nothing is wrong or an error message
-     * @see AccessControl#getReasonToNotDisplay(HttpServletRequest, Creator, String, Method)
+     * @see AccessControl#getReasonToNotDisplay(Creator, String, Method)
      */
-    String getReasonToNotExecute(HttpServletRequest req, Creator creator, String className, Method method);
+    String getReasonToNotExecute(Creator creator, String className, Method method);
 
     /**
      * Check the method for accessibility at 'compile-time' (i.e. when the app
@@ -53,14 +50,13 @@ public interface AccessControl
      * <p>This is not a great becuase it mixes 2 bits of information in the same
      * variable (is it wrong, and what is wrong) but without multi-value returns
      * in Java this seems like the most simple implementation.
-     * @param req The request from which we work out roles
      * @param creator Where does the method come from?
      * @param className The Javascript name of the class
      * @param method What is the method to execute?
      * @return null if nothing is wrong or an error message
-     * @see AccessControl#getReasonToNotExecute(HttpServletRequest, Creator, String, Method)
+     * @see AccessControl#getReasonToNotExecute(Creator, String, Method)
      */
-    String getReasonToNotDisplay(HttpServletRequest req, Creator creator, String className, Method method);
+    String getReasonToNotDisplay(Creator creator, String className, Method method);
 
     /**
      * J2EE role based security allows us to restrict methods to only being used

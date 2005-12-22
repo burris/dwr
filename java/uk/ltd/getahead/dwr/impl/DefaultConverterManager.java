@@ -15,7 +15,6 @@
  */
 package uk.ltd.getahead.dwr.impl;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +28,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -41,27 +41,13 @@ public class DefaultConverterManager implements ConverterManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ConverterManager#addConverterType(java.lang.String, java.lang.Class)
      */
-    public void addConverterType(String id, Class clazz)
+    public void addConverterType(String id, String className)
     {
-        if (!Converter.class.isAssignableFrom(clazz))
+        Class clazz = LocalUtil.classForName(id, className, Converter.class);
+        if (clazz != null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultConverterManager.ConverterNotAssignable", clazz, Converter.class.getName())); //$NON-NLS-1$
+            converterTypes.put(id, clazz);
         }
-
-        try
-        {
-            clazz.newInstance();
-        }
-        catch (InstantiationException ex)
-        {
-            throw new IllegalArgumentException(Messages.getString("DefaultConverterManager.ConverterNotInstantiatable", clazz.getName(), ex.toString())); //$NON-NLS-1$
-        }
-        catch (IllegalAccessException ex)
-        {
-            throw new IllegalArgumentException(Messages.getString("DefaultConverterManager.ConverterNotAccessable", clazz.getName(), ex.toString())); //$NON-NLS-1$
-        }
-
-        converterTypes.put(id, clazz);
     }
 
     /* (non-Javadoc)
@@ -111,26 +97,32 @@ public class DefaultConverterManager implements ConverterManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ConverterManager#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx, TypeHintContext incc) throws ConversionException
     {
         Object converted = inctx.getConverted(iv);
-        if (converted != null)
+        if (converted == null)
         {
-            return converted;
+            Converter converter = getConverter(paramType);
+            if (converter == null)
+            {
+                throw new ConversionException(Messages.getString("DefaultConverterManager.MissingConverter", paramType.getName())); //$NON-NLS-1$
+            }
+
+            // We only think about doing a null conversion ourselves once we are
+            // sure that there is a converter available. This prevents hackers
+            // from passing null to things they are not allowed to convert
+            if (iv.isNull())
+            {
+                return null;
+            }
+
+            // TODO: push the push/pop inside the converters?
+            inctx.pushContext(incc);
+            converted = converter.convertInbound(paramType, iv, inctx);
+            inctx.popContext();
         }
 
-        Converter converter = getConverter(paramType);
-        if (converter == null)
-        {
-            throw new ConversionException(Messages.getString("DefaultConverterManager.MissingConverter", paramType.getName())); //$NON-NLS-1$
-        }
-
-        if (iv.isNull())
-        {
-            return null;
-        }
-
-        return converter.convertInbound(paramType, iv, inctx);
+        return converted;
     }
 
     /* (non-Javadoc)
@@ -166,19 +158,28 @@ public class DefaultConverterManager implements ConverterManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ConverterManager#setExtraTypeInfo(java.lang.reflect.Method, int, int, java.lang.Class)
      */
-    public void setExtraTypeInfo(Method method, int paramNo, int index, Class type)
+    public void setExtraTypeInfo(TypeHintContext thc, Class type)
     {
-        ParamInfoKey key = new ParamInfoKey(method, paramNo, index);
-        extraTypeInfoMap.put(key, type);
+        extraTypeInfoMap.put(thc, type);
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.ConverterManager#getExtraTypeInfo(java.lang.reflect.Method, int, int)
+     * @see uk.ltd.getahead.dwr.ConverterManager#getExtraTypeInfo(TypeHintContext)
      */
-    public Class getExtraTypeInfo(Method method, int paramNo, int index)
+    public Class getExtraTypeInfo(TypeHintContext thc)
     {
-        ParamInfoKey key = new ParamInfoKey(method, paramNo, index);
-        return (Class) extraTypeInfoMap.get(key);
+        Class type = (Class) extraTypeInfoMap.get(thc);
+        if (type == null)
+        {
+            log.warn("Missing type info for " + thc + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+            type = String.class;
+        }
+        else
+        {
+            log.debug("Using extra type info for " + thc + " of " + type); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        return type;
     }
 
     /* (non-Javadoc)
@@ -330,86 +331,6 @@ public class DefaultConverterManager implements ConverterManager
         }
 
         return converter;
-    }
-
-    /**
-     * Something to hold the method, paramNo and index together as an object
-     * that can be a key in a Map.
-     */
-    private static class ParamInfoKey
-    {
-        /**
-         * Setup this object
-         * @param method The method to annotate
-         * @param paramNo The number of the parameter to edit (counts from 0)
-         * @param index The index of the item between &lt; and &gt;.
-         */
-        ParamInfoKey(Method method, int paramNo, int index)
-        {
-            this.method = method;
-            this.paramNo = paramNo;
-            this.index = index;
-        }
-
-        /* (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
-        public int hashCode()
-        {
-            return method.hashCode() + paramNo + index;
-        }
-
-        /* (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        public boolean equals(Object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            if (!this.getClass().equals(obj.getClass()))
-            {
-                return false;
-            }
-
-            if (obj == this)
-            {
-                return true;
-            }
-
-            ParamInfoKey that = (ParamInfoKey) obj;
-
-            if (!this.method.equals(that.method))
-            {
-                return false;
-            }
-
-            if (this.paramNo != that.paramNo)
-            {
-                return false;
-            }
-
-            if (this.index != that.index)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        /* (non-Javadoc)
-         * @see java.lang.Object#toString()
-         */
-        public String toString()
-        {
-            return method.getName() + '[' + paramNo + "]<" + index + '>'; //$NON-NLS-1$
-        }
-
-        final Method method;
-        final int paramNo;
-        final int index;
     }
 
     /**

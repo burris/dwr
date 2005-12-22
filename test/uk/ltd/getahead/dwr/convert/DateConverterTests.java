@@ -32,12 +32,17 @@ import java.sql.Timestamp;
  *
  * @author Bram Smeets
  */
-public class DateConverterTests extends TestCase {
+public class DateConverterTests extends TestCase
+{
     private DateConverter converter = new DateConverter();
 
     private static final DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
 
-    public void testConvertOutbound() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertOutbound() throws Exception
+    {
         OutboundContext ctx = new OutboundContext();
 
         OutboundVariable result = converter.convertOutbound(format.parse("01-01-2005"), ctx);
@@ -47,15 +52,22 @@ public class DateConverterTests extends TestCase {
         assertEquals("", result.getInitCode());
 
         // try to convert a non-date object
-        try {
+        try
+        {
             converter.convertOutbound("01-01-2005", ctx);
             fail("a conversion exception was expected");
-        } catch (ConversionException e) {
+        }
+        catch (ConversionException e)
+        {
             // do nothing, was expected
         }
     }
 
-    public void testConvertInbound() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testConvertInbound() throws Exception
+    {
         InboundContext ctx = new InboundContext();
         InboundVariable iv = new InboundVariable(ctx, "type", "null");
 
@@ -82,10 +94,13 @@ public class DateConverterTests extends TestCase {
         assertTrue(result instanceof Timestamp);
 
         // try to convert a non-supported type
-        try {
+        try
+        {
             converter.convertInbound(String.class, iv, ctx);
             fail("a conversion exception was expected");
-        } catch (ConversionException e) {
+        }
+        catch (ConversionException e)
+        {
             // do nothing, was expected
         }
     }

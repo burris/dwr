@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.servlet;
 
-import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 
-import java.io.InputStream;
-import java.io.IOException;
+import uk.ltd.getahead.dwr.Constants;
+import uk.ltd.getahead.dwr.Container;
+import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.WebContextBuilder;
+import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
+import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 
 /**
  * This is abstract servlet that all DWR servlets should extend.
@@ -49,7 +55,7 @@ import java.io.IOException;
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @author Bram Smeets
  */
-public abstract class AbstractDWRServlet extends HttpServlet
+public abstract class AbstractDwrServlet extends HttpServlet
 {
     /**
      * Concrete implementations of a DwrServlet will need to provide the system
@@ -70,7 +76,7 @@ public abstract class AbstractDWRServlet extends HttpServlet
      * @param configuration the configuration to add configuration to
      * @throws ServletException in case the additional configuration fails
      */
-    protected abstract void configure(ServletConfig config, Configuration configuration) throws ServletException;
+    protected abstract void configure(ServletConfig config, DwrXmlConfigurator configuration) throws ServletException;
 
     /* (non-Javadoc)
     * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
@@ -101,7 +107,7 @@ public abstract class AbstractDWRServlet extends HttpServlet
             builder.set(null, null, getServletConfig(), getServletContext(), container);
 
             // Load the system config file
-            Configuration configuration = (Configuration) container.getBean(Configuration.class.getName());
+            DwrXmlConfigurator configuration = (DwrXmlConfigurator) container.getBean(DwrXmlConfigurator.class.getName());
             InputStream in = getClass().getResourceAsStream(FILE_DWR_XML);
             log.info("retrieved system configuration file: " + in); //$NON-NLS-1$
 
@@ -111,8 +117,7 @@ public abstract class AbstractDWRServlet extends HttpServlet
             }
             catch (Exception ex)
             {
-                log.fatal("Failed to load system config file from dwr.jar", ex); //$NON-NLS-1$
-                throw new ServletException(Messages.getString("DWRServlet.SystemConfigError"), ex); //$NON-NLS-1$
+                throw new ServletException(Messages.getString("DwrServlet.SystemConfigError"), ex); //$NON-NLS-1$
             }
 
             // call the abstract method to perform additional configuration
@@ -174,7 +179,7 @@ public abstract class AbstractDWRServlet extends HttpServlet
      * @param configuration The current configuration loader
      * @throws ServletException If the extra checking of the config file fails
      */
-    protected void readFile(String configFile, Configuration configuration) throws ServletException
+    protected void readFile(String configFile, DwrXmlConfigurator configuration) throws ServletException
     {
         try
         {
@@ -190,7 +195,7 @@ public abstract class AbstractDWRServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            throw new ServletException(Messages.getString("DWRServlet.ConfigError", configFile), ex); //$NON-NLS-1$
+            throw new ServletException(Messages.getString("DwrServlet.ConfigError", configFile), ex); //$NON-NLS-1$
         }
     }
 
@@ -208,11 +213,6 @@ public abstract class AbstractDWRServlet extends HttpServlet
      * The IoC container
      */
     protected Container container;
-
-    /**
-     * The package name because people need to load resources in this package.
-     */
-    public static final String PACKAGE = "/uk/ltd/getahead/dwr"; //$NON-NLS-1$
 
     /**
      * Init parameter: Skip reading the default config file if none are specified.
@@ -233,7 +233,7 @@ public abstract class AbstractDWRServlet extends HttpServlet
     /**
      * The system dwr.xml resource name
      */
-    protected static final String FILE_DWR_XML = PACKAGE + "/dwr.xml"; //$NON-NLS-1$
+    protected static final String FILE_DWR_XML = Constants.PACKAGE + "/dwr.xml"; //$NON-NLS-1$
 
     /**
      * The default dwr.xml file path
@@ -243,5 +243,5 @@ public abstract class AbstractDWRServlet extends HttpServlet
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DWRServlet.class);
+    private static final Logger log = Logger.getLogger(AbstractDwrServlet.class);
 }

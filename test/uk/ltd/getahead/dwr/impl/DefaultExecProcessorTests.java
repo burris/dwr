@@ -16,58 +16,78 @@
 
 package uk.ltd.getahead.dwr.impl;
 
-import junit.framework.*;
-import static org.easymock.EasyMock.*;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import uk.ltd.getahead.dwr.*;
-import uk.ltd.getahead.dwr.impl.test.TestWebContextFactory;
-import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
-import uk.ltd.getahead.dwr.create.NewCreator;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-public class DefaultExecProcessorTests extends TestCase {
+import javax.servlet.http.HttpServletRequest;
+
+import junit.framework.TestCase;
+
+import org.easymock.EasyMock;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.AjaxFilter;
+import uk.ltd.getahead.dwr.AjaxFilterChain;
+import uk.ltd.getahead.dwr.AjaxFilterManager;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.create.NewCreator;
+import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
+import uk.ltd.getahead.dwr.impl.test.TestWebContextFactory;
+import uk.ltd.getahead.dwr.servlet.DefaultExecProcessor;
+
+public class DefaultExecProcessorTests extends TestCase
+{
     private DefaultExecProcessor defaultExecProcessor = new DefaultExecProcessor();
 
     private CreatorManager creatorManager;
+
     private AccessControl accessControl;
+
     private ConverterManager converterManager;
+
     private AjaxFilterManager ajaxFilterManager;
 
     private MockHttpServletRequest request;
+
     private MockHttpServletResponse response;
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
 
-        creatorManager = createMock(CreatorManager.class);
+        creatorManager = (CreatorManager) EasyMock.createMock(CreatorManager.class);
         defaultExecProcessor.setCreatorManager(creatorManager);
 
-        accessControl = createMock(AccessControl.class);
+        accessControl = (AccessControl) EasyMock.createMock(AccessControl.class);
         defaultExecProcessor.setAccessControl(accessControl);
 
-        converterManager = createMock(ConverterManager.class);
+        converterManager = (ConverterManager) EasyMock.createMock(ConverterManager.class);
         defaultExecProcessor.setConverterManager(converterManager);
 
-        ajaxFilterManager = createMock(AjaxFilterManager.class);
+        ajaxFilterManager = (AjaxFilterManager) EasyMock.createMock(AjaxFilterManager.class);
         defaultExecProcessor.setAjaxFilterManager(ajaxFilterManager);
 
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
 
-    public void testHandleWithoutQuery() throws Exception {
-        replay(creatorManager);
-        replay(accessControl);
-        replay(converterManager);
+    public void testHandleWithoutQuery() throws Exception
+    {
+        EasyMock.replay(creatorManager);
+        EasyMock.replay(accessControl);
+        EasyMock.replay(converterManager);
 
         defaultExecProcessor.handle(request, response);
 
-        verify(creatorManager);
-        verify(accessControl);
-        verify(converterManager);
+        EasyMock.verify(creatorManager);
+        EasyMock.verify(accessControl);
+        EasyMock.verify(converterManager);
 
         assertEquals(500, response.getStatus());
         String result = response.getContentAsString();
@@ -75,42 +95,46 @@ public class DefaultExecProcessorTests extends TestCase {
         assertTrue(result.indexOf("alert('") != -1);
     }
 
-    public void testHandle() throws Exception {
+    public void testHandle() throws Exception
+    {
         request.setPathInfo("/exec/dataManager.doTest");
         request.setMethod("POST");
-        request.setContent(("callCount=2\n" +
-                "c0-id=1\nc0-scriptName=creatorName\nc0-methodName=toString\n" +
-                "c1-id=2\nc1-scriptName=creatorName\nc1-methodName=hashCode").getBytes());
+        request.setContent(("callCount=2\n" + "c0-id=1\nc0-scriptName=creatorName\nc0-methodName=toString\n"
+            + "c1-id=2\nc1-scriptName=creatorName\nc1-methodName=hashCode").getBytes());
 
         creatorManager.getCreator("creatorName");
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
-        expectLastCall().andReturn(creator).times(4);
+        EasyMock.expectLastCall().andReturn(creator).times(4);
 
-        expect(accessControl.getReasonToNotExecute(eq(request), eq(creator), eq("creatorName"), (Method)isA(Method.class)));
-        expectLastCall().andReturn(null).times(2);
+        EasyMock.expect(accessControl.getReasonToNotExecute((Creator) EasyMock.eq(creator), (String) EasyMock.eq("creatorName"), (Method) EasyMock.isA(Method.class)));
+        EasyMock.expectLastCall().andReturn(null).times(2);
 
-        expect(converterManager.convertOutbound(isA(Object.class), (OutboundContext)isA(OutboundContext.class)));
-        expectLastCall().andReturn(new OutboundVariable()).times(2);
+        EasyMock.expect(converterManager.convertOutbound(EasyMock.isA(Object.class), (OutboundContext) EasyMock.isA(OutboundContext.class)));
+        EasyMock.expectLastCall().andReturn(new OutboundVariable()).times(2);
 
         // TODO: this should not be neccessary!
         ArrayList filters = new ArrayList();
-        filters.add(new AjaxFilter() {
-            public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception {
+        filters.add(new AjaxFilter()
+        {
+            public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
+            {
                 return new Object();
             }
         });
-        filters.add(new AjaxFilter() {
-            public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception {
+        filters.add(new AjaxFilter()
+        {
+            public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
+            {
                 return new Object();
             }
         });
-        expect(ajaxFilterManager.getAjaxFilters("creatorName")).andReturn(filters.iterator()).atLeastOnce();
+        EasyMock.expect(ajaxFilterManager.getAjaxFilters("creatorName")).andReturn(filters.iterator()).atLeastOnce();
 
-        replay(creatorManager);
-        replay(accessControl);
-        replay(converterManager);
-        replay(ajaxFilterManager);
+        EasyMock.replay(creatorManager);
+        EasyMock.replay(accessControl);
+        EasyMock.replay(converterManager);
+        EasyMock.replay(ajaxFilterManager);
 
         DefaultWebContextBuilder builder = new DefaultWebContextBuilder();
         builder.set(request, response, null, null, null);
@@ -118,10 +142,10 @@ public class DefaultExecProcessorTests extends TestCase {
 
         defaultExecProcessor.handle(request, response);
 
-        verify(creatorManager);
-        verify(accessControl);
-        verify(converterManager);
-        verify(ajaxFilterManager);
+        EasyMock.verify(creatorManager);
+        EasyMock.verify(accessControl);
+        EasyMock.verify(converterManager);
+        EasyMock.verify(ajaxFilterManager);
 
         assertEquals(200, response.getStatus());
         String result = response.getContentAsString();

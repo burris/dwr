@@ -13,52 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package uk.ltd.getahead.dwr.spring;
 
-package uk.ltd.getahead.dwr;
-
-import uk.ltd.getahead.dwr.spring.SpringContainer;
+import java.util.Enumeration;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import java.util.Enumeration;
+
+import uk.ltd.getahead.dwr.Container;
+import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
+import uk.ltd.getahead.dwr.servlet.AbstractDwrServlet;
 
 /**
  * The servlet that handles all calls to DWR. <br>
  * It retrieves its configuration from the Spring IoC container.
- *
- * <p>For more information on configuring the configuration in a Spring application
- * context see {@link uk.ltd.getahead.dwr.spring.DwrConfiguration}.</p>
- *
- * @see uk.ltd.getahead.dwr.spring.DwrConfiguration
- *
  * @author Bram Smeets
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrSpringServlet extends AbstractDWRServlet {
+public class DwrSpringServlet extends AbstractDwrServlet
+{
     /**
-     * Gets a proxy to the configuration in the Spring container. <br>
-     *
+     * Gets a proxy to the configuration in the Spring container.
      * @param config the servlet configuration to use to obtain the Spring container
      * @return the spring container
      * @throws ServletException in case instatiation of the spring container fails
-     *
      * @see SpringContainer
      */
-    protected Container getContainer(ServletConfig config) throws ServletException {
+    protected Container getContainer(ServletConfig config) throws ServletException
+    {
         // create a spring container that retrieves the configuration from spring context
-        return new SpringContainer(config.getServletContext());
+        return new SpringContainer();
     }
 
     /**
-     * Performs additional configuration. <br>
+     * Performs additional configuration.
      * It is implemented to still use any XML-based configurations specified as
      * init parameters.
-     *
      * @param config the servlet configuration to obtain the init parameters from
      * @param configuration the current DWR configuration
      * @throws ServletException in case the additional configuration fails
      */
-    protected void configure(ServletConfig config, Configuration configuration)
-    throws ServletException {
+    protected void configure(ServletConfig config, DwrXmlConfigurator configuration) throws ServletException
+    {
         // perform any additional configuration
         Enumeration en = config.getInitParameterNames();
 

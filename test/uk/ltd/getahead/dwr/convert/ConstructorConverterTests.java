@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ltd.getahead.dwr.convert;
 
 import junit.framework.TestCase;
@@ -24,15 +23,18 @@ import uk.ltd.getahead.dwr.OutboundVariable;
 
 /**
  * The tests for the <code>ConstructorConverter</code> class.
- *
  * @see ConstructorConverter
- *
  * @author Bram Smeets
  */
-public class ConstructorConverterTests extends TestCase {
+public class ConstructorConverterTests extends TestCase
+{
     private ConstructorConverter converter = new ConstructorConverter();
 
-    public void testConvertInbound() {
+    /**
+     * 
+     */
+    public void testConvertInbound()
+    {
         InboundContext ctx = new InboundContext();
         InboundVariable iv = new InboundVariable(ctx, "type", "value");
 
@@ -43,7 +45,11 @@ public class ConstructorConverterTests extends TestCase {
         assertEquals("value", result);
     }
 
-    public void testConvertOutbound() {
+    /**
+     * 
+     */
+    public void testConvertOutbound()
+    {
         OutboundContext ctx = new OutboundContext();
 
         OutboundVariable result = converter.convertOutbound("value", ctx);
@@ -53,7 +59,11 @@ public class ConstructorConverterTests extends TestCase {
         assertEquals("", result.getInitCode());
     }
 
-    public void testSetConverterManager() {
+    /**
+     * 
+     */
+    public void testSetConverterManager()
+    {
         converter.setConverterManager(null);
     }
 }

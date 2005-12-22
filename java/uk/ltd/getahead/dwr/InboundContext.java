@@ -15,72 +15,42 @@
  */
 package uk.ltd.getahead.dwr;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
 /**
- * We need to keep track of what is going on while converting inbound data.
+ * InboundContext is the context for set of inbound conversions.
+ * Since a data set may be recurrsive parts of some data members may refer to
+ * others so we need to keep track of who is converted for what.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public final class InboundContext
 {
     /**
      * Someone wants to tell us about a new conversion context.
-     * @param method The method that will be called with the results
-     * @param paramNum The parameter number on the given method
+     * @param context The current conversion context
      */
-    public void pushContext(Method method, int paramNum)
+    public void pushContext(TypeHintContext context)
     {
-        contexts.addFirst(new DecodeContext(method, paramNum));
+        contexts.addFirst(context);
     }
 
     /**
      * Someone wants to tell us about a finished conversion context.
-     * @param method The method that has been called with the results
-     * @param paramNum The parameter number on the given method
      */
-    public void popContext(Method method, int paramNum)
+    public void popContext()
     {
-        DecodeContext ctx = (DecodeContext) contexts.removeFirst();
-        if (ctx.method != method)
-        {
-            throw new IllegalArgumentException("Non-matching method"); //$NON-NLS-1$
-        }
-        if (ctx.paramNum != paramNum)
-        {
-            throw new IllegalArgumentException("Non-matching paramNum"); //$NON-NLS-1$
-        }
+        contexts.removeFirst();
     }
 
     /**
      * @return The method that we are currently converting data for
      */
-    public Method getCurrentMethod()
+    public TypeHintContext getCurrentTypeHintContext()
     {
-        DecodeContext ctx = (DecodeContext) contexts.getFirst();
-        if (ctx == null)
-        {
-            return null;
-        }
-
-        return ctx.method;
-    }
-
-    /**
-     * @return The parameter number that we are currently converting data for
-     */
-    public int getCurrentParameterNum()
-    {
-        DecodeContext ctx = (DecodeContext) contexts.getFirst();
-        if (ctx == null)
-        {
-            return -1;
-        }
-
-        return ctx.paramNum;
+        return (TypeHintContext) contexts.getFirst();
     }
 
     /**
@@ -206,21 +176,6 @@ public final class InboundContext
     public Iterator getInboundVariableNames()
     {
         return variables.keySet().iterator();
-    }
-
-    /**
-     * A very simple struct that holds a Method and parameter number together
-     */
-    static class DecodeContext
-    {
-        DecodeContext(Method method, int paramNum)
-        {
-            this.method = method;
-            this.paramNum = paramNum;
-        }
-
-        Method method;
-        int paramNum;
     }
 
     /**

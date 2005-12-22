@@ -30,6 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * Control who should be accessing which methods on which classes.
@@ -38,9 +40,9 @@ import uk.ltd.getahead.dwr.Messages;
 public class DefaultAccessControl implements AccessControl
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.AccessControl#getReasonToNotExecute(javax.servlet.http.HttpServletRequest, uk.ltd.getahead.dwr.Creator, java.lang.String, java.lang.reflect.Method)
+     * @see uk.ltd.getahead.dwr.AccessControl#getReasonToNotExecute(uk.ltd.getahead.dwr.Creator, java.lang.String, java.lang.reflect.Method)
      */
-    public String getReasonToNotExecute(HttpServletRequest req, Creator creator, String className, Method method)
+    public String getReasonToNotExecute(Creator creator, String className, Method method)
     {
         String methodName = method.getName();
 
@@ -50,12 +52,20 @@ public class DefaultAccessControl implements AccessControl
         {
             boolean allowed = false;
 
-            for (Iterator it = roles.iterator(); it.hasNext() && !allowed;)
+            HttpServletRequest req = WebContextFactory.get().getHttpServletRequest();
+            if (req == null)
             {
-                String role = (String) it.next();
-                if (req.isUserInRole(role))
+                log.warn("Missing HttpServletRequest roles can not be checked"); //$NON-NLS-1$
+            }
+            else
+            {
+                for (Iterator it = roles.iterator(); it.hasNext() && !allowed;)
                 {
-                    allowed = true;
+                    String role = (String) it.next();
+                    if (req.isUserInRole(role))
+                    {
+                        allowed = true;
+                    }
                 }
             }
 
@@ -81,9 +91,9 @@ public class DefaultAccessControl implements AccessControl
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.AccessControl#getReasonToNotDisplay(javax.servlet.http.HttpServletRequest, uk.ltd.getahead.dwr.Creator, java.lang.String, java.lang.reflect.Method)
+     * @see uk.ltd.getahead.dwr.AccessControl#getReasonToNotDisplay(uk.ltd.getahead.dwr.Creator, java.lang.String, java.lang.reflect.Method)
      */
-    public String getReasonToNotDisplay(HttpServletRequest req, Creator creator, String className, Method method)
+    public String getReasonToNotDisplay(Creator creator, String className, Method method)
     {
         String methodName = method.getName();
 
@@ -290,4 +300,9 @@ public class DefaultAccessControl implements AccessControl
      * My package name, so we can ban DWR classes from being created or marshalled
      */
     private static final String PACKAGE_DWR = "uk.ltd.getahead.dwr."; //$NON-NLS-1$
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DefaultAccessControl.class);
 }

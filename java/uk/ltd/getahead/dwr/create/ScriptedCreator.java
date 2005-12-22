@@ -20,10 +20,12 @@ import java.io.RandomAccessFile;
 
 import javax.servlet.ServletContext;
 
+import org.apache.bsf.BSFException;
 import org.apache.bsf.BSFManager;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -34,6 +36,18 @@ import uk.ltd.getahead.dwr.util.Logger;
  */
 public class ScriptedCreator extends AbstractCreator implements Creator
 {
+    /**
+     * Set up some defaults
+     */
+    public ScriptedCreator()
+    {
+        // The default is <b>true</b>. This parameter is only used if scriptPath is
+        // used instead of script.  When reloadable is true, ScriptedCreator will
+        // check to see if the script has been modified before returning the
+        // existing created class.
+        setCacheable(false);
+    }
+
     /**
      * The language that we are scripting in. Passed to BSF.
      * @return Returns the language.
@@ -61,9 +75,9 @@ public class ScriptedCreator extends AbstractCreator implements Creator
      * Are we caching the script (default: false)
      * @return Returns the reloadable variable
      */
-    public String getReloadable()
+    public boolean isReloadable()
     {
-        return String.valueOf(reloadable);
+        return reloadable;
     }
 
     /**
@@ -73,9 +87,14 @@ public class ScriptedCreator extends AbstractCreator implements Creator
      * check to see if the script has been modified before returning the
      * existing created class.
      */
-    public void setReloadable(String reloadable)
+    public void setReloadable(boolean reloadable)
     {
-        this.reloadable = Boolean.valueOf(reloadable).booleanValue();
+        this.reloadable = reloadable;
+
+        if (reloadable)
+        {
+            setCacheable(false);
+        }
     }
 
     /**
@@ -137,7 +156,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             throw new InstantiationException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
         }
 
-        if (cachedScript != null && (!reloadable || !scriptUpdated()) )
+        if (cachedScript != null && (reloadable || !scriptUpdated()) )
         {
             return cachedScript;
         }
@@ -244,6 +263,17 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             }
 
             BSFManager bsfman = new BSFManager();
+
+            try
+            {
+                WebContext context = WebContextFactory.get();
+                bsfman.declareBean("context", context, context.getClass()); //$NON-NLS-1$
+            }
+            catch (BSFException ex)
+            {
+                log.warn("Failed to register WebContext with scripting engine: " + ex.getMessage()); //$NON-NLS-1$
+            }
+
             return bsfman.eval(language, (null == scriptPath ? "dwr.xml" : scriptPath), 0, 0, getScript()); //$NON-NLS-1$
         }
         catch (Exception ex)

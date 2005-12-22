@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.impl;
+package uk.ltd.getahead.dwr.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,7 +48,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
-import uk.ltd.getahead.dwr.Processor;
+import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
@@ -259,7 +259,7 @@ public class DefaultExecProcessor implements Processor
                 }
 
                 // Check this method is accessible
-                String reason = accessControl.getReasonToNotExecute(req, creator, call.getScriptName(), method);
+                String reason = accessControl.getReasonToNotExecute(creator, call.getScriptName(), method);
                 if (reason != null)
                 {
                     log.error("Access denied: " + reason); //$NON-NLS-1$
@@ -271,21 +271,18 @@ public class DefaultExecProcessor implements Processor
                 Object[] params = new Object[method.getParameterTypes().length];
                 for (int j = 0; j < method.getParameterTypes().length; j++)
                 {
-                    Class paramType = method.getParameterTypes()[j];
-
-                    InboundVariable param = inctx.getParameter(callNum, j);
-                    inctx.pushContext(method, j);
-
                     try
                     {
-                        params[j] = converterManager.convertInbound(paramType, param, inctx);
+                        Class paramType = method.getParameterTypes()[j];
+                        InboundVariable param = inctx.getParameter(callNum, j);
+                        TypeHintContext incc = new TypeHintContext(method, j);
+
+                        params[j] = converterManager.convertInbound(paramType, param, inctx, incc);
                     }
                     catch (ConversionException ex)
                     {
                         throw new ConversionException(Messages.getString("ExecuteQuery.ConversionError", call.getScriptName(), call.getMethodName(), ex.getMessage())); //$NON-NLS-1$
                     }
-
-                    inctx.popContext(method, j);
                 }
 
                 // Get ourselves an object to execute a method on unless the

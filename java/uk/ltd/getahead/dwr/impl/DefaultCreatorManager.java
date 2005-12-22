@@ -55,36 +55,21 @@ public class DefaultCreatorManager implements CreatorManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.CreatorManager#addCreatorType(java.lang.String, java.lang.Class)
      */
-    public void addCreatorType(String typeName, Class clazz)
+    public void addCreatorType(String typeName, String className)
     {
-        if (!Creator.class.isAssignableFrom(clazz))
+        Class clazz = LocalUtil.classForName(typeName, className, Creator.class);
+        if (clazz != null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), Creator.class.getName())); //$NON-NLS-1$
+            creatorTypes.put(typeName, clazz);
         }
-
-        try
-        {
-            clazz.newInstance();
-        }
-        catch (InstantiationException ex)
-        {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotInstantiatable", clazz.getName(), ex.toString())); //$NON-NLS-1$
-        }
-        catch (IllegalAccessException ex)
-        {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAccessable", clazz.getName(), ex.toString())); //$NON-NLS-1$
-        }
-
-        creatorTypes.put(typeName, clazz);
     }
 
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.CreatorManager#addCreator(java.lang.String, java.lang.String, java.util.Map)
      */
-    public void addCreator(String typeName, String scriptName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
+    public void addCreator(String scriptName, String typeName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
     {
         Class clazz = (Class) creatorTypes.get(typeName);
-
         if (clazz == null)
         {
             log.error("Missing creator: " + typeName + " (while initializing creator for: " + scriptName + ".js)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.impl;
+package uk.ltd.getahead.dwr.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,13 +29,13 @@ import javax.servlet.http.HttpServletResponse;
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
  * Create some javascript interface code.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @author Kevin A. Smith [KevinA.Smith at sas dot com]
  */
 public class DefaultInterfaceProcessor implements Processor
 {
@@ -41,30 +44,31 @@ public class DefaultInterfaceProcessor implements Processor
      */
     public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        String pathinfo = req.getPathInfo();
+        String pathInfo = req.getPathInfo();
         String servletpath = req.getServletPath();
-        if (pathinfo == null)
+        if (pathInfo == null)
         {
-            pathinfo = req.getServletPath();
+            pathInfo = req.getServletPath();
             servletpath = HtmlConstants.PATH_ROOT;
         }
-        String scriptname = pathinfo;
-        scriptname = LocalUtil.replace(scriptname, HtmlConstants.PATH_INTERFACE, HtmlConstants.BLANK);
-        scriptname = LocalUtil.replace(scriptname, HtmlConstants.EXTENSION_JS, HtmlConstants.BLANK);
-        Creator creator = creatorManager.getCreator(scriptname);
+
+        String scriptName = pathInfo;
+        scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_INTERFACE, HtmlConstants.BLANK);
+        scriptName = LocalUtil.replace(scriptName, HtmlConstants.EXTENSION_JS, HtmlConstants.BLANK);
+        Creator creator = creatorManager.getCreator(scriptName);
 
         //resp.setContentType("text/javascript");
         PrintWriter out = resp.getWriter();
         out.println();
 
-        out.println("function " + scriptname + "() { }"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println("function " + scriptName + "() { }"); //$NON-NLS-1$ //$NON-NLS-2$
 
         String path = overridePath;
         if (path == null)
         {
             path = req.getContextPath() + servletpath;
         }
-        out.println(scriptname + "._path = '" + path + "';"); //$NON-NLS-1$ //$NON-NLS-2$
+        out.println(scriptName + "._path = '" + path + "';"); //$NON-NLS-1$ //$NON-NLS-2$
 
         Method[] methods = creator.getType().getMethods();
         for (int i = 0; i < methods.length; i++)
@@ -75,7 +79,7 @@ public class DefaultInterfaceProcessor implements Processor
             // We don't need to check accessControl.getReasonToNotExecute()
             // because the checks are made by the doExec method, but we do check
             // if we can display it
-            String reason = accessControl.getReasonToNotDisplay(req, creator, scriptname, method);
+            String reason = accessControl.getReasonToNotDisplay(creator, scriptName, method);
             if (reason != null && !allowImpossibleTests)
             {
                 continue;
@@ -87,36 +91,76 @@ public class DefaultInterfaceProcessor implements Processor
                 continue;
             }
 
-            out.print('\n');
-            out.print(scriptname + '.' + methodName + " = function("); //$NON-NLS-1$
-            Class[] paramTypes = method.getParameterTypes();
-            for (int j = 0; j < paramTypes.length; j++)
+            // Check to see if the creator is reloadable
+            // If it is, then do not cache the generated Javascript
+            String script;
+            if (!creator.isCacheable()) 
             {
-                if (!LocalUtil.isServletClass(paramTypes[j]))
+                script = getMethodJS(scriptName, method);
+            }
+            else
+            {
+                String key = scriptName + "." + method.getName(); //$NON-NLS-1$
+
+                // For optimal performance we might synchronize on methodCache however
+                // since performance isn't a big issue we are prepared to cope with
+                // the off chance that getMethodJS() may be run more than once.
+                script = (String) methodCache.get(key);
+                if (script == null)
                 {
-                    out.print("p" + j + ", "); //$NON-NLS-1$ //$NON-NLS-2$
+                    script = getMethodJS(scriptName, method);
+                    methodCache.put(key, script);
                 }
             }
-            out.println("callback) {"); //$NON-NLS-1$
 
-            out.print("    DWREngine._execute(" + scriptname + "._path, '" + scriptname + "', '" + methodName + "\', "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-            for (int j = 0; j < paramTypes.length; j++)
-            {
-                if (LocalUtil.isServletClass(paramTypes[j]))
-                {
-                    out.print("false, "); //$NON-NLS-1$
-                }
-                else
-                {
-                    out.print("p" + j + ", "); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-            }
-            out.println("callback);"); //$NON-NLS-1$
-
-            out.println('}');
+            out.print(script);
         }
 
         out.flush();
+    }
+
+    /**
+     * Generates Javascript for a given Java method
+     * @param scriptName  Name of the Javascript file, sans ".js" suffix
+     * @param method Target method
+     * @return Javascript implementing the DWR call for the target method
+     */
+    public String getMethodJS(String scriptName, Method method)
+    {
+        StringWriter buffer = new StringWriter();
+        PrintWriter out = new PrintWriter(buffer);
+
+        String methodName = method.getName();
+        out.print(scriptName + '.' + methodName + " = function("); //$NON-NLS-1$
+        Class[] paramTypes = method.getParameterTypes();
+        for (int j = 0; j < paramTypes.length; j++)
+        {
+            if (!LocalUtil.isServletClass(paramTypes[j]))
+            {
+                out.print("p" + j + ", "); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+
+        out.println("callback) {"); //$NON-NLS-1$
+
+        out.print("    DWREngine._execute(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        for (int j = 0; j < paramTypes.length; j++)
+        {
+            if (LocalUtil.isServletClass(paramTypes[j]))
+            {
+                out.print("false, "); //$NON-NLS-1$
+            }
+            else
+            {
+                out.print("p" + j + ", "); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+
+        out.println("callback);"); //$NON-NLS-1$
+        out.println('}');
+        out.flush();
+
+        return buffer.toString();
     }
 
     /**
@@ -154,6 +198,11 @@ public class DefaultInterfaceProcessor implements Processor
     {
         this.overridePath = overridePath;
     }
+
+    /**
+     * Generated Javascript cache
+     */
+    private Map methodCache = new HashMap();
 
     /**
      * If we need to override the default path

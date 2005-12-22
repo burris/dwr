@@ -460,7 +460,9 @@ DWREngine._sendData = function(batch) {
 
     if (batch.verb == "GET") {
       for (prop in batch.map) {
-        query += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
+        if (typeof batch.map[prop] != "function") {
+          query += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
+        }
       }
       query = query.substring(0, query.length - 1);
 
@@ -555,6 +557,15 @@ DWREngine._handleResponse = function(id, reply) {
       DWREngine._handleMetaDataError(callData, ex);
     }
   }
+
+  // Finalize the call for IFrame transport 
+  if (DWREngine._method == DWREngine.IFrame) {
+    var responseBatch = DWREngine._batches[DWREngine._batches.length-1];	
+    // Only finalize after the last call has been handled
+    if (responseBatch.map["c"+(responseBatch.map.callCount-1)+"-id"] == id) {
+      DWREngine._clearUp(responseBatch);
+    }
+  }
 };
 
 /**
@@ -592,11 +603,13 @@ DWREngine._clearUp = function(batch) {
     return;
   }
 
+  // IFrame tidyup
   if (batch.div) batch.div.parentNode.removeChild(batch.div);
   if (batch.iframe) batch.iframe.parentNode.removeChild(batch.iframe);
   if (batch.form) batch.form.parentNode.removeChild(batch.form);
-  // Avoid IE handles increase
-  delete batch.req;
+
+  // XHR tidyup: avoid IE handles increase
+  if (batch.req) delete batch.req;
 
   for (var i = 0; i < batch.postHooks.length; i++) {
     batch.postHooks[i]();

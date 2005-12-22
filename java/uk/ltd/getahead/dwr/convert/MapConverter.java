@@ -15,7 +15,6 @@
  */
 package uk.ltd.getahead.dwr.convert;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +30,7 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
@@ -95,24 +95,14 @@ public class MapConverter implements Converter
                 map = new HashMap();
             }
 
-            Method method = inctx.getCurrentMethod();
-            int paramNum = inctx.getCurrentParameterNum();
+            // Get the extra type info
+            TypeHintContext thc = inctx.getCurrentTypeHintContext();
 
-            // Get type info for keys
-            Class keyType = config.getExtraTypeInfo(method, paramNum, 0);
-            if (keyType == null)
-            {
-                log.warn("--Missing type info for " + method.getName() + "(), param=" + paramNum + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                keyType = String.class;
-            }
+            TypeHintContext keyThc = thc.createChildContext(0);
+            Class keyType = config.getExtraTypeInfo(keyThc);
 
-            // Get type info for values
-            Class valType = config.getExtraTypeInfo(method, paramNum, 1);
-            if (valType == null)
-            {
-                log.warn("--Missing type info for " + method.getName() + "(), param=" + paramNum + ". Assuming this is a map with String values. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                valType = String.class;
-            }
+            TypeHintContext valThc = thc.createChildContext(1);
+            Class valType = config.getExtraTypeInfo(valThc);
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
@@ -141,15 +131,16 @@ public class MapConverter implements Converter
                 String valStr = token.substring(colonpos + 1).trim();
                 String[] splitIv = LocalUtil.splitInbound(valStr);
                 InboundVariable valIv = new InboundVariable(incx, splitIv[LocalUtil.INBOUND_INDEX_TYPE], splitIv[LocalUtil.INBOUND_INDEX_VALUE]);
-                Object val = config.convertInbound(valType, valIv, inctx);
+                Object val = config.convertInbound(valType, valIv, inctx, valThc);
 
                 // Keys (unlike values) do not have type info passed with them
-                // TODO: bug? we could have recurrsive key?
+                // Could we have recurrsive key? - I don't think so because keys
+                // must be strings in Javascript
                 String keyStr = token.substring(0, colonpos).trim();
                 //String[] keySplit = ExecuteQuery.splitInbound(keyStr);
                 //InboundVariable keyIv = new InboundVariable(incx, splitIv[ExecuteQuery.INBOUND_INDEX_TYPE], splitIv[ExecuteQuery.INBOUND_INDEX_VALUE]);
                 InboundVariable keyIv = new InboundVariable(incx, ConversionConstants.TYPE_STRING, keyStr);
-                Object key = config.convertInbound(keyType, keyIv, inctx);
+                Object key = config.convertInbound(keyType, keyIv, inctx, keyThc);
 
                 map.put(key, val);
             }

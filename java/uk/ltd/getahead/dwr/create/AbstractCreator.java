@@ -68,6 +68,27 @@ public abstract class AbstractCreator implements Creator
         return scope;
     }
 
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Creator#getReloadable()
+     */
+    public boolean isCacheable()
+    {
+        return cacheable;
+    }
+
+    /**
+     * @param cacheable Whether or not to cache the script.  
+     */
+    public void setCacheable(boolean cacheable)
+    {
+        this.cacheable = cacheable;
+    }
+
+    /**
+     * Do the methods on the Creator change over time?
+     */
+    private boolean cacheable = false;
+
     /**
      * The javascript name for the class
      */

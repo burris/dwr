@@ -21,7 +21,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import uk.ltd.getahead.dwr.AbstractDWRServlet;
+import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -50,7 +50,7 @@ public final class DTDEntityResolver implements EntityResolver
                     log.warn("Deprecated public id in dwr.xml. Use: " + doctype); //$NON-NLS-1$
                 }
 
-                String dtdname = AbstractDWRServlet.PACKAGE + MAPPINGS[i][1];
+                String dtdname = Constants.PACKAGE + MAPPINGS[i][1];
                 InputStream raw = getClass().getResourceAsStream(dtdname);
                 return new InputSource(raw);
             }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.impl;
+package uk.ltd.getahead.dwr.servlet;
 
 /**
  * Various constants from generating output.

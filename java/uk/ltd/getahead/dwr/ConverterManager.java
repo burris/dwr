@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package uk.ltd.getahead.dwr;
-
-import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -27,9 +25,9 @@ public interface ConverterManager
     /**
      * Add a new converter type
      * @param id The name of the converter type
-     * @param clazz The class to do the conversion
+     * @param className The class to do the conversion
      */
-    void addConverterType(String id, Class clazz);
+    void addConverterType(String id, String className);
 
     /**
      * Add a new converter
@@ -63,10 +61,11 @@ public interface ConverterManager
      * @param paramType The type that you want the object to be
      * @param iv The string version of the object
      * @param inctx The map of data that we are working on
+     * @param incc The context of this type conversion
      * @return The coerced object or null if the object could not be coerced
      * @throws ConversionException If the conversion failed for some reason
      */
-    Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException;
+    Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx, TypeHintContext incc) throws ConversionException;
 
     /**
      * Convert an object into a Javavscript representation of the same.
@@ -82,22 +81,18 @@ public interface ConverterManager
      * We don't know enough from a method signature like setUsers(Set s) to be
      * able to cast the inbound data to a set of Users. This method enables us
      * to specify this extra information.
-     * @param method The method to annotate
-     * @param paramNo The number of the parameter to edit (counts from 0)
-     * @param index The index of the item between &lt; and &gt;.
+     * @param thc The context to find any extra type information from
      * @param type The type of the specified parameter. 
      */
-    void setExtraTypeInfo(Method method, int paramNo, int index, Class type);
+    void setExtraTypeInfo(TypeHintContext thc, Class type);
 
     /**
      * The extra type information that we have learnt about a method parameter.
      * This method will return null if there is nothing extra to know
-     * @param method The method to annotate
-     * @param paramNo The number of the parameter to edit (counts from 0)
-     * @param index The index of the item between &lt; and &gt;.
-     * @return A list of types to fill out a generic type
+     * @param thc The context to find any extra type information from
+     * @return A type to use to fill out the generic type
      */
-    Class getExtraTypeInfo(Method method, int paramNo, int index);
+    Class getExtraTypeInfo(TypeHintContext thc);
 
     /**
      * Sets the converters for this converter manager.

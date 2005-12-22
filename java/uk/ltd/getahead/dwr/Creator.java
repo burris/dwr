@@ -52,6 +52,18 @@ public interface Creator
     String getScope();
 
     /**
+     * Is the class behind the Creator likely to change over time?
+     * @return Returns the reloadable variable
+     */
+    boolean isCacheable();
+
+    /**
+     * How is this creator refered to in Javascript land?
+     * @return A Javascript identifier
+     */
+    String getJavascript();
+
+    /**
      * Application scope: named reference remains available in the
      * ServletContext until it is reclaimed. 
      */

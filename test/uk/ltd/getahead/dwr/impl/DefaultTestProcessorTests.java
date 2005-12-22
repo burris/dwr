@@ -13,94 +13,114 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ltd.getahead.dwr.impl;
-
-import junit.framework.*;
-import static org.easymock.EasyMock.*;
-
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.AccessControl;
-import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
-import uk.ltd.getahead.dwr.create.NewCreator;
 
 import java.lang.reflect.Method;
 
-public class DefaultTestProcessorTests extends TestCase {
+import javax.servlet.http.HttpServletRequest;
+
+import junit.framework.TestCase;
+
+import org.easymock.EasyMock;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.create.NewCreator;
+import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
+import uk.ltd.getahead.dwr.servlet.DefaultTestProcessor;
+
+/**
+ * @author
+ */
+public class DefaultTestProcessorTests extends TestCase
+{
     private DefaultTestProcessor defaultTestProcessor = new DefaultTestProcessor();
 
     private CreatorManager creatorManager;
+
     private AccessControl accessControl;
+
     private ConverterManager converterManager;
 
     private MockHttpServletRequest request;
+
     private MockHttpServletResponse response;
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
 
-        creatorManager = createMock(CreatorManager.class);
+        creatorManager = (CreatorManager) EasyMock.createMock(CreatorManager.class);
         defaultTestProcessor.setCreatorManager(creatorManager);
 
-        accessControl = createMock(AccessControl.class);
+        accessControl = (AccessControl) EasyMock.createMock(AccessControl.class);
         defaultTestProcessor.setAccessControl(accessControl);
 
-        converterManager = createMock(ConverterManager.class);
+        converterManager = (ConverterManager) EasyMock.createMock(ConverterManager.class);
         defaultTestProcessor.setConverterManager(converterManager);
 
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
 
-    public void testHandleInNonDebug() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testHandleInNonDebug() throws Exception
+    {
         creatorManager.isDebug();
-        expectLastCall().andReturn(false);
+        EasyMock.expectLastCall().andReturn(Boolean.FALSE);
 
-        replay(creatorManager);
-        replay(accessControl);
-        replay(converterManager);
+        EasyMock.replay(creatorManager);
+        EasyMock.replay(accessControl);
+        EasyMock.replay(converterManager);
 
         defaultTestProcessor.handle(request, response);
 
-        verify(creatorManager);
-        verify(accessControl);
-        verify(converterManager);
+        EasyMock.verify(creatorManager);
+        EasyMock.verify(accessControl);
+        EasyMock.verify(converterManager);
 
         assertEquals(403, response.getStatus());
     }
 
-    public void testHandle() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testHandle() throws Exception
+    {
         request.setPathInfo("/test/creatorName");
 
         creatorManager.isDebug();
-        expectLastCall().andReturn(true);
+        EasyMock.expectLastCall().andReturn(Boolean.TRUE);
 
         creatorManager.getCreator("creatorName");
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
-        expectLastCall().andReturn(creator);
+        EasyMock.expectLastCall().andReturn(creator);
 
-        expect(accessControl.getReasonToNotDisplay(eq(request), eq(creator), eq("creatorName"), (Method)isA(Method.class)));
-        expectLastCall().andReturn(null).times(11);
+        EasyMock.expect(accessControl.getReasonToNotDisplay((Creator) EasyMock.eq(creator), (String) EasyMock.eq("creatorName"), (Method) EasyMock.isA(Method.class)));
+        EasyMock.expectLastCall().andReturn(null).times(11);
 
-        converterManager.isConvertable((Class)anyObject());
-        expectLastCall().andReturn(true).times(19);
+        converterManager.isConvertable((Class) EasyMock.anyObject());
+        EasyMock.expectLastCall().andReturn(Boolean.TRUE).times(19);
 
-        expect(accessControl.getReasonToNotExecute(eq(request), eq(creator), eq("creatorName"), (Method)isA(Method.class)));
-        expectLastCall().andReturn(null).times(10);
+        EasyMock.expect(accessControl.getReasonToNotExecute((Creator) EasyMock.eq(creator), (String) EasyMock.eq("creatorName"), (Method) EasyMock.isA(Method.class)));
+        EasyMock.expectLastCall().andReturn(null).times(10);
 
-        replay(creatorManager);
-        replay(accessControl);
-        replay(converterManager);
+        EasyMock.replay(creatorManager);
+        EasyMock.replay(accessControl);
+        EasyMock.replay(converterManager);
 
         defaultTestProcessor.handle(request, response);
 
-        verify(creatorManager);
-        verify(accessControl);
-        verify(converterManager);
+        EasyMock.verify(creatorManager);
+        EasyMock.verify(accessControl);
+        EasyMock.verify(converterManager);
 
         assertEquals(200, response.getStatus());
         String result = response.getContentAsString();

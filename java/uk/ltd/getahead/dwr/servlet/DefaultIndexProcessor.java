@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.impl;
+package uk.ltd.getahead.dwr.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.Processor;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**

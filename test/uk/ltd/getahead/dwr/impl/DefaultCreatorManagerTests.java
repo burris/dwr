@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.ltd.getahead.dwr.impl;
 
 import junit.framework.TestCase;
@@ -23,35 +22,47 @@ import uk.ltd.getahead.dwr.create.NewCreator;
 /**
  * @author Bram Smeets
  */
-public class DefaultCreatorManagerTests extends TestCase {
+public class DefaultCreatorManagerTests extends TestCase
+{
     private DefaultCreatorManager manager = new DefaultCreatorManager();
 
-    public void testAddCreatorType() {
-        try {
+    public void testAddCreatorType()
+    {
+        try
+        {
             manager.addCreatorType(null, null);
             fail("a null pointer exception was expected");
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e)
+        {
             // do nothing, was expected
         }
 
-        try {
-            manager.addCreatorType(null, this.getClass());
+        try
+        {
+            manager.addCreatorType(null, this.getClass().getName());
             fail("an illegal argument exception was expected");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e)
+        {
             // do nothing, was expected
         }
 
-        try {
-            manager.addCreatorType(null, Creator.class);
+        try
+        {
+            manager.addCreatorType(null, Creator.class.getName());
             fail("an illegal argument exception was expected");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e)
+        {
             // do nothing, was expected
         }
 
-        manager.addCreatorType(null, NewCreator.class);
+        manager.addCreatorType(null, NewCreator.class.getName());
     }
 
-    public void testAddCreator() {
+    public void testAddCreator()
+    {
         NewCreator creator = new NewCreator();
         manager.addCreator(null, creator);
     }

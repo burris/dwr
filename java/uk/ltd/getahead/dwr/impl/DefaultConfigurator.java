@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package uk.ltd.getahead.dwr.impl;
 
-package uk.ltd.getahead.dwr.convert.test;
+import uk.ltd.getahead.dwr.Configurator;
+import uk.ltd.getahead.dwr.StartupState;
 
 /**
- * @author Bram Smeets
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class MyBeanImpl
+public class DefaultConfigurator implements Configurator
 {
-    private String property;
-
-    private String nonReadableProperty;
-
-    public String getProperty()
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Configurator#configure(uk.ltd.getahead.dwr.StartupState)
+     */
+    public void configure(StartupState system)
     {
-        return property;
-    }
-
-    public void setProperty(String property)
-    {
-        this.property = property;
-    }
-
-    public void setNonReadableProperty(String nonReadableProperty)
-    {
-        this.nonReadableProperty = nonReadableProperty;
     }
 }

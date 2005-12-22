@@ -19,7 +19,9 @@ package uk.ltd.getahead.dwr.convert.test;
 /**
  * @author Bram Smeets
  */
-public interface MyBean {
+public interface MyBean
+{
     String getProperty();
+
     void setProperty(String property);
 }
