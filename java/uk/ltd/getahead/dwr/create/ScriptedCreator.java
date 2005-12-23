@@ -16,6 +16,7 @@
 package uk.ltd.getahead.dwr.create;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import javax.servlet.ServletContext;
@@ -161,37 +162,41 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             return cachedScript;
         }
 
+        // load the script from the path
+        log.debug("Loading Script from Path: " + scriptPath); //$NON-NLS-1$
+        RandomAccessFile in = null;
+
         try
         {
-            // load the script from the path
-            log.debug("Loading Script from Path: " + scriptPath); //$NON-NLS-1$
-            RandomAccessFile in = null;
+            ServletContext sc = WebContextFactory.get().getServletContext();
+            File scriptFile = new File(sc.getRealPath(scriptPath));
+            
+            scriptModified = scriptFile.lastModified();
+            in = new RandomAccessFile(scriptFile, "r"); //$NON-NLS-1$
+            byte bytes[] = new byte[(int) in.length()];
+            in.readFully(bytes);
+            cachedScript = new String(bytes);
 
-            try
-            {
-                ServletContext sc = WebContextFactory.get().getServletContext();
-                File scriptFile = new File(sc.getRealPath(scriptPath));
-                
-                scriptModified = scriptFile.lastModified();
-                in = new RandomAccessFile(scriptFile, "r"); //$NON-NLS-1$
-                byte bytes[] = new byte[(int) in.length()];
-                in.readFully(bytes);
-                cachedScript = new String(bytes);
-
-                return cachedScript;
-            }
-            finally
-            {
-                if (null != in)
-                {
-                    in.close();
-                }
-            }
+            return cachedScript;
         }
         catch (Exception ex)
         {
             log.error(ex.getMessage(), ex);
             throw new InstantiationException(Messages.getString("ScriptCreator.MissingScript")); //$NON-NLS-1$
+        }
+        finally
+        {
+            if (null != in)
+            {
+                try
+                {
+                    in.close();
+                }
+                catch (IOException ex)
+                {
+                    log.warn(ex.getMessage(), ex);
+                }
+            }
         }
     }
 
@@ -257,7 +262,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     {
         try
         {
-			if (clazz != null)
+            if (clazz != null)
             {
                 return clazz.newInstance();
             }
