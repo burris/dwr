@@ -22,8 +22,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import uk.ltd.getahead.dwr.Constants;
-import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.Messages;
 
 /**
  * We want to read the config files in validating mode, and keep the DTD within

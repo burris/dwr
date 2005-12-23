@@ -18,8 +18,8 @@ package uk.ltd.getahead.dwr.create;
 import java.util.Map;
 
 import uk.ltd.getahead.dwr.Creator;
-import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.LocalUtil;
+import uk.ltd.getahead.dwr.util.Messages;
 
 /**
  * A simple implementation of the basic parts of Creator

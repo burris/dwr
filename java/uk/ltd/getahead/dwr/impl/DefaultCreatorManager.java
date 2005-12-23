@@ -25,9 +25,9 @@ import java.util.Map;
 
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.Messages;
 
 /**
  * A class to manage the types of creators and the instansiated creators.

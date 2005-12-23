@@ -16,7 +16,7 @@
 package uk.ltd.getahead.dwr.create;
 
 import uk.ltd.getahead.dwr.Creator;
-import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.util.Messages;
 
 /**
  * A creator that simply uses the default constructor each time it is called.

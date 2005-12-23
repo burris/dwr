@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
-import uk.ltd.getahead.dwr.Messages;
 
 /**
  * Various utilities, mostly to make up for JDK 1.4 functionallity that is not

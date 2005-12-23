@@ -20,9 +20,9 @@ import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.util.RequestUtils;
 
 import uk.ltd.getahead.dwr.Creator;
-import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.util.Messages;
 
 /**
  * StrutsCreator

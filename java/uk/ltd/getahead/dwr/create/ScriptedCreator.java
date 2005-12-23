@@ -24,11 +24,11 @@ import org.apache.bsf.BSFException;
 import org.apache.bsf.BSFManager;
 
 import uk.ltd.getahead.dwr.Creator;
-import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.Messages;
 
 /**
  * A creator that uses BeanShell to evaluate some script to create an object.

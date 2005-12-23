@@ -21,7 +21,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import java.lang.reflect.Method;
 
 import uk.ltd.getahead.dwr.create.NewCreator;
-import uk.ltd.getahead.dwr.Messages;
+import uk.ltd.getahead.dwr.util.Messages;
 import uk.ltd.getahead.dwr.Creator;
 
 /**
