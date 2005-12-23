@@ -15,14 +15,9 @@
  */
 package uk.ltd.getahead.dwr.spring;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,69 +29,25 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import uk.ltd.getahead.dwr.AccessControl;
-import uk.ltd.getahead.dwr.AjaxFilterManager;
-import uk.ltd.getahead.dwr.Configurator;
-import uk.ltd.getahead.dwr.Container;
-import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.StartupState;
-import uk.ltd.getahead.dwr.WebContextBuilder;
-import uk.ltd.getahead.dwr.WebContextFactory;
-import uk.ltd.getahead.dwr.servlet.Processor;
+import uk.ltd.getahead.dwr.servlet.ServletHelper;
+import uk.ltd.getahead.dwr.util.FakeServletConfig;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
+ * A Spring Controller that handles DWR requests using a ServletHelper
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DwrController extends AbstractController implements BeanNameAware, InitializingBean, BeanFactoryAware
 {
     /* (non-Javadoc)
-     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
      */
-    public void afterPropertiesSet() throws Exception
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException
     {
-        try
-        {
-            servletContext = getWebApplicationContext().getServletContext();
+        SpringContainer container = new SpringContainer();
+        container.setBeanFactory(beanFactory);
 
-            // Now we have set the implementations we can set the WebContext up
-            WebContextFactory.setWebContextBuilder(webContextBuilder);
-
-            // And we lace it with the context so far to help init go smoothly
-            webContextBuilder.set(null, null, servletConfig, getServletContext(), container);
-
-            StartupState startupState = new StartupState();
-            startupState.setAccessControl((AccessControl) container.getBean(AccessControl.class.getName()));
-            startupState.setAjaxFilterManager((AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName()));
-            startupState.setConverterManager((ConverterManager) container.getBean(ConverterManager.class.getName()));
-            startupState.setCreatorManager((CreatorManager) container.getBean(CreatorManager.class.getName()));
-            startupState.setProcessor((Processor) container.getBean(Processor.class.getName()));
-            startupState.setWebContextBuilder((WebContextBuilder) container.getBean(WebContextBuilder.class.getName()));
-
-            for (Iterator it = configurators.iterator(); it.hasNext();)
-            {
-                Configurator configurator = (Configurator) it.next();
-                configurator.configure(startupState);
-            }
-        }
-        catch (Exception ex)
-        {
-            log.fatal("init failed", ex); //$NON-NLS-1$
-
-            if (ex instanceof ServletException)
-            {
-                throw ex;
-            }
-            throw new ServletException(ex);
-        }
-        finally
-        {
-            if (webContextBuilder != null)
-            {
-                webContextBuilder.unset();
-            }
-        }
+        servletHelper.initContainer(container);
     }
 
     /**
@@ -106,7 +57,47 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      */
     public void setConfigurators(List configurators)
     {
-        this.configurators = configurators;
+        servletHelper.setConfigurators(configurators);
+    }
+
+    /**
+     * Do we prefix the list of Configurators with a default to read the system
+     * dwr.xml file?
+     * @param includeDefaultConfig the includeDefaultConfig to set
+     */
+    public void setIncludeDefaultConfig(boolean includeDefaultConfig)
+    {
+        servletHelper.setIncludeDefaultConfig(includeDefaultConfig);
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+     */
+    public void afterPropertiesSet() throws Exception
+    {
+        try
+        {
+            ServletContext servletContext = getWebApplicationContext().getServletContext();
+
+            servletHelper.setServletConfig(new FakeServletConfig(name, servletContext));
+            servletHelper.setServletContext(servletContext);
+
+            servletHelper.initWebContextBuilder(null, null);
+
+            // Load the configurators
+            servletHelper.addSystemConfigurator();
+
+            servletHelper.configure();
+        }
+        catch (Exception ex)
+        {
+            log.fatal("init failed", ex); //$NON-NLS-1$
+            throw ex;
+        }
+        finally
+        {
+            servletHelper.deinitWebContextBuilder();
+        }
     }
 
     /* (non-Javadoc)
@@ -116,14 +107,12 @@ public class DwrController extends AbstractController implements BeanNameAware, 
     {
         try
         {
-            webContextBuilder.set(request, response, servletConfig, getServletContext(), container);
-            getWebApplicationContext().getServletContext();
-
-            processor.handle(request, response);
+            servletHelper.initWebContextBuilder(request, response);
+            servletHelper.handle(request, response);
         }
         finally
         {
-            webContextBuilder.unset();
+            servletHelper.deinitWebContextBuilder();
         }
 
         return null;
@@ -134,97 +123,19 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      */
     public void setBeanName(final String name)
     {
-        this.servletConfig = new ServletConfig()
-        {
-            public String getServletName()
-            {
-                return name;
-            }
-
-            public ServletContext getServletContext()
-            {
-                return servletContext;
-            }
-
-            public String getInitParameter(String paramName)
-            {
-                return null;
-            }
-
-            public Enumeration getInitParameterNames()
-            {
-                return new Enumeration()
-                {                
-                    public Object nextElement()
-                    {
-                        return null;
-                    }
-
-                    public boolean hasMoreElements()
-                    {
-                        return false;
-                    }
-                };
-            }            
-        };
+        this.name = name;
     }
 
     /**
-     * @param webContextBuilder The builder to set.
+     * How is this deployed in Spring
      */
-    public void setWebContextBuilder(WebContextBuilder webContextBuilder)
-    {
-        this.webContextBuilder = webContextBuilder;
-    }
+    private String name;
 
     /**
-     * @param processor The processor to set.
+     * We'd like to inherit from this but the broken servlet spec and lack of
+     * multiple inheritance prevents us.
      */
-    public void setProcessor(Processor processor)
-    {
-        this.processor = processor;
-    }
-
-    /* (non-Javadoc)
-     * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
-     */
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException
-    {
-        SpringContainer springContainer = new SpringContainer();
-        springContainer.setBeanFactory(beanFactory);
-
-        this.container = springContainer;
-    }
-
-    /**
-     * The list of classes that configurate DWR
-     */
-    private List configurators = new ArrayList();
-
-    /**
-     * The processor will actually handle the http requests
-     */
-    protected Processor processor;
-
-    /**
-     * The WebContext that keeps http objects local to a thread
-     */
-    protected WebContextBuilder webContextBuilder;
-
-    /**
-     * The wrapper for a Spring IoC container
-     */
-    private Container container;
-
-    /**
-     * The fake ServletConfig
-     */
-    private ServletConfig servletConfig;
-
-    /**
-     * The real ServletContext which we fixh out of Spring internals
-     */
-    protected ServletContext servletContext;
+    private ServletHelper servletHelper = new ServletHelper();
 
     /**
      * The log stream

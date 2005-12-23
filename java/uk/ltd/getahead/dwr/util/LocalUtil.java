@@ -15,6 +15,9 @@
  */
 package uk.ltd.getahead.dwr.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
@@ -30,7 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
-import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
 
 /**
@@ -558,7 +560,7 @@ public final class LocalUtil
         // Check it is of the right type
         if (!impl.isAssignableFrom(clazz))
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), Creator.class.getName())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), impl.getName())); //$NON-NLS-1$
         }
 
         // Check we can create it
@@ -614,7 +616,7 @@ public final class LocalUtil
         // Check it is of the right type
         if (!impl.isAssignableFrom(clazz))
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), Creator.class.getName())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), impl.getName())); //$NON-NLS-1$
         }
 
         // Check we can create it
@@ -634,6 +636,50 @@ public final class LocalUtil
         {
             log.warn("Failed to load creator '" + name + "', classname=" + className + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null;
+        }
+    }
+
+    /**
+     * InputStream closer that can cope if the input stream is null.
+     * If anything goes wrong, the errors are logged and ignored.
+     * @param in The resource to close
+     */
+    public static final void close(InputStream in)
+    {
+        if (in == null)
+        {
+            return;
+        }
+
+        try
+        {
+            in.close();
+        }
+        catch (IOException ex)
+        {
+            log.warn(ex.getMessage(), ex);
+        }
+    }
+
+    /**
+     * InputStream closer that can cope if the input stream is null.
+     * If anything goes wrong, the errors are logged and ignored.
+     * @param in The resource to close
+     */
+    public static final void close(RandomAccessFile in)
+    {
+        if (in == null)
+        {
+            return;
+        }
+
+        try
+        {
+            in.close();
+        }
+        catch (IOException ex)
+        {
+            log.warn(ex.getMessage(), ex);
         }
     }
 

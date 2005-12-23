@@ -25,7 +25,7 @@ public interface Configurator
 {
     /**
      * Do the Configuration actions
-     * @param system The object that contains the system objects to configure
+     * @param container The object that contains the system objects to configure
      */
-    void configure(StartupState system);
+    void configure(Container container);
 }

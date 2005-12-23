@@ -40,12 +40,13 @@ import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.AjaxFilter;
 import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Configurator;
+import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.Messages;
-import uk.ltd.getahead.dwr.StartupState;
 import uk.ltd.getahead.dwr.TypeHintContext;
+import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.LogErrorHandler;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -56,23 +57,6 @@ import uk.ltd.getahead.dwr.util.Logger;
  */
 public class DwrXmlConfigurator implements Configurator
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Configurator#configure(uk.ltd.getahead.dwr.StartupState)
-     */
-    public void configure(StartupState startupState)
-    {
-        addConfig(document);
-    }
-
-    /**
-     * Accessor for the servlet context
-     * @param servletContext the new servlet context
-     */
-    public void setServletContext(ServletContext servletContext)
-    {
-        this.servletContext = servletContext;
-    }
-
     /**
      * Setter for the resource name that we can use to read a file from the
      * servlet context
@@ -83,13 +67,27 @@ public class DwrXmlConfigurator implements Configurator
      */
     public void setServletResourceName(String resourceName) throws IOException, ParserConfigurationException, SAXException
     {
-        InputStream in = servletContext.getResourceAsStream(resourceName);
-        if (in == null)
+        ServletContext servletContext = WebContextFactory.get().getServletContext();
+        if (servletContext == null)
         {
-            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", resourceName)); //$NON-NLS-1$
+            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingServletContext")); //$NON-NLS-1$
         }
 
-        setInputStream(in);
+        InputStream in = null;
+        try
+        {
+            in = servletContext.getResourceAsStream(resourceName);
+            if (in == null)
+            {
+                throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", resourceName)); //$NON-NLS-1$
+            }
+
+            setInputStream(in);
+        }
+        finally
+        {
+            LocalUtil.close(in);
+        }
     }
 
     /**
@@ -138,52 +136,19 @@ public class DwrXmlConfigurator implements Configurator
         this.document = document;
     }
 
-    /**
-     * The stored servlet context
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Configurator#configure(uk.ltd.getahead.dwr.StartupState)
      */
-    private ServletContext servletContext;
-
-    /**
-     * The parsed document
-     */
-    private Document document;
-
-
-
-
-
-
-
-
-
-    /**
-     * Add to the current configuration by reading a DOM tree from a IO stream.
-     * @param in The InputStream to parse from
-     * @throws ParserConfigurationException If there are XML setup problems
-     * @throws IOException Error parsing dwr.xml
-     * @throws SAXException Error parsing dwr.xml
-     */
-    public void addConfig(InputStream in) throws ParserConfigurationException, IOException, SAXException
+    public void configure(Container aContainer)
     {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setValidating(true);
+        this.container = aContainer;
 
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        db.setEntityResolver(new DTDEntityResolver());
-        db.setErrorHandler(new LogErrorHandler());
+        accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
+        ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
+        converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+        creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
 
-        Document doc = db.parse(in);
-
-        addConfig(doc);
-    }
-
-    /**
-     * Add to the current configuration by reading a DOM tree directly
-     * @param doc The DOM tree
-     */
-    public void addConfig(Document doc)
-    {
-        Element root = doc.getDocumentElement();
+        Element root = document.getDocumentElement();
 
         NodeList rootChildren = root.getChildNodes();
         for (int i = 0; i < rootChildren.getLength(); i++)
@@ -299,19 +264,6 @@ public class DwrXmlConfigurator implements Configurator
     {
         String type = allower.getAttribute(ATTRIBUTE_CREATOR);
         String javascript = allower.getAttribute(ATTRIBUTE_JAVASCRIPT);
-
-        // DEPRECATED: Remove when confusion about creators has gone away
-        if (type.equals("session") || type.equals("static")) //$NON-NLS-1$ //$NON-NLS-2$
-        {
-            log.error("The 'session' and 'static' creators are deprecated. Use the 'new' creator"); //$NON-NLS-1$
-            log.error("  For more information see the DWR website"); //$NON-NLS-1$
-            type = "new"; //$NON-NLS-1$
-
-            if (type.equals("session")) //$NON-NLS-1$
-            {
-                allower.setAttribute("scope", "session"); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
 
         try
         {
@@ -442,67 +394,6 @@ public class DwrXmlConfigurator implements Configurator
     }
 
     /**
-     * Collections often have missing information. This helps fill the missing
-     * data in.
-     * @param javascript The name of the creator
-     * @param parent The container of the include and exclude elements.
-     * @throws ClassNotFoundException If the type attribute can't be converted into a Class
-     */
-    private void processParameters(String javascript, Element parent) throws ClassNotFoundException
-    {
-        NodeList nodes = parent.getElementsByTagName(ELEMENT_PARAMETER);
-        for (int i = 0; i < nodes.getLength(); i++)
-        {
-            Element include = (Element) nodes.item(i);
-
-            String methodName = include.getAttribute(ATTRIBUTE_METHOD);
-
-            // Try to find the method that we are annotating
-            Creator creator = creatorManager.getCreator(javascript);
-            Class dest = creator.getType();
-
-            Method method = null;
-            Method[] methods = dest.getMethods();
-            for (int j = 0; j < methods.length; j++)
-            {
-                Method test = methods[j];
-                if (test.getName().equals(methodName))
-                {
-                    if (method == null)
-                    {
-                        method = test;
-                    }
-                    else
-                    {
-                        log.warn("Setting extra type info to overloaded methods may fail with <parameter .../>"); //$NON-NLS-1$
-                    }
-                }
-            }
-
-            if (method == null)
-            {
-                log.error("Unable to find method called: " + methodName + " on type: " + dest.getName() + " from creator: " + javascript); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                continue;
-            }
-
-            String number = include.getAttribute(ATTRIBUTE_NUMBER);
-            int paramNo = Integer.parseInt(number);
-
-            String types = include.getAttribute(ATTRIBUTE_TYPE);
-            StringTokenizer st = new StringTokenizer(types, ","); //$NON-NLS-1$
-
-            int j = 0;
-            while (st.hasMoreTokens())
-            {
-                String type = st.nextToken();
-                Class clazz = Class.forName(type.trim());
-                TypeHintContext thc = new TypeHintContext(method, paramNo).createChildContext(j++);
-                converterManager.setExtraTypeInfo(thc, clazz);
-            }
-        }
-    }
-
-    /**
      * J2EE role based method level security added here.
      * @param javascript The name of the creator
      * @param parent The container of the include and exclude elements.
@@ -573,67 +464,70 @@ public class DwrXmlConfigurator implements Configurator
     }
 
     /**
-     * Accessor for the DefaultCreatorManager that we configure
-     * @param creatorManager The new DefaultConverterManager
+     * Collections often have missing information. This helps fill the missing
+     * data in.
+     * @param javascript The name of the creator
+     * @param parent The container of the include and exclude elements.
+     * @throws ClassNotFoundException If the type attribute can't be converted into a Class
      */
-    public void setCreatorManager(CreatorManager creatorManager)
+    private void processParameters(String javascript, Element parent) throws ClassNotFoundException
     {
-        this.creatorManager = creatorManager;
+        NodeList nodes = parent.getElementsByTagName(ELEMENT_PARAMETER);
+        for (int i = 0; i < nodes.getLength(); i++)
+        {
+            Element include = (Element) nodes.item(i);
+
+            String methodName = include.getAttribute(ATTRIBUTE_METHOD);
+
+            // Try to find the method that we are annotating
+            Creator creator = creatorManager.getCreator(javascript);
+            Class dest = creator.getType();
+
+            Method method = null;
+            Method[] methods = dest.getMethods();
+            for (int j = 0; j < methods.length; j++)
+            {
+                Method test = methods[j];
+                if (test.getName().equals(methodName))
+                {
+                    if (method == null)
+                    {
+                        method = test;
+                    }
+                    else
+                    {
+                        log.warn("Setting extra type info to overloaded methods may fail with <parameter .../>"); //$NON-NLS-1$
+                    }
+                }
+            }
+
+            if (method == null)
+            {
+                log.error("Unable to find method called: " + methodName + " on type: " + dest.getName() + " from creator: " + javascript); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                continue;
+            }
+
+            String number = include.getAttribute(ATTRIBUTE_NUMBER);
+            int paramNo = Integer.parseInt(number);
+
+            String types = include.getAttribute(ATTRIBUTE_TYPE);
+            StringTokenizer st = new StringTokenizer(types, ","); //$NON-NLS-1$
+
+            int j = 0;
+            while (st.hasMoreTokens())
+            {
+                String type = st.nextToken();
+                Class clazz = Class.forName(type.trim());
+                TypeHintContext thc = new TypeHintContext(method, paramNo).createChildContext(j++);
+                converterManager.setExtraTypeInfo(thc, clazz);
+            }
+        }
     }
 
     /**
-     * Accessor for the DefaultCreatorManager that we configure
-     * @return the configured DefaultCreatorManager
+     * The parsed document
      */
-    public CreatorManager getCreatorManager()
-    {
-        return creatorManager;
-    }
-
-    /**
-     * Accessor for the DefaultCreatorManager that we configure
-     * @param converterManager The new DefaultConverterManager
-     */
-    public void setConverterManager(ConverterManager converterManager)
-    {
-        this.converterManager = converterManager;
-    }
-
-    /**
-     * Accessor for the DefaultConverterManager that we configure
-     * @return the configured DefaultConverterManager
-     */
-    public ConverterManager getConverterManager()
-    {
-        return converterManager;
-    }
-
-    /**
-     * Accessor for the security manager
-     * @return Returns the accessControl.
-     */
-    public AccessControl getAccessControl()
-    {
-        return accessControl;
-    }
-
-    /**
-     * Accessor for the security manager
-     * @param accessControl The accessControl to set.
-     */
-    public void setAccessControl(AccessControl accessControl)
-    {
-        this.accessControl = accessControl;
-    }
-
-    /**
-     * Accessor for the AjaxFilterManager
-     * @param ajaxFilterManager The AjaxFilterManager to set.
-     */
-    public void setAjaxFilterManager(AjaxFilterManager ajaxFilterManager)
-    {
-        this.ajaxFilterManager = ajaxFilterManager;
-    }
+    private Document document;
 
     /**
      * The properties that we don't warn about if they don't exist.
@@ -664,6 +558,11 @@ public class DwrXmlConfigurator implements Configurator
      * The security manager
      */
     private AccessControl accessControl = null;
+
+    /**
+     * The IoC container
+     */
+    private Container container = null;
 
     /*
      * The element names

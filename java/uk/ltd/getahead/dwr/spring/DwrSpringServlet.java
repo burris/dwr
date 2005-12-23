@@ -15,59 +15,122 @@
  */
 package uk.ltd.getahead.dwr.spring;
 
-import java.util.Enumeration;
+import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import uk.ltd.getahead.dwr.Container;
-import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
-import uk.ltd.getahead.dwr.servlet.AbstractDwrServlet;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+
+import uk.ltd.getahead.dwr.servlet.ServletHelper;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
- * The servlet that handles all calls to DWR. <br>
+ * The servlet that handles all calls to DWR.<br>
  * It retrieves its configuration from the Spring IoC container.
  * @author Bram Smeets
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrSpringServlet extends AbstractDwrServlet
+public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
 {
-    /**
-     * Gets a proxy to the configuration in the Spring container.
-     * @param config the servlet configuration to use to obtain the Spring container
-     * @return the spring container
-     * @throws ServletException in case instatiation of the spring container fails
-     * @see SpringContainer
+    /* (non-Javadoc)
+     * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
      */
-    protected Container getContainer(ServletConfig config) throws ServletException
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException
     {
-        // create a spring container that retrieves the configuration from spring context
-        return new SpringContainer();
+        SpringContainer container = new SpringContainer();
+        container.setBeanFactory(beanFactory);
+
+        servletHelper.initContainer(container);
     }
 
     /**
-     * Performs additional configuration.
-     * It is implemented to still use any XML-based configurations specified as
-     * init parameters.
-     * @param config the servlet configuration to obtain the init parameters from
-     * @param configuration the current DWR configuration
-     * @throws ServletException in case the additional configuration fails
+     * Setter for use by the Spring IoC container to tell us what Configurators
+     * exist for us to configure ourselves.
+     * @param configurators
      */
-    protected void configure(ServletConfig config, DwrXmlConfigurator configuration) throws ServletException
+    public void setConfigurators(List configurators)
     {
-        // perform any additional configuration
-        Enumeration en = config.getInitParameterNames();
+        servletHelper.setConfigurators(configurators);
+    }
 
-        // Loop through the ones that do exist
-        while (en.hasMoreElements())
+    /**
+     * Do we prefix the list of Configurators with a default to read the system
+     * dwr.xml file?
+     * @param includeDefaultConfig the includeDefaultConfig to set
+     */
+    public void setIncludeDefaultConfig(boolean includeDefaultConfig)
+    {
+        servletHelper.setIncludeDefaultConfig(includeDefaultConfig);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
+     */
+    public void init(ServletConfig config) throws ServletException
+    {
+        try
         {
-            String name = (String) en.nextElement();
-            if (name.startsWith(INIT_CONFIG))
-            {
-                // if the init param starts with "config" then try to load it
-                String configFile = config.getInitParameter(name);
-                readFile(configFile, configuration);
-            }
+            super.init(config);
+
+            servletHelper.setServletConfig(config);
+            servletHelper.setServletContext(config.getServletContext());
+
+            servletHelper.initWebContextBuilder(null, null);
+            servletHelper.addSystemConfigurator();
+
+            servletHelper.addConfiguratorsFromInitParams();
+            servletHelper.configure();
+        }
+        catch (Exception ex)
+        {
+            log.fatal("init failed", ex); //$NON-NLS-1$
+            throw new ServletException(ex);
+        }
+        finally
+        {
+            servletHelper.deinitWebContextBuilder();
         }
     }
+
+    /* (non-Javadoc)
+    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    */
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException
+    {
+        doPost(req, resp);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
+    {
+        try
+        {
+            servletHelper.initWebContextBuilder(request, response);
+            servletHelper.handle(request, response);
+        }
+        finally
+        {
+            servletHelper.deinitWebContextBuilder();
+        }
+    }
+
+    /**
+     * We'd like to inherit from this but the broken servlet spec and lack of
+     * multiple inheritance prevents us.
+     */
+    private ServletHelper servletHelper = new ServletHelper();
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DwrSpringServlet.class);
 }

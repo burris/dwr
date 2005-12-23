@@ -15,7 +15,7 @@
  */
 package uk.ltd.getahead.dwr;
 
-import uk.ltd.getahead.dwr.servlet.DwrServlet;
+//import uk.ltd.getahead.dwr.servlet.DwrServlet;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -35,6 +35,6 @@ import uk.ltd.getahead.dwr.servlet.DwrServlet;
  * @deprecated Use uk.ltd.getahead.dwr.servlet.DwrServlet
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DWRServlet extends DwrServlet
+public class DWRServlet //extends DwrServlet
 {
 }

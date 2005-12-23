@@ -31,19 +31,19 @@ import uk.ltd.getahead.dwr.Container;
 public class SpringContainer implements Container, BeanFactoryAware
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Container#getBean(java.lang.String)
-     */
-    public Object getBean(String id)
-    {
-        return beanFactory.getBean(id);
-    }
-
-    /* (non-Javadoc)
      * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
      */
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException
     {
         this.beanFactory = beanFactory;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Container#getBean(java.lang.String)
+     */
+    public Object getBean(String id)
+    {
+        return beanFactory.getBean(id);
     }
 
     /**

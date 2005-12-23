@@ -25,9 +25,9 @@ import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.AjaxFilter;
 import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Configurator;
+import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.StartupState;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**
@@ -36,14 +36,14 @@ import uk.ltd.getahead.dwr.util.LocalUtil;
 public class SpringConfigurator implements Configurator
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Configurator#configure(java.lang.System)
+     * @see uk.ltd.getahead.dwr.Configurator#configure(uk.ltd.getahead.dwr.Container)
      */
-    public void configure(StartupState startupState)
+    public void configure(Container container)
     {
-        CreatorManager creatorManager = startupState.getCreatorManager();
-        ConverterManager converterManager = startupState.getConverterManager();
-        AccessControl accessControl = startupState.getAccessControl();
-        AjaxFilterManager ajaxFilterManager = startupState.getAjaxFilterManager();
+        AccessControl accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
+        AjaxFilterManager ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
+        ConverterManager converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+        CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
 
         // Configure the creator types
         if (creatorTypes != null)

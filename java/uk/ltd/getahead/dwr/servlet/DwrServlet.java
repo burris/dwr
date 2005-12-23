@@ -16,7 +16,6 @@
 package uk.ltd.getahead.dwr.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Enumeration;
 
 import javax.servlet.ServletConfig;
@@ -27,15 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.AjaxFilterManager;
-import uk.ltd.getahead.dwr.Constants;
-import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.WebContextBuilder;
-import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.impl.DefaultContainer;
-import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 
@@ -58,109 +52,71 @@ import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
  */
 public class DwrServlet extends HttpServlet
 {
+    /**
+     * @param config
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public void setupContainer(ServletConfig config) throws InstantiationException, IllegalAccessException
+    {
+        // Load the factory with implementation information
+        DefaultContainer container = new DefaultContainer();
+        container.addParameter(AccessControl.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultAccessControl"); //$NON-NLS-1$
+        container.addParameter(ConverterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultConverterManager"); //$NON-NLS-1$
+        container.addParameter(CreatorManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultCreatorManager"); //$NON-NLS-1$
+        container.addParameter(Processor.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultProcessor"); //$NON-NLS-1$
+        container.addParameter(WebContextBuilder.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder"); //$NON-NLS-1$
+        container.addParameter(AjaxFilterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager"); //$NON-NLS-1$
+
+        container.addParameter("index", "uk.ltd.getahead.dwr.impl.DefaultIndexProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
+        container.addParameter("test", "uk.ltd.getahead.dwr.impl.DefaultTestProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
+        container.addParameter("interface", "uk.ltd.getahead.dwr.impl.DefaultInterfaceProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
+        container.addParameter("exec", "uk.ltd.getahead.dwr.impl.DefaultExecProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
+        container.addParameter("file", "uk.ltd.getahead.dwr.impl.FileProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        container.addParameter("debug", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        container.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        container.addParameter("scriptCompressed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        Enumeration en = config.getInitParameterNames();
+        while (en.hasMoreElements())
+        {
+            String name = (String) en.nextElement();
+            String value = config.getInitParameter(name);
+            container.addParameter(name, value);
+        }
+        container.configurationFinished();
+
+        servletHelper.initContainer(container);
+    }
+
     /* (non-Javadoc)
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
      */
      public void init(ServletConfig config) throws ServletException
      {
-         super.init(config);
-
          try
          {
-             ServletLoggingOutput.setExecutionContext(this);
+             super.init(config);
 
-             // How much logging do we do?
-             String logLevel = config.getInitParameter(INIT_LOGLEVEL);
-             if (logLevel != null)
-             {
-                 ServletLoggingOutput.setLevel(logLevel);
-             }
+             servletHelper.setServletConfig(config);
+             servletHelper.setServletContext(config.getServletContext());
+             servletHelper.setServletLoggingOutput(this);
 
-             // Load the factory with implementation information
-             DefaultContainer container1 = new DefaultContainer();
-             container1.addParameter(AccessControl.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultAccessControl"); //$NON-NLS-1$
-             container1.addParameter(ConverterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultConverterManager"); //$NON-NLS-1$
-             container1.addParameter(CreatorManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultCreatorManager"); //$NON-NLS-1$
-             container1.addParameter(Processor.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultProcessor"); //$NON-NLS-1$
-             container1.addParameter(WebContextBuilder.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder"); //$NON-NLS-1$
-             container1.addParameter(AjaxFilterManager.class.getName(), "uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager"); //$NON-NLS-1$
-     
-             container1.addParameter("index", "uk.ltd.getahead.dwr.impl.DefaultIndexProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
-             container1.addParameter("test", "uk.ltd.getahead.dwr.impl.DefaultTestProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
-             container1.addParameter("interface", "uk.ltd.getahead.dwr.impl.DefaultInterfaceProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
-             container1.addParameter("exec", "uk.ltd.getahead.dwr.impl.DefaultExecProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
-             container1.addParameter("file", "uk.ltd.getahead.dwr.impl.FileProcessor"); //$NON-NLS-1$ //$NON-NLS-2$
-     
-             container1.addParameter("debug", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-             container1.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-     
-             container1.addParameter("scriptCompressed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-     
-             Enumeration en = config.getInitParameterNames();
-             while (en.hasMoreElements())
-             {
-                 String name = (String) en.nextElement();
-                 String value = config.getInitParameter(name);
-                 container1.addParameter(name, value);
-             }
-             container1.configurationFinished();
-             container = container1;
+             setupContainer(config);
 
-             // Now we have set the implementations we can set the WebContext up
-             builder = (WebContextBuilder) container1.getBean(WebContextBuilder.class.getName());
-             WebContextFactory.setWebContextBuilder(builder);
+             servletHelper.initWebContextBuilder(null, null);
 
-             // And we lace it with the context so far to help init go smoothly
-             builder.set(null, null, getServletConfig(), getServletContext(), container1);
-
-             // Load the system config file
-             DwrXmlConfigurator configuration = (DwrXmlConfigurator) container1.getBean(DwrXmlConfigurator.class.getName());
-             InputStream in = getClass().getResourceAsStream(FILE_DWR_XML);
-             log.info("retrieved system configuration file: " + in); //$NON-NLS-1$
-
-             try
-             {
-                 configuration.addConfig(in);
-             }
-             catch (Exception ex)
-             {
-                 throw new ServletException(Messages.getString("DwrServlet.SystemConfigError"), ex); //$NON-NLS-1$
-             }
-
-             // Find all the init params
-             en = config.getInitParameterNames();
-             boolean foundConfig = false;
-
-             // Loop through the ones that do exist
-             while (en.hasMoreElements())
-             {
-                 String name = (String) en.nextElement();
-                 if (name.startsWith(INIT_CONFIG))
-                 {
-                     foundConfig = true;
-
-                     // if the init param starts with "config" then try to load it
-                     String configFile = config.getInitParameter(name);
-                     readFile(configFile, configuration);
-                 }
-             }
-
-             // If there are none then use the default name
+             // Load the configurators
+             servletHelper.addSystemConfigurator();
+             boolean foundConfig = servletHelper.addConfiguratorsFromInitParams();
              if (!foundConfig)
              {
-                 String skip = config.getInitParameter(INIT_SKIP_DEFAULT);
-                 if (!Boolean.valueOf(skip).booleanValue())
-                 {
-                     readFile(DEFAULT_DWR_XML, configuration);
-                 }
+                 servletHelper.addDefaultDwrXmlConfigurator();
              }
 
-             // Finally the processor that handles doGet and doPost
-             processor = (Processor) container1.getBean(Processor.class.getName());
-         }
-         catch (ServletException ex)
-         {
-             throw ex;
+             servletHelper.configure();
          }
          catch (Exception ex)
          {
@@ -169,10 +125,7 @@ public class DwrServlet extends HttpServlet
          }
          finally
          {
-             if (builder != null)
-             {
-                 builder.unset();
-             }
+             servletHelper.deinitWebContextBuilder();
 
              ServletLoggingOutput.unsetExecutionContext();
          }
@@ -189,91 +142,29 @@ public class DwrServlet extends HttpServlet
      /* (non-Javadoc)
       * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
       */
-     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException
+     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
      {
          try
          {
-             builder.set(req, resp, getServletConfig(), getServletContext(), container);
-             ServletLoggingOutput.setExecutionContext(this);
-
-             processor.handle(req, resp);
+             servletHelper.initWebContextBuilder(request, response);
+             servletHelper.setServletLoggingOutput(this);
+             servletHelper.handle(request, response);
          }
          finally
          {
-             builder.unset();
-             ServletLoggingOutput.unsetExecutionContext();
+             servletHelper.deinitWebContextBuilder();
+             servletHelper.unsetServletLoggingOutput();
          }
      }
 
      /**
-      * Load a DWR config file.
-      * @param configFile the config file to read
-      * @param configuration The current configuration loader
-      * @throws ServletException If the extra checking of the config file fails
+      * We'd like to inherit from this but the broken servlet spec and lack of
+      * multiple inheritance prevents us.
       */
-     protected void readFile(String configFile, DwrXmlConfigurator configuration) throws ServletException
-     {
-         try
-         {
-             InputStream in = getServletContext().getResourceAsStream(configFile);
-             if (in == null)
-             {
-                 log.error("Missing config file: " + configFile); //$NON-NLS-1$
-             }
-             else
-             {
-                 configuration.addConfig(in);
-             }
-         }
-         catch (Exception ex)
-         {
-             throw new ServletException(Messages.getString("DwrServlet.ConfigError", configFile), ex); //$NON-NLS-1$
-         }
-     }
-
-     /**
-      * The processor will actually handle the http requests
-      */
-     protected Processor processor;
-
-     /**
-      * The WebContext that keeps http objects local to a thread
-      */
-     protected WebContextBuilder builder;
-
-     /**
-      * The IoC container
-      */
-     protected Container container;
-
-     /**
-      * Init parameter: Skip reading the default config file if none are specified.
-      */
-     protected static final String INIT_SKIP_DEFAULT = "skipDefaultConfig"; //$NON-NLS-1$
-
-     /**
-      * Init parameter: Set a dwr.xml config file.
-      * This is only a prefix since we might have more than 1 config file.
-      */
-     protected static final String INIT_CONFIG = "config"; //$NON-NLS-1$
-
-     /**
-      * Init parameter: If we are doing Servlet.log logging, to what level?
-      */
-     protected static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
-
-     /**
-      * The system dwr.xml resource name
-      */
-     protected static final String FILE_DWR_XML = Constants.PACKAGE + "/dwr.xml"; //$NON-NLS-1$
-
-     /**
-      * The default dwr.xml file path
-      */
-     protected static final String DEFAULT_DWR_XML = "/WEB-INF/dwr.xml"; //$NON-NLS-1$
+     private ServletHelper servletHelper = new ServletHelper();
 
      /**
       * The log stream
       */
-     private static final Logger log = Logger.getLogger(AbstractDwrServlet.class);
+     private static final Logger log = Logger.getLogger(DwrServlet.class);
 }

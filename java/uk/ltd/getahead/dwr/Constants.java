@@ -24,4 +24,14 @@ public interface Constants
      * The package name because people need to load resources in this package.
      */
     public static final String PACKAGE = "/uk/ltd/getahead/dwr"; //$NON-NLS-1$
+
+    /**
+     * The system dwr.xml resource name
+     */
+    public static final String FILE_DWR_XML = PACKAGE + "/dwr.xml"; //$NON-NLS-1$
+
+    /**
+     * The default dwr.xml file path
+     */
+    public static final String DEFAULT_DWR_XML = "/WEB-INF/dwr.xml"; //$NON-NLS-1$
 }

@@ -16,7 +16,6 @@
 package uk.ltd.getahead.dwr.create;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import javax.servlet.ServletContext;
@@ -28,6 +27,7 @@ import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.Messages;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -186,17 +186,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         }
         finally
         {
-            if (null != in)
-            {
-                try
-                {
-                    in.close();
-                }
-                catch (IOException ex)
-                {
-                    log.warn(ex.getMessage(), ex);
-                }
-            }
+            LocalUtil.close(in);
         }
     }
 

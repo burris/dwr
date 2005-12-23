@@ -28,5 +28,14 @@ public interface Container
      * @throws IllegalArgumentException If the given id does not refer to a bean
      */
     Object getBean(String id) throws IllegalArgumentException;
-}
 
+    /**
+     * It might be good if we could allow components to re-configure DWR on the
+     * fly, however Spring makes it a bit hard by hiding this behind an
+     * ConfigurableBeanFactory interface which isn't the default. There is
+     * probably a good reason for this, so we'll hold off this for now.
+     * @param id The name to register a bean against
+     * @param bean The object to register
+     */
+    //void setBean(String id, Object bean);
+}
