@@ -19,7 +19,7 @@ package uk.ltd.getahead.dwr;
  * Various constants for type conversion
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ConversionConstants
+public interface ConversionConstants
 {
     /**
      * The name for reference types from javascript
@@ -128,11 +128,4 @@ public class ConversionConstants
      * null is sometimes needed in a javascript map
      */
     public static final String INBOUND_NULL = "null"; //$NON-NLS-1$
-
-    /**
-     * Prevent instansiation
-     */
-    private ConversionConstants()
-    {
-    }
 }
