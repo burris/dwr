@@ -80,13 +80,9 @@ public class DwrController extends AbstractController implements BeanNameAware, 
             ServletContext servletContext = getWebApplicationContext().getServletContext();
 
             servletHelper.setServletConfig(new FakeServletConfig(name, servletContext));
-            servletHelper.setServletContext(servletContext);
-
             servletHelper.initWebContextBuilder(null, null);
 
-            // Load the configurators
             servletHelper.addSystemConfigurator();
-
             servletHelper.configure();
         }
         catch (Exception ex)

@@ -31,11 +31,25 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Configurator;
 import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.Container;
+import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.DebugPageGenerator;
+import uk.ltd.getahead.dwr.Remoter;
 import uk.ltd.getahead.dwr.WebContextBuilder;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.impl.DefaultAccessControl;
+import uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager;
+import uk.ltd.getahead.dwr.impl.DefaultContainer;
+import uk.ltd.getahead.dwr.impl.DefaultConverterManager;
+import uk.ltd.getahead.dwr.impl.DefaultCreatorManager;
+import uk.ltd.getahead.dwr.impl.DefaultDebugPageGenerator;
+import uk.ltd.getahead.dwr.impl.DefaultRemoter;
+import uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder;
 import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
 import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 
@@ -68,6 +82,40 @@ public class ServletHelper
     }
 
     /**
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
+    public void initDefaultContainer() throws InstantiationException, IllegalAccessException
+    {
+        // Load the factory with implementation information
+        DefaultContainer defaultContainer = new DefaultContainer();
+
+        defaultContainer.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
+        defaultContainer.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
+        defaultContainer.addParameter(CreatorManager.class.getName(), DefaultCreatorManager.class.getName());
+        defaultContainer.addParameter(Processor.class.getName(), DefaultProcessor.class.getName());
+        defaultContainer.addParameter(WebContextBuilder.class.getName(), DefaultWebContextBuilder.class.getName());
+        defaultContainer.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
+        defaultContainer.addParameter(Remoter.class.getName(), DefaultRemoter.class.getName());
+        defaultContainer.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
+
+        defaultContainer.addParameter("debug", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        defaultContainer.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        defaultContainer.addParameter("scriptCompressed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        Enumeration en = servletConfig.getInitParameterNames();
+        while (en.hasMoreElements())
+        {
+            String name = (String) en.nextElement();
+            String value = servletConfig.getInitParameter(name);
+            defaultContainer.addParameter(name, value);
+        }
+        defaultContainer.configurationFinished();
+
+        initContainer(defaultContainer);
+    }
+
+    /**
      * Accessor for the Container
      * @return the container
      */
@@ -83,6 +131,7 @@ public class ServletHelper
     public void setServletConfig(ServletConfig servletConfig)
     {
         this.servletConfig = servletConfig;
+        this.servletContext = servletConfig.getServletContext();
     }
 
     /**
@@ -92,15 +141,6 @@ public class ServletHelper
     public ServletConfig getServletConfig()
     {
         return servletConfig;
-    }
-
-    /**
-     * Accessor for ServletContext
-     * @param servletContext The new ServletContext
-     */
-    public void setServletContext(ServletContext servletContext)
-    {
-        this.servletContext = servletContext;
     }
 
     /**

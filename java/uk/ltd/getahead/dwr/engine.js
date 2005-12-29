@@ -390,10 +390,14 @@ DWREngine._sendData = function(batch) {
     // Workaround for Safari 1.x POST bug
     var indexSafari = navigator.userAgent.indexOf('Safari/');
     if (indexSafari >= 0) {
-      // So this is Safari, are we on 1.x? This is nasty
+      // So this is Safari, are we on 1.x? POST is broken
       var version = navigator.userAgent.substring(indexSafari + 7);
-      if (parseInt(version, 10) < 400) {
+      var verNum = parseInt(version, 10);
+      if (verNum < 400) {
         batch.verb == "GET";
+      }
+      else if (verNum < 417) {
+        batch.map.isBrokenSafari2 = "true";
       }
     }
     if (batch.verb == "GET") {

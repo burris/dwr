@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.servlet;
+package uk.ltd.getahead.dwr;
 
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
 
 /**
  * Call is a POJO to encapsulate the information required to make a single java

@@ -75,14 +75,13 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
      */
     public void init(ServletConfig config) throws ServletException
     {
+        super.init(config);
+
         try
         {
-            super.init(config);
-
             servletHelper.setServletConfig(config);
-            servletHelper.setServletContext(config.getServletContext());
-
             servletHelper.initWebContextBuilder(null, null);
+
             servletHelper.addSystemConfigurator();
 
             servletHelper.addConfiguratorsFromInitParams();

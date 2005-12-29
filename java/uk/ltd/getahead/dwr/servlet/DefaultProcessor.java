@@ -15,12 +15,26 @@
  */
 package uk.ltd.getahead.dwr.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uk.ltd.getahead.dwr.Calls;
+import uk.ltd.getahead.dwr.Constants;
+import uk.ltd.getahead.dwr.DebugPageGenerator;
+import uk.ltd.getahead.dwr.HttpResponse;
+import uk.ltd.getahead.dwr.Remoter;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -45,106 +59,358 @@ public class DefaultProcessor implements Processor
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Processor#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void handle(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
-        String pathInfo = req.getPathInfo();
-        String servletPath = req.getServletPath();
-        if (pathInfo == null)
+        try
         {
-            pathInfo = req.getServletPath();
-            servletPath = HtmlConstants.PATH_ROOT;
-            log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + req.getContextPath() + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            String pathInfo = request.getPathInfo();
+            String servletPath = request.getServletPath();
+            if (pathInfo == null)
+            {
+                pathInfo = request.getServletPath();
+                servletPath = HtmlConstants.PATH_ROOT;
+                log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + request.getContextPath() + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+    
+            String contextPath = request.getContextPath();
+    
+            HttpResponse reply = null;
+    
+            // NOTE: I'm not totally happy with the if statment, there doesn't
+            // appear to be logic to it, just hack-till-its-not-broken which feels
+            // like a good way to create latent bugs
+            if (pathInfo.length() == 0 ||
+                pathInfo.equals(HtmlConstants.PATH_ROOT) ||
+                pathInfo.equals(request.getContextPath()))
+            {
+                response.sendRedirect(request.getContextPath() + servletPath + HtmlConstants.FILE_INDEX);
+                return;
+            }
+            else if (pathInfo.startsWith(HtmlConstants.FILE_INDEX))
+            {
+                reply = debugPageGenerator.generateIndexPage(contextPath);
+            }
+            else if (pathInfo.startsWith(HtmlConstants.PATH_TEST))
+            {
+                String scriptName = pathInfo;
+                scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_TEST, HtmlConstants.BLANK);
+                scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_ROOT, HtmlConstants.BLANK);
+    
+                reply = debugPageGenerator.generateTestPage(contextPath, servletPath, scriptName);
+            }
+            else if (pathInfo.startsWith(HtmlConstants.PATH_INTERFACE))
+            {
+                String scriptName = pathInfo;
+                scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_INTERFACE, HtmlConstants.BLANK);
+                scriptName = LocalUtil.replace(scriptName, HtmlConstants.EXTENSION_JS, HtmlConstants.BLANK);
+                String path = request.getContextPath() + servletPath;
+    
+                reply = remoter.generateInterfaceScript(scriptName, path);
+            }
+            else if (pathInfo.startsWith(HtmlConstants.PATH_EXEC))
+            {
+                RequestParser requestParser = new RequestParser();
+                Calls calls = requestParser.parseRequest(request);
+    
+                reply = remoter.execute(calls);
+            }
+            else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_ENGINE))
+            {
+                doFile(request, response, HtmlConstants.FILE_ENGINE, HtmlConstants.MIME_JS);
+                return;
+            }
+            else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_UTIL))
+            {
+                doFile(request, response, HtmlConstants.FILE_UTIL, HtmlConstants.MIME_JS);
+                return;
+            }
+            else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_DEPRECATED))
+            {
+                doFile(request, response, HtmlConstants.FILE_DEPRECATED, HtmlConstants.MIME_JS);
+                return;
+            }
+            else
+            {
+                log.warn("Page not found (" + pathInfo + "). In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$ //$NON-NLS-2$
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+    
+            response.setContentType(reply.getMimeType());
+            ServletOutputStream out = response.getOutputStream();
+            out.write(reply.getBody());
+            out.flush();
         }
+        catch (Exception ex)
+        {
+            // This only catches exceptions parsing the request. All execution
+            // exceptions are returned inside the Call POJOs.
+            if (log.isDebugEnabled())
+            {
+                log.warn("Error: " + ex); //$NON-NLS-1$
+                log.debug("- User Agent: " + request.getHeader(HtmlConstants.HEADER_USER_AGENT)); //$NON-NLS-1$
+                log.debug("- Remote IP:  " + request.getRemoteAddr()); //$NON-NLS-1$
+                log.debug("- Request URL:" + request.getRequestURL()); //$NON-NLS-1$
+                log.debug("- Query:      " + request.getQueryString()); //$NON-NLS-1$
+                log.debug("- Method:     " + request.getMethod()); //$NON-NLS-1$
+                log.debug("- Body: {"); //$NON-NLS-1$
 
-        // NOTE: I'm not totally happy with the if statment, there doesn't
-        // appear to be logic to it, just hack-till-its-not-broken which feels
-        // like a good way to create latent bugs
-        if (pathInfo.length() == 0 ||
-            pathInfo.equals(HtmlConstants.PATH_ROOT) ||
-            pathInfo.equals(req.getContextPath()))
-        {
-            resp.sendRedirect(req.getContextPath() + servletPath + HtmlConstants.FILE_INDEX);
-        }
-        else if (pathInfo.startsWith(HtmlConstants.FILE_INDEX))
-        {
-            index.handle(req, resp);
-        }
-        else if (pathInfo.startsWith(HtmlConstants.PATH_TEST))
-        {
-            test.handle(req, resp);
-        }
-        else if (pathInfo.startsWith(HtmlConstants.PATH_INTERFACE))
-        {
-            iface.handle(req, resp);
-        }
-        else if (pathInfo.startsWith(HtmlConstants.PATH_EXEC))
-        {
-            exec.handle(req, resp);
-        }
-        else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_ENGINE))
-        {
-            file.doFile(req, resp, HtmlConstants.FILE_ENGINE, HtmlConstants.MIME_JS);
-        }
-        else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_UTIL))
-        {
-            file.doFile(req, resp, HtmlConstants.FILE_UTIL, HtmlConstants.MIME_JS);
-        }
-        else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_DEPRECATED))
-        {
-            file.doFile(req, resp, HtmlConstants.FILE_DEPRECATED, HtmlConstants.MIME_JS);
-        }
-        else
-        {
-            log.warn("Page not found (" + pathInfo + "). In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$ //$NON-NLS-2$
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                int lines = 0;
+                BufferedReader in = request.getReader();
+                while (in != null && lines < 100)
+                {
+                    String line = in.readLine();
+                    if (line == null)
+                    {
+                        break;
+                    }
+
+                    log.debug("-   " + line); //$NON-NLS-1$
+                    lines++;
+                }
+
+                log.debug("- }" + request.getMethod()); //$NON-NLS-1$
+                ex.printStackTrace();
+            }
+
+            response.setContentType(HtmlConstants.MIME_HTML);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            PrintWriter out = response.getWriter();
+            out.println("//<script type='text/javascript'>"); //$NON-NLS-1$
+            out.println("alert('Error. This may be due to an unsupported browser.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
+            out.println("//</script>"); //$NON-NLS-1$
+            out.flush();
+            return;
         }
     }
 
     /**
-     * @param exec The exec to set.
+     * Basically a file servlet component that does some <b>very limitted</b>
+     * EL type processing on the file. See the source for the cheat.
+     * @param request The request from the browser
+     * @param response The response channel
+     * @param path The path to search for, process and output
+     * @param mimeType The mime type to use for this output file
+     * @throws IOException If writing to the output fails
      */
-    public void setExec(Processor exec)
+    protected void doFile(HttpServletRequest request, HttpServletResponse response, String path, String mimeType) throws IOException
     {
-        this.exec = exec;
+        if (isUpToDate(request, path))
+        {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            return;
+        }
+
+        String output = null;
+
+        synchronized (scriptCache)
+        {
+            output = (String) scriptCache.get(path);
+            if (output == null)
+            {
+                StringBuffer buffer = new StringBuffer();
+
+                String resource = Constants.PACKAGE + path;
+                InputStream raw = getClass().getResourceAsStream(resource);
+                if (raw == null)
+                {
+                    throw new IOException("Failed to find resource: " + resource); //$NON-NLS-1$
+                }
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(raw));
+                while (true)
+                {
+                    String line = in.readLine();
+                    if (line == null)
+                    {
+                        break;
+                    }
+
+                    buffer.append(line);
+                    buffer.append('\n');
+                }
+
+                output = buffer.toString();
+
+                if (mimeType.equals(HtmlConstants.MIME_JS) && scriptCompressed)
+                {
+                    output = jsutil.compress(output, compressionLevel);
+                }
+
+                scriptCache.put(path, output);
+            }
+        }
+
+        response.setContentType(mimeType);
+        response.setDateHeader(HtmlConstants.HEADER_LAST_MODIFIED, servletContainerStartTime);
+        response.setHeader(HtmlConstants.HEADER_ETAG, etag);
+
+        PrintWriter out = response.getWriter();
+        out.println(output);
+        out.flush();
     }
 
     /**
-     * @param file The file to set.
+     * Do we need to send the conent for this file
+     * @param req The HTTP request
+     * @param path The file path (for debug purposes)
+     * @return true iff the ETags and If-Modified-Since headers say we have not changed
      */
-    public void setFile(FileProcessor file)
+    private boolean isUpToDate(HttpServletRequest req, String path)
     {
-        this.file = file;
+        if (ignoreLastModified)
+        {
+            return false;
+        }
+
+        long modifiedSince = req.getDateHeader(HtmlConstants.HEADER_IF_MODIFIED);
+        if (modifiedSince != -1)
+        {
+            // Browsers are only accurate to the second
+            modifiedSince -= modifiedSince % 1000;
+        }
+        String givenEtag = req.getHeader(HtmlConstants.HEADER_IF_NONE);
+
+        // Deal with missing etags
+        if (givenEtag == null)
+        {
+            // There is no ETag, just go with If-Modified-Since
+            if (modifiedSince > servletContainerStartTime)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Sending 304 for " + path + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + servletContainerStartTime); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+                return true;
+            }
+
+            // There are no modified setttings, carry on
+            return false;
+        }
+
+        // Deal with missing If-Modified-Since
+        if (modifiedSince == -1)
+        {
+            if (!etag.equals(givenEtag))
+            {
+                // There is an ETag, but no If-Modified-Since
+                if (log.isDebugEnabled())
+                {
+                log.debug("Sending 304 for " + path + " Old ETag=" + givenEtag + ", New ETag=" + etag); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+                return true;
+            }
+
+            // There are no modified setttings, carry on
+            return false;
+        }
+
+        // Do both values indicate that we are in-date?
+        if (etag.equals(givenEtag) && modifiedSince <= servletContainerStartTime)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("Sending 304 for " + path); //$NON-NLS-1$
+            }
+            return true;
+        }
+
+        return false;
     }
 
     /**
-     * @param iface The iface to set.
+     * @param ignoreLastModified The ignoreLastModified to set.
      */
-    public void setInterface(Processor iface)
+    public void setIgnoreLastModified(boolean ignoreLastModified)
     {
-        this.iface = iface;
+        this.ignoreLastModified = ignoreLastModified;
     }
 
     /**
-     * @param index The index to set.
+     * To what level do we compress scripts?
+     * @param scriptCompressed The scriptCompressed to set.
      */
-    public void setIndex(Processor index)
+    public void setScriptCompressed(boolean scriptCompressed)
     {
-        this.index = index;
+        this.scriptCompressed = scriptCompressed;
     }
 
     /**
-     * @param test The test to set.
+     * @param compressionLevel The compressionLevel to set.
      */
-    public void setTest(Processor test)
+    public void setCompressionLevel(int compressionLevel)
     {
-        this.test = test;
+        this.compressionLevel = compressionLevel;
     }
 
-    private Processor index;
-    private Processor test;
-    private Processor iface;
-    private Processor exec;
-    private FileProcessor file;
+    /**
+     * Setter for the remoter
+     * @param remoter
+     */
+    public void setRemoter(Remoter remoter)
+    {
+        this.remoter = remoter;
+    }
+
+    /**
+     * 
+     * @param debugPageGenerator
+     */
+    public void setDebugPageGenerator(DebugPageGenerator debugPageGenerator)
+    {
+        this.debugPageGenerator = debugPageGenerator;
+    }
+
+    /**
+     * The time on the script files
+     */
+    private static final long servletContainerStartTime;
+
+    /**
+     * The etag (=time for us) on the script files
+     */
+    private static final String etag;
+
+    /**
+     * Initialize the container start time
+     */
+    static
+    {
+        // Browsers are only accurate to the second
+        long now = System.currentTimeMillis();
+        servletContainerStartTime = now - (now % 1000);
+
+        etag = "\"" + servletContainerStartTime + '\"'; //$NON-NLS-1$
+    }
+
+    /**
+     * Do we ignore all the Last-Modified/ETags blathering?
+     */
+    private boolean ignoreLastModified = false;
+
+    /**
+     * How much do we compression javascript by?
+     */
+    private int compressionLevel = JavascriptUtil.LEVEL_DEBUGGABLE;
+
+    /**
+     * Do we retain comments and unneeded spaces in Javascript code?
+     */
+    private boolean scriptCompressed = true;
+
+    /**
+     * We cache the script output for speed
+     */
+    private final Map scriptCache = new HashMap();
+
+    /**
+     * The means by which we strip comments
+     */
+    private JavascriptUtil jsutil = new JavascriptUtil();
+
+    private DebugPageGenerator debugPageGenerator = null;
+
+    private Remoter remoter = null;
 
     /**
      * The log stream
