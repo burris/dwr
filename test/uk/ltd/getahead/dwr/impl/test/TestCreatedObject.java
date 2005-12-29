@@ -27,9 +27,22 @@ import javax.servlet.ServletContext;
  */
 public class TestCreatedObject
 {
-    public void testMethodWithServletParameters(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context,
-        HttpSession session)
+    /**
+     * @param request
+     * @param response
+     * @param config
+     * @param context
+     * @param session
+     */
+    public void testMethodWithServletParameters(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context, HttpSession session)
     {
+        Object ignore = request;
+        ignore = response;
+        ignore = config;
+        ignore = context;
+        ignore = session;
+        session = (HttpSession) ignore;
+
         // do nothing
     }
 

@@ -28,10 +28,12 @@ import java.util.Map;
 /**
  * @author Bram Smeets
  */
-public class SpringCreatorTests extends TestCase {
+public class SpringCreatorTests extends TestCase
+{
     private SpringCreator creator;
 
-    protected void setUp() throws Exception {
+    protected void setUp() throws Exception
+    {
         super.setUp();
 
         creator = new SpringCreator();
@@ -43,37 +45,64 @@ public class SpringCreatorTests extends TestCase {
         creator.setBeanName("dataManager");
     }
 
-    public void testBeanName() {
+    /**
+     * 
+     */
+    public void testBeanName()
+    {
         String beanName = "beanName";
         creator.setBeanName(beanName);
         assertEquals(beanName, creator.getBeanName());
     }
 
-    public void testGetScope() {
+    /**
+     * 
+     */
+    public void testGetScope()
+    {
         // make sure the default scope is the PAGE scope
         assertEquals(Creator.PAGE, creator.getScope());
     }
 
-    public void testGetType() {
+    /**
+     * 
+     */
+    public void testGetType()
+    {
         assertEquals(DummyDataManager.class, creator.getType());
     }
 
-    public void testGetInstance() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testGetInstance() throws Exception
+    {
         DummyDataManager mgr = (DummyDataManager) creator.getInstance();
         assertEquals(new DummyDataManager(), mgr);
     }
 
-    public void testNonExistingBean() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testNonExistingBean() throws Exception
+    {
         creator.setBeanName("nonExistingBean");
-        try {
+        try
+        {
             creator.getInstance();
             fail("a no such bean definition exception was expected");
-        } catch (NoSuchBeanDefinitionException e) {
+        }
+        catch (NoSuchBeanDefinitionException e)
+        {
             // do nothing, was expected
         }
     }
 
-    public void testOverrideBeanFactory() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testOverrideBeanFactory() throws Exception
+    {
         StaticApplicationContext ctx = new StaticApplicationContext();
         ctx.registerSingleton("dataManager", DummyDataManager.class);
         SpringCreator.setOverrideBeanFactory(ctx);
@@ -86,39 +115,60 @@ public class SpringCreatorTests extends TestCase {
         SpringCreator.setOverrideBeanFactory(null);
     }
 
-    public void testWithoutBeanNameWithRequest() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testWithoutBeanNameWithRequest() throws Exception
+    {
         SpringCreator creator2 = new SpringCreator();
         creator2.setBeanName("dataManager");
 
         // TODO: have the spring creator return instatiation exception
-        try {
+        try
+        {
             creator2.getInstance();
             fail("a null pointer exception was expected");
-        } catch(NullPointerException e) {
+        }
+        catch (NullPointerException e)
+        {
             // do nothing, was expected
         }
     }
 
-    public void testWithoutBeanNameWithoutRequest() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testWithoutBeanNameWithoutRequest() throws Exception
+    {
         SpringCreator creator2 = new SpringCreator();
         creator2.setBeanName("dataManager");
 
         // TODO: have the spring creator return instatiation exception
-        try {
+        try
+        {
             creator2.getInstance();
             fail("a null pointer exception was expected");
-        } catch(NullPointerException e) {
+        }
+        catch (NullPointerException e)
+        {
             // do nothing, was expected
         }
     }
 
-    public void testSetClass() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void testSetClass() throws Exception
+    {
         SpringCreator creator2 = new SpringCreator();
 
-        try {
+        try
+        {
             creator2.setClass("NonExistingClass");
             fail("an illegal argument exception was expected");
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e)
+        {
             // do nothing, was expected
         }
 

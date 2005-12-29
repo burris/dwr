@@ -22,8 +22,22 @@ import java.util.List;
  */
 public class SignatureTestsObject
 {
+    /**
+     * @return the nos
+     */
+    public List getLotteryResults()
+    {
+        return nos;
+    }
+
+    /**
+     * @param nos
+     */
     public void setLotteryResults(List nos)
     {
+        this.nos = nos;
         // do nothing
     }
+
+    private List nos;
 }

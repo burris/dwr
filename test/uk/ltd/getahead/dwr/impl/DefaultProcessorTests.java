@@ -22,7 +22,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import uk.ltd.getahead.dwr.servlet.DefaultProcessor;
-import uk.ltd.getahead.dwr.servlet.FileProcessor;
 import uk.ltd.getahead.dwr.servlet.Processor;
 
 /**
@@ -45,16 +44,19 @@ public class DefaultProcessorTests extends TestCase
         processor = new DefaultProcessor();
 
         mockProcessor = (Processor) EasyMock.createMock(Processor.class);
-        processor.setExec(mockProcessor);
-        processor.setIndex(mockProcessor);
-        processor.setInterface(mockProcessor);
-        processor.setTest(mockProcessor);
-        processor.setFile(new FileProcessor());
+//        processor.setExec(mockProcessor);
+//        processor.setIndex(mockProcessor);
+//        processor.setInterface(mockProcessor);
+//        processor.setTest(mockProcessor);
+//        processor.setFile(new FileProcessor());
 
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
 
+    /**
+     * @throws Exception
+     */
     public void testRootRedirection() throws Exception
     {
         request.setPathInfo(null);
@@ -65,6 +67,9 @@ public class DefaultProcessorTests extends TestCase
         assertEquals("//index.html", response.getRedirectedUrl());
     }
 
+    /**
+     * @throws Exception
+     */
     public void testDoIndex() throws Exception
     {
         request.setPathInfo("/index.html");
@@ -78,6 +83,9 @@ public class DefaultProcessorTests extends TestCase
         EasyMock.verify(mockProcessor);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testDoTest() throws Exception
     {
         // test to see if we get a 403 in case the creator manager is not in debug mode
@@ -92,6 +100,9 @@ public class DefaultProcessorTests extends TestCase
         EasyMock.verify(mockProcessor);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testGetEngineFile() throws Exception
     {
         request.setPathInfo("/engine.js");
@@ -107,6 +118,9 @@ public class DefaultProcessorTests extends TestCase
         assertTrue(result.indexOf("function DWREngine()") != -1);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testGetUtilFile() throws Exception
     {
         request.setPathInfo("/util.js");
@@ -122,6 +136,9 @@ public class DefaultProcessorTests extends TestCase
         assertTrue(result.indexOf("function DWRUtil()") != -1);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testGetDeprecatedFile() throws Exception
     {
         request.setPathInfo("/deprecated.js");
@@ -137,6 +154,9 @@ public class DefaultProcessorTests extends TestCase
         assertTrue(result.indexOf("function") != -1);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testDoInterface() throws Exception
     {
         request.setPathInfo("/interface/testCreatorName.js");
@@ -150,6 +170,9 @@ public class DefaultProcessorTests extends TestCase
         EasyMock.verify(mockProcessor);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testDoExec() throws Exception
     {
         request.setPathInfo("/exec/testCreatorName.doTest");
@@ -166,6 +189,9 @@ public class DefaultProcessorTests extends TestCase
         assertNotNull(result);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testNonExitingRequest() throws Exception
     {
         request.setPathInfo("/nonExistingPath");

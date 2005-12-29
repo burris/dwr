@@ -40,6 +40,9 @@ public class DefaultAccessControlTests extends TestCase
         request = new MockHttpServletRequest();
     }
 
+    /**
+     * @throws Exception
+     */
     public void testReasonToNotDisplayDwrObject() throws Exception
     {
         NewCreator creator = new NewCreator();
@@ -49,6 +52,9 @@ public class DefaultAccessControlTests extends TestCase
         assertEquals(Messages.getString("ExecuteQuery.DeniedCoreDWR"), result);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testReasonToNotDisplay() throws Exception
     {
         NewCreator creator = new NewCreator();
@@ -58,12 +64,18 @@ public class DefaultAccessControlTests extends TestCase
         assertNull(result);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testReasonToNotDisplayWithNonPublicMethod() throws Exception
     {
         String result = accessControl.getReasonToNotDisplay(null, null, getPrivateMethod());
         assertNotNull(result);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testReasonToNotDisplayWithNonExecutableMethod() throws Exception
     {
         accessControl.addExcludeRule("className", "someMethod");
@@ -72,6 +84,9 @@ public class DefaultAccessControlTests extends TestCase
         assertNotNull(result);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testReasonToNotDisplayWithMethodWithDwrParameter() throws Exception
     {
         NewCreator creator = new NewCreator();
@@ -81,6 +96,9 @@ public class DefaultAccessControlTests extends TestCase
         assertNotNull(result);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testReasonToNotDisplayWithObjectMethod() throws Exception
     {
         NewCreator creator = new NewCreator();
@@ -90,6 +108,9 @@ public class DefaultAccessControlTests extends TestCase
         assertNotNull(result);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testReasonToNotExecute() throws Exception
     {
         NewCreator creator = new NewCreator();
@@ -107,16 +128,30 @@ public class DefaultAccessControlTests extends TestCase
         assertNull(result);
     }
 
+    /**
+     * 
+     */
     public void someMethod()
     {
         // do nothing
     }
 
+    /**
+     * @param someString
+     * @param creator
+     */
     public void someMethodWithDwrParameter(String someString, Creator creator)
     {
+        Object ignore = someString;
+        ignore =  creator;
+        creator = (Creator) ignore;
+
         // do nothing
     }
 
+    /**
+     * 
+     */
     private void somePrivateMethod()
     {
         // do nothing
@@ -143,5 +178,13 @@ public class DefaultAccessControlTests extends TestCase
     private Method getHashCodeMethod() throws NoSuchMethodException
     {
         return getClass().getMethod("hashCode", new Class[0]);
+    }
+
+    /**
+     * Shuts lint up
+     */
+    protected void ignore()
+    {
+        somePrivateMethod();
     }
 }

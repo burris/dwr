@@ -21,8 +21,13 @@ import junit.framework.TestCase;
 /**
  * @author Bram Smeets
  */
-public class NewCreatorTests extends TestCase {
-    public void test() throws Exception {
+public class NewCreatorTests extends TestCase
+{
+    /**
+     * @throws Exception
+     */
+    public void test() throws Exception
+    {
         NewCreator creator = new NewCreator();
 
         creator.setClass(getClass().getName());

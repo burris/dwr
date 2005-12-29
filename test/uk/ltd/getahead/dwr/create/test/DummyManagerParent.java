@@ -19,8 +19,13 @@ package uk.ltd.getahead.dwr.create.test;
 /**
  * @author Bram Smeets
  */
-public class DummyManagerParent {
-    public void doTest() {
+public class DummyManagerParent
+{
+    /**
+     * 
+     */
+    public void doTest()
+    {
         // do nothing
     }
 }

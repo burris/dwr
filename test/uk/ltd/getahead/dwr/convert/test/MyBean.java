@@ -21,7 +21,13 @@ package uk.ltd.getahead.dwr.convert.test;
  */
 public interface MyBean
 {
+    /**
+     * @return a string
+     */
     String getProperty();
 
+    /**
+     * @param property
+     */
     void setProperty(String property);
 }

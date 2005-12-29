@@ -26,6 +26,9 @@ public class DefaultCreatorManagerTests extends TestCase
 {
     private DefaultCreatorManager manager = new DefaultCreatorManager();
 
+    /**
+     * 
+     */
     public void testAddCreatorType()
     {
         try
@@ -61,6 +64,9 @@ public class DefaultCreatorManagerTests extends TestCase
         manager.addCreatorType(null, NewCreator.class.getName());
     }
 
+    /**
+     * 
+     */
     public void testAddCreator()
     {
         NewCreator creator = new NewCreator();

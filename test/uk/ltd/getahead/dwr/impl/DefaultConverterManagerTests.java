@@ -30,6 +30,9 @@ public class DefaultConverterManagerTests extends TestCase
 {
     private DefaultConverterManager manager = new DefaultConverterManager();
 
+    /**
+     * 
+     */
     public void testAddConverterType()
     {
         try
@@ -55,6 +58,9 @@ public class DefaultConverterManagerTests extends TestCase
         manager.addConverterType(null, BeanConverter.class.getName());
     }
 
+    /**
+     * @throws Exception
+     */
     public void testAddConverter() throws Exception
     {
         manager.addConverter(null, null);
@@ -62,6 +68,9 @@ public class DefaultConverterManagerTests extends TestCase
         manager.addConverter(null, null, null);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testConvertInbound() throws Exception
     {
         try
@@ -110,6 +119,9 @@ public class DefaultConverterManagerTests extends TestCase
         manager.convertInbound(String.class, var, ctx, null);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testConvertOutbound() throws Exception
     {
         manager.convertOutbound(null, null);

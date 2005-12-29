@@ -16,52 +16,135 @@
 package uk.ltd.getahead.dwr.impl;
 
 import java.lang.reflect.Method;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import uk.ltd.getahead.dwr.AccessControl;
+import uk.ltd.getahead.dwr.AjaxFilter;
+import uk.ltd.getahead.dwr.AjaxFilterChain;
+import uk.ltd.getahead.dwr.AjaxFilterManager;
+import uk.ltd.getahead.dwr.Calls;
+import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.HttpResponse;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.create.NewCreator;
 import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
-import uk.ltd.getahead.dwr.servlet.DefaultInterfaceProcessor;
+import uk.ltd.getahead.dwr.impl.test.TestWebContextFactory;
+import uk.ltd.getahead.dwr.servlet.RequestParser;
 
 /**
- * @author Bram Smeets
+ * @author
  */
-public class DefaultInterfaceProcessorTests extends TestCase
+public class DefaultRemoterTests extends TestCase
 {
-    private DefaultInterfaceProcessor defaultInterfaceProcessor = new DefaultInterfaceProcessor();
+    private DefaultRemoter defaultRemoter = new DefaultRemoter();
 
     private CreatorManager creatorManager;
 
     private AccessControl accessControl;
 
+    private ConverterManager converterManager;
+
+    private AjaxFilterManager ajaxFilterManager;
+
     private MockHttpServletRequest request;
 
-    private MockHttpServletResponse response;
+    private RequestParser requestParser = new RequestParser();
 
     protected void setUp() throws Exception
     {
         super.setUp();
 
         creatorManager = (CreatorManager) EasyMock.createMock(CreatorManager.class);
-        defaultInterfaceProcessor.setCreatorManager(creatorManager);
+        defaultRemoter.setCreatorManager(creatorManager);
 
         accessControl = (AccessControl) EasyMock.createMock(AccessControl.class);
-        defaultInterfaceProcessor.setAccessControl(accessControl);
+        defaultRemoter.setAccessControl(accessControl);
+
+        converterManager = (ConverterManager) EasyMock.createMock(ConverterManager.class);
+        defaultRemoter.setConverterManager(converterManager);
+
+        ajaxFilterManager = (AjaxFilterManager) EasyMock.createMock(AjaxFilterManager.class);
+        defaultRemoter.setAjaxFilterManager(ajaxFilterManager);
 
         request = new MockHttpServletRequest();
-        response = new MockHttpServletResponse();
     }
 
+    /**
+     * @throws Exception
+     */
     public void testHandle() throws Exception
+    {
+        request.setPathInfo("/exec/dataManager.doTest");
+        request.setMethod("POST");
+        request.setContent(("callCount=2\n" + "c0-id=1\nc0-scriptName=creatorName\nc0-methodName=toString\n"
+            + "c1-id=2\nc1-scriptName=creatorName\nc1-methodName=hashCode").getBytes());
+
+        creatorManager.getCreator("creatorName");
+        NewCreator creator = new NewCreator();
+        creator.setClass(TestCreatedObject.class.getName());
+        EasyMock.expectLastCall().andReturn(creator).times(4);
+
+        EasyMock.expect(accessControl.getReasonToNotExecute((Creator) EasyMock.eq(creator), (String) EasyMock.eq("creatorName"), (Method) EasyMock.isA(Method.class)));
+        EasyMock.expectLastCall().andReturn(null).times(2);
+
+        EasyMock.expect(converterManager.convertOutbound(EasyMock.isA(Object.class), (OutboundContext) EasyMock.isA(OutboundContext.class)));
+        EasyMock.expectLastCall().andReturn(new OutboundVariable()).times(2);
+
+        // TODO: this should not be neccessary!
+        ArrayList filters = new ArrayList();
+        filters.add(new AjaxFilter()
+        {
+            public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
+            {
+                return new Object();
+            }
+        });
+        filters.add(new AjaxFilter()
+        {
+            public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
+            {
+                return new Object();
+            }
+        });
+        EasyMock.expect(ajaxFilterManager.getAjaxFilters("creatorName")).andReturn(filters.iterator()).atLeastOnce();
+
+        EasyMock.replay(creatorManager);
+        EasyMock.replay(accessControl);
+        EasyMock.replay(converterManager);
+        EasyMock.replay(ajaxFilterManager);
+
+        DefaultWebContextBuilder builder = new DefaultWebContextBuilder();
+        builder.set(request, null, null, null, null);
+        TestWebContextFactory.setWebContextBuilder(builder);
+
+        Calls calls = requestParser.parseRequest(request);
+        HttpResponse response = defaultRemoter.execute(calls);
+
+        EasyMock.verify(creatorManager);
+        EasyMock.verify(accessControl);
+        EasyMock.verify(converterManager);
+        EasyMock.verify(ajaxFilterManager);
+
+        String result = new String(response.getBody());
+        assertNotNull(result);
+        assertTrue(result.indexOf("<script type='text/javascript'>") != -1);
+        assertTrue(result.indexOf("window.parent.DWREngine._handleResponse('1',") != -1);
+        assertTrue(result.indexOf("window.parent.DWREngine._handleResponse('2',") != -1);
+        assertTrue(result.indexOf("</script>") != -1);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public void testHandle2() throws Exception
     {
         request.setPathInfo("/interface/creatorName.js");
 
@@ -77,13 +160,13 @@ public class DefaultInterfaceProcessorTests extends TestCase
         EasyMock.replay(creatorManager);
         EasyMock.replay(accessControl);
 
-        defaultInterfaceProcessor.handle(request, response);
+        HttpResponse response = defaultRemoter.generateInterfaceScript("creatorName", "/path");
 
         EasyMock.verify(creatorManager);
         EasyMock.verify(accessControl);
 
         // check the response
-        String result = response.getContentAsString();
+        String result = new String(response.getBody());
         assertTrue(result.indexOf("function creatorName() { }") != -1);
         assertTrue(result.indexOf("creatorName.hashCode = function(callback)") != -1);
         assertTrue(result.indexOf("creatorName.getClass = function(callback)") != -1);
@@ -100,6 +183,9 @@ public class DefaultInterfaceProcessorTests extends TestCase
         assertFalse(result.indexOf("creatorName.namespace = function(callback)") != -1);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testHandleWithoutInterface() throws Exception
     {
         creatorManager.getCreator("");
@@ -110,7 +196,8 @@ public class DefaultInterfaceProcessorTests extends TestCase
 
         try
         {
-            defaultInterfaceProcessor.handle(request, response);
+            Calls calls = requestParser.parseRequest(request);
+            defaultRemoter.execute(calls);
             fail("a security exception was expected");
         }
         catch (SecurityException e)
@@ -122,10 +209,13 @@ public class DefaultInterfaceProcessorTests extends TestCase
         EasyMock.verify(accessControl);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testHandleWithReasonsNotToDisplay() throws Exception
     {
         // make sure not to allow an impossible test
-        defaultInterfaceProcessor.setAllowImpossibleTests(false);
+        defaultRemoter.setAllowImpossibleTests(false);
 
         request.setPathInfo("/interface/creatorName.js");
 
@@ -141,13 +231,14 @@ public class DefaultInterfaceProcessorTests extends TestCase
         EasyMock.replay(creatorManager);
         EasyMock.replay(accessControl);
 
-        defaultInterfaceProcessor.handle(request, response);
+        Calls calls = requestParser.parseRequest(request);
+        HttpResponse response = defaultRemoter.execute(calls);
 
         EasyMock.verify(creatorManager);
         EasyMock.verify(accessControl);
 
         // check the response
-        String result = response.getContentAsString();
+        String result = new String(response.getBody());
         assertTrue(result.indexOf("function creatorName() { }") != -1);
         assertFalse(result.indexOf("creatorName.hashCode = function(callback)") != -1);
         assertFalse(result.indexOf("creatorName.getClass = function(callback)") != -1);

@@ -16,29 +16,26 @@
 package uk.ltd.getahead.dwr.impl;
 
 import java.lang.reflect.Method;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.HttpResponse;
 import uk.ltd.getahead.dwr.create.NewCreator;
 import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
-import uk.ltd.getahead.dwr.servlet.DefaultTestProcessor;
 
 /**
  * @author
  */
-public class DefaultTestProcessorTests extends TestCase
+public class DebugPageGeneratorTests extends TestCase
 {
-    private DefaultTestProcessor defaultTestProcessor = new DefaultTestProcessor();
+    private DefaultDebugPageGenerator debugPageGenerator = new DefaultDebugPageGenerator();
 
     private CreatorManager creatorManager;
 
@@ -46,25 +43,18 @@ public class DefaultTestProcessorTests extends TestCase
 
     private ConverterManager converterManager;
 
-    private MockHttpServletRequest request;
-
-    private MockHttpServletResponse response;
-
     protected void setUp() throws Exception
     {
         super.setUp();
 
         creatorManager = (CreatorManager) EasyMock.createMock(CreatorManager.class);
-        defaultTestProcessor.setCreatorManager(creatorManager);
+        debugPageGenerator.setCreatorManager(creatorManager);
 
         accessControl = (AccessControl) EasyMock.createMock(AccessControl.class);
-        defaultTestProcessor.setAccessControl(accessControl);
+        debugPageGenerator.setAccessControl(accessControl);
 
         converterManager = (ConverterManager) EasyMock.createMock(ConverterManager.class);
-        defaultTestProcessor.setConverterManager(converterManager);
-
-        request = new MockHttpServletRequest();
-        response = new MockHttpServletResponse();
+        debugPageGenerator.setConverterManager(converterManager);
     }
 
     /**
@@ -79,13 +69,13 @@ public class DefaultTestProcessorTests extends TestCase
         EasyMock.replay(accessControl);
         EasyMock.replay(converterManager);
 
-        defaultTestProcessor.handle(request, response);
+        HttpResponse response = debugPageGenerator.generateIndexPage("/");
 
         EasyMock.verify(creatorManager);
         EasyMock.verify(accessControl);
         EasyMock.verify(converterManager);
 
-        assertEquals(403, response.getStatus());
+        assertTrue(new String(response.getBody()).indexOf("Test Pages") != -1);
     }
 
     /**
@@ -93,8 +83,6 @@ public class DefaultTestProcessorTests extends TestCase
      */
     public void testHandle() throws Exception
     {
-        request.setPathInfo("/test/creatorName");
-
         creatorManager.isDebug();
         EasyMock.expectLastCall().andReturn(Boolean.TRUE);
 
@@ -116,14 +104,14 @@ public class DefaultTestProcessorTests extends TestCase
         EasyMock.replay(accessControl);
         EasyMock.replay(converterManager);
 
-        defaultTestProcessor.handle(request, response);
+        HttpResponse response = debugPageGenerator.generateTestPage("", "", "");
 
         EasyMock.verify(creatorManager);
         EasyMock.verify(accessControl);
         EasyMock.verify(converterManager);
 
-        assertEquals(200, response.getStatus());
-        String result = response.getContentAsString();
+        String result = new String(response.getBody());
+
         assertNotNull(result);
         assertTrue(result.indexOf("testMethodWithServletParameters(") != -1);
         assertTrue(result.indexOf("hashCode(") != -1);
@@ -133,5 +121,56 @@ public class DefaultTestProcessorTests extends TestCase
         assertTrue(result.indexOf("notify(") != -1);
         assertTrue(result.indexOf("notifyAll(") != -1);
         assertTrue(result.indexOf("toString(") != -1);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public void testHandleWithoutDebug() throws Exception
+    {
+        creatorManager.isDebug();
+        EasyMock.expectLastCall().andReturn(Boolean.FALSE);
+
+        EasyMock.replay(creatorManager);
+
+        try
+        {
+            debugPageGenerator.generateIndexPage("contextPath");
+            fail("Missing SecurityException");
+        }
+        catch (SecurityException ex)
+        {
+        }
+
+        EasyMock.verify(creatorManager);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public void testGenerateIndexPage() throws Exception
+    {
+        creatorManager.isDebug();
+        EasyMock.expectLastCall().andReturn(Boolean.TRUE);
+
+        creatorManager.getCreatorNames();
+        ArrayList names = new ArrayList();
+        names.add("creatorName");
+        EasyMock.expectLastCall().andReturn(names);
+
+        creatorManager.getCreator("creatorName");
+        NewCreator creator = new NewCreator();
+        creator.setClass(TestCreatedObject.class.getName());
+        EasyMock.expectLastCall().andReturn(creator);
+
+        EasyMock.replay(creatorManager);
+
+        HttpResponse result = debugPageGenerator.generateIndexPage("contextPath");
+
+        EasyMock.verify(creatorManager);
+
+        assertNotNull(result);
+        assertTrue(new String(result.getBody()).indexOf("creatorName") != -1);
+        assertTrue(new String(result.getBody()).indexOf(TestCreatedObject.class.getName()) != -1);
     }
 }

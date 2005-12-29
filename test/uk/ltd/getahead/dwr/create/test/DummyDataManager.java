@@ -23,33 +23,71 @@ import java.util.Map;
 /**
  * @author Bram Smeets
  */
-public class DummyDataManager extends DummyManagerParent {
-    public void doTest() {
+public class DummyDataManager extends DummyManagerParent
+{
+    public void doTest()
+    {
         // do nothing
     }
 
-    public void doTest(String s) {
+    /**
+     * @param s
+     */
+    public void doTest(String s)
+    {
+        String ignore = s; s = ignore;
         // do nothing
     }
 
-    public void debugger() {
+    /**
+     * 
+     */
+    public void debugger()
+    {
         // do nothing
     }
 
-    public String testArguments(String s, int i, long l, boolean b, float f, List list, Map map, HttpServletRequest request) {
+    /**
+     * @param s
+     * @param i
+     * @param l
+     * @param b
+     * @param f
+     * @param list
+     * @param map
+     * @param request
+     * @return test string
+     */
+    public String testArguments(String s, int i, long l, boolean b, float f, List list, Map map, HttpServletRequest request)
+    {
+        Object ignore = s; s = (String) ignore;
+        ignore = list; ignore = map; ignore = request;
+        long i2 = i;
+        if (b) { i2 = l; i2 = (long) f; ignore = "" + i2; }
+
         return "testString";
     }
 
-    public void doException() throws Exception {
+    /**
+     * @throws Exception
+     */
+    public void doException() throws Exception
+    {
         throw new Exception("testing");
     }
 
-    public boolean equals(Object obj) {
-        if(obj == this) {
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+        {
             return true;
         }
-        if(obj != null && obj instanceof DummyDataManager) {
-            DummyDataManager mgr = (DummyDataManager) obj;
+        if (obj != null && obj instanceof DummyDataManager)
+        {
+            //DummyDataManager mgr = (DummyDataManager) obj;
             return true;
         }
         return false;
