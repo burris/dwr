@@ -697,7 +697,6 @@ DWRUtil.addRows = function(ele, data, cellFuncs, options) {
   if (!options) options = {};
   if (!options.rowCreator) options.rowCreator = DWRUtil._defaultRowCreator;
   if (!options.cellCreator) options.cellCreator = DWRUtil._defaultCellCreator;
-  // TODO: remove the frag if it does not cause bugs: var frag = document.createDocumentFragment();
   var tr, i;
   if (DWRUtil._isArray(data)) {
     for (i = 0; i < data.length; i++) {
@@ -713,7 +712,6 @@ DWRUtil.addRows = function(ele, data, cellFuncs, options) {
       i++;
     }
   }
-  //ele.appendChild(frag);
 };
 
 /**
