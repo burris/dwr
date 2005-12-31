@@ -183,7 +183,7 @@ public class MapConverter implements Converter
                 sentNonStringWarning = true;
             }
 
-            String outkey = jsutil.escapeJavaScript(key.toString());
+            String outkey = JavascriptUtil.escapeJavaScript(key.toString());
 
 //            OutboundVariable ovkey = config.convertOutbound(key, outctx);
 //            buffer.append(ovkey.getInitCode());
@@ -202,11 +202,6 @@ public class MapConverter implements Converter
      * We don't want to give the non-string warning too many times.
      */
     private static boolean sentNonStringWarning = false;
-
-    /**
-     * The means by which we strip comments
-     */
-    private JavascriptUtil jsutil = new JavascriptUtil();
 
     /**
      * To forward marshalling requests

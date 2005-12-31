@@ -116,7 +116,7 @@ public class JavascriptUtil
      * @param level The compression level - see LEVEL_* and COMPRESS_* constants.
      * @return The compressed version
      */
-    public String compress(String text, int level)
+    public static String compress(String text, int level)
     {
         String reply = text;
 
@@ -161,7 +161,7 @@ public class JavascriptUtil
      * @param text The javascript program to strip spaces from.
      * @return The stripped program
      */
-    public String trimLines(String text)
+    public static String trimLines(String text)
     {
         if (text == null)
         {
@@ -200,7 +200,7 @@ public class JavascriptUtil
      * @param text The text to remove single-line comments from
      * @return The single-line comment free text
      */
-    public String stripSingleLineComments(String text)
+    public static String stripSingleLineComments(String text)
     {
         if (text == null)
         {
@@ -245,7 +245,7 @@ public class JavascriptUtil
      * @param text The text to remove multi-line comments from
      * @return The multi-line comment free text
      */
-    public String stripMultiLineComments(String text)
+    public static String stripMultiLineComments(String text)
     {
         if (text == null)
         {
@@ -338,7 +338,7 @@ public class JavascriptUtil
      * @param text The string to strip blank lines from
      * @return The blank line stripped reply
      */
-    public String stripBlankLines(String text)
+    public static String stripBlankLines(String text)
     {
         if (text == null)
         {
@@ -366,6 +366,7 @@ public class JavascriptUtil
                     doneOneLine = true;
                 }
             }
+
             if (!doneOneLine)
             {
                 output.append('\n');
@@ -385,7 +386,7 @@ public class JavascriptUtil
      * @param text The string to strip newline characters from
      * @return The stripped reply
      */
-    public String stripNewlines(String text)
+    public static String stripNewlines(String text)
     {
         if (text == null)
         {
@@ -424,7 +425,7 @@ public class JavascriptUtil
      * @param text The javascript program to shrink the variable names in.
      * @return The shrunk version of the javascript program.
      */
-    public String shrinkVariableNames(String text)
+    public static String shrinkVariableNames(String text)
     {
         if (text == null)
         {
@@ -455,87 +456,105 @@ public class JavascriptUtil
      * @param str  String to escape values in, may be null
      * @return String with escaped values, <code>null</code> if null string input
      */
-    public String escapeJavaScript(String str) {
-        if (str == null) {
+    public static String escapeJavaScript(String str)
+    {
+        if (str == null)
+        {
             return null;
         }
 
         StringBuffer writer = new StringBuffer(str.length() * 2);
-        int sz;
-        sz = str.length();
-        for (int i = 0; i < sz; i++) {
+
+        int sz = str.length();
+        for (int i = 0; i < sz; i++)
+        {
             char ch = str.charAt(i);
-        
+
             // handle unicode
-            if (ch > 0xfff) {
+            if (ch > 0xfff)
+            {
                 writer.append("\\u" + hex(ch)); //$NON-NLS-1$
-            } else if (ch > 0xff) {
+            }
+            else if (ch > 0xff)
+            {
                 writer.append("\\u0" + hex(ch)); //$NON-NLS-1$
-            } else if (ch > 0x7f) {
+            }
+            else if (ch > 0x7f)
+            {
                 writer.append("\\u00" + hex(ch)); //$NON-NLS-1$
-            } else if (ch < 32) {
-                switch (ch) {
-                    case '\b':
-                        writer.append('\\');
-                        writer.append('b');
-                        break;
-                    case '\n':
-                        writer.append('\\');
-                        writer.append('n');
-                        break;
-                    case '\t':
-                        writer.append('\\');
-                        writer.append('t');
-                        break;
-                    case '\f':
-                        writer.append('\\');
-                        writer.append('f');
-                        break;
-                    case '\r':
-                        writer.append('\\');
-                        writer.append('r');
-                        break;
-                    default :
-                        if (ch > 0xf) {
-                            writer.append("\\u00" + hex(ch)); //$NON-NLS-1$
-                        } else {
-                            writer.append("\\u000" + hex(ch)); //$NON-NLS-1$
-                        }
-                        break;
+            }
+            else if (ch < 32)
+            {
+                switch (ch)
+                {
+                case '\b':
+                    writer.append('\\');
+                    writer.append('b');
+                    break;
+                case '\n':
+                    writer.append('\\');
+                    writer.append('n');
+                    break;
+                case '\t':
+                    writer.append('\\');
+                    writer.append('t');
+                    break;
+                case '\f':
+                    writer.append('\\');
+                    writer.append('f');
+                    break;
+                case '\r':
+                    writer.append('\\');
+                    writer.append('r');
+                    break;
+                default :
+                    if (ch > 0xf)
+                    {
+                        writer.append("\\u00" + hex(ch)); //$NON-NLS-1$
+                    }
+                    else
+                    {
+                        writer.append("\\u000" + hex(ch)); //$NON-NLS-1$
+                    }
+                    break;
                 }
-            } else {
-                switch (ch) {
-                    case '\'':
-                        // If we wanted to escape for Java strings then we would
-                        // not need this next line.
-                        writer.append('\\');
-                        writer.append('\'');
-                        break;
-                    case '"':
-                        writer.append('\\');
-                        writer.append('"');
-                        break;
-                    case '\\':
-                        writer.append('\\');
-                        writer.append('\\');
-                        break;
-                    default :
-                        writer.append(ch);
-                        break;
+            }
+            else
+            {
+                switch (ch)
+                {
+                case '\'':
+                    // If we wanted to escape for Java strings then we would
+                    // not need this next line.
+                    writer.append('\\');
+                    writer.append('\'');
+                    break;
+                case '"':
+                    writer.append('\\');
+                    writer.append('"');
+                    break;
+                case '\\':
+                    writer.append('\\');
+                    writer.append('\\');
+                    break;
+                default :
+                    writer.append(ch);
+                    break;
                 }
             }
         }
+
         return writer.toString();
     }
 
     /**
      * <p>Returns an upper case hexadecimal <code>String</code> for the given
      * character.</p>
-     *
      * @param ch The character to convert.
      * @return An upper case hexadecimal <code>String</code>
      */
-    private String hex(char ch) {
+    private static String hex(char ch)
+    {
         return Integer.toHexString(ch).toUpperCase();
     }
 
@@ -547,8 +566,10 @@ public class JavascriptUtil
      * @param str  the <code>String</code> to unescape, may be null
      * @return A new unescaped <code>String</code>, <code>null</code> if null string input
      */
-    public String unescapeJavaScript(String str) {
-        if (str == null) {
+    public static String unescapeJavaScript(String str)
+    {
+        if (str == null)
+        {
             return null;
         }
 
@@ -557,75 +578,90 @@ public class JavascriptUtil
         StringBuffer unicode = new StringBuffer(4);
         boolean hadSlash = false;
         boolean inUnicode = false;
-        for (int i = 0; i < sz; i++) {
+
+        for (int i = 0; i < sz; i++)
+        {
             char ch = str.charAt(i);
-            if (inUnicode) {
+            if (inUnicode)
+            {
                 // if in unicode, then we're reading unicode
                 // values in somehow
                 unicode.append(ch);
-                if (unicode.length() == 4) {
+                if (unicode.length() == 4)
+                {
                     // unicode now contains the four hex digits
                     // which represents our unicode chacater
-                    try {
+                    try
+                    {
                         int value = Integer.parseInt(unicode.toString(), 16);
                         writer.append((char) value);
                         unicode.setLength(0);
                         inUnicode = false;
                         hadSlash = false;
-                    } catch (NumberFormatException nfe) {
+                    }
+                    catch (NumberFormatException nfe)
+                    {
                         throw new IllegalArgumentException("Unable to parse unicode value: " + unicode + " cause: " + nfe); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
                 continue;
             }
-            if (hadSlash) {
+
+            if (hadSlash)
+            {
                 // handle an escaped value
                 hadSlash = false;
-                switch (ch) {
-                    case '\\':
-                        writer.append('\\');
-                        break;
-                    case '\'':
-                        writer.append('\'');
-                        break;
-                    case '\"':
-                        writer.append('"');
-                        break;
-                    case 'r':
-                        writer.append('\r');
-                        break;
-                    case 'f':
-                        writer.append('\f');
-                        break;
-                    case 't':
-                        writer.append('\t');
-                        break;
-                    case 'n':
-                        writer.append('\n');
-                        break;
-                    case 'b':
-                        writer.append('\b');
-                        break;
-                    case 'u':
-                        // uh-oh, we're in unicode country....
-                        inUnicode = true;
-                        break;
-                    default :
-                        writer.append(ch);
-                        break;
+                switch (ch)
+                {
+                case '\\':
+                    writer.append('\\');
+                    break;
+                case '\'':
+                    writer.append('\'');
+                    break;
+                case '\"':
+                    writer.append('"');
+                    break;
+                case 'r':
+                    writer.append('\r');
+                    break;
+                case 'f':
+                    writer.append('\f');
+                    break;
+                case 't':
+                    writer.append('\t');
+                    break;
+                case 'n':
+                    writer.append('\n');
+                    break;
+                case 'b':
+                    writer.append('\b');
+                    break;
+                case 'u':
+                    // uh-oh, we're in unicode country....
+                    inUnicode = true;
+                    break;
+                default :
+                    writer.append(ch);
+                    break;
                 }
                 continue;
-            } else if (ch == '\\') {
+            }
+            else if (ch == '\\')
+            {
                 hadSlash = true;
                 continue;
             }
             writer.append(ch);
         }
-        if (hadSlash) {
+
+        if (hadSlash)
+        {
             // then we're in the weird case of a \ at the end of the
             // string, let's output it anyway.
             writer.append('\\');
         }
+
         return writer.toString();
     }
 
@@ -635,7 +671,7 @@ public class JavascriptUtil
      * @param name The word to check
      * @return false if the word is not reserved
      */
-    public boolean isReservedWord(String name)
+    public static boolean isReservedWord(String name)
     {
         return reserved.contains(name);
     }

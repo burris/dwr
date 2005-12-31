@@ -72,7 +72,7 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
         else if (paramType == Character.class)
         {
             // Treat characters as strings
-            return new OutboundVariable("", '\"' + jsutil.escapeJavaScript(object.toString()) + '\"'); //$NON-NLS-1$
+            return new OutboundVariable("", '\"' + JavascriptUtil.escapeJavaScript(object.toString()) + '\"'); //$NON-NLS-1$
         }
         else
         {
@@ -80,9 +80,4 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
             return new OutboundVariable("", object.toString()); //$NON-NLS-1$
         }
     }
-
-    /**
-     * The means by which we strip comments
-     */
-    private JavascriptUtil jsutil = new JavascriptUtil();
 }

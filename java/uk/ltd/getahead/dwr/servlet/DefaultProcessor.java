@@ -234,7 +234,7 @@ public class DefaultProcessor implements Processor
 
                 if (mimeType.equals(HtmlConstants.MIME_JS) && scriptCompressed)
                 {
-                    output = jsutil.compress(output, compressionLevel);
+                    output = JavascriptUtil.compress(output, compressionLevel);
                 }
 
                 scriptCache.put(path, output);
@@ -404,12 +404,13 @@ public class DefaultProcessor implements Processor
     private final Map scriptCache = new HashMap();
 
     /**
-     * The means by which we strip comments
+     * The bean to handle debug page requests
      */
-    private JavascriptUtil jsutil = new JavascriptUtil();
-
     private DebugPageGenerator debugPageGenerator = null;
 
+    /**
+     * The bean to execute remote requests and generate interfaces
+     */
     private Remoter remoter = null;
 
     /**

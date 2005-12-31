@@ -177,7 +177,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             }
 
             // Is it on the list of banned names
-            if (jsutil.isReservedWord(methodName))
+            if (JavascriptUtil.isReservedWord(methodName))
             {
                 buffer.append(HtmlConstants.BLANK);
                 buffer.append("<li style='color: #88A;'>" + methodName + "() is not available because it is a reserved word.</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -417,11 +417,6 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      * We cache the script output for speed
      */
     protected final Map scriptCache = new HashMap();
-
-    /**
-     * The means by which we strip comments
-     */
-    private JavascriptUtil jsutil = new JavascriptUtil();
 
     /**
      * The log stream

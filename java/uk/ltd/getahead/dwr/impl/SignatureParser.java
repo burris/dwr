@@ -54,8 +54,8 @@ public class SignatureParser
         {
             log.debug("Parsing extra type info: "); //$NON-NLS-1$
 
-            String reply = sourceUtil.stripMultiLineComments(sigtext);
-            reply = sourceUtil.stripSingleLineComments(reply);
+            String reply = JavascriptUtil.stripMultiLineComments(sigtext);
+            reply = JavascriptUtil.stripSingleLineComments(reply);
             String process = reply;
 
             process = process.replace('\n', ' ');
@@ -404,11 +404,6 @@ public class SignatureParser
 
         return (String[]) params.toArray(new String[params.size()]);
     }
-
-    /**
-     * The means by which we strip comments
-     */
-    private JavascriptUtil sourceUtil = new JavascriptUtil();
 
     /**
      * The map of specific class imports that we have parsed.

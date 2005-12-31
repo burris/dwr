@@ -115,7 +115,7 @@ public class JDOMConverter extends BaseV20Converter implements Converter
             buffer.append("var "); //$NON-NLS-1$
             buffer.append(varname);
             buffer.append("=DWREngine._unserializeDocument(\""); //$NON-NLS-1$
-            buffer.append(jsutil.escapeJavaScript(xml.toString()));
+            buffer.append(JavascriptUtil.escapeJavaScript(xml.toString()));
             buffer.append("\");"); //$NON-NLS-1$
 
             ov.setInitCode(buffer.toString());
@@ -130,9 +130,4 @@ public class JDOMConverter extends BaseV20Converter implements Converter
             throw new ConversionException(ex);
         }
     }
-
-    /**
-     * The means by which we strip comments
-     */
-    private JavascriptUtil jsutil = new JavascriptUtil();
 }

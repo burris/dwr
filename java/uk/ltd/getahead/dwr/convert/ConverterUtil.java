@@ -270,7 +270,7 @@ public class ConverterUtil
      */
     public static OutboundVariable addStringInit(String output, OutboundContext outctx)
     {
-        String escaped = jsutil.escapeJavaScript(output);
+        String escaped = JavascriptUtil.escapeJavaScript(output);
 
         // For short strings inline them
         if (escaped.length() < INLINE_LENGTH)
@@ -353,9 +353,4 @@ public class ConverterUtil
      * Strings longer than this are chopped up into smaller strings
      */
     private static final int WRAP_LENGTH = 128;
-
-    /**
-     * The means by which we strip comments
-     */
-    private static JavascriptUtil jsutil = new JavascriptUtil();
 }

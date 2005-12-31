@@ -90,7 +90,7 @@ public class DefaultRemoter implements Remoter
             }
 
             // Is it on the list of banned names
-            if (jsutil.isReservedWord(methodName))
+            if (JavascriptUtil.isReservedWord(methodName))
             {
                 continue;
             }
@@ -550,7 +550,7 @@ public class DefaultRemoter implements Remoter
         OutboundVariable ov = new OutboundVariable();
         String varName = converted.getNextVariableName();
         ov.setAssignCode(varName);
-        ov.setInitCode("var " + varName + " = \"" + jsutil.escapeJavaScript(th.getMessage()) + "\";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ov.setInitCode("var " + varName + " = \"" + JavascriptUtil.escapeJavaScript(th.getMessage()) + "\";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         return ov;
     }
@@ -652,11 +652,6 @@ public class DefaultRemoter implements Remoter
      * Generated Javascript cache
      */
     private Map methodCache = new HashMap();
-
-    /**
-     * The means by which we strip comments
-     */
-    private JavascriptUtil jsutil = new JavascriptUtil();
 
     /**
      * The log stream

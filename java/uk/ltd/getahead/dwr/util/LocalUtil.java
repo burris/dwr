@@ -517,6 +517,11 @@ public final class LocalUtil
             return false;
         }
 
+        if (JavascriptUtil.isReservedWord(name))
+        {
+            return false;
+        }
+
         boolean isSimple = Character.isLetter(name.charAt(0));
         for (int i = 1; isSimple && i < name.length(); i++)
         {
@@ -525,6 +530,7 @@ public final class LocalUtil
                 isSimple = false;
             }
         }
+
         return isSimple;
     }
 

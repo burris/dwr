@@ -24,18 +24,16 @@ import junit.framework.TestCase;
  */
 public class JavascriptUtilTest extends TestCase
 {
-    private JavascriptUtil jsutil = new JavascriptUtil();
-
     /**
      * Test method for 'uk.ltd.getahead.dwr.util.JavascriptUtil.compress(String, int)'
      */
     public void testCompress()
     {
-        assertEquals(jsutil.compress(" aaa \n aa \n", JavascriptUtil.COMPRESS_TRIM_LINES), "aaa\naa\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.compress("//aaa//bbbb\nxx //aaa\n", JavascriptUtil.COMPRESS_STRIP_SL_COMMENTS), "\nxx \n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.compress("a/*\n*/a\n", JavascriptUtil.COMPRESS_STRIP_ML_COMMENTS), "a \na\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.compress("a\n\na\n", JavascriptUtil.COMPRESS_STRIP_BLANKLINES), "a\na\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.compress("a\nb\n", JavascriptUtil.COMPRESS_REMOVE_NEWLINES), "a b \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.compress(" aaa \n aa \n", JavascriptUtil.COMPRESS_TRIM_LINES), "aaa\naa\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.compress("//aaa//bbbb\nxx //aaa\n", JavascriptUtil.COMPRESS_STRIP_SL_COMMENTS), "\nxx \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.compress("a/*\n*/a\n", JavascriptUtil.COMPRESS_STRIP_ML_COMMENTS), "a \na\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.compress("a\n\na\n", JavascriptUtil.COMPRESS_STRIP_BLANKLINES), "a\na\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.compress("a\nb\n", JavascriptUtil.COMPRESS_REMOVE_NEWLINES), "a b \n"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -43,15 +41,15 @@ public class JavascriptUtilTest extends TestCase
      */
     public void testStripSpaces()
     {
-        assertEquals(jsutil.trimLines("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.trimLines(null), null);
+        assertEquals(JavascriptUtil.trimLines("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.trimLines(null), null);
 
-        assertEquals(jsutil.trimLines("a a\n"), "a a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.trimLines("aaa\n"), "aaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.trimLines(" a a \n"), "a a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.trimLines(" aaa \n"), "aaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.trimLines("a a\n"), "a a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.trimLines("aaa\n"), "aaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.trimLines(" a a \n"), "a a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.trimLines(" aaa \n"), "aaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        assertEquals(jsutil.trimLines(" aaa \n aa \n"), "aaa\naa\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.trimLines(" aaa \n aa \n"), "aaa\naa\n"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -59,19 +57,19 @@ public class JavascriptUtilTest extends TestCase
      */
     public void testStripSingleLineComments()
     {
-        assertEquals(jsutil.stripSingleLineComments("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripSingleLineComments(null), null);
+        assertEquals(JavascriptUtil.stripSingleLineComments("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments(null), null);
 
-        assertEquals(jsutil.stripSingleLineComments("a\n"), "a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripSingleLineComments("/a\n"), "/a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripSingleLineComments("/a/a\n"), "/a/a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripSingleLineComments("/ /\n"), "/ /\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("a\n"), "a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("/a\n"), "/a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("/a/a\n"), "/a/a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("/ /\n"), "/ /\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        assertEquals(jsutil.stripSingleLineComments("//\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripSingleLineComments("//aaa\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripSingleLineComments("//aaa\naaa\n"), "\naaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripSingleLineComments("//aaa//bbbb\naaa\n"), "\naaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripSingleLineComments("//aaa//bbbb\nxx //aaa\n"), "\nxx \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("//\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa\naaa\n"), "\naaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa//bbbb\naaa\n"), "\naaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa//bbbb\nxx //aaa\n"), "\nxx \n"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -79,19 +77,19 @@ public class JavascriptUtilTest extends TestCase
      */
     public void testStripMultiLineComments()
     {
-        assertEquals(jsutil.stripMultiLineComments("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripMultiLineComments(null), null);
+        assertEquals(JavascriptUtil.stripMultiLineComments("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments(null), null);
 
-        assertEquals(jsutil.stripMultiLineComments("a\n"), "a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripMultiLineComments("/a\n"), "/a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripMultiLineComments("/a*a\n"), "/a*a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripMultiLineComments("/ */ *\n"), "/ */ *\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("a\n"), "a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("/a\n"), "/a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("/a*a\n"), "/a*a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("/ */ *\n"), "/ */ *\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        assertEquals(jsutil.stripMultiLineComments("/**/\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripMultiLineComments("/***/\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripMultiLineComments("/*a*/\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripMultiLineComments("a/**/a\n"), "a a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripMultiLineComments("a/*\n*/a\n"), "a \na\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("/**/\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("/***/\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("/*a*/\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("a/**/a\n"), "a a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("a/*\n*/a\n"), "a \na\n"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**.
@@ -99,17 +97,17 @@ public class JavascriptUtilTest extends TestCase
      */
     public void testStripBlankLines()
     {
-        assertEquals(jsutil.stripBlankLines("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripBlankLines("\n\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripBlankLines(null), null);
+        assertEquals(JavascriptUtil.stripBlankLines("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines("\n\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines(null), null);
 
-        assertEquals(jsutil.stripBlankLines("a\n"), "a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripBlankLines("a\na\n"), "a\na\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripBlankLines(" \n \n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripBlankLines(" \n\t\n#\n"), "#\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines("a\n"), "a\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines("a\na\n"), "a\na\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines(" \n \n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines(" \n\t\n#\n"), "#\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        assertEquals(jsutil.stripBlankLines("\n\n\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripBlankLines("a\n\na\n"), "a\na\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines("\n\n\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines("a\n\na\n"), "a\na\n"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -117,11 +115,11 @@ public class JavascriptUtilTest extends TestCase
      */
     public void testStripNewlines()
     {
-        assertEquals(jsutil.stripNewlines(""), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripNewlines("\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(jsutil.stripNewlines(null), null);
+        assertEquals(JavascriptUtil.stripNewlines(""), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripNewlines("\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripNewlines(null), null);
 
-        assertEquals(jsutil.stripNewlines("a\nb\n"), "a b \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripNewlines("a\nb\n"), "a b \n"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
