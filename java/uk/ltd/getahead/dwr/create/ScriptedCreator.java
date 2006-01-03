@@ -139,7 +139,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         this.scriptPath = scriptPath;
     }
 
-	/**
+    /**
      * @return Whether or not the script (located at scriptPath) has been modified.
      */
     private boolean scriptUpdated()
@@ -177,7 +177,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             throw new InstantiationException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
         }
 
-        if (cachedScript != null && (reloadable || !scriptUpdated()) )
+        if (cachedScript != null && (reloadable || !scriptUpdated()))
         {
             return cachedScript;
         }
@@ -190,7 +190,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         {
             ServletContext sc = WebContextFactory.get().getServletContext();
             File scriptFile = new File(sc.getRealPath(scriptPath));
-            
+
             scriptModified = scriptFile.lastModified();
             in = new RandomAccessFile(scriptFile, "r"); //$NON-NLS-1$
             byte bytes[] = new byte[(int) in.length()];
