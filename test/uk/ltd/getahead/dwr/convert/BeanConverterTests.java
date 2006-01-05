@@ -108,7 +108,9 @@ public class BeanConverterTests extends TestCase
         InboundVariable var = new InboundVariable(null, "type", "{ property: bla }");
         converter.setInstanceType(MyBeanImpl.class);
 
-        EasyMock.expect(manager.convertInbound((Class) EasyMock.eq(String.class), (InboundVariable) EasyMock.isA(InboundVariable.class), (InboundContext) EasyMock.eq(ctx), null)).andReturn("bla");
+        EasyMock.expect(manager.convertInbound((Class) EasyMock.eq(String.class),
+                (InboundVariable) EasyMock.isA(InboundVariable.class), (InboundContext) EasyMock.eq(ctx),
+                (TypeHintContext) EasyMock.isA(TypeHintContext.class))).andReturn("bla");
         EasyMock.replay(manager);
 
         Object result = converter.convertInbound(Object.class, var, ctx);

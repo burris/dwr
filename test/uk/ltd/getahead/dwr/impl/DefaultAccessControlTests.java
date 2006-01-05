@@ -17,12 +17,15 @@ package uk.ltd.getahead.dwr.impl;
 
 import junit.framework.TestCase;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.lang.reflect.Method;
 
 import uk.ltd.getahead.dwr.create.NewCreator;
 import uk.ltd.getahead.dwr.util.Messages;
 import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.WebContextBuilder;
 
 /**
  * @author Bram Smeets
@@ -46,7 +49,7 @@ public class DefaultAccessControlTests extends TestCase
     public void testReasonToNotDisplayDwrObject() throws Exception
     {
         NewCreator creator = new NewCreator();
-        creator.setClass("uk.ltd.getahead.dwr.Messages");
+        creator.setClass("uk.ltd.getahead.dwr.ExecutionContext");
 
         String result = accessControl.getReasonToNotDisplay(creator, "", getMethod());
         assertEquals(Messages.getString("ExecuteQuery.DeniedCoreDWR"), result);
@@ -113,6 +116,10 @@ public class DefaultAccessControlTests extends TestCase
      */
     public void testReasonToNotExecute() throws Exception
     {
+        WebContextBuilder builder = new DefaultWebContextBuilder();
+        builder.set(new MockHttpServletRequest(), new MockHttpServletResponse(), null, null, null);
+        WebContextFactory.setWebContextBuilder(builder);
+
         NewCreator creator = new NewCreator();
 
         String result = accessControl.getReasonToNotExecute(creator, "className", getMethod());
@@ -125,7 +132,7 @@ public class DefaultAccessControlTests extends TestCase
 
         request.addUserRole("someRole");
         result = accessControl.getReasonToNotExecute(creator, "className", getMethod());
-        assertNull(result);
+        assertNotNull(result);
     }
 
     /**

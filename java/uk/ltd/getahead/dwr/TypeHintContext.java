@@ -34,6 +34,10 @@ public class TypeHintContext
      */
     public TypeHintContext(Method method, int parameterNumber)
     {
+        if (method == null)
+        {
+            throw new IllegalArgumentException("The method can not be null");
+        }
         this.method = method;
         this.parameterNumber = parameterNumber;
         genericParameterTree = new ArrayList();

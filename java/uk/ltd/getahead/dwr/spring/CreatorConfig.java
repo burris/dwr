@@ -15,10 +15,7 @@
  */
 package uk.ltd.getahead.dwr.spring;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import uk.ltd.getahead.dwr.AjaxFilter;
 
@@ -152,10 +149,6 @@ public class CreatorConfig
      */
     public void addAuth(String method, String role)
     {
-        if (auth == null)
-        {
-            auth = new Properties();
-        }
         auth.setProperty(method, role);
     }
 
@@ -166,10 +159,6 @@ public class CreatorConfig
      */
     public void addFilter(AjaxFilter filter)
     {
-        if (filters == null)
-        {
-            filters = new ArrayList();
-        }
         filters.add(filter);
     }
 
@@ -180,10 +169,6 @@ public class CreatorConfig
      */
     public void addInclude(String method)
     {
-        if (includes == null)
-        {
-            includes = new ArrayList();
-        }
         includes.add(method);
     }
 
@@ -194,10 +179,6 @@ public class CreatorConfig
      */
     public void addExclude(String method)
     {
-        if (excludes == null)
-        {
-            excludes = new ArrayList();
-        }
         excludes.add(method);
     }
 
@@ -227,25 +208,25 @@ public class CreatorConfig
     /**
      * The list of method names to include for this creator.
      */
-    private List includes;
+    private List includes = new ArrayList();
 
     /**
      * The list of method names to exclude for this creator.
      */
-    private List excludes;
+    private List excludes = new ArrayList();
 
     /**
      * The properties containing the method name and the corrosponding required role.
      */
-    private Properties auth;
+    private Properties auth = new Properties();
 
     /**
      * The list of filter objects for this creator.
      */
-    private List filters;
+    private List filters = new ArrayList();
 
     /**
      * The set of key/value pairs to provide further configuration
      */
-    private Map params;
+    private Map params = new HashMap();
 }

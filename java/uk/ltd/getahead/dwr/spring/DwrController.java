@@ -28,6 +28,8 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.context.ServletContextAware;
+import org.springframework.util.Assert;
 
 import uk.ltd.getahead.dwr.servlet.ServletHelper;
 import uk.ltd.getahead.dwr.util.FakeServletConfig;
@@ -37,7 +39,7 @@ import uk.ltd.getahead.dwr.util.Logger;
  * A Spring Controller that handles DWR requests using a ServletHelper
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrController extends AbstractController implements BeanNameAware, InitializingBean, BeanFactoryAware
+public class DwrController extends AbstractController implements BeanNameAware, InitializingBean, BeanFactoryAware, ServletContextAware
 {
     /* (non-Javadoc)
      * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
@@ -70,15 +72,19 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         servletHelper.setIncludeDefaultConfig(includeDefaultConfig);
     }
 
+    public void setServletContext(ServletContext servletContext)
+    {
+        this.servletContext = servletContext;
+    }
+
     /* (non-Javadoc)
      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
      */
     public void afterPropertiesSet() throws Exception
     {
+        Assert.notNull(servletContext, "The servlet context has not been set on the controller");
         try
         {
-            ServletContext servletContext = getWebApplicationContext().getServletContext();
-
             servletHelper.setServletConfig(new FakeServletConfig(name, servletContext));
             servletHelper.initWebContextBuilder(null, null);
 
@@ -132,6 +138,8 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      * multiple inheritance prevents us.
      */
     private ServletHelper servletHelper = new ServletHelper();
+
+    private ServletContext servletContext;
 
     /**
      * The log stream

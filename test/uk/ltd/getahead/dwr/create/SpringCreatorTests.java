@@ -21,6 +21,10 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.support.StaticApplicationContext;
 import uk.ltd.getahead.dwr.create.test.DummyDataManager;
 import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.WebContextBuilder;
+import uk.ltd.getahead.dwr.servlet.ServletHelper;
+import uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -123,13 +127,12 @@ public class SpringCreatorTests extends TestCase
         SpringCreator creator2 = new SpringCreator();
         creator2.setBeanName("dataManager");
 
-        // TODO: have the spring creator return instatiation exception
         try
         {
             creator2.getInstance();
-            fail("a null pointer exception was expected");
+            fail("an illegal state exception was expected");
         }
-        catch (NullPointerException e)
+        catch (IllegalStateException e)
         {
             // do nothing, was expected
         }
@@ -143,13 +146,12 @@ public class SpringCreatorTests extends TestCase
         SpringCreator creator2 = new SpringCreator();
         creator2.setBeanName("dataManager");
 
-        // TODO: have the spring creator return instatiation exception
         try
         {
             creator2.getInstance();
-            fail("a null pointer exception was expected");
+            fail("an illegal state exception was expected");
         }
-        catch (NullPointerException e)
+        catch (IllegalStateException e)
         {
             // do nothing, was expected
         }

@@ -168,19 +168,19 @@ public class DefaultRemoterTests extends TestCase
         // check the response
         String result = new String(response.getBody());
         assertTrue(result.indexOf("function creatorName() { }") != -1);
-        assertTrue(result.indexOf("creatorName.hashCode = function(callback)") != -1);
-        assertTrue(result.indexOf("creatorName.getClass = function(callback)") != -1);
-        assertTrue(result.indexOf("creatorName.wait = function(callback)") != -1);
-        assertTrue(result.indexOf("creatorName.wait = function(p0, p1, callback)") != -1);
-        assertTrue(result.indexOf("creatorName.wait = function(p0, callback)") != -1);
-        assertTrue(result.indexOf("creatorName.equals = function(p0, callback)") != -1);
-        assertTrue(result.indexOf("creatorName.notify = function(callback)") != -1);
-        assertTrue(result.indexOf("creatorName.notifyAll = function(callback)") != -1);
-        assertTrue(result.indexOf("creatorName.toString = function(callback)") != -1);
-        assertTrue(result.indexOf("creatorName.testMethodWithServletParameters = function(callback)") != -1);
+        assertTrue(result.indexOf("creatorName.hashCode = function(") != -1);
+        assertTrue(result.indexOf("creatorName.getClass = function(") != -1);
+        assertTrue(result.indexOf("creatorName.wait = function(") != -1);
+        assertTrue(result.indexOf("creatorName.wait = function(") != -1);
+        assertTrue(result.indexOf("creatorName.wait = function(") != -1);
+        assertTrue(result.indexOf("creatorName.equals = function(") != -1);
+        assertTrue(result.indexOf("creatorName.notify = function(") != -1);
+        assertTrue(result.indexOf("creatorName.notifyAll = function(") != -1);
+        assertTrue(result.indexOf("creatorName.toString = function(") != -1);
+        assertTrue(result.indexOf("creatorName.testMethodWithServletParameters = function(") != -1);
 
         // make sure no entry is generated for the reserved javvascript word 'namespace'
-        assertFalse(result.indexOf("creatorName.namespace = function(callback)") != -1);
+        assertFalse(result.indexOf("creatorName.namespace = function(") != -1);
     }
 
     /**
@@ -188,6 +188,8 @@ public class DefaultRemoterTests extends TestCase
      */
     public void testHandleWithoutInterface() throws Exception
     {
+        request.setMethod("GET");
+
         creatorManager.getCreator("");
         EasyMock.expectLastCall().andThrow(new SecurityException());
 
@@ -214,6 +216,8 @@ public class DefaultRemoterTests extends TestCase
      */
     public void testHandleWithReasonsNotToDisplay() throws Exception
     {
+        request.setMethod("GET");
+        
         // make sure not to allow an impossible test
         defaultRemoter.setAllowImpossibleTests(false);
 

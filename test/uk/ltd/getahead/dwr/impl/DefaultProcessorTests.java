@@ -74,7 +74,7 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/index.html");
 
-        mockProcessor.handle(request, response);
+//        mockProcessor.handle(request, response);
 
         EasyMock.replay(mockProcessor);
 
@@ -91,7 +91,7 @@ public class DefaultProcessorTests extends TestCase
         // test to see if we get a 403 in case the creator manager is not in debug mode
         request.setPathInfo("/test/index.html");
 
-        mockProcessor.handle(request, response);
+//        mockProcessor.handle(request, response);
 
         EasyMock.replay(mockProcessor);
 
@@ -161,7 +161,7 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/interface/testCreatorName.js");
 
-        mockProcessor.handle(request, response);
+//        mockProcessor.handle(request, response);
 
         EasyMock.replay(mockProcessor);
 
@@ -177,7 +177,7 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/exec/testCreatorName.doTest");
 
-        mockProcessor.handle(request, response);
+//        mockProcessor.handle(request, response);
 
         EasyMock.replay(mockProcessor);
 

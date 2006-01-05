@@ -79,8 +79,8 @@ public class SpringConfigurator implements Configurator
                 for (Iterator it = creators.entrySet().iterator(); it.hasNext();)
                 {
                     Map.Entry entry = (Map.Entry) it.next();
-                    String scriptName = (String) entry.getValue();
-                    CreatorConfig creatorConfig = (CreatorConfig) entry.getKey();
+                    String scriptName = (String) entry.getKey();
+                    CreatorConfig creatorConfig = (CreatorConfig) entry.getValue();
 
                     String creatorName = creatorConfig.getCreator();
                     Map params = creatorConfig.getParams();

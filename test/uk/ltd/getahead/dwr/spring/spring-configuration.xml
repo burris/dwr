@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <bean id="dwrController" class="uk.ltd.getahead.dwr.spring.DwrController">
+        <property name="configurators">
+            <list>
+                <bean class="uk.ltd.getahead.dwr.spring.SpringConfigurator">
+                    <property name="creators">
+                        <map>
+                            <entry key="MyFacade">
+                                <bean class="uk.ltd.getahead.dwr.spring.CreatorConfig">
+                                    <property name="creator" value="bean"/>
+                                </bean>
+                            </entry>
+                        </map>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="includeDefaultConfig" value="false"/>
+    </bean>
+
+    <bean id="uk.ltd.getahead.dwr.servlet.Processor" class="uk.ltd.getahead.dwr.servlet.DefaultProcessor">
+
+    </bean>
+
+    <bean id="uk.ltd.getahead.dwr.WebContextBuilder" class="uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder">
+
+    </bean>
+
+    <bean id="uk.ltd.getahead.dwr.AccessControl" class="uk.ltd.getahead.dwr.impl.DefaultAccessControl"/>
+    <bean id="uk.ltd.getahead.dwr.AjaxFilterManager" class="uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager"/>
+    <bean id="uk.ltd.getahead.dwr.ConverterManager" class="uk.ltd.getahead.dwr.impl.DefaultConverterManager"/>
+    <bean id="uk.ltd.getahead.dwr.CreatorManager" class="uk.ltd.getahead.dwr.impl.DefaultCreatorManager"/>
+
+    <bean id="myFacade" class="java.lang.Object"/>
+</beans>

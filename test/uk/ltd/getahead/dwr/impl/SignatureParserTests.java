@@ -59,8 +59,8 @@ public class SignatureParserTests extends TestCase
      */
     public void testParse1()
     {
-        TypeHintContext thc = new TypeHintContext((Method) EasyMock.isA(Method.class), EasyMock.eq(0));
-        converterManager.setExtraTypeInfo(thc, (Class) EasyMock.eq(Integer.class));
+        //TypeHintContext thc = new TypeHintContext((Method) EasyMock.isA(Method.class), EasyMock.eq(0));
+        converterManager.setExtraTypeInfo((TypeHintContext)EasyMock.isA(TypeHintContext.class), (Class)EasyMock.eq(Integer.class));
 
         EasyMock.replay(converterManager);
 
