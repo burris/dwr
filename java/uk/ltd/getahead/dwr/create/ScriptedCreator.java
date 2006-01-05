@@ -177,7 +177,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             throw new InstantiationException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
         }
 
-        if (cachedScript != null && (reloadable || !scriptUpdated()))
+        if (cachedScript != null && (!reloadable || !scriptUpdated()))
         {
             return cachedScript;
         }
