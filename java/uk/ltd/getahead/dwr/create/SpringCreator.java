@@ -137,6 +137,7 @@ public class SpringCreator extends AbstractCreator implements Creator
                 log.info("- Option 1. In dwr.xml, <create creator='spring' ...> add <param name='location1' value='beans.xml'/> for each spring config file."); //$NON-NLS-1$
                 log.info("- Option 2. Use a spring org.springframework.web.context.ContextLoaderListener."); //$NON-NLS-1$
                 log.info("- Option 3. Call SpringCreator.setOverrideBeanFactory() from your web-app"); //$NON-NLS-1$
+                throw new InstantiationException("DWR can't find a spring config. See the logs for solutions");
             }
 
             Object reply = factory.getBean(beanName);
