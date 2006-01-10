@@ -7,35 +7,28 @@
   <script type='text/javascript' src='dwr/engine.js'></script>
   <script type='text/javascript' src='dwr/util.js'></script>
   <script>
-    function init()
-    {
-        // This turns off the no-javascript message
-        document.getElementById("start").style.display = "none";
-
-        // This checks for file: URLs and loading problems
-        if (window.DWREngine == null || window.DWRUtil == null)
-        {
-            document.getElementById("file").style.display = "block";
-            return;
-        }
-
-        // DWR setup
-        DWREngine.setErrorHandler(function(message) { alert(message); });
-        DWREngine.setWarningHandler(function(message) { alert(message); });
-        DWRUtil.useLoadingMessage();
-
-        // Turn on the generic error div
-        $("error").style.display = "block";
-
-        // Load a message from the server
-        Test.getInsert(load);
+    function init() {
+      // This turns off the no-javascript message
+      document.getElementById("start").style.display = "none";
+      // This checks for file: URLs and loading problems
+      if (window.DWREngine == null || window.DWRUtil == null) {
+        document.getElementById("file").style.display = "block";
+        return;
+      }
+      // DWR setup
+      DWREngine.setErrorHandler(function(message) { alert(message); });
+      DWREngine.setWarningHandler(function(message) { alert(message); });
+      DWRUtil.useLoadingMessage();
+      // Turn on the generic error div
+      $("error").style.display = "block";
+      // Load a message from the server
+      Test.getInsert(load);
     }
 
-    function load(data)
-    {
-        $("error").style.display = "none";
-        DWRUtil.setValue("reply", data);
-        $("reply").style.display = "block";
+    function load(data) {
+      $("error").style.display = "none";
+      DWRUtil.setValue("reply", data);
+      $("reply").style.display = "block";
     }
   </script>
 </head>
@@ -62,10 +55,10 @@
   <p>
     DWR has received test data from the server, however for some reason this
     data was mangled. Please report this error to the
-    <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList">DWR
-    mailing list</a>, including your browser, server, OS configuration and any
-    error messages that appeared either in the browser (including the Javascript
-    console if one exists) and the server console log.
+    <a href="http://getahead.ltd.uk/dwr/support">DWR mailing list</a>, including
+    your browser, server, OS configuration and any error messages that appeared
+    either in the browser (including the Javascript console if one exists) and
+    the server console log.
   </p>
 </div>
 
@@ -83,10 +76,10 @@
   </p>
   <p>
     If this is not the cause of the problem, please report it to the
-    <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList">DWR
-    mailing list</a>, including your browser, server, OS configuration and any
-    error messages that appeared either in the browser (including the Javascript
-    console if one exists) and the server console log.
+    <a href="http://getahead.ltd.uk/dwr/support">DWR mailing list</a>, including
+    your browser, server, OS configuration and any error messages that appeared
+    either in the browser (including the Javascript console if one exists) and
+    the server console log.
   </p>
 </div>
 
@@ -111,10 +104,10 @@
   </ul>
   <p>
     If none of these steps fixes the error, please report it to the
-    <a href="https://dwr.dev.java.net/servlets/ProjectMailingListList">DWR
-    mailing list</a>, including your browser, server, OS configuration and any
-    error messages that appeared either in the browser (including the Javascript
-    console if one exists) and the server console log.
+    <a href="http://getahead.ltd.uk/dwr/support">DWR mailing list</a>, including
+    your browser, server, OS configuration and any error messages that appeared
+    either in the browser (including the Javascript console if one exists) and
+    the server console log.
   </p>
 </div>
 
@@ -124,7 +117,6 @@
   </p>
   <ul>
     <li>The <a href="http://getahead.ltd.uk/dwr/">main DWR website</a>.</li>
-    <li>The <a href="https://dwr.dev.java.net/">Java.net pages</a>.</li>
     <li><a href="http://getahead.ltd.uk/blog/joe/">Joe Walker's blog</a>.</li>
     <li>The <a href="http://en.wikipedia.org/wiki/DWR">DWR page</a> at Wikipedia.</li>
   </ul>
