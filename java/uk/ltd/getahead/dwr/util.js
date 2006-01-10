@@ -466,6 +466,8 @@ DWRUtil.getValue = function(ele) {
     return ele.value;
   }
 
+  if (ele.textContent) return ele.textContent;
+  else if (ele.innerText) return ele.innerText;
   return ele.innerHTML;
 };
 
