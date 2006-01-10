@@ -360,10 +360,10 @@ DWREngine._sendData = function(batch) {
   // A quick string to help people that use web log analysers
   var statsInfo;
   if (batch.map.callCount == 1) {
-    statsInfo = batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"];
+    statsInfo = batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"] + ".dwr";
   }
   else {
-    statsInfo = "Multiple." + batch.map.callCount;
+    statsInfo = "Multiple." + batch.map.callCount + ".dwr";
   }
 
   // Get setup for XMLHttpRequest if possible
