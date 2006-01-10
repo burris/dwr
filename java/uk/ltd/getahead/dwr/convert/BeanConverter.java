@@ -194,7 +194,14 @@ public class BeanConverter extends BaseV20Converter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            inctx.addConverted(iv, bean);
+            if (instanceType != null)
+            {
+                inctx.addConverted(iv, instanceType, bean);
+            }
+            else
+            {
+                inctx.addConverted(iv, paramType, bean);
+            }
 
             // Loop through the property declarations
             StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);

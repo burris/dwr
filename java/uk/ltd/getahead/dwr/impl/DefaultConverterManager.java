@@ -99,7 +99,7 @@ public class DefaultConverterManager implements ConverterManager
      */
     public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx, TypeHintContext incc) throws ConversionException
     {
-        Object converted = inctx.getConverted(iv);
+        Object converted = inctx.getConverted(iv, paramType);
         if (converted == null)
         {
             Converter converter = getConverter(paramType);

@@ -107,21 +107,25 @@ public final class InboundContext
     /**
      * Add to the (temporary) list of converted objects
      * @param iv The converted object
+     * @param type The type that we converted the object to
      * @param bean The converted version
      */
-    public void addConverted(InboundVariable iv, Object bean)
+    public void addConverted(InboundVariable iv, Class type, Object bean)
     {
-        converted.put(iv, bean);
+        Conversion conversion = new Conversion(iv, type);
+        converted.put(conversion, bean);
     }
 
     /**
      * Check to see if the conversion has already been done
      * @param iv The inbound data to check
+     * @param type The type that we want the object converted to
      * @return The converted data or null if it has not been converted
      */
-    public Object getConverted(InboundVariable iv)
+    public Object getConverted(InboundVariable iv, Class type)
     {
-        return converted.get(iv);
+        Conversion conversion = new Conversion(iv, type);
+        return converted.get(conversion);
     }
 
     /**
@@ -176,6 +180,58 @@ public final class InboundContext
     public Iterator getInboundVariableNames()
     {
         return variables.keySet().iterator();
+    }
+
+    /**
+     * A Class to use as a key in a map for conversion purposes
+     */
+    protected static class Conversion
+    {
+        /**
+         * @param inboundVariable
+         * @param type
+         */
+        protected Conversion(InboundVariable inboundVariable, Class type)
+        {
+            this.inboundVariable = inboundVariable;
+            this.type = type;
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object obj)
+        {
+            if (!(obj instanceof Conversion))
+            {
+                return false;
+            }
+
+            Conversion that = (Conversion) obj;
+
+            if (!this.type.equals(that.type))
+            {
+                return false;
+            }
+
+            if (!this.inboundVariable.equals(that.inboundVariable))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#hashCode()
+         */
+        public int hashCode()
+        {
+            return inboundVariable.hashCode() + type.hashCode();
+        }
+
+        protected InboundVariable inboundVariable;
+        protected Class type;
     }
 
     /**

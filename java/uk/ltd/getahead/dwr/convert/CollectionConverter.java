@@ -125,7 +125,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            inctx.addConverted(iv, col);
+            inctx.addConverted(iv, paramType, col);
 
             StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
             int size = st.countTokens();

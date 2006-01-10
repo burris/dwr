@@ -79,7 +79,7 @@ public class MapConverter implements Converter
         {
             // Maybe we ought to check that the paramType isn't expecting a more
             // distinct type of Map and attempt to create that?
-            Map map =  null;
+            Map map = null;
 
             // If paramType is concrete then just use whatever we've got.
             if (!paramType.isInterface() && !Modifier.isAbstract(paramType.getModifiers()))
@@ -106,7 +106,7 @@ public class MapConverter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            inctx.addConverted(iv, map);
+            inctx.addConverted(iv, paramType, map);
             InboundContext incx = iv.getLookup();
 
             // Loop through the property declarations
