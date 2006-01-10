@@ -16,26 +16,18 @@
 
 package uk.ltd.getahead.dwr.spring;
 
-import junit.framework.TestCase;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.StringUtils;
-
-import java.util.logging.Logger;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 
 /**
  * @author Bram Smeets
  */
 public class DwrControllerTests extends AbstractDependencyInjectionSpringContextTests {
-
-    /** Create a category for the log4j logging facility. */
-    private static final Logger log = Logger.getLogger(DwrControllerTests.class.getName());
 
     private DwrController controller;
 
@@ -63,6 +55,9 @@ public class DwrControllerTests extends AbstractDependencyInjectionSpringContext
         return ctx;
     }
 
+    /**
+     * @throws Exception
+     */
     public void test() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();

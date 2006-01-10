@@ -17,20 +17,16 @@
 package uk.ltd.getahead.dwr.spring;
 
 import junit.framework.TestCase;
+
+import org.easymock.EasyMock;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.beans.factory.BeanFactory;
-import org.easymock.EasyMock;
-import uk.ltd.getahead.dwr.servlet.Processor;
-import uk.ltd.getahead.dwr.WebContextBuilder;
-import uk.ltd.getahead.dwr.Container;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
+import uk.ltd.getahead.dwr.WebContextBuilder;
+import uk.ltd.getahead.dwr.servlet.Processor;
 
 /**
  * @author Bram Smeets
@@ -43,6 +39,9 @@ public class DwrSpringServletTests extends TestCase {
     private MockServletConfig config;
     private MockServletContext context;
 
+    /**
+     * 
+     */
     protected void setUp() throws Exception {
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
@@ -50,6 +49,9 @@ public class DwrSpringServletTests extends TestCase {
         config = new MockServletConfig(context);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testDoPost() throws Exception {
         BeanFactory factory = (BeanFactory) EasyMock.createMock(BeanFactory.class);
 

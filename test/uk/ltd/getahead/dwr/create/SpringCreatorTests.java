@@ -16,18 +16,16 @@
 
 package uk.ltd.getahead.dwr.create;
 
-import junit.framework.TestCase;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.context.support.StaticApplicationContext;
-import uk.ltd.getahead.dwr.create.test.DummyDataManager;
-import uk.ltd.getahead.dwr.Creator;
-import uk.ltd.getahead.dwr.WebContextFactory;
-import uk.ltd.getahead.dwr.WebContextBuilder;
-import uk.ltd.getahead.dwr.servlet.ServletHelper;
-import uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import junit.framework.TestCase;
+
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.support.StaticApplicationContext;
+
+import uk.ltd.getahead.dwr.Creator;
+import uk.ltd.getahead.dwr.create.test.DummyDataManager;
 
 /**
  * @author Bram Smeets

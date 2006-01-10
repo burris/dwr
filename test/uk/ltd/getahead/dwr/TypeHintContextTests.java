@@ -30,6 +30,9 @@ public class TypeHintContextTests extends TestCase {
         ctx = new TypeHintContext(getClass().getMethod("testConstructor", new Class[0]), -1);
     }
 
+    /**
+     * 
+     */
     public void testConstructor() {
         try {
             ctx = new TypeHintContext(null, -1);
@@ -39,6 +42,9 @@ public class TypeHintContextTests extends TestCase {
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public void testToString() throws Exception {
         String s = ctx.toString();
         assertNotNull(s);
@@ -54,11 +60,17 @@ public class TypeHintContextTests extends TestCase {
         assertNotNull(s);
     }
 
+    /**
+     * 
+     */
     public void testHashCode() {
         int hashCode = ctx.hashCode();
         assertFalse(hashCode == -1);
     }
 
+    /**
+     * @throws Exception
+     */
     public void testEquals() throws Exception {
         assertFalse(ctx.equals(null));
         assertFalse(ctx.equals("Testing"));
@@ -74,7 +86,13 @@ public class TypeHintContextTests extends TestCase {
         assertFalse(ctx.equals(ctx2));
     }
 
+    /**
+     * @param s 
+     * @param i 
+     * @param l 
+     * @return a string
+     */
     public String aComplexMethodSignature(String s, Integer i, Long l) {
-        return "test";
+        return "test" + s + i + l;
     }
 }

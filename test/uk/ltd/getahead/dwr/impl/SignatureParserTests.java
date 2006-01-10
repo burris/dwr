@@ -15,8 +15,6 @@
  */
 package uk.ltd.getahead.dwr.impl;
 
-import java.lang.reflect.Method;
-
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
