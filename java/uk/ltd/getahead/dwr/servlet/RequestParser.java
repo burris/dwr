@@ -181,6 +181,7 @@ public class RequestParser
      * Fish out the important parameters
      * @param paramMap The string/string map to convert
      * @return The call details the methods we are calling
+     * @throws IOException If the parsing of input parameter fails
      */
     private Calls parseParameters(Map paramMap) throws IOException
     {
@@ -192,11 +193,13 @@ public class RequestParser
         // Work out how many calls are in this packet
         String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
         int callCount;
-        try {
+        try
+        {
             callCount = Integer.parseInt(callStr);
         }
-        catch (NumberFormatException e) {
-            throw new IOException("The specified call count is not a number: " + e.getMessage());
+        catch (NumberFormatException ex)
+        {
+            throw new IOException(Messages.getString("ExecuteQuery.BadCallCount", ex.getMessage())); //$NON-NLS-1$
         }
 
         // Extract the ids, scriptnames and methodnames
