@@ -26,14 +26,15 @@ public final class InboundVariable
     /**
      * Parsing ctor
      * @param context How we lookup references
+     * @param key The name of the variable that this was transfered as
      * @param type The type information from javascript
      * @param value The javascript variable converted to a string
      */
-    public InboundVariable(InboundContext context, String type, String value)
+    public InboundVariable(InboundContext context, String key, String type, String value)
     {
         this.context = context;
 
-        if (ConversionConstants.TYPE_REFERENCE.equals(type)) 
+        if (ConversionConstants.TYPE_REFERENCE.equals(type))
         {
             String tempType = type;
             String tempValue = value;
@@ -53,11 +54,23 @@ public final class InboundVariable
 
             this.type = tempType;
             this.value = tempValue;
-        } 
-        else 
-        {            
+
+            // For references without an explicit variable name, we use the
+            // name of the thing they point at
+            if (key == null)
+            {
+                this.key = value;
+            }
+            else
+            {
+                this.key = key;
+            }
+        }
+        else
+        {
             this.type = type;
             this.value = value;
+            this.key = key;
         }
     }
 
@@ -107,6 +120,11 @@ public final class InboundVariable
      */
     public boolean equals(Object obj)
     {
+        if (this == obj)
+        {
+            return true;
+        }
+
         if (!(obj instanceof InboundVariable))
         {
             return false;
@@ -120,6 +138,16 @@ public final class InboundVariable
         }
 
         if (!this.value.equals(that.value))
+        {
+            return false;
+        }
+
+        if (this.key == null || that.key == null)
+        {
+            return false;
+        }
+
+        if (!this.key.equals(that.key))
         {
             return false;
         }
@@ -139,6 +167,11 @@ public final class InboundVariable
      * How do be lookup references?
      */
     private InboundContext context;
+
+    /**
+     * The variable name
+     */
+    private final String key;
 
     /**
      * The javascript declared variable type

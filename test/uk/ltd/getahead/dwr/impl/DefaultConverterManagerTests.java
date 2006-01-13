@@ -115,7 +115,7 @@ public class DefaultConverterManagerTests extends TestCase
             // do nothing, was expected
         }
 
-        InboundVariable var = new InboundVariable(ctx, "java.lang.String", "bla");
+        InboundVariable var = new InboundVariable(ctx, null, "java.lang.String", "bla");
         manager.convertInbound(String.class, var, ctx, null);
     }
 

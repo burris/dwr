@@ -53,7 +53,7 @@ public class BigNumberConverterTests extends TestCase
     public void testConvertInboundBigInteger() throws Exception
     {
         InboundContext ctx = new InboundContext();
-        InboundVariable iv = new InboundVariable(ctx, "type", "23");
+        InboundVariable iv = new InboundVariable(ctx, null, "type", "23");
 
         Object result = converter.convertInbound(BigInteger.class, iv, ctx);
 
@@ -68,7 +68,7 @@ public class BigNumberConverterTests extends TestCase
     public void testConvertInboundBigDecimal() throws Exception
     {
         InboundContext ctx = new InboundContext();
-        InboundVariable iv = new InboundVariable(ctx, "type", "23");
+        InboundVariable iv = new InboundVariable(ctx, null, "type", "23");
 
         Object result = converter.convertInbound(BigDecimal.class, iv, ctx);
 
@@ -83,7 +83,7 @@ public class BigNumberConverterTests extends TestCase
     public void testConvertInboundNotANumber() throws Exception
     {
         InboundContext ctx = new InboundContext();
-        InboundVariable iv = new InboundVariable(ctx, "type", "a23");
+        InboundVariable iv = new InboundVariable(ctx, null, "type", "a23");
 
         try
         {
@@ -102,7 +102,7 @@ public class BigNumberConverterTests extends TestCase
     public void testConvertInboundNotAPrimitive() throws Exception
     {
         InboundContext ctx = new InboundContext();
-        InboundVariable iv = new InboundVariable(ctx, "type", "23");
+        InboundVariable iv = new InboundVariable(ctx, null, "type", "23");
 
         try
         {

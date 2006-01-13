@@ -130,7 +130,9 @@ public class MapConverter implements Converter
                 // type and value (as passed in by Javascript)
                 String valStr = token.substring(colonpos + 1).trim();
                 String[] splitIv = LocalUtil.splitInbound(valStr);
-                InboundVariable valIv = new InboundVariable(incx, splitIv[LocalUtil.INBOUND_INDEX_TYPE], splitIv[LocalUtil.INBOUND_INDEX_VALUE]);
+                String splitIvValue = splitIv[LocalUtil.INBOUND_INDEX_VALUE];
+                String splitIvType = splitIv[LocalUtil.INBOUND_INDEX_TYPE];
+                InboundVariable valIv = new InboundVariable(incx, null, splitIvType, splitIvValue);
                 Object val = config.convertInbound(valType, valIv, inctx, valThc);
 
                 // Keys (unlike values) do not have type info passed with them
@@ -139,7 +141,7 @@ public class MapConverter implements Converter
                 String keyStr = token.substring(0, colonpos).trim();
                 //String[] keySplit = ExecuteQuery.splitInbound(keyStr);
                 //InboundVariable keyIv = new InboundVariable(incx, splitIv[ExecuteQuery.INBOUND_INDEX_TYPE], splitIv[ExecuteQuery.INBOUND_INDEX_VALUE]);
-                InboundVariable keyIv = new InboundVariable(incx, ConversionConstants.TYPE_STRING, keyStr);
+                InboundVariable keyIv = new InboundVariable(incx, null, ConversionConstants.TYPE_STRING, keyStr);
                 Object key = config.convertInbound(keyType, keyIv, inctx, keyThc);
 
                 map.put(key, val);

@@ -36,7 +36,7 @@ public class ConstructorConverterTests extends TestCase
     public void testConvertInbound()
     {
         InboundContext ctx = new InboundContext();
-        InboundVariable iv = new InboundVariable(ctx, "type", "value");
+        InboundVariable iv = new InboundVariable(ctx, null, "type", "value");
 
         Object result = converter.convertInbound(String.class, iv, ctx);
 

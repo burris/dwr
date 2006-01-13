@@ -199,7 +199,7 @@ public class RequestParser
         }
         catch (NumberFormatException ex)
         {
-            throw new IOException(Messages.getString("ExecuteQuery.BadCallCount", ex.getMessage())); //$NON-NLS-1$
+            throw new IOException(Messages.getString("ExecuteQuery.BadCallCount", callStr)); //$NON-NLS-1$
         }
 
         // Extract the ids, scriptnames and methodnames

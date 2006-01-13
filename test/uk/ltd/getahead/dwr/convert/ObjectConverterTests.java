@@ -51,7 +51,7 @@ public class ObjectConverterTests extends TestCase
     public void testConvertInbound() throws Exception
     {
         InboundContext ctx = new InboundContext();
-        InboundVariable iv = new InboundVariable(ctx, "type", "{ value : value }");
+        InboundVariable iv = new InboundVariable(ctx, null, "type", "{ value : value }");
 
         Object result = converter.convertInbound(String.class, iv, ctx);
 

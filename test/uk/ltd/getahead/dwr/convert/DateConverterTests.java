@@ -69,12 +69,12 @@ public class DateConverterTests extends TestCase
     public void testConvertInbound() throws Exception
     {
         InboundContext ctx = new InboundContext();
-        InboundVariable iv = new InboundVariable(ctx, "type", "null");
+        InboundVariable iv = new InboundVariable(ctx, null, "type", "null");
 
         Object result = converter.convertInbound(Date.class, iv, ctx);
         assertNull(result);
 
-        iv = new InboundVariable(ctx, "type", "1104534000000");
+        iv = new InboundVariable(ctx, null, "type", "1104534000000");
         result = converter.convertInbound(Date.class, iv, ctx);
 
         assertNotNull(result);

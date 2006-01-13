@@ -65,7 +65,7 @@ public final class InboundContext
      */
     public void createInboundVariable(int callNum, String key, String type, String value)
     {
-        InboundVariable cte = new InboundVariable(this, type, value);
+        InboundVariable cte = new InboundVariable(this, key, type, value);
 
         variables.put(key, cte);
 

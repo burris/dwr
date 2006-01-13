@@ -64,7 +64,7 @@ public class BeanConverterTests extends TestCase
      */
     public void testConvertInboundWithNull() throws Exception
     {
-        InboundVariable var = new InboundVariable(null, null, "null");
+        InboundVariable var = new InboundVariable(null, null, null, "null");
 
         Object result = converter.convertInbound(null, var, null);
         assertNull(result);
@@ -76,7 +76,7 @@ public class BeanConverterTests extends TestCase
     public void testConvertInboundWithInvalidArguments() throws Exception
     {
         // test with missing map start in the variable value
-        InboundVariable var = new InboundVariable(null, null, "value");
+        InboundVariable var = new InboundVariable(null, null, null, "value");
         try
         {
             converter.convertInbound(null, var, null);
@@ -87,7 +87,7 @@ public class BeanConverterTests extends TestCase
         }
 
         // test with missing map end in the variable value
-        var = new InboundVariable(null, null, "{ value");
+        var = new InboundVariable(null, null, null, "{ value");
         try
         {
             converter.convertInbound(null, var, null);
@@ -105,7 +105,7 @@ public class BeanConverterTests extends TestCase
     {
         // also test with an instance type
         InboundContext ctx = new InboundContext();
-        InboundVariable var = new InboundVariable(null, "type", "{ property: bla }");
+        InboundVariable var = new InboundVariable(null, null, "type", "{ property: bla }");
         converter.setInstanceType(MyBeanImpl.class);
 
         EasyMock.expect(manager.convertInbound((Class) EasyMock.eq(String.class),
@@ -137,7 +137,7 @@ public class BeanConverterTests extends TestCase
             // do nothing, was expected
         }
 
-        InboundVariable var = new InboundVariable(null, null, null);
+        InboundVariable var = new InboundVariable(null, null, null, null);
         try
         {
             converter.convertInbound(null, var, null);
@@ -148,7 +148,7 @@ public class BeanConverterTests extends TestCase
             // do nothing, was expected
         }
 
-        var = new InboundVariable(null, null, "value");
+        var = new InboundVariable(null, null, null, "value");
         try
         {
             converter.convertInbound(null, var, null);
@@ -159,7 +159,7 @@ public class BeanConverterTests extends TestCase
             // do nothing, was expected
         }
 
-        var = new InboundVariable(null, null, "{ value }");
+        var = new InboundVariable(null, null, null, "{ value }");
         try
         {
             converter.convertInbound(null, var, null);
@@ -192,7 +192,7 @@ public class BeanConverterTests extends TestCase
             // do nothing, was expected
         }
 
-        var = new InboundVariable(null, "type", "{ value }");
+        var = new InboundVariable(null, null, "type", "{ value }");
         try
         {
             converter.convertInbound(Object.class, var, ctx);
@@ -203,11 +203,11 @@ public class BeanConverterTests extends TestCase
             // do nothing, was expected
         }
 
-        var = new InboundVariable(null, "type", "{ value: , }");
+        var = new InboundVariable(null, null, "type", "{ value: , }");
         Object result = converter.convertInbound(Object.class, var, ctx);
         assertNotNull(result);
 
-        var = new InboundVariable(null, "type", "{ value: , }");
+        var = new InboundVariable(null, null, "type", "{ value: , }");
         result = converter.convertInbound(Object.class, var, ctx);
         assertNotNull(result);
     }
