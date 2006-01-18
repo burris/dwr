@@ -396,7 +396,7 @@ DWREngine._sendData = function(batch) {
       if (verNum < 400) {
         batch.verb == "GET";
       }
-      else if (verNum < 417) {
+      else if (verNum <= 417) {
         batch.map.isBrokenSafari2 = "true";
       }
     }
