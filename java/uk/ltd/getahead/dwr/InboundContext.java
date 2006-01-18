@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import uk.ltd.getahead.dwr.util.Logger;
+
 /**
  * InboundContext is the context for set of inbound conversions.
  * Since a data set may be recurrsive parts of some data members may refer to
@@ -67,7 +69,11 @@ public final class InboundContext
     {
         InboundVariable cte = new InboundVariable(this, key, type, value);
 
-        variables.put(key, cte);
+        Object old = variables.put(key, cte);
+        if (old != null)
+        {
+            log.warn("Duplicate variable called: " + key); //$NON-NLS-1$
+        }
 
         String paramPrefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum +
                              ConversionConstants.INBOUND_CALLNUM_SUFFIX +
@@ -113,7 +119,11 @@ public final class InboundContext
     public void addConverted(InboundVariable iv, Class type, Object bean)
     {
         Conversion conversion = new Conversion(iv, type);
-        converted.put(conversion, bean);
+        Object old = converted.put(conversion, bean);
+        if (old != null)
+        {
+            log.warn("Duplicate variable conversion called: " + conversion); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -230,6 +240,14 @@ public final class InboundContext
             return inboundVariable.hashCode() + type.hashCode();
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        public String toString()
+        {
+            return "Conversion[" + inboundVariable + "," + type.getName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+
         protected InboundVariable inboundVariable;
         protected Class type;
     }
@@ -256,4 +274,9 @@ public final class InboundContext
      * A map of all the variables converted.
      */
     private final Map converted = new HashMap();
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(InboundContext.class);
 }
