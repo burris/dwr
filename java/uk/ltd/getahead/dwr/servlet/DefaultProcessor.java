@@ -36,6 +36,7 @@ import uk.ltd.getahead.dwr.Remoter;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.RequestParser;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -110,7 +111,7 @@ public class DefaultProcessor implements Processor
             else if (pathInfo.startsWith(HtmlConstants.PATH_EXEC))
             {
                 RequestParser requestParser = new RequestParser();
-                Calls calls = requestParser.parseRequest(request);
+                Calls calls = requestParser.parseRequest(new ServletHttpRequest(request));
     
                 reply = remoter.execute(calls);
             }

@@ -37,7 +37,8 @@ import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.create.NewCreator;
 import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
 import uk.ltd.getahead.dwr.impl.test.TestWebContextFactory;
-import uk.ltd.getahead.dwr.servlet.RequestParser;
+import uk.ltd.getahead.dwr.servlet.ServletHttpRequest;
+import uk.ltd.getahead.dwr.util.RequestParser;
 
 /**
  * @author
@@ -125,7 +126,7 @@ public class DefaultRemoterTests extends TestCase
         builder.set(request, null, null, null, null);
         TestWebContextFactory.setWebContextBuilder(builder);
 
-        Calls calls = requestParser.parseRequest(request);
+        Calls calls = requestParser.parseRequest(new ServletHttpRequest(request));
         HttpResponse response = defaultRemoter.execute(calls);
 
         EasyMock.verify(creatorManager);
@@ -198,7 +199,7 @@ public class DefaultRemoterTests extends TestCase
 
         try
         {
-            Calls calls = requestParser.parseRequest(request);
+            Calls calls = requestParser.parseRequest(new ServletHttpRequest(request));
             defaultRemoter.execute(calls);
             fail("a security exception was expected");
         }
@@ -235,7 +236,7 @@ public class DefaultRemoterTests extends TestCase
         EasyMock.replay(creatorManager);
         EasyMock.replay(accessControl);
 
-        Calls calls = requestParser.parseRequest(request);
+        Calls calls = requestParser.parseRequest(new ServletHttpRequest(request));
         HttpResponse response = defaultRemoter.execute(calls);
 
         EasyMock.verify(creatorManager);

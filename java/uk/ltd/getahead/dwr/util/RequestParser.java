@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwr.servlet;
+package uk.ltd.getahead.dwr.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,14 +8,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import uk.ltd.getahead.dwr.Call;
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.ConversionConstants;
-import uk.ltd.getahead.dwr.util.LocalUtil;
-import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.Messages;
+import uk.ltd.getahead.dwr.HttpRequest;
 
 /**
  * A utility class that abstracts the job of converting an inbound request into
@@ -30,7 +26,7 @@ public class RequestParser
      * @return A parsed set of calls
      * @throws IOException If reading from the request body stream fails
      */
-    public Calls parseRequest(HttpServletRequest req) throws IOException
+    public Calls parseRequest(HttpRequest req) throws IOException
     {
         if (req.getMethod().equals("GET")) //$NON-NLS-1$
         {
@@ -51,7 +47,7 @@ public class RequestParser
      * @return The equivalent of HttpServletRequest.getParameterMap() for now
      * @throws IOException If reading from the request body stream fails
      */
-    private Map parsePost(HttpServletRequest req) throws IOException
+    private Map parsePost(HttpRequest req) throws IOException
     {
         Map paramMap = new HashMap();
 
@@ -104,7 +100,7 @@ public class RequestParser
         //      https://dwr.dev.java.net/issues/show_bug.cgi?id=93
         //      http://jira.atlassian.com/browse/JRA-8354
         //      http://developer.apple.com/internet/safari/uamatrix.html
-        String params = req.getParameter("isBrokenSafari2"); //$NON-NLS-1$
+        String params = (String) req.getParameters().get("isBrokenSafari2"); //$NON-NLS-1$
         if (params != null && params.length() > 0)
         {
             StringTokenizer st = new StringTokenizer(params, "\n"); //$NON-NLS-1$
@@ -151,13 +147,13 @@ public class RequestParser
      * be possible to return any sort of error to the user. Failure cases should
      * be handled by the <code>checkParams()</code> method.
      * @param req The original browser's request
-     * @return Simply HttpServletRequest.getParameterMap() for now
+     * @return Simply HttpRequest.getParameterMap() for now
      * @throws IOException If the parsing fails
      */
-    private Map parseGet(HttpServletRequest req) throws IOException
+    private Map parseGet(HttpRequest req) throws IOException
     {
         Map convertedMap = new HashMap();
-        Map paramMap = req.getParameterMap();
+        Map paramMap = req.getParameters();
 
         for (Iterator it = paramMap.keySet().iterator(); it.hasNext();)
         {
