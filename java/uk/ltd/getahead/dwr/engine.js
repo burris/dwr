@@ -161,6 +161,9 @@ DWREngine.endBatch = function(options) {
 
   batch.completed = false;
 
+  // We are about to send so this batch should not be globally visible
+  DWREngine._batch = null;
+
   // If we are in ordered mode, then we don't send unless the list of sent
   // items is empty
   if (!DWREngine._ordered) {
@@ -178,8 +181,6 @@ DWREngine.endBatch = function(options) {
       DWREngine._batchQueue[DWREngine._batchQueue.length] = batch;
     }
   }
-
-  DWREngine._batch = null;
 };
 
 //==============================================================================
