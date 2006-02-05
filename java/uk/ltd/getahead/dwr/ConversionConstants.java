@@ -22,6 +22,11 @@ package uk.ltd.getahead.dwr;
 public interface ConversionConstants
 {
     /**
+     * Is this an instance of a broken copy of safari v2
+     */
+    public static final String BROKEN_SAFARI2 = "isBrokenSafari2"; //$NON-NLS-1$
+
+    /**
      * The name for reference types from javascript
      */
     public static final String TYPE_REFERENCE = "reference"; //$NON-NLS-1$

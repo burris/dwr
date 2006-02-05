@@ -1,3 +1,18 @@
+/*
+ * Copyright 2005 Joe Walker
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package uk.ltd.getahead.dwr.util;
 
 import java.io.BufferedReader;
@@ -100,7 +115,7 @@ public class RequestParser
         //      https://dwr.dev.java.net/issues/show_bug.cgi?id=93
         //      http://jira.atlassian.com/browse/JRA-8354
         //      http://developer.apple.com/internet/safari/uamatrix.html
-        String params = (String) req.getParameters().get("isBrokenSafari2"); //$NON-NLS-1$
+        String params = (String) req.getParameters().get(ConversionConstants.BROKEN_SAFARI2);
         if (params != null && params.length() > 0)
         {
             StringTokenizer st = new StringTokenizer(params, "\n"); //$NON-NLS-1$
@@ -232,7 +247,11 @@ public class RequestParser
 
         if (paramMap.size() != 0)
         {
-            log.warn("Entries left over in parameter map"); //$NON-NLS-1$
+            paramMap.remove(ConversionConstants.BROKEN_SAFARI2);
+            if (paramMap.size() != 0)
+            {
+                log.warn("Entries left over in parameter map"); //$NON-NLS-1$
+            }
         }
 
         return calls;
