@@ -583,8 +583,17 @@ public final class LocalUtil
         }
         catch (Exception ex)
         {
-            log.warn("Failed to load creator '" + name + "', classname=" + className + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            return null;
+            // For some reason we can't catch this?
+            if (ex instanceof ClassNotFoundException)
+            {
+                log.info("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                return null;
+            }
+            else
+            {
+                log.warn("Failed to load '" + name + "' (" + className + ")", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                return null;
+            }
         }
 
         return clazz;
