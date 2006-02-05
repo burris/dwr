@@ -17,6 +17,7 @@ package uk.ltd.getahead.dwr.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +38,7 @@ import uk.ltd.getahead.dwr.Configurator;
 import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.ConverterManager;
+import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
 import uk.ltd.getahead.dwr.Remoter;
@@ -51,6 +53,7 @@ import uk.ltd.getahead.dwr.impl.DefaultDebugPageGenerator;
 import uk.ltd.getahead.dwr.impl.DefaultRemoter;
 import uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder;
 import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
+import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 
 /**
@@ -250,7 +253,7 @@ public class ServletHelper
         if (includeDefaultConfig)
         {
             DwrXmlConfigurator system = new DwrXmlConfigurator();
-            system.setClassResourceName(Constants.DEFAULT_DWR_XML);
+            system.setClassResourceName(Constants.FILE_DWR_XML);
             configurators.add(0, system);
         }
     }
@@ -323,7 +326,64 @@ public class ServletHelper
         for (Iterator it = configurators.iterator(); it.hasNext();)
         {
             Configurator configurator = (Configurator) it.next();
+
+            log.debug("** Adding config from " + configurator); //$NON-NLS-1$
             configurator.configure(container);
+        }
+    }
+
+    /**
+     * 
+     */
+    public void debugConfig()
+    {
+        if (log.isDebugEnabled())
+        {
+            // Container level debug
+            log.debug("Container"); //$NON-NLS-1$
+            log.debug("  Type: " + container.getClass().getName()); //$NON-NLS-1$
+            Collection beanNames = container.getBeanNames();
+            for (Iterator it = beanNames.iterator(); it.hasNext();)
+            {
+                String name = (String) it.next();
+                Object object = container.getBean(name);
+
+                if (object instanceof String)
+                {
+                    log.debug("  Param: " + name + " = " + object + " (" + object.getClass().getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                }
+                else
+                {
+                    log.debug("  Bean: " + name + " = " + object + " (" + object.getClass().getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                }
+            }
+
+            // AccessControl debugging
+            AccessControl accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
+            log.debug("AccessControl"); //$NON-NLS-1$
+            log.debug("  Type: " + accessControl.getClass().getName()); //$NON-NLS-1$
+
+            // AjaxFilterManager debugging
+            AjaxFilterManager ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
+            log.debug("AjaxFilterManager"); //$NON-NLS-1$
+            log.debug("  Type: " + ajaxFilterManager.getClass().getName()); //$NON-NLS-1$
+
+            // ConverterManager debugging
+            ConverterManager converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+            log.debug("ConverterManager"); //$NON-NLS-1$
+            log.debug("  Type: " + converterManager.getClass().getName()); //$NON-NLS-1$
+
+            // CreatorManager debugging
+            CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
+            log.debug("CreatorManager"); //$NON-NLS-1$
+            log.debug("  Type: " + creatorManager.getClass().getName()); //$NON-NLS-1$
+            Collection creatorNames = creatorManager.getCreatorNames();
+            for (Iterator it = creatorNames.iterator(); it.hasNext();)
+            {
+                String creatorName = (String) it.next();
+                Creator creator = creatorManager.getCreator(creatorName);
+                log.debug("  Creator: " + creatorName + " = " + creator + " (" + creator.getClass().getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            }
         }
     }
 
@@ -390,4 +450,9 @@ public class ServletHelper
      * Init parameter: If we are doing Servlet.log logging, to what level?
      */
     protected static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(ServletHelper.class);
 }
