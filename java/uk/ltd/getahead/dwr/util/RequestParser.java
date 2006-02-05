@@ -104,24 +104,6 @@ public class RequestParser
                     parsePostLine(part, paramMap);
                 }
             }
-            else if (line.indexOf('\n') == -1)
-            {
-                // If there are any \ns then this must be a broken Safari. All
-                // the parameters have got dumped on one line split with \n
-                // See: http://bugzilla.opendarwin.org/show_bug.cgi?id=3565
-                //      https://dwr.dev.java.net/issues/show_bug.cgi?id=93
-                //      http://jira.atlassian.com/browse/JRA-8354
-                //      http://developer.apple.com/internet/safari/uamatrix.html
-                log.debug("Using Broken Safari POST mode"); //$NON-NLS-1$
-                StringTokenizer st = new StringTokenizer(line, "\n"); //$NON-NLS-1$
-                while (st.hasMoreTokens())
-                {
-                    String part = st.nextToken();
-                    part = LocalUtil.decode(part);
-
-                    parsePostLine(part, paramMap);
-                }
-            }
             else
             {
                 // Horay, this is a normal one!
@@ -129,19 +111,36 @@ public class RequestParser
             }
         }
 
-        // Safari gets confused so we need some special treatment
+        // If there is only 1 param then this must be a broken Safari. All
+        // the parameters have got dumped on one line split with \n
         // See: http://bugzilla.opendarwin.org/show_bug.cgi?id=3565
         //      https://dwr.dev.java.net/issues/show_bug.cgi?id=93
         //      http://jira.atlassian.com/browse/JRA-8354
         //      http://developer.apple.com/internet/safari/uamatrix.html
-        String params = (String) req.getParameters().get(ConversionConstants.BROKEN_SAFARI2);
-        if (params != null && params.length() > 0)
+        if (paramMap.size() == 1)
         {
-            StringTokenizer st = new StringTokenizer(params, "\n"); //$NON-NLS-1$
+            log.debug("Using Broken Safari POST mode"); //$NON-NLS-1$
+
+            // This looks like a broken Mac where the line endings are confused
+
+            // Iterators insist that we call hasNext() before we start
+            Iterator it = paramMap.keySet().iterator();
+            if (!it.hasNext())
+            {
+                throw new IllegalStateException("No entries in non empty map!"); //$NON-NLS-1$
+            }
+
+            // So get the first
+            String key = (String) it.next();
+            String value = (String) paramMap.get(key);
+            String line = key + ConversionConstants.INBOUND_DECL_SEPARATOR + value;
+
+            StringTokenizer st = new StringTokenizer(line, "\n"); //$NON-NLS-1$
             while (st.hasMoreTokens())
             {
                 String part = st.nextToken();
                 part = LocalUtil.decode(part);
+
                 parsePostLine(part, paramMap);
             }
         }
