@@ -187,6 +187,18 @@ public class SpringConfigurator implements Configurator
         this.converters = converters;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        return "SpringConfigurator[" //$NON-NLS-1$
+            + creatorTypes.size() + " creatorTypes, " //$NON-NLS-1$
+            + converterTypes.size() + " converterTypes, " //$NON-NLS-1$
+            + creators.size() + " creators, " //$NON-NLS-1$
+            + converters.size() + " converters, ]"; //$NON-NLS-1$
+    }
+
     /**
      * The map of Converter types
      */

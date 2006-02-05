@@ -60,13 +60,15 @@ public class DwrXmlConfigurator implements Configurator
     /**
      * Setter for the resource name that we can use to read a file from the
      * servlet context
-     * @param resourceName The name to lookup
+     * @param servletResourceName The name to lookup
      * @throws IOException On file read failure
      * @throws ParserConfigurationException On XML setup failure
      * @throws SAXException On XML parse failure
      */
-    public void setServletResourceName(String resourceName) throws IOException, ParserConfigurationException, SAXException
+    public void setServletResourceName(String servletResourceName) throws IOException, ParserConfigurationException, SAXException
     {
+        this.servletResourceName = servletResourceName;
+
         ServletContext servletContext = WebContextFactory.get().getServletContext();
         if (servletContext == null)
         {
@@ -76,10 +78,10 @@ public class DwrXmlConfigurator implements Configurator
         InputStream in = null;
         try
         {
-            in = servletContext.getResourceAsStream(resourceName);
+            in = servletContext.getResourceAsStream(servletResourceName);
             if (in == null)
             {
-                throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", resourceName)); //$NON-NLS-1$
+                throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", servletResourceName)); //$NON-NLS-1$
             }
 
             setInputStream(in);
@@ -92,17 +94,19 @@ public class DwrXmlConfigurator implements Configurator
 
     /**
      * Setter for a classpath based lookup
-     * @param resourceName The resource to lookup in the classpath
+     * @param classResourceName The resource to lookup in the classpath
      * @throws IOException On file read failure
      * @throws ParserConfigurationException On XML setup failure
      * @throws SAXException On XML parse failure
      */
-    public void setClassResourceName(String resourceName) throws IOException, ParserConfigurationException, SAXException
+    public void setClassResourceName(String classResourceName) throws IOException, ParserConfigurationException, SAXException
     {
-        InputStream in = getClass().getResourceAsStream(resourceName);
+        this.classResourceName = classResourceName;
+
+        InputStream in = getClass().getResourceAsStream(classResourceName);
         if (in == null)
         {
-            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", resourceName)); //$NON-NLS-1$
+            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", classResourceName)); //$NON-NLS-1$
         }
 
         setInputStream(in);
@@ -524,6 +528,21 @@ public class DwrXmlConfigurator implements Configurator
         }
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        if (servletResourceName != null)
+        {
+            return "DwrXmlConfigurator[ServletResource:" + servletResourceName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        else
+        {
+            return "DwrXmlConfigurator[ClassResource:" + classResourceName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+    }
+
     /**
      * The parsed document
      */
@@ -563,6 +582,18 @@ public class DwrXmlConfigurator implements Configurator
      * The IoC container
      */
     private Container container = null;
+
+    /**
+     * For debug purposes, the classResourceName that we were configured with.
+     * Either this or {@link #servletResourceName} will be null
+     */
+    private String classResourceName;
+
+    /**
+     * For debug purposes, the servletResourceName that we were configured with
+     * Either this or {@link #classResourceName} will be null
+     */
+    private String servletResourceName;
 
     /*
      * The element names
