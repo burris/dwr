@@ -82,7 +82,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      */
     public void afterPropertiesSet() throws Exception
     {
-        Assert.notNull(servletContext, "The servlet context has not been set on the controller");
+        Assert.notNull(servletContext, "The servlet context has not been set on the controller"); //$NON-NLS-1$
         try
         {
             servletHelper.setServletConfig(new FakeServletConfig(name, servletContext));
@@ -99,6 +99,8 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         finally
         {
             servletHelper.deinitWebContextBuilder();
+
+            servletHelper.debugConfig();
         }
     }
 

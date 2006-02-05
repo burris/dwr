@@ -95,6 +95,8 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
         finally
         {
             servletHelper.deinitWebContextBuilder();
+
+            servletHelper.debugConfig();
         }
     }
 

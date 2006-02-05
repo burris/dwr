@@ -78,6 +78,8 @@ public class DwrServlet extends HttpServlet
         {
             servletHelper.deinitWebContextBuilder();
             servletHelper.unsetServletLoggingOutput();
+
+            servletHelper.debugConfig();
         }
     }
 

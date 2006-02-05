@@ -15,9 +15,14 @@
  */
 package uk.ltd.getahead.dwr.spring;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.ListableBeanFactory;
 
 import uk.ltd.getahead.dwr.Container;
 
@@ -44,6 +49,22 @@ public class SpringContainer implements Container, BeanFactoryAware
     public Object getBean(String id)
     {
         return beanFactory.getBean(id);
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Container#getBeanNames()
+     */
+    public Collection getBeanNames()
+    {
+        String[] list = new String[0];
+
+        if (beanFactory instanceof ListableBeanFactory)
+        {
+            ListableBeanFactory listable = (ListableBeanFactory) beanFactory;
+            list = listable.getBeanDefinitionNames();
+        }
+
+        return Collections.unmodifiableCollection((Arrays.asList(list)));
     }
 
     /**

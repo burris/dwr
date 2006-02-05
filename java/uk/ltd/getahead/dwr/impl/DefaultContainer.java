@@ -17,6 +17,8 @@ package uk.ltd.getahead.dwr.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -210,6 +212,14 @@ public class DefaultContainer implements Container
         }
 
         return reply;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Container#getBeanNames()
+     */
+    public Collection getBeanNames()
+    {
+        return Collections.unmodifiableCollection(beans.keySet());
     }
 
     /**

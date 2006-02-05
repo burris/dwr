@@ -15,6 +15,8 @@
  */
 package uk.ltd.getahead.dwr;
 
+import java.util.Collection;
+
 /**
  * A very basic IoC container
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -22,12 +24,22 @@ package uk.ltd.getahead.dwr;
 public interface Container
 {
     /**
-     * Get an instance of a bean of a given type.
-     * @param id The type to get an instance of
+     * Get an instance of a bean of a given name (usually name=class name).
+     * @param name The type to get an instance of
      * @return The object of the given type
      * @throws IllegalArgumentException If the given id does not refer to a bean
      */
-    Object getBean(String id) throws IllegalArgumentException;
+    Object getBean(String name) throws IllegalArgumentException;
+
+    /**
+     * Get a list of all the available beans.
+     * Implementation of this method is optional so it is valid for this method
+     * to return an empty collection, but to return Objects when queried
+     * directly using {@link #getBean(String)}. This method should only be used
+     * for debugging purposes.
+     * @return A collection containing all the availble bean names.
+     */
+    Collection getBeanNames();
 
     /**
      * It might be good if we could allow components to re-configure DWR on the
