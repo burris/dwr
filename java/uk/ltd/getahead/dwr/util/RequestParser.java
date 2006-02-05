@@ -90,14 +90,10 @@ public class RequestParser
                 break;
             }
 
-            // If there are any &s then this must be iframe post and all the
-            // parameters have got dumped on one line.
-            if (line.indexOf('&') == -1)
+            if (line.indexOf('&') != -1)
             {
-                parsePostLine(line, paramMap);
-            }
-            else
-            {
+                // If there are any &s then this must be iframe post and all the
+                // parameters have got dumped on one line, split with &
                 log.debug("Using iframe POST mode"); //$NON-NLS-1$
                 StringTokenizer st = new StringTokenizer(line, "&"); //$NON-NLS-1$
                 while (st.hasMoreTokens())
@@ -107,6 +103,29 @@ public class RequestParser
 
                     parsePostLine(part, paramMap);
                 }
+            }
+            else if (line.indexOf('\n') == -1)
+            {
+                // If there are any \ns then this must be a broken Safari. All
+                // the parameters have got dumped on one line split with \n
+                // See: http://bugzilla.opendarwin.org/show_bug.cgi?id=3565
+                //      https://dwr.dev.java.net/issues/show_bug.cgi?id=93
+                //      http://jira.atlassian.com/browse/JRA-8354
+                //      http://developer.apple.com/internet/safari/uamatrix.html
+                log.debug("Using Broken Safari POST mode"); //$NON-NLS-1$
+                StringTokenizer st = new StringTokenizer(line, "\n"); //$NON-NLS-1$
+                while (st.hasMoreTokens())
+                {
+                    String part = st.nextToken();
+                    part = LocalUtil.decode(part);
+
+                    parsePostLine(part, paramMap);
+                }
+            }
+            else
+            {
+                // Horay, this is a normal one!
+                parsePostLine(line, paramMap);
             }
         }
 
