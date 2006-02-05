@@ -230,7 +230,7 @@ public class DefaultRemoter implements Remoter
                 if (method == null)
                 {
                     String name = call.getScriptName() + '.' + call.getMethodName();
-                    throw new IllegalArgumentException(Messages.getString("ExecuteQuery.UnknownMethod", name)); //$NON-NLS-1$
+                    throw new IllegalArgumentException(Messages.getString("DefaultRemoter.UnknownMethod", name)); //$NON-NLS-1$
                 }
 
                 // Check this method is accessible
@@ -254,7 +254,7 @@ public class DefaultRemoter implements Remoter
                     }
                     catch (ConversionException ex)
                     {
-                        throw new ConversionException(Messages.getString("ExecuteQuery.ConversionError", call.getScriptName(), call.getMethodName(), ex.getMessage())); //$NON-NLS-1$
+                        throw new ConversionException(Messages.getString("DefaultRemoter.ConversionError", call.getScriptName(), call.getMethodName(), ex.getMessage())); //$NON-NLS-1$
                     }
                 }
 
@@ -343,6 +343,10 @@ public class DefaultRemoter implements Remoter
                     }
                     buffer.append(") id="); //$NON-NLS-1$
                     buffer.append(call.getId());
+
+                    buffer.append(". Using ("); //$NON-NLS-1$
+                    buffer.append(calls.isXhrMode() ? "XHR" : "IFrame"); //$NON-NLS-1$ //$NON-NLS-2$
+                    buffer.append(")"); //$NON-NLS-1$
 
                     log.debug(buffer.toString());
                 }
@@ -469,12 +473,12 @@ public class DefaultRemoter implements Remoter
     {
         if (call.getScriptName() == null)
         {
-            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingClassParam")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.MissingClassParam")); //$NON-NLS-1$
         }
 
         if (call.getMethodName() == null)
         {
-            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.MissingMethodParam")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.MissingMethodParam")); //$NON-NLS-1$
         }
 
         Creator creator = creatorManager.getCreator(call.getScriptName());
