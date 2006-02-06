@@ -50,9 +50,9 @@ public class FakeServletConfig implements ServletConfig
         this.servletContext = servletContext;
         this.initParameters = initParameters;
 
-        if (initParameters == null)
+        if (this.initParameters == null)
         {
-            initParameters = new HashMap();
+            this.initParameters = new HashMap();
         }
     }
 
