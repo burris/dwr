@@ -562,7 +562,7 @@ DWRUtil.addOptions = function(ele, data) {
   var useOptions = DWRUtil._isHTMLElement(ele, "select");
   var useLi = DWRUtil._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {
-    DWRUtil.debug("addOptions() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
+    DWRUtil.debug("addOptions() can only be used with select/ul/ol elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
     return;
   }
   if (data == null) return;
@@ -570,6 +570,7 @@ DWRUtil.addOptions = function(ele, data) {
   var text;
   var value;
   var opt;
+  var li;
   if (DWRUtil._isArray(data)) {
     // Loop through the data that we do have
     for (var i = 0; i < data.length; i++) {
@@ -697,7 +698,6 @@ DWRUtil.addRows = function(ele, data, cellFuncs, options) {
     return;
   }
   if (!options) options = {};
-  options.data = data;
   if (!options.rowCreator) options.rowCreator = DWRUtil._defaultRowCreator;
   if (!options.cellCreator) options.cellCreator = DWRUtil._defaultCellCreator;
   var tr, rowNum;
@@ -736,13 +736,13 @@ DWRUtil._addRowInner = function(cellFuncs, options) {
   for (var cellNum = 0; cellNum < cellFuncs.length; cellNum++) {
     var func = cellFuncs[cellNum];
     var td;
-    if (typeof func == "string") {
-      options.data = null;
-      options.cellNum = cellNum;
-      td = options.cellCreator(options);
-      td.appendChild(document.createTextNode(func));
-    }
-    else {
+    //if (typeof func == "string") {
+    //  options.data = func;
+    //  options.cellNum = cellNum;
+    //  td = options.cellCreator(options);
+    //  td.appendChild(document.createTextNode(func));
+    //}
+    //else {
       var reply = func(options.rowData);
       options.data = reply;
       options.cellNum = cellNum;
@@ -750,7 +750,7 @@ DWRUtil._addRowInner = function(cellFuncs, options) {
       if (DWRUtil._isHTMLElement(reply, "td")) td = reply;
       else if (DWRUtil._isHTMLElement(reply)) td.appendChild(reply);
       else td.innerHTML = reply;
-    }
+    //}
     tr.appendChild(td);
   }
   return tr;
