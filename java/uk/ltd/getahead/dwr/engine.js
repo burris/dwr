@@ -134,7 +134,7 @@ DWREngine.beginBatch = function() {
   DWREngine._batch.map = {};
   DWREngine._batch.paramCount = 0;
   DWREngine._batch.map.callCount = 0;
-  DWREngine._batch.metadata = {};
+  DWREngine._batch.ids = [];
   DWREngine._batch.preHooks = [];
   DWREngine._batch.postHooks = [];
 };
@@ -155,9 +155,10 @@ DWREngine.endBatch = function(options) {
   if (DWREngine._preHook) batch.preHooks.unshift(DWREngine._preHook);
   if (DWREngine._postHook) batch.postHooks.push(DWREngine._postHook);
 
-  if (!batch.method) batch.method = DWREngine._method;
-  if (!batch.verb) batch.verb = DWREngine._verb;
-  if (!batch.async) batch.async = DWREngine._async;
+  if (batch.method == null) batch.method = DWREngine._method;
+  if (batch.verb == null) batch.verb = DWREngine._verb;
+  if (batch.async == null) batch.async = DWREngine._async;
+  if (batch.timeout == null) batch.timeout = DWREngine._timeout;
 
   batch.completed = false;
 
@@ -205,8 +206,8 @@ DWREngine._batches = [];
 /** In ordered mode, the array of batches waiting to be sent */
 DWREngine._batchQueue = [];
 
-/** A map of all the known current call metadata objects */
-DWREngine._callData = {};
+/** A map of known ids to their handler objects */
+DWREngine._handlersMap = {};
 
 /** What is the default remoting method */
 DWREngine._method = DWREngine.XMLHttpRequest;
@@ -307,21 +308,44 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   // Get a unique ID for this call
   var random = Math.floor(Math.random() * 10001);
   var id = (random + "_" + new Date().getTime()).toString();
-  DWREngine._callData[id] = callData;
   var prefix = "c" + DWREngine._batch.map.callCount + "-";
+  DWREngine._batch.ids.push(id);
 
-  if (callData.preHook) DWREngine._batch.preHooks.unshift(callData.preHook);
-  if (callData.postHook) DWREngine._batch.postHooks.push(callData.postHook);
-  if (!callData.errorHandler) callData.errorHandler = DWREngine._errorHandler;
-  if (!callData.warningHandler) callData.warningHandler = DWREngine._warningHandler;
-  if (!callData.timeout) callData.timeout = DWREngine._timeout;
-
-  // merge the metadata from this call into the batch
-  if (callData != null)  {
-    for (var prop in callData) {
-      DWREngine._batch.metadata[prop] = callData[prop];
-    }
+  // batchMetaData stuff the we allow in callMetaData for convenience
+  if (callData.method != null) {
+    DWREngine._batch.method = callData.method;
+    delete callData.method;
   }
+  if (callData.verb != null) {
+    DWREngine._batch.verb = callData.verb;
+    delete callData.verb;
+  }
+  if (callData.async != null) {
+    DWREngine._batch.async = callData.async;
+    delete callData.async;
+  }
+  if (callData.timeout != null) {
+    DWREngine._batch.timeout = callData.timeout;
+    delete callData.timeout;
+  }
+
+  // callMetaData stuff that we handle with the rest of the batchMetaData
+  if (callData.preHook != null) {
+    DWREngine._batch.preHooks.unshift(callData.preHook);
+    delete callData.preHook;
+  }
+  if (callData.postHook != null) {
+    DWREngine._batch.postHooks.push(callData.postHook);
+    delete callData.postHook;
+  }
+
+  // Default the error and warning handlers
+  if (callData.errorHandler == null) callData.errorHandler = DWREngine._errorHandler;
+  if (callData.warningHandler == null) callData.warningHandler = DWREngine._warningHandler;
+
+  // Save the callMetaData
+  DWREngine._handlersMap[id] = callData;
+
   DWREngine._batch.map[prefix + "scriptName"] = scriptName;
   DWREngine._batch.map[prefix + "methodName"] = methodName;
   DWREngine._batch.map[prefix + "id"] = id;
@@ -352,11 +376,11 @@ DWREngine._sendData = function(batch) {
   }
   batch.preHooks = null;
   // Set a timeout
-  if (batch.metadata && batch.metadata.timeout && batch.metadata.timeout != 0) {
+  if (batch.timeout && batch.timeout != 0) {
     batch.interval = setInterval(function() {
       clearInterval(batch.interval);
       DWREngine._abortRequest(batch);
-    }, batch.metadata.timeout);
+    }, batch.timeout);
   }
   // A quick string to help people that use web log analysers
   var statsInfo;
@@ -427,7 +451,7 @@ DWREngine._sendData = function(batch) {
         }
       }
       catch (ex) {
-        DWREngine._handleMetaDataError(batch.metadata, ex);
+        DWREngine._handleMetaDataError(null, ex);
       }
     }
     else {
@@ -449,7 +473,7 @@ DWREngine._sendData = function(batch) {
         }
       }
       catch (ex) {
-        DWREngine._handleMetaDataError(batch.metadata, ex);
+        DWREngine._handleMetaDataError(null, ex);
       }
     }
   }
@@ -505,19 +529,19 @@ DWREngine._stateChange = function(batch) {
       var status = batch.req.status;
 
       if (reply == null || reply == "") {
-        DWREngine._handleMetaDataError(batch.metadata, "No data received from server");
+        DWREngine._handleMetaDataError(null, "No data received from server");
         return;
       }
 
       // This should get us out of 404s etc.
       if (reply.search("DWREngine._handle") == -1) {
-        DWREngine._handleMetaDataError(batch.metadata, "Invalid reply from server");
+        DWREngine._handleMetaDataError(null, "Invalid reply from server");
         return;
       }
 
       if (status != 200) {
         if (reply == null) reply = "Unknown error occured";
-        DWREngine._handleMetaDataError(batch.metadata, reply);
+        DWREngine._handleMetaDataError(null, reply);
         return;
       }
 
@@ -528,7 +552,7 @@ DWREngine._stateChange = function(batch) {
     }
     catch (ex) {
       if (ex == null) ex = "Unknown error occured";
-      DWREngine._handleMetaDataError(batch.metadata, ex);
+      DWREngine._handleMetaDataError(null, ex);
     }
     finally {
       // If there is anything on the queue waiting to go out, then send it.
@@ -550,16 +574,17 @@ DWREngine._stateChange = function(batch) {
  */
 DWREngine._handleResponse = function(id, reply) {
   // Clear this callback out of the list - we don't need it any more
-  var callData = DWREngine._callData[id];
-  DWREngine._callData[id] = null;
-  if (callData) {
+  var handlers = DWREngine._handlersMap[id];
+  DWREngine._handlersMap[id] = null;
+  // TODO: How can we do this - delete DWREngine._handlersMap.id
+  if (handlers) {
     // Error handlers inside here indicate an error that is nothing to do
     // with DWR so we handle them differently.
     try {
-      if (callData.callback) callData.callback(reply);
+      if (handlers.callback) handlers.callback(reply);
     }
     catch (ex) {
-      DWREngine._handleMetaDataError(callData, ex);
+      DWREngine._handleMetaDataError(handlers, ex);
     }
   }
 
@@ -578,13 +603,13 @@ DWREngine._handleResponse = function(id, reply) {
  */
 DWREngine._handleServerError = function(id, error) {
   // Clear this callback out of the list - we don't need it any more
-  var callData = DWREngine._callData[id];
-  DWREngine._callData[id] = null;
+  var handlers = DWREngine._handlersMap[id];
+  DWREngine._handlersMap[id] = null;
   if (error.message) {
-    DWREngine._handleMetaDataError(callData, error.message, error);
+    DWREngine._handleMetaDataError(handlers, error.message, error);
   }
   else {
-    DWREngine._handleMetaDataError(callData, error);
+    DWREngine._handleMetaDataError(handlers, error);
   }
 };
 
@@ -595,7 +620,14 @@ DWREngine._abortRequest = function(batch) {
   if (batch && batch.metadata != null && !batch.completed) {
     DWREngine._clearUp(batch);
     if (batch.req) batch.req.abort();
-    DWREngine._handleMetaDataError(batch.metadata, "Timeout");
+    // Call all the timeout errorHandlers
+    var handlers;
+    var id;
+    for (var i = 0; i < batch.ids.length; i++) {
+      id = batch.ids[i];
+      handlers = DWREngine._handlersMap[id];
+      DWREngine._handleMetaDataError(handlers, "Timeout");
+    }
   }
 };
 
@@ -644,9 +676,9 @@ DWREngine._handleError = function(reason, ex) {
 /**
  * @private Generic error handling routing to save having null checks everywhere.
  */
-DWREngine._handleMetaDataError = function(metadata, reason, ex) {
-  if (metadata.errorHandler) {
-    metadata.errorHandler(reason, ex);
+DWREngine._handleMetaDataError = function(handlers, reason, ex) {
+  if (handlers && typeof handlers.errorHandler == "function") {
+    handlers.errorHandler(reason, ex);
   }
   else {
     DWREngine._handleError(reason, ex);
