@@ -505,7 +505,7 @@ public class DefaultRemoter implements Remoter
                         if (!converterManager.isConvertable(paramType))
                         {
                             // Give up with this method and try the next
-                            break methods;
+                            continue methods;
                         }
                     }
 
