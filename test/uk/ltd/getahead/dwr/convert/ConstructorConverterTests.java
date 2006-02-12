@@ -16,8 +16,8 @@
 package uk.ltd.getahead.dwr.convert;
 
 import junit.framework.TestCase;
-import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 
