@@ -47,7 +47,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.DebugPageGenerator#generateIndexPage(java.lang.String)
      */
-    public HttpResponse generateIndexPage(final String contextPath) throws SecurityException
+    public HttpResponse generateIndexPage(final String contextPath, final String servletPath) throws SecurityException
     {
         if (!creatorManager.isDebug())
         {
@@ -67,7 +67,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         {
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
-            buffer.append("<li><a href='." + HtmlConstants.PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            buffer.append("<li><a href='" + contextPath + servletPath + HtmlConstants.PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         }
         buffer.append("</ul>\n"); //$NON-NLS-1$
 
@@ -88,7 +88,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.DebugPageGenerator#generateTestPage(java.lang.String, java.lang.String, java.lang.String)
      */
-    public HttpResponse generateTestPage(String contextPath, String servletPath, String scriptName) throws SecurityException
+    public HttpResponse generateTestPage(final String contextPath, final String servletPath, final String scriptName) throws SecurityException
     {
         if (!creatorManager.isDebug())
         {

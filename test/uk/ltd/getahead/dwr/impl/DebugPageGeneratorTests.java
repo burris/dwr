@@ -71,7 +71,7 @@ public class DebugPageGeneratorTests extends TestCase
 
         HttpResponse response = null;
         try {
-            response = debugPageGenerator.generateIndexPage("/");
+            response = debugPageGenerator.generateIndexPage("/", "/");
             fail("a security exception was expected");
         } catch (SecurityException e) {
             // do nothing, was expected
@@ -142,7 +142,7 @@ public class DebugPageGeneratorTests extends TestCase
 
         try
         {
-            debugPageGenerator.generateIndexPage("contextPath");
+            debugPageGenerator.generateIndexPage("contextPath", "servletPath");
             fail("Missing SecurityException");
         }
         catch (SecurityException ex)
@@ -172,7 +172,7 @@ public class DebugPageGeneratorTests extends TestCase
 
         EasyMock.replay(creatorManager);
 
-        HttpResponse result = debugPageGenerator.generateIndexPage("contextPath");
+        HttpResponse result = debugPageGenerator.generateIndexPage("contextPath", "servletPath");
 
         EasyMock.verify(creatorManager);
 

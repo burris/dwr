@@ -15,7 +15,6 @@
  */
 package uk.ltd.getahead.dwr;
 
-
 /**
  * The heart of DWR is a system to generate content from some requests.
  * This interface generates scripts and executes remote calls.
@@ -26,10 +25,11 @@ public interface DebugPageGenerator
     /**
      * Generate some HTML that represents an index page
      * @param contextPath TODO: define this outside of the servlet spec
+     * @param servletPath TODO: define this outside of the servlet spec
      * @return An index page in HTML
      * @throws SecurityException If the pages are not accessible
      */
-    HttpResponse generateIndexPage(String contextPath) throws SecurityException;
+    HttpResponse generateIndexPage(String contextPath, String servletPath) throws SecurityException;
 
     /**
      * Generate some HTML that represents a test page
