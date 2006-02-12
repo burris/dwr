@@ -539,7 +539,7 @@ DWRUtil.getValues = function(data) {
   }
   else {
     for (var property in data) {
-      var ele = $(property);
+      ele = $(property);
       if (ele != null) {
         data[property] = DWRUtil.getValue(property);
       }
