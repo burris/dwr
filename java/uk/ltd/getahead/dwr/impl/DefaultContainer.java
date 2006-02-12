@@ -42,7 +42,7 @@ public class DefaultContainer implements Container
      * @param askFor The interface to implement
      * @param value The new implementation
      * @throws IllegalAccessException If the specified beans could not be accessed
-     * @throws InstantiationException If the specified beans could not be created 
+     * @throws InstantiationException If the specified beans could not be created
      */
     public void addParameter(Object askFor, Object value) throws InstantiationException, IllegalAccessException
     {
@@ -93,6 +93,7 @@ public class DefaultContainer implements Container
     /**
      * Called to indicate that we finished called setImplementation.
      * @see DefaultContainer#addParameter(Object, Object)
+     * @noinspection UnnecessaryLabelOnContinueStatement
      */
     public void configurationFinished()
     {
@@ -106,13 +107,13 @@ public class DefaultContainer implements Container
             if (!(ovalue instanceof String))
             {
                 log.debug("Trying to autowire: " + ovalue.getClass().getName()); //$NON-NLS-1$
-    
+
                 Method[] methods = ovalue.getClass().getMethods();
                 methods:
                 for (int i = 0; i < methods.length; i++)
                 {
                     Method setter = methods[i];
-    
+
                     if (setter.getName().startsWith("set") && //$NON-NLS-1$
                         setter.getName().length() > 3 &&
                         setter.getParameterTypes().length == 1)

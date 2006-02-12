@@ -100,14 +100,13 @@ public class DOMConverter extends BaseV20Converter implements Converter
 
         try
         {
-            Source source = null;
-
             if (transformer == null)
             {
                 transformer = xslFact.newTransformer();
             }
 
             // Using XSLT to convert to a stream. Setup the source
+            Source source;
             if (data instanceof Node)
             {
                 Node node = (Node) data;

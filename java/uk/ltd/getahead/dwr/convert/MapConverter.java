@@ -30,9 +30,9 @@ import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.TypeHintContext;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.Messages;
 
 /**
@@ -79,7 +79,7 @@ public class MapConverter implements Converter
         {
             // Maybe we ought to check that the paramType isn't expecting a more
             // distinct type of Map and attempt to create that?
-            Map map = null;
+            Map map;
 
             // If paramType is concrete then just use whatever we've got.
             if (!paramType.isInterface() && !Modifier.isAbstract(paramType.getModifiers()))

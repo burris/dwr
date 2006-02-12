@@ -25,8 +25,8 @@ import java.util.StringTokenizer;
 
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.TypeHintContext;
-import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A parser for type info in a dwr.xml signature.
@@ -201,8 +201,6 @@ public class SignatureParser
      */
     private Class findClass(String type)
     {
-        Class reply = null;
-
         // Handle inner classes
         if (type.indexOf('.') != -1)
         {
@@ -218,8 +216,7 @@ public class SignatureParser
                 full = type;
             }
 
-            reply = Class.forName(full);
-            return reply;
+            return Class.forName(full);
         }
         catch (Exception ex)
         {
@@ -233,8 +230,7 @@ public class SignatureParser
 
             try
             {
-                reply = Class.forName(lookup);
-                return reply;
+                return Class.forName(lookup);
             }
             catch (Exception ex)
             {
@@ -286,8 +282,7 @@ public class SignatureParser
         int i = 0;
         while (st.hasMoreTokens())
         {
-            String param = st.nextToken();
-            types[i++] = param;
+            types[i++] = st.nextToken();
         }
 
         return types;

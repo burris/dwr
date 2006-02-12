@@ -224,12 +224,7 @@ public final class InboundContext
                 return false;
             }
 
-            if (!this.inboundVariable.equals(that.inboundVariable))
-            {
-                return false;
-            }
-
-            return true;
+            return this.inboundVariable.equals(that.inboundVariable);
         }
 
         /* (non-Javadoc)

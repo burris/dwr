@@ -143,10 +143,8 @@ public class DwrXmlConfigurator implements Configurator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Configurator#configure(uk.ltd.getahead.dwr.StartupState)
      */
-    public void configure(Container aContainer)
+    public void configure(Container container)
     {
-        this.container = aContainer;
-
         accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
         ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
         converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
@@ -577,11 +575,6 @@ public class DwrXmlConfigurator implements Configurator
      * The security manager
      */
     private AccessControl accessControl = null;
-
-    /**
-     * The IoC container
-     */
-    private Container container = null;
 
     /**
      * For debug purposes, the classResourceName that we were configured with.

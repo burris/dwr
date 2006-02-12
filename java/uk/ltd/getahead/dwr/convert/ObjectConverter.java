@@ -174,7 +174,7 @@ public class ObjectConverter implements Converter
 
         try
         {
-            Object bean = null;
+            Object bean;
             if (instanceType != null)
             {
                 bean = instanceType.newInstance();
@@ -398,7 +398,7 @@ public class ObjectConverter implements Converter
                     return false;
                 }
             }
-            
+
             // So we passed all the exclusions. The setters enforce mutual
             // exclusion between exclusions and inclusions so we don't need to
             // 'return true' here, we can carry on. This has the advantage that

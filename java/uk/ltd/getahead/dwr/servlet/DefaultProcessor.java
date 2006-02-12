@@ -72,11 +72,11 @@ public class DefaultProcessor implements Processor
                 servletPath = HtmlConstants.PATH_ROOT;
                 log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + request.getContextPath() + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
-    
+
             String contextPath = request.getContextPath();
-    
-            HttpResponse reply = null;
-    
+
+            HttpResponse reply;
+
             // NOTE: I'm not totally happy with the if statment, there doesn't
             // appear to be logic to it, just hack-till-its-not-broken which feels
             // like a good way to create latent bugs
@@ -89,14 +89,14 @@ public class DefaultProcessor implements Processor
             }
             else if (pathInfo.startsWith(HtmlConstants.FILE_INDEX))
             {
-                reply = debugPageGenerator.generateIndexPage(contextPath);
+                reply = debugPageGenerator.generateIndexPage(contextPath, servletPath);
             }
             else if (pathInfo.startsWith(HtmlConstants.PATH_TEST))
             {
                 String scriptName = pathInfo;
                 scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_TEST, HtmlConstants.BLANK);
                 scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_ROOT, HtmlConstants.BLANK);
-    
+
                 reply = debugPageGenerator.generateTestPage(contextPath, servletPath, scriptName);
             }
             else if (pathInfo.startsWith(HtmlConstants.PATH_INTERFACE))
@@ -105,14 +105,14 @@ public class DefaultProcessor implements Processor
                 scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_INTERFACE, HtmlConstants.BLANK);
                 scriptName = LocalUtil.replace(scriptName, HtmlConstants.EXTENSION_JS, HtmlConstants.BLANK);
                 String path = request.getContextPath() + servletPath;
-    
+
                 reply = remoter.generateInterfaceScript(scriptName, path);
             }
             else if (pathInfo.startsWith(HtmlConstants.PATH_EXEC))
             {
                 RequestParser requestParser = new RequestParser();
                 Calls calls = requestParser.parseRequest(new ServletHttpRequest(request));
-    
+
                 reply = remoter.execute(calls);
             }
             else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_ENGINE))
@@ -136,7 +136,7 @@ public class DefaultProcessor implements Processor
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
-    
+
             response.setContentType(reply.getMimeType());
             ServletOutputStream out = response.getOutputStream();
             out.write(reply.getBody());
@@ -181,7 +181,6 @@ public class DefaultProcessor implements Processor
             out.println("alert('Error. This may be due to an unsupported browser.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
             out.println("//</script>"); //$NON-NLS-1$
             out.flush();
-            return;
         }
     }
 
@@ -202,7 +201,7 @@ public class DefaultProcessor implements Processor
             return;
         }
 
-        String output = null;
+        String output;
 
         synchronized (scriptCache)
         {
@@ -354,7 +353,7 @@ public class DefaultProcessor implements Processor
     }
 
     /**
-     * 
+     *
      * @param debugPageGenerator
      */
     public void setDebugPageGenerator(DebugPageGenerator debugPageGenerator)

@@ -277,7 +277,7 @@ public final class LocalUtil
             Map.Entry entry = (Entry) it.next();
             String key = (String) entry.getKey();
             Object value = entry.getValue();
-    
+
             try
             {
                 setProperty(object, key, value);
@@ -460,7 +460,7 @@ public final class LocalUtil
     public static String[] splitInbound(String data)
     {
         String[] reply = new String[2];
-    
+
         int colon = data.indexOf(ConversionConstants.INBOUND_TYPE_SEPARATOR);
         if (colon == -1)
         {
@@ -473,7 +473,7 @@ public final class LocalUtil
             reply[LocalUtil.INBOUND_INDEX_TYPE] = data.substring(0, colon);
             reply[LocalUtil.INBOUND_INDEX_VALUE] = data.substring(colon + 1);
         }
-    
+
         return reply;
     }
 
@@ -658,7 +658,7 @@ public final class LocalUtil
      * If anything goes wrong, the errors are logged and ignored.
      * @param in The resource to close
      */
-    public static final void close(InputStream in)
+    public static void close(InputStream in)
     {
         if (in == null)
         {
@@ -680,7 +680,7 @@ public final class LocalUtil
      * If anything goes wrong, the errors are logged and ignored.
      * @param in The resource to close
      */
-    public static final void close(RandomAccessFile in)
+    public static void close(RandomAccessFile in)
     {
         if (in == null)
         {

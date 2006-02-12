@@ -85,8 +85,8 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             TypeHintContext subthc = icc.createChildContext(0);
             Class subtype = config.getExtraTypeInfo(subthc);
 
-            //subtype.getMethod("h", null).getTypeParameters();
-            Collection col = null;
+            // subtype.getMethod("h", null).getTypeParameters();
+            Collection col;
 
             // If they want an iterator then just use an array list and fudge
             // at the end.
@@ -166,7 +166,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
     {
         // First we need to get ourselves the collection data
-        Iterator it = null;
+        Iterator it;
         int size = -1;
         if (data instanceof Collection)
         {

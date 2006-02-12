@@ -38,6 +38,8 @@ public class HibernateBeanConverter extends BeanConverter
      */
     public HibernateBeanConverter() throws ClassNotFoundException
     {
+        Class hibernate;
+
         try
         {
             hibernate = Class.forName(CLASS_HIBERNATE3);
@@ -96,8 +98,7 @@ public class HibernateBeanConverter extends BeanConverter
         try
         {
             Class clazz = (Class) getClass.invoke(null, new Object[] { bean });
-            BeanInfo info = Introspector.getBeanInfo(clazz);
-            return info;
+            return Introspector.getBeanInfo(clazz);
         }
         catch (IntrospectionException ex)
         {
@@ -172,11 +173,6 @@ public class HibernateBeanConverter extends BeanConverter
      * The Hibernate utility class under Hibernate3
      */
     private static final String CLASS_HIBERNATE3 = "org.hibernate.Hibernate"; //$NON-NLS-1$
-
-    /**
-     * The Hibernate utility class (either H2 or H3)
-     */
-    private Class hibernate;
 
     /**
      * The cached getClass method from Hibernate

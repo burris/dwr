@@ -147,12 +147,7 @@ public final class InboundVariable
             return false;
         }
 
-        if (!this.key.equals(that.key))
-        {
-            return false;
-        }
-
-        return true;
+        return this.key.equals(that.key);
     }
 
     /* (non-Javadoc)

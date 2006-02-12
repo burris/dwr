@@ -40,7 +40,7 @@ public class EnumConverter extends BaseV20Converter implements Converter
     {
         String value = LocalUtil.decode(iv.getValue());
 
-        Object[] values = null;
+        Object[] values;
         try
         {
             Method getter = paramType.getMethod("values", new Class[0]); //$NON-NLS-1$

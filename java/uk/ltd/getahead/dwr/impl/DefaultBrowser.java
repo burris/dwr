@@ -100,5 +100,5 @@ public class DefaultBrowser implements Browser, HttpSessionBindingListener
     /**
      * The list of waiting scripts
      */
-    private List scripts = new ArrayList();
+    private final List scripts = new ArrayList();
 }

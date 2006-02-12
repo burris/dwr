@@ -33,10 +33,10 @@ import uk.ltd.getahead.dwr.ConversionException;
 import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.compat.BaseV20Converter;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -171,7 +171,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
 
         try
         {
-            Object bean = null;
+            Object bean;
             if (instanceType != null)
             {
                 bean = instanceType.newInstance();
@@ -335,8 +335,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
      */
     protected BeanInfo getBeanInfo(Object bean) throws IntrospectionException
     {
-        BeanInfo info = Introspector.getBeanInfo(bean.getClass());
-        return info;
+        return Introspector.getBeanInfo(bean.getClass());
     }
 
     /**
@@ -357,7 +356,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
                     return false;
                 }
             }
-            
+
             // So we passed all the exclusions. The setters enforce mutual
             // exclusion between exclusions and inclusions so we don't need to
             // 'return true' here, we can carry on. This has the advantage that
