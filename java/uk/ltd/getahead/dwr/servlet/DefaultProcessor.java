@@ -15,28 +15,19 @@
  */
 package uk.ltd.getahead.dwr.servlet;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+import uk.ltd.getahead.dwr.*;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.util.LocalUtil;
+import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.RequestParser;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import uk.ltd.getahead.dwr.Calls;
-import uk.ltd.getahead.dwr.Constants;
-import uk.ltd.getahead.dwr.DebugPageGenerator;
-import uk.ltd.getahead.dwr.HttpResponse;
-import uk.ltd.getahead.dwr.Remoter;
-import uk.ltd.getahead.dwr.util.JavascriptUtil;
-import uk.ltd.getahead.dwr.util.LocalUtil;
-import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.RequestParser;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is the main servlet that handles all the requests to DWR.

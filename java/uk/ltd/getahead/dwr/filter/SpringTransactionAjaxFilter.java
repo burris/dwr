@@ -134,7 +134,7 @@ public class SpringTransactionAjaxFilter implements AjaxFilter
 
         try
         {
-            Object reply = tt.execute(new TransactionCallback()
+            return tt.execute(new TransactionCallback()
             {
                 public Object doInTransaction(TransactionStatus status)
                 {
@@ -152,8 +152,6 @@ public class SpringTransactionAjaxFilter implements AjaxFilter
                     }
                 }
             });
-
-            return reply;
         }
         catch (TransactionSystemException ex)
         {

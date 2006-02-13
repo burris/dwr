@@ -18,6 +18,7 @@ package uk.ltd.getahead.dwr;
 /**
  * Various constants for type conversion
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @noinspection InterfaceNeverImplemented
  */
 public interface ConversionConstants
 {

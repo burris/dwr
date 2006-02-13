@@ -18,10 +18,10 @@ package uk.ltd.getahead.dwr;
 /**
  * A ClientScript contains a clip of Javascript designed for execution on a
  * client web-browser.
- * 
+ *
  * <p>ClientScript is basically a wrapper around a String. But we use the
  * wrapper rather than a String so we have clear rules on identity. With Strings
- * interning can mean that to strings with identical contents are equal() when
+ * interning can mean that 2 strings with identical contents are equal() when
  * they are not ==. With ClientScript the equal() rules are ==.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
@@ -50,6 +50,14 @@ public class ClientScript
     public boolean equals(Object obj)
     {
         return obj == this;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode()
+    {
+        return script.hashCode();
     }
 
     /**

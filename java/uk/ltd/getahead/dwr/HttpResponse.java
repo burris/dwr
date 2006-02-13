@@ -21,62 +21,17 @@ package uk.ltd.getahead.dwr;
  * may be other things we need to add.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class HttpResponse
+public interface HttpResponse
 {
     /**
      * Accessor for the HTTP body
      * @return the body
      */
-    public byte[] getBody()
-    {
-        return body;
-    }
-
-    /**
-     * Accessor for the HTTP body
-     * @param body the body to set
-     */
-    public void setBody(byte[] body)
-    {
-        this.body = body;
-    }
-
-    /**
-     * Accessor for the HTTP body
-     * @param body the body to set
-     */
-    public void setBody(String body)
-    {
-        // TODO: Think about encoding. The servlet spec says it uses a default
-        // value of "ISO-8859-1".
-        this.body = body.getBytes();
-    }
+    byte[] getBody();
 
     /**
      * Accessor for the MimeType that the body is in
      * @return the mimeType
      */
-    public String getMimeType()
-    {
-        return mimeType;
-    }
-
-    /**
-     * Accessor for the MimeType that the body is in
-     * @param mimeType the mimeType to set
-     */
-    public void setMimeType(String mimeType)
-    {
-        this.mimeType = mimeType;
-    }
-
-    /**
-     * The data in the HTTP response
-     */
-    private byte[] body;
-
-    /**
-     * The MimeType of the body
-     */
-    private String mimeType;
+    String getMimeType();
 }

@@ -15,13 +15,12 @@
  */
 package uk.ltd.getahead.dwr.servlet;
 
+import uk.ltd.getahead.dwr.HttpRequest;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import uk.ltd.getahead.dwr.HttpRequest;
 
 /**
  * A implementation of HttpRequest that uses an HttpServletRequest

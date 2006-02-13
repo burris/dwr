@@ -15,11 +15,11 @@
  */
 package uk.ltd.getahead.dwr.create;
 
-import java.util.Map;
-
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Messages;
+
+import java.util.Map;
 
 /**
  * A simple implementation of the basic parts of Creator
@@ -77,7 +77,7 @@ public abstract class AbstractCreator implements Creator
     }
 
     /**
-     * @param cacheable Whether or not to cache the script.  
+     * @param cacheable Whether or not to cache the script.
      */
     public void setCacheable(boolean cacheable)
     {

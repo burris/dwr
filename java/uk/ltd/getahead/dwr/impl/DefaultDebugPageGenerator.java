@@ -67,22 +67,29 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         {
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
-            buffer.append("<li><a href='" + contextPath + servletPath + HtmlConstants.PATH_TEST + name + "'>" + name + "</a> (" + creator.getType().getName() + ")</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+            buffer.append("<li><a href='"); //$NON-NLS-1$
+            buffer.append(contextPath);
+            buffer.append(servletPath);
+            buffer.append(HtmlConstants.PATH_TEST);
+            buffer.append(name);
+            buffer.append("'>"); //$NON-NLS-1$
+            buffer.append(name);
+            buffer.append("</a> ("); //$NON-NLS-1$
+            buffer.append(creator.getType().getName());
+            buffer.append(")</li>\n"); //$NON-NLS-1$
         }
         buffer.append("</ul>\n"); //$NON-NLS-1$
 
         buffer.append("<h2>Other Links</h2>\n"); //$NON-NLS-1$
         buffer.append("<ul>\n"); //$NON-NLS-1$
-        buffer.append("<li>Up to <a href='" + contextPath + "/'>top level of web app</a>.</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("<li>Up to <a href='"); //$NON-NLS-1$
+        buffer.append(contextPath);
+        buffer.append("/'>top level of web app</a>.</li>\n"); //$NON-NLS-1$
         buffer.append("</ul>\n"); //$NON-NLS-1$
 
         buffer.append("</body></html>\n"); //$NON-NLS-1$
 
-        HttpResponse reply = new HttpResponse();
-        reply.setBody(buffer.toString());
-        reply.setMimeType(HtmlConstants.MIME_HTML);
-
-        return reply;
+        return new DefaultHttpResponse(buffer.toString(), HtmlConstants.MIME_HTML);
     }
 
     /* (non-Javadoc)
@@ -327,7 +334,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
                             {
                                 break;
                             }
-    
+
                             fileBuffer.append(line);
                             fileBuffer.append('\n');
                         }
@@ -350,11 +357,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         buffer.append("</body></html>\n"); //$NON-NLS-1$
 
-        HttpResponse reply = new HttpResponse();
-        reply.setBody(buffer.toString());
-        reply.setMimeType(HtmlConstants.MIME_HTML);
-
-        return reply;
+        return new DefaultHttpResponse(buffer.toString(), HtmlConstants.MIME_HTML);
     }
 
     /**

@@ -18,6 +18,7 @@ package uk.ltd.getahead.dwr.servlet;
 /**
  * Various constants from generating output.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @noinspection InterfaceNeverImplemented
  */
 public interface HtmlConstants
 {

@@ -168,12 +168,13 @@ public class DefaultContainer implements Container
     }
 
     /**
-     * A helper to do the reflection
+     * A helper to do the reflection.
+     * This helper throws away all exceptions, prefering to log.
      * @param setter The method to invoke
      * @param bean The object to invoke the method on
      * @param value The value to assign to the property using the setter method
      */
-    private void invoke(Method setter, Object bean, Object value)
+    private static void invoke(Method setter, Object bean, Object value)
     {
         try
         {
@@ -189,7 +190,7 @@ public class DefaultContainer implements Container
         }
         catch (InvocationTargetException ex)
         {
-            log.error("- Exception during auto-wire", ex.getTargetException()); //$NON-NLS-1$
+            log.error("- Exception during auto-wire: ", ex.getTargetException()); //$NON-NLS-1$
         }
     }
 

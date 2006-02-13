@@ -41,6 +41,7 @@ import uk.ltd.getahead.dwr.util.Logger;
  * <li>The exec 'page' that executes the method and returns data to the iframe</li>
  * </ul>
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @noinspection RefusedBequest
  */
 public class DwrServlet extends HttpServlet
 {

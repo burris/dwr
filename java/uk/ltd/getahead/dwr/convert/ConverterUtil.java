@@ -61,7 +61,7 @@ public class ConverterUtil
                     buffer.append(',');
                 }
 
-                if (nested.getAssignCode() == varname)
+                if (nested.getAssignCode().equals(varname))
                 {
                     // We'll fill it in later
                     buffer.append("null"); //$NON-NLS-1$
@@ -101,7 +101,7 @@ public class ConverterUtil
                     buffer.append(',');
                 }
 
-                if (nested.getAssignCode() == varname)
+                if (nested.getAssignCode().equals(varname))
                 {
                     // We'll fill it in later
                     buffer.append("null"); //$NON-NLS-1$

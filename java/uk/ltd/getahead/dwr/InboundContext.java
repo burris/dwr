@@ -201,7 +201,7 @@ public final class InboundContext
          * @param inboundVariable
          * @param type
          */
-        protected Conversion(InboundVariable inboundVariable, Class type)
+        private Conversion(InboundVariable inboundVariable, Class type)
         {
             this.inboundVariable = inboundVariable;
             this.type = type;
@@ -243,8 +243,8 @@ public final class InboundContext
             return "Conversion[" + inboundVariable + "," + type.getName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
 
-        protected InboundVariable inboundVariable;
-        protected Class type;
+        private InboundVariable inboundVariable;
+        private Class type;
     }
 
     /**

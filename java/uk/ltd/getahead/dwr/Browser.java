@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * An interface to the browser so that we can check if it is still 
+ * An interface to the browser so that we can interact with it in new ways
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface Browser extends Serializable

@@ -25,6 +25,7 @@ public class PageFlowCreator extends AbstractCreator implements Creator
      */
     public PageFlowCreator() throws ClassNotFoundException
     {
+        // noinspection EmptyCatchBlock
         try
         {
             bhFlowClass = Class.forName("org.apache.beehive.netui.pageflow.PageFlowController"); //$NON-NLS-1$
@@ -34,8 +35,10 @@ public class PageFlowCreator extends AbstractCreator implements Creator
         }
         catch (Exception ex)
         {
+            // We're expecting this to fail, and notice below
         }
 
+        // noinspection EmptyCatchBlock
         try
         {
             wlFlowClass = Class.forName("com.bea.wlw.netui.pageflow.PageFlowController"); //$NON-NLS-1$
@@ -45,8 +48,9 @@ public class PageFlowCreator extends AbstractCreator implements Creator
         }
         catch (Exception ex)
         {
+            // We're expecting this to fail, and notice below
         }
-        
+
         if ((bhGetter == null && wlGetter == null) ||
            (bhFlowClass == null && wlFlowClass == null))
         {
@@ -127,4 +131,4 @@ public class PageFlowCreator extends AbstractCreator implements Creator
 
     private Class bhFlowClass;
     private Class wlFlowClass;
-} 
+}

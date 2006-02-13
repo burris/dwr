@@ -15,18 +15,13 @@
  */
 package uk.ltd.getahead.dwr.impl;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
 import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.Logger;
+
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * A parser for type info in a dwr.xml signature.

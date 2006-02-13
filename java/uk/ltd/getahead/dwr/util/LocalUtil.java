@@ -24,7 +24,6 @@ import java.net.URLDecoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -274,7 +273,7 @@ public final class LocalUtil
     {
         for (Iterator it = params.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Entry) it.next();
+            Map.Entry entry = (Map.Entry) it.next();
             String key = (String) entry.getKey();
             Object value = entry.getValue();
 

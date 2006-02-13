@@ -122,8 +122,7 @@ public class SpringCreator extends AbstractCreator implements Creator
         {
             if (overrideFactory != null)
             {
-                Object reply = overrideFactory.getBean(beanName);
-                return reply;
+                return overrideFactory.getBean(beanName);
             }
 
             if (factory == null)
@@ -140,8 +139,7 @@ public class SpringCreator extends AbstractCreator implements Creator
                 throw new InstantiationException("DWR can't find a spring config. See the logs for solutions");
             }
 
-            Object reply = factory.getBean(beanName);
-            return reply;
+            return factory.getBean(beanName);
         }
         catch (RuntimeException ex)
         {

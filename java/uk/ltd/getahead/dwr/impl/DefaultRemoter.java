@@ -98,7 +98,7 @@ public class DefaultRemoter implements Remoter
             // Check to see if the creator is reloadable
             // If it is, then do not cache the generated Javascript
             String script;
-            if (!creator.isCacheable()) 
+            if (!creator.isCacheable())
             {
                 script = getMethodJS(scriptName, method);
             }
@@ -120,12 +120,10 @@ public class DefaultRemoter implements Remoter
             buffer.append(script);
         }
 
-        HttpResponse reply = new HttpResponse();
-        reply.setBody(buffer.toString());
-        //reply.setMimeType(HtmlConstants.MIME_JS);
-        reply.setMimeType(HtmlConstants.MIME_PLAIN);
-
-        return reply;
+        // Officially we should use HtmlConstants.MIME_JS, but if we cheat and
+        // use HtmlConstants.MIME_PLAIN then it will be easier to read in a
+        // browser window, and will still work just fine.
+        return new DefaultHttpResponse(buffer.toString(), HtmlConstants.MIME_PLAIN);
     }
 
     /**
@@ -408,7 +406,7 @@ public class DefaultRemoter implements Remoter
             buffer.append("<script type='text/javascript'>\n"); //$NON-NLS-1$
         }
 
-        // Are there any outstanding reverse-ajax scripts to be passed on? 
+        // Are there any outstanding reverse-ajax scripts to be passed on?
         List scripts = WebContextFactory.get().getBrowser().removeAllScripts();
         for (Iterator it = scripts.iterator(); it.hasNext();)
         {
@@ -458,10 +456,8 @@ public class DefaultRemoter implements Remoter
         final String replyString = buffer.toString();
         log.debug(replyString);
 
-        HttpResponse reply = new HttpResponse();
-        reply.setBody(replyString);
-        reply.setMimeType(calls.isXhrMode() ? HtmlConstants.MIME_PLAIN : HtmlConstants.MIME_HTML);
-        return reply;
+        String mimeType = calls.isXhrMode() ? HtmlConstants.MIME_PLAIN : HtmlConstants.MIME_HTML;
+        return new DefaultHttpResponse(replyString, mimeType);
     }
 
     /**
@@ -621,7 +617,7 @@ public class DefaultRemoter implements Remoter
     {
         this.allowImpossibleTests = allowImpossibleTests;
     }
-    
+
     /**
      * What AjaxFilters apply to which Ajax calls?
      */

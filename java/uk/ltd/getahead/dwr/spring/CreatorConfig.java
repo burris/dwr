@@ -15,7 +15,11 @@
  */
 package uk.ltd.getahead.dwr.spring;
 
-import java.util.*;
+import java.util.List;
+import java.util.Properties;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import uk.ltd.getahead.dwr.AjaxFilter;
 
@@ -42,7 +46,7 @@ import uk.ltd.getahead.dwr.AjaxFilter;
 public class CreatorConfig
 {
     /**
-     * The creator type that will be used to create new objects for remoting 
+     * The creator type that will be used to create new objects for remoting
      * @return Returns the creator.
      */
     public String getCreator()
@@ -51,7 +55,7 @@ public class CreatorConfig
     }
 
     /**
-     * The creator type that will be used to create new objects for remoting 
+     * The creator type that will be used to create new objects for remoting
      * @param creator The creator to set.
      */
     public void setCreator(String creator)

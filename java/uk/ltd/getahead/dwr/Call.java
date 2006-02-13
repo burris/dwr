@@ -15,8 +15,6 @@
  */
 package uk.ltd.getahead.dwr;
 
-
-
 /**
  * Call is a POJO to encapsulate the information required to make a single java
  * call, including the result of the call (either returned data or exception).

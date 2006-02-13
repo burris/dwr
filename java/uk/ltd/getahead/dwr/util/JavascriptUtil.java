@@ -45,6 +45,7 @@ public class JavascriptUtil
     /**
      * Flag for use in javascript compression: Remove single line comments.
      * For ease of use you may wish to use one of the LEVEL_* compression levels.
+     * @noinspection PointlessBitwiseExpression
      */
     public static final int COMPRESS_STRIP_SL_COMMENTS = 1 << 0;
 
@@ -473,15 +474,18 @@ public class JavascriptUtil
             // handle unicode
             if (ch > 0xfff)
             {
-                writer.append("\\u" + hex(ch)); //$NON-NLS-1$
+                writer.append("\\u"); //$NON-NLS-1$
+                writer.append(hex(ch));
             }
             else if (ch > 0xff)
             {
-                writer.append("\\u0" + hex(ch)); //$NON-NLS-1$
+                writer.append("\\u0"); //$NON-NLS-1$
+                writer.append(hex(ch));
             }
             else if (ch > 0x7f)
             {
-                writer.append("\\u00" + hex(ch)); //$NON-NLS-1$
+                writer.append("\\u00"); //$NON-NLS-1$
+                writer.append(hex(ch));
             }
             else if (ch < 32)
             {
@@ -510,11 +514,13 @@ public class JavascriptUtil
                 default :
                     if (ch > 0xf)
                     {
-                        writer.append("\\u00" + hex(ch)); //$NON-NLS-1$
+                        writer.append("\\u00"); //$NON-NLS-1$
+                        writer.append(hex(ch));
                     }
                     else
                     {
-                        writer.append("\\u000" + hex(ch)); //$NON-NLS-1$
+                        writer.append("\\u000"); //$NON-NLS-1$
+                        writer.append(hex(ch));
                     }
                     break;
                 }

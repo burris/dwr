@@ -16,7 +16,6 @@
 package uk.ltd.getahead.dwr.spring;
 
 import uk.ltd.getahead.dwr.create.AbstractCreator;
-import uk.ltd.getahead.dwr.spring.CreatorConfig;
 
 /**
  * A creator that proxies to the specified bean. <br>

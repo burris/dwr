@@ -110,7 +110,7 @@ public final class OutboundContext
     /**
      * The prefix for outbound variable names the we generate
      */
-    public static final String OUTBOUND_VARIABLE_PREFIX = "s"; //$NON-NLS-1$
+    private static final String OUTBOUND_VARIABLE_PREFIX = "s"; //$NON-NLS-1$
 
     /**
      * The map of objects to how we converted them last time

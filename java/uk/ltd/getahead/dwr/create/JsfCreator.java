@@ -56,8 +56,8 @@ public class JsfCreator extends AbstractCreator implements Creator
      */
     public Object getInstance() throws InstantiationException
     {
-        FacesContext facesContext = FacesContext.getCurrentInstance();    
-        if (facesContext != null)
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext == null)
         {
             log.error("Object " + getManagedBeanName() + " cannot be created since the faces context is null"); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
@@ -66,9 +66,8 @@ public class JsfCreator extends AbstractCreator implements Creator
         Application application = facesContext.getApplication();
 
         VariableResolver resolver = application.getVariableResolver();
-        Object resolvedObject = resolver.resolveVariable(facesContext, getManagedBeanName());
 
-        return resolvedObject;
+        return resolver.resolveVariable(facesContext, getManagedBeanName());
     }
 
     /**
@@ -127,22 +126,22 @@ public class JsfCreator extends AbstractCreator implements Creator
         {
             // FacesContext facesContext = FacesContext.getCurrentInstance();
             Object facesContext = getCurrentInstanceMethod.invoke(null, new Object[0]);
-    
+
             if (facesContext != null)
             {
                 log.error("Object " + getManagedBeanName() + " cannot be created since the faces context is null"); //$NON-NLS-1$ //$NON-NLS-2$
                 return null;
             }
-    
+
             // Application application = facesContext.getApplication();
             Object application = getApplicationMethod.invoke(facesContext, new Object[0]);
-    
+
             // VariableResolver resolver = application.getVariableResolver();
             Object resolver = getVariableResolverMethod.invoke(application, new Object[0]);
-    
+
             // Object resolvedObject = resolver.resolveVariable(facesContext, getManagedBeanName());
             Object resolvedObject = resolveVariableMethod.invoke(resolver, new Object[] { facesContext, getManagedBeanName() });
-    
+
             return resolvedObject;
         }
         catch (InvocationTargetException ex)

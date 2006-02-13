@@ -435,9 +435,6 @@ public class ObjectConverter implements Converter
      */
     public boolean isAvailable(Object data, String property)
     {
-        // This just shuts the eclipse lint up
-        if (false) { data = property; property = (String) data; }
-
         return true;
     }
 

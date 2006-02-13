@@ -75,12 +75,6 @@ public class RequestParser
         // BufferedReader in = req.getReader();
         BufferedReader in = new BufferedReader(new InputStreamReader(req.getInputStream()));
 
-        if (in == null)
-        {
-            // it is not a post message
-            throw new RuntimeException(Messages.getString("ExecuteQuery.ErrorNullPost")); //$NON-NLS-1$
-        }
-
         while (true)
         {
             String line = in.readLine();

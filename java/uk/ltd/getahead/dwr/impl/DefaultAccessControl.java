@@ -172,7 +172,7 @@ public class DefaultAccessControl implements AccessControl
 
         // If the policy for the given type is defaultAllow then we need to go
         // to default disallow mode, and check that the are not rules applied
-        if (policy.defaultAllow == true)
+        if (policy.defaultAllow)
         {
             if (policy.rules.size() > 0)
             {
@@ -195,7 +195,7 @@ public class DefaultAccessControl implements AccessControl
 
         // If the policy for the given type is defaultAllow then we need to go
         // to default disallow mode, and check that the are not rules applied
-        if (policy.defaultAllow == false)
+        if (!policy.defaultAllow)
         {
             if (policy.rules.size() > 0)
             {
@@ -238,9 +238,6 @@ public class DefaultAccessControl implements AccessControl
             }
         }
 
-        // There may be a more optimized if statement here, but I value code
-        // clarity over performance.
-
         if (policy.defaultAllow && match != null)
         {
             // We are in default allow mode so the rules are exclusions and we
@@ -248,6 +245,10 @@ public class DefaultAccessControl implements AccessControl
             //log.debug("method excluded for creator " + type + " due to defaultAllow=" + policy.defaultAllow + " and rule: " + match); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return false;
         }
+
+        // There may be a more optimized if statement here, but I value code
+        // clarity over performance.
+        //noinspection RedundantIfStatement
 
         if (!policy.defaultAllow && match == null)
         {

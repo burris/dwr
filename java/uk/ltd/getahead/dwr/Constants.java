@@ -17,6 +17,7 @@ package uk.ltd.getahead.dwr;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @noinspection InterfaceNeverImplemented
  */
 public interface Constants
 {
