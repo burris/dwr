@@ -115,8 +115,21 @@ public class Messages
         }
         catch (MissingResourceException ex)
         {
-            log.error("Missing I18N string: " + key, ex); //$NON-NLS-1$
-            return '!' + key + '!';
+            // Create a list of the parameters
+            StringBuffer buffer = new StringBuffer();
+            buffer.append('[');
+            for (int i = 0; i < params.length; i++)
+            {
+                if (i != 0)
+                {
+                    buffer.append(',');
+                }
+                buffer.append(params[i].toString());
+            }
+            buffer.append(']');
+
+            log.error("Missing I18N string: " + key + ". Params: " + buffer.toString()); //$NON-NLS-1$ //$NON-NLS-2$
+            return '!' + key + '!' + buffer.toString() + '!';
         }
     }
 
