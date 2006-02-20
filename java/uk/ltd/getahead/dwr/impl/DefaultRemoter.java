@@ -149,7 +149,7 @@ public class DefaultRemoter implements Remoter
 
         buffer.append("callback) {\n"); //$NON-NLS-1$
 
-        buffer.append("    DWREngine._execute(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        buffer.append("  DWREngine._execute(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         for (int j = 0; j < paramTypes.length; j++)
         {
             if (LocalUtil.isServletClass(paramTypes[j]))
