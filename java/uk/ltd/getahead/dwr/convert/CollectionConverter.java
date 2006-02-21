@@ -22,7 +22,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.ConversionException;
@@ -103,17 +105,22 @@ public class CollectionConverter extends BaseV20Converter implements Converter
                 // subclasses that might be instaniable so we accept failure.
                 col = (Collection) paramType.newInstance();
             }
-            // If they want a set then use HashSet
+            // If they want a SortedSet then use TreeSet
+            else if (SortedSet.class.isAssignableFrom(paramType))
+            {
+                col = new TreeSet();
+            }
+            // If they want a Set then use HashSet
             else if (Set.class.isAssignableFrom(paramType))
             {
                 col = new HashSet();
             }
-            // If they want a list then use an ArrayList
+            // If they want a List then use an ArrayList
             else if (List.class.isAssignableFrom(paramType))
             {
                 col = new ArrayList();
             }
-            // If they just want a collection then just use an ArrayList
+            // If they just want a Collection then just use an ArrayList
             else if (Collection.class.isAssignableFrom(paramType))
             {
                 col = new ArrayList();
