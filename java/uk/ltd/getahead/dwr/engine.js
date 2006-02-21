@@ -421,9 +421,6 @@ DWREngine._sendData = function(batch) {
       if (verNum < 400) {
         batch.verb == "GET";
       }
-      else if (verNum <= 417) {
-        batch.map.isBrokenSafari2 = "true";
-      }
     }
     if (batch.verb == "GET") {
       // Some browsers (Opera/Safari2) seem to fail to convert the value
@@ -463,10 +460,11 @@ DWREngine._sendData = function(batch) {
 
       try {
         // This might include Safari too, but it shouldn't do any harm
-//        if (navigator.userAgent.indexOf('Gecko') >= 0) {
-//          batch.req.setRequestHeader('Connection', 'close');
-//        }
+        //   if (navigator.userAgent.indexOf('Gecko') >= 0) {
+        //     batch.req.setRequestHeader('Connection', 'close');
+        //   }
         batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.async);
+        batch.req.setRequestHeader('Content-Type', 'text/plain');
         batch.req.send(query);
         if (!batch.async) {
           DWREngine._stateChange(batch);
