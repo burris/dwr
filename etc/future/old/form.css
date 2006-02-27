@@ -1,0 +1,25 @@
+
+.fieldholder
+{
+    border: 1px inset ThreedFace;
+}
+
+.label
+{
+    color: Gray;
+    padding-left: 5px;
+}
+
+.demo
+{
+    position: relative;
+    visibility: hidden;
+    position: absolute;
+    color: #1f1f1f;
+}
+
+input
+{
+    border: none;
+}
+

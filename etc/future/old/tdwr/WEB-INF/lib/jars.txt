@@ -1,0 +1,9 @@
+dwr.jar
+spring.jar
+jstl.jar
+standard.jar
+commons-beanutils.jar
+commons-beanutils-core.jar
+commons-beanutils-bean-collections.jar
+commons-collections-3.1.jar
+commons-jxpath-1.2.jar

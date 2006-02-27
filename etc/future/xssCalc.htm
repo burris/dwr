@@ -1,0 +1,24 @@
+<html>
+<head>
+</head>
+<body>
+	<script language="javascript" src="http://braid.com.au/dwrXss-webapp/dwr/engine.js"></script>
+	<script language="javascript" src="http://braid.com.au/dwrXss-webapp/dwr/util.js"></script>
+	<script language="javascript" src="http://braid.com.au/dwrXss-webapp/dwr/interface/Calc.js"></script>
+	<script>
+		function calc() {
+			Calc.add(DWRUtil.getValue('a'), DWRUtil.getValue('b'), {
+				callback:function(result){
+					DWRUtil.setValue('c', result);
+				},
+				method:DWREngine.XssScript,
+				xssBase:"http://braid.com.au"
+			});
+		}
+	</script>
+	<input type='text' id='a'> + <input type='text' id='b'> <input type='button' onclick="calc()" value='='> <input id='c' type='text' value=''>
+</body>
+</html>
+
+
+
