@@ -273,8 +273,16 @@ DWRUtil.useLoadingMessage = function(message) {
  * Set the value an HTML element to the specified value.
  * @see http://getahead.ltd.uk/dwr/browser/util/setvalue
  */
-DWRUtil.setValue = function(ele, val) {
+DWRUtil.setValue = function(ele, val, options) {
   if (val == null) val = "";
+  if (options != null) {
+    if (options.escapeHtml) {
+      val = val.replace(/&/, "&amp;");
+      val = val.replace(/'/, "&apos;");
+      val = val.replace(/</, "&lt;");
+      val = val.replace(/>/, "&gt;");
+    }
+  }
 
   var orig = ele;
   var nodes, i;
@@ -411,7 +419,10 @@ DWRUtil._selectListItem = function(ele, val) {
  * Read the current value for a given HTML element.
  * @see http://getahead.ltd.uk/dwr/browser/util/getvalue
  */
-DWRUtil.getValue = function(ele) {
+DWRUtil.getValue = function(ele, options) {
+  if (options == null) {
+    options = {};
+  }
   var orig = ele;
   ele = $(ele);
   // We can work with names and need to sometimes for radio buttons, and IE has
@@ -466,8 +477,10 @@ DWRUtil.getValue = function(ele) {
     return ele.value;
   }
 
-  if (ele.textContent) return ele.textContent;
-  else if (ele.innerText) return ele.innerText;
+  if (options.textContent) {
+    if (ele.textContent) return ele.textContent;
+    else if (ele.innerText) return ele.innerText;
+  }
   return ele.innerHTML;
 };
 
