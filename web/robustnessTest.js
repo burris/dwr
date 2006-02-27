@@ -17,7 +17,7 @@ function init() {
   update();
 }
 
-function start() {
+function toggleTest() {
   if (working) {
     DWRUtil.setValue("toggle", "Start");
     working = false;
@@ -61,7 +61,6 @@ function update() {
       warningHandler:function(message) {
         report("Batch Warning Handler: " + message);
       }
-
     });
   }
 
