@@ -16,6 +16,7 @@
 package uk.ltd.getahead.dwr;
 
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.Messages;
 
 /**
  * A simple struct to hold data about a single converted javascript variable.
@@ -33,44 +34,60 @@ public final class InboundVariable
     public InboundVariable(InboundContext context, String key, String type, String value)
     {
         this.context = context;
+        this.type = type;
+        this.value = value;
+        this.key = key;
+        this.dereferenced = attemptDereference();
+    }
 
+    /**
+     * Attempt to de-reference an inbound variable.
+     * We try de-referencing as soon as possible (why? there is a good reason
+     * for it, it fixes some bug, but I can't remember what right now) However
+     * the referenced variable may not exist yet, so the de-referencing may
+     * fail, requiring us to have another go later.
+     * @return Did the dereferencing succeed?
+     */
+    private boolean attemptDereference()
+    {
         if (ConversionConstants.TYPE_REFERENCE.equals(type))
         {
-            String tempType = type;
-            String tempValue = value;
-
-            while (ConversionConstants.TYPE_REFERENCE.equals(tempType))
+            while (ConversionConstants.TYPE_REFERENCE.equals(type))
             {
-                InboundVariable cd = context.getInboundVariable(tempValue);
+                InboundVariable cd = context.getInboundVariable(value);
                 if (cd == null)
                 {
-                    // log.error(Messages.getString("InboundVariable.MissingVariable", tempValue)); //$NON-NLS-1$
-                    break;
+                    return false;
                 }
 
-                tempType = cd.type;
-                tempValue = cd.value;
+                type = cd.type;
+                value = cd.value;
             }
-
-            this.type = tempType;
-            this.value = tempValue;
 
             // For references without an explicit variable name, we use the
             // name of the thing they point at
             if (key == null)
             {
-                this.key = value;
-            }
-            else
-            {
-                this.key = key;
+                key = value;
             }
         }
-        else
+
+        return true;
+    }
+
+    /**
+     * Call <code>attemptDereference()</code>, and complain if it fails.
+     * The assumption is that when we call this it really should succeed.
+     */
+    private void forceDereference()
+    {
+        if (!dereferenced)
         {
-            this.type = type;
-            this.value = value;
-            this.key = key;
+            dereferenced = attemptDereference();
+            if (!dereferenced)
+            {
+                log.error(Messages.getString("InboundVariable.MissingVariable", value)); //$NON-NLS-1$
+            }
         }
     }
 
@@ -79,6 +96,7 @@ public final class InboundVariable
      */
     public InboundContext getLookup()
     {
+        forceDereference();
         return context;
     }
 
@@ -87,6 +105,7 @@ public final class InboundVariable
      */
     public String getType()
     {
+        forceDereference();
         return type;
     }
 
@@ -96,6 +115,7 @@ public final class InboundVariable
      */
     public boolean isNull()
     {
+        forceDereference();
         return type.equals(ConversionConstants.INBOUND_NULL);
     }
 
@@ -104,6 +124,7 @@ public final class InboundVariable
      */
     public String getValue()
     {
+        forceDereference();
         return value;
     }
 
@@ -112,6 +133,7 @@ public final class InboundVariable
      */
     public String toString()
     {
+        forceDereference();
         return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value;
     }
 
@@ -131,6 +153,8 @@ public final class InboundVariable
         }
 
         InboundVariable that = (InboundVariable) obj;
+
+        forceDereference();
 
         if (!this.type.equals(that.type))
         {
@@ -166,17 +190,22 @@ public final class InboundVariable
     /**
      * The variable name
      */
-    private final String key;
+    private String key;
 
     /**
      * The javascript declared variable type
      */
-    private final String type;
+    private String type;
 
     /**
      * The javascript declared variable value
      */
-    private final String value;
+    private String value;
+
+    /**
+     * Has this variable been successfully de-referenced
+     */
+    private boolean dereferenced;
 
     /**
      * The log stream
