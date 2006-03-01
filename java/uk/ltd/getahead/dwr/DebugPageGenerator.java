@@ -24,8 +24,8 @@ public interface DebugPageGenerator
 {
     /**
      * Generate some HTML that represents an index page
-     * @param contextPath TODO: define this outside of the servlet spec
-     * @param servletPath TODO: define this outside of the servlet spec
+     * @param contextPath The context to the webapp in which DWR is embedded
+     * @param servletPath The path to DWR from within the current webapp
      * @return An index page in HTML
      * @throws SecurityException If the pages are not accessible
      */
@@ -33,8 +33,8 @@ public interface DebugPageGenerator
 
     /**
      * Generate some HTML that represents a test page
-     * @param contextPath TODO: define this outside of the servlet spec
-     * @param servletPath TODO: define this outside of the servlet spec
+     * @param contextPath The context to the webapp in which DWR is embedded
+     * @param servletPath The path to DWR from within the current webapp
      * @param scriptName The script to generate for
      * @return A test page in HTML
      * @throws SecurityException If the pages are not accessible
