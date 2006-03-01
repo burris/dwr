@@ -13,3 +13,6 @@
 #progress { width:0%; background:green; position:relative; top:0; left:0; }
 #failures { color: red; min-width:300px; max-height:200px; overflow:auto; }
 #testSummary th { text-align:right; }
+
+.inlineList li { display:inline; padding:0px 5px; }
+.inlineList { list-style-type:none; padding:0; margin:5px; }

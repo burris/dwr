@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-  <title>Test Page</title>
+  <title>DWR - Integration Tests</title>
   <script type='text/javascript' src='./dwr/interface/DOM.js'> </script>
   <script type='text/javascript' src='./dwr/interface/DOM4J.js'> </script>
   <script type='text/javascript' src='./dwr/interface/JDOM.js'> </script>
@@ -14,11 +14,20 @@
   <script type='text/javascript' src='generic.js'> </script>
   <link type="text/css" href="generic.css" rel="stylesheet" />
 </head>
+
 <body>
+<div>
+[ <a href="index.html">Top Level</a>
+| <a href="dhtmlTest.html">DHTML Tests</a>
+| Integration Tests
+| <a href="marshallingTest.html">Marshalling Tests</a> ]
+</div>
 
 <h1>Test Page</h1>
 
-<input value="Get XML Documents" type="button" onclick="testXML()"/>
+<div>
+  <input value="Get XML Documents" type="button" onclick="testXML()"/>
+</div>
 
 <div id="replyXOM" class="xmlReply"> </div>
 <div id="replyJDOM" class="xmlReply"> </div>

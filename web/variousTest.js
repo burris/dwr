@@ -5,6 +5,7 @@ function init() {
     if (prop.match(/test/) && typeof window[prop] == "function" && prop != "testEquals") {
       DWRUtil.addOptions("buttons", [ prop ], function(data) {
         return "<button onclick='DWRUtil.setValue(\"output\", \"\"); " + prop + "()'>" + prop.substring(4) + "</button>";
+        // return "<input name='submit' type='image' src='imagebutton.png' onclick='DWRUtil.setValue(\"output\", \"\"); " + prop + "()' />";
       });
     }
   }
