@@ -57,6 +57,24 @@ DWRUtil.selectRange = function(ele, start, end) {
 };
 
 /**
+ * @private Experimental for getting the selected text
+ */
+DWRUtil._getSelection = function(ele) {
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("selectRange() can't find an element with id: " + orig + ".");
+    return;
+  }
+  return ele.value.substring(ele.selectionStart, ele.selectionEnd);
+
+  // if (window.getSelection) return window.getSelection().getRangeAt(0);
+  // else if (document.getSelection) return document.getSelection();
+  // else if (document.selection) return document.selection.createRange().text;
+  // return "";
+}
+
+/**
  * Find the element in the current HTML document with the given id or ids
  * @see http://getahead.ltd.uk/dwr/browser/util/$
  */
@@ -285,7 +303,7 @@ DWRUtil.setValue = function(ele, val, options) {
   }
 
   var orig = ele;
-  var nodes, i;
+  var nodes, node, i;
 
   ele = $(ele);
   // We can work with names and need to sometimes for radio buttons
@@ -303,7 +321,7 @@ DWRUtil.setValue = function(ele, val, options) {
   if (DWRUtil._isHTMLElement(ele, "select")) {
     if (ele.type == "select-multiple" && DWRUtil._isArray(val)) {
       DWRUtil._selectListItems(ele, val);
-      }
+    }
     else {
       DWRUtil._selectListItem(ele, val);
     }
@@ -311,25 +329,28 @@ DWRUtil.setValue = function(ele, val, options) {
   }
 
   if (DWRUtil._isHTMLElement(ele, "input")) {
-    if (nodes && ele.type == "radio") {
-      for (i = 0; i < nodes.length; i++) {
-        if (nodes.item(i).type == "radio") {
-          nodes.item(i).checked = (nodes.item(i).value == val);
+    if (ele.type == "radio") {
+      // Some browsers match names when looking for ids, so check names anyway.
+      if (nodes == null) nodes = document.getElementsByName(orig);
+      if (nodes != null && nodes.length > 1) {
+        for (i = 0; i < nodes.length; i++) {
+          node = nodes.item(i);
+          if (node.type == "radio") {
+            node.checked = (node.value == val);
+          }
         }
       }
-    }
-    else {
-      switch (ele.type) {
-      case "checkbox":
-      case "check-box":
-      case "radio":
+      else {
         ele.checked = (val == true);
-        return;
-      default:
-        ele.value = val;
-        return;
       }
     }
+    else if (ele.type == "checkbox") {
+      ele.checked = val;
+    }
+    else {
+      ele.value = val;
+    }
+    return;
   }
 
   if (DWRUtil._isHTMLElement(ele, "textarea")) {
@@ -410,7 +431,9 @@ DWRUtil._selectListItem = function(ele, val) {
   for (i = 0; i < ele.options.length; i++) {
     if (ele.options[i].text == val) {
       ele.options[i].selected = true;
-      break;
+    }
+    else {
+      ele.options[i].selected = false;
     }
   }
 }
@@ -454,11 +477,14 @@ DWRUtil.getValue = function(ele, options) {
   }
 
   if (DWRUtil._isHTMLElement(ele, "input")) {
-    if (nodes && ele.type == "radio") {
+    if (ele.type == "radio") {
+      var node;
       for (i = 0; i < nodes.length; i++) {
-        if (nodes.item(i).type == "radio") {
-          if (nodes.item(i).checked) {
-            return nodes.item(i).value;
+        node = nodes.item(i);
+        if (node.type == "radio") {
+          if (node.checked) {
+            if (nodes.length > 1) return node.value;
+            else return true;
           }
         }
       }
@@ -518,10 +544,9 @@ DWRUtil.getText = function(ele) {
  */
 DWRUtil.setValues = function(map) {
   for (var property in map) {
-    var ele = $(property);
-    if (ele != null) {
-      var value = map[property];
-      DWRUtil.setValue(property, value);
+    // Are there any elements with that id or name
+    if ($(property) != null || document.getElementsByName(property).length >= 1) {
+      DWRUtil.setValue(property, map[property]);
     }
   }
 };
@@ -552,8 +577,8 @@ DWRUtil.getValues = function(data) {
   }
   else {
     for (var property in data) {
-      ele = $(property);
-      if (ele != null) {
+      // Are there any elements with that id or name
+      if ($(property) != null || document.getElementsByName(property).length >= 1) {
         data[property] = DWRUtil.getValue(property);
       }
     }
