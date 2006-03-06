@@ -170,29 +170,36 @@ tests[tests.length] = { code:"stringParam", data:"{|}~" };
 tests[tests.length] = { code:"stringParam", data:"call.callback = null" };
 //tests[tests.length] = { code:"stringStringParam", data:"param1=' !\"#$%&\'()*+,-/0123456789' param2=':;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ'" };
 //tests[tests.length] = { code:"stringStringParam", data:"param1='[\\]^_`' param2='abcdefghijklmnopqrstuvwxyz{|}~'" };
+tests[tests.length] = { code:"booleanArrayParam", data:[ ] };
 tests[tests.length] = { code:"booleanArrayParam", data:[ true, false, true, false ] };
+tests[tests.length] = { code:"charArrayParam", data:[ ] };
 tests[tests.length] = { code:"charArrayParam", data:[ 'a', ',', '[', ']' ] };
+tests[tests.length] = { code:"byteArrayParam", data:[ ] };
 tests[tests.length] = { code:"byteArrayParam", data:[ -128, -128, -128, -128, -127 ] };
 tests[tests.length] = { code:"byteArrayParam", data:[ -128, -1, 0, 1, 127 ] };
+tests[tests.length] = { code:"shortArrayParam", data:[ ] };
 tests[tests.length] = { code:"shortArrayParam", data:[ -32768, -1, 0, 1, 32767 ] };
+tests[tests.length] = { code:"intArrayParam", data:[ ] };
 tests[tests.length] = { code:"intArrayParam", data:[ -2147483648 ] };
 tests[tests.length] = { code:"intArrayParam", data:[ -1 ] };
 tests[tests.length] = { code:"intArrayParam", data:[ 0 ] };
 tests[tests.length] = { code:"intArrayParam", data:[ 1 ] };
 tests[tests.length] = { code:"intArrayParam", data:[ 2147483647 ] };
 tests[tests.length] = { code:"intArrayParam", data:[ -2147483648, -1, 0, 1, 2147483647 ] };
+tests[tests.length] = { code:"longArrayParam", data:[ ] };
 tests[tests.length] = { code:"longArrayParam", data:[ -9223372036854775000, -1, 0, 1, 9223372036854775000 ] };
+tests[tests.length] = { code:"floatArrayParam", data:[ ] };
 tests[tests.length] = { code:"floatArrayParam", data:[ -100000000000000000000, -1, 0, 1, 100000000000000000000 ] };
 
-double1D = [ -100000000000000000000, -1, 0, 1, 100000000000000000000 ];
+var double1D = [ -100000000000000000000, -1, 0, 1, 100000000000000000000 ];
 tests[tests.length] = { code:"doubleArrayParam", data:double1D };
-double2D = [ double1D, double1D ];
+var double2D = [ double1D, double1D ];
 tests[tests.length] = { code:"double2DArrayParam", data:double2D };
-double3D = [ double2D, double2D ];
+var double3D = [ double2D, double2D ];
 tests[tests.length] = { code:"double3DArrayParam", data:double3D };
-double4D = [ double3D, double3D ];
+var double4D = [ double3D, double3D ];
 tests[tests.length] = { code:"double4DArrayParam", data:double4D };
-double5D = [ double4D, double4D ];
+var double5D = [ double4D, double4D ];
 tests[tests.length] = { code:"double5DArrayParam", data:double5D };
 
 // Unicode: we could be here for some time, so I just picked some commmon ones
@@ -218,6 +225,7 @@ tests[tests.length] = { code:"charParam", data:"\u00FF" };
 var nested = { integer:0, string:'0123456789' };
 nested.testBean = nested;
 
+tests[tests.length] = { code:"byteArrayParam", data:[ ] };
 tests[tests.length] = { code:"byteArrayParam", data:[ -128, -128, -128, -128, -127 ] };
 
 tests[tests.length] = { code:"testBeanParam", data:{ integer:-2147483648, string:'!"$%^&*()', testBean:null } };
@@ -225,51 +233,56 @@ tests[tests.length] = { code:"testBeanParam", data:{ integer:-1, string:'Null', 
 tests[tests.length] = { code:"testBeanParam", data:{ integer:0, string:'null', testBean:null } };
 tests[tests.length] = { code:"testBeanParam", data:{ integer:1, string:'0987654321', testBean:nested } };
 
+tests[tests.length] = { code:"testBeanSetParam", data:[ ] };
 tests[tests.length] = { code:"testBeanSetParam", data:[{ integer:1, string:'0987654321', testBean:nested }] };
 tests[tests.length] = { code:"testBeanSetParam", data:[ nested ] };
+tests[tests.length] = { code:"testBeanListParam", data:[ ] };
 tests[tests.length] = { code:"testBeanListParam", data:[ nested ] };
 tests[tests.length] = { code:"testBeanListParam", data:[ nested, nested ] };
 tests[tests.length] = { code:"testBeanListParam", data:[ nested, nested, nested ] };
 
+tests[tests.length] = { code:"charTestBeanMapParam", data:{ } };
 tests[tests.length] = { code:"charTestBeanMapParam", data:{ d:{ integer:1, string:'0987654321', testBean:nested } } };
 
-tests[tests.length] = { code:"stringCollectionParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
-tests[tests.length] = { code:"stringLinkedListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
-tests[tests.length] = { code:"stringArrayListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
-tests[tests.length] = { code:"stringListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ ] };
+tests[tests.length] = { code:"stringCollectionParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ] };
+tests[tests.length] = { code:"stringLinkedListParam", data:[ ] };
+tests[tests.length] = { code:"stringLinkedListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ] };
+tests[tests.length] = { code:"stringArrayListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ] };
+tests[tests.length] = { code:"stringListParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ] };
 // Note the next 2 are unordered so we cheat by only having 1 element
-tests[tests.length] = { code:"stringSetParam", data:[ 'abcdef' ]};
-tests[tests.length] = { code:"stringHashSetParam", data:[ 'abcdef' ]};
-tests[tests.length] = { code:"stringTreeSetParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ]};
+tests[tests.length] = { code:"stringSetParam", data:[ 'abcdef' ] };
+tests[tests.length] = { code:"stringHashSetParam", data:[ 'abcdef' ] };
+tests[tests.length] = { code:"stringTreeSetParam", data:[ 'abcdef', 'hgijklm', 'nopqrst' ] };
 
-tests[tests.length] = { code:"stringCollectionParam", data:[ ]};
-tests[tests.length] = { code:"stringLinkedListParam", data:[ ]};
-tests[tests.length] = { code:"stringArrayListParam", data:[ ]};
-tests[tests.length] = { code:"stringListParam", data:[ ]};
-tests[tests.length] = { code:"stringSetParam", data:[ ]};
-tests[tests.length] = { code:"stringHashSetParam", data:[ ]};
-tests[tests.length] = { code:"stringTreeSetParam", data:[ ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ ] };
+tests[tests.length] = { code:"stringLinkedListParam", data:[ ] };
+tests[tests.length] = { code:"stringArrayListParam", data:[ ] };
+tests[tests.length] = { code:"stringListParam", data:[ ] };
+tests[tests.length] = { code:"stringSetParam", data:[ ] };
+tests[tests.length] = { code:"stringHashSetParam", data:[ ] };
+tests[tests.length] = { code:"stringTreeSetParam", data:[ ] };
 
-tests[tests.length] = { code:"stringCollectionParam", data:[ 'abcdef' ]};
-tests[tests.length] = { code:"stringLinkedListParam", data:[ 'abcdef' ]};
-tests[tests.length] = { code:"stringArrayListParam", data:[ 'abcdef' ]};
-tests[tests.length] = { code:"stringListParam", data:[ 'abcdef' ]};
-tests[tests.length] = { code:"stringSetParam", data:[ 'abcdef' ]};
-tests[tests.length] = { code:"stringHashSetParam", data:[ 'abcdef' ]};
-tests[tests.length] = { code:"stringTreeSetParam", data:[ 'abcdef' ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ 'abcdef' ] };
+tests[tests.length] = { code:"stringLinkedListParam", data:[ 'abcdef' ] };
+tests[tests.length] = { code:"stringArrayListParam", data:[ 'abcdef' ] };
+tests[tests.length] = { code:"stringListParam", data:[ 'abcdef' ] };
+tests[tests.length] = { code:"stringSetParam", data:[ 'abcdef' ] };
+tests[tests.length] = { code:"stringHashSetParam", data:[ 'abcdef' ] };
+tests[tests.length] = { code:"stringTreeSetParam", data:[ 'abcdef' ] };
 
-tests[tests.length] = { code:"stringCollectionParam", data:[ ",'{}[]" ]};
-tests[tests.length] = { code:"stringLinkedListParam", data:[ ",'{}[]" ]};
-tests[tests.length] = { code:"stringArrayListParam", data:[ ",'{}[]" ]};
-tests[tests.length] = { code:"stringListParam", data:[ ",'{}[]" ]};
-tests[tests.length] = { code:"stringSetParam", data:[ ",'{}[]" ]};
-tests[tests.length] = { code:"stringHashSetParam", data:[ ",'{}[]" ]};
-tests[tests.length] = { code:"stringTreeSetParam", data:[ ",'{}[]" ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ ",'{}[]" ] };
+tests[tests.length] = { code:"stringLinkedListParam", data:[ ",'{}[]" ] };
+tests[tests.length] = { code:"stringArrayListParam", data:[ ",'{}[]" ] };
+tests[tests.length] = { code:"stringListParam", data:[ ",'{}[]" ] };
+tests[tests.length] = { code:"stringSetParam", data:[ ",'{}[]" ] };
+tests[tests.length] = { code:"stringHashSetParam", data:[ ",'{}[]" ] };
+tests[tests.length] = { code:"stringTreeSetParam", data:[ ",'{}[]" ] };
 
-tests[tests.length] = { code:"stringCollectionParam", data:[ ",'{}[]", 'null', ",'{}[]" ]};
-tests[tests.length] = { code:"stringLinkedListParam", data:[ ",'{}[]", 'null', ",'{}[]" ]};
-tests[tests.length] = { code:"stringArrayListParam", data:[ ",'{}[]", 'null', ",'{}[]" ]};
-tests[tests.length] = { code:"stringListParam", data:[ ",'{}[]", 'null', ",'{}[]" ]};
+tests[tests.length] = { code:"stringCollectionParam", data:[ ",'{}[]", 'null', ",'{}[]" ] };
+tests[tests.length] = { code:"stringLinkedListParam", data:[ ",'{}[]", 'null', ",'{}[]" ] };
+tests[tests.length] = { code:"stringArrayListParam", data:[ ",'{}[]", 'null', ",'{}[]" ] };
+tests[tests.length] = { code:"stringListParam", data:[ ",'{}[]", 'null', ",'{}[]" ] };
 
 var map1 = { a:'a', b:'b', c:'c' };
 var map2 = { };
@@ -309,7 +322,6 @@ function startTest() {
     numele.style.backgroundColor = "white";
     DWRUtil.setValue("t" + i + "-results", "");
   }
-  DWRUtil.setValue("totals", "");
 
   setSettings();
 
@@ -355,6 +367,7 @@ function setSettings() {
 function sendBatch(start, size, rate) {
   var incr = size;
   var test, callback, param;
+  var numele;
 
   if (size == 0) {
     // otherwise we never progress
@@ -364,6 +377,9 @@ function sendBatch(start, size, rate) {
     callback = function(data) { testResults(data, start); };
     param = test.data;
 
+    numele = $("t" + start + "-num");
+    numele.style.backgroundColor = "#ff8";
+
     Test[test.code](param, { callback:callback });
   }
   else {
@@ -371,6 +387,10 @@ function sendBatch(start, size, rate) {
 
     for (var i = start; i < start + size && i < tests.length; i++) {
       test = tests[i];
+
+      numele = $("t" + i + "-num");
+      numele.style.backgroundColor = "#ff8";
+
       callback = new Function("data", "testResults(data, " + i + ");");
       param = test.data;
       Test[test.code](param, callback);
@@ -506,6 +526,8 @@ function testEquals(actual, expected, depth) {
 }
 
 function runTest(num) {
+  var numele = $("t" + num + "-num");
+  numele.style.backgroundColor = "#ff8";
   var callback = function(data) {
     testResults(data, num);
   };
