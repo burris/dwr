@@ -252,7 +252,7 @@ public class DefaultRemoter implements Remoter
                     }
                     catch (ConversionException ex)
                     {
-                        throw new ConversionException(Messages.getString("DefaultRemoter.ConversionError", call.getScriptName(), call.getMethodName(), ex.getMessage())); //$NON-NLS-1$
+                        throw new ConversionException(Messages.getString("DefaultRemoter.ConversionError", call.getScriptName(), call.getMethodName(), ex.getMessage()), ex); //$NON-NLS-1$
                     }
                 }
 
@@ -516,13 +516,14 @@ public class DefaultRemoter implements Remoter
             log.warn("Warning multiple matching methods. Using first match."); //$NON-NLS-1$
         }
 
-        // At the moment we are just going to take the first match, for a
-        // later increment we might pack the best implementation
         if (available.isEmpty())
         {
-            return null;
+            String name = call.getScriptName() + '.' + call.getMethodName();
+            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.UnknownMethod", name)); //$NON-NLS-1$
         }
 
+        // At the moment we are just going to take the first match, for a
+        // later increment we might pick the best implementation
         return (Method) available.get(0);
     }
 

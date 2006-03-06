@@ -58,7 +58,7 @@ public final class InboundContext
     /**
      * Create an inbound variable.
      * Usually called by a query parser to setup a list of known variables.
-     * This method also check so see if the new variable is a parameter and if
+     * This method also checks to see if the new variable is a parameter and if
      * it is it updates the count of parameters
      * @param callNum The call number to work on
      * @param key The name of the variable
@@ -245,6 +245,25 @@ public final class InboundContext
 
         private InboundVariable inboundVariable;
         private Class type;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("InboundContext["); //$NON-NLS-1$
+        for (Iterator it = variables.entrySet().iterator(); it.hasNext();)
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            buffer.append(entry.getKey());
+            buffer.append('=');
+            buffer.append(entry.getValue());
+            buffer.append(',');
+        }
+        buffer.append("]"); //$NON-NLS-1$
+        return buffer.toString();
     }
 
     /**
