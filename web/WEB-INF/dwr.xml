@@ -13,7 +13,7 @@
       <param name="delay" value="200"/>
     </filter>
 
-    <create creator="new" javascript="Test">
+    <create creator="new" javascript="Test" scope="application">
       <param name="class" value="uk.ltd.getahead.testdwr.Test"/>
     </create>
 
@@ -24,13 +24,10 @@
       <auth method="getMinutes" role="devel"/>
       <filter class="uk.ltd.getahead.testdwr.Logging1AjaxFilter"/>
       <filter class="uk.ltd.getahead.testdwr.Logging2AjaxFilter"/>
-    </create>
-
-    <create creator="new" javascript="TestBean" scope="session">
-      <param name="class" value="uk.ltd.getahead.testdwr.TestBean"/>
       <filter class="uk.ltd.getahead.testdwr.RandomSecurityAjaxFilter"/>
     </create>
 
+    <convert converter="bean" match="$Proxy*"/>
     <convert converter="testbean" match="uk.ltd.getahead.testdwr.TestBean"/>
 
     <convert converter="bean" match="uk.ltd.getahead.testdwr.ObjB"/>
