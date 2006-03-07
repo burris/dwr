@@ -480,7 +480,7 @@ DWREngine._sendData = function(batch) {
     var idname = "dwr-if-" + batch.map["c0-id"];
     // Proceed using iframe
     batch.div = document.createElement('div');
-    batch.div.innerHTML = "<iframe frameborder='0' width='0' height='0' id='" + idname + "' name='" + idname + "'></iframe>";
+    batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' width='0' height='0' id='" + idname + "' name='" + idname + "'></iframe>";
     document.body.appendChild(batch.div);
     batch.iframe = document.getElementById(idname);
     batch.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
