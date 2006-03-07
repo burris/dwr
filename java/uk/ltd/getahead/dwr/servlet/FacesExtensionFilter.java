@@ -22,12 +22,12 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
 import javax.servlet.ServletResponse;
 
 /**
@@ -39,8 +39,6 @@ import javax.servlet.ServletResponse;
  */
 public class FacesExtensionFilter implements Filter
 {
-    private ServletContext servletContext = null;
-
     /* (non-Javadoc)
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
@@ -66,7 +64,7 @@ public class FacesExtensionFilter implements Filter
             //   servletContext = filterConfig.getServletContext();
             // in your filter init() method or set it here like this:
             //   ServletContext servletContext =
-            //     ((HttpServletRequest)request).getSession().getServletContext();
+            //     ((HttpServletRequest) request).getSession().getServletContext();
             // Note that the above line would fail if you are using any other
             // protocol than http
 
@@ -99,4 +97,6 @@ public class FacesExtensionFilter implements Filter
             FacesContext.setCurrentInstance(facesContext);
         }
     }
+
+    private ServletContext servletContext = null;
 }
