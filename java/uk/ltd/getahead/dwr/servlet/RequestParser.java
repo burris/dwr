@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.util;
+package uk.ltd.getahead.dwr.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +27,9 @@ import uk.ltd.getahead.dwr.Call;
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.HttpRequest;
+import uk.ltd.getahead.dwr.util.LocalUtil;
+import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.Messages;
 
 /**
  * A utility class that abstracts the job of converting an inbound request into

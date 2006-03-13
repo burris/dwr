@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,8 +33,8 @@ import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
+import uk.ltd.getahead.dwr.HtmlConstants;
 import uk.ltd.getahead.dwr.HttpResponse;
-import uk.ltd.getahead.dwr.servlet.HtmlConstants;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -47,7 +49,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.DebugPageGenerator#generateIndexPage(java.lang.String)
      */
-    public HttpResponse generateIndexPage(final String contextPath, final String servletPath) throws SecurityException
+    public HttpResponse generateIndexPage(final String root) throws SecurityException
     {
         if (!creatorManager.isDebug())
         {
@@ -68,8 +70,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
             buffer.append("<li><a href='"); //$NON-NLS-1$
-            buffer.append(contextPath);
-            buffer.append(servletPath);
+            buffer.append(root);
             buffer.append(HtmlConstants.PATH_TEST);
             buffer.append(name);
             buffer.append("'>"); //$NON-NLS-1$
@@ -80,13 +81,6 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         }
         buffer.append("</ul>\n"); //$NON-NLS-1$
 
-        buffer.append("<h2>Other Links</h2>\n"); //$NON-NLS-1$
-        buffer.append("<ul>\n"); //$NON-NLS-1$
-        buffer.append("<li>Up to <a href='"); //$NON-NLS-1$
-        buffer.append(contextPath);
-        buffer.append("/'>top level of web app</a>.</li>\n"); //$NON-NLS-1$
-        buffer.append("</ul>\n"); //$NON-NLS-1$
-
         buffer.append("</body></html>\n"); //$NON-NLS-1$
 
         return new DefaultHttpResponse(buffer.toString(), HtmlConstants.MIME_HTML);
@@ -95,7 +89,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.DebugPageGenerator#generateTestPage(java.lang.String, java.lang.String, java.lang.String)
      */
-    public HttpResponse generateTestPage(final String contextPath, final String servletPath, final String scriptName) throws SecurityException
+    public HttpResponse generateTestPage(final String root, final String scriptName) throws SecurityException
     {
         if (!creatorManager.isDebug())
         {
@@ -103,9 +97,9 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
         }
 
-        String interfaceURL = contextPath + servletPath + HtmlConstants.PATH_INTERFACE + scriptName + HtmlConstants.EXTENSION_JS;
-        String engineURL = contextPath + servletPath + HtmlConstants.FILE_ENGINE;
-        String utilURL = contextPath + servletPath + HtmlConstants.FILE_UTIL;
+        String interfaceURL = root + HtmlConstants.PATH_INTERFACE + scriptName + HtmlConstants.EXTENSION_JS;
+        String engineURL = root + HtmlConstants.FILE_ENGINE;
+        String utilURL = root + HtmlConstants.FILE_UTIL;
 
         String proxyInterfaceURL = HtmlConstants.PATH_UP + HtmlConstants.PATH_INTERFACE + scriptName + HtmlConstants.EXTENSION_JS;
         String proxyEngineURL = HtmlConstants.PATH_UP + HtmlConstants.FILE_ENGINE;
@@ -305,8 +299,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         buffer.append("<h2>Other Links</h2>\n"); //$NON-NLS-1$
         buffer.append("<ul>\n"); //$NON-NLS-1$
-        buffer.append("<li>Back to <a href='" + contextPath + servletPath + "/'>class index</a>.</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append("<li>Up to <a href='" + contextPath + "/'>top level of web app</a>.</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("<li>Back to <a href='" + root + "/'>class index</a>.</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$
         buffer.append("</ul>\n"); //$NON-NLS-1$
 
         synchronized (scriptCache)
@@ -358,6 +351,38 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         buffer.append("</body></html>\n"); //$NON-NLS-1$
 
         return new DefaultHttpResponse(buffer.toString(), HtmlConstants.MIME_HTML);
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.DebugPageGenerator#generateInterfaceUrl(java.lang.String, java.lang.String)
+     */
+    public String generateInterfaceUrl(String root, String scriptName)
+    {
+        return root + HtmlConstants.PATH_INTERFACE + scriptName + HtmlConstants.EXTENSION_JS;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.DebugPageGenerator#generateEngineUrl(java.lang.String)
+     */
+    public String generateEngineUrl(String root)
+    {
+        return root + HtmlConstants.FILE_ENGINE;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.DebugPageGenerator#generateLibraryUrl(java.lang.String, java.lang.String)
+     */
+    public String generateLibraryUrl(String root, String library)
+    {
+        return root + library;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.DebugPageGenerator#getAvailableLibraries()
+     */
+    public Collection getAvailableLibraries()
+    {
+        return availableLibraries;
     }
 
     /**
@@ -420,6 +445,12 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      * We cache the script output for speed
      */
     protected final Map scriptCache = new HashMap();
+
+    /**
+     * For getAvailableLibraries() - just a RO Collection that currently returns
+     * only util.js, but may be expanded in the future.
+     */
+    private Collection availableLibraries = Collections.unmodifiableCollection(Arrays.asList(new String[] { HtmlConstants.FILE_UTIL }));
 
     /**
      * The log stream

@@ -15,7 +15,6 @@
  */
 package uk.ltd.getahead.dwr;
 
-
 /**
  * An interface for converting types from a string to some other type.
  * @author Joe Walker [joe at getahead dot ltd dot uk]

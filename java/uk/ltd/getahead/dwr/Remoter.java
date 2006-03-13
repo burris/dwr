@@ -15,7 +15,6 @@
  */
 package uk.ltd.getahead.dwr;
 
-
 /**
  * The heart of DWR is a system to generate content from some requests.
  * This interface generates scripts and executes remote calls.

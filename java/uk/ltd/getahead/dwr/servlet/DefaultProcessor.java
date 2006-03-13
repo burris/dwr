@@ -15,19 +15,28 @@
  */
 package uk.ltd.getahead.dwr.servlet;
 
-import uk.ltd.getahead.dwr.*;
-import uk.ltd.getahead.dwr.util.JavascriptUtil;
-import uk.ltd.getahead.dwr.util.LocalUtil;
-import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.RequestParser;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
+
+import uk.ltd.getahead.dwr.Calls;
+import uk.ltd.getahead.dwr.Constants;
+import uk.ltd.getahead.dwr.DebugPageGenerator;
+import uk.ltd.getahead.dwr.HtmlConstants;
+import uk.ltd.getahead.dwr.HttpResponse;
+import uk.ltd.getahead.dwr.Remoter;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
+import uk.ltd.getahead.dwr.util.LocalUtil;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -57,15 +66,16 @@ public class DefaultProcessor implements Processor
         {
             String pathInfo = request.getPathInfo();
             String servletPath = request.getServletPath();
+            String contextPath = request.getContextPath();
+
             if (pathInfo == null)
             {
                 pathInfo = request.getServletPath();
                 servletPath = HtmlConstants.PATH_ROOT;
-                log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + request.getContextPath() + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + contextPath + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
 
-            String contextPath = request.getContextPath();
-
+            String root = contextPath + servletPath;
             HttpResponse reply;
 
             // NOTE: I'm not totally happy with the if statment, there doesn't
@@ -73,14 +83,14 @@ public class DefaultProcessor implements Processor
             // like a good way to create latent bugs
             if (pathInfo.length() == 0 ||
                 pathInfo.equals(HtmlConstants.PATH_ROOT) ||
-                pathInfo.equals(request.getContextPath()))
+                pathInfo.equals(contextPath))
             {
-                response.sendRedirect(request.getContextPath() + servletPath + HtmlConstants.FILE_INDEX);
+                response.sendRedirect(contextPath + servletPath + HtmlConstants.FILE_INDEX);
                 return;
             }
             else if (pathInfo.startsWith(HtmlConstants.FILE_INDEX))
             {
-                reply = debugPageGenerator.generateIndexPage(contextPath, servletPath);
+                reply = debugPageGenerator.generateIndexPage(root);
             }
             else if (pathInfo.startsWith(HtmlConstants.PATH_TEST))
             {
@@ -88,14 +98,14 @@ public class DefaultProcessor implements Processor
                 scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_TEST, HtmlConstants.BLANK);
                 scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_ROOT, HtmlConstants.BLANK);
 
-                reply = debugPageGenerator.generateTestPage(contextPath, servletPath, scriptName);
+                reply = debugPageGenerator.generateTestPage(root, scriptName);
             }
             else if (pathInfo.startsWith(HtmlConstants.PATH_INTERFACE))
             {
                 String scriptName = pathInfo;
                 scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_INTERFACE, HtmlConstants.BLANK);
                 scriptName = LocalUtil.replace(scriptName, HtmlConstants.EXTENSION_JS, HtmlConstants.BLANK);
-                String path = request.getContextPath() + servletPath;
+                String path = contextPath + servletPath;
 
                 reply = remoter.generateInterfaceScript(scriptName, path);
             }
@@ -114,11 +124,6 @@ public class DefaultProcessor implements Processor
             else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_UTIL))
             {
                 doFile(request, response, HtmlConstants.FILE_UTIL, HtmlConstants.MIME_JS);
-                return;
-            }
-            else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_DEPRECATED))
-            {
-                doFile(request, response, HtmlConstants.FILE_DEPRECATED, HtmlConstants.MIME_JS);
                 return;
             }
             else
@@ -140,7 +145,7 @@ public class DefaultProcessor implements Processor
             if (log.isDebugEnabled())
             {
                 log.warn("Error: " + ex); //$NON-NLS-1$
-                log.debug("- User Agent: " + request.getHeader(HtmlConstants.HEADER_USER_AGENT)); //$NON-NLS-1$
+                log.debug("- User Agent: " + request.getHeader(HttpConstants.HEADER_USER_AGENT)); //$NON-NLS-1$
                 log.debug("- Remote IP:  " + request.getRemoteAddr()); //$NON-NLS-1$
                 log.debug("- Request URL:" + request.getRequestURL()); //$NON-NLS-1$
                 log.debug("- Query:      " + request.getQueryString()); //$NON-NLS-1$
@@ -233,8 +238,8 @@ public class DefaultProcessor implements Processor
         }
 
         response.setContentType(mimeType);
-        response.setDateHeader(HtmlConstants.HEADER_LAST_MODIFIED, servletContainerStartTime);
-        response.setHeader(HtmlConstants.HEADER_ETAG, etag);
+        response.setDateHeader(HttpConstants.HEADER_LAST_MODIFIED, servletContainerStartTime);
+        response.setHeader(HttpConstants.HEADER_ETAG, etag);
 
         PrintWriter out = response.getWriter();
         out.println(output);
@@ -254,13 +259,13 @@ public class DefaultProcessor implements Processor
             return false;
         }
 
-        long modifiedSince = req.getDateHeader(HtmlConstants.HEADER_IF_MODIFIED);
+        long modifiedSince = req.getDateHeader(HttpConstants.HEADER_IF_MODIFIED);
         if (modifiedSince != -1)
         {
             // Browsers are only accurate to the second
             modifiedSince -= modifiedSince % 1000;
         }
-        String givenEtag = req.getHeader(HtmlConstants.HEADER_IF_NONE);
+        String givenEtag = req.getHeader(HttpConstants.HEADER_IF_NONE);
 
         // Deal with missing etags
         if (givenEtag == null)

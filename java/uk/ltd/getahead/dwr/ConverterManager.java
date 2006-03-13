@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package uk.ltd.getahead.dwr;
-import java.util.Map;
 
+import java.util.Map;
 
 /**
  * A class to manage the converter types and the instansiated class name matches.

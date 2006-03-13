@@ -15,6 +15,8 @@
  */
 package uk.ltd.getahead.dwr;
 
+import java.util.Collection;
+
 /**
  * The heart of DWR is a system to generate content from some requests.
  * This interface generates scripts and executes remote calls.
@@ -24,20 +26,47 @@ public interface DebugPageGenerator
 {
     /**
      * Generate some HTML that represents an index page
-     * @param contextPath The context to the webapp in which DWR is embedded
-     * @param servletPath The path to DWR from within the current webapp
+     * @param root The prefix common to all DWR URLs. Usually contextPath+servletPath
      * @return An index page in HTML
      * @throws SecurityException If the pages are not accessible
      */
-    HttpResponse generateIndexPage(String contextPath, String servletPath) throws SecurityException;
+    HttpResponse generateIndexPage(String root) throws SecurityException;
 
     /**
-     * Generate some HTML that represents a test page
-     * @param contextPath The context to the webapp in which DWR is embedded
-     * @param servletPath The path to DWR from within the current webapp
+     * Generate some HTML that represents a test page for a given script
+     * @param root The prefix common to all DWR URLs. Usually contextPath+servletPath
      * @param scriptName The script to generate for
      * @return A test page in HTML
      * @throws SecurityException If the pages are not accessible
      */
-    HttpResponse generateTestPage(String contextPath, String servletPath, String scriptName) throws SecurityException;
+    HttpResponse generateTestPage(String root, String scriptName) throws SecurityException;
+
+    /**
+     * For a given remoted class, generate a URL that will retrieve the
+     * Javascript interface
+     * @param root The prefix common to all DWR URLs. Usually contextPath+servletPath
+     * @param scriptName The script to generate for
+     * @return A URL that points at the given scriptName
+     */
+    String generateInterfaceUrl(String root, String scriptName);
+
+    /**
+     * Create a url that links to the engine.js file
+     * @param root The prefix common to all DWR URLs. Usually contextPath+servletPath
+     * @return A URL that points at the central engine Javascript file
+     */
+    String generateEngineUrl(String root);
+
+    /**
+     * Create a url that links to one of the library files
+     * @param root The prefix common to all DWR URLs. Usually contextPath+servletPath
+     * @param library The name of a library as returned by {@link DebugPageGenerator#getAvailableLibraries()}
+     * @return A URL that points at the given library
+     */
+    String generateLibraryUrl(String root, String library);
+
+    /**
+     * @return A list of the available libraries.
+     */
+    Collection getAvailableLibraries();
 }

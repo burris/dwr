@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.servlet;
+package uk.ltd.getahead.dwr;
 
 /**
  * Various constants from generating output.
@@ -86,11 +86,6 @@ public interface HtmlConstants
     static final String FILE_ENGINE = "/engine.js"; //$NON-NLS-1$
 
     /**
-     * Deprecated script name
-     */
-    static final String FILE_DEPRECATED = "/deprecated.js"; //$NON-NLS-1$
-
-    /**
      * Help page name
      */
     static final String FILE_HELP = "/help.html"; //$NON-NLS-1$
@@ -99,29 +94,4 @@ public interface HtmlConstants
      * Extension for javascript files
      */
     static final String EXTENSION_JS = ".js"; //$NON-NLS-1$
-
-    /**
-     * HTTP etag header
-     */
-    static final String HEADER_ETAG = "ETag"; //$NON-NLS-1$
-
-    /**
-     * HTTP etag equivalent of HEADER_IF_MODIFIED
-     */
-    static final String HEADER_IF_NONE = "If-None-Match"; //$NON-NLS-1$
-
-    /**
-     * HTTP header for when a file was last modified
-     */
-    static final String HEADER_LAST_MODIFIED = "Last-Modified"; //$NON-NLS-1$
-
-    /**
-     * HTTP header to request only modified data
-     */
-    static final String HEADER_IF_MODIFIED = "If-Modified-Since"; //$NON-NLS-1$
-
-    /**
-     * The name of the user agent HTTP header
-     */
-    static final String HEADER_USER_AGENT = "User-Agent"; //$NON-NLS-1$
 }
