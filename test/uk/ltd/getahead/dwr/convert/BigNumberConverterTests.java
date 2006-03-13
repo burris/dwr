@@ -16,11 +16,15 @@
 
 package uk.ltd.getahead.dwr.convert;
 
-import junit.framework.TestCase;
-import uk.ltd.getahead.dwr.*;
-
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import junit.framework.TestCase;
+import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.InboundContext;
+import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 
 /**
  * The tests for the <code>BigNumberConverter</code> class.

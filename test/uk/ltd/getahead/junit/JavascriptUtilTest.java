@@ -15,8 +15,8 @@
  */
 package uk.ltd.getahead.junit;
 
-import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import junit.framework.TestCase;
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 
 /**
  * JUnit

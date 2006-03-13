@@ -16,8 +16,8 @@
 package uk.ltd.getahead.dwr.impl;
 
 import junit.framework.TestCase;
-import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.ConversionException;
+import uk.ltd.getahead.dwr.Converter;
 import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.InboundVariable;
 import uk.ltd.getahead.dwr.convert.BeanConverter;

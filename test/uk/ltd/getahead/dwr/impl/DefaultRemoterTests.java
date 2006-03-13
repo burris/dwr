@@ -37,8 +37,8 @@ import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.create.NewCreator;
 import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
 import uk.ltd.getahead.dwr.impl.test.TestWebContextFactory;
+import uk.ltd.getahead.dwr.servlet.RequestParser;
 import uk.ltd.getahead.dwr.servlet.ServletHttpRequest;
-import uk.ltd.getahead.dwr.util.RequestParser;
 
 /**
  * @author
