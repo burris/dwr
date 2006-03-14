@@ -28,16 +28,16 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import uk.ltd.getahead.dwr.ConversionConstants;
-import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.compat.BaseV20Converter;
+import uk.ltd.getahead.dwr.dwrp.ConversionConstants;
+import uk.ltd.getahead.dwr.dwrp.Converter;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
@@ -147,7 +147,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
     {
         String value = iv.getValue();
 
@@ -217,7 +217,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
                 int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
                 if (colonpos == -1)
                 {
-                    throw new ConversionException(Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token)); //$NON-NLS-1$
+                    throw new MarshallException(Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token)); //$NON-NLS-1$
                 }
 
                 String key = token.substring(0, colonpos).trim();
@@ -254,20 +254,20 @@ public class BeanConverter extends BaseV20Converter implements Converter
 
             return bean;
         }
-        catch (ConversionException ex)
+        catch (MarshallException ex)
         {
             throw ex;
         }
         catch (Exception ex)
         {
-            throw new ConversionException(ex);
+            throw new MarshallException(ex);
         }
     }
 
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         // Where we collect out converted children
         Map ovs = new TreeMap();
@@ -319,7 +319,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
         }
         catch (IntrospectionException ex)
         {
-            throw new ConversionException(ex);
+            throw new MarshallException(ex);
         }
 
         ConverterUtil.addMapInit(ov, ovs);

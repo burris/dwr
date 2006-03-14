@@ -16,12 +16,13 @@
 package uk.ltd.getahead.dwr.impl;
 
 import junit.framework.TestCase;
-import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.convert.BeanConverter;
 import uk.ltd.getahead.dwr.convert.StringConverter;
+import uk.ltd.getahead.dwr.dwrp.Converter;
+import uk.ltd.getahead.dwr.dwrp.DefaultConverterManager;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
 
 /**
  * @author Bram Smeets
@@ -99,7 +100,7 @@ public class DefaultConverterManagerTests extends TestCase
             manager.convertInbound(String.class, null, ctx, null);
             fail("a conversion exception was expected");
         }
-        catch (ConversionException e)
+        catch (MarshallException e)
         {
             // do nothing, was expected
         }

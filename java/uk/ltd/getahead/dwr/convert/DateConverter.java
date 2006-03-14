@@ -19,14 +19,14 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import uk.ltd.getahead.dwr.ConversionConstants;
-import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.compat.BaseV20Converter;
+import uk.ltd.getahead.dwr.dwrp.ConversionConstants;
+import uk.ltd.getahead.dwr.dwrp.Converter;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 import uk.ltd.getahead.dwr.util.Messages;
 
 /**
@@ -39,7 +39,7 @@ public class DateConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
     {
         String value = iv.getValue();
 
@@ -76,27 +76,27 @@ public class DateConverter extends BaseV20Converter implements Converter
             }
             else
             {
-                throw new ConversionException(Messages.getString("DateConverter.WrongType") + paramType.getName()); //$NON-NLS-1$
+                throw new MarshallException(Messages.getString("DateConverter.WrongType") + paramType.getName()); //$NON-NLS-1$
             }
         }
-        catch (ConversionException ex)
+        catch (MarshallException ex)
         {
             throw ex;
         }
         catch (Exception ex)
         {
-            throw new ConversionException(Messages.getString("DateConverter.ErrorConverting", value, paramType.getName()), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("DateConverter.ErrorConverting", value, paramType.getName()), ex); //$NON-NLS-1$
         }
     }
 
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         if (!(data instanceof Date))
         {
-            throw new ConversionException(Messages.getString("DateConverter.TypeError", data.getClass())); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("DateConverter.TypeError", data.getClass())); //$NON-NLS-1$
         }
 
         Date date = (Date) data;

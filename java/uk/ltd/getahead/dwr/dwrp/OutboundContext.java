@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.dwrp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,12 +57,13 @@ public final class OutboundContext
      */
     public OutboundVariable get(Object object)
     {
+        Object key = object;
         if (referenceWrappers)
         {
-            object = new ReferenceWrapper(object);
+            key = new ReferenceWrapper(object);
         }
 
-        return (OutboundVariable) map.get(object);
+        return (OutboundVariable) map.get(key);
     }
 
     /**
@@ -71,12 +72,13 @@ public final class OutboundContext
      */
     public void put(Object object, OutboundVariable ss)
     {
+        Object key = object;
         if (referenceWrappers)
         {
-            object = new ReferenceWrapper(object);
+            key = new ReferenceWrapper(object);
         }
 
-        map.put(object, ss);
+        map.put(key, ss);
     }
 
     /**

@@ -23,7 +23,6 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +32,9 @@ import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
 import uk.ltd.getahead.dwr.HtmlConstants;
 import uk.ltd.getahead.dwr.HttpResponse;
+import uk.ltd.getahead.dwr.Marshaller;
 import uk.ltd.getahead.dwr.Remoter;
+import uk.ltd.getahead.dwr.Replies;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -55,12 +56,15 @@ import uk.ltd.getahead.dwr.util.Logger;
  * </ul>
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultProcessor implements Processor
+public class UrlProcessor
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Processor#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+    /**
+     * Handle servlet requests aimed at DWR
+     * @param request The servlet request
+     * @param response The servlet response
+     * @throws IOException If there are IO issues
      */
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         try
         {
@@ -111,10 +115,9 @@ public class DefaultProcessor implements Processor
             }
             else if (pathInfo.startsWith(HtmlConstants.PATH_EXEC))
             {
-                RequestParser requestParser = new RequestParser();
-                Calls calls = requestParser.parseRequest(new ServletHttpRequest(request));
-
-                reply = remoter.execute(calls);
+                Calls calls = marshaller.marshallInbound(new ServletHttpRequest(request));
+                Replies replies = remoter.execute(calls);
+                reply = marshaller.marshallOutbound(replies);
             }
             else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_ENGINE))
             {
@@ -152,21 +155,6 @@ public class DefaultProcessor implements Processor
                 log.debug("- Method:     " + request.getMethod()); //$NON-NLS-1$
                 log.debug("- Body: {"); //$NON-NLS-1$
 
-                int lines = 0;
-                BufferedReader in = request.getReader();
-                while (in != null && lines < 100)
-                {
-                    String line = in.readLine();
-                    if (line == null)
-                    {
-                        break;
-                    }
-
-                    log.debug("-   " + line); //$NON-NLS-1$
-                    lines++;
-                }
-
-                log.debug("- }" + request.getMethod()); //$NON-NLS-1$
                 ex.printStackTrace();
             }
 
@@ -292,7 +280,7 @@ public class DefaultProcessor implements Processor
                 // There is an ETag, but no If-Modified-Since
                 if (log.isDebugEnabled())
                 {
-                log.debug("Sending 304 for " + path + " Old ETag=" + givenEtag + ", New ETag=" + etag); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    log.debug("Sending 304 for " + path + " Old ETag=" + givenEtag + ", New ETag=" + etag); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
                 return true;
             }
@@ -358,6 +346,15 @@ public class DefaultProcessor implements Processor
     }
 
     /**
+     * Setter for the Marshaller
+     * @param marshaller
+     */
+    public void setMarshaller(Marshaller marshaller)
+    {
+        this.marshaller = marshaller;
+    }
+
+    /**
      * The time on the script files
      */
     private static final long servletContainerStartTime;
@@ -405,6 +402,11 @@ public class DefaultProcessor implements Processor
     private DebugPageGenerator debugPageGenerator = null;
 
     /**
+     * The method by which objects are marshalled to and from Javascript
+     */
+    private Marshaller marshaller = null;
+
+    /**
      * The bean to execute remote requests and generate interfaces
      */
     private Remoter remoter = null;
@@ -412,5 +414,5 @@ public class DefaultProcessor implements Processor
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultProcessor.class);
+    private static final Logger log = Logger.getLogger(UrlProcessor.class);
 }

@@ -26,8 +26,8 @@ import uk.ltd.getahead.dwr.AjaxFilter;
 import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Configurator;
 import uk.ltd.getahead.dwr.Container;
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.CreatorManager;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 
 /**

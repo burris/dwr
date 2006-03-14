@@ -37,17 +37,19 @@ import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Configurator;
 import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.Container;
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
+import uk.ltd.getahead.dwr.Marshaller;
 import uk.ltd.getahead.dwr.Remoter;
 import uk.ltd.getahead.dwr.WebContextBuilder;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
+import uk.ltd.getahead.dwr.dwrp.DefaultConverterManager;
+import uk.ltd.getahead.dwr.dwrp.DwrpMarshaller;
 import uk.ltd.getahead.dwr.impl.DefaultAccessControl;
 import uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager;
 import uk.ltd.getahead.dwr.impl.DefaultContainer;
-import uk.ltd.getahead.dwr.impl.DefaultConverterManager;
 import uk.ltd.getahead.dwr.impl.DefaultCreatorManager;
 import uk.ltd.getahead.dwr.impl.DefaultDebugPageGenerator;
 import uk.ltd.getahead.dwr.impl.DefaultRemoter;
@@ -77,7 +79,6 @@ public class ServletHelper
         this.container = aContainer;
 
         // Cached to save looking them up
-        processor = (Processor) aContainer.getBean(Processor.class.getName());
         webContextBuilder = (WebContextBuilder) aContainer.getBean(WebContextBuilder.class.getName());
 
         // Now we have set the implementations we can set the WebContext up
@@ -96,11 +97,12 @@ public class ServletHelper
         defaultContainer.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
         defaultContainer.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
         defaultContainer.addParameter(CreatorManager.class.getName(), DefaultCreatorManager.class.getName());
-        defaultContainer.addParameter(Processor.class.getName(), DefaultProcessor.class.getName());
+        defaultContainer.addParameter(UrlProcessor.class.getName(), UrlProcessor.class.getName());
         defaultContainer.addParameter(WebContextBuilder.class.getName(), DefaultWebContextBuilder.class.getName());
         defaultContainer.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
         defaultContainer.addParameter(Remoter.class.getName(), DefaultRemoter.class.getName());
         defaultContainer.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
+        defaultContainer.addParameter(Marshaller.class.getName(), DwrpMarshaller.class.getName());
 
         defaultContainer.addParameter("debug", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         defaultContainer.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -413,7 +415,7 @@ public class ServletHelper
     /**
      * The processor will actually handle the http requests
      */
-    protected Processor processor;
+    protected UrlProcessor processor = new UrlProcessor();
 
     /**
      * The WebContext that keeps http objects local to a thread

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.dwrp;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -201,7 +202,7 @@ public final class InboundContext
          * @param inboundVariable
          * @param type
          */
-        private Conversion(InboundVariable inboundVariable, Class type)
+        Conversion(InboundVariable inboundVariable, Class type)
         {
             this.inboundVariable = inboundVariable;
             this.type = type;

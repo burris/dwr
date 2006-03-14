@@ -15,6 +15,8 @@
  */
 package uk.ltd.getahead.dwr;
 
+import java.lang.reflect.Method;
+
 /**
  * Call is a POJO to encapsulate the information required to make a single java
  * call, including the result of the call (either returned data or exception).
@@ -22,6 +24,43 @@ package uk.ltd.getahead.dwr;
  */
 public class Call
 {
+    /**
+     * @return the method
+     */
+    public Method getMethod()
+    {
+        return method;
+    }
+
+    /**
+     * @param method the method to set
+     */
+    public void setMethod(Method method)
+    {
+        this.method = method;
+    }
+
+    /**
+     * @return the parameters
+     */
+    public Object[] getParameters()
+    {
+        return parameters;
+    }
+
+    /**
+     * @param parameters the parameters to set
+     */
+    public void setParameters(Object[] parameters)
+    {
+        this.parameters = parameters;
+    }
+
+    private Method method;
+    private Object[] parameters;
+
+    ////////////////////// ABOVE THE LINE - NEW FROM REFACTOR
+
     /**
      * @param id The id to set.
      */
@@ -70,63 +109,9 @@ public class Call
         return methodName;
     }
 
-    /**
-     * @param inctx The inctx to set.
-     */
-    public void setInboundContext(InboundContext inctx)
-    {
-        this.inctx = inctx;
-    }
-
-    /**
-     * @return Returns the inctx.
-     */
-    public InboundContext getInboundContext()
-    {
-        return inctx;
-    }
-
-    /**
-     * @param reply The reply to set.
-     */
-    public void setReply(OutboundVariable reply)
-    {
-        this.reply = reply;
-    }
-
-    /**
-     * @return Returns the reply.
-     */
-    public OutboundVariable getReply()
-    {
-        return reply;
-    }
-
-    /**
-     * @param th The th to set.
-     */
-    public void setThrowable(OutboundVariable th)
-    {
-        this.th = th;
-    }
-
-    /**
-     * @return Returns the th.
-     */
-    public OutboundVariable getThrowable()
-    {
-        return th;
-    }
-
     private String id = null;
 
     private String scriptName = null;
 
     private String methodName = null;
-
-    private InboundContext inctx = new InboundContext();
-
-    private OutboundVariable reply =  null;
-
-    private OutboundVariable th = null;
 }

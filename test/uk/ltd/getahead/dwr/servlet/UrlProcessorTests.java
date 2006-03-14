@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.impl;
+package uk.ltd.getahead.dwr.servlet;
 
 import junit.framework.TestCase;
 
@@ -21,17 +21,14 @@ import org.easymock.EasyMock;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import uk.ltd.getahead.dwr.servlet.DefaultProcessor;
-import uk.ltd.getahead.dwr.servlet.Processor;
+import uk.ltd.getahead.dwr.servlet.UrlProcessor;
 
 /**
  * @author Bram Smeets
  */
-public class DefaultProcessorTests extends TestCase
+public class UrlProcessorTests extends TestCase
 {
-    private DefaultProcessor processor;
-
-    private Processor mockProcessor;
+    private UrlProcessor processor;
 
     private MockHttpServletRequest request;
 
@@ -41,14 +38,7 @@ public class DefaultProcessorTests extends TestCase
     {
         super.setUp();
 
-        processor = new DefaultProcessor();
-
-        mockProcessor = (Processor) EasyMock.createMock(Processor.class);
-//        processor.setExec(mockProcessor);
-//        processor.setIndex(mockProcessor);
-//        processor.setInterface(mockProcessor);
-//        processor.setTest(mockProcessor);
-//        processor.setFile(new FileProcessor());
+        processor = new UrlProcessor();
 
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
@@ -74,13 +64,13 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/index.html");
 
-//        mockProcessor.handle(request, response);
+//        processor.handle(request, response);
 
-        EasyMock.replay(mockProcessor);
+        EasyMock.replay(processor);
 
         processor.handle(request, response);
 
-        EasyMock.verify(mockProcessor);
+        EasyMock.verify(processor);
     }
 
     /**
@@ -91,13 +81,13 @@ public class DefaultProcessorTests extends TestCase
         // test to see if we get a 403 in case the creator manager is not in debug mode
         request.setPathInfo("/test/index.html");
 
-//        mockProcessor.handle(request, response);
+//        processor.handle(request, response);
 
-        EasyMock.replay(mockProcessor);
+        EasyMock.replay(processor);
 
         processor.handle(request, response);
 
-        EasyMock.verify(mockProcessor);
+        EasyMock.verify(processor);
     }
 
     /**
@@ -107,11 +97,11 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/engine.js");
 
-        EasyMock.replay(mockProcessor);
+        EasyMock.replay(processor);
 
         processor.handle(request, response);
 
-        EasyMock.verify(mockProcessor);
+        EasyMock.verify(processor);
 
         String result = response.getContentAsString();
         assertNotNull(result);
@@ -125,11 +115,11 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/util.js");
 
-        EasyMock.replay(mockProcessor);
+        EasyMock.replay(processor);
 
         processor.handle(request, response);
 
-        EasyMock.verify(mockProcessor);
+        EasyMock.verify(processor);
 
         String result = response.getContentAsString();
         assertNotNull(result);
@@ -143,11 +133,11 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/deprecated.js");
 
-        EasyMock.replay(mockProcessor);
+        EasyMock.replay(processor);
 
         processor.handle(request, response);
 
-        EasyMock.verify(mockProcessor);
+        EasyMock.verify(processor);
 
         String result = response.getContentAsString();
         assertNotNull(result);
@@ -161,13 +151,13 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/interface/testCreatorName.js");
 
-//        mockProcessor.handle(request, response);
+//        processor.handle(request, response);
 
-        EasyMock.replay(mockProcessor);
+        EasyMock.replay(processor);
 
         processor.handle(request, response);
 
-        EasyMock.verify(mockProcessor);
+        EasyMock.verify(processor);
     }
 
     /**
@@ -177,13 +167,13 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/exec/testCreatorName.doTest");
 
-//        mockProcessor.handle(request, response);
+//        processor.handle(request, response);
 
-        EasyMock.replay(mockProcessor);
+        EasyMock.replay(processor);
 
         processor.handle(request, response);
 
-        EasyMock.verify(mockProcessor);
+        EasyMock.verify(processor);
 
         String result = response.getContentAsString();
         assertNotNull(result);
@@ -196,11 +186,11 @@ public class DefaultProcessorTests extends TestCase
     {
         request.setPathInfo("/nonExistingPath");
 
-        EasyMock.replay(mockProcessor);
+        EasyMock.replay(processor);
 
         processor.handle(request, response);
 
-        EasyMock.verify(mockProcessor);
+        EasyMock.verify(processor);
 
         assertEquals(404, response.getStatus());
     }

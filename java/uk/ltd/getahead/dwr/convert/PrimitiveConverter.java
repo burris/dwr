@@ -15,13 +15,13 @@
  */
 package uk.ltd.getahead.dwr.convert;
 
-import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.compat.BaseV20Converter;
+import uk.ltd.getahead.dwr.dwrp.Converter;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Messages;
@@ -35,7 +35,7 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
     {
         String value = iv.getValue();
         value = LocalUtil.decode(value.trim());
@@ -46,11 +46,11 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
         }
         catch (NumberFormatException ex)
         {
-            throw new ConversionException(Messages.getString("PrimitiveConverter.FormatError", value, paramType.getName()), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("PrimitiveConverter.FormatError", value, paramType.getName()), ex); //$NON-NLS-1$
         }
         catch (IllegalArgumentException ex)
         {
-            throw new ConversionException(Messages.getString("PrimitiveConverter.TypeNotPrimitive", paramType.getName()), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("PrimitiveConverter.TypeNotPrimitive", paramType.getName()), ex); //$NON-NLS-1$
         }
     }
 

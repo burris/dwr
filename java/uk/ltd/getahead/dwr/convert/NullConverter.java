@@ -15,12 +15,12 @@
  */
 package uk.ltd.getahead.dwr.convert;
 
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.dwrp.Converter;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 
 /**
  * An implementation of Converter for null and undefined.

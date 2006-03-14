@@ -22,8 +22,7 @@
         <property name="includeDefaultConfig" value="false"/>
     </bean>
 
-    <bean id="uk.ltd.getahead.dwr.servlet.Processor" class="uk.ltd.getahead.dwr.servlet.DefaultProcessor">
-
+    <bean id="uk.ltd.getahead.dwr.servlet.UrlProcessor" class="uk.ltd.getahead.dwr.servlet.UrlProcessor">
     </bean>
 
     <bean id="uk.ltd.getahead.dwr.WebContextBuilder" class="uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder">
@@ -32,7 +31,7 @@
 
     <bean id="uk.ltd.getahead.dwr.AccessControl" class="uk.ltd.getahead.dwr.impl.DefaultAccessControl"/>
     <bean id="uk.ltd.getahead.dwr.AjaxFilterManager" class="uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager"/>
-    <bean id="uk.ltd.getahead.dwr.ConverterManager" class="uk.ltd.getahead.dwr.impl.DefaultConverterManager"/>
+    <bean id="uk.ltd.getahead.dwr.dwrp.ConverterManager" class="uk.ltd.getahead.dwr.dwrp.DefaultConverterManager"/>
     <bean id="uk.ltd.getahead.dwr.CreatorManager" class="uk.ltd.getahead.dwr.impl.DefaultCreatorManager"/>
 
     <bean id="myFacade" class="java.lang.Object"/>

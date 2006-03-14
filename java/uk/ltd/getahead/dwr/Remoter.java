@@ -25,16 +25,17 @@ public interface Remoter
     /**
      * Generate some Javascript that forms an interface definition
      * @param scriptName The script to generate for
-     * @param path The path of the requests. TODO: Think about this in terms of servlet spec
+     * @param path The path of the requests.
      * @return An interface javascript
      * @throws SecurityException
      */
     HttpResponse generateInterfaceScript(String scriptName, String path) throws SecurityException;
 
     /**
-     * Execute a set of remote calls and generate a Javascript reply
+     * Execute a set of remote calls and generate set of reply data for later
+     * conversion to whatever wire protocol we are using today.
      * @param calls The set of calls to execute
-     * @return A reply page
+     * @return A set of reply data objects
      */
-    HttpResponse execute(Calls calls);
+    Replies execute(Calls calls);
 }

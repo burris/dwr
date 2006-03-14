@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.dwrp;
+
+import uk.ltd.getahead.dwr.MarshallException;
 
 /**
  * An interface for converting types from a string to some other type.
@@ -37,9 +39,9 @@ public interface Converter
      * @param data The data to convert
      * @param inctx The map of data that we are working on
      * @return The convered data, or null if the conversion was not possible
-     * @throws ConversionException If the conversion failed for some reason
+     * @throws MarshallException If the conversion failed for some reason
      */
-    Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws ConversionException;
+    Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws MarshallException;
 
     /**
      * Return a javascript string that defines the variable named varName to
@@ -53,7 +55,7 @@ public interface Converter
      * @param data The data to convert
      * @param outctx Objects already converted and the results
      * @return The OutboundVariable that represents the data to convert
-     * @throws ConversionException If the conversion failed for some reason
+     * @throws MarshallException If the conversion failed for some reason
      */
-    OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException;
+    OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException;
 }

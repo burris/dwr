@@ -19,8 +19,8 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.TypeHintContext;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
 
 /**
  * @author Bram Smeets

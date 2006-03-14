@@ -17,10 +17,10 @@
 package uk.ltd.getahead.dwr.convert;
 
 import junit.framework.TestCase;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 
 /**
  * The tests for the <code>PrimitiveConverter</code> class.

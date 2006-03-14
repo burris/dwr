@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.impl;
+package uk.ltd.getahead.dwr.dwrp;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -97,7 +91,7 @@ public class DefaultConverterManager implements ConverterManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ConverterManager#convertInbound(java.lang.Class, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx, TypeHintContext incc) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx, TypeHintContext incc) throws MarshallException
     {
         Object converted = inctx.getConverted(iv, paramType);
         if (converted == null)
@@ -105,7 +99,7 @@ public class DefaultConverterManager implements ConverterManager
             Converter converter = getConverter(paramType);
             if (converter == null)
             {
-                throw new ConversionException(Messages.getString("DefaultConverterManager.MissingConverter", paramType.getName())); //$NON-NLS-1$
+                throw new MarshallException(Messages.getString("DefaultConverterManager.MissingConverter", paramType.getName())); //$NON-NLS-1$
             }
 
             // We only think about doing a null conversion ourselves once we are
@@ -128,7 +122,7 @@ public class DefaultConverterManager implements ConverterManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ConverterManager#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object object, OutboundContext converted) throws ConversionException
+    public OutboundVariable convertOutbound(Object object, OutboundContext converted) throws MarshallException
     {
         if (object == null)
         {

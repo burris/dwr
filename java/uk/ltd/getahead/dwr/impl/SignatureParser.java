@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.TypeHintContext;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 

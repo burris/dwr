@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.dwrp;
 
 import java.util.Map;
+
+import uk.ltd.getahead.dwr.MarshallException;
+import uk.ltd.getahead.dwr.TypeHintContext;
 
 /**
  * A class to manage the converter types and the instansiated class name matches.
@@ -64,9 +67,9 @@ public interface ConverterManager
      * @param inctx The map of data that we are working on
      * @param incc The context of this type conversion
      * @return The coerced object or null if the object could not be coerced
-     * @throws ConversionException If the conversion failed for some reason
+     * @throws MarshallException If the conversion failed for some reason
      */
-    Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx, TypeHintContext incc) throws ConversionException;
+    Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx, TypeHintContext incc) throws MarshallException;
 
     /**
      * Convert an object into a Javavscript representation of the same.
@@ -74,9 +77,9 @@ public interface ConverterManager
      * @param object The object to convert
      * @param converted The list of converted objects so far
      * @return A Javascript string version of the object
-     * @throws ConversionException If the conversion failed for some reason
+     * @throws MarshallException If the conversion failed for some reason
      */
-    OutboundVariable convertOutbound(Object object, OutboundContext converted) throws ConversionException;
+    OutboundVariable convertOutbound(Object object, OutboundContext converted) throws MarshallException;
 
     /**
      * We don't know enough from a method signature like setUsers(Set s) to be

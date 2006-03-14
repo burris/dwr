@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.dwrp;
 
 /**
- * A simple data container for 2 strings that comprise information about
- * how a Java object has been converted into Javascript
+ * A simple data container for 2 strings that comprise information about how a
+ * Java object has been converted into Javascript.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public final class OutboundVariable

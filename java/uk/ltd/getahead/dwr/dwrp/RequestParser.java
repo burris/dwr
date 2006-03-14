@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.servlet;
+package uk.ltd.getahead.dwr.dwrp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,10 +23,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.Call;
-import uk.ltd.getahead.dwr.Calls;
-import uk.ltd.getahead.dwr.ConversionConstants;
 import uk.ltd.getahead.dwr.HttpRequest;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
@@ -42,17 +40,24 @@ public class RequestParser
      * Parse an inbound request into a Calls object
      * @param req The original browser's request
      * @return A parsed set of calls
-     * @throws IOException If reading from the request body stream fails
+     * @throws MarshallException If reading from the request body stream fails
      */
-    public Calls parseRequest(HttpRequest req) throws IOException
+    public CallsWithContext parseRequest(HttpRequest req) throws MarshallException
     {
-        if (req.getMethod().equals("GET")) //$NON-NLS-1$
+        try
         {
-            return parseParameters(parseGet(req));
+            if (req.getMethod().equals("GET")) //$NON-NLS-1$
+            {
+                return parseParameters(parseGet(req));
+            }
+            else
+            {
+                return parseParameters(parsePost(req));
+            }
         }
-        else
+        catch (IOException ex)
         {
-            return parseParameters(parsePost(req));
+            throw new MarshallException(ex);
         }
     }
 
@@ -209,9 +214,9 @@ public class RequestParser
      * @return The call details the methods we are calling
      * @throws IOException If the parsing of input parameter fails
      */
-    private Calls parseParameters(Map paramMap) throws IOException
+    private CallsWithContext parseParameters(Map paramMap) throws IOException
     {
-        Calls calls = new Calls();
+        CallsWithContext calls = new CallsWithContext();
 
         // XML mode is common to all calls
         calls.setXhrMode(Boolean.valueOf((String) paramMap.remove(ConversionConstants.INBOUND_KEY_XMLMODE)).booleanValue());
@@ -231,7 +236,7 @@ public class RequestParser
         // Extract the ids, scriptnames and methodnames
         for (int callNum = 0; callNum < callCount; callNum++)
         {
-            Call call = new Call();
+            CallWithContext call = new CallWithContext();
             calls.addCall(call);
 
             String prefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + ConversionConstants.INBOUND_CALLNUM_SUFFIX;

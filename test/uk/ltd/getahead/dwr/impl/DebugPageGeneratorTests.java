@@ -23,11 +23,11 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 import uk.ltd.getahead.dwr.AccessControl;
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.HttpResponse;
 import uk.ltd.getahead.dwr.create.NewCreator;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
 import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
 
 /**

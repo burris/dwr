@@ -17,13 +17,13 @@ package uk.ltd.getahead.dwr.convert;
 
 import java.lang.reflect.Method;
 
-import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.compat.BaseV20Converter;
+import uk.ltd.getahead.dwr.dwrp.Converter;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Messages;
 
@@ -36,7 +36,7 @@ public class EnumConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
     {
         String value = LocalUtil.decode(iv.getValue());
 
@@ -50,11 +50,11 @@ public class EnumConverter extends BaseV20Converter implements Converter
         {
             // We would like to have done: if (!paramType.isEnum())
             // But this catch block has the same effect
-            throw new ConversionException(Messages.getString("EnumConverter.TypeNotEnum", paramType)); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("EnumConverter.TypeNotEnum", paramType)); //$NON-NLS-1$
         }
         catch (Exception ex)
         {
-            throw new ConversionException(Messages.getString("EnumConverter.ReflectionError", paramType), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("EnumConverter.ReflectionError", paramType), ex); //$NON-NLS-1$
         }
 
         for (int i = 0; i < values.length; i++)
@@ -66,7 +66,7 @@ public class EnumConverter extends BaseV20Converter implements Converter
             }
         }
 
-        throw new ConversionException(Messages.getString("EnumConverter.NoMatch", value, paramType)); //$NON-NLS-1$
+        throw new MarshallException(Messages.getString("EnumConverter.NoMatch", value, paramType)); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)

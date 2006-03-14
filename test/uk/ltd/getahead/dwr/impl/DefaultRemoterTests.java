@@ -28,16 +28,17 @@ import uk.ltd.getahead.dwr.AjaxFilter;
 import uk.ltd.getahead.dwr.AjaxFilterChain;
 import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Calls;
-import uk.ltd.getahead.dwr.ConverterManager;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.HttpResponse;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.Marshaller;
+import uk.ltd.getahead.dwr.Replies;
 import uk.ltd.getahead.dwr.create.NewCreator;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 import uk.ltd.getahead.dwr.impl.test.TestCreatedObject;
 import uk.ltd.getahead.dwr.impl.test.TestWebContextFactory;
-import uk.ltd.getahead.dwr.servlet.RequestParser;
 import uk.ltd.getahead.dwr.servlet.ServletHttpRequest;
 
 /**
@@ -57,7 +58,7 @@ public class DefaultRemoterTests extends TestCase
 
     private MockHttpServletRequest request;
 
-    private RequestParser requestParser = new RequestParser();
+    private Marshaller marshaller;
 
     protected void setUp() throws Exception
     {
@@ -69,8 +70,7 @@ public class DefaultRemoterTests extends TestCase
         accessControl = (AccessControl) EasyMock.createMock(AccessControl.class);
         defaultRemoter.setAccessControl(accessControl);
 
-        converterManager = (ConverterManager) EasyMock.createMock(ConverterManager.class);
-        defaultRemoter.setConverterManager(converterManager);
+        marshaller = (Marshaller) EasyMock.createMock(Marshaller.class);
 
         ajaxFilterManager = (AjaxFilterManager) EasyMock.createMock(AjaxFilterManager.class);
         defaultRemoter.setAjaxFilterManager(ajaxFilterManager);
@@ -126,8 +126,9 @@ public class DefaultRemoterTests extends TestCase
         builder.set(request, null, null, null, null);
         TestWebContextFactory.setWebContextBuilder(builder);
 
-        Calls calls = requestParser.parseRequest(new ServletHttpRequest(request));
-        HttpResponse response = defaultRemoter.execute(calls);
+        Calls calls = marshaller.marshallInbound(new ServletHttpRequest(request));
+        Replies replies = defaultRemoter.execute(calls);
+        HttpResponse response = marshaller.marshallOutbound(replies);
 
         EasyMock.verify(creatorManager);
         EasyMock.verify(accessControl);
@@ -199,7 +200,7 @@ public class DefaultRemoterTests extends TestCase
 
         try
         {
-            Calls calls = requestParser.parseRequest(new ServletHttpRequest(request));
+            Calls calls = marshaller.marshallInbound(new ServletHttpRequest(request));
             defaultRemoter.execute(calls);
             fail("a security exception was expected");
         }
@@ -236,8 +237,9 @@ public class DefaultRemoterTests extends TestCase
         EasyMock.replay(creatorManager);
         EasyMock.replay(accessControl);
 
-        Calls calls = requestParser.parseRequest(new ServletHttpRequest(request));
-        HttpResponse response = defaultRemoter.execute(calls);
+        Calls calls = marshaller.marshallInbound(new ServletHttpRequest(request));
+        Replies replies = defaultRemoter.execute(calls);
+        HttpResponse response = marshaller.marshallOutbound(replies);
 
         EasyMock.verify(creatorManager);
         EasyMock.verify(accessControl);

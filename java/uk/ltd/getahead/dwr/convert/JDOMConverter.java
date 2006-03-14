@@ -24,13 +24,13 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.compat.BaseV20Converter;
+import uk.ltd.getahead.dwr.dwrp.Converter;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Messages;
@@ -45,7 +45,7 @@ public class JDOMConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
     {
         String value = LocalUtil.decode(iv.getValue());
 
@@ -63,22 +63,22 @@ public class JDOMConverter extends BaseV20Converter implements Converter
                 return doc.getRootElement();
             }
 
-            throw new ConversionException(Messages.getString("DOMConverter.UnusableClass", paramType.getName())); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("DOMConverter.UnusableClass", paramType.getName())); //$NON-NLS-1$
         }
-        catch (ConversionException ex)
+        catch (MarshallException ex)
         {
             throw ex;
         }
         catch (Exception ex)
         {
-            throw new ConversionException(ex);
+            throw new MarshallException(ex);
         }
     }
 
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         OutboundVariable ov = outctx.createOutboundVariable(data);
         String varname = ov.getAssignCode();
@@ -106,7 +106,7 @@ public class JDOMConverter extends BaseV20Converter implements Converter
             }
             else
             {
-                throw new ConversionException("Data is not a DOM Node"); //$NON-NLS-1$
+                throw new MarshallException("Data is not a DOM Node"); //$NON-NLS-1$
             }
 
             xml.flush();
@@ -121,13 +121,13 @@ public class JDOMConverter extends BaseV20Converter implements Converter
             ov.setInitCode(buffer.toString());
             return ov;
         }
-        catch (ConversionException ex)
+        catch (MarshallException ex)
         {
             throw ex;
         }
         catch (Exception ex)
         {
-            throw new ConversionException(ex);
+            throw new MarshallException(ex);
         }
     }
 }

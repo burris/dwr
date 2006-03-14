@@ -26,7 +26,7 @@ import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
 
 import uk.ltd.getahead.dwr.WebContextBuilder;
-import uk.ltd.getahead.dwr.servlet.Processor;
+import uk.ltd.getahead.dwr.servlet.UrlProcessor;
 
 /**
  * @author Bram Smeets
@@ -55,10 +55,10 @@ public class DwrSpringServletTests extends TestCase {
     public void testDoPost() throws Exception {
         BeanFactory factory = (BeanFactory) EasyMock.createMock(BeanFactory.class);
 
-        Processor processor = (Processor) EasyMock.createMock(Processor.class);
+        UrlProcessor processor = (UrlProcessor) EasyMock.createMock(UrlProcessor.class);
         WebContextBuilder builder = (WebContextBuilder) EasyMock.createMock(WebContextBuilder.class);
 
-        EasyMock.expect(factory.getBean("uk.ltd.getahead.dwr.servlet.Processor")).andReturn(processor);
+        EasyMock.expect(factory.getBean("uk.ltd.getahead.dwr.servlet.UrlProcessor")).andReturn(processor);
         EasyMock.expect(factory.getBean("uk.ltd.getahead.dwr.WebContextBuilder")).andReturn(builder);
 
         processor.handle(request, response);

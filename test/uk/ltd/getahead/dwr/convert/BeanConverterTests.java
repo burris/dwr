@@ -19,14 +19,14 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 
-import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.convert.test.MyBeanImpl;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 
 /**
  * The tests for the <code>BeanConverter</code> class.
@@ -172,7 +172,7 @@ public class BeanConverterTests extends TestCase
             converter.convertInbound(null, var, null);
             fail("a conversion exception was expected");
         }
-        catch (ConversionException e)
+        catch (MarshallException e)
         {
             // do nothing, was expected
         }
@@ -182,7 +182,7 @@ public class BeanConverterTests extends TestCase
             converter.convertInbound(Object.class, var, null);
             fail("a conversion exception was expected");
         }
-        catch (ConversionException e)
+        catch (MarshallException e)
         {
             // do nothing, was expected
         }
@@ -194,7 +194,7 @@ public class BeanConverterTests extends TestCase
             converter.convertInbound(Object.class, var, ctx);
             fail("a conversion exception was expected");
         }
-        catch (ConversionException e)
+        catch (MarshallException e)
         {
             // do nothing, was expected
         }
@@ -205,7 +205,7 @@ public class BeanConverterTests extends TestCase
             converter.convertInbound(Object.class, var, ctx);
             fail("a conversion exception was expected");
         }
-        catch (ConversionException e)
+        catch (MarshallException e)
         {
             // do nothing, was expected
         }

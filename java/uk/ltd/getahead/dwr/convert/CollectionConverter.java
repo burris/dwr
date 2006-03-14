@@ -26,16 +26,16 @@ import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import uk.ltd.getahead.dwr.ConversionConstants;
-import uk.ltd.getahead.dwr.ConversionException;
-import uk.ltd.getahead.dwr.Converter;
-import uk.ltd.getahead.dwr.ConverterManager;
-import uk.ltd.getahead.dwr.InboundContext;
-import uk.ltd.getahead.dwr.InboundVariable;
-import uk.ltd.getahead.dwr.OutboundContext;
-import uk.ltd.getahead.dwr.OutboundVariable;
+import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.compat.BaseV20Converter;
+import uk.ltd.getahead.dwr.dwrp.ConversionConstants;
+import uk.ltd.getahead.dwr.dwrp.Converter;
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
+import uk.ltd.getahead.dwr.dwrp.InboundVariable;
+import uk.ltd.getahead.dwr.dwrp.OutboundContext;
+import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
@@ -58,7 +58,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertInbound(java.lang.Class, java.util.List, uk.ltd.getahead.dwr.InboundVariable, uk.ltd.getahead.dwr.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws ConversionException
+    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
     {
         String value = iv.getValue();
 
@@ -127,7 +127,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             }
             else
             {
-                throw new ConversionException(Messages.getString("CollectionConverter.ConvertError") + paramType.getName()); //$NON-NLS-1$
+                throw new MarshallException(Messages.getString("CollectionConverter.ConvertError") + paramType.getName()); //$NON-NLS-1$
             }
 
             // We should put the new object into the working map in case it
@@ -163,14 +163,14 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         }
         catch (Exception ex)
         {
-            throw new ConversionException(ex);
+            throw new MarshallException(ex);
         }
     }
 
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#convertOutbound(java.lang.Object, uk.ltd.getahead.dwr.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws ConversionException
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         // First we need to get ourselves the collection data
         Iterator it;
@@ -187,7 +187,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         }
         else
         {
-            throw new ConversionException(Messages.getString("CollectionConverter.ConvertFailed", data.getClass().getName())); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("CollectionConverter.ConvertFailed", data.getClass().getName())); //$NON-NLS-1$
         }
 
         if (size == 0)

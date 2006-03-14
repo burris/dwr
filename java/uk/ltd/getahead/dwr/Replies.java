@@ -24,37 +24,38 @@ import java.util.List;
  * iframe).
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Calls
+public class Replies
 {
     /**
-     * How many calls are there is this request
-     * @return The total number of calls
+     * How many replies are there is this request
+     * @return The total number of replies
      */
-    public int getCallCount()
+    public int getReplyCount()
     {
-        return calls.size();
+        return replies.size();
     }
 
     /**
-     * @param index The index (starts at 0) of the call to fetch
-     * @return Returns the calls.
+     * @param index The index (starts at 0) of the reply to fetch
+     * @return Returns the replies.
      */
-    public Call getCall(int index)
+    public Reply getReply(int index)
     {
-        return (Call) calls.get(index);
+        return (Reply) replies.get(index);
     }
 
     /**
-     * Add a call to the collection of calls we are about to make
-     * @param call The call to add
+     * Add a reply to the collection of replies we are about to make
+     * @param reply The reply to add
      */
-    public void addCall(Call call)
+    public void addReply(Reply reply)
     {
-        calls.add(call);
+        replies.add(reply);
     }
 
     /**
      * @return Returns the xhrMode.
+     * @deprecated
      */
     public boolean isXhrMode()
     {
@@ -63,6 +64,7 @@ public class Calls
 
     /**
      * @param xhrMode The xhrMode to set.
+     * @deprecated
      */
     public void setXhrMode(boolean xhrMode)
     {
@@ -70,12 +72,13 @@ public class Calls
     }
 
     /**
-     * The collection of Calls that we should execute
+     * The collection of Replies that we should execute
      */
-    protected List calls = new ArrayList();
+    private List replies = new ArrayList();
 
     /**
      * Are we in XMLHttpRequest (XHR) mode
+     * @deprecated
      */
     private boolean xhrMode = false;
 }

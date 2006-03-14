@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import uk.ltd.getahead.dwr.ConversionConstants;
+import uk.ltd.getahead.dwr.dwrp.ConversionConstants;
 
 /**
  * Various utilities, mostly to make up for JDK 1.4 functionallity that is not

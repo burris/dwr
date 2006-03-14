@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.compat;
+package uk.ltd.getahead.dwr.dwrp;
 
-import uk.ltd.getahead.dwr.dwrp.Converter;
-import uk.ltd.getahead.dwr.dwrp.ConverterManager;
+import uk.ltd.getahead.dwr.Calls;
 
 /**
- * A way to migrate from the DWRv2.0 Converter style to something in the future.
- * Inheriting from this is advised to help with forwards compatibility.
+ * The request made by the browser which consists of a number of function call
+ * requests and some associated information like the request mode (XHR or
+ * iframe).
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public abstract class BaseV20Converter implements Converter
+public class CallsWithContext extends Calls
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
+    /**
+     * @param index The index (starts at 0) of the call to fetch
+     * @return Returns the calls.
      */
-    public void setConverterManager(ConverterManager config)
+    public CallWithContext getCallWithContext(int index)
     {
+        return (CallWithContext) calls.get(index);
     }
 }
