@@ -1,0 +1,45 @@
+
+url re-writing not supported
+	I ended up having to extract DWREngine._sendData into a jsp and changing the
+	call to be thus:
+		batch.req.open("POST", batch.path + "/exec/" + statsInfo + "<html:rewrite href=''/>", true);
+	so that the <html:rewrite would add the jsessionid
+
+everything.js
+	A script that gets all the bits in one lump
+	Do we need a dojo.require thing?
+
+Multiple call issue
+	When calling the same function 4 times consecutively passing a different
+	paramter the same result is always returned.  While debugging on the server side
+	(jboss), I have noted that the result passed back (a collection) is different.
+	However, DWR appears to be getting confused and always returns the same result
+	for each call.
+	I have noticed that if I put each call between a begin/endbatch that the correct
+	result is returned.
+	This is only for 1.1.  1.0 does not have this issue.
+	LabBean.getMaterials(displayMaterialJewels, 1);
+	LabBean.getMaterials(displayMaterialReversedItems, 2);
+	LabBean.getMaterials(displayMaterialReversedJewels, 1);
+	LabBean.getMaterials(displayMaterialItems, 2);
+
+ie7 testing
+
+iframe when activex is off
+	auto-fallback from xhr to iframe
+		DWR works fine unless security is really crazy
+
+problems with oc4j??
+	This is a berif description and I will send you my code soon.
+	In my code I'm trying to call a java method from the jscript, where the java
+	method returns a vector of objects and the returned value is reterived from
+	the database, so every time the returned vector size could be changed, but
+	in my case the returned vector has the same size every time however I'm sure
+	that this vector is changed. What I could understand till now that this
+	problem still accoured even I have restarted the jDeveloper and the whole
+	windows.
+	Thank you for your interest, and I will send you the code ASAP.
+
+IFrame GET is broken with Safari
+	iframe is only really useful with IE6 (with activex turned off) so we can
+	ignore this breakage
