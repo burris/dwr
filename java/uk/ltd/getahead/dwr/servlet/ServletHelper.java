@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -394,9 +393,8 @@ public class ServletHelper
      * @param request The HTTP request
      * @param response The HTTP response
      * @throws IOException From <code>processor.handle()</code>
-     * @throws ServletException From <code>processor.handle()</code>
      */
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         processor.handle(request, response);
     }
