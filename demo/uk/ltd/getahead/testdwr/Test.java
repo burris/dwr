@@ -45,14 +45,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import uk.ltd.getahead.dwr.InboundContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.dwrp.InboundContext;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * Methods to help unit test DWR.
  * @author Joe Walker [joe at eireneh dot com]
- * @version $Id$
  */
 public class Test
 {
@@ -65,10 +64,40 @@ public class Test
     }
 
     /**
+     * @param wait
+     * @return wait
+     */
+    public int waitFor(int wait)
+    {
+        synchronized (Thread.currentThread())
+        {
+            try
+            {
+                Thread.currentThread().wait(wait);
+                return wait;
+            }
+            catch (InterruptedException ex)
+            {
+                return 0;
+            }
+        }
+    }
+
+    /**
      * 
      */
     public void doNothing()
     {
+    }
+
+    /**
+     * @param a 
+     * @param b 
+     * @return are they equal
+     */
+    public boolean areIdentical(List a, List b)
+    {
+        return a == b;
     }
 
     /**
