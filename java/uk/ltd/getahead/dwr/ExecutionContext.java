@@ -27,6 +27,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Class to enable us to access servlet parameters.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @deprecated Use WebContext / WebContextFactory for better results
  */
 public class ExecutionContext implements WebContext
 {
