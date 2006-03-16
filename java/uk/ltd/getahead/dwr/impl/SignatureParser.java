@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.dwrp.ConverterManager;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.TypeHintContext;
 
 /**
  * A parser for type info in a dwr.xml signature.

@@ -218,9 +218,6 @@ public class RequestParser
     {
         CallsWithContext calls = new CallsWithContext();
 
-        // XML mode is common to all calls
-        calls.setXhrMode(Boolean.valueOf((String) paramMap.remove(ConversionConstants.INBOUND_KEY_XMLMODE)).booleanValue());
-
         // Work out how many calls are in this packet
         String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
         int callCount;

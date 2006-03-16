@@ -25,23 +25,23 @@ import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.ClientScript;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.HtmlConstants;
 import uk.ltd.getahead.dwr.HttpRequest;
 import uk.ltd.getahead.dwr.HttpResponse;
 import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.Marshaller;
 import uk.ltd.getahead.dwr.Replies;
 import uk.ltd.getahead.dwr.Reply;
-import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
+import uk.ltd.getahead.dwr.util.MimeConstants;
+import uk.ltd.getahead.dwr.util.TypeHintContext;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrpMarshaller implements Marshaller
+public class DwrpPlainJsMarshaller implements Marshaller
 {
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Marshaller#marshallInbound(uk.ltd.getahead.dwr.HttpRequest)
@@ -195,21 +195,17 @@ public class DwrpMarshaller implements Marshaller
         // to debug, and because that's only what the compiler does anyway.
         final StringBuffer buffer = new StringBuffer();
 
-        // if we are in html (iframe mode) we need to direct script to the parent
-        String prefix = replies.isXhrMode() ? "" : "window.parent."; //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append(getOutboundScriptPrefix());
 
-        // iframe mode starts as HTML, so get into script mode
-        if (!replies.isXhrMode())
-        {
-            buffer.append("<script type='text/javascript'>\n"); //$NON-NLS-1$
-        }
+        // if we are in html (iframe mode) we need to direct script to the parent
+        String prefix = getOutboundLinePrefix();
 
         // Are there any outstanding reverse-ajax scripts to be passed on?
         List scripts = WebContextFactory.get().getBrowser().removeAllScripts();
         for (Iterator it = scripts.iterator(); it.hasNext();)
         {
             ClientScript script = (ClientScript) it.next();
-            buffer.append(script);
+            buffer.append(script.getScript());
             buffer.append('\n');
         }
 
@@ -249,11 +245,7 @@ public class DwrpMarshaller implements Marshaller
             }
         }
 
-        // iframe mode needs to get out of script mode
-        if (!replies.isXhrMode())
-        {
-            buffer.append("</script>\n"); //$NON-NLS-1$
-        }
+        buffer.append(getOutboundScriptSuffix());
 
         final String replyString = buffer.toString();
         log.debug(replyString);
@@ -262,7 +254,7 @@ public class DwrpMarshaller implements Marshaller
         {
             public String getMimeType()
             {
-                return replies.isXhrMode() ? HtmlConstants.MIME_PLAIN : HtmlConstants.MIME_HTML;
+                return getOutboundMimeType();
             }
 
             public byte[] getBody()
@@ -270,6 +262,42 @@ public class DwrpMarshaller implements Marshaller
                 return replyString.getBytes();
             }
         };
+    }
+
+    /**
+     * iframe mode starts as HTML, so get into script mode
+     * @return A script prefix
+     */
+    protected String getOutboundMimeType()
+    {
+        return MimeConstants.MIME_PLAIN;
+    }
+
+    /**
+     * iframe mode starts as HTML, so get into script mode
+     * @return A script prefix
+     */
+    protected String getOutboundScriptPrefix()
+    {
+        return ""; //$NON-NLS-1$
+    }
+
+    /**
+     * iframe mode needs to get out of script mode
+     * @return A script suffix
+     */
+    protected String getOutboundScriptSuffix()
+    {
+        return ""; //$NON-NLS-1$
+    }
+
+    /**
+     * Do we need to prefix variable declarations to be visible to another frame
+     * @return A declaration prefix
+     */
+    protected String getOutboundLinePrefix()
+    {
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -354,5 +382,5 @@ public class DwrpMarshaller implements Marshaller
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrpMarshaller.class);
+    private static final Logger log = Logger.getLogger(DwrpPlainJsMarshaller.class);
 }

@@ -1,3 +1,12 @@
 
-removed deprecated.js
+Removed deprecated.js
 
+Refactored to abstract out the wire protocol. By default DWR still uses it's own
+slighty JSONish protocol, but it should be possible for someone to create a
+tweak that makes DWR run over SOAP or JSON-RPC or whatever you want.
+
+Applied the XssScript patch. This enables a 3rd remoting scheme. DWR could
+previously use XHR or iframe remoting. Now we also support script tag remoting.
+NOTE: I've changed the name from XssScript to ScriptTag because XSS has the
+implication of a secuity hole, and I don't want people to think that we are
+exploiting a security hole.

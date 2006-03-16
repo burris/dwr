@@ -40,12 +40,14 @@ public class DefaultContainer implements Container
     /**
      * Set the class that should be used to implement the given interface
      * @param askFor The interface to implement
-     * @param value The new implementation
+     * @param valueParam The new implementation
      * @throws IllegalAccessException If the specified beans could not be accessed
      * @throws InstantiationException If the specified beans could not be created
      */
-    public void addParameter(Object askFor, Object value) throws InstantiationException, IllegalAccessException
+    public void addParameter(Object askFor, Object valueParam) throws InstantiationException, IllegalAccessException
     {
+        Object value = valueParam;
+
         // Maybe the value is a classname that needs instansiating
         if (value instanceof String)
         {

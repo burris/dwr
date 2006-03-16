@@ -773,23 +773,17 @@ DWRUtil._addRowInner = function(cellFuncs, options) {
   if (tr == null) return null;
   for (var cellNum = 0; cellNum < cellFuncs.length; cellNum++) {
     var func = cellFuncs[cellNum];
-    var td;
-    //if (typeof func == "string") {
-    //  options.data = func;
-    //  options.cellNum = cellNum;
-    //  td = options.cellCreator(options);
-    //  td.appendChild(document.createTextNode(func));
-    //}
-    //else {
-      var reply = func(options.rowData);
-      options.data = reply;
-      options.cellNum = cellNum;
-      td = options.cellCreator(options);
-      if (DWRUtil._isHTMLElement(reply, "td")) td = reply;
-      else if (DWRUtil._isHTMLElement(reply)) td.appendChild(reply);
-      else td.innerHTML = reply;
-    //}
-    tr.appendChild(td);
+    var reply = func(options.rowData, options);
+    options.data = reply;
+    options.cellNum = cellNum;
+    var td = options.cellCreator(options);
+    if (td != null) {
+      if (reply != null) {
+        if (DWRUtil._isHTMLElement(reply)) td.appendChild(reply);
+        else td.innerHTML = reply;
+      }
+      tr.appendChild(td);
+    }
   }
   return tr;
 };

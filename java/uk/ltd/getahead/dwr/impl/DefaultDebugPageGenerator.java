@@ -32,13 +32,14 @@ import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
-import uk.ltd.getahead.dwr.HtmlConstants;
 import uk.ltd.getahead.dwr.HttpResponse;
 import uk.ltd.getahead.dwr.dwrp.ConverterManager;
+import uk.ltd.getahead.dwr.dwrp.DwrpConstants;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
+import uk.ltd.getahead.dwr.util.MimeConstants;
 
 /**
  * A default implementation of TestPageGenerator
@@ -71,7 +72,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             Creator creator = creatorManager.getCreator(name);
             buffer.append("<li><a href='"); //$NON-NLS-1$
             buffer.append(root);
-            buffer.append(HtmlConstants.PATH_TEST);
+            buffer.append(DwrpConstants.PATH_TEST);
             buffer.append(name);
             buffer.append("'>"); //$NON-NLS-1$
             buffer.append(name);
@@ -83,7 +84,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         buffer.append("</body></html>\n"); //$NON-NLS-1$
 
-        return new DefaultHttpResponse(buffer.toString(), HtmlConstants.MIME_HTML);
+        return new DefaultHttpResponse(buffer.toString(), MimeConstants.MIME_HTML);
     }
 
     /* (non-Javadoc)
@@ -97,13 +98,13 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
         }
 
-        String interfaceURL = root + HtmlConstants.PATH_INTERFACE + scriptName + HtmlConstants.EXTENSION_JS;
-        String engineURL = root + HtmlConstants.FILE_ENGINE;
-        String utilURL = root + HtmlConstants.FILE_UTIL;
+        String interfaceURL = root + DwrpConstants.PATH_INTERFACE + scriptName + DwrpConstants.EXTENSION_JS;
+        String engineURL = root + DwrpConstants.FILE_ENGINE;
+        String utilURL = root + DwrpConstants.FILE_UTIL;
 
-        String proxyInterfaceURL = HtmlConstants.PATH_UP + HtmlConstants.PATH_INTERFACE + scriptName + HtmlConstants.EXTENSION_JS;
-        String proxyEngineURL = HtmlConstants.PATH_UP + HtmlConstants.FILE_ENGINE;
-        String proxyUtilURL = HtmlConstants.PATH_UP + HtmlConstants.FILE_UTIL;
+        String proxyInterfaceURL = PATH_UP + DwrpConstants.PATH_INTERFACE + scriptName + DwrpConstants.EXTENSION_JS;
+        String proxyEngineURL = PATH_UP + DwrpConstants.FILE_ENGINE;
+        String proxyUtilURL = PATH_UP + DwrpConstants.FILE_UTIL;
 
         Creator creator = creatorManager.getCreator(scriptName);
         Method[] methods = creator.getType().getMethods();
@@ -141,7 +142,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         buffer.append("  </style>\n"); //$NON-NLS-1$
         buffer.append("</head>\n"); //$NON-NLS-1$
         buffer.append("<body onload='DWRUtil.useLoadingMessage()'>\n"); //$NON-NLS-1$
-        buffer.append(HtmlConstants.BLANK);
+        buffer.append(BLANK);
 
         buffer.append("<h2>Methods For: " + scriptName + " (" + creator.getType().getName() + ")</h2>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         buffer.append("<p>To use this class in your javascript you will need the following script includes:</p>\n"); //$NON-NLS-1$
@@ -169,7 +170,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             String reason = accessControl.getReasonToNotDisplay(creator, scriptName, method);
             if (reason != null)
             {
-                buffer.append(HtmlConstants.BLANK);
+                buffer.append(BLANK);
                 buffer.append("<li style='color: #A88;'>  " + methodName + "() is not available: " + reason + "</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 if (!allowImpossibleTests)
                 {
@@ -180,12 +181,12 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             // Is it on the list of banned names
             if (JavascriptUtil.isReservedWord(methodName))
             {
-                buffer.append(HtmlConstants.BLANK);
+                buffer.append(BLANK);
                 buffer.append("<li style='color: #88A;'>" + methodName + "() is not available because it is a reserved word.</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$
                 continue;
             }
 
-            buffer.append(HtmlConstants.BLANK);
+            buffer.append(BLANK);
             buffer.append("<li>\n"); //$NON-NLS-1$
             buffer.append("  " + methodName + '('); //$NON-NLS-1$
 
@@ -201,7 +202,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
                 }
                 else
                 {
-                    String value = HtmlConstants.BLANK;
+                    String value = BLANK;
                     if (paramType == String.class)
                     {
                         value = "\"\""; //$NON-NLS-1$
@@ -231,7 +232,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
                     buffer.append("    <input class='itext' type='text' size='10' value='" + value + "' id='p" + i + j + "' title='Will be converted to: " + paramType.getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 }
 
-                buffer.append(j == paramTypes.length - 1 ? HtmlConstants.BLANK : ", \n"); //$NON-NLS-1$
+                buffer.append(j == paramTypes.length - 1 ? BLANK : ", \n"); //$NON-NLS-1$
             }
             buffer.append("  );\n"); //$NON-NLS-1$
 
@@ -294,7 +295,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             buffer.append("</li>\n"); //$NON-NLS-1$
         }
 
-        buffer.append(HtmlConstants.BLANK);
+        buffer.append(BLANK);
         buffer.append("</ul>\n"); //$NON-NLS-1$
 
         buffer.append("<h2>Other Links</h2>\n"); //$NON-NLS-1$
@@ -304,13 +305,13 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         synchronized (scriptCache)
         {
-            String output = (String) scriptCache.get(HtmlConstants.FILE_HELP);
+            String output = (String) scriptCache.get(DwrpConstants.FILE_HELP);
             if (output == null)
             {
-                InputStream raw = getClass().getResourceAsStream(Constants.PACKAGE + HtmlConstants.FILE_HELP);
+                InputStream raw = getClass().getResourceAsStream(Constants.PACKAGE + DwrpConstants.FILE_HELP);
                 if (raw == null)
                 {
-                    log.error(Messages.getString("DefaultProcessor.MissingHelp", HtmlConstants.FILE_HELP)); //$NON-NLS-1$
+                    log.error(Messages.getString("DefaultProcessor.MissingHelp", DwrpConstants.FILE_HELP)); //$NON-NLS-1$
                     output = "<p>Failed to read help text from resource file. Check dwr.jar is built to include html files.</p>"; //$NON-NLS-1$
                 }
                 else
@@ -342,7 +343,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
                     output = fileBuffer.toString();
                 }
 
-                scriptCache.put(HtmlConstants.FILE_HELP, output);
+                scriptCache.put(DwrpConstants.FILE_HELP, output);
             }
 
             buffer.append(output);
@@ -350,7 +351,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         buffer.append("</body></html>\n"); //$NON-NLS-1$
 
-        return new DefaultHttpResponse(buffer.toString(), HtmlConstants.MIME_HTML);
+        return new DefaultHttpResponse(buffer.toString(), MimeConstants.MIME_HTML);
     }
 
     /* (non-Javadoc)
@@ -358,7 +359,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      */
     public String generateInterfaceUrl(String root, String scriptName)
     {
-        return root + HtmlConstants.PATH_INTERFACE + scriptName + HtmlConstants.EXTENSION_JS;
+        return root + DwrpConstants.PATH_INTERFACE + scriptName + DwrpConstants.EXTENSION_JS;
     }
 
     /* (non-Javadoc)
@@ -366,7 +367,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      */
     public String generateEngineUrl(String root)
     {
-        return root + HtmlConstants.FILE_ENGINE;
+        return root + DwrpConstants.FILE_ENGINE;
     }
 
     /* (non-Javadoc)
@@ -422,6 +423,16 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     }
 
     /**
+     * 2 dots
+     */
+    private static final String PATH_UP = ".."; //$NON-NLS-1$
+
+    /**
+     * Empty string
+     */
+    public static final String BLANK = ""; //$NON-NLS-1$
+
+    /**
      * How we convert parameters
      */
     protected ConverterManager converterManager = null;
@@ -450,7 +461,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      * For getAvailableLibraries() - just a RO Collection that currently returns
      * only util.js, but may be expanded in the future.
      */
-    private Collection availableLibraries = Collections.unmodifiableCollection(Arrays.asList(new String[] { HtmlConstants.FILE_UTIL }));
+    private Collection availableLibraries = Collections.unmodifiableCollection(Arrays.asList(new String[] { DwrpConstants.FILE_UTIL }));
 
     /**
      * The log stream

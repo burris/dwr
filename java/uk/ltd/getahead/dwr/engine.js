@@ -66,14 +66,17 @@ DWREngine.XMLHttpRequest = 1;
 /** XHR remoting method constant. See DWREngine.setMethod() */
 DWREngine.IFrame = 2;
 
+/** XHR remoting method constant. See DWREngine.setMethod() */
+DWREngine.ScriptTag = 3;
+
 /**
  * Set the preferred remoting method.
  * @param newmethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
 DWREngine.setMethod = function(newmethod) {
-  if (newmethod != DWREngine.XMLHttpRequest && newmethod != DWREngine.IFrame) {
-    DWREngine._handleError("Remoting method must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame");
+  if (newmethod != DWREngine.XMLHttpRequest && newmethod != DWREngine.IFrame && newmethod != DWREngine.ScriptTag) {
+    DWREngine._handleError("Remoting method must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame or DWREngine.ScriptTag");
     return;
   }
   DWREngine._method = newmethod;
@@ -339,6 +342,12 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
     delete callData.postHook;
   }
 
+  // ScriptTag method parameter - the scriptTagBase
+  if (callData.scriptTagBase != null) {
+    DWREngine._batch.scriptTagBase = callData.scriptTagBase;
+    delete callData.scriptTagBase;
+  }
+
   // Default the error and warning handlers
   if (callData.errorHandler == null) callData.errorHandler = DWREngine._errorHandler;
   if (callData.warningHandler == null) callData.warningHandler = DWREngine._warningHandler;
@@ -404,8 +413,9 @@ DWREngine._sendData = function(batch) {
 
   var query = "";
   var prop;
+
+  // This equates to (batch.method = XHR && browser supports XHR)
   if (batch.req) {
-    batch.map.xml = "true";
     // Proceed using XMLHttpRequest
     if (batch.async) {
       batch.req.onreadystatechange = function() {
@@ -441,7 +451,7 @@ DWREngine._sendData = function(batch) {
       query = query.substring(0, query.length - 1);
 
       try {
-        batch.req.open("GET", batch.path + "/exec/" + statsInfo + "?" + query, batch.async);
+        batch.req.open("GET", batch.path + "/plainjs/" + statsInfo + "?" + query, batch.async);
         batch.req.send(null);
         if (!batch.async) {
           DWREngine._stateChange(batch);
@@ -463,7 +473,7 @@ DWREngine._sendData = function(batch) {
         //   if (navigator.userAgent.indexOf('Gecko') >= 0) {
         //     batch.req.setRequestHeader('Connection', 'close');
         //   }
-        batch.req.open("POST", batch.path + "/exec/" + statsInfo, batch.async);
+        batch.req.open("POST", batch.path + "/plainjs/" + statsInfo, batch.async);
         batch.req.setRequestHeader('Content-Type', 'text/plain');
         batch.req.send(query);
         if (!batch.async) {
@@ -475,8 +485,7 @@ DWREngine._sendData = function(batch) {
       }
     }
   }
-  else {
-    batch.map.xml = "false";
+  else if (batch.method != DWREngine.ScriptTag) {
     var idname = "dwr-if-" + batch.map["c0-id"];
     // Proceed using iframe
     batch.div = document.createElement('div');
@@ -493,13 +502,13 @@ DWREngine._sendData = function(batch) {
       }
       query = query.substring(0, query.length - 1);
 
-      batch.iframe.setAttribute('src', batch.path + "/exec/" + statsInfo + "?" + query);
+      batch.iframe.setAttribute('src', batch.path + "/htmljs/" + statsInfo + "?" + query);
       document.body.appendChild(batch.iframe);
     }
     else {
       batch.form = document.createElement('form');
       batch.form.setAttribute('id', 'dwr-form');
-      batch.form.setAttribute('action', batch.path + "/exec" + statsInfo);
+      batch.form.setAttribute('action', batch.path + "/htmljs/" + statsInfo);
       batch.form.setAttribute('target', idname);
       batch.form.target = idname;
       batch.form.setAttribute('method', 'post');
@@ -513,7 +522,23 @@ DWREngine._sendData = function(batch) {
 
       document.body.appendChild(batch.form);
       batch.form.submit();
+	}
+  }
+  else {
+    if (!batch.scriptTagBase) {
+      DWREngine._handleError("Please specify the scriptTagBase property within the call data.");
+      return;
     }
+    for (prop in batch.map) {
+      if (typeof batch.map[prop] != "function") {
+        query += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
+      }
+    }
+    query = query.substring(0, query.length - 1);
+    batch.script = document.createElement('script');
+    batch.script.id = "dwr-st-" + batch.map["c0-id"];
+    batch.script.src = batch.scriptTagBase + batch.path + "/plainjs/" + statsInfo + "?" + query;
+    document.body.appendChild(batch.script);
   }
 };
 

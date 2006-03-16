@@ -30,7 +30,6 @@ import uk.ltd.getahead.dwr.Call;
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.HtmlConstants;
 import uk.ltd.getahead.dwr.HttpResponse;
 import uk.ltd.getahead.dwr.Remoter;
 import uk.ltd.getahead.dwr.Replies;
@@ -40,6 +39,7 @@ import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.MimeConstants;
 
 /**
  * In implementation of Remoter that delegates requests to a set of Modules
@@ -111,10 +111,10 @@ public class DefaultRemoter implements Remoter
             buffer.append(script);
         }
 
-        // Officially we should use HtmlConstants.MIME_JS, but if we cheat and
-        // use HtmlConstants.MIME_PLAIN then it will be easier to read in a
+        // Officially we should use MimeConstants.MIME_JS, but if we cheat and
+        // use MimeConstants.MIME_PLAIN then it will be easier to read in a
         // browser window, and will still work just fine.
-        return new DefaultHttpResponse(buffer.toString(), HtmlConstants.MIME_PLAIN);
+        return new DefaultHttpResponse(buffer.toString(), MimeConstants.MIME_PLAIN);
     }
 
     /**
@@ -165,7 +165,6 @@ public class DefaultRemoter implements Remoter
     public Replies execute(Calls calls)
     {
         Replies replies = new Replies();
-        replies.setXhrMode(calls.isXhrMode());
 
         for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
         {
@@ -269,10 +268,6 @@ public class DefaultRemoter implements Remoter
 
                     buffer.append("id="); //$NON-NLS-1$
                     buffer.append(call.getId());
-
-                    buffer.append(". Using ("); //$NON-NLS-1$
-                    buffer.append(calls.isXhrMode() ? "XHR" : "IFrame"); //$NON-NLS-1$ //$NON-NLS-2$
-                    buffer.append(")"); //$NON-NLS-1$
 
                     log.debug(buffer.toString());
                 }

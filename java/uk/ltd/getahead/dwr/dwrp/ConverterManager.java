@@ -18,7 +18,7 @@ package uk.ltd.getahead.dwr.dwrp;
 import java.util.Map;
 
 import uk.ltd.getahead.dwr.MarshallException;
-import uk.ltd.getahead.dwr.TypeHintContext;
+import uk.ltd.getahead.dwr.util.TypeHintContext;
 
 /**
  * A class to manage the converter types and the instansiated class name matches.

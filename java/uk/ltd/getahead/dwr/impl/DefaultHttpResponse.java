@@ -18,7 +18,7 @@ package uk.ltd.getahead.dwr.impl;
 import java.io.UnsupportedEncodingException;
 
 import uk.ltd.getahead.dwr.HttpResponse;
-import uk.ltd.getahead.dwr.dwrp.DwrpMarshaller;
+import uk.ltd.getahead.dwr.dwrp.DwrpHtmlJsMarshaller;
 
 /**
  * A simple class to encapsulate an HTTP response.
@@ -55,7 +55,7 @@ public class DefaultHttpResponse implements HttpResponse
     /**
      * Constructor that allows us to specify a body character encoding.
      * If we are starting to worry about body character encodings then see also
-     * {@link DwrpMarshaller#marshallOutbound(uk.ltd.getahead.dwr.Replies)}
+     * {@link DwrpHtmlJsMarshaller#marshallOutbound(uk.ltd.getahead.dwr.Replies)}
      * which makes the same assumptions as the default string body constructor.
      * @param body The response boody
      * @param encoding The encoding to use in exporting bytes

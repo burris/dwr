@@ -35,6 +35,11 @@
       <param name="force" value="true"/>
     </convert>
 
+    <create creator="new" javascript="Chat" scope="application">
+      <param name="class" value="uk.ltd.getahead.chat.Chat"/>
+    </create>
+    <convert converter="bean" match="uk.ltd.getahead.chat.Message"/>
+
   </allow>
 
   <signatures>

@@ -37,6 +37,13 @@ public interface Browser extends Serializable
     public void addScript(ClientScript script);
 
     /**
+     * Add a script to the list waiting for remote execution.
+     * The version automatically wraps the string in a ClientScript object.
+     * @param script The script to execute
+     */
+    public void addScript(String script);
+
+    /**
      * Remove a script from the list waiting for execution
      * @param script The script to remove
      * @return true if a script was removed, or false otherwise

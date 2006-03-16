@@ -56,11 +56,6 @@ public class Call
         this.parameters = parameters;
     }
 
-    private Method method;
-    private Object[] parameters;
-
-    ////////////////////// ABOVE THE LINE - NEW FROM REFACTOR
-
     /**
      * @param id The id to set.
      */
@@ -114,4 +109,8 @@ public class Call
     private String scriptName = null;
 
     private String methodName = null;
+
+    private Method method;
+
+    private Object[] parameters;
 }

@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import uk.ltd.getahead.dwr.MarshallException;
-import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
+import uk.ltd.getahead.dwr.util.TypeHintContext;
 
 /**
  * A class to manage the converter types and the instansiated class name matches.

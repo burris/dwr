@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr;
+package uk.ltd.getahead.dwr.util;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class TypeHintContext
     {
         if (method == null)
         {
-            throw new IllegalArgumentException("The method can not be null");
+            throw new IllegalArgumentException("The method can not be null"); //$NON-NLS-1$
         }
 
         this.method = method;

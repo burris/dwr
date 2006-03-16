@@ -29,7 +29,6 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import uk.ltd.getahead.dwr.MarshallException;
-import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.compat.BaseV20Converter;
 import uk.ltd.getahead.dwr.dwrp.ConversionConstants;
 import uk.ltd.getahead.dwr.dwrp.Converter;
@@ -41,6 +40,7 @@ import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
+import uk.ltd.getahead.dwr.util.TypeHintContext;
 
 /**
  * Convert a Javascript associative array into a JavaBean

@@ -30,14 +30,16 @@ import javax.servlet.http.HttpServletResponse;
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
-import uk.ltd.getahead.dwr.HtmlConstants;
 import uk.ltd.getahead.dwr.HttpResponse;
-import uk.ltd.getahead.dwr.Marshaller;
 import uk.ltd.getahead.dwr.Remoter;
 import uk.ltd.getahead.dwr.Replies;
+import uk.ltd.getahead.dwr.dwrp.DwrpConstants;
+import uk.ltd.getahead.dwr.dwrp.DwrpHtmlJsMarshaller;
+import uk.ltd.getahead.dwr.dwrp.DwrpPlainJsMarshaller;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.MimeConstants;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -75,7 +77,7 @@ public class UrlProcessor
             if (pathInfo == null)
             {
                 pathInfo = request.getServletPath();
-                servletPath = HtmlConstants.PATH_ROOT;
+                servletPath = DwrpConstants.PATH_ROOT;
                 log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + contextPath + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
 
@@ -86,47 +88,53 @@ public class UrlProcessor
             // appear to be logic to it, just hack-till-its-not-broken which feels
             // like a good way to create latent bugs
             if (pathInfo.length() == 0 ||
-                pathInfo.equals(HtmlConstants.PATH_ROOT) ||
+                pathInfo.equals(DwrpConstants.PATH_ROOT) ||
                 pathInfo.equals(contextPath))
             {
-                response.sendRedirect(contextPath + servletPath + HtmlConstants.FILE_INDEX);
+                response.sendRedirect(contextPath + servletPath + DwrpConstants.FILE_INDEX);
                 return;
             }
-            else if (pathInfo.startsWith(HtmlConstants.FILE_INDEX))
+            else if (pathInfo.startsWith(DwrpConstants.FILE_INDEX))
             {
                 reply = debugPageGenerator.generateIndexPage(root);
             }
-            else if (pathInfo.startsWith(HtmlConstants.PATH_TEST))
+            else if (pathInfo.startsWith(DwrpConstants.PATH_TEST))
             {
                 String scriptName = pathInfo;
-                scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_TEST, HtmlConstants.BLANK);
-                scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_ROOT, HtmlConstants.BLANK);
+                scriptName = LocalUtil.replace(scriptName, DwrpConstants.PATH_TEST, ""); //$NON-NLS-1$
+                scriptName = LocalUtil.replace(scriptName, DwrpConstants.PATH_ROOT, ""); //$NON-NLS-1$
 
                 reply = debugPageGenerator.generateTestPage(root, scriptName);
             }
-            else if (pathInfo.startsWith(HtmlConstants.PATH_INTERFACE))
+            else if (pathInfo.startsWith(DwrpConstants.PATH_INTERFACE))
             {
                 String scriptName = pathInfo;
-                scriptName = LocalUtil.replace(scriptName, HtmlConstants.PATH_INTERFACE, HtmlConstants.BLANK);
-                scriptName = LocalUtil.replace(scriptName, HtmlConstants.EXTENSION_JS, HtmlConstants.BLANK);
+                scriptName = LocalUtil.replace(scriptName, DwrpConstants.PATH_INTERFACE, ""); //$NON-NLS-1$
+                scriptName = LocalUtil.replace(scriptName, DwrpConstants.EXTENSION_JS, ""); //$NON-NLS-1$
                 String path = contextPath + servletPath;
 
                 reply = remoter.generateInterfaceScript(scriptName, path);
             }
-            else if (pathInfo.startsWith(HtmlConstants.PATH_EXEC))
+            else if (pathInfo.startsWith(DwrpConstants.PATH_PLAINJS))
             {
-                Calls calls = marshaller.marshallInbound(new ServletHttpRequest(request));
+                Calls calls = plainJsMarshaller.marshallInbound(new ServletHttpRequest(request));
                 Replies replies = remoter.execute(calls);
-                reply = marshaller.marshallOutbound(replies);
+                reply = plainJsMarshaller.marshallOutbound(replies);
             }
-            else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_ENGINE))
+            else if (pathInfo.startsWith(DwrpConstants.PATH_HTMLJS))
             {
-                doFile(request, response, HtmlConstants.FILE_ENGINE, HtmlConstants.MIME_JS);
+                Calls calls = htmlJsMarshaller.marshallInbound(new ServletHttpRequest(request));
+                Replies replies = remoter.execute(calls);
+                reply = htmlJsMarshaller.marshallOutbound(replies);
+            }
+            else if (pathInfo.equalsIgnoreCase(DwrpConstants.FILE_ENGINE))
+            {
+                doFile(request, response, DwrpConstants.FILE_ENGINE, MimeConstants.MIME_JS);
                 return;
             }
-            else if (pathInfo.equalsIgnoreCase(HtmlConstants.FILE_UTIL))
+            else if (pathInfo.equalsIgnoreCase(DwrpConstants.FILE_UTIL))
             {
-                doFile(request, response, HtmlConstants.FILE_UTIL, HtmlConstants.MIME_JS);
+                doFile(request, response, DwrpConstants.FILE_UTIL, MimeConstants.MIME_JS);
                 return;
             }
             else
@@ -158,7 +166,7 @@ public class UrlProcessor
                 ex.printStackTrace();
             }
 
-            response.setContentType(HtmlConstants.MIME_HTML);
+            response.setContentType(MimeConstants.MIME_HTML);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             PrintWriter out = response.getWriter();
             out.println("//<script type='text/javascript'>"); //$NON-NLS-1$
@@ -216,7 +224,7 @@ public class UrlProcessor
 
                 output = buffer.toString();
 
-                if (mimeType.equals(HtmlConstants.MIME_JS) && scriptCompressed)
+                if (mimeType.equals(MimeConstants.MIME_JS) && scriptCompressed)
                 {
                     output = JavascriptUtil.compress(output, compressionLevel);
                 }
@@ -346,12 +354,21 @@ public class UrlProcessor
     }
 
     /**
-     * Setter for the Marshaller
+     * Setter for the Plain Javascript Marshaller
      * @param marshaller
      */
-    public void setMarshaller(Marshaller marshaller)
+    public void setPlainJsMarshaller(DwrpPlainJsMarshaller marshaller)
     {
-        this.marshaller = marshaller;
+        this.plainJsMarshaller = marshaller;
+    }
+
+    /**
+     * Setter for the HTML Javascript Marshaller
+     * @param marshaller
+     */
+    public void setHtmlJsMarshaller(DwrpHtmlJsMarshaller marshaller)
+    {
+        this.htmlJsMarshaller = marshaller;
     }
 
     /**
@@ -402,9 +419,14 @@ public class UrlProcessor
     private DebugPageGenerator debugPageGenerator = null;
 
     /**
-     * The method by which objects are marshalled to and from Javascript
+     * The 'HTML Javascript' method by which objects are marshalled
      */
-    private Marshaller marshaller = null;
+    private DwrpPlainJsMarshaller plainJsMarshaller = null;
+
+    /**
+     * The 'Plain Javascript' method by which objects are marshalled
+     */
+    private DwrpHtmlJsMarshaller htmlJsMarshaller = null;
 
     /**
      * The bean to execute remote requests and generate interfaces

@@ -54,28 +54,7 @@ public class Calls
     }
 
     /**
-     * @return Returns the xhrMode.
-     */
-    public boolean isXhrMode()
-    {
-        return xhrMode;
-    }
-
-    /**
-     * @param xhrMode The xhrMode to set.
-     */
-    public void setXhrMode(boolean xhrMode)
-    {
-        this.xhrMode = xhrMode;
-    }
-
-    /**
      * The collection of Calls that we should execute
      */
     protected List calls = new ArrayList();
-
-    /**
-     * Are we in XMLHttpRequest (XHR) mode
-     */
-    private boolean xhrMode = false;
 }

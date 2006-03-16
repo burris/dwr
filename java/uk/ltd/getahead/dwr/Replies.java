@@ -54,31 +54,7 @@ public class Replies
     }
 
     /**
-     * @return Returns the xhrMode.
-     * @deprecated
-     */
-    public boolean isXhrMode()
-    {
-        return xhrMode;
-    }
-
-    /**
-     * @param xhrMode The xhrMode to set.
-     * @deprecated
-     */
-    public void setXhrMode(boolean xhrMode)
-    {
-        this.xhrMode = xhrMode;
-    }
-
-    /**
      * The collection of Replies that we should execute
      */
     private List replies = new ArrayList();
-
-    /**
-     * Are we in XMLHttpRequest (XHR) mode
-     * @deprecated
-     */
-    private boolean xhrMode = false;
 }

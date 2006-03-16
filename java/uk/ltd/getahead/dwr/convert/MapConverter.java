@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import uk.ltd.getahead.dwr.MarshallException;
-import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.dwrp.ConversionConstants;
 import uk.ltd.getahead.dwr.dwrp.Converter;
 import uk.ltd.getahead.dwr.dwrp.ConverterManager;
@@ -34,6 +33,7 @@ import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
+import uk.ltd.getahead.dwr.util.TypeHintContext;
 
 /**
  * An implementation of Converter for Maps.

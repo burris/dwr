@@ -91,11 +91,6 @@ public interface ConversionConstants
     public static final String INBOUND_TYPE_SEPARATOR = ":"; //$NON-NLS-1$
 
     /**
-     * The key to define if we are in XMLRPC mode
-     */
-    public static final String INBOUND_KEY_XMLMODE = "xml"; //$NON-NLS-1$
-
-    /**
      * How are javascript arrays begun
      */
     public static final String INBOUND_ARRAY_END = "]"; //$NON-NLS-1$

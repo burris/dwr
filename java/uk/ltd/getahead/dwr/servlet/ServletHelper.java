@@ -39,13 +39,13 @@ import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
-import uk.ltd.getahead.dwr.Marshaller;
 import uk.ltd.getahead.dwr.Remoter;
 import uk.ltd.getahead.dwr.WebContextBuilder;
 import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.dwrp.ConverterManager;
 import uk.ltd.getahead.dwr.dwrp.DefaultConverterManager;
-import uk.ltd.getahead.dwr.dwrp.DwrpMarshaller;
+import uk.ltd.getahead.dwr.dwrp.DwrpHtmlJsMarshaller;
+import uk.ltd.getahead.dwr.dwrp.DwrpPlainJsMarshaller;
 import uk.ltd.getahead.dwr.impl.DefaultAccessControl;
 import uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager;
 import uk.ltd.getahead.dwr.impl.DefaultContainer;
@@ -68,8 +68,7 @@ public class ServletHelper
 {
     /**
      * Accessor for the Container.
-     * This is kind of a setter execpt that it has 2 side effects, one to cache
-     * the Processor and WebContextBuilder for later use, the other to initalize
+     * This is kind of a setter execpt that it has a side effect, to initialize
      * the WebContextFactory.
      * @param aContainer The new IoC container
      */
@@ -79,14 +78,16 @@ public class ServletHelper
 
         // Cached to save looking them up
         webContextBuilder = (WebContextBuilder) aContainer.getBean(WebContextBuilder.class.getName());
+        processor = (UrlProcessor) aContainer.getBean(UrlProcessor.class.getName());
 
         // Now we have set the implementations we can set the WebContext up
         WebContextFactory.setWebContextBuilder(webContextBuilder);
     }
 
     /**
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * Push the default beans into a new copy of the default Container.
+     * @throws InstantiationException If a bean can not be instansiated
+     * @throws IllegalAccessException If a bean can not be accessed
      */
     public void initDefaultContainer() throws InstantiationException, IllegalAccessException
     {
@@ -101,7 +102,8 @@ public class ServletHelper
         defaultContainer.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
         defaultContainer.addParameter(Remoter.class.getName(), DefaultRemoter.class.getName());
         defaultContainer.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
-        defaultContainer.addParameter(Marshaller.class.getName(), DwrpMarshaller.class.getName());
+        defaultContainer.addParameter(DwrpHtmlJsMarshaller.class.getName(), DwrpHtmlJsMarshaller.class.getName());
+        defaultContainer.addParameter(DwrpPlainJsMarshaller.class.getName(), DwrpPlainJsMarshaller.class.getName());
 
         defaultContainer.addParameter("debug", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         defaultContainer.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -413,7 +415,7 @@ public class ServletHelper
     /**
      * The processor will actually handle the http requests
      */
-    protected UrlProcessor processor = new UrlProcessor();
+    protected UrlProcessor processor;
 
     /**
      * The WebContext that keeps http objects local to a thread

@@ -42,6 +42,17 @@ public class DefaultBrowser implements Browser, HttpSessionBindingListener
     }
 
     /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Browser#addScript(java.lang.String)
+     */
+    public void addScript(String script)
+    {
+        synchronized (scripts)
+        {
+            scripts.add(new ClientScript(script));
+        }
+    }
+
+    /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Browser#removeScript(uk.ltd.getahead.dwr.ClientScript)
      */
     public boolean removeScript(ClientScript script)

@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import uk.ltd.getahead.dwr.TypeHintContext;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.TypeHintContext;
 
 /**
  * InboundContext is the context for set of inbound conversions.
