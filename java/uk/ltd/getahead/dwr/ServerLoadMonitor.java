@@ -13,32 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.dwrp;
-
-import uk.ltd.getahead.dwr.Call;
+package uk.ltd.getahead.dwr;
 
 /**
- * Call is a POJO to encapsulate the information required to make a single java
- * call, including the result of the call (either returned data or exception).
+ * Polling or Comet style interactive web applications require something to
+ * monitor high levels of server load to ensure that
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class CallWithContext extends Call
+public interface ServerLoadMonitor
 {
     /**
-     * @param inctx The inctx to set.
+     * Controller for poll times.
+     * @return How long should this client wait until it next polls?
      */
-    public void setInboundContext(InboundContext inctx)
-    {
-        this.inctx = inctx;
-    }
-
-    /**
-     * @return Returns the inctx.
-     */
-    public InboundContext getInboundContext()
-    {
-        return inctx;
-    }
-
-    private InboundContext inctx = new InboundContext();
+    int timeToNextPoll();
 }

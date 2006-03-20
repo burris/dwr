@@ -109,8 +109,8 @@ public class DefaultAccessControl implements AccessControl
             return Messages.getString("ExecuteQuery.DeniedByAccessRules"); //$NON-NLS-1$
         }
 
-        // Is it disallowed because it is part of DWR?
-        if (creator.getType().getName().startsWith(PACKAGE_DWR))
+        if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY) &&
+            !creator.getType().getName().startsWith(PACKAGE_DWR_ALLOW))
         {
             return Messages.getString("ExecuteQuery.DeniedCoreDWR"); //$NON-NLS-1$
         }
@@ -120,8 +120,8 @@ public class DefaultAccessControl implements AccessControl
         {
             Class paramType = method.getParameterTypes()[j];
 
-            // Is it access to this type disallowed because it is part of DWR?
-            if (paramType.getName().startsWith(PACKAGE_DWR))
+            if (paramType.getName().startsWith(PACKAGE_DWR_DENY) && 
+                !paramType.getName().startsWith(PACKAGE_DWR_ALLOW))
             {
                 return Messages.getString("ExecuteQuery.DeniedParamDWR"); //$NON-NLS-1$
             }
@@ -300,7 +300,12 @@ public class DefaultAccessControl implements AccessControl
     /**
      * My package name, so we can ban DWR classes from being created or marshalled
      */
-    private static final String PACKAGE_DWR = "uk.ltd.getahead.dwr."; //$NON-NLS-1$
+    private static final String PACKAGE_DWR_DENY = "uk.ltd.getahead.dwr."; //$NON-NLS-1$
+
+    /**
+     * My package name, so we can ban DWR classes from being created or marshalled
+     */
+    private static final String PACKAGE_DWR_ALLOW = "uk.ltd.getahead.dwr.remote."; //$NON-NLS-1$
 
     /**
      * The log stream

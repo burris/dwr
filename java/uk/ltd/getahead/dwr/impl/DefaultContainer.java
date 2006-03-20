@@ -226,6 +226,14 @@ public class DefaultContainer implements Container
         return Collections.unmodifiableCollection(beans.keySet());
     }
 
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.Container#setBean(java.lang.String, java.lang.Object)
+     */
+    public void setBean(String id, Object bean)
+    {
+        beans.put(id, bean);
+    }
+
     /**
      * The beans that we know of indexed by type
      */

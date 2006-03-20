@@ -25,12 +25,12 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import uk.ltd.getahead.dwr.MarshallException;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.compat.BaseV20Converter;
 import uk.ltd.getahead.dwr.dwrp.Converter;
 import uk.ltd.getahead.dwr.dwrp.InboundContext;
 import uk.ltd.getahead.dwr.dwrp.InboundVariable;
-import uk.ltd.getahead.dwr.dwrp.OutboundContext;
-import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Messages;

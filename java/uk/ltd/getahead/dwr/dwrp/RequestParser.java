@@ -23,8 +23,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.servlet.http.HttpServletRequest;
+
 import uk.ltd.getahead.dwr.HttpRequest;
 import uk.ltd.getahead.dwr.MarshallException;
+import uk.ltd.getahead.dwr.WebContext;
+import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
@@ -262,12 +266,27 @@ public class RequestParser
             }
         }
 
+        paramMap.remove(ConversionConstants.INBOUND_KEY_HTTP_SESSIONID);
+        // Maybe we should check the value of this against the cookie value
+
+        String scriptSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
+
+        WebContext webContext = WebContextFactory.get();
+        webContext.setScriptSessionId(scriptSessionId);
+
+        // Remaining parameters get put into the request for later consumption
         if (paramMap.size() != 0)
         {
-            paramMap.remove(ConversionConstants.BROKEN_SAFARI2);
-            if (paramMap.size() != 0)
+            HttpServletRequest request = webContext.getHttpServletRequest();
+
+            for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
             {
-                log.warn("Entries left over in parameter map"); //$NON-NLS-1$
+                Map.Entry entry = (Map.Entry) it.next();
+                String key = (String) entry.getKey();
+                String value = (String) entry.getValue();
+
+                request.setAttribute(key, value);
+                log.debug("Moved param to request: " + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 

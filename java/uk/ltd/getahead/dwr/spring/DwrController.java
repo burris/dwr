@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
@@ -46,10 +47,22 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      */
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException
     {
-        SpringContainer container = new SpringContainer();
-        container.setBeanFactory(beanFactory);
+        try
+        {
+            SpringContainer container = new SpringContainer();
+            container.setBeanFactory(beanFactory);
 
-        servletHelper.initContainer(container);
+            servletHelper.configureDefaultContainer(container);
+            servletHelper.initContainer(container);
+        }
+        catch (InstantiationException ex)
+        {
+            throw new BeanCreationException("Failed to instansiate", ex); //$NON-NLS-1$
+        }
+        catch (IllegalAccessException ex)
+        {
+            throw new BeanCreationException("Access error", ex); //$NON-NLS-1$
+        }
     }
 
     /**

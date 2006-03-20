@@ -18,7 +18,19 @@
  * Declare a constructor function to which we can add real functions.
  * @constructor
  */
-function DWREngine() { }
+if (DWREngine == null) {
+  var DWREngine = {};
+}
+
+/**
+ * The real session id should be filled in by the server
+ */
+DWREngine._httpSessionId = "${httpSessionId}";
+
+/**
+ * The real page id should be filled in by the server
+ */
+DWREngine._scriptSessionId = "${scriptSessionId}";
 
 /**
  * Set an alternative error handler from the default alert box.
@@ -111,6 +123,15 @@ DWREngine.setAsync = function(async) {
 };
 
 /**
+ * Does DWR poll the server for updates? (Default: false)
+ * @see http://getahead.ltd.uk/dwr/browser/engine/options
+ */
+DWREngine.setPolling = function(polling) {
+  DWREngine._polling = polling;
+  DWREngine._triggerNextPoll(0);
+};
+
+/**
  * The default message handler.
  * @see http://getahead.ltd.uk/dwr/browser/engine/errors
  */
@@ -119,7 +140,10 @@ DWREngine.defaultMessageHandler = function(message) {
     alert("Error: " + message.description);
   }
   else {
-    alert(message);
+    // Ignore NS_ERROR_NOT_AVAILABLE
+    if (message.indexOf("0x80040111") == -1) {
+      alert(message);
+    }
   }
 };
 
@@ -133,13 +157,13 @@ DWREngine.beginBatch = function() {
     return;
   }
   // Setup a batch
-  DWREngine._batch = {};
-  DWREngine._batch.map = {};
-  DWREngine._batch.paramCount = 0;
-  DWREngine._batch.map.callCount = 0;
-  DWREngine._batch.ids = [];
-  DWREngine._batch.preHooks = [];
-  DWREngine._batch.postHooks = [];
+  DWREngine._batch = {
+    map:{ callCount:0 },
+    paramCount:0,
+    ids:[],
+    preHooks:[],
+    postHooks:[]
+  };
 };
 
 /**
@@ -235,6 +259,9 @@ DWREngine._DOMDocument = ["Msxml2.DOMDocument.5.0", "Msxml2.DOMDocument.4.0", "M
 
 /** The ActiveX objects to use when we want to do an XMLHttpRequest call. */
 DWREngine._XMLHTTP = ["Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
+
+/** Are we polling for updates? */
+DWREngine._polling = false;
 
 /**
  * @private Send a request. Called by the Javascript interface stub
@@ -355,6 +382,19 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   // Save the callMetaData
   DWREngine._handlersMap[id] = callData;
 
+  // Copy extra callData into the map
+  var data, prop;
+  for (prop in callData) {
+    data = callData[prop];
+    if (typeof data != "function") {
+      DWREngine._batch.map[prop] = "" + data;
+    }
+  }
+
+  // Add in the page and session ids
+  DWREngine._batch.map.httpSessionId = DWREngine._httpSessionId;
+  DWREngine._batch.map.scriptSessionId = DWREngine._scriptSessionId;
+
   DWREngine._batch.map[prefix + "scriptName"] = scriptName;
   DWREngine._batch.map[prefix + "methodName"] = methodName;
   DWREngine._batch.map[prefix + "id"] = id;
@@ -372,6 +412,56 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
     DWREngine.endBatch();
   }
 };
+
+/**
+ * @private Poll the server to see if there is any data waiting
+ */
+DWREngine._poll = function(overridePath) {
+  if (!DWREngine._polling) {
+    return;
+  }
+  // Get a unique ID for this call
+  var random = Math.floor(Math.random() * 10001);
+  var id = (random + "_" + new Date().getTime()).toString();
+  // Create a batch object that describes how we are to call the server
+  var batch = {
+    completed:false,
+    map:{
+      callCount:1,
+      'c0-scriptName':'DWRSystem',
+      'c0-methodName':'timeToNextPoll',
+      'c0-id':id,
+      httpSessionId:DWREngine._httpSessionId,
+      scriptSessionId:DWREngine._scriptSessionId
+    },
+    // method:DWREngine.IFrame,
+    method:DWREngine.XMLHttpRequest,
+    verb:"POST",
+    async:true,
+    paramCount:0,
+    ids:[ id ],
+    path:(overridePath) ? overridePath : DWREngine._defaultPath,
+    preHooks:(DWREngine._preHook) ? [ DWREngine._preHook ] : [],
+    postHooks:(DWREngine._postHook) ? [ DWREngine._postHook ] : [],
+    timeout:0
+  };
+  // Create an entry in the handlers map for what happens when the reply arrives
+  DWREngine._handlersMap[id] = {
+    errorHandler:DWREngine._errorHandler,
+    warningHandler:DWREngine._warningHandler,
+    callback:DWREngine._triggerNextPoll
+  };
+  // Send the data
+  DWREngine._sendData(batch);
+  DWREngine._batches[DWREngine._batches.length] = batch;
+};
+
+/**
+ * Setup an interval to kick off the next poll
+ */
+DWREngine._triggerNextPoll = function(pause) {
+  setTimeout("DWREngine._poll()", pause);
+}
 
 /**
  * @private Actually send the block of data in the batch object.
@@ -448,7 +538,7 @@ DWREngine._sendData = function(batch) {
         }
         query += qkey + "=" + qval + "&";
       }
-      query = query.substring(0, query.length - 1);
+      query += "jsessionid=" + DWREngine._httpSessionId;
 
       try {
         batch.req.open("GET", batch.path + "/plainjs/" + statsInfo + "?" + query, batch.async);
@@ -612,8 +702,8 @@ DWREngine._handleResponse = function(id, reply) {
   }
 
   // Finalize the call for IFrame transport 
-  if (DWREngine._method == DWREngine.IFrame) {
-    var responseBatch = DWREngine._batches[DWREngine._batches.length-1];	
+  var responseBatch = DWREngine._batches[DWREngine._batches.length-1];
+  if (responseBatch.method == DWREngine.IFrame) {
     // Only finalize after the last call has been handled
     if (responseBatch.map["c"+(responseBatch.map.callCount-1)+"-id"] == id) {
       DWREngine._clearUp(responseBatch);

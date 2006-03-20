@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import uk.ltd.getahead.dwr.MarshallException;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;

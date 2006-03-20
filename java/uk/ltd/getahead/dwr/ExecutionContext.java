@@ -16,6 +16,7 @@
 package uk.ltd.getahead.dwr;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -23,6 +24,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 
 /**
  * Class to enable us to access servlet parameters.
@@ -108,9 +110,25 @@ public class ExecutionContext implements WebContext
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContext#getBrowser()
      */
-    public Browser getBrowser()
+    public ScriptSession getScriptSession()
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().getBrowser()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getPage()"); //$NON-NLS-1$
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getScriptSession(java.lang.String)
+     */
+    public ScriptSession getScriptSession(String id)
+    {
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSession()"); //$NON-NLS-1$
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getScriptSessionIds()
+     */
+    public Iterator getScriptSessionIds()
+    {
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSessionIds()"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
@@ -119,6 +137,22 @@ public class ExecutionContext implements WebContext
     public Container getContainer()
     {
         throw new UnsupportedOperationException("Use WebContextFactory.get().getContainer()"); //$NON-NLS-1$
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#setScriptSessionId(java.lang.String)
+     */
+    public void setScriptSessionId(String scriptSessionId)
+    {
+        throw new UnsupportedOperationException("Use WebContextFactory.get().setPageAndSessionIds()"); //$NON-NLS-1$
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#toJavascript(java.lang.Object)
+     */
+    public OutboundVariable toJavascript(Object data) throws MarshallException
+    {
+        throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()"); //$NON-NLS-1$
     }
 
     /**

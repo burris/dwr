@@ -16,6 +16,8 @@
 package uk.ltd.getahead.dwr.dwrp;
 
 import uk.ltd.getahead.dwr.MarshallException;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 
 /**
  * An interface for converting types from a string to some other type.

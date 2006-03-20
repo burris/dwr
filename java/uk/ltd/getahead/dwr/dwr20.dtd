@@ -71,7 +71,7 @@ files and we might refer to one in another file.
 <!ATTLIST create
     creator CDATA #REQUIRED
     javascript CDATA #REQUIRED
-    scope (application|session|request|page) #IMPLIED
+    scope (application | session | script | request | page) #IMPLIED
 >
 
 <!--

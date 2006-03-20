@@ -36,6 +36,7 @@ import uk.ltd.getahead.dwr.Replies;
 import uk.ltd.getahead.dwr.dwrp.DwrpConstants;
 import uk.ltd.getahead.dwr.dwrp.DwrpHtmlJsMarshaller;
 import uk.ltd.getahead.dwr.dwrp.DwrpPlainJsMarshaller;
+import uk.ltd.getahead.dwr.util.IdGenerator;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -129,12 +130,12 @@ public class UrlProcessor
             }
             else if (pathInfo.equalsIgnoreCase(DwrpConstants.FILE_ENGINE))
             {
-                doFile(request, response, DwrpConstants.FILE_ENGINE, MimeConstants.MIME_JS);
+                doFile(request, response, DwrpConstants.FILE_ENGINE, MimeConstants.MIME_JS, true);
                 return;
             }
             else if (pathInfo.equalsIgnoreCase(DwrpConstants.FILE_UTIL))
             {
-                doFile(request, response, DwrpConstants.FILE_UTIL, MimeConstants.MIME_JS);
+                doFile(request, response, DwrpConstants.FILE_UTIL, MimeConstants.MIME_JS, false);
                 return;
             }
             else
@@ -183,11 +184,12 @@ public class UrlProcessor
      * @param response The response channel
      * @param path The path to search for, process and output
      * @param mimeType The mime type to use for this output file
+     * @param dynamic Should the script be recalculated each time?
      * @throws IOException If writing to the output fails
      */
-    protected void doFile(HttpServletRequest request, HttpServletResponse response, String path, String mimeType) throws IOException
+    protected void doFile(HttpServletRequest request, HttpServletResponse response, String path, String mimeType, boolean dynamic) throws IOException
     {
-        if (isUpToDate(request, path))
+        if (!dynamic && isUpToDate(request, path))
         {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             return;
@@ -218,6 +220,19 @@ public class UrlProcessor
                         break;
                     }
 
+                    if (dynamic)
+                    {
+                        if (line.indexOf(PARAM_HTTP_SESSIONID) != -1)
+                        {
+                            line = LocalUtil.replace(line, PARAM_HTTP_SESSIONID, request.getSession(true).getId());
+                        }
+
+                        if (line.indexOf(PARAM_SCRIPT_SESSIONID) != -1)
+                        {
+                            line = LocalUtil.replace(line, PARAM_SCRIPT_SESSIONID, generator.generateId(pageIdLength));
+                        }
+                    }
+
                     buffer.append(line);
                     buffer.append('\n');
                 }
@@ -229,7 +244,10 @@ public class UrlProcessor
                     output = JavascriptUtil.compress(output, compressionLevel);
                 }
 
-                scriptCache.put(path, output);
+                if (!dynamic)
+                {
+                    scriptCache.put(path, output);
+                }
             }
         }
 
@@ -394,6 +412,16 @@ public class UrlProcessor
     }
 
     /**
+     * The page id length
+     */
+    private int pageIdLength = 16;
+
+    /**
+     * The method by which we get new page ids
+     */
+    private IdGenerator generator = new IdGenerator();
+
+    /**
      * Do we ignore all the Last-Modified/ETags blathering?
      */
     private boolean ignoreLastModified = false;
@@ -432,6 +460,16 @@ public class UrlProcessor
      * The bean to execute remote requests and generate interfaces
      */
     private Remoter remoter = null;
+
+    /**
+     * The session id parameter that goes in engine.js
+     */
+    private static final String PARAM_HTTP_SESSIONID = "${httpSessionId}"; //$NON-NLS-1$
+
+    /**
+     * The page id parameter that goes in engine.js
+     */
+    private static final String PARAM_SCRIPT_SESSIONID = "${scriptSessionId}"; //$NON-NLS-1$
 
     /**
      * The log stream

@@ -77,6 +77,13 @@ public interface Creator
     static final String SESSION = "session"; //$NON-NLS-1$
 
     /**
+     * Script scope (tied to a id recorded in Javascript): the named reference
+     * remains available while the script variable remains stored in the
+     * browser. 
+     */
+    static final String SCRIPT = "script"; //$NON-NLS-1$
+
+    /**
      * <b>This type of scope is not currently supported by DWR</b>
      * Request scope: the named reference remains available from the
      * ServletRequest associated with the Servlet until the current request is

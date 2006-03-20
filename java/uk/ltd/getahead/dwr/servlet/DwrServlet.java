@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uk.ltd.getahead.dwr.impl.DefaultContainer;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -57,7 +58,10 @@ public class DwrServlet extends HttpServlet
             servletHelper.setServletConfig(config);
             servletHelper.setServletLoggingOutput(this);
 
-            servletHelper.initDefaultContainer();
+            DefaultContainer defaultContainer = new DefaultContainer();
+            servletHelper.configureDefaultContainer(defaultContainer);
+            servletHelper.initContainer(defaultContainer);
+
             servletHelper.initWebContextBuilder(null, null);
 
             // Load the configurators

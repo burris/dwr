@@ -23,11 +23,6 @@ package uk.ltd.getahead.dwr.dwrp;
 public interface ConversionConstants
 {
     /**
-     * Is this an instance of a broken copy of safari v2
-     */
-    public static final String BROKEN_SAFARI2 = "isBrokenSafari2"; //$NON-NLS-1$
-
-    /**
      * The name for reference types from javascript
      */
     public static final String TYPE_REFERENCE = "reference"; //$NON-NLS-1$
@@ -56,6 +51,16 @@ public interface ConversionConstants
      * Used to define the id of this call
      */
     public static final String INBOUND_KEY_ID = "id"; //$NON-NLS-1$
+
+    /**
+     * The parameter that specifies the http session identifier
+     */
+    public static final String INBOUND_KEY_HTTP_SESSIONID = "httpSessionId"; //$NON-NLS-1$
+
+    /**
+     * The parameter that specifies the script session identifier
+     */
+    public static final String INBOUND_KEY_SCRIPT_SESSIONID = "scriptSessionId"; //$NON-NLS-1$
 
     /**
      * The inbound key to define the class to be used.

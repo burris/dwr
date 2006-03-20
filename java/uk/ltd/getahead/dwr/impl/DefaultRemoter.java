@@ -62,6 +62,10 @@ public class DefaultRemoter implements Remoter
         StringBuffer buffer = new StringBuffer();
 
         buffer.append('\n');
+        buffer.append("// Provide a default path to DWREngine\n"); //$NON-NLS-1$
+        buffer.append("if (DWREngine == null) { var DWREngine = {}; }\n"); //$NON-NLS-1$
+        buffer.append("DWREngine._defaultPath = '" + actualPath + "';\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append('\n');
         buffer.append("function " + scriptName + "() { }\n"); //$NON-NLS-1$ //$NON-NLS-2$
         buffer.append(scriptName + "._path = '" + actualPath + "';\n"); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -128,7 +132,7 @@ public class DefaultRemoter implements Remoter
         StringBuffer buffer = new StringBuffer();
 
         String methodName = method.getName();
-        buffer.append(scriptName + '.' + methodName + " = function(\n"); //$NON-NLS-1$
+        buffer.append(scriptName + '.' + methodName + " = function("); //$NON-NLS-1$
         Class[] paramTypes = method.getParameterTypes();
         for (int j = 0; j < paramTypes.length; j++)
         {
@@ -198,6 +202,10 @@ public class DefaultRemoter implements Remoter
                     {
                         object = webcx.getSession().getAttribute(call.getScriptName());
                     }
+                    else if (scope.equals(Creator.SCRIPT))
+                    {
+                        object = webcx.getScriptSession().getAttribute(call.getScriptName());
+                    }
                     else if (scope.equals(Creator.REQUEST))
                     {
                         object = webcx.getHttpServletRequest().getAttribute(call.getScriptName());
@@ -219,6 +227,10 @@ public class DefaultRemoter implements Remoter
                     else if (scope.equals(Creator.SESSION))
                     {
                         webcx.getSession().setAttribute(call.getScriptName(), object);
+                    }
+                    else if (scope.equals(Creator.SCRIPT))
+                    {
+                        webcx.getScriptSession().setAttribute(call.getScriptName(), object);
                     }
                     else if (scope.equals(Creator.REQUEST))
                     {

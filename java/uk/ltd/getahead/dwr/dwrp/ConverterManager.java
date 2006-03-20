@@ -18,6 +18,8 @@ package uk.ltd.getahead.dwr.dwrp;
 import java.util.Map;
 
 import uk.ltd.getahead.dwr.MarshallException;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.util.TypeHintContext;
 
 /**

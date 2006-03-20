@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.dwrp;
+package uk.ltd.getahead.dwr;
 
 /**
  * A simple data container for 2 strings that comprise information about how a

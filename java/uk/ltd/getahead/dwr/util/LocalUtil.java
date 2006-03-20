@@ -386,65 +386,65 @@ public final class LocalUtil
             }
         }
 
-        value = value.trim();
+        String trimValue = value.trim();
 
         if (paramType == Boolean.class || paramType == Boolean.TYPE)
         {
-            return Boolean.valueOf(value);
+            return Boolean.valueOf(trimValue);
         }
 
         if (paramType == Integer.class || paramType == Integer.TYPE)
         {
-            if (value.length() == 0)
+            if (trimValue.length() == 0)
             {
                 return new Integer(0);
             }
-            return Integer.valueOf(value);
+            return Integer.valueOf(trimValue);
         }
 
         if (paramType == Short.class || paramType == Short.TYPE)
         {
-            if (value.length() == 0)
+            if (trimValue.length() == 0)
             {
                 return new Short((short) 0);
             }
-            return Short.valueOf(value);
+            return Short.valueOf(trimValue);
         }
 
         if (paramType == Byte.class || paramType == Byte.TYPE)
         {
-            if (value.length() == 0)
+            if (trimValue.length() == 0)
             {
                 return new Byte((byte) 0);
             }
-            return Byte.valueOf(value);
+            return Byte.valueOf(trimValue);
         }
 
         if (paramType == Long.class || paramType == Long.TYPE)
         {
-            if (value.length() == 0)
+            if (trimValue.length() == 0)
             {
                 return new Long(0);
             }
-            return Long.valueOf(value);
+            return Long.valueOf(trimValue);
         }
 
         if (paramType == Float.class || paramType == Float.TYPE)
         {
-            if (value.length() == 0)
+            if (trimValue.length() == 0)
             {
                 return new Float(0);
             }
-            return Float.valueOf(value);
+            return Float.valueOf(trimValue);
         }
 
         if (paramType == Double.class || paramType == Double.TYPE)
         {
-            if (value.length() == 0)
+            if (trimValue.length() == 0)
             {
                 return new Double(0);
             }
-            return Double.valueOf(value);
+            return Double.valueOf(trimValue);
         }
 
         throw new IllegalArgumentException("Unsupported conversion type: " + paramType.getName()); //$NON-NLS-1$

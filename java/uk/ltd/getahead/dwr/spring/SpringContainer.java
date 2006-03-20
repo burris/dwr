@@ -15,9 +15,11 @@
  */
 package uk.ltd.getahead.dwr.spring;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -25,6 +27,8 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 import uk.ltd.getahead.dwr.Container;
+import uk.ltd.getahead.dwr.impl.DefaultContainer;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A <code>Container</code> implementation that looks up all beans from the
@@ -33,7 +37,7 @@ import uk.ltd.getahead.dwr.Container;
  * @author Bram Smeets
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class SpringContainer implements Container, BeanFactoryAware
+public class SpringContainer extends DefaultContainer implements Container, BeanFactoryAware
 {
     /* (non-Javadoc)
      * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
@@ -48,7 +52,13 @@ public class SpringContainer implements Container, BeanFactoryAware
      */
     public Object getBean(String id)
     {
-        return beanFactory.getBean(id);
+        Object reply = super.getBean(id);
+        if (reply == null)
+        {
+            reply = beanFactory.getBean(id);
+        }
+
+        return reply;
     }
 
     /* (non-Javadoc)
@@ -56,19 +66,32 @@ public class SpringContainer implements Container, BeanFactoryAware
      */
     public Collection getBeanNames()
     {
-        String[] list = new String[0];
+        List names = new ArrayList();
 
+        // Snarf the beans from Spring
         if (beanFactory instanceof ListableBeanFactory)
         {
             ListableBeanFactory listable = (ListableBeanFactory) beanFactory;
-            list = listable.getBeanDefinitionNames();
+            names.addAll(Arrays.asList(listable.getBeanDefinitionNames()));
+        }
+        else
+        {
+            log.warn("List of beanNames does not include Spring beans since your BeanFactory is not a ListableBeanFactory."); //$NON-NLS-1$
         }
 
-        return Collections.unmodifiableCollection((Arrays.asList(list)));
+        // And append the DWR ones
+        names.addAll(super.getBeanNames());
+
+        return Collections.unmodifiableCollection(names);
     }
 
     /**
      * The Spring BeanFactory that we read from
      */
-    private BeanFactory beanFactory;
+    protected BeanFactory beanFactory;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(SpringContainer.class);
 }

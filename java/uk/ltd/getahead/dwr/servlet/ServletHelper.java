@@ -40,6 +40,8 @@ import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
 import uk.ltd.getahead.dwr.Remoter;
+import uk.ltd.getahead.dwr.ScriptSessionManager;
+import uk.ltd.getahead.dwr.ServerLoadMonitor;
 import uk.ltd.getahead.dwr.WebContextBuilder;
 import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.dwrp.ConverterManager;
@@ -52,6 +54,8 @@ import uk.ltd.getahead.dwr.impl.DefaultContainer;
 import uk.ltd.getahead.dwr.impl.DefaultCreatorManager;
 import uk.ltd.getahead.dwr.impl.DefaultDebugPageGenerator;
 import uk.ltd.getahead.dwr.impl.DefaultRemoter;
+import uk.ltd.getahead.dwr.impl.DefaultScriptSessionManager;
+import uk.ltd.getahead.dwr.impl.DefaultServerLoadMonitor;
 import uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder;
 import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -88,12 +92,24 @@ public class ServletHelper
      * Push the default beans into a new copy of the default Container.
      * @throws InstantiationException If a bean can not be instansiated
      * @throws IllegalAccessException If a bean can not be accessed
+     * @deprecated It's probably best to do this in parts
      */
     public void initDefaultContainer() throws InstantiationException, IllegalAccessException
     {
         // Load the factory with implementation information
         DefaultContainer defaultContainer = new DefaultContainer();
+        configureDefaultContainer(defaultContainer);
+        initContainer(defaultContainer);
+    }
 
+    /**
+     * Take a DefaultContainer and setup the default beans
+     * @param defaultContainer The container to configure
+     * @throws InstantiationException If we can't instantiate a bean
+     * @throws IllegalAccessException If we have access problems creating a bean
+     */
+    public void configureDefaultContainer(DefaultContainer defaultContainer) throws InstantiationException, IllegalAccessException
+    {
         defaultContainer.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
         defaultContainer.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
         defaultContainer.addParameter(CreatorManager.class.getName(), DefaultCreatorManager.class.getName());
@@ -104,6 +120,8 @@ public class ServletHelper
         defaultContainer.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
         defaultContainer.addParameter(DwrpHtmlJsMarshaller.class.getName(), DwrpHtmlJsMarshaller.class.getName());
         defaultContainer.addParameter(DwrpPlainJsMarshaller.class.getName(), DwrpPlainJsMarshaller.class.getName());
+        defaultContainer.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
+        defaultContainer.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
 
         defaultContainer.addParameter("debug", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         defaultContainer.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -116,9 +134,8 @@ public class ServletHelper
             String value = servletConfig.getInitParameter(name);
             defaultContainer.addParameter(name, value);
         }
-        defaultContainer.configurationFinished();
 
-        initContainer(defaultContainer);
+        defaultContainer.configurationFinished();
     }
 
     /**
@@ -433,7 +450,7 @@ public class ServletHelper
     private ServletConfig servletConfig;
 
     /**
-     * The real ServletContext which we fixh out of Spring internals
+     * The real ServletContext
      */
     protected ServletContext servletContext;
 

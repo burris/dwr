@@ -1,13 +1,16 @@
 
-url re-writing not supported
-	I ended up having to extract DWREngine._sendData into a jsp and changing the
-	call to be thus:
-		batch.req.open("POST", batch.path + "/exec/" + statsInfo + "<html:rewrite href=''/>", true);
-	so that the <html:rewrite would add the jsessionid
+server side dom objects that are auto-inserted – c.f. Oracle ADF. See Mats posting
 
-everything.js
-	A script that gets all the bits in one lump
-	Do we need a dojo.require thing?
+accessibility
+
+comet
+
+struts
+
+jsf
+
+onbackbutton, onforwardbutton
+
 
 Multiple call issue
 	When calling the same function 4 times consecutively passing a different
@@ -24,10 +27,6 @@ Multiple call issue
 	LabBean.getMaterials(displayMaterialItems, 2);
 
 ie7 testing
-
-iframe when activex is off
-	auto-fallback from xhr to iframe
-		DWR works fine unless security is really crazy
 
 problems with oc4j??
 	This is a berif description and I will send you my code soon.

@@ -22,13 +22,14 @@ import java.util.List;
 
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.Calls;
-import uk.ltd.getahead.dwr.ClientScript;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.HttpRequest;
 import uk.ltd.getahead.dwr.HttpResponse;
 import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.Marshaller;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.Replies;
 import uk.ltd.getahead.dwr.Reply;
 import uk.ltd.getahead.dwr.WebContextFactory;
@@ -178,7 +179,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
         if (available.isEmpty())
         {
             String name = call.getScriptName() + '.' + call.getMethodName();
-            throw new IllegalArgumentException(Messages.getString("ExecuteQuery.UnknownMethod", name)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.UnknownMethod", name)); //$NON-NLS-1$
         }
 
         // At the moment we are just going to take the first match, for a
@@ -201,11 +202,10 @@ public class DwrpPlainJsMarshaller implements Marshaller
         String prefix = getOutboundLinePrefix();
 
         // Are there any outstanding reverse-ajax scripts to be passed on?
-        List scripts = WebContextFactory.get().getBrowser().removeAllScripts();
+        List scripts = WebContextFactory.get().getScriptSession().removeAllScripts();
         for (Iterator it = scripts.iterator(); it.hasNext();)
         {
-            ClientScript script = (ClientScript) it.next();
-            buffer.append(script.getScript());
+            buffer.append((String) it.next());
             buffer.append('\n');
         }
 

@@ -13,32 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.dwrp;
+package uk.ltd.getahead.dwr.remote;
 
-import uk.ltd.getahead.dwr.Call;
+import uk.ltd.getahead.dwr.ServerLoadMonitor;
+import uk.ltd.getahead.dwr.WebContextFactory;
 
 /**
- * Call is a POJO to encapsulate the information required to make a single java
- * call, including the result of the call (either returned data or exception).
+ * A collection of system level actions that can be called remotely.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class CallWithContext extends Call
+public class DwrSystem
 {
     /**
-     * @param inctx The inctx to set.
+     * The polling system needs to be able to wait for something to happen
+     * @return How long should the client wait until it next polls
      */
-    public void setInboundContext(InboundContext inctx)
+    public int timeToNextPoll()
     {
-        this.inctx = inctx;
+        ServerLoadMonitor monitor = (ServerLoadMonitor) WebContextFactory.get().getContainer().getBean(ServerLoadMonitor.class.getName());
+        return monitor.timeToNextPoll();
     }
-
-    /**
-     * @return Returns the inctx.
-     */
-    public InboundContext getInboundContext()
-    {
-        return inctx;
-    }
-
-    private InboundContext inctx = new InboundContext();
 }

@@ -16,9 +16,9 @@
 package uk.ltd.getahead.dwr.compat;
 
 import uk.ltd.getahead.dwr.MarshallException;
+import uk.ltd.getahead.dwr.OutboundContext;
+import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.dwrp.Converter;
-import uk.ltd.getahead.dwr.dwrp.OutboundContext;
-import uk.ltd.getahead.dwr.dwrp.OutboundVariable;
 
 /**
  * A way to migrate from the DWRv1.x Converter style to something in the future.

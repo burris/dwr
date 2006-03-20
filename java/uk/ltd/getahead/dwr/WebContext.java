@@ -16,6 +16,7 @@
 package uk.ltd.getahead.dwr;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
 /**
  * Class to enable us to access servlet parameters.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -31,17 +33,31 @@ import javax.servlet.http.HttpSession;
 public interface WebContext
 {
     /**
-     * Get a browser object that we can use to identify this user across
-     * separate requests.
+     * Get the script session that represents the currently viewed page in the
+     * same way that an HttpSession represents a cookie.
      * @return A browser object for this user
      */
-    Browser getBrowser();
+    ScriptSession getScriptSession();
 
     /**
-     * Accessor for the IoC container.
-     * @return The IoC container that created the interface implementations.
+     * Get the script session of another page (and probably another user) on
+     * this server. This session will probably not belong to the current user
+     * so take care what you do with it.
+     * @param id The unique identifier for the other page
+     * @return A browser object for this user
      */
-    Container getContainer();
+    ScriptSession getScriptSession(String id);
+
+    /**
+     * Get a list of all the ScriptSessions know to this server at the given
+     * time.
+     * Note that the list of known sessions is continually changing so it is
+     * possible that the list will be out of date by the time it is used. For
+     * this reason you should check that getScriptSession(String id) returns
+     * something non null.
+     * @return An iterator over all the ScriptSessions.
+     */
+    Iterator getScriptSessionIds();
 
     /**
      * Returns the current session associated with this request, or if the
@@ -87,7 +103,25 @@ public interface WebContext
     HttpServletResponse getHttpServletResponse();
 
     /**
-     * Forward a request to a given URL and catch the data written to it
+     * Accessor for the IoC container.
+     * @return The IoC container that created the interface implementations.
+     */
+    Container getContainer();
+
+    /**
+     * An attribute used by {@link WebContext#forwardToString(String)} to inform
+     * anyone that wants to know that this is a request from DWR.
+     */
+    public static final String ATTRIBUTE_DWR = "uk.ltd.getahead.dwr"; //$NON-NLS-1$
+
+    /**
+     * Forward a request to a given URL and catch the data written to it.
+     * It is possible to distinguish requests that arrive normally and requests
+     * that come from a DWR forwardToString() by the presence of a request
+     * attribute. Before the request is forwarded, DWR will call:
+     * <pre>
+     * request.setAttribute(WebContext.ATTRIBUTE_DWR, Boolean.TRUE);
+     * </pre>
      * @param url The URL to forward to
      * @return The text that results from forwarding to the given URL
      * @throws IOException if the target resource throws this exception
@@ -97,8 +131,24 @@ public interface WebContext
     String forwardToString(String url) throws ServletException, IOException;
 
     /**
+     * Attempt to convert from a Java object to a Javascript expression for
+     * passing to eval in a browser.
+     * @param data The object to convert
+     * @return An outbound variable (contains an init code and an assign code)
+     * @throws MarshallException
+     */
+    OutboundVariable toJavascript(Object data) throws MarshallException;
+
+    /**
      * Fish the version number out of the dwr.properties file.
      * @return The current version number.
      */
     String getVersion();
+
+    /**
+     * For system use only: This method allows the system to fill in the session
+     * id and page id when they are discovered.
+     * @param scriptSessionId The session id passed in by the browser
+     */
+    void setScriptSessionId(String scriptSessionId);
 }

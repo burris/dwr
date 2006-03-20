@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
@@ -44,10 +45,22 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
      */
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException
     {
-        SpringContainer container = new SpringContainer();
-        container.setBeanFactory(beanFactory);
+        try
+        {
+            SpringContainer container = new SpringContainer();
+            container.setBeanFactory(beanFactory);
 
-        servletHelper.initContainer(container);
+            servletHelper.configureDefaultContainer(container);
+            servletHelper.initContainer(container);
+        }
+        catch (InstantiationException ex)
+        {
+            throw new BeanCreationException("Failed to instansiate", ex); //$NON-NLS-1$
+        }
+        catch (IllegalAccessException ex)
+        {
+            throw new BeanCreationException("Access error", ex); //$NON-NLS-1$
+        }
     }
 
     /**
@@ -82,9 +95,10 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
             servletHelper.setServletConfig(config);
             servletHelper.initWebContextBuilder(null, null);
 
+            // Load the configurators
             servletHelper.addSystemConfigurator();
-
             servletHelper.addConfiguratorsFromInitParams();
+
             servletHelper.configure();
         }
         catch (Exception ex)
@@ -101,8 +115,8 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
     }
 
     /* (non-Javadoc)
-    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-    */
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException
     {
         doPost(req, resp);
