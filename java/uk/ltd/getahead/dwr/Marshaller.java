@@ -15,6 +15,11 @@
  */
 package uk.ltd.getahead.dwr;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * A Marshaller is responsible for all the on-the-wire communication between
  * DWR on the server and the HTTP channel. DWREngine does the corresponding
@@ -31,15 +36,16 @@ public interface Marshaller
      * @throws SecurityException If the requests are not allowed
      * @throws MarshallException If the data can not be understood.
      */
-    Calls marshallInbound(HttpRequest request) throws SecurityException, MarshallException;
+    Calls marshallInbound(HttpServletRequest request) throws SecurityException, MarshallException;
 
     /**
      * Marshall the return values from executing this batch of requests.
-     * @param replies
-     * @return An Ajax response, XML, JSON, Javascript, etc.
+     * @param replies The objects to convert into a reply
+     * @param response An Ajax response, XML, JSON, Javascript, etc.
      * @throws MarshallException If the marshallinng process fails
+     * @throws IOException If the connection breaks
      */
-    HttpResponse marshallOutbound(Replies replies) throws MarshallException;
+    void marshallOutbound(Replies replies, HttpServletResponse response) throws MarshallException, IOException;
 
     /**
      * Check if we can coerce the given type

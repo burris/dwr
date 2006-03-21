@@ -15,17 +15,20 @@
  */
 package uk.ltd.getahead.dwr.dwrp;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
-import uk.ltd.getahead.dwr.HttpRequest;
-import uk.ltd.getahead.dwr.HttpResponse;
 import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.Marshaller;
 import uk.ltd.getahead.dwr.OutboundContext;
@@ -47,7 +50,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Marshaller#marshallInbound(uk.ltd.getahead.dwr.HttpRequest)
      */
-    public Calls marshallInbound(HttpRequest request) throws MarshallException
+    public Calls marshallInbound(HttpServletRequest request) throws MarshallException
     {
         RequestParser requestParser = new RequestParser();
         CallsWithContext calls = requestParser.parseRequest(request);
@@ -188,15 +191,16 @@ public class DwrpPlainJsMarshaller implements Marshaller
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Marshaller#marshallOutbound(uk.ltd.getahead.dwr.Replies)
+     * @see uk.ltd.getahead.dwr.Marshaller#marshallOutbound(uk.ltd.getahead.dwr.Replies, javax.servlet.http.HttpServletResponse)
      */
-    public HttpResponse marshallOutbound(final Replies replies) throws MarshallException
+    public void marshallOutbound(Replies replies, HttpServletResponse response) throws MarshallException, IOException
     {
         // We build the answer up in a StringBuffer because that makes is easier
         // to debug, and because that's only what the compiler does anyway.
-        final StringBuffer buffer = new StringBuffer();
+        response.setContentType(MimeConstants.MIME_PLAIN);
+        PrintWriter out = response.getWriter();
 
-        buffer.append(getOutboundScriptPrefix());
+        out.print(getOutboundScriptPrefix());
 
         // if we are in html (iframe mode) we need to direct script to the parent
         String prefix = getOutboundLinePrefix();
@@ -205,8 +209,8 @@ public class DwrpPlainJsMarshaller implements Marshaller
         List scripts = WebContextFactory.get().getScriptSession().removeAllScripts();
         for (Iterator it = scripts.iterator(); it.hasNext();)
         {
-            buffer.append((String) it.next());
-            buffer.append('\n');
+            out.print((String) it.next());
+            out.print('\n');
         }
 
         OutboundContext converted = new OutboundContext();
@@ -220,13 +224,13 @@ public class DwrpPlainJsMarshaller implements Marshaller
                 Throwable ex = reply.getThrowable();
                 OutboundVariable ov = convertException(ex, converted);
 
-                buffer.append(ov.getInitCode());
-                buffer.append(prefix);
-                buffer.append("DWREngine._handleServerError('"); //$NON-NLS-1$
-                buffer.append(reply.getId());
-                buffer.append("', "); //$NON-NLS-1$
-                buffer.append(ov.getAssignCode());
-                buffer.append(");\n"); //$NON-NLS-1$
+                out.print(ov.getInitCode());
+                out.print(prefix);
+                out.print("DWREngine._handleServerError('"); //$NON-NLS-1$
+                out.print(reply.getId());
+                out.print("', "); //$NON-NLS-1$
+                out.print(ov.getAssignCode());
+                out.print(");\n"); //$NON-NLS-1$
 
                 log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -235,33 +239,19 @@ public class DwrpPlainJsMarshaller implements Marshaller
                 Object data = reply.getReply();
                 OutboundVariable ov = converterManager.convertOutbound(data, converted);
 
-                buffer.append(ov.getInitCode());
-                buffer.append(prefix);
-                buffer.append("DWREngine._handleResponse('"); //$NON-NLS-1$
-                buffer.append(reply.getId());
-                buffer.append("', "); //$NON-NLS-1$
-                buffer.append(ov.getAssignCode());
-                buffer.append(");\n"); //$NON-NLS-1$
+                out.print(ov.getInitCode());
+                out.print(prefix);
+                out.print("DWREngine._handleResponse('"); //$NON-NLS-1$
+                out.print(reply.getId());
+                out.print("', "); //$NON-NLS-1$
+                out.print(ov.getAssignCode());
+                out.print(");\n"); //$NON-NLS-1$
             }
         }
 
-        buffer.append(getOutboundScriptSuffix());
+        out.print(getOutboundScriptSuffix());
 
-        final String replyString = buffer.toString();
-        log.debug(replyString);
-
-        return new HttpResponse()
-        {
-            public String getMimeType()
-            {
-                return getOutboundMimeType();
-            }
-
-            public byte[] getBody()
-            {
-                return replyString.getBytes();
-            }
-        };
+        // log.debug(replyString);
     }
 
     /**

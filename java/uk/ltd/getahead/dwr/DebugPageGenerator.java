@@ -30,7 +30,7 @@ public interface DebugPageGenerator
      * @return An index page in HTML
      * @throws SecurityException If the pages are not accessible
      */
-    HttpResponse generateIndexPage(String root) throws SecurityException;
+    String generateIndexPage(String root) throws SecurityException;
 
     /**
      * Generate some HTML that represents a test page for a given script
@@ -39,7 +39,7 @@ public interface DebugPageGenerator
      * @return A test page in HTML
      * @throws SecurityException If the pages are not accessible
      */
-    HttpResponse generateTestPage(String root, String scriptName) throws SecurityException;
+    String generateTestPage(String root, String scriptName) throws SecurityException;
 
     /**
      * For a given remoted class, generate a URL that will retrieve the

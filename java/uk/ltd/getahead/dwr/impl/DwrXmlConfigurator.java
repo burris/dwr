@@ -250,7 +250,7 @@ public class DwrXmlConfigurator implements Configurator
         }
         catch (NoClassDefFoundError ex)
         {
-            log.info("Missing class for convertor '" + type + "'. (match='" + match + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Convertor '" + type + "' not loaded due to NoClassDefFoundError. (match='" + match + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (Exception ex)
         {
@@ -279,7 +279,7 @@ public class DwrXmlConfigurator implements Configurator
         }
         catch (NoClassDefFoundError ex)
         {
-            log.info("Missing class for creator '" + type + "'. (javascript='" + javascript + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Creator '" + type + "' not loaded due to NoClassDefFoundError. (javascript='" + javascript + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         catch (Exception ex)
         {

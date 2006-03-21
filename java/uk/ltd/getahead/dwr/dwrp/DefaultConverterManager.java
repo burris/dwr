@@ -54,7 +54,7 @@ public class DefaultConverterManager implements ConverterManager
         Class clazz = (Class) converterTypes.get(type);
         if (clazz == null)
         {
-            log.info("Can't marshall " + match + " because converter '" + type + "' is not available. The converter definition may be missing, or required element may be missing from the CLASSPATH"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Type '" + match + "' is not convertable due to missing converter '" + type + "'. This is only an problem if you wanted to use it."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return;
         }
 

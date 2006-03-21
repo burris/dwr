@@ -29,7 +29,7 @@ public interface Remoter
      * @return An interface javascript
      * @throws SecurityException
      */
-    HttpResponse generateInterfaceScript(String scriptName, String path) throws SecurityException;
+    String generateInterfaceScript(String scriptName, String path) throws SecurityException;
 
     /**
      * Execute a set of remote calls and generate set of reply data for later

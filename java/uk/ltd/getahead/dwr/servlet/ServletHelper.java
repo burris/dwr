@@ -127,12 +127,15 @@ public class ServletHelper
         defaultContainer.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         defaultContainer.addParameter("scriptCompressed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        Enumeration en = servletConfig.getInitParameterNames();
-        while (en.hasMoreElements())
+        if (servletConfig != null)
         {
-            String name = (String) en.nextElement();
-            String value = servletConfig.getInitParameter(name);
-            defaultContainer.addParameter(name, value);
+            Enumeration en = servletConfig.getInitParameterNames();
+            while (en.hasMoreElements())
+            {
+                String name = (String) en.nextElement();
+                String value = servletConfig.getInitParameter(name);
+                defaultContainer.addParameter(name, value);
+            }
         }
 
         defaultContainer.configurationFinished();

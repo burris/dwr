@@ -25,7 +25,6 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import uk.ltd.getahead.dwr.HttpRequest;
 import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.WebContext;
 import uk.ltd.getahead.dwr.WebContextFactory;
@@ -46,7 +45,7 @@ public class RequestParser
      * @return A parsed set of calls
      * @throws MarshallException If reading from the request body stream fails
      */
-    public CallsWithContext parseRequest(HttpRequest req) throws MarshallException
+    public CallsWithContext parseRequest(HttpServletRequest req) throws MarshallException
     {
         try
         {
@@ -74,7 +73,7 @@ public class RequestParser
      * @return The equivalent of HttpServletRequest.getParameterMap() for now
      * @throws IOException If reading from the request body stream fails
      */
-    private Map parsePost(HttpRequest req) throws IOException
+    private Map parsePost(HttpServletRequest req) throws IOException
     {
         Map paramMap = new HashMap();
 
@@ -189,10 +188,10 @@ public class RequestParser
      * @return Simply HttpRequest.getParameterMap() for now
      * @throws IOException If the parsing fails
      */
-    private Map parseGet(HttpRequest req) throws IOException
+    private Map parseGet(HttpServletRequest req) throws IOException
     {
         Map convertedMap = new HashMap();
-        Map paramMap = req.getParameters();
+        Map paramMap = req.getParameterMap();
 
         for (Iterator it = paramMap.keySet().iterator(); it.hasNext();)
         {

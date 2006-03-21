@@ -23,14 +23,12 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
-import uk.ltd.getahead.dwr.HttpResponse;
 import uk.ltd.getahead.dwr.Remoter;
 import uk.ltd.getahead.dwr.Replies;
 import uk.ltd.getahead.dwr.dwrp.DwrpConstants;
@@ -83,7 +81,6 @@ public class UrlProcessor
             }
 
             String root = contextPath + servletPath;
-            HttpResponse reply;
 
             // NOTE: I'm not totally happy with the if statment, there doesn't
             // appear to be logic to it, just hack-till-its-not-broken which feels
@@ -93,11 +90,15 @@ public class UrlProcessor
                 pathInfo.equals(contextPath))
             {
                 response.sendRedirect(contextPath + servletPath + DwrpConstants.FILE_INDEX);
-                return;
             }
             else if (pathInfo.startsWith(DwrpConstants.FILE_INDEX))
             {
-                reply = debugPageGenerator.generateIndexPage(root);
+                String page = debugPageGenerator.generateIndexPage(root);
+
+                response.setContentType(MimeConstants.MIME_PLAIN);
+                PrintWriter out = response.getWriter();
+                out.print(page);
+                response.flushBuffer();
             }
             else if (pathInfo.startsWith(DwrpConstants.PATH_TEST))
             {
@@ -105,7 +106,12 @@ public class UrlProcessor
                 scriptName = LocalUtil.replace(scriptName, DwrpConstants.PATH_TEST, ""); //$NON-NLS-1$
                 scriptName = LocalUtil.replace(scriptName, DwrpConstants.PATH_ROOT, ""); //$NON-NLS-1$
 
-                reply = debugPageGenerator.generateTestPage(root, scriptName);
+                String page = debugPageGenerator.generateTestPage(root, scriptName);
+
+                response.setContentType(MimeConstants.MIME_PLAIN);
+                PrintWriter out = response.getWriter();
+                out.print(page);
+                response.flushBuffer();
             }
             else if (pathInfo.startsWith(DwrpConstants.PATH_INTERFACE))
             {
@@ -114,41 +120,41 @@ public class UrlProcessor
                 scriptName = LocalUtil.replace(scriptName, DwrpConstants.EXTENSION_JS, ""); //$NON-NLS-1$
                 String path = contextPath + servletPath;
 
-                reply = remoter.generateInterfaceScript(scriptName, path);
+                String script = remoter.generateInterfaceScript(scriptName, path);
+
+                // Officially we should use MimeConstants.MIME_JS, but if we cheat and
+                // use MimeConstants.MIME_PLAIN then it will be easier to read in a
+                // browser window, and will still work just fine.
+                response.setContentType(MimeConstants.MIME_PLAIN);
+                PrintWriter out = response.getWriter();
+                out.print(script);
+                response.flushBuffer();
             }
             else if (pathInfo.startsWith(DwrpConstants.PATH_PLAINJS))
             {
-                Calls calls = plainJsMarshaller.marshallInbound(new ServletHttpRequest(request));
+                Calls calls = plainJsMarshaller.marshallInbound(request);
                 Replies replies = remoter.execute(calls);
-                reply = plainJsMarshaller.marshallOutbound(replies);
+                plainJsMarshaller.marshallOutbound(replies, response);
             }
             else if (pathInfo.startsWith(DwrpConstants.PATH_HTMLJS))
             {
-                Calls calls = htmlJsMarshaller.marshallInbound(new ServletHttpRequest(request));
+                Calls calls = htmlJsMarshaller.marshallInbound(request);
                 Replies replies = remoter.execute(calls);
-                reply = htmlJsMarshaller.marshallOutbound(replies);
+                htmlJsMarshaller.marshallOutbound(replies, response);
             }
             else if (pathInfo.equalsIgnoreCase(DwrpConstants.FILE_ENGINE))
             {
                 doFile(request, response, DwrpConstants.FILE_ENGINE, MimeConstants.MIME_JS, true);
-                return;
             }
             else if (pathInfo.equalsIgnoreCase(DwrpConstants.FILE_UTIL))
             {
                 doFile(request, response, DwrpConstants.FILE_UTIL, MimeConstants.MIME_JS, false);
-                return;
             }
             else
             {
                 log.warn("Page not found (" + pathInfo + "). In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$ //$NON-NLS-2$
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
             }
-
-            response.setContentType(reply.getMimeType());
-            ServletOutputStream out = response.getOutputStream();
-            out.write(reply.getBody());
-            out.flush();
         }
         catch (Exception ex)
         {

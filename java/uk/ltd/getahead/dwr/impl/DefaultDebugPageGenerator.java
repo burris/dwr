@@ -32,14 +32,12 @@ import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
-import uk.ltd.getahead.dwr.HttpResponse;
 import uk.ltd.getahead.dwr.dwrp.ConverterManager;
 import uk.ltd.getahead.dwr.dwrp.DwrpConstants;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
 import uk.ltd.getahead.dwr.util.Logger;
 import uk.ltd.getahead.dwr.util.Messages;
-import uk.ltd.getahead.dwr.util.MimeConstants;
 
 /**
  * A default implementation of TestPageGenerator
@@ -50,7 +48,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.DebugPageGenerator#generateIndexPage(java.lang.String)
      */
-    public HttpResponse generateIndexPage(final String root) throws SecurityException
+    public String generateIndexPage(final String root) throws SecurityException
     {
         if (!creatorManager.isDebug())
         {
@@ -84,13 +82,13 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         buffer.append("</body></html>\n"); //$NON-NLS-1$
 
-        return new DefaultHttpResponse(buffer.toString(), MimeConstants.MIME_HTML);
+        return buffer.toString();
     }
 
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.DebugPageGenerator#generateTestPage(java.lang.String, java.lang.String, java.lang.String)
      */
-    public HttpResponse generateTestPage(final String root, final String scriptName) throws SecurityException
+    public String generateTestPage(final String root, final String scriptName) throws SecurityException
     {
         if (!creatorManager.isDebug())
         {
@@ -351,7 +349,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         buffer.append("</body></html>\n"); //$NON-NLS-1$
 
-        return new DefaultHttpResponse(buffer.toString(), MimeConstants.MIME_HTML);
+        return buffer.toString();
     }
 
     /* (non-Javadoc)
