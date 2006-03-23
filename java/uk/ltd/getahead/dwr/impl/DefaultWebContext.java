@@ -65,9 +65,18 @@ public class DefaultWebContext implements WebContext
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContext#setScriptSessionId(java.lang.String)
      */
-    public void setScriptSessionId(String scriptSessionId)
+    public void setCurrentPageInformation(String page, String scriptSessionId)
     {
         this.scriptSessionId = scriptSessionId;
+        this.page = page;
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getCurrentPage()
+     */
+    public String getCurrentPage()
+    {
+        return page;
     }
 
     /* (non-Javadoc)
@@ -75,23 +84,23 @@ public class DefaultWebContext implements WebContext
      */
     public ScriptSession getScriptSession()
     {
-        return getScriptSessionManager().getScriptSession(scriptSessionId);
+        return getScriptSessionManager().getScriptSession(page, scriptSessionId);
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.WebContext#getScriptSession(java.lang.String)
+     * @see uk.ltd.getahead.dwr.WebContext#getScriptSessionsByPage(java.lang.String)
      */
-    public ScriptSession getScriptSession(String id)
+    public Iterator getScriptSessionsByPage(String otherPage)
     {
-        return getScriptSessionManager().getScriptSession(id);
+        return getScriptSessionManager().getScriptSessionsByPage(otherPage);
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.WebContext#getScriptSessionIds()
+     * @see uk.ltd.getahead.dwr.WebContext#getAllScriptSessions()
      */
-    public Iterator getScriptSessionIds()
+    public Iterator getAllScriptSessions()
     {
-        return getScriptSessionManager().getScriptSessionIds();
+        return getScriptSessionManager().getAllScriptSessions();
     }
 
     /* (non-Javadoc)
@@ -261,11 +270,34 @@ public class DefaultWebContext implements WebContext
         return converterManager;
     }
 
+    /**
+     * The unique ID (like a session ID) assigned to the current page
+     */
     private String scriptSessionId = null;
 
+    /**
+     * The URL of the current page
+     */
+    private String page = null;
+
+    /**
+     * The HttpServletRequest associated with the current request
+     */
     private HttpServletRequest request = null;
+
+    /**
+     * The HttpServletResponse associated with the current request
+     */
     private HttpServletResponse response = null;
+
+    /**
+     * The ServletConfig associated with the current request
+     */
     private ServletConfig config = null;
+
+    /**
+     * The ServletContext associated with the current request
+     */
     private ServletContext context = null;
 
     private Container container = null;

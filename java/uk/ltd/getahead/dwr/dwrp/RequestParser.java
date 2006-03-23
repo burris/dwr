@@ -270,8 +270,10 @@ public class RequestParser
 
         String scriptSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
 
+        String page = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_PAGE);
+
         WebContext webContext = WebContextFactory.get();
-        webContext.setScriptSessionId(scriptSessionId);
+        webContext.setCurrentPageInformation(page, scriptSessionId);
 
         // Remaining parameters get put into the request for later consumption
         if (paramMap.size() != 0)

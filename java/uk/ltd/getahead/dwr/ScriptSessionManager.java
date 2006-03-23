@@ -32,15 +32,24 @@ public interface ScriptSessionManager
      * something non null.
      * @return An iterator over the currently known sessions, by id
      */
-    Iterator getScriptSessionIds();
+    Iterator getAllScriptSessions();
 
     /**
      * For a given script session id, either create a new ScriptSession object
      * or retrieve an existing one if one exists.
+     * @param url The URL including 'http://', up to (but not including) '?' or '#' 
+     * @return A ScriptSession.
+     */
+    Iterator getScriptSessionsByPage(String url);
+
+    /**
+     * For a given script session id, either create a new ScriptSession object
+     * or retrieve an existing one if one exists.
+     * @param url The URL including 'http://', up to (but not including) '?' or '#' 
      * @param id The id to get a ScriptSession object for
      * @return A ScriptSession.
      */
-    ScriptSession getScriptSession(String id);
+    ScriptSession getScriptSession(String url, String id);
 
     /**
      * Accessor for the time (in milliseconds) when unused ScriptSessions will expire

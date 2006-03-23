@@ -16,22 +16,18 @@
 package uk.ltd.getahead.dwr;
 
 /**
- * Polling or Comet style interactive web applications require something to
- * monitor high levels of server load to ensure that
+ * While a Marshaller is processing a request it can register a ScriptConduit
+ * with the ScriptSession to say - pass scripts straight to me and bypass the
+ * temporary storage area.
+ * This interface allows this to happen.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public interface ServerLoadMonitor
+public interface ScriptConduit
 {
     /**
-     * Controller for poll times.
-     * @return How long should this client wait until it next polls?
+     * Add a script to the list waiting for remote execution.
+     * The version automatically wraps the string in a ClientScript object.
+     * @param script The script to execute
      */
-    int timeToNextPoll();
-
-    /**
-     * How long should we hold up a client request in case some more scripts
-     * come in.
-     * @return The time in millis to wait before closing an Ajax request
-     */
-    long timeWithinPoll();
+    public void addScript(String script);
 }

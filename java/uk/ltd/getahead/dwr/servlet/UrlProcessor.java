@@ -132,15 +132,15 @@ public class UrlProcessor
             }
             else if (pathInfo.startsWith(DwrpConstants.PATH_PLAINJS))
             {
-                Calls calls = plainJsMarshaller.marshallInbound(request);
+                Calls calls = plainJsMarshaller.marshallInbound(request, response);
                 Replies replies = remoter.execute(calls);
-                plainJsMarshaller.marshallOutbound(replies, response);
+                plainJsMarshaller.marshallOutbound(replies, request, response);
             }
             else if (pathInfo.startsWith(DwrpConstants.PATH_HTMLJS))
             {
-                Calls calls = htmlJsMarshaller.marshallInbound(request);
+                Calls calls = htmlJsMarshaller.marshallInbound(request, response);
                 Replies replies = remoter.execute(calls);
-                htmlJsMarshaller.marshallOutbound(replies, response);
+                htmlJsMarshaller.marshallOutbound(replies, request, response);
             }
             else if (pathInfo.equalsIgnoreCase(DwrpConstants.FILE_ENGINE))
             {

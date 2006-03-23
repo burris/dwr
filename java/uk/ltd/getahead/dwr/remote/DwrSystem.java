@@ -15,8 +15,10 @@
  */
 package uk.ltd.getahead.dwr.remote;
 
+import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.ServerLoadMonitor;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A collection of system level actions that can be called remotely.
@@ -28,9 +30,27 @@ public class DwrSystem
      * The polling system needs to be able to wait for something to happen
      * @return How long should the client wait until it next polls
      */
-    public int timeToNextPoll()
+    public int poll()
     {
-        ServerLoadMonitor monitor = (ServerLoadMonitor) WebContextFactory.get().getContainer().getBean(ServerLoadMonitor.class.getName());
+        Container container = WebContextFactory.get().getContainer();
+        ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
+
+        // The comet part of a poll request
+        try
+        {
+            long sleepTime = monitor.timeWithinPoll();
+            Thread.sleep(sleepTime);
+        }
+        catch (InterruptedException ex)
+        {
+            log.warn("Interupted", ex); //$NON-NLS-1$
+        }
+
         return monitor.timeToNextPoll();
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DwrSystem.class);
 }

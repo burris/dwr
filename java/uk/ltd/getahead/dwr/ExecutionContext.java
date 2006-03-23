@@ -116,19 +116,19 @@ public class ExecutionContext implements WebContext
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.WebContext#getScriptSession(java.lang.String)
+     * @see uk.ltd.getahead.dwr.WebContext#getAllScriptSessions()
      */
-    public ScriptSession getScriptSession(String id)
+    public Iterator getAllScriptSessions()
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSession()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getAllScriptSessions()"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.WebContext#getScriptSessionIds()
+     * @see uk.ltd.getahead.dwr.WebContext#getScriptSessionsByPage(java.lang.String)
      */
-    public Iterator getScriptSessionIds()
+    public Iterator getScriptSessionsByPage(String page)
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSessionIds()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSessionsByPage()"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
@@ -142,7 +142,7 @@ public class ExecutionContext implements WebContext
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContext#setScriptSessionId(java.lang.String)
      */
-    public void setScriptSessionId(String scriptSessionId)
+    public void setCurrentPageInformation(String page, String scriptSessionId)
     {
         throw new UnsupportedOperationException("Use WebContextFactory.get().setPageAndSessionIds()"); //$NON-NLS-1$
     }
@@ -151,6 +151,14 @@ public class ExecutionContext implements WebContext
      * @see uk.ltd.getahead.dwr.WebContext#toJavascript(java.lang.Object)
      */
     public OutboundVariable toJavascript(Object data) throws MarshallException
+    {
+        throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()"); //$NON-NLS-1$
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.WebContext#getCurrentPage()
+     */
+    public String getCurrentPage()
     {
         throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()"); //$NON-NLS-1$
     }

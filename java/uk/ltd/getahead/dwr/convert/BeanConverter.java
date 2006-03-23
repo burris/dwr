@@ -225,11 +225,13 @@ public class BeanConverter extends BaseV20Converter implements Converter
 
                 Method setter = null;
                 PropertyDescriptor descriptor = (PropertyDescriptor) props.get(key);
-                if (descriptor != null)
+                if (descriptor == null)
                 {
-                    setter = descriptor.getWriteMethod();
+                    log.warn("Null descriptor for key=" + key); //$NON-NLS-1$
+                    continue;
                 }
 
+                setter = descriptor.getWriteMethod();
                 if (setter == null)
                 {
                     log.warn("setter method for property " + key + " is not visible to DWR."); //$NON-NLS-1$ //$NON-NLS-2$

@@ -201,19 +201,21 @@ public class SignatureParser
      */
     private Class findClass(String type)
     {
+        String itype = type;
+
         // Handle inner classes
-        if (type.indexOf('.') != -1)
+        if (itype.indexOf('.') != -1)
         {
-            log.debug("Inner class detected: " + type); //$NON-NLS-1$
-            type = type.replace('.', '$');
+            log.debug("Inner class detected: " + itype); //$NON-NLS-1$
+            itype = itype.replace('.', '$');
         }
 
         try
         {
-            String full = (String) classImports.get(type);
+            String full = (String) classImports.get(itype);
             if (full == null)
             {
-                full = type;
+                full = itype;
             }
 
             return Class.forName(full);
@@ -226,7 +228,7 @@ public class SignatureParser
         for (Iterator it = packageImports.iterator(); it.hasNext();)
         {
             String pkg = (String) it.next();
-            String lookup = pkg + '.' + type;
+            String lookup = pkg + '.' + itype;
 
             try
             {
@@ -238,7 +240,7 @@ public class SignatureParser
             }
         }
 
-        log.error("Failed to find class: '" + type  + "' from <signature> block."); //$NON-NLS-1$ //$NON-NLS-2$
+        log.error("Failed to find class: '" + itype  + "' from <signature> block."); //$NON-NLS-1$ //$NON-NLS-2$
         log.info("- Looked in the following class imports:"); //$NON-NLS-1$
         for (Iterator it = classImports.entrySet().iterator(); it.hasNext();)
         {

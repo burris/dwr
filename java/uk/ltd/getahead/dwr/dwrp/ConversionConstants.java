@@ -63,6 +63,11 @@ public interface ConversionConstants
     public static final String INBOUND_KEY_SCRIPT_SESSIONID = "scriptSessionId"; //$NON-NLS-1$
 
     /**
+     * The parameter that specifies the current page
+     */
+    public static final Object INBOUND_KEY_PAGE = "page"; //$NON-NLS-1$
+
+    /**
      * The inbound key to define the class to be used.
      * This will be the javascript version of the full java package name.
      */

@@ -16,40 +16,26 @@
 package uk.ltd.getahead.dwr.impl;
 
 import uk.ltd.getahead.dwr.ServerLoadMonitor;
-import uk.ltd.getahead.dwr.util.Logger;
 
 /**
+ * A default implementation of ServerLoadMonitor
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultServerLoadMonitor implements ServerLoadMonitor 
 {
-    private int concurrentPages = 0;
-    private int activeServlets = 0;
-
-    private int recommendedConnectTime = 0;
-    private int recommendedPauseTime = 0;
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.ServerLoadMonitor#timeWithinPoll()
+     */
+    public long timeWithinPoll()
+    {
+        return 2000;
+    }
 
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ServerLoadMonitor#waitForAction()
      */
     public int timeToNextPoll()
     {
-        /*
-        try
-        {
-            Thread.sleep(5000);
-        }
-        catch (InterruptedException ex)
-        {
-            log.warn("Interrupted while polling: " + ex.getMessage()); //$NON-NLS-1$
-        }
-        */
-
         return 3000;
     }
-
-    /**
-     * The log stream
-     */
-    private static final Logger log = Logger.getLogger(DefaultServerLoadMonitor.class);
 }

@@ -16,7 +16,6 @@
 package uk.ltd.getahead.dwr;
 
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Page scope is like session scope except that it is managed using a Javascript
@@ -94,12 +93,6 @@ public interface ScriptSession
     public void addScript(String script);
 
     /**
-     * Expected to be of use to the system that forwards scripts to the client
-     * @return A list of scripts, which could be empty, but not null.
-     */
-    public List removeAllScripts();
-
-    /**
      * Returns a string containing the unique identifier assigned to this
      * session. The identifier is assigned by the servlet container and is
      * implementation dependent.
@@ -126,6 +119,25 @@ public interface ScriptSession
      * @throws IllegalStateException if the page has been invalidated
      */
     public long getLastAccessedTime();
+
+    /**
+     * While a Marshaller is processing a request it can register a
+     * ScriptConduit with the ScriptSession to say - "pass scripts to me"
+     * <p>
+     * Several Marshallers may be active on the same page as a time and it
+     * doesn't really matter which gets the script. So ScriptSession should
+     * record all of the active ScriptConduits, but just pick one
+     * @param conduit The new ScriptConduit
+     * @see ScriptSession#removeScriptConduit(ScriptConduit)
+     */
+    public void addScriptConduit(ScriptConduit conduit);
+
+    /**
+     * Remove a ScriptConduit.
+     * @param conduit The ScriptConduit to remove
+     * @see ScriptSession#addScriptConduit(ScriptConduit)
+     */
+    public void removeScriptConduit(ScriptConduit conduit);
 
     /*
      * Specifies the time, in seconds, between client requests before the 

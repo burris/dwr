@@ -35,6 +35,8 @@ import uk.ltd.getahead.dwr.OutboundContext;
 import uk.ltd.getahead.dwr.OutboundVariable;
 import uk.ltd.getahead.dwr.Replies;
 import uk.ltd.getahead.dwr.Reply;
+import uk.ltd.getahead.dwr.ScriptConduit;
+import uk.ltd.getahead.dwr.ScriptSession;
 import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -48,10 +50,23 @@ import uk.ltd.getahead.dwr.util.TypeHintContext;
 public class DwrpPlainJsMarshaller implements Marshaller
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Marshaller#marshallInbound(uk.ltd.getahead.dwr.HttpRequest)
+     * @see uk.ltd.getahead.dwr.Marshaller#marshallInbound(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public Calls marshallInbound(HttpServletRequest request) throws MarshallException
+    public Calls marshallInbound(HttpServletRequest request, HttpServletResponse response) throws MarshallException, IOException
     {
+        response.setContentType(getOutboundMimeType());
+        PrintWriter out = response.getWriter();
+        request.setAttribute(ATTRIBUTE_REQUEST, out);
+
+        out.print(getOutboundScriptPrefix());
+
+        // Are there any outstanding reverse-ajax scripts to be passed on?
+        DirectScriptConduit conduit = new DirectScriptConduit(out, response);
+        request.setAttribute(ATTRIBUTE_CONDUIT, conduit);
+
+        ScriptSession scriptSession = WebContextFactory.get().getScriptSession();
+        scriptSession.addScriptConduit(conduit);
+
         RequestParser requestParser = new RequestParser();
         CallsWithContext calls = requestParser.parseRequest(request);
 
@@ -191,27 +206,25 @@ public class DwrpPlainJsMarshaller implements Marshaller
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Marshaller#marshallOutbound(uk.ltd.getahead.dwr.Replies, javax.servlet.http.HttpServletResponse)
+     * @see uk.ltd.getahead.dwr.Marshaller#marshallOutbound(uk.ltd.getahead.dwr.Replies, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void marshallOutbound(Replies replies, HttpServletResponse response) throws MarshallException, IOException
+    public void marshallOutbound(Replies replies, HttpServletRequest request, HttpServletResponse response) throws MarshallException, IOException
     {
         // We build the answer up in a StringBuffer because that makes is easier
         // to debug, and because that's only what the compiler does anyway.
-        response.setContentType(MimeConstants.MIME_PLAIN);
-        PrintWriter out = response.getWriter();
+        PrintWriter out = (PrintWriter) request.getAttribute(ATTRIBUTE_REQUEST);
+        DirectScriptConduit conduit = (DirectScriptConduit) request.getAttribute(ATTRIBUTE_CONDUIT);
 
-        out.print(getOutboundScriptPrefix());
+        synchronized (out)
+        {
+            out.print(getOutboundScriptPrefix());
+            response.flushBuffer();
+        }
 
         // if we are in html (iframe mode) we need to direct script to the parent
         String prefix = getOutboundLinePrefix();
 
-        // Are there any outstanding reverse-ajax scripts to be passed on?
-        List scripts = WebContextFactory.get().getScriptSession().removeAllScripts();
-        for (Iterator it = scripts.iterator(); it.hasNext();)
-        {
-            out.print((String) it.next());
-            out.print('\n');
-        }
+        ScriptSession scriptSession = WebContextFactory.get().getScriptSession();
 
         OutboundContext converted = new OutboundContext();
         for (int i = 0; i < replies.getReplyCount(); i++)
@@ -224,13 +237,17 @@ public class DwrpPlainJsMarshaller implements Marshaller
                 Throwable ex = reply.getThrowable();
                 OutboundVariable ov = convertException(ex, converted);
 
-                out.print(ov.getInitCode());
-                out.print(prefix);
-                out.print("DWREngine._handleServerError('"); //$NON-NLS-1$
-                out.print(reply.getId());
-                out.print("', "); //$NON-NLS-1$
-                out.print(ov.getAssignCode());
-                out.print(");\n"); //$NON-NLS-1$
+                synchronized (out)
+                {
+                    out.print(ov.getInitCode());
+                    out.print(prefix);
+                    out.print("DWREngine._handleServerError('"); //$NON-NLS-1$
+                    out.print(reply.getId());
+                    out.print("', "); //$NON-NLS-1$
+                    out.print(ov.getAssignCode());
+                    out.print(");\n"); //$NON-NLS-1$
+                    response.flushBuffer();
+                }
 
                 log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -239,16 +256,21 @@ public class DwrpPlainJsMarshaller implements Marshaller
                 Object data = reply.getReply();
                 OutboundVariable ov = converterManager.convertOutbound(data, converted);
 
-                out.print(ov.getInitCode());
-                out.print(prefix);
-                out.print("DWREngine._handleResponse('"); //$NON-NLS-1$
-                out.print(reply.getId());
-                out.print("', "); //$NON-NLS-1$
-                out.print(ov.getAssignCode());
-                out.print(");\n"); //$NON-NLS-1$
+                synchronized (out)
+                {
+                    out.print(ov.getInitCode());
+                    out.print(prefix);
+                    out.print("DWREngine._handleResponse('"); //$NON-NLS-1$
+                    out.print(reply.getId());
+                    out.print("', "); //$NON-NLS-1$
+                    out.print(ov.getAssignCode());
+                    out.print(");\n"); //$NON-NLS-1$
+                    response.flushBuffer();
+                }
             }
         }
 
+        scriptSession.removeScriptConduit(conduit);
         out.print(getOutboundScriptSuffix());
 
         // log.debug(replyString);
@@ -355,6 +377,47 @@ public class DwrpPlainJsMarshaller implements Marshaller
     }
 
     /**
+     * A ScriptConduit that works with the parent Marshaller
+     */
+    private static class DirectScriptConduit implements ScriptConduit
+    {
+        /**
+         * Simple ctor
+         * @param out The stream to write to
+         * @param response The response to flush on write complete
+         */
+        private DirectScriptConduit(PrintWriter out, HttpServletResponse response)
+        {
+            this.out = out;
+            this.response = response;
+        }
+
+        /* (non-Javadoc)
+         * @see uk.ltd.getahead.dwr.ScriptConduit#addScript(java.lang.String)
+         */
+        public void addScript(String script)
+        {
+            synchronized (out)
+            {
+                out.print(script);
+                out.print('\n');
+ 
+                try
+                {
+                    response.flushBuffer();
+                }
+                catch (IOException ex)
+                {
+                    log.warn("Ignoring IOException while writing script: " + ex.getMessage()); //$NON-NLS-1$
+                }
+            }
+        }
+
+        private PrintWriter out;
+        private HttpServletResponse response;
+    }
+
+    /**
      * How we convert parameters
      */
     protected ConverterManager converterManager = null;
@@ -370,7 +433,17 @@ public class DwrpPlainJsMarshaller implements Marshaller
     protected AccessControl accessControl = null;
 
     /**
+     * How we stash away the request
+     */
+    protected String ATTRIBUTE_REQUEST = "uk.ltd.getahead.dwr.dwrp.request"; //$NON-NLS-1$
+
+    /**
+     * How we stash away the conduit
+     */
+    protected String ATTRIBUTE_CONDUIT = "uk.ltd.getahead.dwr.dwrp.conduit"; //$NON-NLS-1$
+
+    /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrpPlainJsMarshaller.class);
+    protected static final Logger log = Logger.getLogger(DwrpPlainJsMarshaller.class);
 }

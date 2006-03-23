@@ -429,10 +429,11 @@ DWREngine._poll = function(overridePath) {
     map:{
       callCount:1,
       'c0-scriptName':'DWRSystem',
-      'c0-methodName':'timeToNextPoll',
+      'c0-methodName':'poll',
       'c0-id':id,
       httpSessionId:DWREngine._httpSessionId,
-      scriptSessionId:DWREngine._scriptSessionId
+      scriptSessionId:DWREngine._scriptSessionId,
+      page:window.location.href
     },
     // method:DWREngine.IFrame,
     method:DWREngine.XMLHttpRequest,

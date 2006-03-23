@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import uk.ltd.getahead.dwr.ScriptConduit;
 import uk.ltd.getahead.dwr.ScriptSession;
 
 /**
@@ -119,27 +120,28 @@ public class DefaultScriptSession implements ScriptSession
     public void addScript(String script)
     {
         checkNotInvalidated();
-        synchronized (scripts)
-        {
-            scripts.add(script);
-        }
-    }
+        boolean handledDirectly = false;
 
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.Browser#removeAllScripts()
-     */
-    public List removeAllScripts()
-    {
-        checkNotInvalidated();
-        List copy = new ArrayList();
-
-        synchronized (scripts)
+        // First we try to add the script to an existing conduit
+        synchronized (conduits)
         {
-            copy.addAll(scripts);
-            scripts.clear();
+            if (conduits.size() > 0)
+            {
+                ScriptConduit conduit = (ScriptConduit) conduits.get(0);
+                conduit.addScript(script);
+
+                handledDirectly = true;
+            }
         }
 
-        return copy;
+        // But if that doesn't work we dump it to a list for later
+        if (!handledDirectly)
+        {
+            synchronized (scripts)
+            {
+                scripts.add(script);
+            }
+        }
     }
 
     /**
@@ -170,38 +172,82 @@ public class DefaultScriptSession implements ScriptSession
         }
     }
 
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.ScriptSession#addScriptConduit(uk.ltd.getahead.dwr.ScriptConduit)
+     */
+    public void addScriptConduit(ScriptConduit conduit)
+    {
+        checkNotInvalidated();
+
+        // If there are any outstanding scripts, dump them to the new conduit
+        synchronized (scripts)
+        {
+            for (Iterator it = scripts.iterator(); it.hasNext();)
+            {
+                String script = (String) it.next();
+                conduit.addScript(script);
+            }
+
+            scripts.clear();
+        }
+
+        // And add the conduit into the list
+        synchronized (conduits)
+        {
+            conduits.add(conduit);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.ScriptSession#removeScriptConduit(uk.ltd.getahead.dwr.ScriptConduit)
+     */
+    public void removeScriptConduit(ScriptConduit conduit)
+    {
+        checkNotInvalidated();
+
+        synchronized (conduits)
+        {
+            conduits.remove(conduit);
+        }
+    }
+
+    /**
+     * The script conduits that we can use to transfer data to the browser
+     */
+    protected final List conduits = new ArrayList();
+
     /**
      * The list of waiting scripts
      */
-    private final List scripts = new ArrayList();
+    protected final List scripts = new ArrayList();
 
     /**
      * What is our page session id?
      */
-    private String id = null;
+    protected String id = null;
 
     /**
      * When we we created?
      */
-    private long creationTime = 0L;
+    protected long creationTime = 0L;
 
     /**
      * When the the web page that we represent last contact us using DWR?
      */
-    private long lastAccessedTime = 0L;
+    protected long lastAccessedTime = 0L;
 
     /**
      * Have we been made invalid?
      */
-    private boolean invalidated = false;
+    protected boolean invalidated = false;
 
     /**
      * The server side attributes for this page
      */
-    private Map attributes = new HashMap();
+    protected Map attributes = new HashMap();
 
     /**
      * The session manager that collects sessions together
      */
-    private DefaultScriptSessionManager manager;
+    protected DefaultScriptSessionManager manager;
 }

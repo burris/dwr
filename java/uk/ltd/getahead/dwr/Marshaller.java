@@ -32,20 +32,23 @@ public interface Marshaller
      * Marshall an incomming HttpRequest into an abstract Calls POJO that
      * defines the functions that we need to call.
      * @param request The incoming Http request
+     * @param response An Ajax response, XML, JSON, Javascript, etc.
      * @return Data specifying the methods to call
      * @throws SecurityException If the requests are not allowed
      * @throws MarshallException If the data can not be understood.
+     * @throws IOException If the connection breaks
      */
-    Calls marshallInbound(HttpServletRequest request) throws SecurityException, MarshallException;
+    Calls marshallInbound(HttpServletRequest request, HttpServletResponse response) throws SecurityException, MarshallException, IOException;
 
     /**
      * Marshall the return values from executing this batch of requests.
      * @param replies The objects to convert into a reply
+     * @param request The incoming Http request
      * @param response An Ajax response, XML, JSON, Javascript, etc.
      * @throws MarshallException If the marshallinng process fails
      * @throws IOException If the connection breaks
      */
-    void marshallOutbound(Replies replies, HttpServletResponse response) throws MarshallException, IOException;
+    void marshallOutbound(Replies replies, HttpServletRequest request, HttpServletResponse response) throws MarshallException, IOException;
 
     /**
      * Check if we can coerce the given type

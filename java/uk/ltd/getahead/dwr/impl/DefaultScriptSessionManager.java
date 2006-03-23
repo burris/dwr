@@ -32,19 +32,32 @@ import uk.ltd.getahead.dwr.ScriptSessionManager;
 public class DefaultScriptSessionManager implements ScriptSessionManager
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.impl.ScriptSessionManager#create(java.lang.String)
+     * @see uk.ltd.getahead.dwr.ScriptSessionManager#getScriptSession(java.lang.String, java.lang.String)
      */
-    public ScriptSession getScriptSession(String id)
+    public ScriptSession getScriptSession(String page, String id)
     {
         DefaultScriptSession session;
+        boolean created = false;
 
-        synchronized (sessions)
+        synchronized (allSessions)
         {
-            session = (DefaultScriptSession) sessions.get(id);    
+            session = (DefaultScriptSession) allSessions.get(id);    
             if (session == null)
             {
                 session = new DefaultScriptSession(id, this);
-                sessions.put(id, session);
+                created = true;
+
+                allSessions.put(id, session);
+            }
+        }
+
+        // I've kept this separate to avoid deadlock issues, is there a risk
+        // of something being in one map but not the other?
+        if (created)
+        {
+            synchronized (pageSessions)
+            {
+                pageSessions.put(id, session);
             }
         }
 
@@ -52,13 +65,24 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.ScriptSessionManager#getScriptSessionIds()
+     * @see uk.ltd.getahead.dwr.ScriptSessionManager#getScriptSessionsByPage(java.lang.String)
      */
-    public Iterator getScriptSessionIds()
+    public Iterator getScriptSessionsByPage(String page)
     {
-        synchronized (sessions)
+        synchronized (pageSessions)
         {
-            return Collections.unmodifiableSet(sessions.keySet()).iterator();
+            return Collections.unmodifiableCollection(pageSessions.values()).iterator();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.ScriptSessionManager#getAllScriptSessions()
+     */
+    public Iterator getAllScriptSessions()
+    {
+        synchronized (allSessions)
+        {
+            return Collections.unmodifiableCollection(allSessions.values()).iterator();
         }
     }
 
@@ -69,9 +93,16 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      */
     protected void invalidate(ScriptSession session)
     {
-        synchronized (sessions)
+        // Can we think of a reason why we need to sync both together?
+        // It feels like a deadlock risk to do so
+        synchronized (allSessions)
         {
-            sessions.remove(session.getId());
+            allSessions.remove(session.getId());
+        }
+
+        synchronized (pageSessions)
+        {
+            pageSessions.remove(session.getId());
         }
     }
 
@@ -84,9 +115,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         long now = System.currentTimeMillis();
         List timeouts = new ArrayList();
 
-        synchronized (sessions)
+        synchronized (allSessions)
         {
-            for (Iterator it = sessions.values().iterator(); it.hasNext();)
+            for (Iterator it = allSessions.values().iterator(); it.hasNext();)
             {
                 DefaultScriptSession session = (DefaultScriptSession) it.next();
 
@@ -96,12 +127,12 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
                     timeouts.add(session);
                 }
             }
+        }
 
-            for (Iterator it = timeouts.iterator(); it.hasNext();)
-            {
-                DefaultScriptSession session = (DefaultScriptSession) it.next();
-                session.invalidate();
-            }
+        for (Iterator it = timeouts.iterator(); it.hasNext();)
+        {
+            DefaultScriptSession session = (DefaultScriptSession) it.next();
+            session.invalidate();
         }
     }
 
@@ -123,5 +154,13 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
 
     private long scriptSessionTimeout = DEFAULT_TIMEOUT_MILLIS;
 
-    private Map sessions = new HashMap();
+    /**
+     * The map of all the known sessions
+     */
+    private Map allSessions = new HashMap();
+
+    /**
+     * The map of pages that have sessions
+     */
+    private Map pageSessions = new HashMap();
 }

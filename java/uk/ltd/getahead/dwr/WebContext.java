@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
 /**
  * Class to enable us to access servlet parameters.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -40,16 +39,25 @@ public interface WebContext
     ScriptSession getScriptSession();
 
     /**
-     * Get the script session of another page (and probably another user) on
-     * this server. This session will probably not belong to the current user
-     * so take care what you do with it.
-     * @param id The unique identifier for the other page
-     * @return A browser object for this user
+     * Get a list of all ScriptSessions on a given page.
+     * Note that the list of known sessions is continually changing so it is
+     * possible that the list will be out of date by the time it is used. For
+     * this reason you should check that getScriptSession(String id) returns
+     * something non null.
+     * @param url The URL including 'http://', up to (but not including) '?' or '#' 
+     * @return An iterator over all the ScriptSessions.
      */
-    ScriptSession getScriptSession(String id);
+    Iterator getScriptSessionsByPage(String url);
 
     /**
-     * Get a list of all the ScriptSessions know to this server at the given
+     * What is the URL of the current page.
+     * This includes 'http://', up to (but not including) '?' or '#'
+     * @return The URL of the current page
+     */
+    String getCurrentPage();
+
+    /**
+     * Get a list of all the ScriptSessions known to this server at the given
      * time.
      * Note that the list of known sessions is continually changing so it is
      * possible that the list will be out of date by the time it is used. For
@@ -57,7 +65,7 @@ public interface WebContext
      * something non null.
      * @return An iterator over all the ScriptSessions.
      */
-    Iterator getScriptSessionIds();
+    Iterator getAllScriptSessions();
 
     /**
      * Returns the current session associated with this request, or if the
@@ -148,7 +156,8 @@ public interface WebContext
     /**
      * For system use only: This method allows the system to fill in the session
      * id and page id when they are discovered.
+     * @param page The URL of the current page
      * @param scriptSessionId The session id passed in by the browser
      */
-    void setScriptSessionId(String scriptSessionId);
+    void setCurrentPageInformation(String page, String scriptSessionId);
 }
