@@ -73,27 +73,22 @@ public class UrlProcessor
             String servletPath = request.getServletPath();
             String contextPath = request.getContextPath();
 
-            if (pathInfo == null)
+            if (nullPathInfoWorkaround && pathInfo == null)
             {
                 pathInfo = request.getServletPath();
                 servletPath = DwrpConstants.PATH_ROOT;
                 log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + contextPath + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
 
-            String root = contextPath + servletPath;
-
-            // NOTE: I'm not totally happy with the if statment, there doesn't
-            // appear to be logic to it, just hack-till-its-not-broken which feels
-            // like a good way to create latent bugs
-            if (pathInfo.length() == 0 ||
-                pathInfo.equals(DwrpConstants.PATH_ROOT) ||
-                pathInfo.equals(contextPath))
+            if (pathInfo == null ||
+                pathInfo.length() == 0 ||
+                pathInfo.equals(DwrpConstants.PATH_ROOT))
             {
                 response.sendRedirect(contextPath + servletPath + DwrpConstants.FILE_INDEX);
             }
             else if (pathInfo.startsWith(DwrpConstants.FILE_INDEX))
             {
-                String page = debugPageGenerator.generateIndexPage(root);
+                String page = debugPageGenerator.generateIndexPage(contextPath + servletPath);
 
                 response.setContentType(MimeConstants.MIME_PLAIN);
                 PrintWriter out = response.getWriter();
@@ -106,7 +101,7 @@ public class UrlProcessor
                 scriptName = LocalUtil.replace(scriptName, DwrpConstants.PATH_TEST, ""); //$NON-NLS-1$
                 scriptName = LocalUtil.replace(scriptName, DwrpConstants.PATH_ROOT, ""); //$NON-NLS-1$
 
-                String page = debugPageGenerator.generateTestPage(root, scriptName);
+                String page = debugPageGenerator.generateTestPage(contextPath + servletPath, scriptName);
 
                 response.setContentType(MimeConstants.MIME_PLAIN);
                 PrintWriter out = response.getWriter();
@@ -396,6 +391,15 @@ public class UrlProcessor
     }
 
     /**
+     * Do we use our hack for when pathInfo is null?
+     * @param nullPathInfoWorkaround The nullPathInfoWorkaround to set.
+     */
+    public void setNullPathInfoWorkaround(boolean nullPathInfoWorkaround)
+    {
+        this.nullPathInfoWorkaround = nullPathInfoWorkaround;
+    }
+
+    /**
      * The time on the script files
      */
     private static final long servletContainerStartTime;
@@ -416,6 +420,12 @@ public class UrlProcessor
 
         etag = "\"" + servletContainerStartTime + '\"'; //$NON-NLS-1$
     }
+
+    /**
+     * Do we use our hack for when pathInfo is null?
+     * Enabling this will require you to have a / on the end of the DWR root URL
+     */
+    private boolean nullPathInfoWorkaround = false;
 
     /**
      * The page id length
