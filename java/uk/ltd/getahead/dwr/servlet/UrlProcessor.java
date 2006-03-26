@@ -90,7 +90,7 @@ public class UrlProcessor
             {
                 String page = debugPageGenerator.generateIndexPage(contextPath + servletPath);
 
-                response.setContentType(MimeConstants.MIME_PLAIN);
+                response.setContentType(MimeConstants.MIME_HTML);
                 PrintWriter out = response.getWriter();
                 out.print(page);
                 response.flushBuffer();
@@ -103,7 +103,7 @@ public class UrlProcessor
 
                 String page = debugPageGenerator.generateTestPage(contextPath + servletPath, scriptName);
 
-                response.setContentType(MimeConstants.MIME_PLAIN);
+                response.setContentType(MimeConstants.MIME_HTML);
                 PrintWriter out = response.getWriter();
                 out.print(page);
                 response.flushBuffer();
