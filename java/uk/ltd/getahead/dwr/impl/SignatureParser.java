@@ -178,7 +178,7 @@ public class SignatureParser
 
                 if (clazz != null)
                 {
-                    TypeHintContext thc = new TypeHintContext(method, i).createChildContext(j);
+                    TypeHintContext thc = new TypeHintContext(converterManager, method, i).createChildContext(j);
                     converterManager.setExtraTypeInfo(thc, clazz);
 
                     if (log.isDebugEnabled())

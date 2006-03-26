@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import uk.ltd.getahead.dwr.dwrp.ConverterManager;
+
 /**
  * Something to hold the method, paramNo and index together as an object
  * that can be a key in a Map.
@@ -28,61 +30,138 @@ import java.util.List;
 public class TypeHintContext
 {
     /**
-     * Setup this object
+     * External setup this object
+     * @param converterManager For when we can't work out the parameterized type info
      * @param method The method to annotate
      * @param parameterNumber The number of the parameter to edit (counts from 0)
      */
-    public TypeHintContext(Method method, int parameterNumber)
+    public TypeHintContext(ConverterManager converterManager, Method method, int parameterNumber)
     {
         if (method == null)
         {
             throw new IllegalArgumentException("The method can not be null"); //$NON-NLS-1$
         }
 
+        this.converterManager = converterManager;
         this.method = method;
         this.parameterNumber = parameterNumber;
-        genericParameterTree = new ArrayList();
+
+        // Type[] types = method.getGenericParameterTypes();
+        Object[] types = (Object[]) LocalUtil.invoke(method, getGenericParameterTypesMethod, new Object[0]);
+
+        if (types != null)
+        {
+            if (parameterNumber >= types.length)
+            {
+                throw new IllegalArgumentException("parameterNumber=" + parameterNumber + " is too big when method=" + method.getName() + " returns genericParameterTypes.length=" + types.length); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+
+            this.parameterType = types[parameterNumber];
+        }
+        else
+        {
+            this.parameterType = null;
+        }
+
+        parameterNumberTree = new ArrayList();
+        parameterTypeTree = new ArrayList();
+    }
+
+    /**
+     * Internal setup for nested object
+     * @param manager For when we can't work out the parameterized type info
+     * @param method The method to annotate
+     * @param parameterNumber The number of the parameter to edit (counts from 0)
+     * @param parameterType The Type for this context
+     */
+    private TypeHintContext(ConverterManager manager, Method method, int parameterNumber, Object/*Type*/ parameterType)
+    {
+        this.converterManager = manager;
+        this.method = method;
+        this.parameterNumber = parameterNumber;
+        this.parameterType = parameterType;
+
+        parameterNumberTree = new ArrayList();
+        parameterTypeTree = new ArrayList();
     }
 
     /**
      * Create a child TypeHintContext based on this one
-     * @param genericParameterNumber The index of the item between &lt; and &gt;.
+     * @param newParameterNumber The index of the item between &lt; and &gt;.
      * @return a new TypeHintContext
      */
-    public TypeHintContext createChildContext(int genericParameterNumber)
+    public TypeHintContext createChildContext(int newParameterNumber)
     {
-        TypeHintContext child = new TypeHintContext(getMethod(), getParameterNumber());
-        child.genericParameterTree.addAll(this.getGenericParameterTree());
-        child.genericParameterTree.add(new Integer(genericParameterNumber));
+        Object/*Type*/ childType = null;
+
+        //if (parameterType instanceof ParameterizedType)
+        if (parameterizedTypeClass != null && parameterizedTypeClass.isInstance(parameterType))
+        {
+            Object/*Type*/ ptype = /*(Type)*/ parameterType;
+            // Type[] rawParams = ptype.getActualTypeArguments();
+            Object[] actualTypeArguments = (Object[]) LocalUtil.invoke(ptype, getActualTypeArgumentsMethod, new Object[0]);
+
+            if (newParameterNumber >= actualTypeArguments.length)
+            {
+                throw new IllegalArgumentException("newParameterNumber=" + newParameterNumber + " is too big when parameterType=" + parameterType + " give actualTypeArguments.length=" + actualTypeArguments.length); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
+
+            childType = actualTypeArguments[newParameterNumber];
+        }
+
+        TypeHintContext child = new TypeHintContext(converterManager, this.method, this.parameterNumber, childType);
+
+        child.parameterNumberTree.addAll(this.parameterNumberTree);
+        child.parameterNumberTree.add(new Integer(newParameterNumber));
+
+        child.parameterTypeTree.addAll(parameterTypeTree);
+        child.parameterTypeTree.add(parameterType);
 
         return child;
     }
 
     /**
-     * Accessor for the method that we are converting for
-     * @return The method that we are converting for
+     * Find the parameterized type information for this parameter either using
+     * JDK5 introspection or
+     * @return The extra type information for this context
      */
-    public Method getMethod()
+    public Class getExtraTypeInfo()
     {
-        return method;
-    }
+        Class type = null;
 
-    /**
-     * Accessor for the parameter that we are converting for
-     * @return The parameter that we are converting for
-     */
-    public int getParameterNumber()
-    {
-        return parameterNumber;
-    }
+        if (converterManager != null)
+        {
+            type = converterManager.getExtraTypeInfo(this);
+            if (type != null)
+            {
+                log.debug("Using type info from <signature> " + toString() + " of " + type); //$NON-NLS-1$ //$NON-NLS-2$
+                return type;
+            }
+        }
 
-    /**
-     * Accessor for the generic parameter number
-     * @return The generic parameter number
-     */
-    public List getGenericParameterTree()
-    {
-        return genericParameterTree;
+        //if (parameterType instanceof ParameterizedType)
+        if (parameterizedTypeClass != null && parameterizedTypeClass.isInstance(parameterType))
+        {
+            Object/*Type*/ ptype = /*(Type)*/ parameterType;
+            // Type rawType = ptype.getRawType();
+            Object rawType = LocalUtil.invoke(ptype, getRawTypeMethod, new Object[0]);
+
+            if (rawType instanceof Class)
+            {
+                type = (Class) rawType;
+                log.debug("Using type info from JDK5 ParameterizedType of " + type.getName() + " for " + toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                return type;
+            }
+        }
+        else if (parameterType instanceof Class)
+        {
+            type = (Class) parameterType;
+            log.debug("Using type info from JDK5 reflection of " + type.getName() + " for " + toString()); //$NON-NLS-1$ //$NON-NLS-2$
+            return type;
+        }
+
+        log.warn("Missing type info for " + toString() + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+        return String.class;
     }
 
     /* (non-Javadoc)
@@ -90,7 +169,7 @@ public class TypeHintContext
      */
     public int hashCode()
     {
-        return method.hashCode() + parameterNumber + genericParameterTree.hashCode();
+        return method.hashCode() + parameterNumber + parameterNumberTree.hashCode();
     }
 
     /* (non-Javadoc)
@@ -125,7 +204,7 @@ public class TypeHintContext
             return false;
         }
 
-        return this.genericParameterTree.equals(that.genericParameterTree);
+        return this.parameterNumberTree.equals(that.parameterNumberTree);
     }
 
     /* (non-Javadoc)
@@ -141,12 +220,12 @@ public class TypeHintContext
             buffer.append('(');
             buffer.append(parameterNumber);
 
-            for (Iterator it = genericParameterTree.iterator(); it.hasNext();)
+            for (Iterator it = parameterNumberTree.iterator(); it.hasNext();)
             {
                 buffer.append('<');
                 buffer.append(it.next());
             }
-            for (Iterator it = genericParameterTree.iterator(); it.hasNext();)
+            for (Iterator it = parameterNumberTree.iterator(); it.hasNext();)
             {
                 buffer.append('>');
                 it.next();
@@ -159,6 +238,11 @@ public class TypeHintContext
 
         return cachedToString;
     }
+
+    /**
+     * When we can't work out a parameterized type, then we can ask here
+     */
+    private ConverterManager converterManager;
 
     /**
      * Calculating toString could be costly, so we cache it
@@ -176,7 +260,107 @@ public class TypeHintContext
     private final int parameterNumber;
 
     /**
+     * The type parameter of the method that the conversion is happening for
+     */
+    private final Object/*Type*/ parameterType;
+
+    /**
      * The list of generic parameters that we have dug into
      */
-    private final List genericParameterTree;
+    private final List parameterNumberTree;
+
+    /**
+     * The list of generic parameters that we have dug into
+     */
+    private final List parameterTypeTree;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(TypeHintContext.class);
+
+    /**
+     * We have to use ParameterizedType through reflection since we work on JDK 1.3
+     */
+    private static final Class parameterizedTypeClass;
+
+    /**
+     * We have to use Type through reflection since we work on JDK 1.3
+     */
+    private static final Class typeClass;
+
+    /**
+     * We have to execute getGenericParameterTypes() through reflection too
+     */
+    private static final Method getGenericParameterTypesMethod;
+
+    /**
+     * We have to execute getActualTypeArguments() through reflection too
+     */
+    private static final Method getActualTypeArgumentsMethod;
+
+    /**
+     * We have to execute getRawType() through reflection too
+     */
+    private static final Method getRawTypeMethod;
+
+    static
+    {
+        // This may seem like a lot of bother just to call Class.forName() a
+        // couple of times, however it is complex because the fields are final
+        // so we can only set them once
+        Class tempClass;
+        Method tempMethod;
+
+        try
+        {
+            tempClass = Class.forName("java.lang.reflect.ParameterizedType"); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            tempClass = null;
+            log.debug("JDK1.5 reflection not available. Generic parameters must use <signatures>."); //$NON-NLS-1$
+        }
+        parameterizedTypeClass = tempClass;
+
+        try
+        {
+            tempClass = Class.forName("java.lang.reflect.Type"); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            tempClass = null;
+        }
+        typeClass = tempClass;
+
+        try
+        {
+            tempMethod = Method.class.getDeclaredMethod("getGenericParameterTypes", new Class[0]); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            tempMethod = null;
+        }
+        getGenericParameterTypesMethod = tempMethod;
+
+        try
+        {
+            tempMethod = typeClass.getDeclaredMethod("getActualTypeArguments", new Class[0]); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            tempMethod = null;
+        }
+        getActualTypeArgumentsMethod = tempMethod;
+
+        try
+        {
+            tempMethod = typeClass.getDeclaredMethod("getRawType", new Class[0]); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            tempMethod = null;
+        }
+        getRawTypeMethod = tempMethod;
+    }
 }

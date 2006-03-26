@@ -85,7 +85,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             TypeHintContext icc = inctx.getCurrentTypeHintContext();
 
             TypeHintContext subthc = icc.createChildContext(0);
-            Class subtype = config.getExtraTypeInfo(subthc);
+            Class subtype = subthc.getExtraTypeInfo();
 
             // subtype.getMethod("h", null).getTypeParameters();
             Collection col;

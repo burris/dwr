@@ -165,16 +165,6 @@ public class DefaultConverterManager implements ConverterManager
     public Class getExtraTypeInfo(TypeHintContext thc)
     {
         Class type = (Class) extraTypeInfoMap.get(thc);
-        if (type == null)
-        {
-            log.warn("Missing type info for " + thc + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$
-            type = String.class;
-        }
-        else
-        {
-            log.debug("Using extra type info for " + thc + " of " + type); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-
         return type;
     }
 

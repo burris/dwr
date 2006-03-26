@@ -127,7 +127,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
             {
                 Class paramType = method.getParameterTypes()[j];
                 InboundVariable param = inctx.getParameter(callNum, j);
-                TypeHintContext incc = new TypeHintContext(method, j);
+                TypeHintContext incc = new TypeHintContext(converterManager, method, j);
 
                 params[j] = converterManager.convertInbound(paramType, param, inctx, incc);
             }

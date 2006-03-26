@@ -130,9 +130,9 @@ public class BeanConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.Converter#init(uk.ltd.getahead.dwr.DefaultConfiguration)
      */
-    public void setConverterManager(ConverterManager newConfig)
+    public void setConverterManager(ConverterManager converterManager)
     {
-        this.config = newConfig;
+        this.converterManager = converterManager;
     }
 
     /**
@@ -141,7 +141,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
      */
     public ConverterManager getConverterManager()
     {
-        return config;
+        return converterManager;
     }
 
     /* (non-Javadoc)
@@ -247,8 +247,8 @@ public class BeanConverter extends BaseV20Converter implements Converter
 
                     InboundVariable nested = new InboundVariable(iv.getLookup(), null, splitType, splitValue);
 
-                    TypeHintContext incc = new TypeHintContext(setter, 0);
-                    Object output = config.convertInbound(propType, nested, inctx, incc);
+                    TypeHintContext incc = new TypeHintContext(converterManager, setter, 0);
+                    Object output = converterManager.convertInbound(propType, nested, inctx, incc);
 
                     setter.invoke(bean, new Object[] { output });
                 }
@@ -421,5 +421,5 @@ public class BeanConverter extends BaseV20Converter implements Converter
     /**
      * To forward marshalling requests
      */
-    private ConverterManager config = null;
+    private ConverterManager converterManager = null;
 }

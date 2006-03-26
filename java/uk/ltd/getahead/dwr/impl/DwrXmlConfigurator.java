@@ -520,7 +520,7 @@ public class DwrXmlConfigurator implements Configurator
             {
                 String type = st.nextToken();
                 Class clazz = Class.forName(type.trim());
-                TypeHintContext thc = new TypeHintContext(method, paramNo).createChildContext(j++);
+                TypeHintContext thc = new TypeHintContext(converterManager, method, paramNo).createChildContext(j++);
                 converterManager.setExtraTypeInfo(thc, clazz);
             }
         }
