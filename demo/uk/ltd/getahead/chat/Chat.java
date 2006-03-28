@@ -2,7 +2,6 @@ package uk.ltd.getahead.chat;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import uk.ltd.getahead.dwr.MarshallException;
 import uk.ltd.getahead.dwr.OutboundVariable;
@@ -17,9 +16,8 @@ public class Chat
 {
     /**
      * @param text The new message text to add
-     * @return a list of the current messages
      */
-    public List addMessage(String text)
+    public void addMessage(String text)
     {
         if (text != null && text.trim().length() > 0)
         {
@@ -36,7 +34,7 @@ public class Chat
         try
         {
             OutboundVariable ov = wctx.toJavascript(messages);
-            String eval = ov.getInitCode() + "receiveMessages(" + ov.getAssignCode() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            String eval = ov.getInitCode() + "receiveMessages(" + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$
 
             // Loop over all the users on the current page
             for (Iterator it = wctx.getScriptSessionsByPage(currentPage); it.hasNext();)
@@ -49,16 +47,6 @@ public class Chat
         {
             ex.printStackTrace();
         }
-
-        return messages;
-    }
-
-    /**
-     * @return a list of the current messages
-     */
-    public List getMessages()
-    {
-        return messages;
     }
 
     private LinkedList messages = new LinkedList();

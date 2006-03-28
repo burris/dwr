@@ -42,6 +42,11 @@ public class DwrpConstants
     public static final String PATH_TEST = "/test/"; //$NON-NLS-1$
 
     /**
+     * Path to the generated status pages
+     */
+    public static final String PATH_STATUS = "/status/"; //$NON-NLS-1$
+
+    /**
      * Path to the root of the web app
      */
     public static final String PATH_ROOT = "/"; //$NON-NLS-1$

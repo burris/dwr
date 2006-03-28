@@ -13,29 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.impl;
-
-import uk.ltd.getahead.dwr.ServerLoadMonitor;
+package uk.ltd.getahead.dwr.proxy.dwrutil;
 
 /**
- * A default implementation of ServerLoadMonitor
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultServerLoadMonitor implements ServerLoadMonitor 
+public class Row
 {
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.ServerLoadMonitor#timeWithinPoll()
-     */
-    public long timeWithinPoll()
-    {
-        return 10000;
-    }
 
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.ServerLoadMonitor#waitForAction()
-     */
-    public int timeToNextPoll()
-    {
-        return 10000;
-    }
 }
+

@@ -16,17 +16,12 @@
 package uk.ltd.getahead.dwr.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
@@ -34,7 +29,6 @@ import org.xml.sax.SAXException;
 import uk.ltd.getahead.dwr.AccessControl;
 import uk.ltd.getahead.dwr.AjaxFilterManager;
 import uk.ltd.getahead.dwr.Configurator;
-import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.Creator;
 import uk.ltd.getahead.dwr.CreatorManager;
@@ -43,7 +37,6 @@ import uk.ltd.getahead.dwr.Remoter;
 import uk.ltd.getahead.dwr.ScriptSessionManager;
 import uk.ltd.getahead.dwr.ServerLoadMonitor;
 import uk.ltd.getahead.dwr.WebContextBuilder;
-import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.dwrp.ConverterManager;
 import uk.ltd.getahead.dwr.dwrp.DefaultConverterManager;
 import uk.ltd.getahead.dwr.dwrp.DwrpHtmlJsMarshaller;
@@ -59,7 +52,6 @@ import uk.ltd.getahead.dwr.impl.DefaultServerLoadMonitor;
 import uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder;
 import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
 import uk.ltd.getahead.dwr.util.Logger;
-import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 
 /**
  * An abstraction of all the common servlet operations that are required to host
@@ -71,44 +63,12 @@ import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 public class ServletHelper
 {
     /**
-     * Accessor for the Container.
-     * This is kind of a setter execpt that it has a side effect, to initialize
-     * the WebContextFactory.
-     * @param aContainer The new IoC container
-     */
-    public void initContainer(Container aContainer)
-    {
-        this.container = aContainer;
-
-        // Cached to save looking them up
-        webContextBuilder = (WebContextBuilder) aContainer.getBean(WebContextBuilder.class.getName());
-        processor = (UrlProcessor) aContainer.getBean(UrlProcessor.class.getName());
-
-        // Now we have set the implementations we can set the WebContext up
-        WebContextFactory.setWebContextBuilder(webContextBuilder);
-    }
-
-    /**
-     * Push the default beans into a new copy of the default Container.
-     * @throws InstantiationException If a bean can not be instansiated
-     * @throws IllegalAccessException If a bean can not be accessed
-     * @deprecated It's probably best to do this in parts
-     */
-    public void initDefaultContainer() throws InstantiationException, IllegalAccessException
-    {
-        // Load the factory with implementation information
-        DefaultContainer defaultContainer = new DefaultContainer();
-        configureDefaultContainer(defaultContainer);
-        initContainer(defaultContainer);
-    }
-
-    /**
      * Take a DefaultContainer and setup the default beans
      * @param defaultContainer The container to configure
      * @throws InstantiationException If we can't instantiate a bean
      * @throws IllegalAccessException If we have access problems creating a bean
      */
-    public void configureDefaultContainer(DefaultContainer defaultContainer) throws InstantiationException, IllegalAccessException
+    public static void configureDefaults(DefaultContainer defaultContainer) throws InstantiationException, IllegalAccessException
     {
         defaultContainer.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
         defaultContainer.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
@@ -126,176 +86,38 @@ public class ServletHelper
         defaultContainer.addParameter("debug", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         defaultContainer.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         defaultContainer.addParameter("scriptCompressed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
-        if (servletConfig != null)
+    /**
+     * Take a DefaultContainer and setup the default beans
+     * @param defaultContainer The container to configure
+     * @param servletConfig The servlet configuration (null to ignore)
+     * @throws InstantiationException If we can't instantiate a bean
+     * @throws IllegalAccessException If we have access problems creating a bean
+     */
+    public static void configureFromServletConfig(DefaultContainer defaultContainer, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
+    {
+        Enumeration en = servletConfig.getInitParameterNames();
+        while (en.hasMoreElements())
         {
-            Enumeration en = servletConfig.getInitParameterNames();
-            while (en.hasMoreElements())
-            {
-                String name = (String) en.nextElement();
-                String value = servletConfig.getInitParameter(name);
-                defaultContainer.addParameter(name, value);
-            }
-        }
-
-        defaultContainer.configurationFinished();
-    }
-
-    /**
-     * Accessor for the Container
-     * @return the container
-     */
-    public Container getContainer()
-    {
-        return container;
-    }
-
-    /**
-     * Accessor for ServletConfig
-     * @param servletConfig The new ServletConfig
-     */
-    public void setServletConfig(ServletConfig servletConfig)
-    {
-        this.servletConfig = servletConfig;
-        this.servletContext = servletConfig.getServletContext();
-    }
-
-    /**
-     * Accessor for ServletConfig
-     * @return the ServletConfig
-     */
-    public ServletConfig getServletConfig()
-    {
-        return servletConfig;
-    }
-
-    /**
-     * Accessor for ServletContext
-     * @return the servletContext
-     */
-    public ServletContext getServletContext()
-    {
-        return servletContext;
-    }
-
-    /**
-     * Do we prefix the list of Configurators with a default to read the system
-     * dwr.xml file?
-     * @param includeDefaultConfig the includeDefaultConfig to set
-     */
-    public void setIncludeDefaultConfig(boolean includeDefaultConfig)
-    {
-        this.includeDefaultConfig = includeDefaultConfig;
-    }
-
-    /**
-     * Do we prefix the list of Configurators with a default to read the system
-     * dwr.xml file?
-     * @return The current includeDefaultConfig status
-     */
-    public boolean isIncludeDefaultConfig()
-    {
-        return includeDefaultConfig;
-    }
-
-    /**
-     * Call <code>ServletLoggingOutput.setExecutionContext()</code> and
-     * <code>ServletLoggingOutput.setLevel()</code>
-     * @param servlet The HttpServlet to push log messages to
-     */
-    public void setServletLoggingOutput(HttpServlet servlet)
-    {
-        ServletLoggingOutput.setExecutionContext(servlet);
-        String logLevel = servletConfig.getInitParameter(INIT_LOGLEVEL);
-        if (logLevel != null)
-        {
-            ServletLoggingOutput.setLevel(logLevel);
-        }
-    }
-
-    /**
-     * Match for <code>setServletLoggingOutput()</code> that calls
-     * <code>ServletLoggingOutput.unsetExecutionContext()</code>
-     */
-    public void unsetServletLoggingOutput()
-    {
-        ServletLoggingOutput.unsetExecutionContext();
-    }
-
-    /**
-     * Proxy to <code>WebContextBuilder.set()</code>.
-     * @param request The HTTP request
-     * @param response The HTTP response
-     */
-    public void initWebContextBuilder(HttpServletRequest request, HttpServletResponse response)
-    {
-        // And we lace it with the context so far to help init go smoothly
-        webContextBuilder.set(request, response, servletConfig, servletContext, container);
-    }
-
-    /**
-     * Proxy to <code>WebContextBuilder.unset()</code>.
-     */
-    public void deinitWebContextBuilder()
-    {
-        webContextBuilder.unset();
-    }
-
-    /**
-     * Accessor for the list of Configurators the we configure ourselves using
-     * @param configurators New list of configurators
-     */
-    public void setConfigurators(List configurators)
-    {
-        this.configurators = configurators;
-    }
-
-    /**
-     * Accessor for the list of Configurators the we configure ourselves using
-     * @return the list of configurators
-     */
-    public List getConfigurators()
-    {
-        return configurators;
-    }
-
-    /**
-     * Add the system configurator to the start of the list of configurators
-     * @throws SAXException If the config file parse fails
-     * @throws ParserConfigurationException If the config file parse fails
-     * @throws IOException If the config file read fails
-     */
-    public void addSystemConfigurator() throws IOException, ParserConfigurationException, SAXException
-    {
-        if (configurators == null)
-        {
-            configurators = new ArrayList();
-        }
-
-        // Do we need to include the default system configuration?
-        if (includeDefaultConfig)
-        {
-            DwrXmlConfigurator system = new DwrXmlConfigurator();
-            system.setClassResourceName(Constants.FILE_DWR_XML);
-            configurators.add(0, system);
+            String name = (String) en.nextElement();
+            String value = servletConfig.getInitParameter(name);
+            defaultContainer.addParameter(name, value);
         }
     }
 
     /**
      * Add configurators from init params to the end of the list of
      * configurators.
+     * @param container The container to configure
+     * @param servletConfig The source of init parameters
      * @return true if any Configurators were read
      * @throws SAXException If the config file parse fails
      * @throws ParserConfigurationException If the config file parse fails
      * @throws IOException If the config file read fails
      */
-    public boolean addConfiguratorsFromInitParams() throws IOException, ParserConfigurationException, SAXException
+    public static boolean configureUsingInitParams(Container container, ServletConfig servletConfig) throws IOException, ParserConfigurationException, SAXException
     {
-        if (configurators == null)
-        {
-            configurators = new ArrayList();
-        }
-
         Enumeration en = servletConfig.getInitParameterNames();
         boolean foundConfig = false;
         while (en.hasMoreElements())
@@ -310,7 +132,7 @@ public class ServletHelper
 
                 DwrXmlConfigurator local = new DwrXmlConfigurator();
                 local.setServletResourceName(configFile);
-                configurators.add(local);
+                local.configure(container);
             }
         }
 
@@ -318,32 +140,11 @@ public class ServletHelper
     }
 
     /**
-     * Add the default web-app level configurator to the end of the list of
-     * configurators.
-     * @throws SAXException If the config file parse fails
-     * @throws ParserConfigurationException If the config file parse fails
-     * @throws IOException If the config file read fails
-     */
-    public void addDefaultDwrXmlConfigurator() throws IOException, ParserConfigurationException, SAXException
-    {
-        if (configurators == null)
-        {
-            configurators = new ArrayList();
-        }
-
-        String skip = servletConfig.getInitParameter(INIT_SKIP_DEFAULT);
-        if (!Boolean.valueOf(skip).booleanValue())
-        {
-            DwrXmlConfigurator local = new DwrXmlConfigurator();
-            local.setServletResourceName(Constants.DEFAULT_DWR_XML);
-            configurators.add(local);
-        }
-    }
-
-    /**
      * Allow all the configurators to have a go at the container in turn
+     * @param container The container to configure
+     * @param configurators A list of configurators to run against the container
      */
-    public void configure()
+    public static void configure(Container container, List configurators)
     {
         // Allow all the configurators to have a go
         for (Iterator it = configurators.iterator(); it.hasNext();)
@@ -356,9 +157,10 @@ public class ServletHelper
     }
 
     /**
-     * 
+     * Create a bunch of debug information about a container
+     * @param container The container to print debug information about
      */
-    public void debugConfig()
+    public static void debugConfig(Container container)
     {
         if (log.isDebugEnabled())
         {
@@ -409,53 +211,6 @@ public class ServletHelper
             }
         }
     }
-
-    /**
-     * Process a GET or POST request from a web browser.
-     * @param request The HTTP request
-     * @param response The HTTP response
-     * @throws IOException From <code>processor.handle()</code>
-     */
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
-    {
-        processor.handle(request, response);
-    }
-
-    /**
-     * The list of classes that configurate DWR
-     */
-    private List configurators = new ArrayList();
-
-    /**
-     * Do we prefix the list of Configurators with a default to read the system
-     * dwr.xml file?
-     */
-    private boolean includeDefaultConfig = true;
-
-    /**
-     * The processor will actually handle the http requests
-     */
-    protected UrlProcessor processor;
-
-    /**
-     * The WebContext that keeps http objects local to a thread
-     */
-    protected WebContextBuilder webContextBuilder;
-
-    /**
-     * The IoC container
-     */
-    protected Container container;
-
-    /**
-     * The fake ServletConfig
-     */
-    private ServletConfig servletConfig;
-
-    /**
-     * The real ServletContext
-     */
-    protected ServletContext servletContext;
 
     /**
      * Init parameter: Set a dwr.xml config file.

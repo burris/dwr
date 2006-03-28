@@ -6,7 +6,7 @@ function init() {
 function sendMessage() {
   var text = DWRUtil.getValue("text");
   DWRUtil.setValue("text", "");
-  Chat.addMessage(text, receiveMessages);
+  Chat.addMessage(text);
 }
 
 function receiveMessages(messages) {

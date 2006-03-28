@@ -45,11 +45,11 @@ public interface ScriptSessionManager
     /**
      * For a given script session id, either create a new ScriptSession object
      * or retrieve an existing one if one exists.
-     * @param url The URL including 'http://', up to (but not including) '?' or '#' 
      * @param id The id to get a ScriptSession object for
+     * @param url The URL including 'http://', up to (but not including) '?' or '#' 
      * @return A ScriptSession.
      */
-    ScriptSession getScriptSession(String url, String id);
+    ScriptSession getScriptSession(String id, String url);
 
     /**
      * Accessor for the time (in milliseconds) when unused ScriptSessions will expire

@@ -168,143 +168,157 @@ public class DefaultRemoter implements Remoter
         for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
         {
             Call call = calls.getCall(callNum);
-
-            try
-            {
-                Method method = call.getMethod();
-
-                // Get a list of the available matching methods with the coerced
-                // parameters that we will use to call it if we choose to use that
-                // method.
-                Creator creator = creatorManager.getCreator(call.getScriptName());
-
-                // Get ourselves an object to execute a method on unless the
-                // method is static
-                Object object = null;
-                String scope = creator.getScope();
-                boolean create = false;
-
-                if (!Modifier.isStatic(method.getModifiers()))
-                {
-                    WebContext webcx = WebContextFactory.get();
-
-                    // Check the various scopes to see if it is there
-                    if (scope.equals(Creator.APPLICATION))
-                    {
-                        object = webcx.getServletContext().getAttribute(call.getScriptName());
-                    }
-                    else if (scope.equals(Creator.SESSION))
-                    {
-                        object = webcx.getSession().getAttribute(call.getScriptName());
-                    }
-                    else if (scope.equals(Creator.SCRIPT))
-                    {
-                        object = webcx.getScriptSession().getAttribute(call.getScriptName());
-                    }
-                    else if (scope.equals(Creator.REQUEST))
-                    {
-                        object = webcx.getHttpServletRequest().getAttribute(call.getScriptName());
-                    }
-                    // Creator.PAGE scope means we create one every time anyway
-
-                    // If we don't have an object the call the creator
-                    if (object == null)
-                    {
-                        create = true;
-                        object = creator.getInstance();
-                    }
-
-                    // We might need to remember it for next time
-                    if (scope.equals(Creator.APPLICATION))
-                    {
-                        webcx.getServletContext().setAttribute(call.getScriptName(), object);
-                    }
-                    else if (scope.equals(Creator.SESSION))
-                    {
-                        webcx.getSession().setAttribute(call.getScriptName(), object);
-                    }
-                    else if (scope.equals(Creator.SCRIPT))
-                    {
-                        webcx.getScriptSession().setAttribute(call.getScriptName(), object);
-                    }
-                    else if (scope.equals(Creator.REQUEST))
-                    {
-                        webcx.getHttpServletRequest().setAttribute(call.getScriptName(), object);
-                    }
-                    // Creator.PAGE scope means we create one every time anyway
-                }
-
-                // Some debug
-                log.info("Exec[" + callNum + "]: " + call.getScriptName() + "." + call.getMethodName() + "()"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                if (log.isDebugEnabled())
-                {
-                    StringBuffer buffer = new StringBuffer();
-
-                    if (create)
-                    {
-                        buffer.append("--Object created, "); //$NON-NLS-1$
-                        if (!scope.equals(Creator.PAGE))
-                        {
-                            buffer.append(" stored in "); //$NON-NLS-1$
-                            buffer.append(scope);
-                        }
-                        else
-                        {
-                            buffer.append(" not stored"); //$NON-NLS-1$
-                        }
-                    }
-                    else
-                    {
-                        buffer.append("--Object found in "); //$NON-NLS-1$
-                        buffer.append(scope);
-                    }
-                    buffer.append(". "); //$NON-NLS-1$
-
-                    // It would be good to debug the params but it's not easy
-                    //buffer.append("Call params ("); //$NON-NLS-1$
-                    //for (int j = 0; j < inctx.getParameterCount(callNum); j++)
-                    //{
-                    //    if (j != 0)
-                    //    {
-                    //        buffer.append(", "); //$NON-NLS-1$
-                    //    }
-                    //    InboundVariable param = inctx.getParameter(callNum, j);
-                    //    buffer.append(param.toString());
-                    //}
-                    //buffer.append(") "); //$NON-NLS-1$
-
-                    buffer.append("id="); //$NON-NLS-1$
-                    buffer.append(call.getId());
-
-                    log.debug(buffer.toString());
-                }
-
-                // Execute the filter chain method.toString()
-                final Iterator it = ajaxFilterManager.getAjaxFilters(call.getScriptName());
-                AjaxFilterChain chain = new AjaxFilterChain()
-                {
-                    public Object doFilter(Object obj, Method meth, Object[] p) throws Exception
-                    {
-                        AjaxFilter next = (AjaxFilter) it.next();
-                        return next.doFilter(obj, meth, p, this);
-                    }
-                };
-                Object reply = chain.doFilter(object, method, call.getParameters());
-                replies.addReply(new Reply(call.getId(), reply));
-            }
-            catch (InvocationTargetException ex)
-            {
-                log.warn("Method execution failed: ", ex.getTargetException()); //$NON-NLS-1$
-                replies.addReply(new Reply(call.getId(), null, ex.getTargetException()));
-            }
-            catch (Exception ex)
-            {
-                log.warn("Method execution failed: ", ex); //$NON-NLS-1$
-                replies.addReply(new Reply(call.getId(), null, ex));
-            }
+            Reply reply = execute(call);
+            replies.addReply(reply);
         }
 
         return replies;
+    }
+
+    /**
+     * Execute a single call object
+     * @param call The call to execute
+     * @return A Reply to the Call
+     */
+    private Reply execute(Call call)
+    {
+        try
+        {
+            Method method = call.getMethod();
+            if (method == null)
+            {
+                return new Reply(call.getId(), null, call.getException());
+            }
+
+            // Get a list of the available matching methods with the coerced
+            // parameters that we will use to call it if we choose to use that
+            // method.
+            Creator creator = creatorManager.getCreator(call.getScriptName());
+
+            // Get ourselves an object to execute a method on unless the
+            // method is static
+            Object object = null;
+            String scope = creator.getScope();
+            boolean create = false;
+
+            if (!Modifier.isStatic(method.getModifiers()))
+            {
+                WebContext webcx = WebContextFactory.get();
+
+                // Check the various scopes to see if it is there
+                if (scope.equals(Creator.APPLICATION))
+                {
+                    object = webcx.getServletContext().getAttribute(call.getScriptName());
+                }
+                else if (scope.equals(Creator.SESSION))
+                {
+                    object = webcx.getSession().getAttribute(call.getScriptName());
+                }
+                else if (scope.equals(Creator.SCRIPT))
+                {
+                    object = webcx.getScriptSession().getAttribute(call.getScriptName());
+                }
+                else if (scope.equals(Creator.REQUEST))
+                {
+                    object = webcx.getHttpServletRequest().getAttribute(call.getScriptName());
+                }
+                // Creator.PAGE scope means we create one every time anyway
+
+                // If we don't have an object the call the creator
+                if (object == null)
+                {
+                    create = true;
+                    object = creator.getInstance();
+                }
+
+                // We might need to remember it for next time
+                if (scope.equals(Creator.APPLICATION))
+                {
+                    webcx.getServletContext().setAttribute(call.getScriptName(), object);
+                }
+                else if (scope.equals(Creator.SESSION))
+                {
+                    webcx.getSession().setAttribute(call.getScriptName(), object);
+                }
+                else if (scope.equals(Creator.SCRIPT))
+                {
+                    webcx.getScriptSession().setAttribute(call.getScriptName(), object);
+                }
+                else if (scope.equals(Creator.REQUEST))
+                {
+                    webcx.getHttpServletRequest().setAttribute(call.getScriptName(), object);
+                }
+                // Creator.PAGE scope means we create one every time anyway
+            }
+
+            // Some debug
+            log.info("Exec: " + call.getScriptName() + "." + call.getMethodName() + "()"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            if (log.isDebugEnabled())
+            {
+                StringBuffer buffer = new StringBuffer();
+
+                if (create)
+                {
+                    buffer.append("--Object created, "); //$NON-NLS-1$
+                    if (!scope.equals(Creator.PAGE))
+                    {
+                        buffer.append(" stored in "); //$NON-NLS-1$
+                        buffer.append(scope);
+                    }
+                    else
+                    {
+                        buffer.append(" not stored"); //$NON-NLS-1$
+                    }
+                }
+                else
+                {
+                    buffer.append("--Object found in "); //$NON-NLS-1$
+                    buffer.append(scope);
+                }
+                buffer.append(". "); //$NON-NLS-1$
+
+                // It would be good to debug the params but it's not easy
+                //buffer.append("Call params ("); //$NON-NLS-1$
+                //for (int j = 0; j < inctx.getParameterCount(callNum); j++)
+                //{
+                //    if (j != 0)
+                //    {
+                //        buffer.append(", "); //$NON-NLS-1$
+                //    }
+                //    InboundVariable param = inctx.getParameter(callNum, j);
+                //    buffer.append(param.toString());
+                //}
+                //buffer.append(") "); //$NON-NLS-1$
+
+                buffer.append("id="); //$NON-NLS-1$
+                buffer.append(call.getId());
+
+                log.debug(buffer.toString());
+            }
+
+            // Execute the filter chain method.toString()
+            final Iterator it = ajaxFilterManager.getAjaxFilters(call.getScriptName());
+            AjaxFilterChain chain = new AjaxFilterChain()
+            {
+                public Object doFilter(Object obj, Method meth, Object[] p) throws Exception
+                {
+                    AjaxFilter next = (AjaxFilter) it.next();
+                    return next.doFilter(obj, meth, p, this);
+                }
+            };
+            Object reply = chain.doFilter(object, method, call.getParameters());
+            return new Reply(call.getId(), reply);
+        }
+        catch (InvocationTargetException ex)
+        {
+            log.warn("Method execution failed: ", ex.getTargetException()); //$NON-NLS-1$
+            return new Reply(call.getId(), null, ex.getTargetException());
+        }
+        catch (Exception ex)
+        {
+            log.warn("Method execution failed: ", ex); //$NON-NLS-1$
+            return new Reply(call.getId(), null, ex);
+        }
     }
 
     /**

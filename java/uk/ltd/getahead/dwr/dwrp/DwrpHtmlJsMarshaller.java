@@ -15,6 +15,9 @@
  */
 package uk.ltd.getahead.dwr.dwrp;
 
+import java.io.PrintWriter;
+
+import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.MimeConstants;
 
 /**
@@ -34,20 +37,34 @@ public class DwrpHtmlJsMarshaller extends DwrpPlainJsMarshaller
 
     /**
      * iframe mode starts as HTML, so get into script mode
-     * @return A script prefix
+     * @param out The stream to write to
      */
-    protected String getOutboundScriptPrefix()
+    protected void sendOutboundScriptPrefix(PrintWriter out)
     {
-        return "<script type='text/javascript'>\n"; //$NON-NLS-1$
+        out.println("<script type='text/javascript'>\n"); //$NON-NLS-1$
     }
 
     /**
      * iframe mode needs to get out of script mode
-     * @return A script suffix
+     * @param out The stream to write to
      */
-    protected String getOutboundScriptSuffix()
+    protected void sendOutboundScriptSuffix(PrintWriter out)
     {
-        return "</script>\n"; //$NON-NLS-1$
+        out.println("</script>\n"); //$NON-NLS-1$
+    }
+
+    /**
+     * Send a script to the browser
+     * @param out The stream to write to
+     * @param script The script to send
+     */
+    protected void sendScript(PrintWriter out, String script)
+    {
+        synchronized (out)
+        {
+            String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
+            out.println(modScript);
+        }
     }
 
     /**

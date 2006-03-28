@@ -23,8 +23,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uk.ltd.getahead.dwr.Constants;
+import uk.ltd.getahead.dwr.WebContextBuilder;
+import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.impl.DefaultContainer;
+import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
 import uk.ltd.getahead.dwr.util.Logger;
+import uk.ltd.getahead.dwr.util.ServletLoggingOutput;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -53,26 +58,46 @@ public class DwrServlet extends HttpServlet
     {
         super.init(config);
 
+        container = new DefaultContainer();
         try
         {
-            servletHelper.setServletConfig(config);
-            servletHelper.setServletLoggingOutput(this);
-
-            DefaultContainer defaultContainer = new DefaultContainer();
-            servletHelper.configureDefaultContainer(defaultContainer);
-            servletHelper.initContainer(defaultContainer);
-
-            servletHelper.initWebContextBuilder(null, null);
-
-            // Load the configurators
-            servletHelper.addSystemConfigurator();
-            boolean foundConfig = servletHelper.addConfiguratorsFromInitParams();
-            if (!foundConfig)
+            // Setup logging
+            ServletLoggingOutput.setExecutionContext(this);
+            String logLevel = config.getInitParameter(ServletHelper.INIT_LOGLEVEL);
+            if (logLevel != null)
             {
-                servletHelper.addDefaultDwrXmlConfigurator();
+                ServletLoggingOutput.setLevel(logLevel);
             }
 
-            servletHelper.configure();
+            ServletHelper.configureDefaults(container);
+            ServletHelper.configureFromServletConfig(container, config);
+            container.configurationFinished();
+
+            // Cached to save looking them up
+            webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
+            processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+
+            // Now we have set the implementations we can set the WebContext up
+            WebContextFactory.setWebContextBuilder(webContextBuilder);
+
+            webContextBuilder.set(null, null, getServletConfig(), getServletContext(), container);
+
+            // The dwr.xml from within the JAR file.
+            DwrXmlConfigurator system = new DwrXmlConfigurator();
+            system.setClassResourceName(Constants.FILE_DWR_XML);
+            system.configure(container);
+
+            // dwr.xml files specified in the web.xml
+            boolean foundConfig = ServletHelper.configureUsingInitParams(container, config);
+
+            // The default dwr.xml file that sits by web.xml
+            boolean skip = Boolean.valueOf(config.getInitParameter(ServletHelper.INIT_SKIP_DEFAULT)).booleanValue();
+            if (!foundConfig && !skip)
+            {
+                DwrXmlConfigurator local = new DwrXmlConfigurator();
+                local.setServletResourceName(Constants.DEFAULT_DWR_XML);
+                local.configure(container);
+            }
         }
         catch (Exception ex)
         {
@@ -81,10 +106,10 @@ public class DwrServlet extends HttpServlet
         }
         finally
         {
-            servletHelper.deinitWebContextBuilder();
-            servletHelper.unsetServletLoggingOutput();
+            webContextBuilder.unset();
+            ServletLoggingOutput.unsetExecutionContext();
 
-            servletHelper.debugConfig();
+            ServletHelper.debugConfig(container);
         }
     }
 
@@ -103,22 +128,32 @@ public class DwrServlet extends HttpServlet
     {
         try
         {
-            servletHelper.initWebContextBuilder(request, response);
-            servletHelper.setServletLoggingOutput(this);
-            servletHelper.handle(request, response);
+            webContextBuilder.set(request, response, getServletConfig(), getServletContext(), container);
+            ServletLoggingOutput.setExecutionContext(this);
+
+            processor.handle(request, response);
         }
         finally
         {
-            servletHelper.deinitWebContextBuilder();
-            servletHelper.unsetServletLoggingOutput();
+            webContextBuilder.unset();
+            ServletLoggingOutput.unsetExecutionContext();
         }
     }
 
     /**
-     * We'd like to inherit from this but the broken servlet spec and lack of
-     * multiple inheritance prevents us.
+     * The processor will actually handle the http requests
      */
-    private ServletHelper servletHelper = new ServletHelper();
+    protected UrlProcessor processor;
+
+    /**
+     * The WebContext that keeps http objects local to a thread
+     */
+    protected WebContextBuilder webContextBuilder;
+
+    /**
+     * Our IoC container
+     */
+    protected DefaultContainer container;
 
     /**
      * The log stream

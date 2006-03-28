@@ -1,4 +1,6 @@
 
+Audit all MarshallExceptions - they could go to the client
+
 server side dom objects that are auto-inserted – c.f. Oracle ADF. See Mats posting
 
 accessibility

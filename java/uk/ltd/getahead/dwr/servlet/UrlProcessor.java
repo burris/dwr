@@ -28,12 +28,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import uk.ltd.getahead.dwr.Calls;
 import uk.ltd.getahead.dwr.Constants;
+import uk.ltd.getahead.dwr.Container;
 import uk.ltd.getahead.dwr.DebugPageGenerator;
 import uk.ltd.getahead.dwr.Remoter;
 import uk.ltd.getahead.dwr.Replies;
+import uk.ltd.getahead.dwr.ScriptSessionManager;
+import uk.ltd.getahead.dwr.WebContextFactory;
 import uk.ltd.getahead.dwr.dwrp.DwrpConstants;
 import uk.ltd.getahead.dwr.dwrp.DwrpHtmlJsMarshaller;
 import uk.ltd.getahead.dwr.dwrp.DwrpPlainJsMarshaller;
+import uk.ltd.getahead.dwr.impl.DefaultScriptSessionManager;
 import uk.ltd.getahead.dwr.util.IdGenerator;
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.LocalUtil;
@@ -145,13 +149,27 @@ public class UrlProcessor
             {
                 doFile(request, response, DwrpConstants.FILE_UTIL, MimeConstants.MIME_JS, false);
             }
+            else if (pathInfo.startsWith(DwrpConstants.PATH_STATUS))
+            {
+                Container container = WebContextFactory.get().getContainer();
+                ScriptSessionManager manager = (ScriptSessionManager) container.getBean(ScriptSessionManager.class.getName());
+                if (manager instanceof DefaultScriptSessionManager)
+                {
+                    DefaultScriptSessionManager dssm = (DefaultScriptSessionManager) manager;
+                    dssm.debug();
+                }
+            }
             else
             {
                 log.warn("Page not found (" + pathInfo + "). In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$ //$NON-NLS-2$
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
         }
-        catch (Exception ex)
+        catch (IOException ex)
+        {
+            throw ex;
+        }
+        catch (SecurityException ex)
         {
             // This only catches exceptions parsing the request. All execution
             // exceptions are returned inside the Call POJOs.

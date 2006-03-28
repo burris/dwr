@@ -29,7 +29,12 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
+import uk.ltd.getahead.dwr.Constants;
+import uk.ltd.getahead.dwr.WebContextBuilder;
+import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
 import uk.ltd.getahead.dwr.servlet.ServletHelper;
+import uk.ltd.getahead.dwr.servlet.UrlProcessor;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -47,11 +52,19 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
     {
         try
         {
-            SpringContainer container = new SpringContainer();
+            container = new SpringContainer();
             container.setBeanFactory(beanFactory);
 
-            servletHelper.configureDefaultContainer(container);
-            servletHelper.initContainer(container);
+            ServletHelper.configureDefaults(container);
+            ServletHelper.configureFromServletConfig(container, getServletConfig());
+            container.configurationFinished();
+
+            // Cached to save looking them up
+            webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
+            processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+
+            // Now we have set the implementations we can set the WebContext up
+            WebContextFactory.setWebContextBuilder(webContextBuilder);
         }
         catch (InstantiationException ex)
         {
@@ -70,7 +83,7 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
      */
     public void setConfigurators(List configurators)
     {
-        servletHelper.setConfigurators(configurators);
+        this.configurators = configurators;
     }
 
     /**
@@ -80,7 +93,7 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
      */
     public void setIncludeDefaultConfig(boolean includeDefaultConfig)
     {
-        servletHelper.setIncludeDefaultConfig(includeDefaultConfig);
+        this.includeDefaultConfig = includeDefaultConfig;
     }
 
     /* (non-Javadoc)
@@ -92,14 +105,19 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
 
         try
         {
-            servletHelper.setServletConfig(config);
-            servletHelper.initWebContextBuilder(null, null);
+            webContextBuilder.set(null, null, getServletConfig(), getServletContext(), container);
 
-            // Load the configurators
-            servletHelper.addSystemConfigurator();
-            servletHelper.addConfiguratorsFromInitParams();
+            // Load the dwr.xml from within the JAR file.
+            if (includeDefaultConfig)
+            {
+                DwrXmlConfigurator system = new DwrXmlConfigurator();
+                system.setClassResourceName(Constants.FILE_DWR_XML);
+                system.configure(container);
+            }
 
-            servletHelper.configure();
+            ServletHelper.configureUsingInitParams(container, config);
+
+            ServletHelper.configure(container, configurators);
         }
         catch (Exception ex)
         {
@@ -108,9 +126,9 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
         }
         finally
         {
-            servletHelper.deinitWebContextBuilder();
+            webContextBuilder.unset();
 
-            servletHelper.debugConfig();
+            ServletHelper.debugConfig(container);
         }
     }
 
@@ -129,20 +147,40 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
     {
         try
         {
-            servletHelper.initWebContextBuilder(request, response);
-            servletHelper.handle(request, response);
+            webContextBuilder.set(request, response, getServletConfig(), getServletContext(), container);
+            processor.handle(request, response);
         }
         finally
         {
-            servletHelper.deinitWebContextBuilder();
+            webContextBuilder.unset();
         }
     }
 
     /**
-     * We'd like to inherit from this but the broken servlet spec and lack of
-     * multiple inheritance prevents us.
+     * DWRs IoC container (that passes stuff to Spring in this case)
      */
-    private ServletHelper servletHelper = new ServletHelper();
+    private SpringContainer container;
+
+    /**
+     * The processor will actually handle the http requests
+     */
+    protected UrlProcessor processor;
+
+    /**
+     * The WebContext that keeps http objects local to a thread
+     */
+    protected WebContextBuilder webContextBuilder;
+
+    /**
+     * Do we prefix the list of Configurators with a default to read the system
+     * dwr.xml file?
+     */
+    private boolean includeDefaultConfig = true;
+
+    /**
+     * What Configurators exist for us to configure ourselves.
+     */
+    private List configurators;
 
     /**
      * The log stream

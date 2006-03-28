@@ -18,12 +18,15 @@ package uk.ltd.getahead.dwr.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import uk.ltd.getahead.dwr.ScriptSession;
 import uk.ltd.getahead.dwr.ScriptSessionManager;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * A default implmentation of ScriptSessionManager.
@@ -34,20 +37,24 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.ScriptSessionManager#getScriptSession(java.lang.String, java.lang.String)
      */
-    public ScriptSession getScriptSession(String page, String id)
+    public ScriptSession getScriptSession(String id, String page)
     {
         DefaultScriptSession session;
         boolean created = false;
 
-        synchronized (allSessions)
+        synchronized (sessionLock)
         {
-            session = (DefaultScriptSession) allSessions.get(id);    
+            session = (DefaultScriptSession) sessionMap.get(id);
             if (session == null)
             {
                 session = new DefaultScriptSession(id, this);
                 created = true;
 
-                allSessions.put(id, session);
+                sessionMap.put(id, session);
+            }
+            else
+            {
+                session.updateLastAccessedTime();
             }
         }
 
@@ -55,9 +62,16 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         // of something being in one map but not the other?
         if (created)
         {
-            synchronized (pageSessions)
+            synchronized (sessionLock)
             {
-                pageSessions.put(id, session);
+                Set pageSessions = (Set) pageSessionMap.get(page);
+                if (pageSessions == null)
+                {
+                    pageSessions = new HashSet();
+                    pageSessionMap.put(page, pageSessions);
+                }
+
+                pageSessions.add(session);
             }
         }
 
@@ -69,9 +83,15 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      */
     public Iterator getScriptSessionsByPage(String page)
     {
-        synchronized (pageSessions)
+        synchronized (sessionLock)
         {
-            return Collections.unmodifiableCollection(pageSessions.values()).iterator();
+            Set pageSessions = (Set) pageSessionMap.get(page);
+            if (pageSessions == null)
+            {
+                pageSessions = new HashSet();
+            }
+
+            return Collections.unmodifiableCollection(pageSessions).iterator();
         }
     }
 
@@ -80,9 +100,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      */
     public Iterator getAllScriptSessions()
     {
-        synchronized (allSessions)
+        synchronized (sessionLock)
         {
-            return Collections.unmodifiableCollection(allSessions.values()).iterator();
+            return Collections.unmodifiableCollection(sessionMap.values()).iterator();
         }
     }
 
@@ -95,14 +115,31 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     {
         // Can we think of a reason why we need to sync both together?
         // It feels like a deadlock risk to do so
-        synchronized (allSessions)
+        synchronized (sessionLock)
         {
-            allSessions.remove(session.getId());
-        }
+            ScriptSession removed = (ScriptSession) sessionMap.remove(session.getId());
 
-        synchronized (pageSessions)
-        {
-            pageSessions.remove(session.getId());
+            if (!session.equals(removed))
+            {
+                throw new IllegalStateException("Can't remove session from all sessons, session=" + session + " removed=" + removed); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+
+            int removeCount = 0;
+            for (Iterator it = pageSessionMap.values().iterator(); it.hasNext();)
+            {
+                Set pageSessions = (Set) it.next();
+                boolean isRemoved = pageSessions.remove(session);
+                
+                if (isRemoved)
+                {
+                    removeCount++;
+                }
+            }
+
+            if (removeCount != 1)
+            {
+                throw new IllegalStateException("Remove count=" + removeCount); //$NON-NLS-1$
+            }
         }
     }
 
@@ -115,9 +152,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         long now = System.currentTimeMillis();
         List timeouts = new ArrayList();
 
-        synchronized (allSessions)
+        synchronized (sessionLock)
         {
-            for (Iterator it = allSessions.values().iterator(); it.hasNext();)
+            for (Iterator it = sessionMap.values().iterator(); it.hasNext();)
             {
                 DefaultScriptSession session = (DefaultScriptSession) it.next();
 
@@ -152,15 +189,114 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         this.scriptSessionTimeout = timeout;
     }
 
+    /**
+     * Debug the current status
+     */
+    public void debug()
+    {
+        if (log.isDebugEnabled())
+        {
+            synchronized (sessionLock)
+            {
+                log.debug("DefaultScriptSessionManager containing the following sessions:"); //$NON-NLS-1$
+                for (Iterator sit = sessionMap.entrySet().iterator(); sit.hasNext();)
+                {
+                    Map.Entry idEntry = (Map.Entry) sit.next();
+                    String id = (String) idEntry.getKey();
+                    ScriptSession session = (ScriptSession) idEntry.getValue();
+    
+                    log.debug("- " + id + "=" + session); //$NON-NLS-1$ //$NON-NLS-2$
+    
+                    for (Iterator pit = pageSessionMap.entrySet().iterator(); pit.hasNext();)
+                    {
+                        Map.Entry pageEntry = (Map.Entry) pit.next();
+                        String page = (String) pageEntry.getKey();
+                        Set pageSessions = (Set) pageEntry.getValue();
+    
+                        if (pageSessions.contains(session))
+                        {
+                            log.debug("  - on page=" + page); //$NON-NLS-1$
+                        }
+                    }
+    
+                    if (session instanceof DefaultScriptSession)
+                    {
+                        DefaultScriptSession dss = (DefaultScriptSession) session;
+    
+                        log.debug("  - creationTime=" + dss.creationTime); //$NON-NLS-1$
+                        log.debug("  - lastAccessedTime=" + dss.lastAccessedTime); //$NON-NLS-1$
+    
+                        // Debug the attributes
+                        if (dss.attributes.size() == 0)
+                        {
+                            log.debug("  - no attributes"); //$NON-NLS-1$
+                        }
+                        else
+                        {
+                            log.debug("  - with attributes:"); //$NON-NLS-1$
+                            for (Iterator it = dss.attributes.entrySet().iterator(); it.hasNext();)
+                            {
+                                Map.Entry entry = (Map.Entry) it.next();
+                                log.debug("    - " + entry.getKey() + "=" + entry.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+                            }
+                        }
+    
+                        // Debug the Conduits
+                        if (dss.conduits.size() == 0)
+                        {
+                            log.debug("  - no conduits"); //$NON-NLS-1$
+                        }
+                        else
+                        {
+                            log.debug("  - with conduits:"); //$NON-NLS-1$
+                            for (Iterator it = dss.conduits.iterator(); it.hasNext();)
+                            {
+                                log.debug("    - " + it.next()); //$NON-NLS-1$
+                            }
+                        }
+    
+                        // Debug the Scripts
+                        if (dss.scripts.size() == 0)
+                        {
+                            log.debug("  - no waiting scripts"); //$NON-NLS-1$
+                        }
+                        else
+                        {
+                            log.debug("  - with waiting scripts:"); //$NON-NLS-1$
+                            for (Iterator it = dss.scripts.iterator(); it.hasNext();)
+                            {
+                                log.debug("    - " + it.next()); //$NON-NLS-1$
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * How long do we wait before we timeout script sessions?
+     */
     private long scriptSessionTimeout = DEFAULT_TIMEOUT_MILLIS;
+
+    /**
+     * What we synchronize against when we want to access either sessionMap or
+     * pageSessionMap
+     */
+    private final Object sessionLock = new Object();
 
     /**
      * The map of all the known sessions
      */
-    private Map allSessions = new HashMap();
+    private Map sessionMap = new HashMap();
 
     /**
      * The map of pages that have sessions
      */
-    private Map pageSessions = new HashMap();
+    private Map pageSessionMap = new HashMap();
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DefaultScriptSessionManager.class);
 }

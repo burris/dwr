@@ -16,6 +16,7 @@
 package uk.ltd.getahead.dwr.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 import uk.ltd.getahead.dwr.ScriptConduit;
 import uk.ltd.getahead.dwr.ScriptSession;
+import uk.ltd.getahead.dwr.util.Logger;
 
 /**
  * An implementation of ScriptSession.
@@ -38,6 +40,11 @@ public class DefaultScriptSession implements ScriptSession
     protected DefaultScriptSession(String id, DefaultScriptSessionManager manager)
     {
         this.id = id;
+        if (id == null)
+        {
+            throw new IllegalArgumentException("id can not be null"); //$NON-NLS-1$
+        }
+
         this.manager = manager;
         this.creationTime = System.currentTimeMillis();
         this.lastAccessedTime = creationTime;
@@ -120,26 +127,22 @@ public class DefaultScriptSession implements ScriptSession
     public void addScript(String script)
     {
         checkNotInvalidated();
-        boolean handledDirectly = false;
 
         // First we try to add the script to an existing conduit
-        synchronized (conduits)
+        synchronized (scriptLock)
         {
             if (conduits.size() > 0)
             {
                 ScriptConduit conduit = (ScriptConduit) conduits.get(0);
                 conduit.addScript(script);
 
-                handledDirectly = true;
+                log.debug("Added script to conduit: " + conduit); //$NON-NLS-1$
             }
-        }
-
-        // But if that doesn't work we dump it to a list for later
-        if (!handledDirectly)
-        {
-            synchronized (scripts)
+            else
             {
                 scripts.add(script);
+
+                log.debug("Added script to temp store: id=" + id); //$NON-NLS-1$
             }
         }
     }
@@ -179,9 +182,13 @@ public class DefaultScriptSession implements ScriptSession
     {
         checkNotInvalidated();
 
-        // If there are any outstanding scripts, dump them to the new conduit
-        synchronized (scripts)
+        // And add the conduit into the list
+        synchronized (scriptLock)
         {
+            conduits.add(conduit);
+            log.debug("Adding " + conduit.toString()); //$NON-NLS-1$
+
+            // If there are any outstanding scripts, dump them to the new conduit
             for (Iterator it = scripts.iterator(); it.hasNext();)
             {
                 String script = (String) it.next();
@@ -189,12 +196,6 @@ public class DefaultScriptSession implements ScriptSession
             }
 
             scripts.clear();
-        }
-
-        // And add the conduit into the list
-        synchronized (conduits)
-        {
-            conduits.add(conduit);
         }
     }
 
@@ -205,10 +206,70 @@ public class DefaultScriptSession implements ScriptSession
     {
         checkNotInvalidated();
 
-        synchronized (conduits)
+        synchronized (scriptLock)
         {
-            conduits.remove(conduit);
+            boolean removed = conduits.remove(conduit);
+            if (!removed)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Missing ScriptConduit: " + conduit + ". We do know about:"); //$NON-NLS-1$ //$NON-NLS-2$
+                    for (Iterator it = conduits.iterator(); it.hasNext();)
+                    {
+                        ScriptConduit c = (ScriptConduit) it.next();
+                        log.debug("- " + c); //$NON-NLS-1$
+                    }
+                }
+
+                throw new IllegalStateException("Attempt to remove unattached ScriptConduit: " + conduit); //$NON-NLS-1$
+            }
         }
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode()
+    {
+        return 572 + id.hashCode();
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+
+        if (obj == this)
+        {
+            return true;
+        }
+
+        if (!this.getClass().equals(obj.getClass()))
+        {
+            return false;
+        }
+
+        DefaultScriptSession that = (DefaultScriptSession) obj;
+
+        if (!this.id.equals(that.id))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        return "DefaultScriptSession[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -244,10 +305,21 @@ public class DefaultScriptSession implements ScriptSession
     /**
      * The server side attributes for this page
      */
-    protected Map attributes = new HashMap();
+    protected Map attributes = Collections.synchronizedMap(new HashMap());
 
     /**
      * The session manager that collects sessions together
      */
     protected DefaultScriptSessionManager manager;
+
+    /**
+     * The object that we use to synchronize against when we want to alter
+     * the path of scripts (to conduits or the scripts list)
+     */
+    private final Object scriptLock = new Object();
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DefaultScriptSession.class);
 }

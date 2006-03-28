@@ -141,7 +141,7 @@ DWREngine.defaultMessageHandler = function(message) {
   }
   else {
     // Ignore NS_ERROR_NOT_AVAILABLE
-    if (message.indexOf("0x80040111") == -1) {
+    if (message.toString().indexOf("0x80040111") == -1) {
       alert(message);
     }
   }
@@ -394,6 +394,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   // Add in the page and session ids
   DWREngine._batch.map.httpSessionId = DWREngine._httpSessionId;
   DWREngine._batch.map.scriptSessionId = DWREngine._scriptSessionId;
+  DWREngine._batch.map.page = window.location.href;
 
   DWREngine._batch.map[prefix + "scriptName"] = scriptName;
   DWREngine._batch.map[prefix + "methodName"] = methodName;
@@ -429,14 +430,15 @@ DWREngine._poll = function(overridePath) {
     map:{
       callCount:1,
       'c0-scriptName':'DWRSystem',
-      'c0-methodName':'poll',
+      'c0-methodName':'pollWithIframe',
+      //'c0-methodName':'pollWithXhr',
       'c0-id':id,
       httpSessionId:DWREngine._httpSessionId,
       scriptSessionId:DWREngine._scriptSessionId,
       page:window.location.href
     },
-    // method:DWREngine.IFrame,
-    method:DWREngine.XMLHttpRequest,
+    method:DWREngine.IFrame,
+    //method:DWREngine.XMLHttpRequest,
     verb:"POST",
     async:true,
     paramCount:0,
@@ -726,6 +728,13 @@ DWREngine._handleServerError = function(id, error) {
     DWREngine._handleMetaDataError(handlers, error);
   }
 };
+
+/**
+ * @private This is a hack to make the context be this window
+ */
+DWREngine._eval = function(script) {
+  return eval(script);
+}
 
 /**
  * @private Called as a result of a request timeout

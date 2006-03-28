@@ -20,10 +20,29 @@ import java.lang.reflect.Method;
 /**
  * Call is a POJO to encapsulate the information required to make a single java
  * call, including the result of the call (either returned data or exception).
+ * Either the Method and Parameters should be filled in to allow a call to be
+ * made or, the exception should be filled in indicating that things have gone
+ * wrong already.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Call
 {
+    /**
+     * @return the exception
+     */
+    public Throwable getException()
+    {
+        return exception;
+    }
+
+    /**
+     * @param exception the exception to set
+     */
+    public void setException(Throwable exception)
+    {
+        this.exception = exception;
+    }
+
     /**
      * @return the method
      */
@@ -110,7 +129,9 @@ public class Call
 
     private String methodName = null;
 
-    private Method method;
+    private Method method = null;
 
-    private Object[] parameters;
+    private Object[] parameters = null;
+
+    private Throwable exception = null;
 }
