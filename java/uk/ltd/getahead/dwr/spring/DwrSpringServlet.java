@@ -32,8 +32,8 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.WebContextBuilder;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.impl.ContainerUtil;
 import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
-import uk.ltd.getahead.dwr.servlet.ServletHelper;
 import uk.ltd.getahead.dwr.servlet.UrlProcessor;
 import uk.ltd.getahead.dwr.util.Logger;
 
@@ -55,8 +55,8 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
             container = new SpringContainer();
             container.setBeanFactory(beanFactory);
 
-            ServletHelper.configureDefaults(container);
-            ServletHelper.configureFromServletConfig(container, getServletConfig());
+            ContainerUtil.setupDefaults(container);
+            ContainerUtil.setupFromServletConfig(container, getServletConfig());
             container.configurationFinished();
 
             // Cached to save looking them up
@@ -115,9 +115,9 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
                 system.configure(container);
             }
 
-            ServletHelper.configureUsingInitParams(container, config);
+            ContainerUtil.configureUsingInitParams(container, config);
 
-            ServletHelper.configure(container, configurators);
+            ContainerUtil.configure(container, configurators);
         }
         catch (Exception ex)
         {
@@ -128,7 +128,7 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
         {
             webContextBuilder.unset();
 
-            ServletHelper.debugConfig(container);
+            ContainerUtil.debugConfig(container);
         }
     }
 

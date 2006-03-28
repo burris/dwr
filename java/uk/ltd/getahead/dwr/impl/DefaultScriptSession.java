@@ -135,14 +135,10 @@ public class DefaultScriptSession implements ScriptSession
             {
                 ScriptConduit conduit = (ScriptConduit) conduits.get(0);
                 conduit.addScript(script);
-
-                log.debug("Added script to conduit: " + conduit); //$NON-NLS-1$
             }
             else
             {
                 scripts.add(script);
-
-                log.debug("Added script to temp store: id=" + id); //$NON-NLS-1$
             }
         }
     }
@@ -186,7 +182,6 @@ public class DefaultScriptSession implements ScriptSession
         synchronized (scriptLock)
         {
             conduits.add(conduit);
-            log.debug("Adding " + conduit.toString()); //$NON-NLS-1$
 
             // If there are any outstanding scripts, dump them to the new conduit
             for (Iterator it = scripts.iterator(); it.hasNext();)

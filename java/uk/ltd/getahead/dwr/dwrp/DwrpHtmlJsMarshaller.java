@@ -15,7 +15,10 @@
  */
 package uk.ltd.getahead.dwr.dwrp;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServletResponse;
 
 import uk.ltd.getahead.dwr.util.JavascriptUtil;
 import uk.ltd.getahead.dwr.util.MimeConstants;
@@ -26,53 +29,50 @@ import uk.ltd.getahead.dwr.util.MimeConstants;
  */
 public class DwrpHtmlJsMarshaller extends DwrpPlainJsMarshaller
 {
-    /**
-     * iframe mode starts as HTML, so get into script mode
-     * @return A script prefix
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.dwrp.DwrpPlainJsMarshaller#getOutboundMimeType()
      */
     protected String getOutboundMimeType()
     {
         return MimeConstants.MIME_HTML;
     }
 
-    /**
-     * iframe mode starts as HTML, so get into script mode
-     * @param out The stream to write to
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.dwrp.DwrpPlainJsMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter, javax.servlet.http.HttpServletResponse)
      */
-    protected void sendOutboundScriptPrefix(PrintWriter out)
-    {
-        out.println("<script type='text/javascript'>\n"); //$NON-NLS-1$
-    }
-
-    /**
-     * iframe mode needs to get out of script mode
-     * @param out The stream to write to
-     */
-    protected void sendOutboundScriptSuffix(PrintWriter out)
-    {
-        out.println("</script>\n"); //$NON-NLS-1$
-    }
-
-    /**
-     * Send a script to the browser
-     * @param out The stream to write to
-     * @param script The script to send
-     */
-    protected void sendScript(PrintWriter out, String script)
+    protected void sendOutboundScriptPrefix(PrintWriter out, HttpServletResponse response) throws IOException
     {
         synchronized (out)
         {
-            String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\")"; //$NON-NLS-1$ //$NON-NLS-2$
-            out.println(modScript);
+            out.println("<html><body><script type='text/javascript'>"); //$NON-NLS-1$
+            out.flush();
+            response.flushBuffer();
         }
     }
 
-    /**
-     * Do we need to prefix variable declarations to be visible to another frame
-     * @return A declaration prefix
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.dwrp.DwrpPlainJsMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter, javax.servlet.http.HttpServletResponse)
      */
-    protected String getOutboundLinePrefix()
+    protected void sendOutboundScriptSuffix(PrintWriter out, HttpServletResponse response) throws IOException
     {
-        return "window.parent."; //$NON-NLS-1$
+        synchronized (out)
+        {
+            out.println("</script></body></html>"); //$NON-NLS-1$
+            out.flush();
+            response.flushBuffer();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ltd.getahead.dwr.dwrp.DwrpPlainJsMarshaller#sendScript(java.io.PrintWriter, javax.servlet.http.HttpServletResponse, java.lang.String)
+     */
+    protected void sendScript(PrintWriter out, HttpServletResponse response, String script) throws IOException
+    {
+        synchronized (out)
+        {
+            String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");"; //$NON-NLS-1$ //$NON-NLS-2$
+            out.println(modScript);
+            response.flushBuffer();
+        }
     }
 }

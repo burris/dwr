@@ -394,7 +394,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   // Add in the page and session ids
   DWREngine._batch.map.httpSessionId = DWREngine._httpSessionId;
   DWREngine._batch.map.scriptSessionId = DWREngine._scriptSessionId;
-  DWREngine._batch.map.page = window.location.href;
+  DWREngine._batch.map.page = window.location.pathname;
 
   DWREngine._batch.map[prefix + "scriptName"] = scriptName;
   DWREngine._batch.map[prefix + "methodName"] = methodName;
@@ -435,7 +435,7 @@ DWREngine._poll = function(overridePath) {
       'c0-id':id,
       httpSessionId:DWREngine._httpSessionId,
       scriptSessionId:DWREngine._scriptSessionId,
-      page:window.location.href
+      page:window.location.pathname
     },
     method:DWREngine.IFrame,
     //method:DWREngine.XMLHttpRequest,

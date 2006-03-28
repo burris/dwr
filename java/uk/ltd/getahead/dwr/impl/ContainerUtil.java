@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwr.servlet;
+package uk.ltd.getahead.dwr.impl;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -41,16 +41,7 @@ import uk.ltd.getahead.dwr.dwrp.ConverterManager;
 import uk.ltd.getahead.dwr.dwrp.DefaultConverterManager;
 import uk.ltd.getahead.dwr.dwrp.DwrpHtmlJsMarshaller;
 import uk.ltd.getahead.dwr.dwrp.DwrpPlainJsMarshaller;
-import uk.ltd.getahead.dwr.impl.DefaultAccessControl;
-import uk.ltd.getahead.dwr.impl.DefaultAjaxFilterManager;
-import uk.ltd.getahead.dwr.impl.DefaultContainer;
-import uk.ltd.getahead.dwr.impl.DefaultCreatorManager;
-import uk.ltd.getahead.dwr.impl.DefaultDebugPageGenerator;
-import uk.ltd.getahead.dwr.impl.DefaultRemoter;
-import uk.ltd.getahead.dwr.impl.DefaultScriptSessionManager;
-import uk.ltd.getahead.dwr.impl.DefaultServerLoadMonitor;
-import uk.ltd.getahead.dwr.impl.DefaultWebContextBuilder;
-import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
+import uk.ltd.getahead.dwr.servlet.UrlProcessor;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
@@ -60,7 +51,7 @@ import uk.ltd.getahead.dwr.util.Logger;
  * lack of MI prevents us from doing this.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ServletHelper
+public class ContainerUtil
 {
     /**
      * Take a DefaultContainer and setup the default beans
@@ -68,7 +59,7 @@ public class ServletHelper
      * @throws InstantiationException If we can't instantiate a bean
      * @throws IllegalAccessException If we have access problems creating a bean
      */
-    public static void configureDefaults(DefaultContainer defaultContainer) throws InstantiationException, IllegalAccessException
+    public static void setupDefaults(DefaultContainer defaultContainer) throws InstantiationException, IllegalAccessException
     {
         defaultContainer.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
         defaultContainer.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
@@ -95,7 +86,7 @@ public class ServletHelper
      * @throws InstantiationException If we can't instantiate a bean
      * @throws IllegalAccessException If we have access problems creating a bean
      */
-    public static void configureFromServletConfig(DefaultContainer defaultContainer, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
+    public static void setupFromServletConfig(DefaultContainer defaultContainer, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
     {
         Enumeration en = servletConfig.getInitParameterNames();
         while (en.hasMoreElements())
@@ -216,20 +207,20 @@ public class ServletHelper
      * Init parameter: Set a dwr.xml config file.
      * This is only a prefix since we might have more than 1 config file.
      */
-    protected static final String INIT_CONFIG = "config"; //$NON-NLS-1$
+    public static final String INIT_CONFIG = "config"; //$NON-NLS-1$
 
     /**
      * Init parameter: Skip reading the default config file if none are specified.
      */
-    protected static final String INIT_SKIP_DEFAULT = "skipDefaultConfig"; //$NON-NLS-1$
+    public static final String INIT_SKIP_DEFAULT = "skipDefaultConfig"; //$NON-NLS-1$
 
     /**
      * Init parameter: If we are doing Servlet.log logging, to what level?
      */
-    protected static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
+    public static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
 
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(ServletHelper.class);
+    private static final Logger log = Logger.getLogger(ContainerUtil.class);
 }

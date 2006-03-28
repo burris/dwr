@@ -70,10 +70,14 @@ public class DwrpPlainJsMarshaller implements Marshaller
         // only after doing this that we know the scriptSessionId
         CallsWithContext calls = parseRequest(request);
 
+        // Get the output stream and setup the mimetype
         response.setContentType(getOutboundMimeType());
         PrintWriter out;
         if (log.isDebugEnabled())
         {
+            // This might be considered evil - altering the program flow
+            // depending on the log status, however DebuggingPrintWriter is
+            // very thin and only about logging
             out = new DebuggingPrintWriter("", response.getWriter()); //$NON-NLS-1$
         }
         else
@@ -81,12 +85,10 @@ public class DwrpPlainJsMarshaller implements Marshaller
             out = response.getWriter();
         }
 
+        // Save the output stream so the outbound marshaller can get at it
         request.setAttribute(ATTRIBUTE_REQUEST, out);
 
-        sendOutboundScriptPrefix(out);
-        response.flushBuffer();
-
-        // Are there any outstanding reverse-ajax scripts to be passed on?
+        // The conduit to pass on reverse ajax scripts
         DirectScriptConduit conduit = new DirectScriptConduit(out, response, this);
         request.setAttribute(ATTRIBUTE_CONDUIT, conduit);
 
@@ -94,8 +96,13 @@ public class DwrpPlainJsMarshaller implements Marshaller
         if (out instanceof DebuggingPrintWriter)
         {
             DebuggingPrintWriter dpw = (DebuggingPrintWriter) out;
-            dpw.setPrefix("out(" + conduit.hashCode() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+            dpw.setPrefix("out(" + conduit.hashCode() + "): "); //$NON-NLS-1$ //$NON-NLS-2$
         }
+
+        // Send the script prefix (if any)
+        sendOutboundScriptPrefix(out, response);
+        out.flush();
+        response.flushBuffer();
 
         // From the call to addScriptConduit() there could be 2 threads writing
         // to 'out' so we synchronize on 'out' to make sure there are no
@@ -275,8 +282,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
                 OutboundVariable ov = convertException(ex, converted);
 
                 String script = ov.getInitCode() + "DWREngine._handleServerError('" + reply.getId() + "', " + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                sendScript(out, script);
-                response.flushBuffer();
+                sendScript(out, response, script);
 
                 log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -289,16 +295,14 @@ public class DwrpPlainJsMarshaller implements Marshaller
                     OutboundVariable ov = converterManager.convertOutbound(data, converted);
 
                     String script = ov.getInitCode() + "DWREngine._handleResponse('" + reply.getId() + "', " + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    sendScript(out, script);
-                    response.flushBuffer();
+                    sendScript(out, response, script);
                 }
                 catch (MarshallException ex)
                 {
                     OutboundVariable ov = convertException(ex, converted);
 
                     String script = ov.getInitCode() + "DWREngine._handleServerError('" + reply.getId() + "', " + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    sendScript(out, script);
-                    response.flushBuffer();
+                    sendScript(out, response, script);
 
                     log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
                 }                
@@ -310,8 +314,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
 
         synchronized (out)
         {
-            sendOutboundScriptSuffix(out);
-            response.flushBuffer();
+            sendOutboundScriptSuffix(out, response);
         }
 
         // log.debug(replyString);
@@ -320,13 +323,17 @@ public class DwrpPlainJsMarshaller implements Marshaller
     /**
      * Send a script to the browser
      * @param out The stream to write to
+     * @param response The http response so we can flush
      * @param script The script to send
+     * @throws IOException If the write fails
      */
-    protected void sendScript(PrintWriter out, String script)
+    protected void sendScript(PrintWriter out, HttpServletResponse response, String script) throws IOException
     {
         synchronized (out)
         {
             out.println(script);
+            out.flush();
+            response.flushBuffer();
         }
     }
 
@@ -342,24 +349,32 @@ public class DwrpPlainJsMarshaller implements Marshaller
     /**
      * iframe mode starts as HTML, so get into script mode
      * @param out The stream to write to
+     * @param response The http response so we can flush
+     * @throws IOException If the write fails
      */
-    protected void sendOutboundScriptPrefix(PrintWriter out)
+    protected void sendOutboundScriptPrefix(PrintWriter out, HttpServletResponse response) throws IOException
     {
         synchronized (out)
         {
             out.println(""); //$NON-NLS-1$
+            out.flush();
+            response.flushBuffer();
         }
     }
 
     /**
      * iframe mode needs to get out of script mode
      * @param out The stream to write to
+     * @param response The http response so we can flush
+     * @throws IOException If the write fails
      */
-    protected void sendOutboundScriptSuffix(PrintWriter out)
+    protected void sendOutboundScriptSuffix(PrintWriter out, HttpServletResponse response) throws IOException
     {
         synchronized (out)
         {
             out.println(""); //$NON-NLS-1$
+            out.flush();
+            response.flushBuffer();
         }
     }
 

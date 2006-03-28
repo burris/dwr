@@ -36,14 +36,14 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.WebContextBuilder;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.impl.ContainerUtil;
 import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
-import uk.ltd.getahead.dwr.servlet.ServletHelper;
 import uk.ltd.getahead.dwr.servlet.UrlProcessor;
 import uk.ltd.getahead.dwr.util.FakeServletConfig;
 import uk.ltd.getahead.dwr.util.Logger;
 
 /**
- * A Spring Controller that handles DWR requests using a ServletHelper
+ * A Spring Controller that handles DWR requests using a ContainerUtil
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DwrController extends AbstractController implements BeanNameAware, InitializingBean, BeanFactoryAware, ServletContextAware
@@ -59,8 +59,8 @@ public class DwrController extends AbstractController implements BeanNameAware, 
             container.setBeanFactory(beanFactory);
 
             Assert.notNull(servletConfig, "The servlet config has not been set on the controller"); //$NON-NLS-1$
-            ServletHelper.configureDefaults(container);
-            ServletHelper.configureFromServletConfig(container, servletConfig);
+            ContainerUtil.setupDefaults(container);
+            ContainerUtil.setupFromServletConfig(container, servletConfig);
             container.configurationFinished();
 
             // Cached to save looking them up
@@ -127,7 +127,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
                 system.configure(container);
             }
 
-            ServletHelper.configure(container, configurators);
+            ContainerUtil.configure(container, configurators);
         }
         catch (Exception ex)
         {
@@ -138,7 +138,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         {
             webContextBuilder.unset();
 
-            ServletHelper.debugConfig(container);
+            ContainerUtil.debugConfig(container);
         }
     }
 

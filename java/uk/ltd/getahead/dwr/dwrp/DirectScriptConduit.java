@@ -21,6 +21,7 @@ public class DirectScriptConduit implements ScriptConduit
      * Simple ctor
      * @param out The stream to write to
      * @param response The response to flush on write complete
+     * @param marshaller The marshaller that we ask to re-write our Javascript
      */
     public DirectScriptConduit(PrintWriter out, HttpServletResponse response, DwrpPlainJsMarshaller marshaller)
     {
@@ -37,8 +38,6 @@ public class DirectScriptConduit implements ScriptConduit
         this.out = out;
         this.response = response;
         this.marshaller = marshaller;
-
-        log.debug("Creating " + toString()); //$NON-NLS-1$
     }
 
     /**
@@ -46,7 +45,6 @@ public class DirectScriptConduit implements ScriptConduit
      */
     public void close()
     {
-        log.debug("Closing " + toString()); //$NON-NLS-1$
         closed = true;
     }
 
@@ -62,11 +60,9 @@ public class DirectScriptConduit implements ScriptConduit
 
         synchronized (out)
         {
-            marshaller.sendScript(out, script);
-
             try
             {
-                response.flushBuffer();
+                marshaller.sendScript(out, response, script);
             }
             catch (IOException ex)
             {

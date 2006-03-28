@@ -49,5 +49,8 @@ public class Chat
         }
     }
 
+    /**
+     * The current set of messages
+     */
     private LinkedList messages = new LinkedList();
 }

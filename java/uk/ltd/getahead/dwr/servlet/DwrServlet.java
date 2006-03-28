@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import uk.ltd.getahead.dwr.Constants;
 import uk.ltd.getahead.dwr.WebContextBuilder;
 import uk.ltd.getahead.dwr.WebContextFactory;
+import uk.ltd.getahead.dwr.impl.ContainerUtil;
 import uk.ltd.getahead.dwr.impl.DefaultContainer;
 import uk.ltd.getahead.dwr.impl.DwrXmlConfigurator;
 import uk.ltd.getahead.dwr.util.Logger;
@@ -63,14 +64,14 @@ public class DwrServlet extends HttpServlet
         {
             // Setup logging
             ServletLoggingOutput.setExecutionContext(this);
-            String logLevel = config.getInitParameter(ServletHelper.INIT_LOGLEVEL);
+            String logLevel = config.getInitParameter(ContainerUtil.INIT_LOGLEVEL);
             if (logLevel != null)
             {
                 ServletLoggingOutput.setLevel(logLevel);
             }
 
-            ServletHelper.configureDefaults(container);
-            ServletHelper.configureFromServletConfig(container, config);
+            ContainerUtil.setupDefaults(container);
+            ContainerUtil.setupFromServletConfig(container, config);
             container.configurationFinished();
 
             // Cached to save looking them up
@@ -88,10 +89,10 @@ public class DwrServlet extends HttpServlet
             system.configure(container);
 
             // dwr.xml files specified in the web.xml
-            boolean foundConfig = ServletHelper.configureUsingInitParams(container, config);
+            boolean foundConfig = ContainerUtil.configureUsingInitParams(container, config);
 
             // The default dwr.xml file that sits by web.xml
-            boolean skip = Boolean.valueOf(config.getInitParameter(ServletHelper.INIT_SKIP_DEFAULT)).booleanValue();
+            boolean skip = Boolean.valueOf(config.getInitParameter(ContainerUtil.INIT_SKIP_DEFAULT)).booleanValue();
             if (!foundConfig && !skip)
             {
                 DwrXmlConfigurator local = new DwrXmlConfigurator();
@@ -109,7 +110,7 @@ public class DwrServlet extends HttpServlet
             webContextBuilder.unset();
             ServletLoggingOutput.unsetExecutionContext();
 
-            ServletHelper.debugConfig(container);
+            ContainerUtil.debugConfig(container);
         }
     }
 
