@@ -17,7 +17,7 @@ package org.directwebremoting.faces;
 
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
-import javax.faces.el.VariableResolver;
+import javax.faces.el.ValueBinding;
 
 import org.directwebremoting.Creator;
 import org.directwebremoting.create.AbstractCreator;
@@ -28,6 +28,7 @@ import org.directwebremoting.util.Logger;
  * JSF scopes and into jeffs3 specific scope (i.e. the flow scope)
  * @author Pierpaolo Follia (Latest revision: $Author: esa50833 $)
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @author Vinicius Melo [vdmelo at gmail dot com]
  */
 public class JsfCreator extends AbstractCreator implements Creator
 {
@@ -66,9 +67,16 @@ public class JsfCreator extends AbstractCreator implements Creator
 
         Application application = facesContext.getApplication();
 
-        VariableResolver resolver = application.getVariableResolver();
-
-        return resolver.resolveVariable(facesContext, getManagedBeanName());
+        // VariableResolver resolver = application.getVariableResolver();
+        // return resolver.resolveVariable(facesContext, getManagedBeanName());
+        
+        ValueBinding resolvedObject = application.createValueBinding(getManagedBeanName());
+        if (resolvedObject == null)
+        {
+            return null;
+        }
+        
+        return resolvedObject.getValue(facesContext);
     }
 
     /**

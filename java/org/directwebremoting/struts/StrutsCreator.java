@@ -51,7 +51,9 @@ public class StrutsCreator extends AbstractCreator implements Creator
             {
                 WebContext wc = WebContextFactory.get();
                 moduleConfig = RequestUtils.getModuleConfig(wc.getHttpServletRequest(), wc.getServletContext());
-                // moduleConfig = ModuleUtils.getInstance().getModuleConfig("", wc.getServletContext()); //$NON-NLS-1$
+
+                // String moduleName = ModuleUtils.getInstance().getModuleName("/", wc.getServletContext());
+                // moduleConfig = ModuleUtils.getInstance().getModuleConfig(moduleName, wc.getServletContext());
             }
         }
 
