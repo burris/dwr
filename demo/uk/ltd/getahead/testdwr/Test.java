@@ -45,9 +45,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import uk.ltd.getahead.dwr.WebContextFactory;
-import uk.ltd.getahead.dwr.dwrp.InboundContext;
-import uk.ltd.getahead.dwr.util.Logger;
+import org.directwebremoting.InboundContext;
+import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.util.Logger;
+
 
 /**
  * Methods to help unit test DWR.

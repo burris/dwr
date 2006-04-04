@@ -25,6 +25,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.directwebremoting.Container;
+import org.directwebremoting.MarshallException;
+import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.ScriptSession;
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
+
 
 /**
  * Class to enable us to access servlet parameters.

@@ -11,6 +11,8 @@ struts
 
 jsf
 
+make sure that the exec calls never pass back an exception. catch and emit some good javascript
+
 onbackbutton, onforwardbutton
 
 

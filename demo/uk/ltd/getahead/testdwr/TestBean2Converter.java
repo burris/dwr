@@ -15,7 +15,7 @@
  */
 package uk.ltd.getahead.testdwr;
 
-import uk.ltd.getahead.dwr.convert.BeanConverter;
+import org.directwebremoting.convert.BeanConverter;
 
 /**
  * For demo purposes

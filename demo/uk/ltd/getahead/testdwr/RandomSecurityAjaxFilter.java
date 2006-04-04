@@ -17,8 +17,9 @@ package uk.ltd.getahead.testdwr;
 
 import java.lang.reflect.Method;
 
-import uk.ltd.getahead.dwr.AjaxFilter;
-import uk.ltd.getahead.dwr.AjaxFilterChain;
+import org.directwebremoting.AjaxFilter;
+import org.directwebremoting.AjaxFilterChain;
+
 
 /**
  * An example filter that uses a fairly random event to define it's security

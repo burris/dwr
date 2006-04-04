@@ -9,6 +9,10 @@ function sendMessage() {
   Chat.addMessage(text);
 }
 
+function pingMe() {
+  Chat.pingMe();
+}
+
 function receiveMessages(messages) {
   var chatlog = "";
   for (var data in messages) {

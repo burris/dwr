@@ -17,9 +17,10 @@ package uk.ltd.getahead.testdwr;
 
 import java.lang.reflect.Method;
 
-import uk.ltd.getahead.dwr.AjaxFilter;
-import uk.ltd.getahead.dwr.AjaxFilterChain;
-import uk.ltd.getahead.dwr.util.Logger;
+import org.directwebremoting.AjaxFilter;
+import org.directwebremoting.AjaxFilterChain;
+import org.directwebremoting.util.Logger;
+
 
 /**
  * An example filter that does some logging of Ajax calls

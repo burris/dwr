@@ -3,11 +3,13 @@ package uk.ltd.getahead.chat;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import uk.ltd.getahead.dwr.MarshallException;
-import uk.ltd.getahead.dwr.OutboundVariable;
-import uk.ltd.getahead.dwr.ScriptSession;
-import uk.ltd.getahead.dwr.WebContext;
-import uk.ltd.getahead.dwr.WebContextFactory;
+import org.directwebremoting.MarshallException;
+import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.ScriptSession;
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.util.Logger;
+
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -53,4 +55,40 @@ public class Chat
      * The current set of messages
      */
     private LinkedList messages = new LinkedList();
+
+    /**
+     * 
+     */
+    public void pingMe()
+    {
+        WebContext wctx = WebContextFactory.get();
+        final ScriptSession scriptSession = wctx.getScriptSession();
+        Thread worker = new Thread(new Runnable()
+        {
+            public void run()
+            {
+                int count = 0;
+                while (count < 100)
+                {
+                    count++;
+                    try
+                    {
+                        log.debug("count=" + count); //$NON-NLS-1$
+                        scriptSession.addScript("DWRUtil.setValue('ping', 'count=" + count + "');"); //$NON-NLS-1$ //$NON-NLS-2$
+                        Thread.sleep(1000);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.warn("Waking:", ex); //$NON-NLS-1$
+                    }
+                }
+            }
+        });
+        worker.start();
+    }
+
+    /**
+     * The log stream
+     */
+    protected static final Logger log = Logger.getLogger(Chat.class);
 }

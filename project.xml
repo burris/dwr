@@ -2,9 +2,10 @@
 <project>
   <pomVersion>3</pomVersion>
   <id>dwr</id>
-  <groupId>uk.ltd.getahead</groupId>
+  <groupId>org.directwebremoting</groupId>
   <name>Direct Web Remoting</name>
   <currentVersion>2.0.m1.pre</currentVersion>
+  <package>org.directwebremoting</package>
   <package>uk.ltd.getahead.dwr</package>
   <developers>
     <developer>

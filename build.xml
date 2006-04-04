@@ -41,6 +41,7 @@
         <fileset dir="${source.jar}" includes="**/*.jar"/>
         <!-- fileset dir="${source.lib}" includes="**/*.jar"/ -->
       </classpath>
+      <package name="org.directwebremoting.*"/>
       <package name="uk.ltd.getahead.dwr.*"/>
       <footer>Copyright &#168; 2005</footer>
     </javadoc>

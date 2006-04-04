@@ -15,7 +15,7 @@
  */
 package uk.ltd.getahead.dwr;
 
-import uk.ltd.getahead.dwr.servlet.DwrServlet;
+import org.directwebremoting.servlet.DwrServlet;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -32,7 +32,7 @@ import uk.ltd.getahead.dwr.servlet.DwrServlet;
  * <li>The engine javascript to form the iframe request and process replies</li>
  * <li>The exec 'page' that executes the method and returns data to the iframe</li>
  * </ul>
- * @deprecated Use uk.ltd.getahead.dwr.servlet.DwrServlet
+ * @deprecated Use org.directwebremoting.servlet.DwrServlet
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DWRServlet extends DwrServlet
