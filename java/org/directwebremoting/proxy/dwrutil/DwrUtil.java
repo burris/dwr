@@ -15,18 +15,13 @@
  */
 package org.directwebremoting.proxy.dwrutil;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.ScriptSession;
-import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
-
+import org.directwebremoting.proxy.AbstractProxy;
 
 /**
  * DwrUtil is a server-side proxy that allows Java programmers to call client
@@ -44,7 +39,7 @@ import org.directwebremoting.WebContextFactory;
  * have been left out as not being DOM related.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrUtil
+public class DwrUtil extends AbstractProxy
 {
     /**
      * Build a DwrUtil that acts on a single ScriptSession.
@@ -52,23 +47,29 @@ public class DwrUtil
      */
     public DwrUtil(ScriptSession scriptSession)
     {
-        scriptSessions.add(scriptSession);
-        webContext = WebContextFactory.get();
+        addScriptSession(scriptSession);
     }
 
     /**
      * Build a DwrUtil that acts on a number of ScriptSessions
-     * @param it A collection of ScriptSessions that we should act on.
+     * @param dests A collection of ScriptSessions that we should act on.
      */
-    public DwrUtil(Iterator it)
+    public DwrUtil(Collection dests)
     {
-        while (it.hasNext())
-        {
-            ScriptSession scriptSession = (ScriptSession) it.next();
-            scriptSessions.add(scriptSession);
-        }
+        addScriptSessions(dests);
+    }
 
-        webContext = WebContextFactory.get();
+    /**
+     * Set the value an HTML element to the specified value.
+     * <p>
+     * <a href="http://getahead.ltd.uk/dwr/browser/util/setvalue">More</a>.
+     * @param elementId The HTML element to update (by id)
+     * @param value The text to insert into the HTML element
+     * @throws MarshallException 
+     */
+    public void setValue(String elementId, String value) throws MarshallException
+    {
+        setValue(elementId, value, false);
     }
 
     /**
@@ -82,8 +83,8 @@ public class DwrUtil
      */
     public void setValue(String elementId, String value, boolean escapeHtml) throws MarshallException
     {
-        OutboundVariable elementIdOv = webContext.toJavascript(elementId);
-        OutboundVariable valueOv = webContext.toJavascript(value);
+        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+        OutboundVariable valueOv = getWebContext().toJavascript(value);
         String options = escapeHtml ? "{escapeHtml:true}" : "null"; //$NON-NLS-1$ //$NON-NLS-2$
 
         StringBuffer script = new StringBuffer();
@@ -111,7 +112,7 @@ public class DwrUtil
      */
     public void setValues(Map values, boolean escapeHtml) throws MarshallException
     {
-        OutboundVariable valuesOv = webContext.toJavascript(values);
+        OutboundVariable valuesOv = getWebContext().toJavascript(values);
         String options = escapeHtml ? "{escapeHtml:true}" : "null"; //$NON-NLS-1$ //$NON-NLS-2$
 
         StringBuffer script = new StringBuffer();
@@ -135,8 +136,8 @@ public class DwrUtil
      */
     public void addOptions(String elementId, String[] array) throws MarshallException
     {
-        OutboundVariable elementIdOv = webContext.toJavascript(elementId);
-        OutboundVariable arrayOv = webContext.toJavascript(array);
+        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+        OutboundVariable arrayOv = getWebContext().toJavascript(array);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -162,10 +163,10 @@ public class DwrUtil
      */
     public void addOptions(String elementId, Collection array, String valueProperty, String textProperty) throws MarshallException
     {
-        OutboundVariable elementIdOv = webContext.toJavascript(elementId);
-        OutboundVariable arrayOv = webContext.toJavascript(array);
-        OutboundVariable valuePropertyOv = webContext.toJavascript(valueProperty);
-        OutboundVariable textPropertyOv = webContext.toJavascript(textProperty);
+        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+        OutboundVariable arrayOv = getWebContext().toJavascript(array);
+        OutboundVariable valuePropertyOv = getWebContext().toJavascript(valueProperty);
+        OutboundVariable textPropertyOv = getWebContext().toJavascript(textProperty);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -192,7 +193,7 @@ public class DwrUtil
      */
     public void removeAllOptions(String elementId) throws MarshallException
     {
-        OutboundVariable elementIdOv = webContext.toJavascript(elementId);
+        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -225,7 +226,7 @@ public class DwrUtil
      */
     public void removeAllRows(String elementId) throws MarshallException
     {
-        OutboundVariable elementIdOv = webContext.toJavascript(elementId);
+        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -235,27 +236,4 @@ public class DwrUtil
 
         addScript(script.toString());
     }
-
-    /**
-     * Utility to add the given script to all known browsers.
-     * @param script The Javascript to send to the browsers
-     */
-    private void addScript(String script)
-    {
-        for (Iterator it = scriptSessions.iterator(); it.hasNext();)
-        {
-            ScriptSession scriptSession = (ScriptSession) it.next();
-            scriptSession.addScript(script);
-        }
-    }
-
-    /**
-     * We're going to need this for converting data
-     */
-    private final WebContext webContext;
-
-    /**
-     * The browsers that we affect.
-     */
-    private final List scriptSessions = new ArrayList();
 }
