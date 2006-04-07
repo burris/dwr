@@ -164,33 +164,33 @@ public class UrlProcessor
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
         }
-        catch (IOException ex)
+        catch (Exception ex)
         {
-            throw ex;
-        }
-        catch (SecurityException ex)
-        {
-            // This only catches exceptions parsing the request. All execution
-            // exceptions are returned inside the Call POJOs.
-            if (log.isDebugEnabled())
+            log.warn("Error: " + ex); //$NON-NLS-1$
+            if (ex instanceof SecurityException && log.isDebugEnabled())
             {
-                log.warn("Error: " + ex); //$NON-NLS-1$
                 log.debug("- User Agent: " + request.getHeader(HttpConstants.HEADER_USER_AGENT)); //$NON-NLS-1$
                 log.debug("- Remote IP:  " + request.getRemoteAddr()); //$NON-NLS-1$
                 log.debug("- Request URL:" + request.getRequestURL()); //$NON-NLS-1$
                 log.debug("- Query:      " + request.getQueryString()); //$NON-NLS-1$
                 log.debug("- Method:     " + request.getMethod()); //$NON-NLS-1$
-                log.debug("- Body: {"); //$NON-NLS-1$
-
+   
                 ex.printStackTrace();
             }
 
             response.setContentType(MimeConstants.MIME_HTML);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             PrintWriter out = response.getWriter();
-            out.println("//<script type='text/javascript'>"); //$NON-NLS-1$
-            out.println("alert('Error. This may be due to an unsupported browser.\\nSee the mailing lists at http://www.getahead.ltd.uk/dwr/ for more information.');"); //$NON-NLS-1$
-            out.println("//</script>"); //$NON-NLS-1$
+            out.println("<html><head><title>Error</title</head><body>"); //$NON-NLS-1$
+            out.println("<p><b>Error</b>: " + ex.getMessage() + "</p>"); //$NON-NLS-1$ //$NON-NLS-2$
+            out.println("<p>For further information about DWR see:</p><ul>"); //$NON-NLS-1$
+            out.println("<li><a href='http://getahead.ltd.uk/dwr/documentation'>DWR Documentation</a></li>"); //$NON-NLS-1$
+            out.println("<li><a href='http://getahead.ltd.uk/dwr/support'>DWR Mailing List</a></li>"); //$NON-NLS-1$
+            out.println("</ul>"); //$NON-NLS-1$
+            out.println("<script type='text/javascript'>"); //$NON-NLS-1$
+            out.println("alert('" + ex.getMessage() + "');"); //$NON-NLS-1$ //$NON-NLS-2$
+            out.println("</script>"); //$NON-NLS-1$
+            out.println("</body></html>"); //$NON-NLS-1$
             out.flush();
         }
     }

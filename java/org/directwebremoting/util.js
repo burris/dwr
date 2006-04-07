@@ -808,6 +808,43 @@ DWRUtil.removeAllRows = function(ele) {
 };
 
 /**
+ * Clone a node and insert it into the document just above the 'template' node
+ * @see http://getahead.ltd.uk/dwr/???
+ */
+DWRUtil.cloneNode = function(ele)  {
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("cloneNode() can't find an element with id: " + orig + ".");
+    return;
+  }
+  var clone = ele.cloneNode(true);
+  DWRUtil._removeIds(clone);
+  ele.parentNode.insertBefore(clone, ele);
+  return clone;
+}
+
+/**
+ * @private Remove all the Ids from an element
+ */
+DWRUtil._removeIds = function(ele) {
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("_removeIds() can't find an element with id: " + orig + ".");
+    return;
+  }
+  if (ele.id) ele.removeAttribute("id");
+  var children = ele.childNodes;
+  for (var i = 0; i < children.length; i++) {
+    var child = children.item(i);
+    if (child.nodeType == 1 /*Node.ELEMENT_NODE*/) {
+      DWRUtil._removeIds(child);
+    }
+  }
+}
+
+/**
  * @private Is the given node an HTML element (optionally of a given type)?
  * @param ele The element to test
  * @param nodeName eg "input", "textarea" - check for node name (optional)
