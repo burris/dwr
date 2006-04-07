@@ -15,6 +15,11 @@
  */
 package org.directwebremoting.struts;
 
+import java.lang.reflect.Method;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.util.RequestUtils;
@@ -22,6 +27,8 @@ import org.directwebremoting.Creator;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.create.AbstractCreator;
+import org.directwebremoting.util.FakeHttpServletRequest;
+import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -31,6 +38,31 @@ import org.directwebremoting.util.Messages;
  */
 public class StrutsCreator extends AbstractCreator implements Creator
 {
+    /**
+     * 
+     */
+    public StrutsCreator()
+    {
+        try
+        {
+            moduleUtilsClass = Class.forName("org.apache.struts.util.ModuleUtils"); //$NON-NLS-1$
+            getInstanceMethod = moduleUtilsClass.getMethod("getInstance", new Class[0]); //$NON-NLS-1$
+            getModuleNameMethod = moduleUtilsClass.getMethod("getModuleName", new Class[] { String.class, ServletContext.class }); //$NON-NLS-1$
+            getModuleConfigMethod = moduleUtilsClass.getMethod("getModuleConfig", new Class[] { String.class, ServletContext.class }); //$NON-NLS-1$
+
+            log.debug("Using Struts 1.2 based ModuleUtils code"); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            moduleUtilsClass = null;
+            getInstanceMethod = null;
+            getModuleNameMethod = null;
+            getModuleConfigMethod = null;
+
+            log.debug("Failed to find Struts 1.2 ModuleUtils code. Falling back to 1.1 based code"); //$NON-NLS-1$
+        }
+    }
+
     /**
      * Struts formBean to be retrived
      * @param formBean Struts bean form related.
@@ -50,10 +82,36 @@ public class StrutsCreator extends AbstractCreator implements Creator
             if (moduleConfig == null)
             {
                 WebContext wc = WebContextFactory.get();
-                moduleConfig = RequestUtils.getModuleConfig(wc.getHttpServletRequest(), wc.getServletContext());
 
-                // String moduleName = ModuleUtils.getInstance().getModuleName("/", wc.getServletContext());
-                // moduleConfig = ModuleUtils.getInstance().getModuleConfig(moduleName, wc.getServletContext());
+                if (moduleUtilsClass == null)
+                {
+                    try
+                    {
+                        // ModuleUtils utils = ModuleUtils.getInstance();
+                        Object utils = getInstanceMethod.invoke(null, new Object[0]);
+
+                        // String moduleName = utils.getModuleName("/", wc.getServletContext()); //$NON-NLS-1$
+                        String moduleName = (String) getModuleNameMethod.invoke(utils, new Object[] { "/", wc.getServletContext() }); //$NON-NLS-1$
+
+                        // moduleConfig = utils.getModuleConfig(moduleName, wc.getServletContext());
+                        moduleConfig = (ModuleConfig) getModuleConfigMethod.invoke(utils, new Object[] { moduleName, wc.getServletContext() });
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new IllegalArgumentException(ex.getMessage());
+                    }
+                }
+                else
+                {
+                    HttpServletRequest request = wc.getHttpServletRequest();
+                    if (request == null)
+                    {
+                        log.warn("Using a FakeHttpServletRequest as part of setup"); //$NON-NLS-1$
+                        request = new FakeHttpServletRequest();
+                    }
+
+                    moduleConfig = RequestUtils.getModuleConfig(request, wc.getServletContext());
+                }
             }
         }
 
@@ -91,4 +149,29 @@ public class StrutsCreator extends AbstractCreator implements Creator
      * moduleConfig allows us to do the lookup
      */
     private ModuleConfig moduleConfig;
+
+    /**
+     * Reflection access to 1.2 code for compatibility with 1.1
+     */
+    private Class moduleUtilsClass;
+
+    /**
+     * Reflection access to 1.2 code for compatibility with 1.1
+     */
+    private Method getInstanceMethod;
+
+    /**
+     * Reflection access to 1.2 code for compatibility with 1.1
+     */
+    private Method getModuleNameMethod;
+
+    /**
+     * Reflection access to 1.2 code for compatibility with 1.1
+     */
+    private Method getModuleConfigMethod;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(StrutsCreator.class);
 }
