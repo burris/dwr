@@ -16,6 +16,7 @@
 package org.directwebremoting.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,7 +82,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#getScriptSessionsByPage(java.lang.String)
      */
-    public Iterator getScriptSessionsByPage(String page)
+    public Collection getScriptSessionsByPage(String page)
     {
         synchronized (sessionLock)
         {
@@ -91,18 +92,18 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
                 pageSessions = new HashSet();
             }
 
-            return Collections.unmodifiableCollection(pageSessions).iterator();
+            return Collections.unmodifiableCollection(pageSessions);
         }
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#getAllScriptSessions()
      */
-    public Iterator getAllScriptSessions()
+    public Collection getAllScriptSessions()
     {
         synchronized (sessionLock)
         {
-            return Collections.unmodifiableCollection(sessionMap.values()).iterator();
+            return Collections.unmodifiableCollection(sessionMap.values());
         }
     }
 

@@ -15,8 +15,7 @@
  */
 package org.directwebremoting;
 
-import java.util.Iterator;
-
+import java.util.Collection;
 
 /**
  * A ScriptSessionManager looks after a number of sessions (keyed using a
@@ -33,7 +32,7 @@ public interface ScriptSessionManager
      * something non null.
      * @return An iterator over the currently known sessions, by id
      */
-    Iterator getAllScriptSessions();
+    Collection getAllScriptSessions();
 
     /**
      * For a given script session id, either create a new ScriptSession object
@@ -41,7 +40,7 @@ public interface ScriptSessionManager
      * @param url The URL including 'http://', up to (but not including) '?' or '#' 
      * @return A ScriptSession.
      */
-    Iterator getScriptSessionsByPage(String url);
+    Collection getScriptSessionsByPage(String url);
 
     /**
      * For a given script session id, either create a new ScriptSession object

@@ -36,8 +36,16 @@
 			<attribute value="http://www.springframework.org/docs/api/" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="jar/struts.jar"/>
-	<classpathentry exported="true" kind="lib" path="jar/myfaces-api.jar"/>
+	<classpathentry exported="true" sourcepath="/library/jarlib/struts-1.2.9/struts-1.2.9-src.zip" kind="lib" path="jar/struts-1.2.9.jar">
+		<attributes>
+			<attribute value="http://struts.apache.org/struts-doc-1.2.9/api/" name="javadoc_location"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="jar/myfaces-api.jar">
+		<attributes>
+			<attribute value="http://java.sun.com/javaee/5/docs/api/" name="javadoc_location"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="java"/>
 	<classpathentry kind="src" path="etc/classpath"/>
 	<classpathentry kind="src" path="demo"/>

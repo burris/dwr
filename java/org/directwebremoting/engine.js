@@ -269,7 +269,8 @@ DWREngine._pollServer = false;
 DWREngine._pollComet = true;
 
 /** What is the default polling method */
-DWREngine._pollMethod = /*DWREngine.XMLHttpRequest*/ DWREngine.IFrame;
+//DWREngine._pollMethod = DWREngine.XMLHttpRequest;
+DWREngine._pollMethod = DWREngine.IFrame;
 
 /** The iframe that we are using to poll */
 DWREngine._pollFrame = null;

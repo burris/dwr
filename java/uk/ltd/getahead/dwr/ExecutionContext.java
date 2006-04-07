@@ -16,7 +16,7 @@
 package uk.ltd.getahead.dwr;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.Collection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -125,7 +125,7 @@ public class ExecutionContext implements WebContext
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContext#getAllScriptSessions()
      */
-    public Iterator getAllScriptSessions()
+    public Collection getAllScriptSessions()
     {
         throw new UnsupportedOperationException("Use WebContextFactory.get().getAllScriptSessions()"); //$NON-NLS-1$
     }
@@ -133,7 +133,7 @@ public class ExecutionContext implements WebContext
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContext#getScriptSessionsByPage(java.lang.String)
      */
-    public Iterator getScriptSessionsByPage(String page)
+    public Collection getScriptSessionsByPage(String page)
     {
         throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSessionsByPage()"); //$NON-NLS-1$
     }

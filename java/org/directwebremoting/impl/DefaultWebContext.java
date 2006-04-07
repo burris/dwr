@@ -17,7 +17,7 @@ package org.directwebremoting.impl;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Iterator;
+import java.util.Collection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -89,7 +89,7 @@ public class DefaultWebContext implements WebContext
     /* (non-Javadoc)
      * @see org.directwebremoting.WebContext#getScriptSessionsByPage(java.lang.String)
      */
-    public Iterator getScriptSessionsByPage(String otherPage)
+    public Collection getScriptSessionsByPage(String otherPage)
     {
         return getScriptSessionManager().getScriptSessionsByPage(otherPage);
     }
@@ -97,7 +97,7 @@ public class DefaultWebContext implements WebContext
     /* (non-Javadoc)
      * @see org.directwebremoting.WebContext#getAllScriptSessions()
      */
-    public Iterator getAllScriptSessions()
+    public Collection getAllScriptSessions()
     {
         return getScriptSessionManager().getAllScriptSessions();
     }

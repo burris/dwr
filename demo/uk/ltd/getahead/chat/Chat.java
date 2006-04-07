@@ -1,5 +1,6 @@
 package uk.ltd.getahead.chat;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -8,8 +9,8 @@ import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.proxy.dwrutil.DwrUtil;
 import org.directwebremoting.util.Logger;
-
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -39,11 +40,49 @@ public class Chat
             String eval = ov.getInitCode() + "receiveMessages(" + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$
 
             // Loop over all the users on the current page
-            for (Iterator it = wctx.getScriptSessionsByPage(currentPage); it.hasNext();)
+            Collection pages = wctx.getScriptSessionsByPage(currentPage);
+            for (Iterator it = pages.iterator(); it.hasNext();)
             {
                 ScriptSession otherSession = (ScriptSession) it.next();
                 otherSession.addScript(eval);
             }
+        }
+        catch (MarshallException ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * @param text The new message text to add
+     */
+    public void addMessage0(String text)
+    {
+        if (text != null && text.trim().length() > 0)
+        {
+            messages.addFirst(new Message(text));
+            while (messages.size() > 10)
+            {
+                messages.removeLast();
+            }
+        }
+
+        WebContext wctx = WebContextFactory.get();
+        String currentPage = wctx.getCurrentPage();
+
+        try
+        {
+            StringBuffer chatlog = new StringBuffer();
+            for (Iterator it = messages.iterator(); it.hasNext();)
+            {
+                Message message = (Message) it.next();
+                chatlog.insert(0, "<div>"); //$NON-NLS-1$
+                chatlog.insert(0, message.getText());
+                chatlog.insert(0, "</div>"); //$NON-NLS-1$
+            }
+
+            DwrUtil util = new DwrUtil(wctx.getScriptSessionsByPage(currentPage));
+            util.setValue("chatlog", chatlog.toString()); //$NON-NLS-1$
         }
         catch (MarshallException ex)
         {
@@ -73,7 +112,6 @@ public class Chat
                     count++;
                     try
                     {
-                        log.debug("count=" + count); //$NON-NLS-1$
                         scriptSession.addScript("DWRUtil.setValue('ping', 'count=" + count + "');"); //$NON-NLS-1$ //$NON-NLS-2$
                         Thread.sleep(1000);
                     }

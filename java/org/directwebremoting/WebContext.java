@@ -16,7 +16,7 @@
 package org.directwebremoting;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.Collection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -45,9 +45,9 @@ public interface WebContext
      * this reason you should check that getScriptSession(String id) returns
      * something non null.
      * @param url The URL including 'http://', up to (but not including) '?' or '#' 
-     * @return An iterator over all the ScriptSessions.
+     * @return A collection of all the ScriptSessions.
      */
-    Iterator getScriptSessionsByPage(String url);
+    Collection getScriptSessionsByPage(String url);
 
     /**
      * What is the URL of the current page.
@@ -63,9 +63,9 @@ public interface WebContext
      * possible that the list will be out of date by the time it is used. For
      * this reason you should check that getScriptSession(String id) returns
      * something non null.
-     * @return An iterator over all the ScriptSessions.
+     * @return A collection of all the ScriptSessions.
      */
-    Iterator getAllScriptSessions();
+    Collection getAllScriptSessions();
 
     /**
      * Returns the current session associated with this request, or if the
