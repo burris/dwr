@@ -18,6 +18,7 @@ package org.directwebremoting.faces;
 import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
+import javax.faces.el.VariableResolver;
 
 import org.directwebremoting.Creator;
 import org.directwebremoting.create.AbstractCreator;
@@ -26,7 +27,7 @@ import org.directwebremoting.util.Logger;
 /**
  * This is a DWR creator implementation, to allow dwr beans to be allocated into
  * JSF scopes and into jeffs3 specific scope (i.e. the flow scope)
- * @author Pierpaolo Follia (Latest revision: $Author: esa50833 $)
+ * @author Pierpaolo Follia
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @author Vinicius Melo [vdmelo at gmail dot com]
  */
@@ -66,17 +67,40 @@ public class JsfCreator extends AbstractCreator implements Creator
         }
 
         Application application = facesContext.getApplication();
+        Object resolvedObject = null;
 
-        // VariableResolver resolver = application.getVariableResolver();
-        // return resolver.resolveVariable(facesContext, getManagedBeanName());
-        
-        ValueBinding resolvedObject = application.createValueBinding(getManagedBeanName());
-        if (resolvedObject == null)
+        if (isVBExpression(getManagedBeanName()))
         {
-            return null;
+            ValueBinding vb = application.createValueBinding(getManagedBeanName());
+            if (vb != null)
+            {
+                resolvedObject = vb.getValue(facesContext);
+            }
         }
-        
-        return resolvedObject.getValue(facesContext);
+        else
+        {
+            VariableResolver resolver = application.getVariableResolver();
+            resolvedObject = resolver.resolveVariable(facesContext, getManagedBeanName());
+        }
+        return resolvedObject;
+    }
+
+    /**
+     * Determine whether String is a value binding expression or not.
+     * @param expression The expression to test for value bindingness
+     * @return true iff the expression contains a VB expression
+     */
+    public static boolean isVBExpression(String expression)
+    {
+        if (null == expression)
+        {
+            return false;
+        }
+
+        int start = expression.indexOf("#{"); //$NON-NLS-1$
+
+        // Check to see if attribute has an expression
+        return (start != -1) && (start < expression.indexOf('}'));
     }
 
     /**
@@ -125,76 +149,4 @@ public class JsfCreator extends AbstractCreator implements Creator
      * The log stream
      */
     private static final Logger log = Logger.getLogger(JsfCreator.class);
-
-    /**
-     * If we need reflection based access then we can do something like this
-     *
-    public Object getInstance() throws InstantiationException
-    {
-        try
-        {
-            // FacesContext facesContext = FacesContext.getCurrentInstance();
-            Object facesContext = getCurrentInstanceMethod.invoke(null, new Object[0]);
-
-            if (facesContext != null)
-            {
-                log.error("Object " + getManagedBeanName() + " cannot be created since the faces context is null"); //$NON-NLS-1$ //$NON-NLS-2$
-                return null;
-            }
-
-            // Application application = facesContext.getApplication();
-            Object application = getApplicationMethod.invoke(facesContext, new Object[0]);
-
-            // VariableResolver resolver = application.getVariableResolver();
-            Object resolver = getVariableResolverMethod.invoke(application, new Object[0]);
-
-            // Object resolvedObject = resolver.resolveVariable(facesContext, getManagedBeanName());
-            Object resolvedObject = resolveVariableMethod.invoke(resolver, new Object[] { facesContext, getManagedBeanName() });
-
-            return resolvedObject;
-        }
-        catch (InvocationTargetException ex)
-        {
-            Throwable target = ex.getTargetException();
-            throw new InstantiationException(target.toString());
-        }
-        catch (Exception ex)
-        {
-            throw new InstantiationException(ex.toString());
-        }
-    }
-
-    static
-    {
-        try
-        {
-            Class facesContextClass = Class.forName("javax.faces.context.FacesContext"); //$NON-NLS-1$
-            getCurrentInstanceMethod = facesContextClass.getMethod("getCurrentInstance", null); //$NON-NLS-1$
-            getApplicationMethod = facesContextClass.getMethod("getApplication", null); //$NON-NLS-1$
-
-            Class applicationClass = Class.forName("javax.faces.application.Application"); //$NON-NLS-1$
-            getVariableResolverMethod = applicationClass.getMethod("getVariableResolver", null); //$NON-NLS-1$
-
-            Class variableResolver = Class.forName("javax.faces.el.VariableResolver"); //$NON-NLS-1$
-            resolveVariableMethod = variableResolver.getMethod("resolveVariable", null); //$NON-NLS-1$
-        }
-        catch (ClassNotFoundException ex)
-        {
-            throw new NoClassDefFoundError(ex.getMessage());
-        }
-        catch (SecurityException ex)
-        {
-            throw new IncompatibleClassChangeError(ex.getMessage());
-        }
-        catch (NoSuchMethodException ex)
-        {
-            throw new IncompatibleClassChangeError(ex.getMessage());
-        }
-    }
-
-    private static Method getCurrentInstanceMethod = null;
-    private static Method getApplicationMethod = null;
-    private static Method getVariableResolverMethod = null;
-    private static Method resolveVariableMethod = null;
-    */
 }
