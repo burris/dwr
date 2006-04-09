@@ -1,6 +1,10 @@
 
-function init() {
+function startPoll() {
   DWREngine.setPolling(true);
+}
+
+function stopPoll() {
+  DWREngine.setPolling(false);
 }
 
 function sendMessage() {

@@ -269,8 +269,8 @@ DWREngine._pollServer = false;
 DWREngine._pollComet = true;
 
 /** What is the default polling method */
-//DWREngine._pollMethod = DWREngine.XMLHttpRequest;
-DWREngine._pollMethod = DWREngine.IFrame;
+DWREngine._pollMethod = DWREngine.XMLHttpRequest;
+//DWREngine._pollMethod = DWREngine.IFrame;
 
 /** The iframe that we are using to poll */
 DWREngine._pollFrame = null;
@@ -280,6 +280,9 @@ DWREngine._pollReq = null;
 
 /** How much data has been received into a reverse ajax document */
 DWREngine._pollCometSize = 0;
+
+/** How many milliseconds between internal comet polls */
+DWREngine._pollCometInterval = 200;
 
 /**
  * @private Send a request. Called by the Javascript interface stub
@@ -448,7 +451,7 @@ DWREngine._poll = function(overridePath) {
     map:{
       callCount:1,
       'c0-scriptName':'DWRSystem',
-      'c0-methodName':(DWREngine._pollMethod == DWREngine.IFrame) ? 'pollWithIframe' : 'pollWithXhr',
+      'c0-methodName':'poll',
       'c0-id':id,
       httpSessionId:DWREngine._httpSessionId,
       scriptSessionId:DWREngine._scriptSessionId,
@@ -465,6 +468,10 @@ DWREngine._poll = function(overridePath) {
     postHooks:(DWREngine._postHook) ? [ DWREngine._postHook ] : [],
     timeout:0
   };
+  // IE can't handle XHR polling, so we must back off to iframe
+  if (!window.XMLHttpRequest && DWREngine._pollMethod == DWREngine.XMLHttpRequest) {
+    batch.method = DWREngine.IFrame;
+  }
   // Create an entry in the handlers map for what happens when the reply arrives
   DWREngine._handlersMap[id] = {
     errorHandler:DWREngine._errorHandler,
@@ -490,32 +497,72 @@ DWREngine._triggerNextPoll = function(pause) {
 DWREngine._checkCometPoll = function() {
   if (DWREngine._pollComet) {
     if (DWREngine._pollFrame) {
-      setTimeout("DWREngine._checkCometPoll()", 100);
-      var frameDocument;
-      if (DWREngine._pollFrame.contentDocument) {
-        frameDocument = DWREngine._pollFrame.contentDocument.defaultView.document;
-      }
-      else if (DWREngine._pollFrame.contentWindow) {
-        frameDocument = DWREngine._pollFrame.contentWindow.document
-      }
-      var bodyNodes = frameDocument.getElementsByTagName("body");
-      if (bodyNodes == null || bodyNodes.length == 0) return;
-      if (bodyNodes[0] == null) return;
-      var text = bodyNodes[0].innerHTML.toString();
-      // IE plays silly-pants and adds <PRE>...</PRE> for some unknown reason
-      if (text.indexOf("<PRE>") == 0) {
-        text = text.substring(5, text.length - 7);
-      }
-      var size = text.length;
-      if (DWREngine._pollCometSize != size) {
-        var executeString = text.substring(DWREngine._pollCometSize);
-        eval(executeString);
-        DWREngine._pollCometSize = size;
-      }
+      setTimeout("DWREngine._checkCometPoll()", DWREngine._pollCometInterval);
+      var text = DWREngine._getTextFromCometIFrame();
+      DWREngine._processCometResponse(text);
     }
     else if (DWREngine._pollReq) {
-      setTimeout("DWREngine._checkCometPoll()", 100);
-      var xhrtext = DWREngine._pollReq.responseText;
+      setTimeout("DWREngine._checkCometPoll()", DWREngine._pollCometInterval);
+      try {
+        var xhrtext = DWREngine._pollReq.responseText;
+        DWREngine._processCometResponse(xhrtext);
+      }
+      catch (ex) {
+        // IE complains for no good reason. Ignore
+      }
+    }
+  }
+}
+
+/**
+ * @private Extract the whole (executed an all) text from the current iframe
+ */
+DWREngine._getTextFromCometIFrame = function() {
+  var frameDocument;
+  if (DWREngine._pollFrame.contentDocument) {
+    frameDocument = DWREngine._pollFrame.contentDocument.defaultView.document;
+  }
+  else if (DWREngine._pollFrame.contentWindow) {
+    frameDocument = DWREngine._pollFrame.contentWindow.document
+  }
+  else {
+    return "";
+  }
+  var bodyNodes = frameDocument.getElementsByTagName("body");
+  if (bodyNodes == null || bodyNodes.length == 0) return "";
+  if (bodyNodes[0] == null) return "";
+  var text = bodyNodes[0].innerHTML.toString();
+  // IE plays silly-pants and adds <PRE>...</PRE> for some unknown reason
+  if (text.indexOf("<PRE>") == 0) text = text.substring(5, text.length - 7);
+  return text;
+}
+
+/**
+ * @private Some more text might have come in, test and execute the new stuff
+ */
+DWREngine._processCometResponse = function(response) {
+  if (DWREngine._pollCometSize != response.length) {
+    var firstStartTag = response.indexOf("//@DWR-START@", DWREngine._pollCometSize);
+    if (firstStartTag == -1) {
+      // There is no start tag so we ignore the rest
+      // DWRUtil.debug("Missing //@DWR-START@ Skipping: " + response.substring(DWREngine._pollCometSize));
+      DWREngine._pollCometSize = response.length;
+    }
+    else {
+      // if (firstStartTag != DWREngine._pollCometSize) {
+      //   DWRUtil.debug("//@DWR-START@ not at start skipping: " + response.substring(DWREngine._pollCometSize, firstStartTag));
+      // }
+      var lastEndTag = response.lastIndexOf("//@DWR-END@");
+      if (lastEndTag != -1) {
+        var executeString = response.substring(firstStartTag + 13, lastEndTag);
+        // DWRUtil.debug(executeString);
+        eval(executeString);
+        // Skip the end tag too for next time
+        DWREngine._pollCometSize = lastEndTag + 11;
+      }
+      // else {
+      //   DWRUtil.debug("Missing //@DWR-END@ Postponing: " + executeString);
+      // }
     }
   }
 }
@@ -713,19 +760,26 @@ DWREngine._stateChange = function(batch) {
         return;
       }
 
-      // This should get us out of 404s etc.
-      if (reply.search("DWREngine._handle") == -1) {
-        DWREngine._handleMetaDataError(null, "Invalid reply from server");
-        return;
-      }
+// DWR doesn't use response codes for failure conditions, so we should be able
+// to delete this. If no one complains, we will.
+//      if (status != 200) {
+//        if (reply == null) reply = "Unknown error occured";
+//        DWREngine._handleMetaDataError(null, reply);
+//        return;
+//      }
 
-      if (status != 200) {
-        if (reply == null) reply = "Unknown error occured";
-        DWREngine._handleMetaDataError(null, reply);
-        return;
+      // Comet replies might have already partially executed
+      if (batch.req == DWREngine._pollReq) {
+        DWREngine._processCometResponse(reply);
       }
-
-      eval(reply);
+      else {
+        // This should get us out of 404s etc.
+        if (reply.search("DWREngine._handle") == -1) {
+          DWREngine._handleMetaDataError(null, "Invalid reply from server");
+          return;
+        }
+        eval(reply);
+      }
 
       // We're done. Clear up
       DWREngine._clearUp(batch);
@@ -830,14 +884,18 @@ DWREngine._clearUp = function(batch) {
   // Irame tidyup
   if (batch.div) batch.div.parentNode.removeChild(batch.div);
   if (batch.iframe) {
-    batch.iframe.parentNode.removeChild(batch.iframe);
     // If this is a poll frame then stop comet polling
     if (batch.iframe == DWREngine._pollFrame) DWREngine._pollFrame = null;
+    batch.iframe.parentNode.removeChild(batch.iframe);
   }
   if (batch.form) batch.form.parentNode.removeChild(batch.form);
 
   // XHR tidyup: avoid IE handles increase
-  if (batch.req) delete batch.req;
+  if (batch.req) {
+    // If this is a poll frame then stop comet polling
+    if (batch.req == DWREngine._pollReq) DWREngine._pollReq = null;
+    delete batch.req;
+  }
 
   for (var i = 0; i < batch.postHooks.length; i++) {
     batch.postHooks[i]();

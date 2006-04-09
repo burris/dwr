@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.MimeConstants;
 
-
 /**
  * A version of the Plain Javascript Marshaller that uses iframe syntax
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -43,12 +42,7 @@ public class DwrpHtmlJsMarshaller extends DwrpPlainJsMarshaller
      */
     protected void sendOutboundScriptPrefix(PrintWriter out, HttpServletResponse response) throws IOException
     {
-        synchronized (out)
-        {
-            out.println("<html><body><script type='text/javascript'>"); //$NON-NLS-1$
-            out.flush();
-            response.flushBuffer();
-        }
+        sendScript(out, response, "<html><body><script type='text/javascript'>"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
@@ -56,12 +50,7 @@ public class DwrpHtmlJsMarshaller extends DwrpPlainJsMarshaller
      */
     protected void sendOutboundScriptSuffix(PrintWriter out, HttpServletResponse response) throws IOException
     {
-        synchronized (out)
-        {
-            out.println("</script></body></html>"); //$NON-NLS-1$
-            out.flush();
-            response.flushBuffer();
-        }
+        sendScript(out, response, "</script></body></html>"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
@@ -72,7 +61,12 @@ public class DwrpHtmlJsMarshaller extends DwrpPlainJsMarshaller
         synchronized (out)
         {
             String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");"; //$NON-NLS-1$ //$NON-NLS-2$
+
+            out.println(ConversionConstants.SCRIPT_START_MARKER);
             out.println(modScript);
+            out.println(ConversionConstants.SCRIPT_END_MARKER);
+
+            out.flush();
             response.flushBuffer();
         }
     }

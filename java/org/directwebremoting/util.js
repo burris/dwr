@@ -816,7 +816,7 @@ DWRUtil.cloneNode = function(ele)  {
   ele = $(ele);
   if (ele == null) {
     DWRUtil.debug("cloneNode() can't find an element with id: " + orig + ".");
-    return;
+    return null;
   }
   var clone = ele.cloneNode(true);
   DWRUtil._removeIds(clone);
@@ -942,7 +942,7 @@ DWRUtil._importNode = function(doc, importedNode, deep) {
 DWRUtil._debugDisplay = [];
 
 /** What is the maximum length of the debug items array */
-DWRUtil._debugMaxLength = 10;
+DWRUtil._debugMaxLength = 50;
 
 /**
  * Used internally when some message needs to get to the programmer

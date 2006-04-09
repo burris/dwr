@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.ScriptConduit;
-import org.directwebremoting.util.Logger;
 
 /**
  * A ScriptConduit that works with the parent Marshaller.
@@ -51,24 +50,14 @@ public class DirectScriptConduit implements ScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptConduit#addScript(java.lang.String)
      */
-    public void addScript(String script)
+    public void addScript(String script) throws IOException
     {
         if (closed)
         {
             throw new IllegalStateException("Attempt to write to closed DirectScriptConduit"); //$NON-NLS-1$
         }
 
-        synchronized (out)
-        {
-            try
-            {
-                marshaller.sendScript(out, response, script);
-            }
-            catch (IOException ex)
-            {
-                log.warn("Ignoring IOException while writing script: " + ex.getMessage()); //$NON-NLS-1$
-            }
-        }
+        marshaller.sendScript(out, response, script);
     }
 
     /* (non-Javadoc)
@@ -142,9 +131,4 @@ public class DirectScriptConduit implements ScriptConduit
      * The next ID, to get around serialization issues
      */
     private static long nextId = 0L;
-
-    /**
-     * The log stream
-     */
-    private static final Logger log = Logger.getLogger(DirectScriptConduit.class);
 }

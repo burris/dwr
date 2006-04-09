@@ -83,7 +83,12 @@ public class DefaultWebContext implements WebContext
      */
     public ScriptSession getScriptSession()
     {
-        return getScriptSessionManager().getScriptSession(scriptSessionId, page);
+        ScriptSessionManager manager = getScriptSessionManager();
+
+        ScriptSession scriptSession = manager.getScriptSession(scriptSessionId);
+        manager.setPageForScriptSession(scriptSession, page);
+
+        return scriptSession;
     }
 
     /* (non-Javadoc)

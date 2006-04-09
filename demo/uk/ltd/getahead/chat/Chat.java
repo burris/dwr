@@ -112,8 +112,9 @@ public class Chat
                     count++;
                     try
                     {
-                        scriptSession.addScript("DWRUtil.setValue('ping', 'count=" + count + "');"); //$NON-NLS-1$ //$NON-NLS-2$
                         Thread.sleep(1000);
+                        log.debug("ping: " + count);
+                        scriptSession.addScript("DWRUtil.setValue('ping', 'count=" + count + "');"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                     catch (Exception ex)
                     {

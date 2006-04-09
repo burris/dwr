@@ -15,6 +15,8 @@
  */
 package org.directwebremoting;
 
+import java.io.IOException;
+
 /**
  * While a Marshaller is processing a request it can register a ScriptConduit
  * with the ScriptSession to say - pass scripts straight to me and bypass the
@@ -28,6 +30,7 @@ public interface ScriptConduit
      * Add a script to the list waiting for remote execution.
      * The version automatically wraps the string in a ClientScript object.
      * @param script The script to execute
+     * @throws IOException If the script can not go out via this conduit.
      */
-    public void addScript(String script);
+    public void addScript(String script) throws IOException;
 }

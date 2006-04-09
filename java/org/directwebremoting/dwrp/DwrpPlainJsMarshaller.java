@@ -315,10 +315,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
         scriptSession.removeScriptConduit(conduit);
         conduit.close();
 
-        synchronized (out)
-        {
-            sendOutboundScriptSuffix(out, response);
-        }
+        sendOutboundScriptSuffix(out, response);
 
         // log.debug(replyString);
     }
@@ -332,9 +329,18 @@ public class DwrpPlainJsMarshaller implements Marshaller
      */
     protected void sendScript(PrintWriter out, HttpServletResponse response, String script) throws IOException
     {
+        if (script.trim().length() == 0)
+        {
+            log.warn("Skipping empty script", new Exception()); //$NON-NLS-1$
+            return;
+        }
+
         synchronized (out)
         {
+            out.println(ConversionConstants.SCRIPT_START_MARKER);
             out.println(script);
+            out.println(ConversionConstants.SCRIPT_END_MARKER);
+
             out.flush();
             response.flushBuffer();
         }
@@ -357,12 +363,6 @@ public class DwrpPlainJsMarshaller implements Marshaller
      */
     protected void sendOutboundScriptPrefix(PrintWriter out, HttpServletResponse response) throws IOException
     {
-        synchronized (out)
-        {
-            out.println(""); //$NON-NLS-1$
-            out.flush();
-            response.flushBuffer();
-        }
     }
 
     /**
@@ -373,12 +373,6 @@ public class DwrpPlainJsMarshaller implements Marshaller
      */
     protected void sendOutboundScriptSuffix(PrintWriter out, HttpServletResponse response) throws IOException
     {
-        synchronized (out)
-        {
-            out.println(""); //$NON-NLS-1$
-            out.flush();
-            response.flushBuffer();
-        }
     }
 
     /**

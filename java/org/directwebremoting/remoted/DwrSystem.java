@@ -30,19 +30,7 @@ public class DwrSystem
      * The polling system needs to be able to wait for something to happen
      * @return How long should the client wait until it next polls
      */
-    public int pollWithXhr()
-    {
-        Container container = WebContextFactory.get().getContainer();
-        ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
-
-        return monitor.timeToNextPoll();
-    }
-
-    /**
-     * The polling system needs to be able to wait for something to happen
-     * @return How long should the client wait until it next polls
-     */
-    public int pollWithIframe()
+    public int poll()
     {
         Container container = WebContextFactory.get().getContainer();
         ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());

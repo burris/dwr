@@ -26,7 +26,6 @@ import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.util.Logger;
 
-
 /**
  * An implementation of ScriptSession.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -129,17 +128,42 @@ public class DefaultScriptSession implements ScriptSession
     {
         checkNotInvalidated();
 
+        if (script == null)
+        {
+            throw new NullPointerException("null script"); //$NON-NLS-1$
+        }
+
         // First we try to add the script to an existing conduit
         synchronized (scriptLock)
         {
-            if (conduits.size() > 0)
+            if (conduits.size() == 0)
             {
-                ScriptConduit conduit = (ScriptConduit) conduits.get(0);
-                conduit.addScript(script);
+                // There are no conduits, just store it until there are
+                scripts.add(script);
             }
             else
             {
-                scripts.add(script);
+                // Try all the conduits, starting with the first
+                boolean written = false;
+                for (Iterator it = conduits.iterator(); !written && it.hasNext();)
+                {
+                    ScriptConduit conduit = (ScriptConduit) it.next();
+                    try
+                    {
+                        conduit.addScript(script);
+                        written = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        log.warn("Failed to write to ScriptConduit, removing from list: " + conduit); //$NON-NLS-1$
+                        removeScriptConduit(conduit);
+                    }
+                }
+
+                if (!written)
+                {
+                    scripts.add(script);
+                }
             }
         }
     }
@@ -182,16 +206,22 @@ public class DefaultScriptSession implements ScriptSession
         // And add the conduit into the list
         synchronized (scriptLock)
         {
-            conduits.add(conduit);
-
             // If there are any outstanding scripts, dump them to the new conduit
-            for (Iterator it = scripts.iterator(); it.hasNext();)
+            try
             {
-                String script = (String) it.next();
-                conduit.addScript(script);
+                for (Iterator it = scripts.iterator(); it.hasNext();)
+                {
+                    String script = (String) it.next();
+                    conduit.addScript(script);
+                    it.remove();
+                }
             }
+            catch (Exception ex)
+            {
+                log.warn("Failed to catch-up write to a ScriptConduit"); //$NON-NLS-1$
+            }                
 
-            scripts.clear();
+            conduits.add(conduit);
         }
     }
 

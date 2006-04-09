@@ -36,12 +36,11 @@ import org.directwebremoting.util.Logger;
 public class DefaultScriptSessionManager implements ScriptSessionManager
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSessionManager#getScriptSession(java.lang.String, java.lang.String)
+     * @see org.directwebremoting.ScriptSessionManager#getScriptSession(java.lang.String)
      */
-    public ScriptSession getScriptSession(String id, String page)
+    public ScriptSession getScriptSession(String id)
     {
         DefaultScriptSession session;
-        boolean created = false;
 
         synchronized (sessionLock)
         {
@@ -49,8 +48,6 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             if (session == null)
             {
                 session = new DefaultScriptSession(id, this);
-                created = true;
-
                 sessionMap.put(id, session);
             }
             else
@@ -59,24 +56,25 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             }
         }
 
-        // I've kept this separate to avoid deadlock issues, is there a risk
-        // of something being in one map but not the other?
-        if (created)
-        {
-            synchronized (sessionLock)
-            {
-                Set pageSessions = (Set) pageSessionMap.get(page);
-                if (pageSessions == null)
-                {
-                    pageSessions = new HashSet();
-                    pageSessionMap.put(page, pageSessions);
-                }
-
-                pageSessions.add(session);
-            }
-        }
-
         return session;
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ScriptSessionManager#setPageForScriptSession(org.directwebremoting.ScriptSession, java.lang.String)
+     */
+    public void setPageForScriptSession(ScriptSession scriptSession, String page)
+    {
+        synchronized (sessionLock)
+        {
+            Set pageSessions = (Set) pageSessionMap.get(page);
+            if (pageSessions == null)
+            {
+                pageSessions = new HashSet();
+                pageSessionMap.put(page, pageSessions);
+            }
+
+            pageSessions.add(scriptSession);
+        }
     }
 
     /* (non-Javadoc)
