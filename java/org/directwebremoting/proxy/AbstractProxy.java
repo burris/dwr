@@ -46,11 +46,11 @@ public class AbstractProxy
     }
 
     /**
-     * @param scriptSession
+     * @param addScriptSessions
      */
-    protected void addScriptSessions(Collection scriptSessions)
+    protected void addScriptSessions(Collection addScriptSessions)
     {
-        scriptSessions.addAll(scriptSessions);
+        scriptSessions.addAll(addScriptSessions);
     }
 
     /**
