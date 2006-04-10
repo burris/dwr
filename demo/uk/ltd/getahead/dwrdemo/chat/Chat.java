@@ -1,4 +1,4 @@
-package uk.ltd.getahead.chat;
+package uk.ltd.getahead.dwrdemo.chat;
 
 import java.util.Collection;
 import java.util.Iterator;

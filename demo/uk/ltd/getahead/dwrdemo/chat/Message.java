@@ -1,4 +1,4 @@
-package uk.ltd.getahead.chat;
+package uk.ltd.getahead.dwrdemo.chat;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]

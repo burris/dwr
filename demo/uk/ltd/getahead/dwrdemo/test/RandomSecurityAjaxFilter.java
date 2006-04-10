@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.testdwr;
+package uk.ltd.getahead.dwrdemo.test;
 
 import java.lang.reflect.Method;
 
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
-import org.directwebremoting.util.Logger;
 
 
 /**
- * An example filter that does some logging of Ajax calls
+ * An example filter that uses a fairly random event to define it's security
+ * policy: If the current system time (in milliseconds) is even then the call
+ * is allowed, otherwise it is denied.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Logging1AjaxFilter implements AjaxFilter
+public class RandomSecurityAjaxFilter implements AjaxFilter
 {
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.AjaxFilter#doFilter(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], uk.ltd.getahead.dwr.AjaxFilterChain)
      */
     public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
     {
-        log.debug("L1: About to execute: " + method.getName() + "() on " + obj); //$NON-NLS-1$ //$NON-NLS-2$
-        Object reply = chain.doFilter(obj, method, params);
-        log.debug("L1: - Executed: " + method.getName() + "() giving " + reply); //$NON-NLS-1$ //$NON-NLS-2$
-        return reply;
+        if (System.currentTimeMillis() % 2 == 1)
+        {
+            return chain.doFilter(obj, method, params);
+        }
+        else
+        {
+            throw new SecurityException("Wrong time. Try again later"); //$NON-NLS-1$
+        }
     }
-    
-    /**
-     * The log stream
-     */
-    private static final Logger log = Logger.getLogger(Logging1AjaxFilter.class);
 }

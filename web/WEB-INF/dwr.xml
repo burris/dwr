@@ -4,7 +4,7 @@
 <dwr>
 
   <init>
-    <converter id="testbean" class="uk.ltd.getahead.testdwr.TestBean2Converter"/>
+    <converter id="testbean" class="uk.ltd.getahead.dwrdemo.test.TestBean2Converter"/>
   </init>
 
   <allow>
@@ -14,7 +14,11 @@
     </filter>
 
     <create creator="new" javascript="Test" scope="application">
-      <param name="class" value="uk.ltd.getahead.testdwr.Test"/>
+      <param name="class" value="uk.ltd.getahead.dwrdemo.test.Test"/>
+    </create>
+
+    <create creator="new" javascript="Generator" scope="application">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.asmg.Generator"/>
     </create>
 
     <create creator="new" javascript="JDate">
@@ -22,30 +26,38 @@
       <exclude method="getHours"/>
       <auth method="getMinutes" role="admin"/>
       <auth method="getMinutes" role="devel"/>
-      <filter class="uk.ltd.getahead.testdwr.Logging1AjaxFilter"/>
-      <filter class="uk.ltd.getahead.testdwr.Logging2AjaxFilter"/>
-      <filter class="uk.ltd.getahead.testdwr.RandomSecurityAjaxFilter"/>
+      <filter class="uk.ltd.getahead.dwrdemo.test.Logging1AjaxFilter"/>
+      <filter class="uk.ltd.getahead.dwrdemo.test.Logging2AjaxFilter"/>
+      <filter class="uk.ltd.getahead.dwrdemo.test.RandomSecurityAjaxFilter"/>
     </create>
 
     <convert converter="bean" match="$Proxy*"/>
-    <convert converter="testbean" match="uk.ltd.getahead.testdwr.TestBean"/>
+    <convert converter="testbean" match="uk.ltd.getahead.dwrdemo.test.TestBean"/>
 
-    <convert converter="bean" match="uk.ltd.getahead.testdwr.ObjB"/>
-    <convert converter="object" match="uk.ltd.getahead.testdwr.ObjA">
+    <convert converter="bean" match="uk.ltd.getahead.dwrdemo.test.ObjB"/>
+    <convert converter="object" match="uk.ltd.getahead.dwrdemo.test.ObjA">
       <param name="force" value="true"/>
     </convert>
 
     <create creator="new" javascript="Chat" scope="application">
-      <param name="class" value="uk.ltd.getahead.chat.Chat"/>
+      <param name="class" value="uk.ltd.getahead.dwrdemo.chat.Chat"/>
     </create>
-    <convert converter="bean" match="uk.ltd.getahead.chat.Message"/>
+    <convert converter="bean" match="uk.ltd.getahead.dwrdemo.chat.Message"/>
+
+    <create creator="script" javascript="EmailValidator" scope="application">
+      <param name="language" value="beanshell"/>
+      <param name="script">
+        import org.apache.commons.validator.EmailValidator;
+        return EmailValidator.getInstance();
+      </param>
+    </create>
 
   </allow>
 
   <signatures>
   <![CDATA[
   import java.util.*;
-  import uk.ltd.getahead.testdwr.*;
+  import uk.ltd.getahead.dwrdemo.test.*;
 
   Test.testBeanSetParam(Set<TestBean>);
   Test.testBeanListParam(List<TestBean>);

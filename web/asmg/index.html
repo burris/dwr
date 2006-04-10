@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Anti-spam mailto: Link Creator</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+  <script type='text/javascript' src='../dwr/engine.js'> </script>
+  <script type='text/javascript' src='../dwr/interface/Generator.js'> </script>
+  <script type='text/javascript' src='../dwr/util.js'> </script>
+  <script type="text/javascript" src='index.js'> </script>
+</head>
+
+<body>
+
+  <h1>Anti-spam mailto: Link Creator.</h1>
+
+  <table>
+    <tr>
+      <td>EMail Address:</td>
+      <td><input type=text" id="address" onkeypress="DWRUtil.onReturn(event, process)" onblur="verifyAddress()"/></td>
+      <td><span class="error" id="addressError"></span></td>
+    </tr>
+    <tr>
+      <td>Name:</td>
+      <td><input type=text" id="name" onkeypress="DWRUtil.onReturn(event, process)" onblur="verifyName()"/></td>
+      <td><span class="error" id="nameError"></span></td>
+    </tr>
+  </table>
+
+  <input type="submit" value="Submit Query" onclick="process()"/>
+
+  <div id="output">
+    <h1>Generated Links</h1>
+    <div id="outputExample"></div>
+    <textarea id="outputFull"></textarea>
+  </div>
+
+</body>
+</html>
