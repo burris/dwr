@@ -1,11 +1,20 @@
 
+Stuff I'm working on:
+- Serverside DWRUtil, Serverside Scriptaculous and Serverside Dojo. Create a Java API that maps through to the Javascript API
+- Accessibility. DWR should integrate with screen readers to tell them when a page has changed
+
+Stuff that would be cool:
+- Annotations based configuration
+- Using JDK5 type metadata to make <signatures> optional
+- WDDX stuff from Rob Gonda
+- Overloaded objects marshaled to correct types
+- Hierarchical DWRUtil.[g|s]etValues
+
 Audit all MarshallExceptions - they could go to the client
 
 server side dom objects that are auto-inserted – c.f. Oracle ADF. See Mats posting
 
 accessibility
-
-comet
 
 struts
 
@@ -14,7 +23,6 @@ jsf
 make sure that the exec calls never pass back an exception. catch and emit some good javascript
 
 onbackbutton, onforwardbutton
-
 
 Multiple call issue
 	When calling the same function 4 times consecutively passing a different

@@ -62,10 +62,14 @@
     <war destfile="${target.files}/dwr.war" webxml="${source.web}/WEB-INF/web.xml">
       <lib file="${target.files}/dwr.jar"/>
       <classes dir="${target.class}">
-        <include name="**/testdwr/**"/>
+        <include name="**/dwrdemo/**"/>
+      </classes>
+      <classes dir="${source.demo}">
       </classes>
       <fileset dir="${source.web}">
-        <exclude name="web.iml"/>
+        <exclude name="**/*.iml"/>
+        <exclude name="**/*.ipr"/>
+        <exclude name="**/*.iws"/>
         <exclude name="WEB-INF/web.xml"/>
         <exclude name="WEB-INF/classes/**"/>
       </fileset>
@@ -73,6 +77,9 @@
     <zip destfile="${target.files}/dwr-${version}-src.zip">
       <fileset dir="${source.root}">
         <exclude name="target/**"/>
+        <exclude name="**/*.iml"/>
+        <exclude name="**/*.ipr"/>
+        <exclude name="**/*.iws"/>
       </fileset>
       <fileset dir="${target.files}">
         <include name="dwr.jar"/>
