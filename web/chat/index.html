@@ -9,25 +9,33 @@
   <script type="text/javascript" src='index.js'> </script>
 </head>
 
-<body>
+<body onload="startPoll()">
 
-<p>
-  <input type="button" value="Start Poll" onclick="startPoll()"/>
-  <input type="button" value="Stop Poll" onclick="stopPoll()"/>
-</p>
+  <div>[ <a href="../index.html">Top Level</a> ]</div>
 
-<p>Messages:</p>
-<div id="chatlog"></div>
-<p>
-  Your Message:
-  <input id="text" onkeypress="DWRUtil.onReturn(event, sendMessage)"/>
-  <input type="button" value="Send" onclick="sendMessage()"/>
-</p>
+  <h1>Simple Chat</h1>
 
-<p id="dwr-debug">debug</p>
+  <!--
+  <p>
+    <input type="button" value="Start Poll" onclick="startPoll()"/>
+    <input type="button" value="Stop Poll" onclick="stopPoll()"/>
+  </p>
+  -->
 
-<input type="button" value="Ping Me" onclick="pingMe()"/>
-<p id="ping">ping</p>
+  <p>
+    Your Message:
+    <input id="text" onkeypress="DWRUtil.onReturn(event, sendMessage)"/>
+    <input type="button" value="Send" onclick="sendMessage()"/>
+  </p>
+
+  <p>Messages:</p>
+  <div id="chatlog"></div>
+
+  <!--
+  <p id="dwr-debug">debug</p>
+  <input type="button" value="Ping Me" onclick="pingMe()"/>
+  <p id="ping">ping</p>
+  -->
 
 </body>
 </html>

@@ -544,39 +544,25 @@ function init() {
   DWREngine.setErrorHandler(catchFailure);
   DWREngine.setWarningHandler(catchFailure);
 
-  var rownum = 0;
   DWRUtil.addRows("chart", tests, [
-    function(row) {
-      var td = document.createElement("td");
-      td.setAttribute("id", "t" + rownum + "-num");
-      td.innerHTML = "" + rownum;
-      return td;
-    },
-    function(row) {
-      var td = document.createElement("td");
-      td.setAttribute("id", "t" + rownum + "-code");
-      td.innerHTML = "" + row.code;
-      return td;
-    },
-    function(row) {
-      var td = document.createElement("td");
-      td.setAttribute("id", "t" + rownum + "-data");
+    function(row, options) { return options.rowNum; },
+    function(row, options) { return "" + row.code; },
+    function(row, options) {
       var display = DWRUtil.toDescriptiveString(row.data);
-      if (display.length > 30) {
-        display = display.substring(0, 27) + "...";
-      }
-      td.innerHTML = display;
-      return td;
+      if (display.length > 30) display = display.substring(0, 27) + "...";
+      return display;
     },
-    function(row) {
-      return "<input type='button' value='Test' onclick='setSettings();runTest(" + rownum + ")'/>";
+    function(row, options) {
+      return "<input type='button' value='Test' onclick='setSettings();runTest(" + options.rowNum + ")'/>";
     },
-    function(row) {
+    function(row, options) { return ""; }
+  ], {
+    cellCreator:function(options) {
       var td = document.createElement("td");
-      td.setAttribute("id", "t" + rownum + "-results");
-      td.innerHTML = "";
-      rownum++;
+      td.setAttribute("id", "t" + options.rowNum + cellNumIdSuffix[options.cellNum]);
       return td;
     }
-  ]);
+  });
 }
+
+var cellNumIdSuffix = [ "-num", "-code", "-data", "-button", "-results" ];

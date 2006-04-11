@@ -35,8 +35,41 @@
 
 <body onload="init()">
 
+<h1>Welcome to DWR</h1>
+
+<div id="more">
+  <p>
+    For general information about DWR see:
+  </p>
+  <ul>
+    <li>The <a href="http://getahead.ltd.uk/dwr/">main DWR website</a>.</li>
+    <li><a href="http://getahead.ltd.uk/blog/joe/">Joe Walker's blog</a>.</li>
+  </ul>
+</div>
+
+<div>
+  <p>
+    DWR Examples within this WAR file:
+  </p>
+  <ul>
+    <li><a href="asmg">Anti-Spam mailto: Generator</a>: Generate mailto: links without attracting spam.</li>
+    <li><a href="chat">Chat</a>: A simple chat application using DWR.</li>
+  </ul>
+</div>
+
+<p>To see how DWR is configured in this web application see:</p>
+
+<ul>
+  <li>The generated <a href='dwr/'>configuration/test pages</a>.</li>
+  <!--<li><a href="integrationTest.html">Integration Test</a> (Pages that test DWR can work with Spring, Struts, XOM, JDOM, DOM4J, DOM, Hibernate)</li> -->
+  <li><a href="marshallingTest.html">Marshalling Test</a> (Can DWR marshall all parameters, can they be done under load)</li>
+  <li><a href="dhtmlTest.html">DHTML Test</a> (Can DWRUtil manipulate the DOM properly)</li>
+</ul>
+
+<hr/>
+
 <div id="start">
-  <h1>DWR is testing installation ...</h1>
+  <p><strong>DWR is testing installation ...</strong></p>
   <p>
     DWR uses Javascript to make some initial checks. If you can see this message
     then either you are a very fast reader, or Javascript is not working
@@ -51,7 +84,7 @@
 </div>
 
 <div id="reply" style="display:none;">
-  <h1>DWR is partially working</h1>
+  <p><strong>DWR is partially working</strong></p>
   <p>
     DWR has received test data from the server, however for some reason this
     data was mangled. Please report this error to the
@@ -63,7 +96,7 @@
 </div>
 
 <div id="file" style="display:none;">
-  <h1>Missing DWR Javascript Functions</h1>
+  <p><strong>Missing DWR Javascript Functions</strong></p>
   <p>
     This is a fairly advanced page that tests DWR to check that everything is
     setup properly for you.
@@ -84,7 +117,7 @@
 </div>
 
 <div id="error" style="display:none;">
-  <h1>DWR is testing installation ...</h1>
+  <p><strong>DWR is testing installation ...</strong></p>
   <p>
     This is a fairly advanced page that tests DWR. If you can see this message
     for a prolonged period of time then you should check the following:
@@ -109,17 +142,6 @@
     either in the browser (including the Javascript console if one exists) and
     the server console log.
   </p>
-</div>
-
-<div id="more">
-  <p>
-    For general information about DWR see:
-  </p>
-  <ul>
-    <li>The <a href="http://getahead.ltd.uk/dwr/">main DWR website</a>.</li>
-    <li><a href="http://getahead.ltd.uk/blog/joe/">Joe Walker's blog</a>.</li>
-    <li>The <a href="http://en.wikipedia.org/wiki/DWR">DWR page</a> at Wikipedia.</li>
-  </ul>
 </div>
 
 </body>

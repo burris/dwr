@@ -35,10 +35,11 @@ public class Generator
 {
     /**
      * Generate an anti-spam mailto link from an email address
+     * @param name The person to contact
      * @param email The address to generate a link from
      * @return The HTML snippet
      */
-    public String generateAntiSpamMailto(String email)
+    public String generateAntiSpamMailto(String name, String email)
     {
         StringTokenizer st = new StringTokenizer(email, "@"); //$NON-NLS-1$
         if (st.countTokens() != 2)
@@ -51,14 +52,22 @@ public class Generator
 
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("Contact us using:\n"); //$NON-NLS-1$
+        buffer.append("Contact "); //$NON-NLS-1$
+        buffer.append(name);
+        buffer.append(" using: <span id=\"asmgLink\"></span>\n"); //$NON-NLS-1$
         buffer.append("<script type='text/javascript'>\n"); //$NON-NLS-1$
-        buffer.append("var a = '"); //$NON-NLS-1$
+
+        buffer.append("var before = '"); //$NON-NLS-1$
         buffer.append(before);
-        buffer.append('@');
+        buffer.append("';\n"); //$NON-NLS-1$;
+
+        buffer.append("var after = '"); //$NON-NLS-1$
         buffer.append(after);
         buffer.append("';\n"); //$NON-NLS-1$;
-        buffer.append("document.write(\"<a href='mail\" + \"to:\" + a + \"'>\" + a + \"</a>\");\n"); //$NON-NLS-1$
+
+        buffer.append("var link = \"<a href='mail\" + \"to:\" + before + '@' + after + \"'>\" + before + '@' + after + \"</a>\";\n"); //$NON-NLS-1$;
+
+        buffer.append("document.getElementById(\"asmgLink\").innerHTML = link;\n"); //$NON-NLS-1$
         buffer.append("</script>\n"); //$NON-NLS-1$
         buffer.append("<noscript>["); //$NON-NLS-1$
         buffer.append(before);

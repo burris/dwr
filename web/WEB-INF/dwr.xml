@@ -9,9 +9,11 @@
 
   <allow>
 
+    <!--
     <filter class="org.directwebremoting.filter.ExtraLatencyAjaxFilter">
       <param name="delay" value="200"/>
     </filter>
+    -->
 
     <create creator="new" javascript="Test" scope="application">
       <param name="class" value="uk.ltd.getahead.dwrdemo.test.Test"/>

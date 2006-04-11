@@ -892,11 +892,7 @@ public class Test
      */
     public String getInsert() throws ServletException, IOException
     {
-        return WebContextFactory.get().forwardToString("/insert.jsp"); //$NON-NLS-1$
-
-        // return "<h1>DWR is working properly</h1><p>To see how DWR is configured in this web application see:</p>" + //$NON-NLS-1$
-        //        "<ul><li>The generated <a href='dwr/'>configuration/test pages</a>.</li>" + //$NON-NLS-1$
-        //        "<li><a href='test.html'>The unit test suite</a>.</li></ul>"; //$NON-NLS-1$
+        return WebContextFactory.get().forwardToString("/insert.html"); //$NON-NLS-1$
     }
 
     /**
