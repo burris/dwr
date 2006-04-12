@@ -442,70 +442,70 @@ public class UrlProcessor
      * Do we use our hack for when pathInfo is null?
      * Enabling this will require you to have a / on the end of the DWR root URL
      */
-    private boolean nullPathInfoWorkaround = false;
+    protected boolean nullPathInfoWorkaround = false;
 
     /**
      * The page id length
      */
-    private int pageIdLength = 16;
+    protected int pageIdLength = 16;
 
     /**
      * The method by which we get new page ids
      */
-    private IdGenerator generator = new IdGenerator();
+    protected IdGenerator generator = new IdGenerator();
 
     /**
      * Do we ignore all the Last-Modified/ETags blathering?
      */
-    private boolean ignoreLastModified = false;
+    protected boolean ignoreLastModified = false;
 
     /**
      * How much do we compression javascript by?
      */
-    private int compressionLevel = JavascriptUtil.LEVEL_DEBUGGABLE;
+    protected int compressionLevel = JavascriptUtil.LEVEL_DEBUGGABLE;
 
     /**
      * Do we retain comments and unneeded spaces in Javascript code?
      */
-    private boolean scriptCompressed = true;
+    protected boolean scriptCompressed = false;
 
     /**
      * We cache the script output for speed
      */
-    private final Map scriptCache = new HashMap();
+    protected final Map scriptCache = new HashMap();
 
     /**
      * The bean to handle debug page requests
      */
-    private DebugPageGenerator debugPageGenerator = null;
+    protected DebugPageGenerator debugPageGenerator = null;
 
     /**
      * The 'HTML Javascript' method by which objects are marshalled
      */
-    private DwrpPlainJsMarshaller plainJsMarshaller = null;
+    protected DwrpPlainJsMarshaller plainJsMarshaller = null;
 
     /**
      * The 'Plain Javascript' method by which objects are marshalled
      */
-    private DwrpHtmlJsMarshaller htmlJsMarshaller = null;
+    protected DwrpHtmlJsMarshaller htmlJsMarshaller = null;
 
     /**
      * The bean to execute remote requests and generate interfaces
      */
-    private Remoter remoter = null;
+    protected Remoter remoter = null;
 
     /**
      * The session id parameter that goes in engine.js
      */
-    private static final String PARAM_HTTP_SESSIONID = "${httpSessionId}"; //$NON-NLS-1$
+    protected static final String PARAM_HTTP_SESSIONID = "${httpSessionId}"; //$NON-NLS-1$
 
     /**
      * The page id parameter that goes in engine.js
      */
-    private static final String PARAM_SCRIPT_SESSIONID = "${scriptSessionId}"; //$NON-NLS-1$
+    protected static final String PARAM_SCRIPT_SESSIONID = "${scriptSessionId}"; //$NON-NLS-1$
 
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(UrlProcessor.class);
+    protected static final Logger log = Logger.getLogger(UrlProcessor.class);
 }
