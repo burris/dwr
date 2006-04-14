@@ -284,6 +284,9 @@ DWREngine._pollCometSize = 0;
 /** How many milliseconds between internal comet polls */
 DWREngine._pollCometInterval = 200;
 
+/** Do we do a document.reload if we get a text/html reply? */
+DWREngine._reloadOnTextHml = false;
+
 /**
  * @private Send a request. Called by the Javascript interface stub
  * @param path part of URL after the host and before the exec bit without leading or trailing /s
@@ -767,6 +770,14 @@ DWREngine._stateChange = function(batch) {
 //        DWREngine._handleMetaDataError(null, reply);
 //        return;
 //      }
+
+      if (DWREngine._reloadOnTextHml) {
+        var contentType = batch.req.getResponseHeader('Content-Type');
+        if (contentType.match(/^text\/html/)) {
+          document.location.reload();
+          return;
+        }
+      }
 
       // Comet replies might have already partially executed
       if (batch.req == DWREngine._pollReq) {
