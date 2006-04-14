@@ -231,24 +231,27 @@ public class DefaultRemoter implements Remoter
                     object = creator.getInstance();
                 }
 
-                // We might need to remember it for next time
-                if (scope.equals(Creator.APPLICATION))
+                // Remember it for next time
+                if (create)
                 {
-                    webcx.getServletContext().setAttribute(call.getScriptName(), object);
+                    if (scope.equals(Creator.APPLICATION))
+                    {
+                        webcx.getServletContext().setAttribute(call.getScriptName(), object);
+                    }
+                    else if (scope.equals(Creator.SESSION))
+                    {
+                        webcx.getSession().setAttribute(call.getScriptName(), object);
+                    }
+                    else if (scope.equals(Creator.SCRIPT))
+                    {
+                        webcx.getScriptSession().setAttribute(call.getScriptName(), object);
+                    }
+                    else if (scope.equals(Creator.REQUEST))
+                    {
+                        webcx.getHttpServletRequest().setAttribute(call.getScriptName(), object);
+                    }
+                    // Creator.PAGE scope means we create one every time anyway
                 }
-                else if (scope.equals(Creator.SESSION))
-                {
-                    webcx.getSession().setAttribute(call.getScriptName(), object);
-                }
-                else if (scope.equals(Creator.SCRIPT))
-                {
-                    webcx.getScriptSession().setAttribute(call.getScriptName(), object);
-                }
-                else if (scope.equals(Creator.REQUEST))
-                {
-                    webcx.getHttpServletRequest().setAttribute(call.getScriptName(), object);
-                }
-                // Creator.PAGE scope means we create one every time anyway
             }
 
             // Some debug
