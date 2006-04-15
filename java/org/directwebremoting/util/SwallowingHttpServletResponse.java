@@ -38,7 +38,7 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
         super(response);
 
         pout = new PrintWriter(sout);
-        oout = new WriterOutputStream(sout);
+        oout = new WriterOutputStream(sout, response.getCharacterEncoding());
 
         // Ignored, but we might as well start with a realistic value in case
         // anyone wants to work with the buffer size.
