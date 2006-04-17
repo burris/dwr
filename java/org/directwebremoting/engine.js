@@ -134,6 +134,14 @@ DWREngine.setPolling = function(polling) {
 };
 
 /**
+ * Setter for the text/html handler - what happens if a DWR request gets an HTML
+ * reply rather than the expected Javascript. Often due to login timeout
+ */
+DWREngine.setTextHtmlHandler = function(handler) {
+  DWREngine._textHtmlHandler = handler;
+}
+
+/**
  * The default message handler.
  * @see http://getahead.ltd.uk/dwr/browser/engine/errors
  */
@@ -285,7 +293,7 @@ DWREngine._pollCometSize = 0;
 DWREngine._pollCometInterval = 200;
 
 /** Do we do a document.reload if we get a text/html reply? */
-DWREngine._reloadOnTextHml = false;
+DWREngine._textHtmlHandler = null;
 
 /**
  * @private Send a request. Called by the Javascript interface stub
@@ -771,12 +779,10 @@ DWREngine._stateChange = function(batch) {
 //        return;
 //      }
 
-      if (DWREngine._reloadOnTextHml) {
-        var contentType = batch.req.getResponseHeader('Content-Type');
-        if (contentType.match(/^text\/html/)) {
-          document.location.reload();
-          return;
-        }
+      var contentType = batch.req.getResponseHeader('Content-Type');
+      if (DWREngine._textHtmlHandler && contentType.match(/^text\/html/)) {
+        DWREngine._textHtmlHandler();
+        return;
       }
 
       // Comet replies might have already partially executed
@@ -888,7 +894,7 @@ DWREngine._abortRequest = function(batch) {
  */
 DWREngine._clearUp = function(batch) {
   if (batch.completed) {
-    alert("double complete");
+    DWREngine._handleWarning("double complete");
     return;
   }
 
@@ -930,6 +936,15 @@ DWREngine._clearUp = function(batch) {
 DWREngine._handleError = function(reason, ex) {
   if (DWREngine._errorHandler) {
     DWREngine._errorHandler(reason, ex);
+  }
+};
+
+/**
+ * @private Generic error handling routing to save having null checks everywhere.
+ */
+DWREngine._handleWarning = function(reason, ex) {
+  if (DWREngine._warningHandler) {
+    DWREngine._warningHandler(reason, ex);
   }
 };
 

@@ -17,12 +17,12 @@ package org.directwebremoting.proxy.scriptaculous;
 
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundVariable;
-import org.directwebremoting.proxy.AbstractProxy;
+import org.directwebremoting.proxy.ScriptProxy;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Effect extends AbstractProxy
+public class Effect extends ScriptProxy
 {
     /**
      * Call the script.aculo.us <code>Effect.fade()</code> function.

@@ -1,19 +1,17 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-  <meta http-equiv="Content-Style-Type" content="text/css" />
-  <script type='text/javascript' src='./dwr/util.js'> </script>
-  <script type='text/javascript' src='dhtmlTest.js'> </script>
-  <script type='text/javascript' src='generic.js'> </script>
-  <link type="text/css" href="generic.css" rel="stylesheet" />
-<title>DWR - DHTML Tests</title>
+  <script type='text/javascript' src='../dwr/util.js'> </script>
+  <script type='text/javascript' src='../generic.js'> </script>
+  <script type='text/javascript' src='dhtml.js'> </script>
+  <link type="text/css" href="../generic.css" rel="stylesheet" />
+  <title>DWR - DHTML Tests</title>
 </head>
 
 <body>
 
-<div>[ <a href="index.html">Top Level</a> ]</div>
+<div>[ <a href="../index.html">Top Level</a> ]</div>
 
 <script type="text/javascript">
 var arrayFive = [ 'One', 'Two', 'Three', 'Four', 'Five' ];
@@ -322,6 +320,35 @@ function testAddItemsObject4() {
   <button onclick="testAddItemsObject4();">AddItemsObject4</button>
   <ul id="addItemsObject4"> </ul>
   (Items One-Five should appear)
+</div>
+
+<hr/><!--====================================================================-->
+
+<script type="text/javascript">
+function testCloneNode1() {
+  DWRUtil.cloneNode('cloneNode1', { idPrefix:'pre', idSuffix:'suf' });
+  $("precloneNode1suf").style.backgroundColor = "#AFA";
+  DWRUtil.setValue("precloneNode1Inner2suf", "v2");
+  var clonetext = DWRUtil.getValue("precloneNode1Inner1suf", { textContent:true });
+  DWRUtil.setValue("cloneNode1Results", clonetext);
+}
+</script>
+
+<div>
+  <div id="cloneNode1">
+    <ul id="cloneNode1Inner1">
+      <li>One</li><li>Two</li><li>Three</li><li>Four</li>
+    </ul>
+    <select id="cloneNode1Inner2">
+      <option value="v1">One</option><option value="v2">Two</option>
+      <option value="v3">Three</option><option value="v4">Four</option>
+    </select>
+  </div>
+  <button onclick="testCloneNode1();">testCloneNode1</button>
+  Results: [<span id="cloneNode1Results"> </span>]
+  <div>
+    (Green clone should appear with Results: [OneTwoThreeFour] and Option Two selected)
+  </div>
 </div>
 
 <hr/><!--====================================================================-->

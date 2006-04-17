@@ -27,12 +27,12 @@ import org.directwebremoting.WebContextFactory;
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class AbstractProxy
+public class ScriptProxy
 {
     /**
      * 
      */
-    protected AbstractProxy()
+    public ScriptProxy()
     {
         webContext = WebContextFactory.get();
     }
@@ -40,7 +40,7 @@ public class AbstractProxy
     /**
      * @param scriptSession
      */
-    protected void addScriptSession(ScriptSession scriptSession)
+    public void addScriptSession(ScriptSession scriptSession)
     {
         scriptSessions.add(scriptSession);
     }
@@ -48,7 +48,7 @@ public class AbstractProxy
     /**
      * @param addScriptSessions
      */
-    protected void addScriptSessions(Collection addScriptSessions)
+    public void addScriptSessions(Collection addScriptSessions)
     {
         scriptSessions.addAll(addScriptSessions);
     }
@@ -57,7 +57,7 @@ public class AbstractProxy
      * Utility to add the given script to all known browsers.
      * @param script The Javascript to send to the browsers
      */
-    protected void addScript(String script)
+    public void addScript(String script)
     {
         for (Iterator it = scriptSessions.iterator(); it.hasNext();)
         {

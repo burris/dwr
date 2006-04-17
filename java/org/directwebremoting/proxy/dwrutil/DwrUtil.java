@@ -21,7 +21,7 @@ import java.util.Map;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.ScriptSession;
-import org.directwebremoting.proxy.AbstractProxy;
+import org.directwebremoting.proxy.ScriptProxy;
 
 /**
  * DwrUtil is a server-side proxy that allows Java programmers to call client
@@ -39,7 +39,7 @@ import org.directwebremoting.proxy.AbstractProxy;
  * have been left out as not being DOM related.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrUtil extends AbstractProxy
+public class DwrUtil extends ScriptProxy
 {
     /**
      * Build a DwrUtil that acts on a single ScriptSession.
@@ -85,7 +85,7 @@ public class DwrUtil extends AbstractProxy
     {
         OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
         OutboundVariable valueOv = getWebContext().toJavascript(value);
-        String options = escapeHtml ? "{escapeHtml:true}" : "null"; //$NON-NLS-1$ //$NON-NLS-2$
+        String options = escapeHtml ? ", {escapeHtml:true}" : ""; //$NON-NLS-1$ //$NON-NLS-2$
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -94,7 +94,6 @@ public class DwrUtil extends AbstractProxy
             .append(elementIdOv.getAssignCode())
             .append(',')
             .append(valueOv.getAssignCode())
-            .append(',')
             .append(options)
             .append(");"); //$NON-NLS-1$
 
@@ -146,6 +145,35 @@ public class DwrUtil extends AbstractProxy
             .append(elementIdOv.getAssignCode())
             .append(',')
             .append(arrayOv.getAssignCode())
+            .append(");"); //$NON-NLS-1$
+
+        addScript(script.toString());
+    }
+
+    /**
+     * Add options to a list from an array or map.
+     * <p>
+     * <a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
+     * @param elementId The HTML element to update (by id)
+     * @param array And array of objects from which to create options
+     * @param property The object property to use for the option value and text
+     * @throws MarshallException If the data can not be marshalled
+     */
+    public void addOptions(String elementId, Collection array, String property) throws MarshallException
+    {
+        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+        OutboundVariable arrayOv = getWebContext().toJavascript(array);
+        OutboundVariable propertyOv = getWebContext().toJavascript(property);
+
+        StringBuffer script = new StringBuffer();
+        script.append(elementIdOv.getInitCode())
+            .append(arrayOv.getInitCode())
+            .append("DWRUtil.addOptions(") //$NON-NLS-1$
+            .append(elementIdOv.getAssignCode())
+            .append(',')
+            .append(arrayOv.getAssignCode())
+            .append(',')
+            .append(propertyOv.getAssignCode())
             .append(");"); //$NON-NLS-1$
 
         addScript(script.toString());
@@ -209,7 +237,7 @@ public class DwrUtil extends AbstractProxy
      * <p>
      * <a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
      * @param elementId The HTML element to update (by id)
-     * @param array 
+     * @param row The cells to add to the table
      * @throws MarshallException If the data can not be marshalled
      */
     public void addRow(String elementId, Row row) throws MarshallException
@@ -235,5 +263,76 @@ public class DwrUtil extends AbstractProxy
             .append(");"); //$NON-NLS-1$
 
         addScript(script.toString());
+    }
+
+    /**
+     * Clone a given node.
+     * <p>
+     * <a href="http://getahead.ltd.uk/dwr/browser/TODO">More</a>.
+     * @param elementId The HTML element to update (by id)
+     * @throws MarshallException If the data can not be marshalled
+     */
+    public void cloneNode(String elementId) throws MarshallException
+    {
+        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+
+        StringBuffer script = new StringBuffer();
+        script.append(elementIdOv.getInitCode())
+            .append("DWRUtil.cloneNode(") //$NON-NLS-1$
+            .append(elementIdOv.getAssignCode())
+            .append(");"); //$NON-NLS-1$
+
+        addScript(script.toString());
+    }
+
+    /**
+     * Clone a given node.
+     * <p>
+     * <a href="http://getahead.ltd.uk/dwr/browser/TODO">More</a>.
+     * @param elementId The HTML element to update (by id)
+     * @param idPrefix How do we prefix ids in the cloned version of the node tree
+     * @param idSuffix How do we suffix ids in the cloned version of the node tree
+     * @throws MarshallException If the data can not be marshalled
+     */
+    public void cloneNode(String elementId, String idPrefix, String idSuffix) throws MarshallException
+    {
+        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+
+        StringBuffer options = new StringBuffer();
+        options.append("{"); //$NON-NLS-1$
+        if (idPrefix != null)
+        {
+            options.append("idPrefix:'").append(idPrefix).append("'");  //$NON-NLS-1$//$NON-NLS-2$
+        }
+        if (idPrefix != null && idSuffix != null)
+        {
+            options.append(","); //$NON-NLS-1$
+        }
+        if (idSuffix != null)
+        {
+            options.append("idSuffix:'").append(idSuffix).append("'");  //$NON-NLS-1$//$NON-NLS-2$
+        }
+        options.append("}"); //$NON-NLS-1$
+
+        StringBuffer script = new StringBuffer();
+        script.append(elementIdOv.getInitCode())
+            .append("DWRUtil.cloneNode(") //$NON-NLS-1$
+            .append(elementIdOv.getAssignCode())
+            .append(", ") //$NON-NLS-1$
+            .append(options)
+            .append(");"); //$NON-NLS-1$
+
+        addScript(script.toString());
+    }
+
+    /**
+     * Sets a CSS style on an element
+     * @param elementId The HTML element to update (by id)
+     * @param className The CSS class to update
+     * @param value The new value for the CSS class on the given element
+     */
+    public void setStyle(String elementId, String className, String value)
+    {
+        addScript("$('" + elementId + "').style." + className + " = '" + value + "';"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 }

@@ -807,21 +807,52 @@ DWRUtil.removeAllRows = function(ele) {
   }
 };
 
+
+
 /**
  * Clone a node and insert it into the document just above the 'template' node
  * @see http://getahead.ltd.uk/dwr/???
  */
-DWRUtil.cloneNode = function(ele)  {
+DWRUtil.cloneNode = function(ele, options) {
+  if (options == null) options = {};
   var orig = ele;
   ele = $(ele);
   if (ele == null) {
-    DWRUtil.debug("cloneNode() can't find an element with id: " + orig + ".");
+    DWRUtil.debug("cloneNode2() can't find an element with id: " + orig + ".");
     return null;
   }
   var clone = ele.cloneNode(true);
-  DWRUtil._removeIds(clone);
+  if (options.idPrefix || options.idSuffix) {
+    DWRUtil._updateIds(clone, options);
+  }
+  else {
+    DWRUtil._removeIds(clone);
+  }
   ele.parentNode.insertBefore(clone, ele);
   return clone;
+}
+
+/**
+ * @private Update all of the ids in an element tree
+ */
+DWRUtil._updateIds = function(ele, options) {
+  if (options == null) options = {};
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("_updateIds() can't find an element with id: " + orig + ".");
+    return;
+  }
+  if (ele.id) {
+    ele.setAttribute("id", (options.idPrefix || "") + ele.id + (options.idSuffix || ""));
+  }
+  var children = ele.childNodes;
+  for (var i = 0; i < children.length; i++) {
+    var child = children.item(i);
+    if (child.nodeType == 1 /*Node.ELEMENT_NODE*/) {
+      DWRUtil._updateIds(child, options);
+    }
+  }
 }
 
 /**

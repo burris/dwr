@@ -156,7 +156,7 @@ public class DefaultScriptSession implements ScriptSession
                     catch (Exception ex)
                     {
                         log.warn("Failed to write to ScriptConduit, removing from list: " + conduit); //$NON-NLS-1$
-                        removeScriptConduit(conduit);
+                        it.remove();
                     }
                 }
 

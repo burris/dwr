@@ -121,6 +121,7 @@ public class JavascriptUtil
     {
         String reply = text;
 
+        // First we strip multi line comments. I think this is important:
         if ((level & COMPRESS_STRIP_ML_COMMENTS) != 0)
         {
             reply = stripMultiLineComments(text);
@@ -212,7 +213,6 @@ public class JavascriptUtil
         {
             StringBuffer output = new StringBuffer();
 
-            // First we strip multi line comments. I think this is important:
             BufferedReader in = new BufferedReader(new StringReader(text));
             while (true)
             {
@@ -222,10 +222,14 @@ public class JavascriptUtil
                     break;
                 }
 
-                int cstart = line.indexOf(COMMENT_SL_START);
-                if (cstart >= 0)
+                // Skip @DWR comments
+                if (line.indexOf(COMMENT_RETAIN) == -1)
                 {
-                    line = line.substring(0, cstart);
+                    int cstart = line.indexOf(COMMENT_SL_START);
+                    if (cstart >= 0)
+                    {
+                        line = line.substring(0, cstart);
+                    }
                 }
 
                 output.append(line);
@@ -793,11 +797,25 @@ public class JavascriptUtil
 
     private static final String SPACE = " "; //$NON-NLS-1$
 
+    /**
+     * How does a multi line comment start?
+     */
     private static final String COMMENT_ML_START = "/*"; //$NON-NLS-1$
 
+    /**
+     * How does a multi line comment end?
+     */
     private static final String COMMENT_ML_END = "*/"; //$NON-NLS-1$
 
+    /**
+     * How does a single line comment start?
+     */
     private static final String COMMENT_SL_START = "//"; //$NON-NLS-1$
+
+    /**
+     * Sometimes we need to retain the comment because it has special meaning
+     */
+    private static final String COMMENT_RETAIN = "@DWR"; //$NON-NLS-1$
 
     /**
      * The log stream

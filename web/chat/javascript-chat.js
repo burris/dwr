@@ -10,11 +10,11 @@ function stopPoll() {
 function sendMessage() {
   var text = DWRUtil.getValue("text");
   DWRUtil.setValue("text", "");
-  Chat.addMessage(text);
+  JavascriptChat.addMessage(text);
 }
 
 function pingMe() {
-  Chat.pingMe();
+  JavascriptChat.pingMe();
 }
 
 function receiveMessages(messages) {
