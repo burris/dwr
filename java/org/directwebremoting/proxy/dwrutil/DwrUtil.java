@@ -326,13 +326,53 @@ public class DwrUtil extends ScriptProxy
     }
 
     /**
+     * $(ele).className = "X", that we can call from Java easily
+     * @param elementId The HTML element to update (by id)
+     * @param className The CSS class to set for the element
+     */
+    public void setClassName(String elementId, String className)
+    {
+        addScript("DWRUtil.setClassName('" + elementId + "', '" + className + "');"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    /**
+     * $(ele).className += "X", that we can call from Java easily.
+     * @param elementId The HTML element to update (by id)
+     * @param className The CSS class to add to the element
+     */
+    public void addClassName(String elementId, String className)
+    {
+        addScript("DWRUtil.addClassName('" + elementId + "', '" + className + "');"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    /**
+     * $(ele).className -= "X", that we can call from Java easily From code originally by Gavin Kistner
+     * @param elementId The HTML element to update (by id)
+     * @param className The CSS class to remove from the element
+     */
+    public void removeClassName(String elementId, String className)
+    {
+        addScript("DWRUtil.removeClassName('" + elementId + "', '" + className + "');"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    /**
+     * $(ele).className |= "X", that we can call from Java easily.
+     * @param elementId The HTML element to update (by id)
+     * @param className The CSS class to toggle on/off
+     */
+    public void toggleClassName(String elementId, String className)
+    {
+        addScript("DWRUtil.toggleClassName('" + elementId + "', '" + className + "');"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    /**
      * Sets a CSS style on an element
      * @param elementId The HTML element to update (by id)
-     * @param className The CSS class to update
+     * @param selector The CSS selector to update
      * @param value The new value for the CSS class on the given element
      */
-    public void setStyle(String elementId, String className, String value)
+    public void setStyle(String elementId, String selector, String value)
     {
-        addScript("$('" + elementId + "').style." + className + " = '" + value + "';"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        addScript("$('" + elementId + "').style." + selector + " = '" + value + "';"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 }
