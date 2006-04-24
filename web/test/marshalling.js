@@ -222,6 +222,10 @@ tests[tests.length] = { code:"charParam", data:"\u00C6" };
 tests[tests.length] = { code:"charParam", data:"\u00DF" };
 tests[tests.length] = { code:"charParam", data:"\u00FF" };
 
+// This line should contain a string of non-western characters and no question marks
+tests[tests.length] = { code:"stringParam", data:"一部BBC在1994年拍的老片子~~可是我却看了又看！可是相当的吸引人啊~~简·奥斯丁的名著，就不用说了吧~~不看不知道，看了绝对不会后悔！一部BBC在1994年拍的老片子~~可是我却看了又看！可是相当的吸引人啊~~简·奥斯丁的名著，就不用说了吧~~不看不知道，看了绝对不会后悔！" };
+tests[tests.length] = { code:"stringParam", data:"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" };
+
 var nested = { integer:0, string:'0123456789' };
 nested.testBean = nested;
 

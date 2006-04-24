@@ -551,71 +551,6 @@ public final class LocalUtil
     }
 
     /**
-     * Utility to essentially do Class forName with the assumption that the
-     * environment expects failures for missing jar files and can carry on if
-     * this process fails.
-     * @param name The name for debugging purposes
-     * @param className The class to create
-     * @param impl The implementation class - what should className do?
-     * @return The class if it is safe or null otherwise.
-     */
-    public static Class classForName(String name, String className, Class impl)
-    {
-        Class clazz;
-
-        try
-        {
-            clazz = classForName(className);
-        }
-        catch (ClassNotFoundException ex)
-        {
-            log.info("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            return null;
-        }
-        catch (NoClassDefFoundError ex)
-        {
-            log.info("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            return null;
-        }
-
-        // Check it is of the right type
-        if (!impl.isAssignableFrom(clazz))
-        {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), impl.getName())); //$NON-NLS-1$
-        }
-
-        // Check we can create it
-        try
-        {
-            clazz.newInstance();
-        }
-        catch (InstantiationException ex)
-        {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotInstantiatable", className, ex.toString())); //$NON-NLS-1$
-        }
-        catch (IllegalAccessException ex)
-        {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAccessable", className, ex.toString())); //$NON-NLS-1$
-        }
-        catch (Exception ex)
-        {
-            // For some reason we can't catch this?
-            if (ex instanceof ClassNotFoundException)
-            {
-                log.info("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                return null;
-            }
-            else
-            {
-                log.warn("Failed to load '" + name + "' (" + className + ")", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                return null;
-            }
-        }
-
-        return clazz;
-    }
-
-    /**
      * Calling methods using reflection is useful for graceful fallback - this
      * is a helper method to make this easy
      * @param object The object to use as 'this'
@@ -647,6 +582,83 @@ public final class LocalUtil
     }
 
     /**
+     * Utility to essentially do Class forName with the assumption that the
+     * environment expects failures for missing jar files and can carry on if
+     * this process fails.
+     * @param name The name for debugging purposes
+     * @param className The class to create
+     * @param impl The implementation class - what should className do?
+     * @return The class if it is safe or null otherwise.
+     */
+    public static Class classForName(String name, String className, Class impl)
+    {
+        Class clazz;
+
+        try
+        {
+            clazz = classForName(className);
+        }
+        catch (ClassNotFoundException ex)
+        {
+            // We expect this sometimes, hence debug
+            log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            // We expect this sometimes, hence debug
+            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+
+        // Check it is of the right type
+        if (!impl.isAssignableFrom(clazz))
+        {
+            log.error("Class '" + clazz.getName() + "' does not implement '" + impl.getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+
+        // Check we can create it
+        try
+        {
+            clazz.newInstance();
+        }
+        catch (InstantiationException ex)
+        {
+            log.error("InstantiationException for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            return null;
+        }
+        catch (IllegalAccessException ex)
+        {
+            log.error("IllegalAccessException for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            return null;
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            // We expect this sometimes, hence debug
+            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+        catch (Exception ex)
+        {
+            // For some reason we can't catch this?
+            if (ex instanceof ClassNotFoundException)
+            {
+                // We expect this sometimes, hence debug
+                log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                return null;
+            }
+            else
+            {
+                log.error("Failed to load '" + name + "' (" + className + ")", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                return null;
+            }
+        }
+
+        return clazz;
+    }
+
+    /**
      * Utility to essentially do Class forName and newInstance with the
      * assumption that the environment expects failures for missing jar files
      * and can carry on if this process fails.
@@ -665,19 +677,22 @@ public final class LocalUtil
         }
         catch (ClassNotFoundException ex)
         {
-            log.info("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            // We expect this sometimes, hence debug
+            log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null;
         }
         catch (NoClassDefFoundError ex)
         {
-            log.info("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            // We expect this sometimes, hence debug
+            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null;
         }
 
         // Check it is of the right type
         if (!impl.isAssignableFrom(clazz))
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAssignable", clazz.getName(), impl.getName())); //$NON-NLS-1$
+            log.error("Class '" + clazz.getName() + "' does not implement '" + impl.getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
         }
 
         // Check we can create it
@@ -687,15 +702,17 @@ public final class LocalUtil
         }
         catch (InstantiationException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotInstantiatable", className, ex.toString())); //$NON-NLS-1$
+            log.error("InstantiationException for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            return null;
         }
         catch (IllegalAccessException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.CreatorNotAccessable", className, ex.toString())); //$NON-NLS-1$
+            log.error("IllegalAccessException for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            return null;
         }
         catch (Exception ex)
         {
-            log.warn("Failed to load creator '" + name + "', classname=" + className + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Failed to load creator '" + name + "', classname=" + className + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null;
         }
     }

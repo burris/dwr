@@ -303,23 +303,40 @@ public class ConverterUtil
         {
             String tempvar = outctx.getNextVariableName();
 
-            boolean last = false;
             int end = start + WRAP_LENGTH;
-            if (end > escaped.length())
+            if (end >= escaped.length())
             {
-                last = true;
                 end = escaped.length();
             }
 
             // If the last char is a \ then there is a chance of breaking
-            // an escape so we increment until the last char in not a \
+            // an escape so we increment until the last char is not a \
             // There is a potential bug here where the input string contains
             // only escaped slashes (\\) in which case we will end up not
             // breaking the string. Since this whole thing is a workaround
             // and the solution is complex we are going to pass on it now.
-            while (!last && escaped.charAt(end - 1) == '\\' && end < escaped.length())
+            while (end < escaped.length() && escaped.charAt(end - 1) == '\\')
             {
                 end++;
+            }
+
+            // If there is a '\' followed by a 'u' in the last 4 chars then
+            // we've probably broken a unicode escape
+            if (escaped.charAt(end - 5) == '\\' && escaped.charAt(end - 4) == 'u')
+            {
+                end += 1;
+            }
+            if (escaped.charAt(end - 4) == '\\' && escaped.charAt(end - 3) == 'u')
+            {
+                end += 2;
+            }
+            if (escaped.charAt(end - 3) == '\\' && escaped.charAt(end - 2) == 'u')
+            {
+                end += 3;
+            }
+            if (escaped.charAt(end - 2) == '\\' && escaped.charAt(end - 1) == 'u')
+            {
+                end += 4;
             }
 
             initBody.append("var "); //$NON-NLS-1$
@@ -329,7 +346,7 @@ public class ConverterUtil
             initBody.append("\";\r\n"); //$NON-NLS-1$
 
             initEnd.append(tempvar);
-            if (!last)
+            if (end < escaped.length())
             {
                 initEnd.append('+');
             }

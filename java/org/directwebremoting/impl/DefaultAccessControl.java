@@ -176,7 +176,7 @@ public class DefaultAccessControl implements AccessControl
         {
             if (policy.rules.size() > 0)
             {
-                throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.MixedIncludesAndExcludes", scriptName)); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("DefaultAccessControl.MixedIncludesAndExcludes", scriptName)); //$NON-NLS-1$
             }
 
             policy.defaultAllow = false;
@@ -199,7 +199,7 @@ public class DefaultAccessControl implements AccessControl
         {
             if (policy.rules.size() > 0)
             {
-                throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.MixedIncludesAndExcludes", scriptName)); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("DefaultAccessControl.MixedIncludesAndExcludes", scriptName)); //$NON-NLS-1$
             }
 
             policy.defaultAllow = true;
