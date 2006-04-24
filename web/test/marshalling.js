@@ -1,3 +1,4 @@
+// This file is in UTF-8
 
 var failures;
 var failreport;
