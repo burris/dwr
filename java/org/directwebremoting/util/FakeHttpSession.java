@@ -22,7 +22,6 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionContext;
 
 /**
  * For the benefit of anyone that wants to create a fake HttpSession
@@ -92,7 +91,7 @@ public class FakeHttpSession implements HttpSession
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpSession#getSessionContext()
      */
-    public HttpSessionContext getSessionContext()
+    public javax.servlet.http.HttpSessionContext getSessionContext()
     {
         return null;
     }
