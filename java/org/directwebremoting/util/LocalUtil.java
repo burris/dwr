@@ -33,7 +33,6 @@ import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.dwrp.ConversionConstants;
 
-
 /**
  * Various utilities, mostly to make up for JDK 1.4 functionallity that is not
  * in JDK 1.3
@@ -500,6 +499,8 @@ public final class LocalUtil
             }
         }
 
+        // This might come up in scans for locale/charset issues. It's not an
+        // issue since we are talking about chars.
         return new String(chars, lastDot, chars.length - lastDot);
     }
 

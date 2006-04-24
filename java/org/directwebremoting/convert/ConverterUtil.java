@@ -25,7 +25,6 @@ import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 
-
 /**
  * A collection of utilities that are useful to more than one Converter
  * @author Joe Walker [joe at getahead dot ltd dot uk]

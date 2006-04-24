@@ -190,6 +190,10 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             ServletContext sc = WebContextFactory.get().getServletContext();
             File scriptFile = new File(sc.getRealPath(scriptPath));
 
+            // This uses the platform default encoding. If there are complaints
+            // from people wanting to read script files that are not in the
+            // default platform encoding then we will need a new param that is
+            // used here.
             scriptModified = scriptFile.lastModified();
             in = new RandomAccessFile(scriptFile, "r"); //$NON-NLS-1$
             byte bytes[] = new byte[(int) in.length()];

@@ -15,7 +15,7 @@
  */
 package org.directwebremoting.convert;
 
-import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -38,6 +38,7 @@ import org.directwebremoting.util.Messages;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 /**
  * An implementation of Converter for DOM objects.
@@ -65,7 +66,8 @@ public class DOMConverter extends BaseV20Converter implements Converter
                 builder = buildFactory.newDocumentBuilder();
             }
 
-            Document doc = builder.parse(new ByteArrayInputStream(value.getBytes()));
+            InputSource is = new InputSource(new StringReader(value));
+            Document doc = builder.parse(is);
 
             if (paramType == Document.class)
             {
