@@ -104,8 +104,6 @@ public class DwrpPlainJsMarshaller implements Marshaller
 
         // Send the script prefix (if any)
         sendOutboundScriptPrefix(out, response);
-        out.flush();
-        response.flushBuffer();
 
         // From the call to addScriptConduit() there could be 2 threads writing
         // to 'out' so we synchronize on 'out' to make sure there are no
@@ -308,7 +306,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
                     sendScript(out, response, script);
 
                     log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
-                }                
+                }
             }
         }
 
