@@ -1,4 +1,4 @@
-#Mon Mar 27 14:05:19 BST 2006
+#Tue Apr 18 10:17:33 BST 2006
 comment_clear_blank_lines=false
 comment_format_comments=false
 comment_format_header=false
@@ -10,7 +10,7 @@ comment_line_length=80
 comment_new_line_for_parameter=false
 comment_separate_root_tags=false
 eclipse.preferences.version=1
-formatter_profile=_Custom
+formatter_profile=_DWR
 formatter_settings_version=10
 internal.default.compliance=user
 org.eclipse.jdt.ui.exception.name=ex
