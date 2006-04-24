@@ -26,7 +26,9 @@ import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterManager;
 import org.directwebremoting.Configurator;
 import org.directwebremoting.Container;
+import org.directwebremoting.Converter;
 import org.directwebremoting.ConverterManager;
+import org.directwebremoting.Creator;
 import org.directwebremoting.CreatorManager;
 import org.directwebremoting.convert.BeanConverter;
 import org.directwebremoting.create.NewCreator;
@@ -55,8 +57,8 @@ public class AnnotationsConfigurator implements Configurator
 
     /**
      * Process the annotations on a given class
-     * @param className The class to search for annotations on
-     * @param container The container to configure
+     * @param className The class to search for annotations
+     * @param container The IoC container to configure
      */
     private void processClass(String className, Container container)
     {
@@ -64,10 +66,10 @@ public class AnnotationsConfigurator implements Configurator
         {
             Class<?> clazz = Class.forName(className);
 
-            Script scriptAnn = clazz.getAnnotation(Script.class);
-            if (scriptAnn != null)
+            Create createAnn = clazz.getAnnotation(Create.class);
+            if (createAnn != null)
             {
-                processScript(clazz, scriptAnn, container);
+                processCreate(clazz, createAnn, container);
             }
 
             Convert convertAnn = clazz.getAnnotation(Convert.class);
@@ -88,13 +90,19 @@ public class AnnotationsConfigurator implements Configurator
         }
     }
 
-    private void processScript(Class<?> clazz, Script scriptAnn, Container container)
+    /**
+     * Process the @Create annotaion on a given class
+     * @param clazz The class annotated with @Create
+     * @param createAnn The annotation
+     * @param container The IoC container to configure
+     */
+    private void processCreate(Class<?> clazz, Create createAnn, Container container)
     {
-        String name = scriptAnn.name();
-        Class<? extends org.directwebremoting.Creator> creator = scriptAnn.creator();
+        String name = createAnn.name();
+        Class<? extends Creator> creator = createAnn.creator();
         String creatorClass = creator.getName();
-        Map<String, String> creatorParams = getParamsMap(scriptAnn.creatorParams());
-        ScriptScope scope = scriptAnn.scope();
+        Map<String, String> creatorParams = getParamsMap(createAnn.creatorParams());
+        ScriptScope scope = createAnn.scope();
 
         CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
         creatorManager.addCreatorType(creatorClass, creatorClass);
@@ -154,22 +162,35 @@ public class AnnotationsConfigurator implements Configurator
         }
     }
 
+    /**
+     * Process the @Filter annotaion
+     * @param filterAnn The filter annotation
+     * @param name The Javascript name of the class to filter 
+     * @param container The IoC container to configure
+     */
     private void processFilter(Filter filterAnn, String name, Container container)
     {
         Map<String, String> filterParams = getParamsMap(filterAnn.params());
-        String javascript = name;
-        AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(javascript, filterAnn.type().getName(), AjaxFilter.class);
+        AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(name, filterAnn.type().getName(), AjaxFilter.class);
         if (filter != null)
         {
             LocalUtil.setParams(filter, filterParams, null);
             AjaxFilterManager filterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
-            filterManager.addAjaxFilter(filter, javascript);
+            filterManager.addAjaxFilter(filter, name);
         }
     }
 
+    /**
+     * Process the @Convert annotaion on a given class
+     * @param clazz The class annotated with @Convert
+     * @param convertAnn The annotation
+     * @param container The IoC container to configure
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     */
     private void processConvert(Class<?> clazz, Convert convertAnn, Container container) throws InstantiationException, IllegalAccessException
     {
-        Class<? extends org.directwebremoting.Converter> converter = convertAnn.converter();
+        Class<? extends Converter> converter = convertAnn.converter();
         String converterClass = converter.getName();
         Map<String, String> params = getParamsMap(convertAnn.params());
 
@@ -219,6 +240,14 @@ public class AnnotationsConfigurator implements Configurator
         converterManager.addConverter(clazz.getName(), converterClass, params);
     }
 
+    /**
+     * Global Filters apply to all classes
+     * @param clazz The class to use as a filter
+     * @param globalFilterAnn The filter annotation
+     * @param container The IoC container to configure
+     * @throws InstantiationException In case we can't create the given clazz
+     * @throws IllegalAccessException In case we can't create the given clazz
+     */
     private void processGlobalFilter(Class<?> clazz, GlobalFilter globalFilterAnn, Container container) throws InstantiationException, IllegalAccessException
     {
         if (!AjaxFilter.class.isAssignableFrom(clazz))
@@ -236,6 +265,12 @@ public class AnnotationsConfigurator implements Configurator
         }
     }
 
+    /**
+     * Utility to turn a Param array into a Map<String, String>.
+     * TODO: Should we move this code into Param? Is that even possible? 
+     * @param params The params array from annotations
+     * @return A Map<String, String>
+     */
     private Map<String, String> getParamsMap(Param[] params)
     {
         Map<String, String> result = new HashMap<String, String>();
@@ -251,12 +286,12 @@ public class AnnotationsConfigurator implements Configurator
     }
 
     /**
-     * 
+     * The getter prefix for boolean variables
      */
     private static final String METHOD_PREFIX_IS = "is"; //$NON-NLS-1$
 
     /**
-     * 
+     * The getter prefix for non-boolean variables
      */
     private static final String METHOD_PREFIX_GET = "get"; //$NON-NLS-1$
 

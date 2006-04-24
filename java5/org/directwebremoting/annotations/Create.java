@@ -29,7 +29,7 @@ import org.directwebremoting.create.NewCreator;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Script
+public @interface Create
 {
     /**
      * Name of the JavaScript variable (default: the simple class name without package).

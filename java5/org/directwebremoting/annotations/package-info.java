@@ -44,11 +44,11 @@
  * <h3>Remote Class Access</h3>
  * 
  * <p>To make a simple class available for remote access, use the
- * {@link org.directwebremoting.annotations.Script Script} and
+ * {@link org.directwebremoting.annotations.Create Create} and
  * {@link org.directwebremoting.annotations.RemoteMethod RemoteMethod} annotations:</p>
  * 
  * <p><pre>
- * {@literal @Script}
+ * {@literal @Create}
  * public class RemoteFunctions {
  *    {@literal @RemoteMethod}
  *    public int calculateFoo() {
@@ -61,10 +61,10 @@
  * for remote access.</p>
  * 
  * <p>To use a scripting name different from the class name, use the
- * {@code name} attribute of {@code Script}:</p>
+ * {@code name} attribute of {@code Create}:</p>
  * 
  * <p><pre>
- * {@literal @Script}(name="Functions")
+ * {@literal @Create}(name="Functions")
  * public class RemoteFunctions {
  * }
  * </pre></p>
