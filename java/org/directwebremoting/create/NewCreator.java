@@ -16,6 +16,7 @@
 package org.directwebremoting.create;
 
 import org.directwebremoting.Creator;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -32,7 +33,7 @@ public class NewCreator extends AbstractCreator implements Creator
     {
         try
         {
-            this.clazz = Class.forName(classname);
+            this.clazz = LocalUtil.classForName(classname);
         }
         catch (ClassNotFoundException ex)
         {

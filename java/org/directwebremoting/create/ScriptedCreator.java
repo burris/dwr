@@ -239,7 +239,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     {
         try
         {
-            this.clazz = Class.forName(classname);
+            this.clazz = LocalUtil.classForName(classname);
         }
         catch (ClassNotFoundException ex)
         {

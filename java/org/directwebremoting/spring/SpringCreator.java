@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.directwebremoting.Creator;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.create.AbstractCreator;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 import org.springframework.beans.factory.BeanFactory;
@@ -63,7 +64,7 @@ public class SpringCreator extends AbstractCreator implements Creator
     {
         try
         {
-            this.clazz = Class.forName(classname);
+            this.clazz = LocalUtil.classForName(classname);
         }
         catch (ClassNotFoundException ex)
         {

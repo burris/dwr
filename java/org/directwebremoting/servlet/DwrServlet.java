@@ -30,6 +30,7 @@ import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.DefaultContainer;
 import org.directwebremoting.impl.DwrXmlConfigurator;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.ServletLoggingOutput;
 import org.directwebremoting.util.VersionUtil;
@@ -105,7 +106,7 @@ public class DwrServlet extends HttpServlet
 
             try
             {
-                Class annotationCfgClass = Class.forName("org.directwebremoting.annotations.AnnotationsConfigurator"); //$NON-NLS-1$
+                Class annotationCfgClass = LocalUtil.classForName("org.directwebremoting.annotations.AnnotationsConfigurator"); //$NON-NLS-1$
                 log.debug("Java5 AnnotationsConfigurator enabled"); //$NON-NLS-1$
 
                 Configurator configurator = (Configurator) annotationCfgClass.newInstance();

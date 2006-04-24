@@ -18,6 +18,8 @@ package org.directwebremoting;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.directwebremoting.util.LocalUtil;
+
 /**
  * We need to keep track of stuff while we are converting on the way out to
  * prevent recurrsion.
@@ -38,7 +40,7 @@ public final class OutboundContext
 
         try
         {
-            assign = (Map) Class.forName("java.util.IdentityHashMap").newInstance(); //$NON-NLS-1$
+            assign = (Map) LocalUtil.classForName("java.util.IdentityHashMap").newInstance(); //$NON-NLS-1$
             referenceWrappers = false;
         }
         catch (Exception ex)

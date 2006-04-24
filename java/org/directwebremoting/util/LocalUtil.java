@@ -536,7 +536,22 @@ public final class LocalUtil
     }
 
     /**
-     * Utility to essentially do Class.forName with the assumption that the
+     * Utility to essentially do Class forName and allow configurable
+     * Classloaders.
+     * <p>The initial implementation makes use of the context classloader for
+     * the current thread.
+     * @param className The class to create
+     * @return The class if it is safe or null otherwise.
+     * @throws ClassNotFoundException If <code>className</code> is not valid
+     */
+    public static Class classForName(String className) throws ClassNotFoundException
+    {
+        //return Class.forName(className);
+        return Thread.currentThread().getContextClassLoader().loadClass(className);
+    }
+
+    /**
+     * Utility to essentially do Class forName with the assumption that the
      * environment expects failures for missing jar files and can carry on if
      * this process fails.
      * @param name The name for debugging purposes
@@ -550,7 +565,7 @@ public final class LocalUtil
 
         try
         {
-            clazz = Class.forName(className);
+            clazz = classForName(className);
         }
         catch (ClassNotFoundException ex)
         {
@@ -632,7 +647,7 @@ public final class LocalUtil
     }
 
     /**
-     * Utility to essentially do Class.forName and newInstance with the
+     * Utility to essentially do Class forName and newInstance with the
      * assumption that the environment expects failures for missing jar files
      * and can carry on if this process fails.
      * @param name The name for debugging purposes
@@ -646,7 +661,7 @@ public final class LocalUtil
 
         try
         {
-            clazz = Class.forName(className);
+            clazz = LocalUtil.classForName(className);
         }
         catch (ClassNotFoundException ex)
         {

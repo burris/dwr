@@ -107,7 +107,7 @@ public class BeanConverter extends BaseV20Converter implements Converter
      */
     public void setImplementation(String name) throws ClassNotFoundException
     {
-        setInstanceType(Class.forName(name));
+        setInstanceType(LocalUtil.classForName(name));
     }
 
     /**

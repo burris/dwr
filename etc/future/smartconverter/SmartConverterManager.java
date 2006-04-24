@@ -2,6 +2,9 @@ package uk.ltd.getahead.dwr.impl;
 
 import java.lang.reflect.*;
 import java.util.*;
+
+import org.directwebremoting.util.LocalUtil;
+
 import uk.ltd.getahead.dwr.*;
 import uk.ltd.getahead.dwr.util.*;
 
@@ -290,7 +293,7 @@ public class SmartConverterManager implements ConverterManager
 						className = className.substring(WRAPPER_TOKEN_LEN);
 					}
 
-					c = Class.forName(className);
+					c = LocalUtil.classForName(className);
 				}
 			}
 			catch(ConversionException cex)

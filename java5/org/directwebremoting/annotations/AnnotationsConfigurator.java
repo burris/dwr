@@ -64,7 +64,7 @@ public class AnnotationsConfigurator implements Configurator
     {
         try
         {
-            Class<?> clazz = Class.forName(className);
+            Class<?> clazz = LocalUtil.classForName(className);
 
             Create createAnn = clazz.getAnnotation(Create.class);
             if (createAnn != null)

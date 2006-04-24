@@ -308,7 +308,7 @@ public class TypeHintContext
 
     static
     {
-        // This may seem like a lot of bother just to call Class.forName() a
+        // This may seem like a lot of bother just to call Class forName() a
         // couple of times, however it is complex because the fields are final
         // so we can only set them once
         Class tempClass;
@@ -316,7 +316,7 @@ public class TypeHintContext
 
         try
         {
-            tempClass = Class.forName("java.lang.reflect.ParameterizedType"); //$NON-NLS-1$
+            tempClass = LocalUtil.classForName("java.lang.reflect.ParameterizedType"); //$NON-NLS-1$
         }
         catch (Exception ex)
         {
@@ -327,7 +327,7 @@ public class TypeHintContext
 
         try
         {
-            tempClass = Class.forName("java.lang.reflect.Type"); //$NON-NLS-1$
+            tempClass = LocalUtil.classForName("java.lang.reflect.Type"); //$NON-NLS-1$
         }
         catch (Exception ex)
         {

@@ -54,7 +54,7 @@ public class DefaultContainer implements Container
         {
             try
             {
-                Class impl = Class.forName((String) value);
+                Class impl = LocalUtil.classForName((String) value);
                 value = impl.newInstance();
             }
             catch (ClassNotFoundException ex)
@@ -69,7 +69,7 @@ public class DefaultContainer implements Container
         {
             try
             {
-                Class iface = Class.forName((String) askFor);
+                Class iface = LocalUtil.classForName((String) askFor);
                 if (!iface.isAssignableFrom(value.getClass()))
                 {
                     log.error("Can't cast: " + value + " to " + askFor); //$NON-NLS-1$ //$NON-NLS-2$

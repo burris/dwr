@@ -296,7 +296,7 @@ public class DwrXmlConfigurator implements Configurator
 
         try
         {
-            Class impl = Class.forName(type);
+            Class impl = LocalUtil.classForName(type);
             AjaxFilter object = (AjaxFilter) impl.newInstance();
 
             LocalUtil.setParams(object, createSettingMap(allower), ignore);
@@ -518,7 +518,7 @@ public class DwrXmlConfigurator implements Configurator
             while (st.hasMoreTokens())
             {
                 String type = st.nextToken();
-                Class clazz = Class.forName(type.trim());
+                Class clazz = LocalUtil.classForName(type.trim());
                 TypeHintContext thc = new TypeHintContext(converterManager, method, paramNo).createChildContext(j++);
                 converterManager.setExtraTypeInfo(thc, clazz);
             }

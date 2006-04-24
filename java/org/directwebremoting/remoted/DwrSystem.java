@@ -25,6 +25,7 @@ import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerLoadMonitor;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
 /**
@@ -124,8 +125,8 @@ public class DwrSystem
     {
         try
         {
-            continuationClass = Class.forName("org.mortbay.util.ajax.Continuation"); //$NON-NLS-1$
-            continuationSupportClass = Class.forName("org.mortbay.util.ajax.ContinuationSupport"); //$NON-NLS-1$
+            continuationClass = LocalUtil.classForName("org.mortbay.util.ajax.Continuation"); //$NON-NLS-1$
+            continuationSupportClass = LocalUtil.classForName("org.mortbay.util.ajax.ContinuationSupport"); //$NON-NLS-1$
             getContinuationMethod = continuationSupportClass.getMethod("getContinuation", new Class[] { HttpServletRequest.class, Boolean.class }); //$NON-NLS-1$
             suspendMethod = continuationClass.getMethod("suspend", new Class[] { Long.TYPE }); //$NON-NLS-1$
         }

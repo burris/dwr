@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.directwebremoting.Creator;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.create.AbstractCreator;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
 /**
@@ -29,9 +30,9 @@ public class PageFlowCreator extends AbstractCreator implements Creator
         // noinspection EmptyCatchBlock
         try
         {
-            bhFlowClass = Class.forName("org.apache.beehive.netui.pageflow.PageFlowController"); //$NON-NLS-1$
+            bhFlowClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowController"); //$NON-NLS-1$
 
-            Class bhUtilClass = Class.forName("org.apache.beehive.netui.pageflow.PageFlowUtils"); //$NON-NLS-1$
+            Class bhUtilClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowUtils"); //$NON-NLS-1$
             bhGetter = bhUtilClass.getMethod("getCurrentPageFlow", new Class[] { HttpServletRequest.class }); //$NON-NLS-1$
         }
         catch (Exception ex)
@@ -42,9 +43,9 @@ public class PageFlowCreator extends AbstractCreator implements Creator
         // noinspection EmptyCatchBlock
         try
         {
-            wlFlowClass = Class.forName("com.bea.wlw.netui.pageflow.PageFlowController"); //$NON-NLS-1$
+            wlFlowClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowController"); //$NON-NLS-1$
 
-            Class wlUtilClass = Class.forName("com.bea.wlw.netui.pageflow.PageFlowUtils"); //$NON-NLS-1$
+            Class wlUtilClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowUtils"); //$NON-NLS-1$
             wlGetter = wlUtilClass.getMethod("getCurrentPageFlow", new Class[] { HttpServletRequest.class }); //$NON-NLS-1$
         }
         catch (Exception ex)

@@ -28,6 +28,7 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.create.AbstractCreator;
 import org.directwebremoting.util.FakeHttpServletRequest;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
@@ -45,7 +46,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
     {
         try
         {
-            moduleUtilsClass = Class.forName("org.apache.struts.util.ModuleUtils"); //$NON-NLS-1$
+            moduleUtilsClass = LocalUtil.classForName("org.apache.struts.util.ModuleUtils"); //$NON-NLS-1$
             getInstanceMethod = moduleUtilsClass.getMethod("getInstance", new Class[0]); //$NON-NLS-1$
             getModuleNameMethod = moduleUtilsClass.getMethod("getModuleName", new Class[] { String.class, ServletContext.class }); //$NON-NLS-1$
             getModuleConfigMethod = moduleUtilsClass.getMethod("getModuleConfig", new Class[] { String.class, ServletContext.class }); //$NON-NLS-1$
@@ -117,7 +118,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
 
         try
         {
-            return Class.forName(moduleConfig.findFormBeanConfig(formBean).getType());
+            return LocalUtil.classForName(moduleConfig.findFormBeanConfig(formBean).getType());
         }
         catch (ClassNotFoundException ex)
         {

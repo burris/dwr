@@ -26,6 +26,7 @@ import java.util.StringTokenizer;
 import org.directwebremoting.ConverterManager;
 import org.directwebremoting.TypeHintContext;
 import org.directwebremoting.util.JavascriptUtil;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
 
@@ -219,7 +220,7 @@ public class SignatureParser
                 full = itype;
             }
 
-            return Class.forName(full);
+            return LocalUtil.classForName(full);
         }
         catch (Exception ex)
         {
@@ -233,7 +234,7 @@ public class SignatureParser
 
             try
             {
-                return Class.forName(lookup);
+                return LocalUtil.classForName(lookup);
             }
             catch (Exception ex)
             {

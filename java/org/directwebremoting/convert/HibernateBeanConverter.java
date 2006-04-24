@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
@@ -43,14 +44,14 @@ public class HibernateBeanConverter extends BeanConverter
 
         try
         {
-            hibernate = Class.forName(CLASS_HIBERNATE3);
+            hibernate = LocalUtil.classForName(CLASS_HIBERNATE3);
             log.info("Found Hibernate3 class: " + hibernate.getName()); //$NON-NLS-1$
         }
         catch (Exception ex)
         {
             try
             {
-                hibernate = Class.forName(CLASS_HIBERNATE2);
+                hibernate = LocalUtil.classForName(CLASS_HIBERNATE2);
                 log.info("Found Hibernate2 class: " + hibernate.getName()); //$NON-NLS-1$
             }
             catch (Exception ex2)

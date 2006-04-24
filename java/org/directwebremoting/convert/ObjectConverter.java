@@ -111,7 +111,7 @@ public class ObjectConverter implements Converter
      */
     public void setImplementation(String name) throws ClassNotFoundException
     {
-        setInstanceType(Class.forName(name));
+        setInstanceType(LocalUtil.classForName(name));
     }
 
     /**

@@ -22,6 +22,7 @@ import javax.faces.el.VariableResolver;
 
 import org.directwebremoting.Creator;
 import org.directwebremoting.create.AbstractCreator;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
 /**
@@ -127,7 +128,7 @@ public class JsfCreator extends AbstractCreator implements Creator
     {
         try
         {
-            this.instanceType = Class.forName(classname);
+            this.instanceType = LocalUtil.classForName(classname);
         }
         catch (ClassNotFoundException ex)
         {
