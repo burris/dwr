@@ -96,7 +96,6 @@ public class UrlProcessor
                 response.setContentType(MimeConstants.MIME_HTML);
                 PrintWriter out = response.getWriter();
                 out.print(page);
-                response.flushBuffer();
             }
             else if (pathInfo.startsWith(PathConstants.PATH_TEST))
             {
@@ -109,7 +108,6 @@ public class UrlProcessor
                 response.setContentType(MimeConstants.MIME_HTML);
                 PrintWriter out = response.getWriter();
                 out.print(page);
-                response.flushBuffer();
             }
             else if (pathInfo.startsWith(PathConstants.PATH_INTERFACE))
             {
@@ -126,7 +124,6 @@ public class UrlProcessor
                 response.setContentType(MimeConstants.MIME_PLAIN);
                 PrintWriter out = response.getWriter();
                 out.print(script);
-                response.flushBuffer();
             }
             else if (pathInfo.startsWith(PathConstants.PATH_PLAINJS))
             {
@@ -191,7 +188,6 @@ public class UrlProcessor
             out.println("alert('" + ex.getMessage() + "');"); //$NON-NLS-1$ //$NON-NLS-2$
             out.println("</script>"); //$NON-NLS-1$
             out.println("</body></html>"); //$NON-NLS-1$
-            out.flush();
         }
     }
 
@@ -275,7 +271,6 @@ public class UrlProcessor
 
         PrintWriter out = response.getWriter();
         out.println(output);
-        out.flush();
     }
 
     /**
