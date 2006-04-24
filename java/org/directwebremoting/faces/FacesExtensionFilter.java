@@ -52,29 +52,24 @@ public class FacesExtensionFilter implements Filter
      */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
     {
-        // Create the faces context
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        if (facesContext == null)
-        {
-            FacesContextFactory contextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-            LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-            Lifecycle lifecycle = lifecycleFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
+        FacesContextFactory contextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+        LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+        Lifecycle lifecycle = lifecycleFactory.getLifecycle(LifecycleFactory.DEFAULT_LIFECYCLE);
 
-            // Either set a private member
-            //   servletContext = filterConfig.getServletContext();
-            // in your filter init() method or set it here like this:
-            //   ServletContext servletContext =
-            //     ((HttpServletRequest) request).getSession().getServletContext();
-            // Note that the above line would fail if you are using any other
-            // protocol than http
+        // Either set a private member
+        //   servletContext = filterConfig.getServletContext();
+        // in your filter init() method or set it here like this:
+        //   ServletContext servletContext =
+        //     ((HttpServletRequest) request).getSession().getServletContext();
+        // Note that the above line would fail if you are using any other
+        // protocol than http
 
-            // Doesn't set this instance as the current instance of
-            // FacesContext.getCurrentInstance
-            facesContext = contextFactory.getFacesContext(servletContext, request, response, lifecycle);
+        // Doesn't set this instance as the current instance of
+        // FacesContext.getCurrentInstance
+        FacesContext facesContext = contextFactory.getFacesContext(servletContext, request, response, lifecycle);
 
-            // Set using our inner class
-            InnerFacesContext.setFacesContextAsCurrentInstance(facesContext);
-        }
+        // Set using our inner class
+        InnerFacesContext.setFacesContextAsCurrentInstance(facesContext);
 
         // call the filter chain
         chain.doFilter(request, response);
