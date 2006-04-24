@@ -74,7 +74,7 @@ public class DwrSystem
             catch (Exception ex)
             {
                 // If continuations fails, we must just fall back to polling
-            }            
+            }
         }
         else
         {
