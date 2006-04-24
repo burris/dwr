@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.directwebremoting.Configurator;
 import org.directwebremoting.DwrConstants;
 import org.directwebremoting.WebContextBuilder;
 import org.directwebremoting.WebContextFactory;
@@ -101,6 +102,19 @@ public class DwrServlet extends HttpServlet
                 local.setServletResourceName(DwrConstants.DEFAULT_DWR_XML);
                 local.configure(container);
             }
+
+            try
+            {
+                Class annotationCfgClass = Class.forName("org.directwebremoting.annotations.AnnotationsConfigurator"); //$NON-NLS-1$
+                log.debug("Java5 AnnotationsConfigurator enabled"); //$NON-NLS-1$
+
+                Configurator configurator = (Configurator) annotationCfgClass.newInstance();
+                configurator.configure(container);
+            }
+            catch (Exception ex)
+            {
+                log.debug("Java5 AnnotationsConfigurator disabled"); //$NON-NLS-1$
+            }
         }
         catch (Exception ex)
         {
@@ -142,6 +156,11 @@ public class DwrServlet extends HttpServlet
     }
 
     /**
+     * Our IoC container
+     */
+    protected DefaultContainer container;
+
+    /**
      * The processor will actually handle the http requests
      */
     protected UrlProcessor processor;
@@ -150,11 +169,6 @@ public class DwrServlet extends HttpServlet
      * The WebContext that keeps http objects local to a thread
      */
     protected WebContextBuilder webContextBuilder;
-
-    /**
-     * Our IoC container
-     */
-    protected DefaultContainer container;
 
     /**
      * The log stream
