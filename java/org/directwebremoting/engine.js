@@ -433,11 +433,9 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   DWREngine._batch.map[prefix + "id"] = id;
 
   // Serialize the parameters into batch.map
-  DWREngine._addSerializeFunctions();
   for (i = 0; i < params.length; i++) {
     DWREngine._serializeAll(DWREngine._batch, [], params[i], prefix + "param" + i);
   }
-  DWREngine._removeSerializeFunctions();
 
   // Now we have finished remembering the call, we incr the call count
   DWREngine._batch.map.callCount++;
@@ -961,30 +959,6 @@ DWREngine._handleMetaDataError = function(handlers, reason, ex) {
 };
 
 /**
- * @private Hack a polymorphic dwrSerialize() function on all basic types. Yeulch
- */
-DWREngine._addSerializeFunctions = function() {
-  Object.prototype.dwrSerialize = DWREngine._serializeObject;
-  Array.prototype.dwrSerialize = DWREngine._serializeArray;
-  Boolean.prototype.dwrSerialize = DWREngine._serializeBoolean;
-  Number.prototype.dwrSerialize = DWREngine._serializeNumber;
-  String.prototype.dwrSerialize = DWREngine._serializeString;
-  Date.prototype.dwrSerialize = DWREngine._serializeDate;
-};
-
-/**
- * @private Remove the hacked polymorphic dwrSerialize() function on all basic types.
- */
-DWREngine._removeSerializeFunctions = function() {
-  delete Object.prototype.dwrSerialize;
-  delete Array.prototype.dwrSerialize;
-  delete Boolean.prototype.dwrSerialize;
-  delete Number.prototype.dwrSerialize;
-  delete String.prototype.dwrSerialize;
-  delete Date.prototype.dwrSerialize;
-};
-
-/**
  * @private Marshall a data item
  * @param batch A map of variables to how they have been marshalled
  * @param referto An array of already marshalled variables to prevent recurrsion
@@ -1011,17 +985,23 @@ DWREngine._serializeAll = function(batch, referto, data, name) {
     break;
 
   case "object":
-    if (data.dwrSerialize) {
-      batch.map[name] = data.dwrSerialize(batch, referto, data, name);
+    if (data instanceof String) {
+      batch.map[name] = "String:" + encodeURIComponent(data);
     }
-    else if (data.nodeName) {
-      batch.map[name] = DWREngine._serializeXml(batch, referto, data, name);
+    else if (data instanceof Boolean) {
+      batch.map[name] = "Boolean:" + data;
+    }
+    else if (data instanceof Number) {
+      batch.map[name] = "Number:" + data;
+    }
+    else if (data instanceof Date) {
+      batch.map[name] = "Date:" + data.getTime();
+    }
+    else if (data instanceof Array) {
+      batch.map[name] = DWREngine._serializeArray(batch, referto, data, name);
     }
     else {
-      if (DWREngine._warningHandler) {
-        DWREngine._warningHandler("Object without dwrSerialize: " + typeof data + ", attempting default converter.");
-      }
-      batch.map[name] = "default:" + data;
+      batch.map[name] = DWREngine._serializeObject(batch, referto, data, name);
     }
     break;
 
@@ -1060,7 +1040,9 @@ DWREngine._serializeObject = function(batch, referto, data, name) {
   var ref = DWREngine._lookup(referto, this, name);
   if (ref) return ref;
 
-  if (data.nodeName) {
+  // This check for an HTML is not complete, but is there a better way.
+  // Maybe we should add: data.hasChildNodes typeof "function" == true
+  if (data.nodeName && data.nodeType) {
     return DWREngine._serializeXml(batch, referto, data, name);
   }
 
@@ -1091,9 +1073,8 @@ DWREngine._serializeObject = function(batch, referto, data, name) {
 /** @private Marshall an object */
 DWREngine._serializeXml = function(batch, referto, data, name) {
   var ref = DWREngine._lookup(referto, this, name);
-  if (ref) {
-    return ref;
-  }
+  if (ref) return ref;
+
   var output;
   if (window.XMLSerializer) {
     var serializer = new XMLSerializer();
@@ -1127,26 +1108,6 @@ DWREngine._serializeArray = function(batch, referto, data, name) {
   return reply;
 };
 
-/** @private Marshall a Boolean */
-DWREngine._serializeBoolean = function(batch, referto, data, name) {
-  return "Boolean:" + this;
-};
-
-/** @private Marshall a Number */
-DWREngine._serializeNumber = function(batch, referto, data, name) {
-  return "Number:" + this;
-};
-
-/** @private Marshall a String */
-DWREngine._serializeString = function(batch, referto, data, name) {
-  return "String:" + encodeURIComponent(this);
-};
-
-/** @private Marshall a Date */
-DWREngine._serializeDate = function(batch, referto, data, name) {
-  return "Date:" + this.getTime();
-};
-
 /** @private Convert an XML string into a DOM object. */
 DWREngine._unserializeDocument = function(xml) {
   var dom;
@@ -1166,14 +1127,6 @@ DWREngine._unserializeDocument = function(xml) {
     // What happens on parse fail with IE?
     return dom;
   }
-  //else if (window.XMLHttpRequest) {
-  //  // Hack with XHR to get at Safari's parser
-  //  var req = new XMLHttpRequest;
-  //  var url = "data:application/xml;charset=utf-8," + encodeURIComponent(xml);
-  //  req.open("GET", url, false);
-  //  req.send(null);
-  //  return req.responseXML;
-  //}
   else {
     var div = document.createElement('div');
     div.innerHTML = xml;
@@ -1261,26 +1214,14 @@ if (typeof window.encodeURIComponent === 'undefined') {
 if (typeof Array.prototype.splice === 'undefined') {
   Array.prototype.splice = function(ind, cnt)
   {
-    if (arguments.length == 0) {
-      return ind;
-    }
-    if (typeof ind != "number") {
-      ind = 0;
-    }
-    if (ind < 0) {
-      ind = Math.max(0,this.length + ind);
-    }
+    if (arguments.length == 0) return ind;
+    if (typeof ind != "number") ind = 0;
+    if (ind < 0) ind = Math.max(0,this.length + ind);
     if (ind > this.length) {
-      if (arguments.length > 2) {
-        ind = this.length;
-      }
-      else {
-        return [];
-      }
+      if (arguments.length > 2) ind = this.length;
+      else return [];
     }
-    if (arguments.length < 2) {
-      cnt = this.length-ind;
-    }
+    if (arguments.length < 2) cnt = this.length-ind;
 
     cnt = (typeof cnt == "number") ? Math.max(0, cnt) : 0;
     removeArray = this.slice(ind, ind + cnt);
