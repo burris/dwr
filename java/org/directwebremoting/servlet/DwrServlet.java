@@ -112,6 +112,10 @@ public class DwrServlet extends HttpServlet
                 Configurator configurator = (Configurator) annotationCfgClass.newInstance();
                 configurator.configure(container);
             }
+            catch (UnsupportedClassVersionError ex)
+            {
+                log.debug("Java5 AnnotationsConfigurator disabled"); //$NON-NLS-1$
+            }
             catch (Exception ex)
             {
                 log.debug("Java5 AnnotationsConfigurator disabled"); //$NON-NLS-1$
