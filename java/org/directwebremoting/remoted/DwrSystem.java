@@ -15,16 +15,18 @@
  */
 package org.directwebremoting.remoted;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerLoadMonitor;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.ScriptSession.AddScriptListener;
+import org.directwebremoting.util.ContinuationUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
@@ -41,82 +43,165 @@ public class DwrSystem
     public int poll()
     {
         WebContext context = WebContextFactory.get();
-
         Container container = context.getContainer();
+
         ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
-        long sleepTime = monitor.timeWithinPoll();
 
-        // If this is Jetty then we can use Continuations
-        HttpServletResponse response = context.getHttpServletResponse();
-        if (response.getClass().getName().equals("org.mortbay.util.ajax.AjaxFilter.AjaxResponse")) //$NON-NLS-1$
+        // The comet part of a poll request
+        try
         {
-            try
-            {
-                HttpServletRequest request = context.getHttpServletRequest();
-                ScriptSession scriptSession = context.getScriptSession();
-
-                // Continuation continuation = ContinuationSupport.getContinuation(request, true);
-                Object continuation = getContinuationMethod.invoke(null, new Object[] { request, Boolean.TRUE });
-                if (continuation != null)
-                {
-                    scriptSession.setAttribute("org.mortbay.util.ajax.Continuation", continuation); //$NON-NLS-1$
-
-                    // continuation.suspend(sleepTime);
-                    suspendMethod.invoke(continuation, new Object[] { new Long(sleepTime) });
-
-                    // The example does the following ... Why?
-                    // Object event= continuation.getEvent(timeoutMS);
-                }
-
-                // The example does the following ... Why?
-                // Signal for a new poll
-                // response.objectResponse("poll", "");
-            }
-            catch (Exception ex)
-            {
-                // If continuations fails, we must just fall back to polling
-            }
+            long sleepTime = monitor.timeWithinPoll();
+            Thread.sleep(sleepTime);
         }
-        else
+        catch (InterruptedException ex)
         {
-            // The comet part of a poll request
-            try
-            {
-                Thread.sleep(sleepTime);
-            }
-            catch (InterruptedException ex)
-            {
-                log.warn("Interupted", ex); //$NON-NLS-1$
-            }
+            log.warn("Interupted", ex); //$NON-NLS-1$
         }
 
         return monitor.timeToNextPoll();
     }
 
     /**
-     * Jetty code used by reflection to allow it to run outside of Jetty
+     * The polling system needs to be able to wait for something to happen
      */
-    private static Class continuationClass;
+    public void pollWait()
+    {
+        WebContext context = WebContextFactory.get();
+        Container container = context.getContainer();
+
+        final ScriptSession scriptSession = context.getScriptSession();
+        ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
+        long sleepTime = monitor.timeWithinPoll();
+
+        synchronized (scriptSession.getScriptLock())
+        {
+            // Don't wait if there are queued scripts
+            if (scriptSession.getQueuedScripts() > 0)
+            {
+                return;
+            }
+
+            // If this is Jetty then we can use Continuations
+            HttpServletRequest request = context.getHttpServletRequest();
+
+            boolean useSleep = true;
+            final Object continuation = request.getAttribute("org.mortbay.jetty.ajax.Continuation"); //$NON-NLS-1$
+            if (continuation != null)
+            {
+                useSleep = false;
+
+                try
+                {
+                    // create a listener 
+                    AddScriptListener listener = (AddScriptListener) getObject.invoke(continuation, new Object[0]);
+                    if (listener == null)
+                    {
+                        listener = new AddScriptListener()
+                        {
+                            public void scriptAdded()
+                            {
+                                try
+                                {
+                                    // continuation.resume();
+                                    resumeMethod.invoke(continuation, new Object[0]);
+                                    scriptSession.removeAddScriptListener(this);
+                                }
+                                catch (Exception ex)
+                                {
+                                    log.warn("Exception in continuation.resume()", ex); //$NON-NLS-1$
+                                }
+                            }
+                        };
+                        setObject.invoke(continuation, new Object[] { listener });
+                    }
+                    scriptSession.addAddScriptListener(listener);
+
+                    // continuation.suspend(sleepTime);
+                    // NB. May throw a Runtime exception that must propogate to the container!
+                    suspendMethod.invoke(continuation, new Object[] { new Long(sleepTime) });
+                }
+                catch (InvocationTargetException ex)
+                {
+                    ContinuationUtil.rethrowIfContinuation(ex.getTargetException());
+
+                    log.warn("Error in Reflection", ex.getTargetException()); //$NON-NLS-1$
+                    useSleep = true;
+                }
+                catch (Exception ex)
+                {
+                    log.warn("Exception", ex); //$NON-NLS-1$
+                    useSleep = true;
+                }
+            }
+
+            if (useSleep)
+            {
+                // create a listener // TODO avoid the expense of creation and registration
+                AddScriptListener listener = new AddScriptListener()
+                {
+                    public void scriptAdded()
+                    {
+                        try
+                        {
+                            synchronized(scriptSession.getScriptLock())
+                            {
+                                scriptSession.getScriptLock().notifyAll();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            log.warn("Failed to notify all ScriptSession users", ex); //$NON-NLS-1$
+                        }
+                    }
+                };
+                scriptSession.addAddScriptListener(listener);
+
+                // The comet part of a poll request
+                try
+                {
+                    scriptSession.getScriptLock().wait(sleepTime);
+                }
+                catch (InterruptedException ex)
+                {
+                    log.warn("Interupted", ex); //$NON-NLS-1$
+                }
+                finally
+                {
+                    scriptSession.removeAddScriptListener(listener);
+                }
+            }
+        }
+    }
 
     /**
      * Jetty code used by reflection to allow it to run outside of Jetty
      */
-    private static Class continuationSupportClass;
-
-    /**
-     * How we get get a Continuation object
-     */
-    private static Method getContinuationMethod;
+    protected static Class continuationClass;
 
     /**
      * How we suspend the continuation
      */
-    private static Method suspendMethod;
+    protected static Method suspendMethod;
+    
+    /**
+     * How we resume the continuation
+     */
+    protected static Method resumeMethod;
+
+    /**
+     * How we get the associated continuation object
+     */
+    protected static Method getObject;
+
+    /**
+     * How we set the associated continuation object
+     */
+    protected static Method setObject;
 
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrSystem.class);
+    protected static final Logger log = Logger.getLogger(DwrSystem.class);
 
     /**
      * Can we use Jetty?
@@ -126,9 +211,10 @@ public class DwrSystem
         try
         {
             continuationClass = LocalUtil.classForName("org.mortbay.util.ajax.Continuation"); //$NON-NLS-1$
-            continuationSupportClass = LocalUtil.classForName("org.mortbay.util.ajax.ContinuationSupport"); //$NON-NLS-1$
-            getContinuationMethod = continuationSupportClass.getMethod("getContinuation", new Class[] { HttpServletRequest.class, Boolean.class }); //$NON-NLS-1$
             suspendMethod = continuationClass.getMethod("suspend", new Class[] { Long.TYPE }); //$NON-NLS-1$
+            resumeMethod = continuationClass.getMethod("resume", new Class[] {}); //$NON-NLS-1$
+            getObject = continuationClass.getMethod("getObject", new Class[] {}); //$NON-NLS-1$
+            setObject = continuationClass.getMethod("setObject", new Class[] { Object.class }); //$NON-NLS-1$
         }
         catch (Exception ex)
         {

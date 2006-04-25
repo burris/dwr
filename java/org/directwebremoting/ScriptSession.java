@@ -15,11 +15,12 @@
  */
 package org.directwebremoting;
 
+import java.util.EventListener;
 import java.util.Iterator;
 
 /**
- * Page scope is like session scope except that it is managed using a Javascript
- * variable.
+ * Script scope is like session scope except that it is managed using a
+ * Javascript variable.
  * The operations on a Page are similar to (and derived from) the options on a
  * Session, with some added simplification.
  * @see javax.servlet.http.HttpSession
@@ -158,4 +159,17 @@ public interface ScriptSession
      * @see #setMaxInactiveInterval
      */
     //public int getMaxInactiveInterval();
+
+    public int getQueuedScripts();
+
+    public void addAddScriptListener(AddScriptListener listener);
+
+    public void removeAddScriptListener(AddScriptListener listener);
+
+    public Object getScriptLock();
+
+    public interface AddScriptListener extends EventListener
+    {
+        void scriptAdded();
+    }
 }

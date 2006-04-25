@@ -18,9 +18,11 @@ package org.directwebremoting.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
@@ -170,6 +172,13 @@ public class DefaultScriptSession implements ScriptSession
                     scripts.add(script);
                 }
             }
+
+            // Call listeners
+            for (Iterator it = new ArrayList(listeners).iterator(); it.hasNext();)
+            {
+                AddScriptListener listener = (AddScriptListener) it.next();
+                listener.scriptAdded();
+            }
         }
     }
 
@@ -295,6 +304,47 @@ public class DefaultScriptSession implements ScriptSession
         return true;
     }
 
+    /**
+     * @return The Script lock to allow external synchronization
+     */
+    public Object getScriptLock()
+    {
+        return scriptLock;
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ScriptSession#queueScripts()
+     */
+    public int getQueuedScripts()
+    {
+        synchronized (scriptLock)
+        {
+            return scripts.size();
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ScriptSession#addAddScriptListener(org.directwebremoting.ScriptSession.AddScriptListener)
+     */
+    public void addAddScriptListener(AddScriptListener listener)
+    {
+        synchronized (scriptLock)
+        {
+            listeners.add(listener);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ScriptSession#removeAddScriptListener(org.directwebremoting.ScriptSession.AddScriptListener)
+     */
+    public void removeAddScriptListener(AddScriptListener listener)
+    {
+        synchronized (scriptLock)
+        {
+            listeners.remove(listener);
+        }
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -302,6 +352,8 @@ public class DefaultScriptSession implements ScriptSession
     {
         return "DefaultScriptSession[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
+
+    protected final Set listeners = new HashSet();
 
     /**
      * The script conduits that we can use to transfer data to the browser

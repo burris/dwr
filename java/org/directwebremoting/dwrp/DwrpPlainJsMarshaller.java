@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.AccessControl;
+import org.directwebremoting.Call;
 import org.directwebremoting.Calls;
 import org.directwebremoting.ConverterManager;
 import org.directwebremoting.Creator;
@@ -47,6 +48,8 @@ import org.directwebremoting.ScriptSession;
 import org.directwebremoting.TypeHintContext;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.remoted.DwrSystem;
+import org.directwebremoting.util.ContinuationUtil;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
@@ -71,7 +74,52 @@ public class DwrpPlainJsMarshaller implements Marshaller
     {
         // We must parse the parameters before we setup the conduit because it's
         // only after doing this that we know the scriptSessionId
-        CallsWithContext calls = parseRequest(request);
+
+        WebContext webContext = WebContextFactory.get();
+        CallsWithContext calls = (CallsWithContext) request.getAttribute("org.directwebremoting.dwrp.calls"); //$NON-NLS-1$
+        if (calls == null)
+        {
+            calls = parseRequest(request);
+
+            // save calls for retry exception
+            request.setAttribute("org.directwebremoting.dwrp.calls", calls); //$NON-NLS-1$
+            // as parseRequest(request) has side effects - we must save these also!
+            request.setAttribute("org.directwebremoting.dwrp.page", webContext.getCurrentPage()); //$NON-NLS-1$
+            request.setAttribute("org.directwebremoting.dwrp.id", webContext.getScriptSession().getId()); //$NON-NLS-1$
+        }
+        else
+        {
+            // restore the side effects of parseRequest
+            String page = (String) request.getAttribute("org.directwebremoting.dwrp.page"); //$NON-NLS-1$
+            String id = (String) request.getAttribute("org.directwebremoting.dwrp.id"); //$NON-NLS-1$
+            webContext.setCurrentPageInformation(page, id);
+        }
+
+        // Special case handling for long poll of the DWRSystem.poll() method.
+        // If there is only 1 call and that call is a Poll, then we will wait until
+        // there are scripts to send.   If there is more than 1 request, do not suspend
+        // as it should not be held up by the poll.
+        if (calls.getCallCount() == 1)
+        {
+            Call call = calls.getCall(0);
+            if ("DWRSystem".equals(call.getScriptName()) && "poll".equals(call.getMethodName())) //$NON-NLS-1$ //$NON-NLS-2$
+            {
+                try
+                {
+                    DwrSystem system = (DwrSystem) webContext.getServletContext().getAttribute(call.getScriptName());
+                    if (system != null)
+                    {
+                        system.pollWait();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Allow Jetty RequestRetry exception to propogate to container
+                    ContinuationUtil.rethrowIfContinuation(ex);
+                    log.warn("Error calling pollWait()", ex); //$NON-NLS-1$
+                }
+            }
+        }
 
         // Get the output stream and setup the mimetype
         response.setContentType(getOutboundMimeType());
