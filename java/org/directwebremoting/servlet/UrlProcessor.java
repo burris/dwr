@@ -39,6 +39,7 @@ import org.directwebremoting.dwrp.DwrpPlainJsMarshaller;
 import org.directwebremoting.impl.DefaultScriptSessionManager;
 import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.JavascriptUtil;
+import org.directwebremoting.util.ContinuationUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.MimeConstants;
@@ -163,6 +164,9 @@ public class UrlProcessor
         }
         catch (Exception ex)
         {
+            // Allow Jetty RequestRetry exception to propogate to container
+            ContinuationUtil.rethrowIfContinuation(ex);
+
             log.warn("Error: " + ex); //$NON-NLS-1$
             if (ex instanceof SecurityException && log.isDebugEnabled())
             {
