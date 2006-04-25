@@ -133,6 +133,11 @@ public class DefaultScriptSession implements ScriptSession
             throw new NullPointerException("null script"); //$NON-NLS-1$
         }
 
+        if (script.length() == 0)
+        {
+            return;
+        }
+
         // First we try to add the script to an existing conduit
         synchronized (scriptLock)
         {

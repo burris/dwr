@@ -16,6 +16,7 @@
 package org.directwebremoting;
 
 /**
+ * Some constants to do with the heart of DWR.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @noinspection InterfaceNeverImplemented
  */

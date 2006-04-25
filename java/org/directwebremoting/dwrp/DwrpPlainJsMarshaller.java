@@ -338,7 +338,6 @@ public class DwrpPlainJsMarshaller implements Marshaller
     {
         if (script.trim().length() == 0)
         {
-            log.warn("Skipping empty script", new Exception()); //$NON-NLS-1$
             return;
         }
 

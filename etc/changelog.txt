@@ -7,4 +7,9 @@ Yeah - good one. So there is now:
 DWREngine.setTextHtmlHandler(function() { document.location.reload(); });
 Or you can make up your own.
 
+- Serverside DWRUtil, Serverside Scriptaculous and Serverside Dojo. Create a Java API that maps through to the Javascript API
+- Annotations based configuration
+- Using JDK5 type metadata to make <signatures> optional
+
+
 wget --quiet --base=./ --directory-prefix=./ --convert-links --mirror --page-requisites --exclude-directories=blog/*,dwr-demo/*,book/*  http://getahead.ltd.uk/
