@@ -88,7 +88,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
         // Various bits of parseResponse need to be stashed away places
         storeParseResponse(request, webContext, parseResponse);
 
-        CallsWithContext calls = parseResponse.getCallsWithContext();
+        Calls calls = parseResponse.getCalls();
 
         // Special case handling for long poll of the DWRSystem.poll() method.
         // If there is only 1 call and that call is a Poll, then we will wait until
@@ -158,7 +158,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
         if (log.isDebugEnabled() && calls.getCallCount() > 0)
         {
             // We can just use 0 because they are all shared
-            InboundContext inctx = calls.getCallWithContext(0).getInboundContext();
+            InboundContext inctx = (InboundContext) parseResponse.getInboundContexts().get(0);
             StringBuffer buffer = new StringBuffer();
 
             for (Iterator it = inctx.getInboundVariableNames(); it.hasNext();)
@@ -181,9 +181,8 @@ public class DwrpPlainJsMarshaller implements Marshaller
         callLoop:
         for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
         {
-            CallWithContext call = calls.getCallWithContext(callNum);
-            InboundContext inctx = call.getInboundContext();
-
+            Call call = calls.getCall(callNum);
+            InboundContext inctx = (InboundContext) parseResponse.getInboundContexts().get(callNum);
 
             // Get a list of the available matching methods with the coerced
             // parameters that we will use to call it if we choose to use
@@ -191,7 +190,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
             Creator creator = creatorManager.getCreator(call.getScriptName());
 
             // Which method are we using?
-            Method method = findMethod(call);
+            Method method = findMethod(call, inctx);
             call.setMethod(method);
             if (method == null)
             {
@@ -263,9 +262,10 @@ public class DwrpPlainJsMarshaller implements Marshaller
     /**
      * Find the method the best matches the method name and parameters
      * @param call The function call we are going to make
+     * @param inctx The data conversion context
      * @return A matching method, or null if one was not found.
      */
-    private Method findMethod(CallWithContext call)
+    private Method findMethod(Call call, InboundContext inctx)
     {
         if (call.getScriptName() == null)
         {
@@ -288,11 +288,11 @@ public class DwrpPlainJsMarshaller implements Marshaller
             if (methods[i].getName().equals(call.getMethodName()))
             {
                 // Check number of parameters
-                if (methods[i].getParameterTypes().length == call.getInboundContext().getParameterCount())
+                if (methods[i].getParameterTypes().length == inctx.getParameterCount())
                 {
                     // Clear the previous conversion attempts (the param types
                     // will probably be different)
-                    call.getInboundContext().clearConverted();
+                    inctx.clearConverted();
 
                     // Check parameter types
                     for (int j = 0; j < methods[i].getParameterTypes().length; j++)
@@ -652,8 +652,8 @@ public class DwrpPlainJsMarshaller implements Marshaller
     private ParseResponse parseParameters(Map paramMap) throws IOException
     {
         ParseResponse parseResponse = new ParseResponse();
-        CallsWithContext calls = new CallsWithContext();
-        parseResponse.setCallsWithContext(calls);
+        Calls calls = new Calls();
+        parseResponse.setCalls(calls);
 
         // Work out how many calls are in this packet
         String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
@@ -667,11 +667,16 @@ public class DwrpPlainJsMarshaller implements Marshaller
             throw new IOException(Messages.getString("ExecuteQuery.BadCallCount", callStr)); //$NON-NLS-1$
         }
 
+        List inboundContexts = parseResponse.getInboundContexts();
+
         // Extract the ids, scriptnames and methodnames
         for (int callNum = 0; callNum < callCount; callNum++)
         {
-            CallWithContext call = new CallWithContext();
+            Call call = new Call();
             calls.addCall(call);
+
+            InboundContext inctx = new InboundContext();
+            inboundContexts.add(inctx);
 
             String prefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + ConversionConstants.INBOUND_CALLNUM_SUFFIX;
 
@@ -693,7 +698,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
 
                     String value = split[LocalUtil.INBOUND_INDEX_VALUE];
                     String type = split[LocalUtil.INBOUND_INDEX_TYPE];
-                    call.getInboundContext().createInboundVariable(callNum, key, type, value);
+                    inctx.createInboundVariable(callNum, key, type, value);
                     it.remove();
                 }
             }

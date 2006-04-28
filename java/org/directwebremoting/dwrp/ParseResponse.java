@@ -15,13 +15,35 @@
  */
 package org.directwebremoting.dwrp;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.directwebremoting.Calls;
+
 /**
+ * A container for all the by-products of an HttpRequest parse
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ParseResponse
+class ParseResponse
 {
+    /**
+     * @return the inboundContexts
+     */
+    public List getInboundContexts()
+    {
+        return inboundContexts;
+    }
+
+    /**
+     * @param inboundContexts the inboundContexts to set
+     */
+    public void setInboundContexts(List inboundContexts)
+    {
+        this.inboundContexts = inboundContexts;
+    }
+
     /**
      * @return the spareParameters
      */
@@ -71,26 +93,28 @@ public class ParseResponse
     }
 
     /**
-     * @return the callsWithContext
+     * @return the calls
      */
-    public CallsWithContext getCallsWithContext()
+    public Calls getCalls()
     {
-        return callsWithContext;
+        return calls;
     }
 
     /**
-     * @param callsWithContext the callsWithContext to set
+     * @param calls the calls to set
      */
-    public void setCallsWithContext(CallsWithContext callsWithContext)
+    public void setCalls(Calls calls)
     {
-        this.callsWithContext = callsWithContext;
+        this.calls = calls;
     }
+
+    private List inboundContexts = new ArrayList();
 
     private String scriptSessionId;
 
     private String page;
 
-    private CallsWithContext callsWithContext;
+    private Calls calls;
 
-    private Map spareParameters;
+    private Map spareParameters = new HashMap();
 }
