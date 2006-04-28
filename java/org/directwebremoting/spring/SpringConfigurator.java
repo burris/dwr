@@ -21,13 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.directwebremoting.AccessControl;
-import org.directwebremoting.AjaxFilter;
-import org.directwebremoting.AjaxFilterManager;
-import org.directwebremoting.Configurator;
-import org.directwebremoting.Container;
-import org.directwebremoting.ConverterManager;
-import org.directwebremoting.CreatorManager;
+import org.directwebremoting.*;
 import org.directwebremoting.util.LocalUtil;
 
 /**
@@ -82,9 +76,14 @@ public class SpringConfigurator implements Configurator
                     String scriptName = (String) entry.getKey();
                     CreatorConfig creatorConfig = (CreatorConfig) entry.getValue();
 
-                    String creatorName = creatorConfig.getCreator();
-                    Map params = creatorConfig.getParams();
-                    creatorManager.addCreator(scriptName, creatorName, params);
+                    if (creatorConfig.getCreator() != null) {
+                        Creator creator = creatorConfig.getCreator();
+                        creatorManager.addCreator(scriptName, creator);
+                    } else {
+                        String creatorName = creatorConfig.getCreatorType();
+                        Map params = creatorConfig.getParams();
+                        creatorManager.addCreator(scriptName, creatorName, params);
+                    }
 
                     List excludes = creatorConfig.getExcludes();
                     for (Iterator eit = excludes.iterator(); eit.hasNext();)
@@ -185,18 +184,6 @@ public class SpringConfigurator implements Configurator
     public void setConverters(Map converters)
     {
         this.converters = converters;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    public String toString()
-    {
-        return "SpringConfigurator[" //$NON-NLS-1$
-            + creatorTypes.size() + " creatorTypes, " //$NON-NLS-1$
-            + converterTypes.size() + " converterTypes, " //$NON-NLS-1$
-            + creators.size() + " creators, " //$NON-NLS-1$
-            + converters.size() + " converters, ]"; //$NON-NLS-1$
     }
 
     /**

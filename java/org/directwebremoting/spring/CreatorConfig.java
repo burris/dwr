@@ -22,10 +22,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.directwebremoting.AjaxFilter;
-
+import org.directwebremoting.Creator;
 
 /**
  * The configuration for a creator. <br>
+ * You can either specify the creator directly or specify one of the build in creator types,
+ * for instance "new".
+ *
  * It allows the specification of the following optional configuration parameters:
  * <ul>
  *  <li>includes - the list of method names to include</li>
@@ -48,9 +51,27 @@ public class CreatorConfig
 {
     /**
      * The creator type that will be used to create new objects for remoting
+     * @return Returns the creator type.
+     */
+    public String getCreatorType()
+    {
+        return creatorType;
+    }
+
+    /**
+     * The creator that will be used to create new objects for remoting
+     * @param creatorType The creator type to set.
+     */
+    public void setCreatorType(String creatorType)
+    {
+        this.creatorType = creatorType;
+    }
+
+    /**
+     * The creator that will be used to create new objects for remoting
      * @return Returns the creator.
      */
-    public String getCreator()
+    public Creator getCreator()
     {
         return creator;
     }
@@ -59,7 +80,7 @@ public class CreatorConfig
      * The creator type that will be used to create new objects for remoting
      * @param creator The creator to set.
      */
-    public void setCreator(String creator)
+    public void setCreator(Creator creator)
     {
         this.creator = creator;
     }
@@ -188,7 +209,9 @@ public class CreatorConfig
     }
 
     /**
-     * The set of key/value pairs to provide further configuration
+     * The set of key/value pairs to provide further configuration.<br>
+     * Note that these params are only used when setting the creator type and not when setting the
+     * creator directly.
      * @return Returns the params.
      */
     public Map getParams()
@@ -197,7 +220,9 @@ public class CreatorConfig
     }
 
     /**
-     * The set of key/value pairs to provide further configuration
+     * The set of key/value pairs to provide further configuration.<br>
+     * Note that these params are only used when setting the creator type and not when setting the
+     * creator directly.
      * @param params The params to set.
      */
     public void setParams(Map params)
@@ -208,7 +233,12 @@ public class CreatorConfig
     /**
      * The creator type to use
      */
-    private String creator;
+    private String creatorType;
+
+    /**
+     * The creator to use
+     */
+    private Creator creator;
 
     /**
      * The list of method names to include for this creator.
