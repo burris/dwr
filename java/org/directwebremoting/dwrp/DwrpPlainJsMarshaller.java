@@ -76,24 +76,19 @@ public class DwrpPlainJsMarshaller implements Marshaller
         // only after doing this that we know the scriptSessionId
 
         WebContext webContext = WebContextFactory.get();
-        CallsWithContext calls = (CallsWithContext) request.getAttribute("org.directwebremoting.dwrp.calls"); //$NON-NLS-1$
-        if (calls == null)
+        ParseResponse parseResponse = (ParseResponse) request.getAttribute(ATTRIBUTE_PARSE_RESPONSE);
+        if (parseResponse == null)
         {
-            calls = parseRequest(request);
+            parseResponse = parseRequest(request);
 
-            // save calls for retry exception
-            request.setAttribute("org.directwebremoting.dwrp.calls", calls); //$NON-NLS-1$
-            // as parseRequest(request) has side effects - we must save these also!
-            request.setAttribute("org.directwebremoting.dwrp.page", webContext.getCurrentPage()); //$NON-NLS-1$
-            request.setAttribute("org.directwebremoting.dwrp.id", webContext.getScriptSession().getId()); //$NON-NLS-1$
+            // Save calls for retry exception
+            request.setAttribute(ATTRIBUTE_PARSE_RESPONSE, parseResponse);
         }
-        else
-        {
-            // restore the side effects of parseRequest
-            String page = (String) request.getAttribute("org.directwebremoting.dwrp.page"); //$NON-NLS-1$
-            String id = (String) request.getAttribute("org.directwebremoting.dwrp.id"); //$NON-NLS-1$
-            webContext.setCurrentPageInformation(page, id);
-        }
+
+        // Various bits of parseResponse need to be stashed away places
+        storeParseResponse(request, webContext, parseResponse);
+
+        CallsWithContext calls = parseResponse.getCallsWithContext();
 
         // Special case handling for long poll of the DWRSystem.poll() method.
         // If there is only 1 call and that call is a Poll, then we will wait until
@@ -238,6 +233,31 @@ public class DwrpPlainJsMarshaller implements Marshaller
         }
 
         return calls;
+    }
+
+    /**
+     * @param request
+     * @param webContext
+     * @param parseResponse
+     */
+    private void storeParseResponse(HttpServletRequest request, WebContext webContext, ParseResponse parseResponse)
+    {
+        webContext.setCurrentPageInformation(parseResponse.getPage(), parseResponse.getScriptSessionId());
+
+        // Remaining parameters get put into the request for later consumption
+        Map paramMap = parseResponse.getSpareParameters();
+        if (paramMap.size() != 0)
+        {
+            for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+                String key = (String) entry.getKey();
+                String value = (String) entry.getValue();
+
+                request.setAttribute(key, value);
+                log.debug("Moved param to request: " + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
     }
 
     /**
@@ -464,7 +484,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
      * @return A parsed set of calls
      * @throws IOException If reading from the request body stream fails
      */
-    private CallsWithContext parseRequest(HttpServletRequest req) throws IOException
+    private ParseResponse parseRequest(HttpServletRequest req) throws IOException
     {
         if (req.getMethod().equals("GET")) //$NON-NLS-1$
         {
@@ -629,9 +649,11 @@ public class DwrpPlainJsMarshaller implements Marshaller
      * @return The call details the methods we are calling
      * @throws IOException If the parsing of input parameter fails
      */
-    private CallsWithContext parseParameters(Map paramMap) throws IOException
+    private ParseResponse parseParameters(Map paramMap) throws IOException
     {
+        ParseResponse parseResponse = new ParseResponse();
         CallsWithContext calls = new CallsWithContext();
+        parseResponse.setCallsWithContext(calls);
 
         // Work out how many calls are in this packet
         String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
@@ -681,29 +703,14 @@ public class DwrpPlainJsMarshaller implements Marshaller
         // Maybe we should check the value of this against the cookie value
 
         String scriptSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
+        parseResponse.setScriptSessionId(scriptSessionId);
 
         String page = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_PAGE);
+        parseResponse.setPage(page);
 
-        WebContext webContext = WebContextFactory.get();
-        webContext.setCurrentPageInformation(page, scriptSessionId);
+        parseResponse.setSpareParameters(paramMap);
 
-        // Remaining parameters get put into the request for later consumption
-        if (paramMap.size() != 0)
-        {
-            HttpServletRequest request = webContext.getHttpServletRequest();
-
-            for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
-            {
-                Map.Entry entry = (Map.Entry) it.next();
-                String key = (String) entry.getKey();
-                String value = (String) entry.getValue();
-
-                request.setAttribute(key, value);
-                log.debug("Moved param to request: " + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-
-        return calls;
+        return parseResponse;
     }
 
     /* (non-Javadoc)
@@ -759,12 +766,17 @@ public class DwrpPlainJsMarshaller implements Marshaller
     /**
      * How we stash away the request
      */
-    protected String ATTRIBUTE_REQUEST = "org.directwebremoting.dwrp.request"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_REQUEST = "org.directwebremoting.dwrp.request"; //$NON-NLS-1$
 
     /**
      * How we stash away the conduit
      */
-    protected String ATTRIBUTE_CONDUIT = "org.directwebremoting.dwrp.conduit"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_CONDUIT = "org.directwebremoting.dwrp.conduit"; //$NON-NLS-1$
+
+    /**
+     * 
+     */
+    protected static final String ATTRIBUTE_PARSE_RESPONSE = "org.directwebremoting.dwrp.parseResponse"; //$NON-NLS-1$
 
     /**
      * The log stream
