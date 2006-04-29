@@ -1,10 +1,10 @@
 
 function startPoll() {
-  DWREngine.setPolling(true);
+  DWREngine.setReverseAjax(true);
 }
 
 function stopPoll() {
-  DWREngine.setPolling(false);
+  DWREngine.setReverseAjax(false);
 }
 
 function sendMessage() {

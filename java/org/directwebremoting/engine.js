@@ -83,15 +83,15 @@ DWREngine.ScriptTag = 3;
 
 /**
  * Set the preferred remoting method.
- * @param newmethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame
+ * @param newMethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
-DWREngine.setMethod = function(newmethod) {
-  if (newmethod != DWREngine.XMLHttpRequest && newmethod != DWREngine.IFrame && newmethod != DWREngine.ScriptTag) {
+DWREngine.setMethod = function(newMethod) {
+  if (newMethod != DWREngine.XMLHttpRequest && newMethod != DWREngine.IFrame && newMethod != DWREngine.ScriptTag) {
     DWREngine._handleError("Remoting method must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame or DWREngine.ScriptTag");
     return;
   }
-  DWREngine._method = newmethod;
+  DWREngine._method = newMethod;
 };
 
 /**
@@ -123,14 +123,42 @@ DWREngine.setAsync = function(async) {
 };
 
 /**
+ * @deprecated Use DWREngine.setReverseAjax
+ */
+DWREngine.setPolling = function() {
+  DWREngine._handleError("DWREngine.setPolling() has been renamed to DWREngine.setReverseAjax()");
+}
+
+/**
  * Does DWR poll the server for updates? (Default: false)
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
-DWREngine.setPolling = function(polling) {
-  DWREngine._pollServer = polling;
-  if (DWREngine._pollServer) {
+DWREngine.setReverseAjax = function(reverseAjax) {
+  DWREngine._reverseAjax = reverseAjax;
+  if (DWREngine._reverseAjax) {
     DWREngine._triggerNextPoll(0);
   }
+};
+
+/**
+ * Does DWR us comet polling? (Default: true)
+ * @see http://getahead.ltd.uk/dwr/browser/engine/options
+ */
+DWREngine.setPollUsingComet = function(pollComet) {
+  DWREngine._pollComet = pollComet;
+};
+
+/**
+ * Set the preferred polling method.
+ * @param newPollMethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame
+ * @see http://getahead.ltd.uk/dwr/browser/engine/options
+ */
+DWREngine.setPollMethod = function(newPollMethod) {
+  if (newPollMethod != DWREngine.XMLHttpRequest && newPollMethod != DWREngine.IFrame) {
+    DWREngine._handleError("Polling method must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame");
+    return;
+  }
+  DWREngine._pollMethod = newPollMethod;
 };
 
 /**
@@ -270,8 +298,8 @@ DWREngine._DOMDocument = ["Msxml2.DOMDocument.6.0", "Msxml2.DOMDocument.5.0", "M
 /** The ActiveX objects to use when we want to do an XMLHttpRequest call. */
 DWREngine._XMLHTTP = ["Msxml2.XMLHTTP.6.0", "Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
 
-/** Are we polling the server for updates? */
-DWREngine._pollServer = false;
+/** Are we doing reverse ajax? */
+DWREngine._reverseAjax = false;
 
 /** Is there a long term poll (comet) interraction in place? */
 DWREngine._pollComet = true;
@@ -448,7 +476,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
  * @private Poll the server to see if there is any data waiting
  */
 DWREngine._poll = function(overridePath) {
-  if (!DWREngine._pollServer) {
+  if (!DWREngine._reverseAjax) {
     return;
   }
   // Get a unique ID for this call
