@@ -122,4 +122,19 @@ Broken signatures
 	the append a ";" before loading the class, we simlely commented out the
 	section of code that manages inner classes to get around the "$"
 	substitution problem.
-	
+	Thanks Dan.
+
+Simple Date format
+	There are also notes here:
+	http://getahead.ltd.uk/dwr/server/dwrxml/converters
+	This is something that keeps on being mentioned. At some stage maybe we
+	should consider creating a simple Javascript version of SimpleDateFormat
+	that would help people get this job done more quickly.
+
+Beans extending hashmap - Kristján Bjarni Guðmundsson <kristjg@hugvit.is>
+	I have a class that extends HashMap, and I define that it should be
+	converted using the bean converter, however it always get converted
+	using the map converter. Is there any way to specify that it should be
+	converted as a bean?
+	Joe: This ought to work because DWR should pick the more specific
+	declaration. I'll add it to the list of issues.
