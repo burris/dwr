@@ -16,10 +16,56 @@
 package org.directwebremoting.proxy.dwrutil;
 
 /**
+ * A simple wrapper for a table row element.
+ * This style of adding elements is very experimental.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Row
+public class Row extends HtmlElement
 {
+    /**
+     * Make sure there is a default constructor
+     */
+    public Row()
+    {
+    }
 
+    /**
+     * Constructor to automatically create a set of cells
+     * @param cellStrings String values for the cell contents
+     */
+    public Row(String[] cellStrings)
+    {
+        cells = new Cell[cellStrings.length];
+        for (int i = 0; i < cellStrings.length; i++)
+        {
+            cells[i] = new Cell(cellStrings[i]);
+        }
+    }
+
+    /**
+     * Constructor to automatically create a set of cells
+     * @param cells Cell contents
+     */
+    public Row(Cell[] cells)
+    {
+        this.cells = cells;
+    }
+
+    /**
+     * @return the cells
+     */
+    public Cell[] getCells()
+    {
+        return cells;
+    }
+
+    /**
+     * @param cells the cells to set
+     */
+    public void setCells(Cell[] cells)
+    {
+        this.cells = cells;
+    }
+
+    private Cell[] cells;
 }
-

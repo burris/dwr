@@ -29,9 +29,17 @@ public interface ServerLoadMonitor
     int timeToNextPoll();
 
     /**
-     * How long should we hold up a client request in case some more scripts
-     * come in.
-     * @return The time in millis to wait before closing an Ajax request
+     * How long should we hold up a client request before starting a
+     * response stream while waiting for some scripts come in.
+     * @return The time in millis to wait before opening an Ajax poll response stream.
      */
-    long timeWithinPoll();
+    long timeWithinPollPreStream();
+    
+    /**
+     * How long should we hold up a client request after starting 
+     * a response stream while waiting for more scripts
+     * come in.
+     * @return The time in millis to wait before closing an Ajax poll response stream
+     */
+    long timeWithinPollPostStream();
 }

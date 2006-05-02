@@ -53,8 +53,7 @@ public class PageFlowCreator extends AbstractCreator implements Creator
             // We're expecting this to fail, and notice below
         }
 
-        if ((bhGetter == null && wlGetter == null) ||
-           (bhFlowClass == null && wlFlowClass == null))
+        if ((bhGetter == null && wlGetter == null) || (bhFlowClass == null && wlFlowClass == null))
         {
             throw new ClassNotFoundException("Beehive/Weblogic jar file not available."); //$NON-NLS-1$
         }
@@ -128,9 +127,12 @@ public class PageFlowCreator extends AbstractCreator implements Creator
     private Class instanceType;
 
     private Method getter;
+
     private Method bhGetter;
+
     private Method wlGetter;
 
     private Class bhFlowClass;
+
     private Class wlFlowClass;
 }

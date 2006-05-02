@@ -289,10 +289,16 @@ public class BeanConverter extends BaseV20Converter implements Converter
                 {
                     // We don't marshall things we can't read
                     Method getter = descriptor.getReadMethod();
-                    if (getter == null) continue;
+                    if (getter == null)
+                    {
+                        continue;
+                    }
 
                     // We don't marshall getClass()
-                    if (name.equals("class")) continue; //$NON-NLS-1$
+                    if (name.equals("class")) //$NON-NLS-1$
+                    {
+                        continue;
+                    }
 
                     // Access rules mean we might not want to do this one
                     if (!isAllowed(name))

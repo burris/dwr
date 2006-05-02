@@ -27,7 +27,6 @@ import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
-
 /**
  * BeanConverter that works with Hibernate3 to get BeanInfo.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -143,7 +142,7 @@ public class HibernateBeanConverter extends BeanConverter
                 }
 
                 Boolean reply = (Boolean) isPropertyInitialized.invoke(null, new Object[] { data, property });
-                Boolean reply2 = (Boolean) isInitialized.invoke(null, new Object[] { method.invoke(data, new Object[]{ }) });
+                Boolean reply2 = (Boolean) isInitialized.invoke(null, new Object[] { method.invoke(data, new Object[] {}) });
 
                 boolean inited = reply.booleanValue() && reply2.booleanValue();
                 if (!inited)

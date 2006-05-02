@@ -3,8 +3,6 @@ package org.directwebremoting.dwrp;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.directwebremoting.ScriptConduit;
 
 /**
@@ -19,23 +17,16 @@ public class DirectScriptConduit implements ScriptConduit
     /**
      * Simple ctor
      * @param out The stream to write to
-     * @param response The response to flush on write complete
      * @param marshaller The marshaller that we ask to re-write our Javascript
      */
-    public DirectScriptConduit(PrintWriter out, HttpServletResponse response, DwrpPlainJsMarshaller marshaller)
+    public DirectScriptConduit(PrintWriter out, DwrpPlainJsMarshaller marshaller)
     {
         if (out == null)
         {
             throw new NullPointerException("out=null"); //$NON-NLS-1$
         }
 
-        if (response == null)
-        {
-            throw new NullPointerException("response=null"); //$NON-NLS-1$
-        }
-
         this.out = out;
-        this.response = response;
         this.marshaller = marshaller;
     }
 
@@ -50,14 +41,15 @@ public class DirectScriptConduit implements ScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptConduit#addScript(java.lang.String)
      */
-    public void addScript(String script) throws IOException
+    public boolean addScript(String script) throws IOException
     {
         if (closed)
         {
             throw new IllegalStateException("Attempt to write to closed DirectScriptConduit"); //$NON-NLS-1$
         }
 
-        marshaller.sendScript(out, response, script);
+        marshaller.sendScript(out, script);
+        return true;
     }
 
     /* (non-Javadoc)
@@ -94,6 +86,18 @@ public class DirectScriptConduit implements ScriptConduit
     }
 
     /* (non-Javadoc)
+     * @see org.directwebremoting.ScriptConduit#flush()
+     */
+    public void flush() throws IOException
+    {
+        out.flush();
+        if (out.checkError())
+        {
+            throw new IOException("Error flushing buffered stream"); //$NON-NLS-1$
+        }
+    }
+
+    /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     public String toString()
@@ -110,11 +114,6 @@ public class DirectScriptConduit implements ScriptConduit
      * The PrintWriter to send output to, and that we should synchronize against
      */
     private final PrintWriter out;
-
-    /**
-     * Having written to the output we must flush the buffer
-     */
-    private final HttpServletResponse response;
 
     /**
      * The marshaller needs to be able to rewrite scripts depending on plain or

@@ -18,11 +18,9 @@ package org.directwebremoting.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
@@ -157,8 +155,15 @@ public class DefaultScriptSession implements ScriptSession
                     ScriptConduit conduit = (ScriptConduit) it.next();
                     try
                     {
-                        conduit.addScript(script);
-                        written = true;
+                        written = conduit.addScript(script);
+                        if (written)
+                        {
+                            conduit.flush();
+                        }
+                        else
+                        {
+                            it.remove();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -172,12 +177,36 @@ public class DefaultScriptSession implements ScriptSession
                     scripts.add(script);
                 }
             }
+        }
+    }
 
-            // Call listeners
-            for (Iterator it = new ArrayList(listeners).iterator(); it.hasNext();)
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ScriptSession#flushConduits()
+     */
+    public void flushConduits()
+    {
+        checkNotInvalidated();
+
+        // First we try to add the script to an existing conduit
+        synchronized (scriptLock)
+        {
+            if (conduits.size() > 0)
             {
-                AddScriptListener listener = (AddScriptListener) it.next();
-                listener.scriptAdded();
+                for (Iterator it = conduits.iterator(); it.hasNext();)
+                {
+                    ScriptConduit conduit = (ScriptConduit) it.next();
+                    
+                    try
+                    {
+                        conduit.flush();
+                    }
+                    catch (Exception ex)
+                    {
+                        log.warn("Failed to flush to ScriptConduit, removing from list: " + conduit); //$NON-NLS-1$
+                        it.remove();
+                    }
+                }
             }
         }
     }
@@ -226,7 +255,12 @@ public class DefaultScriptSession implements ScriptSession
                 for (Iterator it = scripts.iterator(); it.hasNext();)
                 {
                     String script = (String) it.next();
-                    conduit.addScript(script);
+                    if (!conduit.addScript(script))
+                    {
+                        // Don't add conduit
+                        return;
+                    }
+
                     it.remove();
                 }
             }
@@ -324,37 +358,13 @@ public class DefaultScriptSession implements ScriptSession
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSession#addAddScriptListener(org.directwebremoting.ScriptSession.AddScriptListener)
-     */
-    public void addAddScriptListener(AddScriptListener listener)
-    {
-        synchronized (scriptLock)
-        {
-            listeners.add(listener);
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSession#removeAddScriptListener(org.directwebremoting.ScriptSession.AddScriptListener)
-     */
-    public void removeAddScriptListener(AddScriptListener listener)
-    {
-        synchronized (scriptLock)
-        {
-            listeners.remove(listener);
-        }
-    }
-
-    /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     public String toString()
     {
         return "DefaultScriptSession[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
-
-    protected final Set listeners = new HashSet();
-
+    
     /**
      * The script conduits that we can use to transfer data to the browser
      */

@@ -15,7 +15,6 @@
  */
 package org.directwebremoting;
 
-import java.util.EventListener;
 import java.util.Iterator;
 
 /**
@@ -140,36 +139,19 @@ public interface ScriptSession
      */
     public void removeScriptConduit(ScriptConduit conduit);
 
-    /*
-     * Specifies the time, in seconds, between client requests before the 
-     * servlet container will invalidate this session. A negative time indicates
-     * the session should never timeout.
-     * @param interval An integer specifying the number of seconds 
+    /**
+     * @return number of scripts queued within session
      */
-    //public void setMaxInactiveInterval(int interval);
-
-    /*
-     * Returns the maximum time interval, in seconds, that the servlet container
-     * will keep this session open between client accesses.
-     * After this interval, the servlet container will invalidate the session.
-     * The maximum time interval can be set with the
-     * <code>setMaxInactiveInterval</code> method.
-     * A negative time indicates the session should never timeout.
-     * @return the number of seconds this session remains open between client requests
-     * @see #setMaxInactiveInterval
-     */
-    //public int getMaxInactiveInterval();
-
     public int getQueuedScripts();
 
-    public void addAddScriptListener(AddScriptListener listener);
-
-    public void removeAddScriptListener(AddScriptListener listener);
-
+    /**
+     * 
+     * @return The mutex object used by the script session
+     */
     public Object getScriptLock();
 
-    public interface AddScriptListener extends EventListener
-    {
-        void scriptAdded();
-    }
+    /**
+     * Flush the session conduits
+     */
+    public void flushConduits();    
 }

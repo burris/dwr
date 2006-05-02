@@ -13,37 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.impl;
-
-import org.directwebremoting.ServerLoadMonitor;
+package org.directwebremoting.proxy.dwrutil;
 
 /**
- * A default implementation of ServerLoadMonitor
+ * A simple wrapper for a table cell element
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultServerLoadMonitor implements ServerLoadMonitor 
+public class Cell extends HtmlElement
 {
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#timeWithinPoll()
+    /**
+     * Ensure there is a default constructor
      */
-    public long timeWithinPollPreStream()
+    public Cell()
     {
-        return 20000;
+        innerHtml = ""; //$NON-NLS-1$
     }
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#timeWithinPoll()
+    /**
+     * @param cellString The cell contents
      */
-    public long timeWithinPollPostStream()
+    public Cell(String cellString)
     {
-        return 5000;
+        innerHtml = cellString;
     }
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#timeToNextPoll()
+    /**
+     * @return the innerHtml
      */
-    public int timeToNextPoll()
+    public String getInnerHtml()
     {
-        return 1000;
+        return innerHtml;
     }
+
+    /**
+     * @param innerHtml the innerHtml to set
+     */
+    public void setInnerHtml(String innerHtml)
+    {
+        this.innerHtml = innerHtml;
+    }
+
+    private String innerHtml;
 }

@@ -30,7 +30,14 @@ public interface ScriptConduit
      * Add a script to the list waiting for remote execution.
      * The version automatically wraps the string in a ClientScript object.
      * @param script The script to execute
+     * @return true if this ScriptConduit handled the script.
      * @throws IOException If the script can not go out via this conduit.
      */
-    public void addScript(String script) throws IOException;
+    public boolean addScript(String script) throws IOException;
+    
+    /**
+     * Called to flush any scripts written to the conduit
+     * @throws IOException
+     */
+    public void flush() throws IOException;
 }

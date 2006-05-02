@@ -105,10 +105,7 @@ public abstract class AbstractCreator implements Creator
      */
     protected static void checkScope(String cscope)
     {
-        if (!cscope.equals(PAGE) &&
-            !cscope.equals(REQUEST) &&
-            !cscope.equals(SESSION) &&
-            !cscope.equals(APPLICATION))
+        if (!cscope.equals(PAGE) && !cscope.equals(REQUEST) && !cscope.equals(SESSION) && !cscope.equals(APPLICATION))
         {
             throw new IllegalArgumentException(Messages.getString("AbstractCreator.IllegalScope", cscope)); //$NON-NLS-1$
         }

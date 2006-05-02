@@ -21,11 +21,11 @@ import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 
 import org.directwebremoting.Container;
+import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerLoadMonitor;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.ScriptSession.AddScriptListener;
 import org.directwebremoting.util.ContinuationUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
@@ -47,11 +47,18 @@ public class DwrSystem
 
         ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
 
+        ScriptSession scriptSession = context.getScriptSession();
+
         // The comet part of a poll request
         try
         {
-            long sleepTime = monitor.timeWithinPoll();
-            Thread.sleep(sleepTime);
+            long sleepTime = monitor.timeWithinPollPostStream();
+            if (sleepTime > 0)
+            {
+                // flush any scripts already written.
+                scriptSession.flushConduits();
+                Thread.sleep(sleepTime);
+            }
         }
         catch (InterruptedException ex)
         {
@@ -64,14 +71,14 @@ public class DwrSystem
     /**
      * The polling system needs to be able to wait for something to happen
      */
-    public void pollWait()
+    public void pollPreStreamWait()
     {
         WebContext context = WebContextFactory.get();
         Container container = context.getContainer();
 
         final ScriptSession scriptSession = context.getScriptSession();
         ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
-        long sleepTime = monitor.timeWithinPoll();
+        long sleepTime = monitor.timeWithinPollPreStream();
 
         synchronized (scriptSession.getScriptLock())
         {
@@ -85,7 +92,7 @@ public class DwrSystem
             HttpServletRequest request = context.getHttpServletRequest();
 
             boolean useSleep = true;
-            final Object continuation = request.getAttribute("org.mortbay.jetty.ajax.Continuation"); //$NON-NLS-1$
+            Object continuation = request.getAttribute(ATTRIBUTE_JETTY_CONTINUATION);
             if (continuation != null)
             {
                 useSleep = false;
@@ -93,28 +100,13 @@ public class DwrSystem
                 try
                 {
                     // create a listener 
-                    AddScriptListener listener = (AddScriptListener) getObject.invoke(continuation, new Object[0]);
+                    ScriptConduit listener = (ScriptConduit) getObject.invoke(continuation, new Object[0]);
                     if (listener == null)
                     {
-                        listener = new AddScriptListener()
-                        {
-                            public void scriptAdded()
-                            {
-                                try
-                                {
-                                    // continuation.resume();
-                                    resumeMethod.invoke(continuation, new Object[0]);
-                                    scriptSession.removeAddScriptListener(this);
-                                }
-                                catch (Exception ex)
-                                {
-                                    log.warn("Exception in continuation.resume()", ex); //$NON-NLS-1$
-                                }
-                            }
-                        };
+                        listener = new SystemScriptConduit(continuation);
                         setObject.invoke(continuation, new Object[] { listener });
                     }
-                    scriptSession.addAddScriptListener(listener);
+                    scriptSession.addScriptConduit(listener);
 
                     // continuation.suspend(sleepTime);
                     // NB. May throw a Runtime exception that must propogate to the container!
@@ -137,9 +129,9 @@ public class DwrSystem
             if (useSleep)
             {
                 // create a listener // TODO avoid the expense of creation and registration
-                AddScriptListener listener = new AddScriptListener()
+                ScriptConduit listener = new ScriptConduit()
                 {
-                    public void scriptAdded()
+                    public boolean addScript(String script)
                     {
                         try
                         {
@@ -152,9 +144,13 @@ public class DwrSystem
                         {
                             log.warn("Failed to notify all ScriptSession users", ex); //$NON-NLS-1$
                         }
+
+                        // just listening!
+                        return false;
                     }
+                    public void flush(){}
                 };
-                scriptSession.addAddScriptListener(listener);
+                scriptSession.addScriptConduit(listener);
 
                 // The comet part of a poll request
                 try
@@ -167,11 +163,56 @@ public class DwrSystem
                 }
                 finally
                 {
-                    scriptSession.removeAddScriptListener(listener);
+                    scriptSession.removeScriptConduit(listener);
                 }
             }
         }
     }
+
+    private static final class SystemScriptConduit implements ScriptConduit
+    {
+        private final Object continuation;
+
+        /**
+         * @param continuation
+         */
+        private SystemScriptConduit(Object continuation)
+        {
+            this.continuation = continuation;
+        }
+
+        /* (non-Javadoc)
+         * @see org.directwebremoting.ScriptConduit#addScript(java.lang.String)
+         */
+        public boolean addScript(String script)
+        {
+            try
+            {
+                // continuation.resume();
+                resumeMethod.invoke(continuation, new Object[0]);
+            }
+            catch (Exception ex)
+            {
+                log.warn("Exception in continuation.resume()", ex); //$NON-NLS-1$
+            }
+        
+            // never actually handle the script!
+            return false;
+        }
+
+        /* (non-Javadoc)
+         * @see org.directwebremoting.ScriptConduit#flush()
+         */
+        public void flush()
+        {
+        }
+    }
+
+    /**
+     * The attribute under which Jetty stores it's Contuniations.
+     * TODO: This feels like a mighty hack. I hope Greg doesn't change it without telling us!
+     */
+    private static final String ATTRIBUTE_JETTY_CONTINUATION = "org.mortbay.jetty.ajax.Continuation"; //$NON-NLS-1$
 
     /**
      * Jetty code used by reflection to allow it to run outside of Jetty

@@ -187,9 +187,9 @@ public class MapConverter implements Converter
 
             String outkey = JavascriptUtil.escapeJavaScript(key.toString());
 
-//            OutboundVariable ovkey = config.convertOutbound(key, outctx);
-//            buffer.append(ovkey.getInitCode());
-//            outkey = ovkey.getAssignCode();
+            // OutboundVariable ovkey = config.convertOutbound(key, outctx);
+            // buffer.append(ovkey.getInitCode());
+            // outkey = ovkey.getAssignCode();
 
             OutboundVariable nested = config.convertOutbound(value, outctx);
 
