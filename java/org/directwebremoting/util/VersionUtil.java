@@ -82,11 +82,16 @@ public class VersionUtil
     }
 
     private static Properties props = null;
+
     private static final Object propLock = new Object();
 
     private static final String FILENAME_VERSION = "/dwr-version.properties"; //$NON-NLS-1$
+
     private static final String KEY_VERSION = "version"; //$NON-NLS-1$
+
     private static final String KEY_SCCINFO = "scc-info"; //$NON-NLS-1$
+
     private static final String KEY_ERROR = "error"; //$NON-NLS-1$
+
     private static final String VALUE_UNKNOWN = "unknown"; //$NON-NLS-1$
 }

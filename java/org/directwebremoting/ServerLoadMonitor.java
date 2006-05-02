@@ -34,7 +34,7 @@ public interface ServerLoadMonitor
      * @return The time in millis to wait before opening an Ajax poll response stream.
      */
     long timeWithinPollPreStream();
-    
+
     /**
      * How long should we hold up a client request after starting 
      * a response stream while waiting for more scripts

@@ -36,7 +36,6 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
-
 /**
  * The servlet that handles all calls to DWR.<br>
  * It retrieves its configuration from the Spring IoC container.

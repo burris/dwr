@@ -73,6 +73,7 @@ public final class Logger
     private LoggingOutput output;
 
     private static boolean commonsLoggingTried = false;
+
     private static boolean commonsLoggingAvailable = false;
 
     /**

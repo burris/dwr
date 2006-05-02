@@ -80,7 +80,7 @@ public class Reply
 
     private String id = null;
 
-    private Object reply =  null;
+    private Object reply = null;
 
     private Throwable th = null;
 }

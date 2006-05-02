@@ -23,7 +23,6 @@ import java.util.Map;
 import org.directwebremoting.dwrp.ConversionConstants;
 import org.directwebremoting.util.Logger;
 
-
 /**
  * InboundContext is the context for set of inbound conversions.
  * Since a data set may be recurrsive parts of some data members may refer to
@@ -84,7 +83,7 @@ public final class InboundContext
         if (key.startsWith(paramPrefix))
         {
             int i = Integer.parseInt(key.substring(paramPrefix.length())) + 1;
-            if (i > paramCount )
+            if (i > paramCount)
             {
                 paramCount = i;
             }
@@ -246,6 +245,7 @@ public final class InboundContext
         }
 
         private InboundVariable inboundVariable;
+
         private Class type;
     }
 

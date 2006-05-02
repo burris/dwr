@@ -34,7 +34,7 @@ public interface ScriptConduit
      * @throws IOException If the script can not go out via this conduit.
      */
     public boolean addScript(String script) throws IOException;
-    
+
     /**
      * Called to flush any scripts written to the conduit
      * @throws IOException

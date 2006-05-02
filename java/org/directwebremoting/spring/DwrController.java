@@ -117,7 +117,8 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      * <b>NOTE</b>: make sure to not set this property to <code>true</code> in a production environment.
      * @param debug the indication of whether to start DWR in debug mode
      */
-    public void setDebug(boolean debug) {
+    public void setDebug(boolean debug)
+    {
         this.debug = debug;
     }
 
@@ -181,7 +182,6 @@ public class DwrController extends AbstractController implements BeanNameAware, 
             throw new BeanCreationException("Access error", ex); //$NON-NLS-1$
         }
 
-
         try
         {
             webContextBuilder.set(null, null, servletConfig, getServletContext(), container);
@@ -214,11 +214,9 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      * @param request the request to handle
      * @param response the reponse to handle
      * @throws Exception in case handling of the request fails unexpectedly
-     *
      * @see org.directwebremoting.WebContext
      */
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
-    throws Exception
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception
     {
         try
         {

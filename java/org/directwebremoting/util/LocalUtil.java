@@ -337,8 +337,7 @@ public final class LocalUtil
         {
             Method setter = methods[i];
 
-            if (setter.getName().equals(setterName) &&
-                setter.getParameterTypes().length == 1)
+            if (setter.getName().equals(setterName) && setter.getParameterTypes().length == 1)
             {
                 Class propertyType = setter.getParameterTypes()[0];
                 try

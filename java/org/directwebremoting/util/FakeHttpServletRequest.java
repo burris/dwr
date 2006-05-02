@@ -504,7 +504,7 @@ public class FakeHttpServletRequest implements HttpServletRequest
             public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException
             {
             }
-        
+
             /* (non-Javadoc)
              * @see javax.servlet.RequestDispatcher#forward(javax.servlet.ServletRequest, javax.servlet.ServletResponse)
              */

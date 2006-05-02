@@ -17,7 +17,6 @@ package org.directwebremoting;
 
 import java.util.Map;
 
-
 /**
  * A class to manage the converter types and the instansiated class name matches.
  * @author Joe Walker [joe at getahead dot ltd dot uk]

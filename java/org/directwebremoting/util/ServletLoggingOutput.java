@@ -145,7 +145,7 @@ public class ServletLoggingOutput implements LoggingOutput
                 {
                     System.out.println(message);
                 }
-    
+
                 if (th != null)
                 {
                     th.printStackTrace();

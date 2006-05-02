@@ -84,9 +84,7 @@ public class UrlProcessor
                 log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + contextPath + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
 
-            if (pathInfo == null ||
-                pathInfo.length() == 0 ||
-                pathInfo.equals(PathConstants.PATH_ROOT))
+            if (pathInfo == null || pathInfo.length() == 0 || pathInfo.equals(PathConstants.PATH_ROOT))
             {
                 response.sendRedirect(contextPath + servletPath + PathConstants.FILE_INDEX);
             }
@@ -175,8 +173,8 @@ public class UrlProcessor
                 log.debug("- Request URL:" + request.getRequestURL()); //$NON-NLS-1$
                 log.debug("- Query:      " + request.getQueryString()); //$NON-NLS-1$
                 log.debug("- Method:     " + request.getMethod()); //$NON-NLS-1$
-   
-                ex.printStackTrace();
+
+                log.warn("Stack Trace:", ex); //$NON-NLS-1$
             }
 
             response.setContentType(MimeConstants.MIME_HTML);

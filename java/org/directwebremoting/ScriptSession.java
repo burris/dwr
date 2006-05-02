@@ -153,5 +153,5 @@ public interface ScriptSession
     /**
      * Flush the session conduits
      */
-    public void flushConduits();    
+    public void flushConduits();
 }

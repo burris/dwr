@@ -15,7 +15,6 @@
  */
 package org.directwebremoting;
 
-
 /**
  * An interface for converting types from a string to some other type.
  * @author Joe Walker [joe at getahead dot ltd dot uk]

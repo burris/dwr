@@ -135,7 +135,7 @@ public class DwrSystem
                     {
                         try
                         {
-                            synchronized(scriptSession.getScriptLock())
+                            synchronized (scriptSession.getScriptLock())
                             {
                                 scriptSession.getScriptLock().notifyAll();
                             }
@@ -148,7 +148,10 @@ public class DwrSystem
                         // just listening!
                         return false;
                     }
-                    public void flush(){}
+
+                    public void flush()
+                    {
+                    }
                 };
                 scriptSession.addScriptConduit(listener);
 
@@ -195,7 +198,7 @@ public class DwrSystem
             {
                 log.warn("Exception in continuation.resume()", ex); //$NON-NLS-1$
             }
-        
+
             // never actually handle the script!
             return false;
         }
@@ -223,7 +226,7 @@ public class DwrSystem
      * How we suspend the continuation
      */
     protected static Method suspendMethod;
-    
+
     /**
      * How we resume the continuation
      */

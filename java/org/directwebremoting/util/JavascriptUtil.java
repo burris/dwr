@@ -515,7 +515,7 @@ public class JavascriptUtil
                     writer.append('\\');
                     writer.append('r');
                     break;
-                default :
+                default:
                     if (ch > 0xf)
                     {
                         writer.append("\\u00"); //$NON-NLS-1$
@@ -547,7 +547,7 @@ public class JavascriptUtil
                     writer.append('\\');
                     writer.append('\\');
                     break;
-                default :
+                default:
                     writer.append(ch);
                     break;
                 }
@@ -651,7 +651,7 @@ public class JavascriptUtil
                     // uh-oh, we're in unicode country....
                     inUnicode = true;
                     break;
-                default :
+                default:
                     writer.append(ch);
                     break;
                 }
@@ -822,4 +822,3 @@ public class JavascriptUtil
      */
     private static final Logger log = Logger.getLogger(JavascriptUtil.class);
 }
-

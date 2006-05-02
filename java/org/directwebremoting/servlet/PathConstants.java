@@ -76,4 +76,3 @@ public class PathConstants
      */
     public static final String EXTENSION_JS = ".js"; //$NON-NLS-1$
 }
-

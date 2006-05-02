@@ -23,7 +23,6 @@ import java.util.List;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
-
 /**
  * Something to hold the method, paramNo and index together as an object
  * that can be a key in a Map.
