@@ -123,7 +123,14 @@ public class DwrServlet extends HttpServlet
             }
             catch (UnsupportedClassVersionError ex)
             {
+                // This will happen in JDK 1.4 and below
                 handleAnnotationFailure(delayedIOException);
+            }
+            catch (ClassNotFoundException ex)
+            {
+                // This will happen when run in an IDE without the java5 tree
+                handleAnnotationFailure(delayedIOException);
+                log.warn("Annotations disabled due to missing AnnotationsConfigurator"); //$NON-NLS-1$
             }
             catch (Exception ex)
             {
