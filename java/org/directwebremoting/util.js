@@ -471,10 +471,9 @@ DWRUtil.getValue = function(ele, options) {
     case "checkbox":
     case "check-box":
     case "radio":
-      if (ele.checked && ele.value != "")
-        return ele.value;
-      else
-        return ele.checked;
+      // if (ele.checked && ele.value != "") return ele.value;
+      // else
+      return ele.checked;
     default:
       return ele.value;
     }
