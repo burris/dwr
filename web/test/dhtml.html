@@ -66,27 +66,57 @@ function submitFunction() {
 
 <script type="text/javascript">
 function testSelectRangeBasic() {
-  DWRUtil.selectRange("selectRangeBasic", 1, 2);
-  if (DWRUtil._getSelection("selectRangeBasic") == "1") success();
-  else failure("DWRUtil.selectRange('selectRangeBasic', 1, 2); = '" + DWRUtil._getSelection("selectRangeBasic") + "'");
-
-  DWRUtil.selectRange("selectRangeBasic", 0, 20);
-  if (DWRUtil._getSelection("selectRangeBasic") == "01234567890123456789") success();
-  else failure("DWRUtil.selectRange('selectRangeBasic', 0, 20); = '" + DWRUtil._getSelection("selectRangeBasic") + "'");
-
-  DWRUtil.selectRange("selectRangeBasic", 1, 1);
-  if (DWRUtil._getSelection("selectRangeBasic") == "") success();
-  else failure("DWRUtil.selectRange('selectRangeBasic', 1, 1); = '" + DWRUtil._getSelection("selectRangeBasic") + "'");
-
-  DWRUtil.selectRange("selectRangeBasic", 5, 15);
-  if (DWRUtil._getSelection("selectRangeBasic") == "5678901234") success();
-  else failure("DWRUtil.selectRange('selectRangeBasic', 5, 15); = '" + DWRUtil._getSelection("selectRangeBasic") + "'");
+  DWRUtil.selectRange("selectRangeBasic1", 1, 2);
+  if (DWRUtil._getSelection("selectRangeBasic1") == "1") success();
+  else failure("DWRUtil.selectRange('selectRangeBasic1', 1, 2); = '" + DWRUtil._getSelection("selectRangeBasic1") + "'");
 }
 </script>
 
 <div>
-  <button onclick="testSelectRangeBasic();">SelectRangeBasic</button>
-  <input id="selectRangeBasic" type="text" value="01234567890123456789"/>
+  <button onclick="testSelectRangeBasic1();">SelectRangeBasic1</button>
+  <input id="selectRangeBasic1" type="text" value="01234567890123456789"/>
+  (1 should be selected)
+</div>
+
+<script type="text/javascript">
+function testSelectRangeBasic2() {
+  DWRUtil.selectRange("selectRangeBasic2", 0, 20);
+  if (DWRUtil._getSelection("selectRangeBasic2") == "01234567890123456789") success();
+  else failure("DWRUtil.selectRange('selectRangeBasic2', 0, 20); = '" + DWRUtil._getSelection("selectRangeBasic2") + "'");
+}
+</script>
+
+<div>
+  <button onclick="testSelectRangeBasic2();">SelectRangeBasic2</button>
+  <input id="selectRangeBasic2" type="text" value="01234567890123456789"/>
+  (01234567890123456789 should be selected)
+</div>
+
+<script type="text/javascript">
+function testSelectRangeBasic() {
+  DWRUtil.selectRange("selectRangeBasic3", 1, 1);
+  if (DWRUtil._getSelection("selectRangeBasic3") == "") success();
+  else failure("DWRUtil.selectRange('selectRangeBasic3', 1, 1); = '" + DWRUtil._getSelection("selectRangeBasic3") + "'");
+}
+</script>
+
+<div>
+  <button onclick="testSelectRangeBasic3();">SelectRangeBasic3</button>
+  <input id="selectRangeBasic3" type="text" value="01234567890123456789"/>
+  (nothing should be selected)
+</div>
+
+<script type="text/javascript">
+function testSelectRangeBasic4() {
+  DWRUtil.selectRange("selectRangeBasic4", 5, 15);
+  if (DWRUtil._getSelection("selectRangeBasic4") == "5678901234") success();
+  else failure("DWRUtil.selectRange('selectRangeBasic4', 5, 15); = '" + DWRUtil._getSelection("selectRangeBasic4") + "'");
+}
+</script>
+
+<div>
+  <button onclick="testSelectRangeBasic4();">SelectRangeBasic4</button>
+  <input id="selectRangeBasic4" type="text" value="01234567890123456789"/>
   (5678901234 should be selected)
 </div>
 
