@@ -43,6 +43,12 @@ public class DefaultConverterManager implements ConverterManager
      */
     public void addConverterType(String id, String className)
     {
+        if (!LocalUtil.isJavaIdentifier(id))
+        {
+            log.error("Illegal identifier: '" + id + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            return;
+        }
+
         Class clazz = LocalUtil.classForName(id, className, Converter.class);
         if (clazz != null)
         {

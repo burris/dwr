@@ -97,28 +97,38 @@ public class DwrServlet extends HttpServlet
 
             // The default dwr.xml file that sits by web.xml
             boolean skip = Boolean.valueOf(config.getInitParameter(ContainerUtil.INIT_SKIP_DEFAULT)).booleanValue();
+            IOException delayedIOException = null;
             if (!foundConfig && !skip)
             {
-                DwrXmlConfigurator local = new DwrXmlConfigurator();
-                local.setServletResourceName(DwrConstants.DEFAULT_DWR_XML);
-                local.configure(container);
+                try
+                {
+                    DwrXmlConfigurator local = new DwrXmlConfigurator();
+                    local.setServletResourceName(DwrConstants.DEFAULT_DWR_XML);
+                    local.configure(container);
+                }
+                catch (IOException ex)
+                {
+                    // This is fatal unless we are on JDK5+ AND using annotations
+                    delayedIOException = ex;
+                }
             }
 
             try
             {
                 Class annotationCfgClass = LocalUtil.classForName("org.directwebremoting.annotations.AnnotationsConfigurator"); //$NON-NLS-1$
-                log.debug("Java5 AnnotationsConfigurator enabled"); //$NON-NLS-1$
 
                 Configurator configurator = (Configurator) annotationCfgClass.newInstance();
                 configurator.configure(container);
+                log.debug("Java5 AnnotationsConfigurator enabled"); //$NON-NLS-1$
             }
             catch (UnsupportedClassVersionError ex)
             {
-                log.debug("Java5 AnnotationsConfigurator disabled"); //$NON-NLS-1$
+                handleAnnotationFailure(delayedIOException);
             }
             catch (Exception ex)
             {
-                log.debug("Java5 AnnotationsConfigurator disabled"); //$NON-NLS-1$
+                handleAnnotationFailure(delayedIOException);
+                log.warn("Failed to start annotations", ex); //$NON-NLS-1$
             }
         }
         catch (Exception ex)
@@ -130,6 +140,23 @@ public class DwrServlet extends HttpServlet
         {
             webContextBuilder.unset();
             ServletLoggingOutput.unsetExecutionContext();
+        }
+    }
+
+    /**
+     * AnnotationsConfigurator failure (i.e. we're on 1.4 or before)
+     * @param delayedIOException The IO exception if dwr.xml based config failed
+     * @throws IOException If everything has failed
+     */
+    private void handleAnnotationFailure(IOException delayedIOException) throws IOException
+    {
+        log.debug("Java5 AnnotationsConfigurator disabled"); //$NON-NLS-1$
+
+        // So we can't to annotation config.
+        // If dwr.xml based config failed then we are in trouble
+        if (delayedIOException != null)
+        {
+            throw delayedIOException;
         }
     }
 

@@ -1065,7 +1065,7 @@ DWREngine._lookup = function(referto, data, name) {
 
 /** @private Marshall an object */
 DWREngine._serializeObject = function(batch, referto, data, name) {
-  var ref = DWREngine._lookup(referto, this, name);
+  var ref = DWREngine._lookup(referto, data, name);
   if (ref) return ref;
 
   // This check for an HTML is not complete, but is there a better way.
@@ -1077,11 +1077,11 @@ DWREngine._serializeObject = function(batch, referto, data, name) {
   // treat objects as an associative arrays
   var reply = "Object:{";
   var element;
-  for (element in this)  {
+  for (element in data)  {
     if (element != "dwrSerialize") {
       batch.paramCount++;
       var childName = "c" + DWREngine._batch.map.callCount + "-e" + batch.paramCount;
-      DWREngine._serializeAll(batch, referto, this[element], childName);
+      DWREngine._serializeAll(batch, referto, data[element], childName);
 
       reply += encodeURIComponent(element);
       reply += ":reference:";
@@ -1100,7 +1100,7 @@ DWREngine._serializeObject = function(batch, referto, data, name) {
 
 /** @private Marshall an object */
 DWREngine._serializeXml = function(batch, referto, data, name) {
-  var ref = DWREngine._lookup(referto, this, name);
+  var ref = DWREngine._lookup(referto, data, name);
   if (ref) return ref;
 
   var output;
@@ -1116,18 +1116,18 @@ DWREngine._serializeXml = function(batch, referto, data, name) {
 
 /** @private Marshall an array */
 DWREngine._serializeArray = function(batch, referto, data, name) {
-  var ref = DWREngine._lookup(referto, this, name);
+  var ref = DWREngine._lookup(referto, data, name);
   if (ref) return ref;
 
   var reply = "Array:[";
-  for (var i = 0; i < this.length; i++) {
+  for (var i = 0; i < data.length; i++) {
     if (i != 0) {
       reply += ",";
     }
 
     batch.paramCount++;
     var childName = "c" + DWREngine._batch.map.callCount + "-e" + batch.paramCount;
-    DWREngine._serializeAll(batch, referto, this[i], childName);
+    DWREngine._serializeAll(batch, referto, data[i], childName);
     reply += "reference:";
     reply += childName;
   }

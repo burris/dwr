@@ -186,7 +186,7 @@ public class DefaultRemoter implements Remoter
         try
         {
             Method method = call.getMethod();
-            if (method == null)
+            if (method == null || call.getException() != null)
             {
                 return new Reply(call.getId(), null, call.getException());
             }

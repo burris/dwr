@@ -95,19 +95,22 @@ public class TypeHintContext
     {
         Object/*Type*/ childType = null;
 
-        //if (parameterType instanceof ParameterizedType)
-        if (parameterizedTypeClass != null && parameterizedTypeClass.isInstance(parameterType))
+        if (isGenericsSupported)
         {
-            Object/*Type*/ ptype = /*(Type)*/ parameterType;
-            // Type[] rawParams = ptype.getActualTypeArguments();
-            Object[] actualTypeArguments = (Object[]) LocalUtil.invoke(ptype, getActualTypeArgumentsMethod, new Object[0]);
-
-            if (newParameterNumber >= actualTypeArguments.length)
+            //if (parameterType instanceof ParameterizedType)
+            if (parameterizedTypeClass.isInstance(parameterType))
             {
-                throw new IllegalArgumentException("newParameterNumber=" + newParameterNumber + " is too big when parameterType=" + parameterType + " give actualTypeArguments.length=" + actualTypeArguments.length); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            }
+                Object/*Type*/ ptype = /*(Type)*/ parameterType;
+                // Type[] rawParams = ptype.getActualTypeArguments();
+                Object[] actualTypeArguments = (Object[]) LocalUtil.invoke(ptype, getActualTypeArgumentsMethod, new Object[0]);
 
-            childType = actualTypeArguments[newParameterNumber];
+                if (newParameterNumber >= actualTypeArguments.length)
+                {
+                    throw new IllegalArgumentException("newParameterNumber=" + newParameterNumber + " is too big when parameterType=" + parameterType + " give actualTypeArguments.length=" + actualTypeArguments.length); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                }
+
+                childType = actualTypeArguments[newParameterNumber];
+            }
         }
 
         TypeHintContext child = new TypeHintContext(converterManager, this.method, this.parameterNumber, childType);
@@ -140,25 +143,28 @@ public class TypeHintContext
             }
         }
 
-        //if (parameterType instanceof ParameterizedType)
-        if (parameterizedTypeClass != null && parameterizedTypeClass.isInstance(parameterType))
+        if (isGenericsSupported)
         {
-            Object/*Type*/ ptype = /*(Type)*/ parameterType;
-            // Type rawType = ptype.getRawType();
-            Object rawType = LocalUtil.invoke(ptype, getRawTypeMethod, new Object[0]);
-
-            if (rawType instanceof Class)
+            //if (parameterType instanceof ParameterizedType)
+            if (parameterizedTypeClass.isInstance(parameterType))
             {
-                type = (Class) rawType;
-                log.debug("Using type info from JDK5 ParameterizedType of " + type.getName() + " for " + toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                Object/*Type*/ ptype = /*(Type)*/ parameterType;
+                // Type rawType = ptype.getRawType();
+                Object rawType = LocalUtil.invoke(ptype, getRawTypeMethod, new Object[0]);
+    
+                if (rawType instanceof Class)
+                {
+                    type = (Class) rawType;
+                    log.debug("Using type info from JDK5 ParameterizedType of " + type.getName() + " for " + toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                    return type;
+                }
+            }
+            else if (parameterType instanceof Class)
+            {
+                type = (Class) parameterType;
+                log.debug("Using type info from JDK5 reflection of " + type.getName() + " for " + toString()); //$NON-NLS-1$ //$NON-NLS-2$
                 return type;
             }
-        }
-        else if (parameterType instanceof Class)
-        {
-            type = (Class) parameterType;
-            log.debug("Using type info from JDK5 reflection of " + type.getName() + " for " + toString()); //$NON-NLS-1$ //$NON-NLS-2$
-            return type;
         }
 
         log.warn("Missing type info for " + toString() + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -286,11 +292,6 @@ public class TypeHintContext
     private static final Class parameterizedTypeClass;
 
     /**
-     * We have to use Type through reflection since we work on JDK 1.3
-     */
-    private static final Class typeClass;
-
-    /**
      * We have to execute getGenericParameterTypes() through reflection too
      */
     private static final Method getGenericParameterTypesMethod;
@@ -305,13 +306,17 @@ public class TypeHintContext
      */
     private static final Method getRawTypeMethod;
 
+    /**
+     * Can we use generic type info?
+     */
+    private static final boolean isGenericsSupported;
+
     static
     {
         // This may seem like a lot of bother just to call Class forName() a
         // couple of times, however it is complex because the fields are final
         // so we can only set them once
         Class tempClass;
-        Method tempMethod;
 
         try
         {
@@ -323,45 +328,17 @@ public class TypeHintContext
             log.debug("JDK1.5 reflection not available. Generic parameters must use <signatures>."); //$NON-NLS-1$
         }
         parameterizedTypeClass = tempClass;
+        isGenericsSupported = (parameterizedTypeClass != null); 
 
         try
         {
-            tempClass = LocalUtil.classForName("java.lang.reflect.Type"); //$NON-NLS-1$
+            getGenericParameterTypesMethod = Method.class.getDeclaredMethod("getGenericParameterTypes", new Class[0]); //$NON-NLS-1$
+            getActualTypeArgumentsMethod = parameterizedTypeClass.getDeclaredMethod("getActualTypeArguments", new Class[0]); //$NON-NLS-1$
+            getRawTypeMethod = parameterizedTypeClass.getDeclaredMethod("getRawType", new Class[0]); //$NON-NLS-1$
         }
         catch (Exception ex)
         {
-            tempClass = null;
+            throw new IllegalStateException(ex.toString());
         }
-        typeClass = tempClass;
-
-        try
-        {
-            tempMethod = Method.class.getDeclaredMethod("getGenericParameterTypes", new Class[0]); //$NON-NLS-1$
-        }
-        catch (Exception ex)
-        {
-            tempMethod = null;
-        }
-        getGenericParameterTypesMethod = tempMethod;
-
-        try
-        {
-            tempMethod = typeClass.getDeclaredMethod("getActualTypeArguments", new Class[0]); //$NON-NLS-1$
-        }
-        catch (Exception ex)
-        {
-            tempMethod = null;
-        }
-        getActualTypeArgumentsMethod = tempMethod;
-
-        try
-        {
-            tempMethod = typeClass.getDeclaredMethod("getRawType", new Class[0]); //$NON-NLS-1$
-        }
-        catch (Exception ex)
-        {
-            tempMethod = null;
-        }
-        getRawTypeMethod = tempMethod;
     }
 }

@@ -218,7 +218,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
                 }
                 catch (MarshallException ex)
                 {
-                    log.debug("Marshalling exception: " + ex.getMessage()); //$NON-NLS-1$
+                    log.warn("Marshalling exception: " + ex.getMessage()); //$NON-NLS-1$
 
                     call.setMethod(null);
                     call.setParameters(null);
@@ -485,14 +485,19 @@ public class DwrpPlainJsMarshaller implements Marshaller
      */
     private ParseResponse parseRequest(HttpServletRequest req) throws IOException
     {
+        ParseResponse parseResponse = new ParseResponse();
+
         if (req.getMethod().equals("GET")) //$NON-NLS-1$
         {
-            return parseParameters(parseGet(req));
+            parseResponse.setAllParameters(parseGet(req));
         }
         else
         {
-            return parseParameters(parsePost(req));
+            parseResponse.setAllParameters(parsePost(req));
         }
+
+        parseParameters(parseResponse);
+        return parseResponse;
     }
 
     /**
@@ -644,13 +649,12 @@ public class DwrpPlainJsMarshaller implements Marshaller
 
     /**
      * Fish out the important parameters
-     * @param paramMap The string/string map to convert
-     * @return The call details the methods we are calling
+     * @param parseResponse The call details the methods we are calling
      * @throws IOException If the parsing of input parameter fails
      */
-    private ParseResponse parseParameters(Map paramMap) throws IOException
+    private void parseParameters(ParseResponse parseResponse) throws IOException
     {
-        ParseResponse parseResponse = new ParseResponse();
+        Map paramMap = parseResponse.getAllParameters();
         Calls calls = new Calls();
         parseResponse.setCalls(calls);
 
@@ -713,8 +717,6 @@ public class DwrpPlainJsMarshaller implements Marshaller
         parseResponse.setPage(page);
 
         parseResponse.setSpareParameters(paramMap);
-
-        return parseResponse;
     }
 
     /* (non-Javadoc)

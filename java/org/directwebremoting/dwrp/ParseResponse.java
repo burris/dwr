@@ -29,6 +29,22 @@ import org.directwebremoting.Calls;
 class ParseResponse
 {
     /**
+     * @return the allParameters
+     */
+    public Map getAllParameters()
+    {
+        return new HashMap(allParameters);
+    }
+
+    /**
+     * @param allParameters the allParameters to set
+     */
+    public void setAllParameters(Map allParameters)
+    {
+        this.allParameters = allParameters;
+    }
+
+    /**
      * @return the inboundContexts
      */
     public List getInboundContexts()
@@ -115,6 +131,8 @@ class ParseResponse
     private String page;
 
     private Calls calls;
+
+    private Map allParameters = new HashMap();
 
     private Map spareParameters = new HashMap();
 }

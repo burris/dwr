@@ -57,6 +57,12 @@ public class DefaultCreatorManager implements CreatorManager
      */
     public void addCreatorType(String typeName, String className)
     {
+        if (!LocalUtil.isJavaIdentifier(typeName))
+        {
+            log.error("Illegal identifier: '" + typeName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            return;
+        }
+
         Class clazz = LocalUtil.classForName(typeName, className, Creator.class);
         if (clazz != null)
         {
@@ -69,6 +75,12 @@ public class DefaultCreatorManager implements CreatorManager
      */
     public void addCreator(String scriptName, String typeName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
     {
+        if (!LocalUtil.isJavaIdentifier(scriptName))
+        {
+            log.error("Illegal identifier: '" + scriptName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            return;
+        }
+
         Class clazz = (Class) creatorTypes.get(typeName);
         if (clazz == null)
         {

@@ -47,46 +47,68 @@ public class AnnotationsConfigurator implements Configurator
      */
     public void configure(Container container)
     {
-        String classesStr = (String) container.getBean("classes"); //$NON-NLS-1$
-        String[] classNames = classesStr.split(","); //$NON-NLS-1$
-        for (int i = 0; i < classNames.length; i++)
+        Object data = container.getBean("classes"); //$NON-NLS-1$
+        if (data == null)
         {
-            processClass(classNames[i].trim(), container);
+            return;
+        }
+
+        if (data instanceof String)
+        {
+            String classesStr = (String) data;
+            String[] classNames = classesStr.split(","); //$NON-NLS-1$
+            for (int i = 0; i < classNames.length; i++)
+            {
+                String className = classNames[i].trim();
+                try
+                {
+                    Class<?> clazz = LocalUtil.classForName(className);
+                    processClass(clazz, container);
+                }
+                catch (Exception ex)
+                {
+                    log.error("Failed to process class: " + className, ex); //$NON-NLS-1$
+                }
+            }
+        }
+        else
+        {
+            try
+            {
+                processClass(data.getClass(), container);
+            }
+            catch (Exception ex)
+            {
+                log.error("Failed to process class: " + data.getClass().getName(), ex); //$NON-NLS-1$
+            }
         }
     }
 
     /**
      * Process the annotations on a given class
-     * @param className The class to search for annotations
+     * @param clazz The class to search for annotations
      * @param container The IoC container to configure
+     * @throws IllegalAccessException If annotation processing fails
+     * @throws InstantiationException If annotation processing fails
      */
-    private void processClass(String className, Container container)
+    private void processClass(Class<?> clazz, Container container) throws InstantiationException, IllegalAccessException
     {
-        try
+        Create createAnn = clazz.getAnnotation(Create.class);
+        if (createAnn != null)
         {
-            Class<?> clazz = LocalUtil.classForName(className);
-
-            Create createAnn = clazz.getAnnotation(Create.class);
-            if (createAnn != null)
-            {
-                processCreate(clazz, createAnn, container);
-            }
-
-            Convert convertAnn = clazz.getAnnotation(Convert.class);
-            if (convertAnn != null)
-            {
-                processConvert(clazz, convertAnn, container);
-            }
-
-            GlobalFilter globalFilterAnn = clazz.getAnnotation(GlobalFilter.class);
-            if (globalFilterAnn != null)
-            {
-                processGlobalFilter(clazz, globalFilterAnn, container);
-            }
+            processCreate(clazz, createAnn, container);
         }
-        catch (Exception ex)
+
+        Convert convertAnn = clazz.getAnnotation(Convert.class);
+        if (convertAnn != null)
         {
-            log.error("Failed to process class: " + className, ex); //$NON-NLS-1$
+            processConvert(clazz, convertAnn, container);
+        }
+
+        GlobalFilter globalFilterAnn = clazz.getAnnotation(GlobalFilter.class);
+        if (globalFilterAnn != null)
+        {
+            processGlobalFilter(clazz, globalFilterAnn, container);
         }
     }
 
@@ -98,14 +120,14 @@ public class AnnotationsConfigurator implements Configurator
      */
     private void processCreate(Class<?> clazz, Create createAnn, Container container)
     {
-        String name = createAnn.name();
         Class<? extends Creator> creator = createAnn.creator();
         String creatorClass = creator.getName();
         Map<String, String> creatorParams = getParamsMap(createAnn.creatorParams());
         ScriptScope scope = createAnn.scope();
 
         CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
-        creatorManager.addCreatorType(creatorClass, creatorClass);
+        String creatorName = LocalUtil.replace(creatorClass, ".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+        creatorManager.addCreatorType(creatorName, creatorClass);
 
         Map<String, String> params = new HashMap<String, String>();
         if (NewCreator.class.isAssignableFrom(NewCreator.class))
@@ -115,11 +137,16 @@ public class AnnotationsConfigurator implements Configurator
         params.putAll(creatorParams);
         params.put("scope", scope.getValue()); //$NON-NLS-1$
 
-        log.info("Adding class " + clazz.getName() + " as " + name); //$NON-NLS-1$ //$NON-NLS-2$
+        String name = createAnn.name();
+        if (name == null || name.length() == 0)
+        {
+            name = LocalUtil.getShortClassName(clazz);
+        }
 
         try
         {
-            creatorManager.addCreator(name, creatorClass, params);
+            log.info("Adding class " + clazz.getName() + " as " + name); //$NON-NLS-1$ //$NON-NLS-2$
+            creatorManager.addCreator(name, creatorName, params);
         }
         catch (Exception ex)
         {
@@ -195,7 +222,8 @@ public class AnnotationsConfigurator implements Configurator
         Map<String, String> params = getParamsMap(convertAnn.params());
 
         ConverterManager converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
-        converterManager.addConverterType(converterClass, converterClass);
+        String converterName = LocalUtil.replace(converterClass, ".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+        converterManager.addConverterType(converterName, converterClass);
 
         if (BeanConverter.class.isAssignableFrom(converter))
         {
@@ -237,7 +265,7 @@ public class AnnotationsConfigurator implements Configurator
             }
         }
 
-        converterManager.addConverter(clazz.getName(), converterClass, params);
+        converterManager.addConverter(clazz.getName(), converterName, params);
     }
 
     /**

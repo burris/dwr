@@ -61,6 +61,7 @@
         splitindex="true"
         version="true">
       <sourcepath path="${source.java}"/>
+      <sourcepath path="${source.java5}"/>
       <classpath>
         <fileset dir="${source.jar}" includes="**/*.jar"/>
         <!-- fileset dir="${source.lib}" includes="**/*.jar"/ -->

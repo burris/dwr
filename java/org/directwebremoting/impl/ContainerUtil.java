@@ -75,7 +75,7 @@ public class ContainerUtil
 
         defaultContainer.addParameter("debug", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         defaultContainer.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-        defaultContainer.addParameter("scriptCompressed", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+        defaultContainer.addParameter("scriptCompressed", "false"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

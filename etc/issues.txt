@@ -138,3 +138,11 @@ Beans extending hashmap - Kristján Bjarni Guðmundsson <kristjg@hugvit.is>
 	converted as a bean?
 	Joe: This ought to work because DWR should pick the more specific
 	declaration. I'll add it to the list of issues.
+
+Response Size Limits
+    My collection has 20.000 objects(string not so large) the size of each
+    object is 74 bytes. After 20 thousands elements I have problems, the client
+    side doesn't show me the result. Do u have any idea to help?  or something?
+    i got the firebug but didn't help. Sometime I received a dialog box
+    "InternalError: Too many literals".
+

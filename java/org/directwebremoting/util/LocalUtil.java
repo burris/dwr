@@ -90,6 +90,39 @@ public final class LocalUtil
     }
 
     /**
+     * Determines if the specified string is permissible as a Java identifier.
+     * Returns true if the string is non-null, non-zero length with a Java
+     * identifier start as the first character and Java identifier parts in all
+     * remaining characters.
+     * @param test the string to be tested.
+     * @return true if the string is a Java identifier, false otherwise.
+     * @see java.lang.Character#isJavaIdentifierPart(char)
+     * @see java.lang.Character#isJavaIdentifierStart(char)
+     */
+    public static boolean isJavaIdentifier(String test)
+    {
+        if (test == null || test.length() == 0)
+        {
+            return false;
+        }
+
+        if (!Character.isJavaIdentifierStart(test.charAt(0)))
+        {
+            return false;
+        }
+
+        for (int i = 1; i < test.length(); i++)
+        {
+            if (!Character.isJavaIdentifierPart(test.charAt(i)))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * True if c1 is java.lang.Boolean and c2 is boolean, etc.
      * @param c1 the first class to test
      * @param c2 the second class to test

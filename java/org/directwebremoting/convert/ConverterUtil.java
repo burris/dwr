@@ -369,5 +369,5 @@ public class ConverterUtil
     /**
      * Strings longer than this are chopped up into smaller strings
      */
-    private static final int WRAP_LENGTH = 128;
+    private static final int WRAP_LENGTH = 256;
 }
