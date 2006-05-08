@@ -17,6 +17,7 @@ package org.directwebremoting.create;
 
 import org.directwebremoting.Creator;
 import org.directwebremoting.util.LocalUtil;
+import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -34,6 +35,11 @@ public class NewCreator extends AbstractCreator implements Creator
         try
         {
             this.clazz = LocalUtil.classForName(classname);
+        }
+        catch (ExceptionInInitializerError ex)
+        {
+            log.warn("Class load error", ex); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassLoadError", classname)); //$NON-NLS-1$
         }
         catch (ClassNotFoundException ex)
         {
@@ -64,5 +70,13 @@ public class NewCreator extends AbstractCreator implements Creator
         }
     }
 
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(NewCreator.class);
+
+    /**
+     * The type of the class that we are creating
+     */
     private Class clazz;
 }
