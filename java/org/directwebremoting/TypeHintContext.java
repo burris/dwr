@@ -330,15 +330,24 @@ public class TypeHintContext
         parameterizedTypeClass = tempClass;
         isGenericsSupported = (parameterizedTypeClass != null); 
 
-        try
+        if (isGenericsSupported)
         {
-            getGenericParameterTypesMethod = Method.class.getDeclaredMethod("getGenericParameterTypes", new Class[0]); //$NON-NLS-1$
-            getActualTypeArgumentsMethod = parameterizedTypeClass.getDeclaredMethod("getActualTypeArguments", new Class[0]); //$NON-NLS-1$
-            getRawTypeMethod = parameterizedTypeClass.getDeclaredMethod("getRawType", new Class[0]); //$NON-NLS-1$
+            try
+            {
+                getGenericParameterTypesMethod = Method.class.getDeclaredMethod("getGenericParameterTypes", new Class[0]); //$NON-NLS-1$
+                getActualTypeArgumentsMethod = parameterizedTypeClass.getDeclaredMethod("getActualTypeArguments", new Class[0]); //$NON-NLS-1$
+                getRawTypeMethod = parameterizedTypeClass.getDeclaredMethod("getRawType", new Class[0]); //$NON-NLS-1$
+            }
+            catch (Exception ex)
+            {
+                throw new IllegalStateException(ex.toString());
+            }
         }
-        catch (Exception ex)
+        else
         {
-            throw new IllegalStateException(ex.toString());
+            getGenericParameterTypesMethod = null;
+            getActualTypeArgumentsMethod = null;
+            getRawTypeMethod = null;
         }
     }
 }
