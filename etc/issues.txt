@@ -31,6 +31,8 @@ Multiple call issue
 
 ie7 testing
 
+timeout is broken
+
 problems with oc4j??
 	This is a berif description and I will send you my code soon.
 	In my code I'm trying to call a java method from the jscript, where the java
