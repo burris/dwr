@@ -130,17 +130,25 @@ public class DwrServlet extends HttpServlet
             {
                 // This will happen when run in an IDE without the java5 tree
                 handleAnnotationFailure(delayedIOException);
-                log.warn("Annotations disabled due to missing AnnotationsConfigurator"); //$NON-NLS-1$
+                log.warn("AnnotationsConfigurator is missing. Are you running from within an IDE?"); //$NON-NLS-1$
             }
             catch (Exception ex)
             {
-                handleAnnotationFailure(delayedIOException);
+                // This happens if there is a bug in AnnotationsConfigurator
                 log.warn("Failed to start annotations", ex); //$NON-NLS-1$
+                handleAnnotationFailure(delayedIOException);
             }
+
+            ContainerUtil.publishContainer(container, config);
+        }
+        catch (ExceptionInInitializerError ex)
+        {
+            log.fatal("ExceptionInInitializerError. Nested exception:", ex.getException()); //$NON-NLS-1$
+            throw new ServletException(ex);
         }
         catch (Exception ex)
         {
-            log.fatal("init failed", ex); //$NON-NLS-1$
+            log.fatal("DwrServlet.init() failed", ex); //$NON-NLS-1$
             throw new ServletException(ex);
         }
         finally

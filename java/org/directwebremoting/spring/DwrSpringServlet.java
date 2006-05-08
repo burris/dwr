@@ -117,6 +117,7 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
             ContainerUtil.configureUsingInitParams(container, config);
 
             ContainerUtil.configure(container, configurators);
+            ContainerUtil.publishContainer(container, config);
         }
         catch (Exception ex)
         {

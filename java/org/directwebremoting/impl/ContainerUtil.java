@@ -147,6 +147,22 @@ public class ContainerUtil
     }
 
     /**
+     * If helps some situations if people can get at the container by looking
+     * in the servlet context, under some name.
+     * The name is specified in an initParameter. 
+     * @param container The container to publish
+     * @param config Source of initParams to dictate publishing and contexts to publish to
+     */
+    public static void publishContainer(DefaultContainer container, ServletConfig config)
+    {
+        String publishName = config.getInitParameter(INIT_PUBLISH_CONTAINER);
+        if (publishName != null)
+        {
+            config.getServletContext().setAttribute(publishName, container);
+        }
+    }
+
+    /**
      * Create a bunch of debug information about a container
      * @param container The container to print debug information about
      */
@@ -217,6 +233,12 @@ public class ContainerUtil
      * Init parameter: If we are doing Servlet.log logging, to what level?
      */
     public static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
+
+    /**
+     * Init parameter: Should we publish the container to the servlet context,
+     * and if so, under what name?
+     */
+    public static final String INIT_PUBLISH_CONTAINER = "publishContainerAs"; //$NON-NLS-1$
 
     /**
      * The log stream
