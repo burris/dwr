@@ -29,7 +29,6 @@ import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
-
 /**
  * A parser for type info in a dwr.xml signature.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -242,7 +241,7 @@ public class SignatureParser
             }
         }
 
-        log.error("Failed to find class: '" + itype  + "' from <signature> block."); //$NON-NLS-1$ //$NON-NLS-2$
+        log.error("Failed to find class: '" + itype + "' from <signature> block."); //$NON-NLS-1$ //$NON-NLS-2$
         log.info("- Looked in the following class imports:"); //$NON-NLS-1$
         for (Iterator it = classImports.entrySet().iterator(); it.hasNext();)
         {
@@ -393,7 +392,7 @@ public class SignatureParser
                 // This is the start of a new parameter
                 String param = paramDecl.substring(start, i);
                 params.add(param);
-                start = i  + 1;
+                start = i + 1;
             }
         }
 
