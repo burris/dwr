@@ -25,12 +25,8 @@ function DWRUtil() { }
  * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
  */
 DWRUtil.onReturn = function(event, action) {
-  if (!event) {
-    event = window.event;
-  }
-  if (event && event.keyCode && event.keyCode == 13) {
-    action();
-  }
+  if (!event) event = window.event;
+  if (event && event.keyCode && event.keyCode == 13) action();
 };
 
 /**
@@ -496,7 +492,7 @@ DWRUtil.getValue = function(ele, options) {
  */
 DWRUtil.getText = function(ele) {
   ele = DWRUtil._getElementById(ele, "getText()");
-  if (ele == null) return;
+  if (ele == null) return null;
   if (!DWRUtil._isHTMLElement(ele, "select")) {
     DWRUtil.debug("getText() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele) + " from  id: " + orig + ".");
     return "";
@@ -819,7 +815,7 @@ DWRUtil.toggleClassName = function(ele, className) {
  */
 DWRUtil.cloneNode = function(ele, options) {
   ele = DWRUtil._getElementById(ele, "cloneNode()");
-  if (ele == null) return;
+  if (ele == null) return null;
   if (options == null) options = {};
   var clone = ele.cloneNode(true);
   if (options.idPrefix || options.idSuffix) {
