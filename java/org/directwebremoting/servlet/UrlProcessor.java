@@ -205,6 +205,13 @@ public class UrlProcessor
      */
     protected void doFile(HttpServletRequest request, HttpServletResponse response, String path, String mimeType, boolean dynamic) throws IOException
     {
+        if (dynamic)
+        {
+            response.setHeader("pragma", "public"); //$NON-NLS-1$ //$NON-NLS-2$
+            response.setHeader("Expires", "0"); //$NON-NLS-1$ //$NON-NLS-2$
+            response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
         if (!dynamic && isUpToDate(request, path))
         {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
