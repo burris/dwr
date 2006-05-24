@@ -255,13 +255,15 @@ public class DefaultScriptSession implements ScriptSession
                 for (Iterator it = scripts.iterator(); it.hasNext();)
                 {
                     String script = (String) it.next();
-                    if (!conduit.addScript(script))
+                    if (conduit.addScript(script))
                     {
-                        // Don't add conduit
-                        return;
+                        it.remove();
                     }
-
-                    it.remove();
+                    else
+                    {
+                        // Dont try any more
+                        break;
+                    }
                 }
             }
             catch (Exception ex)
