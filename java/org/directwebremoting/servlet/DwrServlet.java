@@ -85,6 +85,7 @@ public class DwrServlet extends HttpServlet
             // Now we have set the implementations we can set the WebContext up
             WebContextFactory.setWebContextBuilder(webContextBuilder);
 
+            ContainerUtil.prepareForWebContextFilter(config, container, webContextBuilder, this);
             webContextBuilder.set(null, null, getServletConfig(), getServletContext(), container);
 
             // The dwr.xml from within the JAR file.

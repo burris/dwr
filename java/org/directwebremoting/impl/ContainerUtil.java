@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.directwebremoting.AccessControl;
@@ -94,6 +96,23 @@ public class ContainerUtil
             String value = servletConfig.getInitParameter(name);
             defaultContainer.addParameter(name, value);
         }
+    }
+
+    /**
+     * 
+     * @param config
+     * @param container
+     * @param webContextBuilder
+     * @param servlet
+     */
+    public static void prepareForWebContextFilter(ServletConfig config, Container container, WebContextBuilder webContextBuilder, HttpServlet servlet)
+    {
+        ServletContext context = config.getServletContext();
+
+        context.setAttribute(Container.class.getName(), container);
+        context.setAttribute(WebContextBuilder.class.getName(), webContextBuilder);
+        context.setAttribute(ServletConfig.class.getName(), config);
+        context.setAttribute(HttpServlet.class.getName(), servlet);
     }
 
     /**

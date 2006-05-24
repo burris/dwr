@@ -104,7 +104,8 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
 
         try
         {
-            webContextBuilder.set(null, null, getServletConfig(), getServletContext(), container);
+            ContainerUtil.prepareForWebContextFilter(config, container, webContextBuilder, this);
+            webContextBuilder.set(null, null, config, getServletContext(), container);
 
             // Load the dwr.xml from within the JAR file.
             if (includeDefaultConfig)
