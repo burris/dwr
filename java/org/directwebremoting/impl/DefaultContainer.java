@@ -213,7 +213,7 @@ public class DefaultContainer implements Container
                 }
             }
 
-            throw new IllegalArgumentException("DefaultContainer can't find a " + id); //$NON-NLS-1$
+            log.debug("DefaultContainer can't find bean with id=" + id); //$NON-NLS-1$
         }
 
         return reply;
