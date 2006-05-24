@@ -77,7 +77,7 @@
     <mkdir dir="${target.files}"/>
     <jar destfile="${target.files}/dwr.jar" compress="true">
       <fileset dir="${target.class}">
-        <exclude name="**/testdwr/**"/>
+        <exclude name="**/dwrdemo/**"/>
       </fileset>
     </jar>
   </target>
