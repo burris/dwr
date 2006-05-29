@@ -43,6 +43,7 @@ import org.directwebremoting.dwrp.DwrpHtmlJsMarshaller;
 import org.directwebremoting.dwrp.DwrpPlainJsMarshaller;
 import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.util.Logger;
+import org.directwebremoting.util.VersionUtil;
 import org.xml.sax.SAXException;
 
 /**
@@ -179,6 +180,18 @@ public class ContainerUtil
         {
             config.getServletContext().setAttribute(publishName, container);
         }
+    }
+
+    /**
+     * Some logging so we have a good clue what we are working with.
+     * @param config The servlet config
+     */
+    public static void logStartup(ServletConfig config)
+    {
+        log.info("DWR Version " + VersionUtil.getVersion() + " starting."); //$NON-NLS-1$ //$NON-NLS-2$
+        log.info("- Servlet Engine: " + config.getServletContext().getServerInfo()); //$NON-NLS-1$
+        log.info("- Java Version:   " + System.getProperty("java.version"));  //$NON-NLS-1$//$NON-NLS-2$
+        log.info("- Java Vendor:    " + System.getProperty("java.vendor"));  //$NON-NLS-1$//$NON-NLS-2$
     }
 
     /**
