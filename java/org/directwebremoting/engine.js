@@ -377,9 +377,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
     // null then we can't tell which is the function unless there are only
     // 2 args, in which case we don't care!
     if (lastArg == null && args.length > 2) {
-      if (DWREngine._warningHandler) {
-        DWREngine._warningHandler("Ambiguous nulls at start and end of parameter list. Which is the callback function?");
-      }
+        DWREngine._handleError("Ambiguous nulls at start and end of parameter list. Which is the callback function?");
     }
     callData = { callback:args.shift() };
     params = args;
@@ -389,9 +387,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
     params = args;
   }
   else {
-    if (DWREngine._warningHandler) {
-      DWREngine._warningHandler("Missing callback function or metadata object.");
-    }
+    DWREngine._handleError("Missing callback function or metadata object.");
     return;
   }
 
@@ -472,9 +468,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   }
 };
 
-/**
- * @private Poll the server to see if there is any data waiting
- */
+/** @private Poll the server to see if there is any data waiting */
 DWREngine._poll = function(overridePath) {
   if (!DWREngine._reverseAjax) {
     return;
@@ -521,16 +515,12 @@ DWREngine._poll = function(overridePath) {
   DWREngine._checkCometPoll();
 };
 
-/**
- * Setup an interval to kick off the next poll
- */
+/** @private Setup an interval to kick off the next poll */
 DWREngine._triggerNextPoll = function(pause) {
   setTimeout("DWREngine._poll()", pause);
 }
 
-/**
- * @private Check for reverse Ajax activity
- */
+/** @private Check for reverse Ajax activity */
 DWREngine._checkCometPoll = function() {
   if (DWREngine._pollComet) {
     if (DWREngine._pollFrame) {
@@ -551,9 +541,7 @@ DWREngine._checkCometPoll = function() {
   }
 }
 
-/**
- * @private Extract the whole (executed an all) text from the current iframe
- */
+/** @private Extract the whole (executed an all) text from the current iframe */
 DWREngine._getTextFromCometIFrame = function() {
   var frameDocument;
   if (DWREngine._pollFrame.contentDocument) {
@@ -574,9 +562,7 @@ DWREngine._getTextFromCometIFrame = function() {
   return text;
 }
 
-/**
- * @private Some more text might have come in, test and execute the new stuff
- */
+/** @private Some more text might have come in, test and execute the new stuff */
 DWREngine._processCometResponse = function(response) {
   if (DWREngine._pollCometSize != response.length) {
     var firstStartTag = response.indexOf("//@DWR-START@", DWREngine._pollCometSize);
@@ -604,9 +590,7 @@ DWREngine._processCometResponse = function(response) {
   }
 }
 
-/**
- * @private Actually send the block of data in the batch object.
- */
+/** @private Actually send the block of data in the batch object. */
 DWREngine._sendData = function(batch) {
   // If the batch is empty, don't send anything
   if (batch.map.callCount == 0) return;
@@ -674,11 +658,7 @@ DWREngine._sendData = function(batch) {
       for (prop in batch.map) {
         var qkey = encodeURIComponent(prop);
         var qval = encodeURIComponent(batch.map[prop]);
-        if (qval == "") {
-          if (DWREngine._warningHandler) {
-            DWREngine._warningHandler("Found empty qval for qkey=" + qkey);
-          }
-        }
+        if (qval == "") DWREngine._handleError("Found empty qval for qkey=" + qkey);
         query += qkey + "=" + qval + "&";
       }
       query += "jsessionid=" + DWREngine._httpSessionId;
@@ -709,9 +689,7 @@ DWREngine._sendData = function(batch) {
         batch.req.open("POST", batch.path + "/plainjs/" + statsInfo, batch.async);
         batch.req.setRequestHeader('Content-Type', 'text/plain');
         batch.req.send(query);
-        if (!batch.async) {
-          DWREngine._stateChange(batch);
-        }
+        if (!batch.async) DWREngine._stateChange(batch);
       }
       catch (ex) {
         DWREngine._handleMetaDataError(null, ex);
@@ -783,9 +761,7 @@ DWREngine._sendData = function(batch) {
   }
 };
 
-/**
- * @private Called by XMLHttpRequest to indicate that something has happened
- */
+/** @private Called by XMLHttpRequest to indicate that something has happened */
 DWREngine._stateChange = function(batch) {
   if (!batch.completed && batch.req.readyState == 4) {
     try {
@@ -797,17 +773,16 @@ DWREngine._stateChange = function(batch) {
         return;
       }
 
-// DWR doesn't use response codes for failure conditions, so we should be able
-// to delete this. If no one complains, we will.
-//      if (status != 200) {
-//        if (reply == null) reply = "Unknown error occured";
-//        DWREngine._handleMetaDataError(null, reply);
-//        return;
-//      }
-
       var contentType = batch.req.getResponseHeader('Content-Type');
       if (DWREngine._textHtmlHandler && contentType.match(/^text\/html/)) {
         DWREngine._textHtmlHandler();
+        return;
+      }
+
+      // Check the status code
+      if (status != 200) {
+        if (reply == null) reply = "Unknown error occured";
+        DWREngine._handleMetaDataError(null, reply);
         return;
       }
 
@@ -875,9 +850,7 @@ DWREngine._handleResponse = function(id, reply) {
   }
 };
 
-/**
- * @private This method is called by Javascript that is emitted by server
- */
+/** @private This method is called by Javascript that is emitted by server */
 DWREngine._handleServerError = function(id, error) {
   // Clear this callback out of the list - we don't need it any more
   var handlers = DWREngine._handlersMap[id];
@@ -890,16 +863,12 @@ DWREngine._handleServerError = function(id, error) {
   }
 };
 
-/**
- * @private This is a hack to make the context be this window
- */
+/** @private This is a hack to make the context be this window */
 DWREngine._eval = function(script) {
   return eval(script);
 }
 
-/**
- * @private Called as a result of a request timeout
- */ 
+/** @private Called as a result of a request timeout */ 
 DWREngine._abortRequest = function(batch) {
   if (batch && batch.metadata != null && !batch.completed) {
     DWREngine._clearUp(batch);
@@ -915,12 +884,10 @@ DWREngine._abortRequest = function(batch) {
   }
 };
 
-/**
- * @private A call has finished by whatever means and we need to shut it all down.
- */
+/** @private A call has finished by whatever means and we need to shut it all down. */
 DWREngine._clearUp = function(batch) {
   if (batch.completed) {
-    DWREngine._handleWarning("double complete");
+    DWREngine._handleError("Double complete");
     return;
   }
 
@@ -956,34 +923,26 @@ DWREngine._clearUp = function(batch) {
   batch.completed = true;
 };
 
-/**
- * @private Generic error handling routing to save having null checks everywhere.
- */
+/** @private Generic error handling routing to save having null checks everywhere. */
 DWREngine._handleError = function(reason, ex) {
-  if (DWREngine._errorHandler) {
-    DWREngine._errorHandler(reason, ex);
-  }
+  if (DWREngine._errorHandler) DWREngine._errorHandler(reason, ex);
 };
 
-/**
- * @private Generic error handling routing to save having null checks everywhere.
- */
+/** @private Generic error handling routing to save having null checks everywhere. */
 DWREngine._handleWarning = function(reason, ex) {
-  if (DWREngine._warningHandler) {
-    DWREngine._warningHandler(reason, ex);
-  }
+  if (DWREngine._warningHandler) DWREngine._warningHandler(reason, ex);
 };
 
-/**
- * @private Generic error handling routing to save having null checks everywhere.
- */
+/** @private Generic error handling routing to save having null checks everywhere */
 DWREngine._handleMetaDataError = function(handlers, reason, ex) {
-  if (handlers && typeof handlers.errorHandler == "function") {
-    handlers.errorHandler(reason, ex);
-  }
-  else {
-    DWREngine._handleError(reason, ex);
-  }
+  if (handlers && typeof handlers.errorHandler == "function") handlers.errorHandler(reason, ex);
+  else DWREngine._handleError(reason, ex);
+};
+
+/** @private Generic error handling routing to save having null checks everywhere */
+DWREngine._handleMetaDataWarning = function(handlers, reason, ex) {
+  if (handlers && typeof handlers.errorHandler == "function") handlers.errorHandler(reason, ex);
+  else DWREngine._handleWarning(reason, ex);
 };
 
 /**
@@ -1013,24 +972,12 @@ DWREngine._serializeAll = function(batch, referto, data, name) {
     break;
 
   case "object":
-    if (data instanceof String) {
-      batch.map[name] = "String:" + encodeURIComponent(data);
-    }
-    else if (data instanceof Boolean) {
-      batch.map[name] = "Boolean:" + data;
-    }
-    else if (data instanceof Number) {
-      batch.map[name] = "Number:" + data;
-    }
-    else if (data instanceof Date) {
-      batch.map[name] = "Date:" + data.getTime();
-    }
-    else if (data instanceof Array) {
-      batch.map[name] = DWREngine._serializeArray(batch, referto, data, name);
-    }
-    else {
-      batch.map[name] = DWREngine._serializeObject(batch, referto, data, name);
-    }
+    if (data instanceof String) batch.map[name] = "String:" + encodeURIComponent(data);
+    else if (data instanceof Boolean) batch.map[name] = "Boolean:" + data;
+    else if (data instanceof Number) batch.map[name] = "Number:" + data;
+    else if (data instanceof Date) batch.map[name] = "Date:" + data.getTime();
+    else if (data instanceof Array) batch.map[name] = DWREngine._serializeArray(batch, referto, data, name);
+    else batch.map[name] = DWREngine._serializeObject(batch, referto, data, name);
     break;
 
   case "function":
@@ -1038,9 +985,7 @@ DWREngine._serializeAll = function(batch, referto, data, name) {
     break;
 
   default:
-    if (DWREngine._warningHandler) {
-      DWREngine._warningHandler("Unexpected type: " + typeof data + ", attempting default converter.");
-    }
+    DWREngine._handleWarning("Unexpected type: " + typeof data + ", attempting default converter.");
     batch.map[name] = "default:" + data;
     break;
   }
@@ -1056,9 +1001,7 @@ DWREngine._lookup = function(referto, data, name) {
       break;
     }
   }
-  if (lookup) {
-    return "reference:" + lookup.name;
-  }
+  if (lookup) return "reference:" + lookup.name;
   referto.push({ data:data, name:name });
   return null;
 };
@@ -1121,10 +1064,7 @@ DWREngine._serializeArray = function(batch, referto, data, name) {
 
   var reply = "Array:[";
   for (var i = 0; i < data.length; i++) {
-    if (i != 0) {
-      reply += ",";
-    }
-
+    if (i != 0) reply += ",";
     batch.paramCount++;
     var childName = "c" + DWREngine._batch.map.callCount + "-e" + batch.paramCount;
     DWREngine._serializeAll(batch, referto, data[i], childName);
@@ -1256,12 +1196,8 @@ if (typeof Array.prototype.splice === 'undefined') {
     endArray = this.slice(ind + cnt);
     this.length = ind;
 
-    for (var i = 2; i < arguments.length; i++) {
-      this[this.length] = arguments[i];
-    }
-    for (i = 0; i < endArray.length; i++) {
-      this[this.length] = endArray[i];
-    }
+    for (var i = 2; i < arguments.length; i++) this[this.length] = arguments[i];
+    for (i = 0; i < endArray.length; i++) this[this.length] = endArray[i];
 
     return removeArray;
   }
@@ -1271,9 +1207,7 @@ if (typeof Array.prototype.splice === 'undefined') {
 if (typeof Array.prototype.shift === 'undefined') {
   Array.prototype.shift = function(str) {
     var val = this[0];
-    for (var i = 1; i < this.length; ++i) {
-      this[i - 1] = this[i];
-    }
+    for (var i = 1; i < this.length; ++i) this[i - 1] = this[i];
     this.length--;
     return val;
   }
@@ -1283,12 +1217,8 @@ if (typeof Array.prototype.shift === 'undefined') {
 if (typeof Array.prototype.unshift === 'undefined') {
   Array.prototype.unshift = function() {
     var i = unshift.arguments.length;
-    for (var j = this.length - 1; j >= 0; --j) {
-      this[j + i] = this[j];
-    }
-    for (j = 0; j < i; ++j) {
-      this[j] = unshift.arguments[j];
-    }
+    for (var j = this.length - 1; j >= 0; --j) this[j + i] = this[j];
+    for (j = 0; j < i; ++j) this[j] = unshift.arguments[j];
   }
 }
 
