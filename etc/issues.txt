@@ -15,6 +15,53 @@ make sure that the exec calls never pass back an exception. catch and emit some 
 
 onbackbutton, onforwardbutton
 
+DwrUtil serious bug
+	I believe I found a bug in DWR 2.0 milestone 2:
+	It all starts in file DWRUtil.java, method setValue(String elementId, String 
+	value, boolean escapeHtml)
+	In the original code the following lines exist (exhibit 1):	
+		OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+		OutboundVariable valueOv = getWebContext().toJavascript(value);
+	These methods lead to this code in class DefaultWebContext (exhibit 2):	
+		public OutboundVariable toJavascript(Object data) throws MarshallException
+		{
+		  return getConverterManager().convertOutbound(data, new OutboundContext());
+		}
+	Subsequently the program reaches ConverterUtil.addStringInit(String output, 
+	OutboundContext outctx) which created the error in the line (exhibit 3):	
+		// For medium length strings do it in a separate variable
+		if (escaped.length() < WRAP_LENGTH)
+		{
+		  OutboundVariable ov = outctx.createOutboundVariable(output);
+		  String varname = ov.getAssignCode();
+		  ov.setInitCode("var " + varname + "=\"" + escaped + "\";\r\n");
+		  return ov;
+		}
+	Each of the multiple calls in exhibit 1 create a new outbound context in 
+	exhibit 2. When the program reached eventually the position of exhibit 3 it 
+	created twice the Javascript variable s0 leading to the following Javascript:	
+		var s0="imageSrc";
+		var s0="image_fill_up_to_more_than_20_characters.png";
+		DWRUtil.setValue(s0,s0);
+	Although I am not certain that my solution actually solves all issues, it 
+	seems to work for me.
+	I added to interface WebContext the method:
+	OutboundVariable toJavascript(Object data, OutboundContext aContext) throws 
+	MarshallException;
+	and implemented it in all derived classes, especially in DefaultWebContext as:
+		public OutboundVariable toJavascript(Object data, OutboundContext aContext) 
+		throws MarshallException
+		{
+		  return getConverterManager().convertOutbound(data, aContext);
+		}
+	Then I changed DWRUtil.java, method setValue(String elementId, String value, 
+	boolean escapeHtml) as such:	
+		OutboundContext outputContext = new OutboundContext();
+		OutboundVariable elementIdOv = getWebContext().toJavascript(elementId, 
+		outputContext);
+		OutboundVariable valueOv = getWebContext().toJavascript(value, outputContext);
+	
+
 Multiple call issue
 	When calling the same function 4 times consecutively passing a different
 	paramter the same result is always returned.  While debugging on the server side
@@ -148,3 +195,31 @@ Response Size Limits
     i got the firebug but didn't help. Sometime I received a dialog box
     "InternalError: Too many literals".
 
+Test with Dojo and Prototype.
+
+Asynchronous batches
+	I set my call to be synchronous:	
+		DWREngine.setAsync(false);
+		ClientRequest.request(ri, defaultCallBack);
+	The call is executed as it supposed to. But then I get a JavaScript error
+	from DWR saying "[object Error]". When I step through the engine.js code I
+	found the following lines in function DWREngine._endBatch
+		DWREngine._sendData(batch);
+		DWREngine._batches[DWREngine._batches.length] = batch;
+	Where second line never gets executed if synchronous is set.  That means that
+	DWREngine._batches collection is EMPTY.
+	As a result in DWREngine._handleResponse function the following line
+	returns 'undefined' and causes error:
+	     var responseBatch = DWREngine._batches[DWREngine._batches.length-1];
+	Because chain of calls stops at this moment DWREngine._clearUp(batch)
+	never gets called for synchronous call.
+
+Add checks for Javascript reserved names
+	In using DWR one nasty issue I came across was that my bean had a property
+	called default - my ajax call kept failing and I couldn't figure out why
+	till I looked at the generated variables and saw that it was because the
+	generated code put in a value for default and javascript didn't like it.
+	Maybe as a warning, look at bean properties and see if there are a conflicts
+	with reserved keywords.
+
+New Converters for java.util.Currency and java.net.URL
