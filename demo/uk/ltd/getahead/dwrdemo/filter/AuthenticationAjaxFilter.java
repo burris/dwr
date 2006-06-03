@@ -1,4 +1,4 @@
-package org.directwebremoting.filter;
+package uk.ltd.getahead.dwrdemo.filter;
 
 import java.lang.reflect.Method;
 
