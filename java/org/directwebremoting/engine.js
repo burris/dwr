@@ -766,7 +766,6 @@ DWREngine._stateChange = function(batch) {
   if (!batch.completed && batch.req.readyState == 4) {
     try {
       var reply = batch.req.responseText;
-      var status = batch.req.status;
 
       if (reply == null || reply == "") {
         DWREngine._handleMetaDataError(null, "No data received from server");
@@ -774,17 +773,17 @@ DWREngine._stateChange = function(batch) {
       }
 
       var contentType = batch.req.getResponseHeader('Content-Type');
-      if (DWREngine._textHtmlHandler && contentType.match(/^text\/html/)) {
-        DWREngine._textHtmlHandler();
-        return;
+      if (!contentType.match(/^text\/plain/) && !contentType.match(/^text\/javascript/)) {
+        if (DWREngine._textHtmlHandler && contentType.match(/^text\/html/)) {
+          DWREngine._textHtmlHandler();
+          return;
+        }
+        else {
+          DWREngine._handleMetaDataError(null, "Invalid content from server");
+        }
       }
-
-      // Check the status code
-      if (status != 200) {
-        if (reply == null) reply = "Unknown error occured";
-        DWREngine._handleMetaDataError(null, reply);
-        return;
-      }
+      // Skip checking the xhr.status because the above will do for most errors
+      // and because it causes Mozilla to error
 
       // Comet replies might have already partially executed
       if (batch.req == DWREngine._pollReq) {
