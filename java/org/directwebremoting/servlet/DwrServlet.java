@@ -33,7 +33,6 @@ import org.directwebremoting.impl.DwrXmlConfigurator;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.ServletLoggingOutput;
-import org.directwebremoting.util.VersionUtil;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -72,7 +71,8 @@ public class DwrServlet extends HttpServlet
             {
                 ServletLoggingOutput.setLevel(logLevel);
             }
-            log.info("DWR Version " + VersionUtil.getVersion() + " starting."); //$NON-NLS-1$ //$NON-NLS-2$
+
+            ContainerUtil.logStartup(config);
 
             ContainerUtil.setupDefaults(container);
             ContainerUtil.setupFromServletConfig(container, config);
@@ -138,6 +138,25 @@ public class DwrServlet extends HttpServlet
                 // This happens if there is a bug in AnnotationsConfigurator
                 log.warn("Failed to start annotations", ex); //$NON-NLS-1$
                 handleAnnotationFailure(delayedIOException);
+            }
+            catch (Throwable ex)
+            {
+                if (ex.getClass().getName().equals(UnsupportedClassVersionError.class.getName()))
+                {
+                    log.error("Caught impossible Throwable", ex); //$NON-NLS-1$
+                    handleAnnotationFailure(delayedIOException);
+                }
+                else if (ex instanceof Error)
+                {
+                    throw (Error) ex;
+                }
+                else
+                {
+                    // This can't happen: We've handled all Exceptions, and
+                    // Errors, so we can't get to execute this code.
+                    log.error("Ilogical catch state", ex); //$NON-NLS-1$
+                    handleAnnotationFailure(delayedIOException);
+                }
             }
 
             ContainerUtil.publishContainer(container, config);
