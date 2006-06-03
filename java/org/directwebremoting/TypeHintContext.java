@@ -313,38 +313,79 @@ public class TypeHintContext
 
     static
     {
+        // This is one of those times when you really wish you were in a
+        // dynamic language ...
+
         // This may seem like a lot of bother just to call Class forName() a
         // couple of times, however it is complex because the fields are final
         // so we can only set them once
-        Class tempClass;
+        int failures = 0;
 
+        Class tempParameterizedTypeClass;
         try
         {
-            tempClass = LocalUtil.classForName("java.lang.reflect.ParameterizedType"); //$NON-NLS-1$
+            tempParameterizedTypeClass = LocalUtil.classForName("java.lang.reflect.ParameterizedType"); //$NON-NLS-1$
         }
         catch (Exception ex)
         {
-            tempClass = null;
+            tempParameterizedTypeClass = null;
             log.debug("JDK1.5 reflection not available. Generic parameters must use <signatures>."); //$NON-NLS-1$
+            failures++;
         }
-        parameterizedTypeClass = tempClass;
-        isGenericsSupported = (parameterizedTypeClass != null); 
 
-        if (isGenericsSupported)
+        Method tempGetGenericParameterTypesMethod = null;
+        try
         {
-            try
+            tempGetGenericParameterTypesMethod = Method.class.getDeclaredMethod("getGenericParameterTypes", new Class[0]); //$NON-NLS-1$
+        }
+        catch (Exception ex)
+        {
+            log.debug("Error finding Method.getGenericParameterTypes(): JDK1.5 reflection not available."); //$NON-NLS-1$
+            failures++;
+        }
+
+        Method tempGetActualTypeArgumentsMethod = null;
+        try
+        {
+            if (tempParameterizedTypeClass != null)
             {
-                getGenericParameterTypesMethod = Method.class.getDeclaredMethod("getGenericParameterTypes", new Class[0]); //$NON-NLS-1$
-                getActualTypeArgumentsMethod = parameterizedTypeClass.getDeclaredMethod("getActualTypeArguments", new Class[0]); //$NON-NLS-1$
-                getRawTypeMethod = parameterizedTypeClass.getDeclaredMethod("getRawType", new Class[0]); //$NON-NLS-1$
+                tempGetActualTypeArgumentsMethod = tempParameterizedTypeClass.getDeclaredMethod("getActualTypeArguments", new Class[0]); //$NON-NLS-1$
             }
-            catch (Exception ex)
+        }
+        catch (Exception ex)
+        {
+            log.debug("Error finding XXX: JDK1.5 reflection not available."); //$NON-NLS-1$
+            failures++;
+        }
+
+        Method tempGetRawTypeMethod = null;
+        try
+        {
+            if (tempParameterizedTypeClass != null)
             {
-                throw new IllegalStateException(ex.toString());
+                tempGetRawTypeMethod = tempParameterizedTypeClass.getDeclaredMethod("getRawType", new Class[0]); //$NON-NLS-1$
             }
+        }
+        catch (Exception ex)
+        {
+            log.debug("Error finding XXX: JDK1.5 reflection not available."); //$NON-NLS-1$
+            failures++;
+        }
+
+        if (failures == 0)
+        {
+            isGenericsSupported = true;
+
+            parameterizedTypeClass = tempParameterizedTypeClass;
+            getGenericParameterTypesMethod = tempGetGenericParameterTypesMethod;
+            getActualTypeArgumentsMethod = tempGetActualTypeArgumentsMethod;
+            getRawTypeMethod = tempGetRawTypeMethod;
         }
         else
         {
+            isGenericsSupported = false;
+
+            parameterizedTypeClass = null;
             getGenericParameterTypesMethod = null;
             getActualTypeArgumentsMethod = null;
             getRawTypeMethod = null;
