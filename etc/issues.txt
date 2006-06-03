@@ -223,3 +223,32 @@ Add checks for Javascript reserved names
 	with reserved keywords.
 
 New Converters for java.util.Currency and java.net.URL
+
+Response already committed
+	Is it normal to get "INFO [org.apache.jk.core.MsgContext] - Response already
+	committed" message to log files every 25 secs when you have called the
+	"DWREngine.setReverseAjax(true)"? I know that the long request is cut out
+	around every 30 sec or so, so I believe the message is coming from that, the
+	question is more that is this normal? I'm using tomcat 5.5.7 and apache httpd
+	2.0 with jk_mod. I've tested this with my own code and with the 2.0M2 example
+	chat code.
+	...
+	Thanks for quick reply. It's definetly something to do with the Apache
+	facading the tomcat. When I connected straight to tomcat it doesn't write
+	that to the log. Here is the threads from the debug if this helps you at all:
+	TP-Processor2@4 daemon, priority=5, in group 'main', status: 'RUNNING'
+	action():249, MsgContext.java
+	action():182, Response.java
+	doFlush():322, OutputBuffer.java
+	flush():293, OutputBuffer.java
+	flush():94, CoyoteWriter.java
+	flush():270, PrintWriter.java
+	checkError():306, PrintWriter.java
+	sendScript():417, DwrpPlainJsMarshaller.java
+	marshallOutbound():367, DwrpPlainJsMarshaller.java
+	handle():131, UrlProcessor.java
+	doPost():188, DwrServlet.java
+	service():709, HttpServlet.java
+	service():802, HttpServlet.java
+	...
+
