@@ -165,7 +165,11 @@ public class MapConverter implements Converter
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         // First we just collect our converted children
-        Map ovs = new HashMap();
+        Map ovs = (Map) LocalUtil.classNewInstance("OrderedConvertOutbound", "java.util.LinkedHashMap", Map.class); //$NON-NLS-1$ //$NON-NLS-2$
+        if (ovs == null)
+        {
+            ovs = new HashMap();
+        }
 
         OutboundVariable ov = outctx.createOutboundVariable(data);
 
@@ -181,7 +185,7 @@ public class MapConverter implements Converter
             // It would be nice to check for Enums here
             if (!(key instanceof String) && !sentNonStringWarning)
             {
-                log.warn("--Javascript does not support non string keys. Converting to '" + key.getClass().getName() + "' using toString()"); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("--Javascript does not support non string keys. Converting '" + key.getClass().getName() + "' using toString()"); //$NON-NLS-1$ //$NON-NLS-2$
                 sentNonStringWarning = true;
             }
 
