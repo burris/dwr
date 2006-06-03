@@ -30,6 +30,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import org.directwebremoting.dwrp.ConversionConstants;
 
@@ -642,6 +643,13 @@ public final class LocalUtil
             log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null;
         }
+        catch (TransformerFactoryConfigurationError ex)
+        {
+            // We expect this sometimes, hence debug
+            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.debug("Maybe you need to add xalan.jar to your webserver?"); //$NON-NLS-1$
+            return null;
+        }
 
         // Check it is of the right type
         if (!impl.isAssignableFrom(clazz))
@@ -669,6 +677,13 @@ public final class LocalUtil
         {
             // We expect this sometimes, hence debug
             log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
+        catch (TransformerFactoryConfigurationError ex)
+        {
+            // We expect this sometimes, hence debug
+            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.debug("Maybe you need to add xalan.jar to your webserver?"); //$NON-NLS-1$
             return null;
         }
         catch (Exception ex)
@@ -719,6 +734,12 @@ public final class LocalUtil
             log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             return null;
         }
+        catch (TransformerFactoryConfigurationError ex)
+        {
+            // We expect this sometimes, hence debug
+            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return null;
+        }
 
         // Check it is of the right type
         if (!impl.isAssignableFrom(clazz))
@@ -740,6 +761,11 @@ public final class LocalUtil
         catch (IllegalAccessException ex)
         {
             log.error("IllegalAccessException for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            return null;
+        }
+        catch (TransformerFactoryConfigurationError ex)
+        {
+            log.error("TransformerFactoryConfigurationError for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
         }
         catch (Exception ex)
