@@ -90,7 +90,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
                 pageSessions = new HashSet();
             }
 
-            return Collections.unmodifiableCollection(pageSessions);
+            Set reply = new HashSet();
+            reply.addAll(pageSessions);
+            return reply;
         }
     }
 
@@ -101,7 +103,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     {
         synchronized (sessionLock)
         {
-            return Collections.unmodifiableCollection(sessionMap.values());
+            Set reply = new HashSet();
+            reply.addAll(sessionMap.values());
+            return reply;
         }
     }
 
