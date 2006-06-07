@@ -38,6 +38,15 @@ public class ScriptProxy
     }
 
     /**
+     * @param scriptSessions 
+     */
+    public ScriptProxy(Collection scriptSessions)
+    {
+        webContext = WebContextFactory.get();
+        this.scriptSessions.addAll(scriptSessions);
+    }
+
+    /**
      * @param scriptSession
      */
     public void addScriptSession(ScriptSession scriptSession)
