@@ -345,6 +345,14 @@ public class DwrXmlConfigurator implements Configurator
             // all the nodes are elements.
             Element element = (Element) locNodes.item(i);
 
+            // But getElementsByTagName(ELEMENT_PARAM) includes param nodes that
+            // are nested down inside filters, so we need to check that the
+            // parent node is 'parent'. $&*?! DOM!
+            if (element.getParentNode() != parent)
+            {
+                continue;
+            }
+
             String name = element.getAttribute(ATTRIBUTE_NAME);
             if (name != null)
             {
