@@ -15,6 +15,10 @@
     </filter>
     -->
 
+    <create creator="new" javascript="LiveHelp" scope="application">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.livehelp.LiveHelp"/>
+    </create>
+
     <create creator="new" javascript="Test" scope="application">
       <param name="class" value="uk.ltd.getahead.dwrdemo.test.Test"/>
     </create>
