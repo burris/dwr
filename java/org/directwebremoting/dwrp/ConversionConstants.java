@@ -143,10 +143,10 @@ public interface ConversionConstants
     /**
      * The marker to indicate the start of a evalable script block
      */
-    public static final String SCRIPT_START_MARKER = "//@DWR-START@"; //$NON-NLS-1$
+    public static final String SCRIPT_START_MARKER = "//#DWR-START#"; //$NON-NLS-1$
 
     /**
      * The marker to indicate the end of a evalable script block
      */
-    public static final String SCRIPT_END_MARKER = "//@DWR-END@"; //$NON-NLS-1$
+    public static final String SCRIPT_END_MARKER = "//#DWR-END#"; //$NON-NLS-1$
 }

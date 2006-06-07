@@ -256,8 +256,8 @@ DWREngine.endBatch = function(options) {
 /** A function to call if something fails. */
 DWREngine._errorHandler = DWREngine.defaultMessageHandler;
 
-/** A function to call to alert the user to some breakage. */
-DWREngine._warningHandler = DWREngine.defaultMessageHandler;
+/** For debugging when something unexplained happens. */
+DWREngine._warningHandler = null;
 
 /** A function to be called before requests are marshalled. Can be null. */
 DWREngine._preHook = null;
@@ -523,20 +523,22 @@ DWREngine._triggerNextPoll = function(pause) {
 /** @private Check for reverse Ajax activity */
 DWREngine._checkCometPoll = function() {
   if (DWREngine._pollComet) {
-    if (DWREngine._pollFrame) {
+    // If the poll resources are still there, come back again
+    if (DWREngine._pollFrame || DWREngine._pollReq) {
       setTimeout("DWREngine._checkCometPoll()", DWREngine._pollCometInterval);
-      var text = DWREngine._getTextFromCometIFrame();
-      DWREngine._processCometResponse(text);
     }
-    else if (DWREngine._pollReq) {
-      setTimeout("DWREngine._checkCometPoll()", DWREngine._pollCometInterval);
-      try {
+    try {
+      if (DWREngine._pollFrame) {
+        var text = DWREngine._getTextFromCometIFrame();
+        DWREngine._processCometResponse(text);
+      }
+      else if (DWREngine._pollReq) {
         var xhrtext = DWREngine._pollReq.responseText;
         DWREngine._processCometResponse(xhrtext);
       }
-      catch (ex) {
-        // IE complains for no good reason. Ignore
-      }
+    }
+    catch (ex) {
+      // IE complains for no good reason for both options above. Ignore.
     }
   }
 }
@@ -548,7 +550,7 @@ DWREngine._getTextFromCometIFrame = function() {
     frameDocument = DWREngine._pollFrame.contentDocument.defaultView.document;
   }
   else if (DWREngine._pollFrame.contentWindow) {
-    frameDocument = DWREngine._pollFrame.contentWindow.document
+    frameDocument = DWREngine._pollFrame.contentWindow.document;
   }
   else {
     return "";
@@ -565,17 +567,17 @@ DWREngine._getTextFromCometIFrame = function() {
 /** @private Some more text might have come in, test and execute the new stuff */
 DWREngine._processCometResponse = function(response) {
   if (DWREngine._pollCometSize != response.length) {
-    var firstStartTag = response.indexOf("//@DWR-START@", DWREngine._pollCometSize);
+    var firstStartTag = response.indexOf("//#DWR-START#", DWREngine._pollCometSize);
     if (firstStartTag == -1) {
       // There is no start tag so we ignore the rest
-      // DWRUtil.debug("Missing //@DWR-START@ Skipping: " + response.substring(DWREngine._pollCometSize));
+      // DWRUtil.debug("Missing //#DWR-START# Skipping: " + response.substring(DWREngine._pollCometSize));
       DWREngine._pollCometSize = response.length;
     }
     else {
       // if (firstStartTag != DWREngine._pollCometSize) {
-      //   DWRUtil.debug("//@DWR-START@ not at start skipping: " + response.substring(DWREngine._pollCometSize, firstStartTag));
+      //   DWRUtil.debug("//#DWR-START# not at start skipping: " + response.substring(DWREngine._pollCometSize, firstStartTag));
       // }
-      var lastEndTag = response.lastIndexOf("//@DWR-END@");
+      var lastEndTag = response.lastIndexOf("//#DWR-END#");
       if (lastEndTag != -1) {
         var executeString = response.substring(firstStartTag + 13, lastEndTag);
         // DWRUtil.debug(executeString);
@@ -584,7 +586,7 @@ DWREngine._processCometResponse = function(response) {
         DWREngine._pollCometSize = lastEndTag + 11;
       }
       // else {
-      //   DWRUtil.debug("Missing //@DWR-END@ Postponing: " + executeString);
+      //   DWRUtil.debug("Missing //#DWR-END# Postponing: " + executeString);
       // }
     }
   }
@@ -768,7 +770,7 @@ DWREngine._stateChange = function(batch) {
       var reply = batch.req.responseText;
 
       if (reply == null || reply == "") {
-        DWREngine._handleMetaDataError(null, "No data received from server");
+        DWREngine._handleMetaDataWarning(null, "No data received from server");
         return;
       }
 
@@ -779,7 +781,7 @@ DWREngine._stateChange = function(batch) {
           return;
         }
         else {
-          DWREngine._handleMetaDataError(null, "Invalid content from server");
+          DWREngine._handleMetaDataWarning(null, "Invalid content from server");
         }
       }
       // Skip checking the xhr.status because the above will do for most errors
@@ -792,7 +794,7 @@ DWREngine._stateChange = function(batch) {
       else {
         // This should get us out of 404s etc.
         if (reply.search("DWREngine._handle") == -1) {
-          DWREngine._handleMetaDataError(null, "Invalid reply from server");
+          DWREngine._handleMetaDataWarning(null, "Invalid reply from server");
           return;
         }
         eval(reply);
@@ -803,7 +805,7 @@ DWREngine._stateChange = function(batch) {
     }
     catch (ex) {
       if (ex == null) ex = "Unknown error occured";
-      DWREngine._handleMetaDataError(null, ex);
+      DWREngine._handleMetaDataWarning(null, ex);
     }
     finally {
       // If there is anything on the queue waiting to go out, then send it.
