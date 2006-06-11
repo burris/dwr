@@ -71,6 +71,26 @@ public class NewCreator extends AbstractCreator implements Creator
     }
 
     /**
+     * Sets the class name to create.
+     *
+     * @param className The name of the class to create
+     */
+    public void setClassName(String className)
+    {
+        setClass(className);
+    }
+
+    /**
+     * Gets the name of the class to create.
+     *
+     * @return The name of the class to create
+     */
+    public String getClassName()
+    {
+        return getType().getName();
+    }
+
+    /**
      * The log stream
      */
     private static final Logger log = Logger.getLogger(NewCreator.class);
