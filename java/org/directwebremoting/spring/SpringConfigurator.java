@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import org.directwebremoting.*;
 import org.directwebremoting.util.LocalUtil;
+import org.directwebremoting.util.Messages;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -114,13 +115,25 @@ public class SpringConfigurator implements Configurator
                     List filters = creatorConfig.getFilters();
                     for (Iterator fit = filters.iterator(); fit.hasNext();)
                     {
-                        String filterName = (String) fit.next();
-
-                        AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(filterName, filterName, AjaxFilter.class);
-                        if (filter != null)
+                        Object obj = fit.next();
+                        if (obj instanceof String)
                         {
-                            // LocalUtil.setParams(filter, createSettingMap(include), ignore);
+                            String filterName = (String) obj;
+
+                            AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(filterName, filterName, AjaxFilter.class);
+                            if (filter != null)
+                            {
+                                ajaxFilterManager.addAjaxFilter(filter, scriptName);
+                            }
+                        }
+                        else if (obj instanceof AjaxFilter)
+                        {
+                            AjaxFilter filter = (AjaxFilter) obj;
                             ajaxFilterManager.addAjaxFilter(filter, scriptName);
+                        }
+                        else
+                        {
+                            throw new IllegalArgumentException(Messages.getString("SpringConfigurator.InvalidFilter", scriptName, obj));
                         }
                     }
                 }
