@@ -106,6 +106,15 @@ public class DirectScriptConduit implements ScriptConduit
     }
 
     /**
+     * Get the next unique ID in a thread safe way
+     * @return a unique id
+     */
+    private static synchronized long getNextId()
+    {
+        return nextId++;
+    }
+
+    /**
      * Are we done with?
      */
     private boolean closed = false;
@@ -124,7 +133,7 @@ public class DirectScriptConduit implements ScriptConduit
     /**
      * Our ID, to get around serialization issues
      */
-    private final long id = nextId++;
+    private final long id = getNextId();
 
     /**
      * The next ID, to get around serialization issues
