@@ -70,17 +70,14 @@ public class Test
      */
     public int waitFor(int wait)
     {
-        synchronized (Thread.currentThread())
+        try
         {
-            try
-            {
-                Thread.currentThread().wait(wait);
-                return wait;
-            }
-            catch (InterruptedException ex)
-            {
-                return 0;
-            }
+            Thread.sleep(wait);
+            return wait;
+        }
+        catch (InterruptedException ex)
+        {
+            return 0;
         }
     }
 
