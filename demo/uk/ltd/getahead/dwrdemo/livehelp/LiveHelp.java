@@ -40,7 +40,7 @@ public class LiveHelp
     }
 
     /**
-     * The user has tabbed on
+     * The user has tabbed in
      * @param id The id of the field that changed
      */
     public void notifyFocus(String id)
@@ -55,7 +55,7 @@ public class LiveHelp
     }
 
     /**
-     * The user has tabbed on
+     * The user has tabbed out
      * @param id The id of the field that changed
      */
     public void notifyBlur(String id)
