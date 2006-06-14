@@ -1,4 +1,29 @@
 
+XHR headers
+	I also read a recent posted question on setting
+	headers, and you asked why it was needed.
+	
+	Let me explain where I see a need.
+	
+	At our site, we use Spring and Acegi where we have
+	written and/or use Acegi filters that look at the
+	request authentication information in the request
+	header.  Typically this is WSSE authentication
+	information.
+	
+	As I started to look at DWR, I wanted to continue to
+	leverage this capability, but to do so, I would need
+	to set the request headers with the appropriate
+	information.  If successful the filter will just pass
+	the information to the DWR servlet for processing.
+	
+	Can you tell me if there is a way in either version of
+	DWR to set this information? Of if you see another way
+	around this, that would be helpful.
+
+ScriptSession has been invalided
+	We get this "ScriptSession has been invalided" error every once in a while.
+
 Stuff I'm working on:
 - Accessibility. DWR should integrate with screen readers to tell them when a page has changed
 
