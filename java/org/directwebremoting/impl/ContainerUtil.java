@@ -42,6 +42,7 @@ import org.directwebremoting.dwrp.DefaultConverterManager;
 import org.directwebremoting.dwrp.DwrpHtmlJsMarshaller;
 import org.directwebremoting.dwrp.DwrpPlainJsMarshaller;
 import org.directwebremoting.servlet.UrlProcessor;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.VersionUtil;
 import org.xml.sax.SAXException;
@@ -133,16 +134,31 @@ public class ContainerUtil
         while (en.hasMoreElements())
         {
             String name = (String) en.nextElement();
+            String value = servletConfig.getInitParameter(name);
+
+            // if the init param starts with "config" then try to load it
             if (name.startsWith(INIT_CONFIG))
             {
                 foundConfig = true;
 
-                // if the init param starts with "config" then try to load it
-                String configFile = servletConfig.getInitParameter(name);
-
                 DwrXmlConfigurator local = new DwrXmlConfigurator();
-                local.setServletResourceName(configFile);
+                local.setServletResourceName(value);
                 local.configure(container);
+            }
+            else if (name.equals(INIT_CUSTOM_CONFIGURATOR))
+            {
+                foundConfig = true;
+
+                try
+                {
+                    Configurator configurator = (Configurator) LocalUtil.classNewInstance(INIT_CUSTOM_CONFIGURATOR, value, Configurator.class);
+                    configurator.configure(container);
+                    log.debug("Loaded config from: " + value); //$NON-NLS-1$
+                }
+                catch (Exception ex)
+                {
+                    log.warn("Failed to start custom configurator", ex); //$NON-NLS-1$
+                }
             }
         }
 
@@ -271,6 +287,12 @@ public class ContainerUtil
      * and if so, under what name?
      */
     public static final String INIT_PUBLISH_CONTAINER = "publishContainerAs"; //$NON-NLS-1$
+
+    /**
+     * Init parameter: If you wish to use a custom configurator, place its
+     * class name here
+     */
+    public static final String INIT_CUSTOM_CONFIGURATOR = "customConfigurator"; //$NON-NLS-1$
 
     /**
      * The log stream
