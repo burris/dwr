@@ -170,7 +170,7 @@ public class DwrSystem
         /**
          * @param lock Object to wait and notifyAll with
          */
-        private NotifyOnlyScriptConduit(Object lock)
+        protected NotifyOnlyScriptConduit(Object lock)
         {
             this.lock = lock;
         }
@@ -214,7 +214,7 @@ public class DwrSystem
         /**
          * @param continuation
          */
-        private ResumeContinuationScriptConduit(Object continuation)
+        protected ResumeContinuationScriptConduit(Object continuation)
         {
             this.continuation = continuation;
         }
