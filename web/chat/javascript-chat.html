@@ -7,37 +7,28 @@
   <script type='text/javascript' src='../dwr/interface/JavascriptChat.js'> </script>
   <script type='text/javascript' src='../dwr/util.js'> </script>
   <script type="text/javascript" src='javascript-chat.js'> </script>
+  <link rel="stylesheet" type="text/css" href="../generic.css" />
 </head>
 
 <body onload="startPoll()">
+<div id="page-title">[
+  <a href="http://getahead.ltd.uk/dwr/">DWR Website</a> |
+  <a href="..">Web Application Index</a>
+]</div>
 
-  <div>[ <a href="../index.html">Top Level</a> ]</div>
+<h1>Javascript Chat</h1>
 
-  <h1>Javascript Chat</h1>
+<p>This is a very simple chat demo that uses reverse ajax to collect messages
+and Javascript to manipulate the pages with the results.</p>
 
-  <p>This is a very simple chat demo.</p>
+<p>
+  Your Message:
+  <input id="text" onkeypress="DWRUtil.onReturn(event, sendMessage)"/>
+  <input type="button" value="Send" onclick="sendMessage()"/>
+</p>
+<hr/>
 
-  <!--
-  <p>
-    <input type="button" value="Start Poll" onclick="startPoll()"/>
-    <input type="button" value="Stop Poll" onclick="stopPoll()"/>
-  </p>
-  -->
-
-  <p>
-    Your Message:
-    <input id="text" onkeypress="DWRUtil.onReturn(event, sendMessage)"/>
-    <input type="button" value="Send" onclick="sendMessage()"/>
-  </p>
-
-  <p>Messages:</p>
-  <div id="chatlog"></div>
-
-  <!--
-  <p id="dwr-debug">debug</p>
-  <input type="button" value="Ping Me" onclick="pingMe()"/>
-  <p id="ping">ping</p>
-  -->
+<div id="chatlog"></div>
 
 </body>
 </html>

@@ -11,25 +11,29 @@
       JavaChat.addMessage(DWRUtil.getValue("text"));
     }
   </script>
+  <link rel="stylesheet" type="text/css" href="../generic.css" />
 </head>
 
 <body onload="DWREngine.setReverseAjax(true);">
+<div id="page-title">[
+  <a href="http://getahead.ltd.uk/dwr/">DWR Website</a> |
+  <a href="..">Web Application Index</a>
+]</div>
 
-  <div>[ <a href="../index.html">Top Level</a> ]</div>
+<h1>Java Chat</h1>
 
-  <h1>Java Chat</h1>
+<p>This is a very simple chat demo that uses reverse ajax to collect messages
+and server-side browser manipulation to update the pages with the results.</p>
 
-  <p>This is a very simple chat demo.</p>
+<p>
+  Your Message:
+  <input id="text" onkeypress="DWRUtil.onReturn(event, sendMessage)"/>
+  <input type="button" value="Send" onclick="sendMessage()"/>
+</p>
+<hr/>
 
-  <p>
-    Your Message:
-    <input id="text" onkeypress="DWRUtil.onReturn(event, sendMessage)"/>
-    <input type="button" value="Send" onclick="sendMessage()"/>
-  </p>
-
-  <p>Messages:</p>
-  <ul id="chatlog" style="list-style-type:none;">
-  </ul>
+<ul id="chatlog" style="list-style-type:none;">
+</ul>
 
 </body>
 </html>

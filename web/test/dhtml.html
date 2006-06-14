@@ -10,8 +10,10 @@
 </head>
 
 <body>
-
-<div>[ <a href="../index.html">Top Level</a> ]</div>
+<div id="page-title">[
+  <a href="http://getahead.ltd.uk/dwr/">DWR Website</a> |
+  <a href="..">Web Application Index</a>
+]</div>
 
 <script type="text/javascript">
 var arrayFive = [ 'One', 'Two', 'Three', 'Four', 'Five' ];
@@ -396,7 +398,9 @@ function testSetValuesDiv() {
 }
 </script>
 
-<button onclick="testSetValuesDiv()">SetValuesDiv</button>
+<div>
+   <button onclick="testSetValuesDiv()">SetValuesDiv</button>
+</div>
 
 <div>setValuesDiv: <div id="setValuesDiv"></div> (Should become 'setValuesDiv')</div>
 <div>setValuesSpan: <span id="setValuesSpan"></span> (Should become 'setValuesSpan')</div>
@@ -411,7 +415,7 @@ function testSetValuesDiv() {
   (Should become 'text two')
 </div>
 
-<div>setValuesText: <input id="setValuesText" value="" /> (Should become 'setValuesText')</div>
+<div>setValuesText: <input id="setValuesText" type="text" value="" /> (Should become 'setValuesText')</div>
 <div>setValuesPassword: <input id="setValuesPassword" type="password" /> (Should have 2 chars)</div>
 <div>setValuesTextarea: <textarea id="setValuesTextarea"></textarea> (Should become 'setValuesTextarea')</div>
 

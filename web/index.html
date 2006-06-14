@@ -30,9 +30,16 @@
       $("reply").style.display = "block";
     }
   </script>
+  <link rel="stylesheet" type="text/css" href="generic.css" />
 </head>
 
 <body onload="init()">
+
+<div id="page-title">[
+  <a href="http://getahead.ltd.uk/dwr/">DWR Website</a>
+]</div>
+
+<a href="http://getahead.ltd.uk/dwr/"><img style="float:right;" border="0" src="logo.gif"/></a>
 
 <h1>Welcome to DWR</h1>
 
@@ -45,9 +52,22 @@
 
 <p>Examples within this WAR file:</p>
 <ul>
-  <li><a href="asmg">Anti-Spam mailto: Generator</a>: Generate clickable mailto: links without attracting spam.</li>
-  <li><a href="chat/javascript-chat.html">Javascript Chat</a>: A simple chat application using DWR with conventional Javascript/DWRUtil</li>
-  <li><a href="chat/java-chat.html">Java Chat</a>: As above except with much reduced Javascript, preferring Java/DwrUtil</li>
+  <li>
+    <a href="asmg">Anti-Spam mailto: Generator</a>:
+    Generate clickable mailto: links without attracting spam.
+  </li>
+  <li>
+    <a href="livehelp/index.html">Live Help</a>:
+    Use multiple-browsers to update a single form.
+  </li>
+  <li>
+    <a href="chat/javascript-chat.html">Javascript Chat</a>:
+    A simple chat application using DWR with conventional Javascript/DWRUtil
+  </li>
+  <li>
+    <a href="chat/java-chat.html">Java Chat</a>:
+    As above except with much reduced Javascript, preferring Java/DwrUtil
+  </li>
 </ul>
 
 <p>Current Configuration:</p>
@@ -59,9 +79,20 @@
 <p>Self test pages:</p>
 
 <ul>
-  <!--<li><a href="test/integrationTest.html">Integration Test</a> (Pages that test DWR can work with Spring, Struts, XOM, JDOM, DOM4J, DOM, Hibernate)</li> -->
-  <li><a href="test/marshalling.html">Marshalling Test</a> (Can DWR marshall all parameters, can they be done under load)</li>
-  <li><a href="test/dhtml.html">DHTML Test</a> (Can DWRUtil manipulate the DOM properly)</li>
+  <!--
+  <li>
+    <a href="test/integrationTest.html">Integration Test</a>
+    (Pages that test DWR can work with Spring, Struts, XOM, JDOM, DOM4J, DOM, Hibernate)
+  </li>
+  -->
+  <li>
+    <a href="test/marshalling.html">Marshalling Test</a>
+    (Can DWR marshall all parameters, can they be done under load)
+  </li>
+  <li>
+    <a href="test/dhtml.html">DHTML Test</a>
+    (Can DWRUtil manipulate the DOM properly)
+  </li>
 </ul>
 
 <hr/>
