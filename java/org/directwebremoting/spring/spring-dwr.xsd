@@ -16,11 +16,12 @@
   ~ limitations under the License.
   -->
 
-<xsd:schema xmlns="http://directwebremoting.org/schema/spring"
+<xsd:schema xmlns="http://www.directwebremoting.org/schema/spring"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://directwebremoting.org/schema/spring"
+            targetNamespace="http://www.directwebremoting.org/schema/spring"
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
+
     <xsd:element name="configuration" type="configuration" />
     <xsd:element name="remote" type="remote" />
     <xsd:element name="controller" type="controller" />
@@ -72,12 +73,28 @@
     <xsd:complexType name="remote">
         <xsd:sequence>
             <xsd:element name="latencyfilter" type="latencyfilter" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="include" type="include" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="exclude" type="exclude" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="auth" type="auth" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
-        <xsd:attribute name="javascript" type="xsd:ID"/>
+        <xsd:attribute name="javascript" type="xsd:ID" use="required"/>
     </xsd:complexType>
 
     <xsd:complexType name="latencyfilter">
-        <xsd:attribute name="delay" type="xsd:positiveInteger"/>
+        <xsd:attribute name="delay" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="include">
+        <xsd:attribute name="method" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="exclude">
+        <xsd:attribute name="method" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="auth">
+        <xsd:attribute name="method" type="xsd:string" use="required"/>
+        <xsd:attribute name="role" type="xsd:string" use="required"/>
     </xsd:complexType>
 
     <xsd:complexType name="controller">

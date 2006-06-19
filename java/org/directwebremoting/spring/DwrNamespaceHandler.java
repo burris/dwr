@@ -28,9 +28,7 @@ import org.w3c.dom.Node;
 import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
 import org.directwebremoting.create.NewCreator;
 
-import java.util.Map;
-import java.util.List;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * The Spring namespace handler which handles all elements that are defined as
@@ -43,7 +41,7 @@ import java.util.Iterator;
  * @author Bram Smeets
  */
 public class DwrNamespaceHandler extends NamespaceHandlerSupport {
-    private final static String DEFAULT_SPRING_CONFIGURATOR_ID = "__dwrConfiguration";
+    final static String DEFAULT_SPRING_CONFIGURATOR_ID = "__dwrConfiguration";
 
     private Map creators = new ManagedMap();
     private Map converters = new ManagedMap();
@@ -88,21 +86,42 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
         BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);
         creatorConfig.addPropertyReference("creator", beanCreator);
 
+        List includes = new ArrayList();
+        creatorConfig.addPropertyValue("includes", includes);
+
+        List excludes = new ArrayList();
+        creatorConfig.addPropertyValue("excludes", excludes);
+
+        Properties auth = new Properties();
+        creatorConfig.addPropertyValue("auth", auth);
+
         // check to see if there are any nested elements here
         for (int i = 0; i < children.getLength(); i++) {
             Node node = children.item(i);
 
-            if (node.getNodeType() == Node.TEXT_NODE) continue;
+            if (node.getNodeType() == Node.TEXT_NODE
+                    || node.getNodeType() == Node.COMMENT_NODE) {
+                continue;
+            }
+
+            Element child = (Element) node;
 
             if (node.getNodeName().equals("dwr:latencyfilter")) {
                 BeanDefinitionBuilder beanFilter = BeanDefinitionBuilder.rootBeanDefinition(ExtraLatencyAjaxFilter.class);
-                Element filterElement = (Element) node;
-                beanFilter.addPropertyValue("delay", filterElement.getAttribute("delay"));
+                beanFilter.addPropertyValue("delay", child.getAttribute("delay"));
                 registryBuilder.register("__latencyFilter_" + javascript, beanFilter);
 
                 ManagedList filterList = new ManagedList();
                 filterList.add(new RuntimeBeanReference("__latencyFilter_" + javascript));
                 creatorConfig.addPropertyValue("filters", filterList);
+            } else if (node.getNodeName().equals("dwr:include")) {
+                includes.add(child.getAttribute("method"));
+            } else if (node.getNodeName().equals("dwr:exclude")) {
+                excludes.add(child.getAttribute("method"));
+            } else if (node.getNodeName().equals("dwr:auth")) {
+                auth.setProperty(child.getAttribute("method"), child.getAttribute("role"));
+            } else {
+                throw new RuntimeException("an unknown dwr:remote sub node was fouund: " + node.getNodeName());
             }
         }
 
@@ -121,7 +140,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
             Iterator iter = creators.iterator();
             while (iter.hasNext()) {
                 Element createElement = (Element) iter.next();
-                findDecoratorForElement(createElement).decorate(
+                findDecoratorForNode(createElement).decorate(
                         createElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
@@ -129,7 +148,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
             iter = converters.iterator();
             while (iter.hasNext()) {
                 Element convertElement = (Element) iter.next();
-                findDecoratorForElement(convertElement).decorate(
+                findDecoratorForNode(convertElement).decorate(
                         convertElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
@@ -151,10 +170,12 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
     }
 
     private class RemoteBeanDefinitionDecorator implements BeanDefinitionDecorator {
-        public BeanDefinitionHolder decorate(Element element,
+        public BeanDefinitionHolder decorate(Node node,
                                              BeanDefinitionHolder definition,
                                              ParserContext parserContext) {
             BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
+
+            Element element = (Element) node;
 
             String parentBeanName = definition.getBeanName();
             String javascript = element.getAttribute("javascript");
@@ -163,7 +184,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
             beanCreator.addPropertyValue("bean", new RuntimeBeanReference(parentBeanName));
             beanCreator.addPropertyValue("javascript", javascript);
 
-            registerCreator(registryBuilder, javascript, beanCreator, element.getChildNodes());
+            registerCreator(registryBuilder, javascript, beanCreator, node.getChildNodes());
 
             return definition;
         }
@@ -171,9 +192,10 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
 
     private class ConverterBeanDefinitionDecorator implements BeanDefinitionDecorator {
 
-        public BeanDefinitionHolder decorate(Element element,
+        public BeanDefinitionHolder decorate(Node node,
                                              BeanDefinitionHolder definition,
                                              ParserContext parserContext) {
+            Element element = (Element) node;
             String type = element.getAttribute("type");
 
             if ("array".equals(type)) {
@@ -197,12 +219,13 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
      * Uses the BeanDefinitionDecorator since we need access to the name of the parent definition??
      */
     private class CreatorBeanDefinitionDecorator implements BeanDefinitionDecorator {
-        public BeanDefinitionHolder decorate(Element element,
+        public BeanDefinitionHolder decorate(Node node,
                                              BeanDefinitionHolder definition,
                                              ParserContext parserContext) {
             BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
 
             String parentBeanName = definition.getBeanName();
+            Element element = (Element) node;
             String javascript = element.getAttribute("javascript");
             String type = element.getAttribute("type");
 
@@ -215,13 +238,13 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
                 creator.addPropertyValue("javascript", javascript);
             } else if ("new".equals(type)) {
                 creator = BeanDefinitionBuilder.rootBeanDefinition(NewCreator.class);
-                creator.addPropertyValue("className", element.getAttribute("class"));
+                creator.addPropertyValue("className", node.getAttributes().getNamedItem("class").getNodeValue());
                 creator.addPropertyValue("javascript", javascript);
             } else {
                 throw new UnsupportedOperationException("Type " + type + " is not yet supported");
             }
 
-            registerCreator(registryBuilder, javascript, creator, element.getChildNodes());
+            registerCreator(registryBuilder, javascript, creator, node.getChildNodes());
 
             return definition;
         }

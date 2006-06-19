@@ -16,6 +16,7 @@
 package org.directwebremoting.spring;
 
 import org.directwebremoting.create.AbstractCreator;
+import org.springframework.aop.framework.ProxyFactoryBean;
 
 /**
  * A creator that proxies to the specified bean. <br>
@@ -40,6 +41,12 @@ public class BeanCreator extends AbstractCreator
         {
             return beanClass;
         }
+
+        if (bean.getClass().equals(ProxyFactoryBean.class)) {
+            ProxyFactoryBean proxy = (ProxyFactoryBean) getInstance();
+            return proxy.getObjectType();
+        }
+
         return bean.getClass();
     }
 

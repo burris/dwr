@@ -17,6 +17,7 @@ package org.directwebremoting.spring;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -31,50 +32,29 @@ import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.DwrXmlConfigurator;
 import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.util.Logger;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
- * The servlet that handles all calls to DWR.<br>
- * It retrieves its configuration from the Spring IoC container.
+ * The servlet that handles all calls to DWR. <br>
+ * It retrieves its configuration from the Spring IoC container. This is done in two ways:
+ * <ol>
+ *   <li>Use the Spring namespace. When using the Spring namespace for DWR, the confgiuration for DWR is
+ *       automatically picked up by this servlet.</li>
+ *   <li>Explicitly specify which configurations to pick up. When explicitly defining the DWR configuration in
+ *       Spring yourself, you can explicitely specify them in the init parameters.</li>
+ * </ol>
+ * Same as with the <code>DwrServlet</code>, you can specify a <code>debug</code> init parameter on this servlet
+ * to put DWR in debug mode (allowing access to the very handy debug pages).
+ *
+ * @see org.directwebremoting.servlet.DwrServlet
+ *
  * @author Bram Smeets
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
+public class DwrSpringServlet extends HttpServlet
 {
-    /* (non-Javadoc)
-     * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
-     */
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException
-    {
-        try
-        {
-            container = new SpringContainer();
-            container.setBeanFactory(beanFactory);
-
-            ContainerUtil.setupDefaults(container);
-            ContainerUtil.setupFromServletConfig(container, getServletConfig());
-            container.configurationFinished();
-
-            // Cached to save looking them up
-            webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
-            processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
-
-            // Now we have set the implementations we can set the WebContext up
-            WebContextFactory.setWebContextBuilder(webContextBuilder);
-        }
-        catch (InstantiationException ex)
-        {
-            throw new BeanCreationException("Failed to instansiate", ex); //$NON-NLS-1$
-        }
-        catch (IllegalAccessException ex)
-        {
-            throw new BeanCreationException("Access error", ex); //$NON-NLS-1$
-        }
-    }
-
     /**
      * Setter for use by the Spring IoC container to tell us what Configurators
      * exist for us to configure ourselves.
@@ -101,6 +81,35 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
     public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
+
+        try
+        {
+            container = new SpringContainer();
+
+            ContainerUtil.setupDefaults(container);
+            ContainerUtil.setupFromServletConfig(container, getServletConfig());
+            container.configurationFinished();
+
+            // Cached to save looking them up
+            webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
+            processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+
+            // Now we have set the implementations we can set the WebContext up
+            WebContextFactory.setWebContextBuilder(webContextBuilder);
+        }
+        catch (InstantiationException ex)
+        {
+            throw new BeanCreationException("Failed to instansiate", ex); //$NON-NLS-1$
+        }
+        catch (IllegalAccessException ex)
+        {
+            throw new BeanCreationException("Access error", ex); //$NON-NLS-1$
+        }
+
+        // retrieve the configurators from Spring (loaded by the ContextLoaderListener)
+        WebApplicationContext wCtx = WebApplicationContextUtils.getRequiredWebApplicationContext(
+                config.getServletContext());
+        configurators.add(wCtx.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID));
 
         try
         {
@@ -179,7 +188,7 @@ public class DwrSpringServlet extends HttpServlet implements BeanFactoryAware
     /**
      * What Configurators exist for us to configure ourselves.
      */
-    private List configurators;
+    private List configurators = new ArrayList();
 
     /**
      * The log stream
