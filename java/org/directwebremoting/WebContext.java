@@ -16,10 +16,7 @@
 package org.directwebremoting;
 
 import java.io.IOException;
-import java.util.Collection;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +26,7 @@ import javax.servlet.http.HttpSession;
  * Class to enable us to access servlet parameters.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public interface WebContext
+public interface WebContext extends ServerContext
 {
     /**
      * Get the script session that represents the currently viewed page in the
@@ -39,33 +36,11 @@ public interface WebContext
     ScriptSession getScriptSession();
 
     /**
-     * Get a list of all ScriptSessions on a given page.
-     * Note that the list of known sessions is continually changing so it is
-     * possible that the list will be out of date by the time it is used. For
-     * this reason you should check that getScriptSession(String id) returns
-     * something non null.
-     * @param url The URL including 'http://', up to (but not including) '?' or '#' 
-     * @return A collection of all the ScriptSessions.
-     */
-    Collection getScriptSessionsByPage(String url);
-
-    /**
      * What is the URL of the current page.
      * This includes 'http://', up to (but not including) '?' or '#'
      * @return The URL of the current page
      */
     String getCurrentPage();
-
-    /**
-     * Get a list of all the ScriptSessions known to this server at the given
-     * time.
-     * Note that the list of known sessions is continually changing so it is
-     * possible that the list will be out of date by the time it is used. For
-     * this reason you should check that getScriptSession(String id) returns
-     * something non null.
-     * @return A collection of all the ScriptSessions.
-     */
-    Collection getAllScriptSessions();
 
     /**
      * Returns the current session associated with this request, or if the
@@ -87,18 +62,6 @@ public interface WebContext
     HttpSession getSession(boolean create);
 
     /**
-     * Accessor for the servlet config.
-     * @return Returns the config.
-     */
-    ServletConfig getServletConfig();
-
-    /**
-     * Returns the ServletContext to which this session belongs.
-     * @return The servlet context information.
-     */
-    ServletContext getServletContext();
-
-    /**
      * Accessor for the http request information.
      * @return Returns the request.
      */
@@ -109,18 +72,6 @@ public interface WebContext
      * @return Returns the response.
      */
     HttpServletResponse getHttpServletResponse();
-
-    /**
-     * Accessor for the IoC container.
-     * @return The IoC container that created the interface implementations.
-     */
-    Container getContainer();
-
-    /**
-     * An attribute used by {@link WebContext#forwardToString(String)} to inform
-     * anyone that wants to know that this is a request from DWR.
-     */
-    public static final String ATTRIBUTE_DWR = "org.directwebremoting"; //$NON-NLS-1$
 
     /**
      * Forward a request to a given URL and catch the data written to it.
@@ -137,21 +88,6 @@ public interface WebContext
      * @throws IllegalStateException if the response was already committed
      */
     String forwardToString(String url) throws ServletException, IOException;
-
-    /**
-     * Attempt to convert from a Java object to a Javascript expression for
-     * passing to eval in a browser.
-     * @param data The object to convert
-     * @return An outbound variable (contains an init code and an assign code)
-     * @throws MarshallException
-     */
-    OutboundVariable toJavascript(Object data) throws MarshallException;
-
-    /**
-     * Fish the version number out of the dwr.properties file.
-     * @return The current version number.
-     */
-    String getVersion();
 
     /**
      * For system use only: This method allows the system to fill in the session
