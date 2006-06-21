@@ -235,7 +235,7 @@ public class DefaultScriptSession implements ScriptSession
 
         if (invalidated)
         {
-            throw new IllegalStateException("ScriptSession has been invalidated."); //$NON-NLS-1$
+            log.warn("ScriptSession has been invalidated."); //$NON-NLS-1$
         }
     }
 
