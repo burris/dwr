@@ -83,7 +83,7 @@ DWREngine.ScriptTag = 3;
 
 /**
  * Set the preferred remoting method.
- * @param newMethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame
+ * @param newMethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame or DWREngine.ScriptTag
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
 DWREngine.setMethod = function(newMethod) {
@@ -631,7 +631,7 @@ DWREngine._sendData = function(batch) {
   var query = "";
   var prop;
 
-  // This equates to (batch.method = XHR && browser supports XHR)
+  // This equates to (batch.method == XHR && browser supports XHR)
   if (batch.req) {
     // Proceed using XMLHttpRequest
     if (batch.async) {
@@ -781,7 +781,8 @@ DWREngine._stateChange = function(batch) {
           return;
         }
         else {
-          DWREngine._handleMetaDataWarning(null, "Invalid content from server");
+// TODO: work out what to do here
+//          DWREngine._handleMetaDataWarning(null, "Invalid content type from server: '" + contentType + "'");
         }
       }
       // Skip checking the xhr.status because the above will do for most errors
@@ -869,7 +870,7 @@ DWREngine._eval = function(script) {
   return eval(script);
 }
 
-/** @private Called as a result of a request timeout */ 
+/** @private Called as a result of a request timeout */
 DWREngine._abortRequest = function(batch) {
   if (batch && batch.metadata != null && !batch.completed) {
     DWREngine._clearUp(batch);
@@ -892,7 +893,7 @@ DWREngine._clearUp = function(batch) {
     return;
   }
 
-  // Irame tidyup
+  // IFrame tidyup
   if (batch.div) batch.div.parentNode.removeChild(batch.div);
   if (batch.iframe) {
     // If this is a poll frame then stop comet polling
@@ -924,12 +925,12 @@ DWREngine._clearUp = function(batch) {
   batch.completed = true;
 };
 
-/** @private Generic error handling routing to save having null checks everywhere. */
+/** @private Generic error handling routing to save having null checks everywhere */
 DWREngine._handleError = function(reason, ex) {
   if (DWREngine._errorHandler) DWREngine._errorHandler(reason, ex);
 };
 
-/** @private Generic error handling routing to save having null checks everywhere. */
+/** @private Generic warning handling routing to save having null checks everywhere */
 DWREngine._handleWarning = function(reason, ex) {
   if (DWREngine._warningHandler) DWREngine._warningHandler(reason, ex);
 };
@@ -1012,7 +1013,7 @@ DWREngine._serializeObject = function(batch, referto, data, name) {
   var ref = DWREngine._lookup(referto, data, name);
   if (ref) return ref;
 
-  // This check for an HTML is not complete, but is there a better way.
+  // This check for an HTML is not complete, but is there a better way?
   // Maybe we should add: data.hasChildNodes typeof "function" == true
   if (data.nodeName && data.nodeType) {
     return DWREngine._serializeXml(batch, referto, data, name);
