@@ -1,4 +1,25 @@
 
+Killing a comet request
+	How to reproduce:
+	(I use DWR 1.1.1)
+	Use XMLHttpRequest method and Internet Explorer (tested at
+	6.0.2900.2180.xpsp_sp2_rtm.040803-2158).
+	Start a long request and close the browser while the request is pending.
+	From now on the browser behaves very strange - re-opening the page leads to a
+	white screen, an empty status bar...
+	One has to restart IE.	
+	As a workaround I tried the IFrame method but it does not seem to work with
+	multiple asynchronous requests (neither on Firefox nor on IE).
+
+
+ScriptSession was invalidated
+	I'm using reverse ajax in M2.
+	I get sometimes alerts with 'ScriptSession was invalidated', I'm not
+	sure what causes them, but it seems that after an alert or two
+	everything works OK; is there a place to disable or catch them?
+	
+
+
 XHR headers
 	I also read a recent posted question on setting
 	headers, and you asked why it was needed.
