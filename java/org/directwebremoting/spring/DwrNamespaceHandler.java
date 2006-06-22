@@ -140,16 +140,16 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
             Iterator iter = creators.iterator();
             while (iter.hasNext()) {
                 Element createElement = (Element) iter.next();
-                findDecoratorForNode(createElement).decorate(
-                        createElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
+                //findDecoratorForNode(createElement).decorate(
+                //        createElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
             List converters = DomUtils.getChildElementsByTagName(element, "convert");
             iter = converters.iterator();
             while (iter.hasNext()) {
                 Element convertElement = (Element) iter.next();
-                findDecoratorForNode(convertElement).decorate(
-                        convertElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
+                //findDecoratorForNode(convertElement).decorate(
+                //        convertElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
             return beanDefinition;
@@ -170,7 +170,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
     }
 
     private class RemoteBeanDefinitionDecorator implements BeanDefinitionDecorator {
-        public BeanDefinitionHolder decorate(Node node,
+        public BeanDefinitionHolder decorate(Element node,
                                              BeanDefinitionHolder definition,
                                              ParserContext parserContext) {
             BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
@@ -192,7 +192,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
 
     private class ConverterBeanDefinitionDecorator implements BeanDefinitionDecorator {
 
-        public BeanDefinitionHolder decorate(Node node,
+        public BeanDefinitionHolder decorate(Element node,
                                              BeanDefinitionHolder definition,
                                              ParserContext parserContext) {
             Element element = (Element) node;
@@ -219,7 +219,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
      * Uses the BeanDefinitionDecorator since we need access to the name of the parent definition??
      */
     private class CreatorBeanDefinitionDecorator implements BeanDefinitionDecorator {
-        public BeanDefinitionHolder decorate(Node node,
+        public BeanDefinitionHolder decorate(Element node,
                                              BeanDefinitionHolder definition,
                                              ParserContext parserContext) {
             BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
