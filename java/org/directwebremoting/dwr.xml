@@ -60,6 +60,7 @@
     <convert converter="date" match="java.sql.Date"/>
     <convert converter="date" match="java.sql.Time"/>
     <convert converter="date" match="java.sql.Timestamp"/>
+    <convert converter="date" match="java.util.Calendar"/>
 
     <convert converter="array" match="[Z"/>
     <convert converter="array" match="[B"/>

@@ -17,6 +17,7 @@ package org.directwebremoting.convert;
 
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.directwebremoting.Converter;
@@ -73,6 +74,12 @@ public class DateConverter extends BaseV20Converter implements Converter
             {
                 return new Timestamp(date.getTime());
             }
+            else if (paramType == Calendar.class)
+            {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                return cal;
+            }
             else
             {
                 throw new MarshallException(Messages.getString("DateConverter.WrongType") + paramType.getName()); //$NON-NLS-1$
@@ -98,8 +105,17 @@ public class DateConverter extends BaseV20Converter implements Converter
             throw new MarshallException(Messages.getString("DateConverter.TypeError", data.getClass())); //$NON-NLS-1$
         }
 
-        Date date = (Date) data;
-        long millis = date.getTime();
+        long millis;
+        if (data instanceof Calendar)
+        {
+            Calendar cal = (Calendar) data;
+            millis = cal.getTime().getTime();
+        }
+        else
+        {
+            Date date = (Date) data;
+            millis = date.getTime();
+        }
 
         return new OutboundVariable("", "new Date(" + millis + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
