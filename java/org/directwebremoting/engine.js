@@ -609,12 +609,15 @@ DWREngine._sendData = function(batch) {
     }, batch.timeout);
   }
   // A quick string to help people that use web log analysers
-  var statsInfo;
+  var urlPostfix;
   if (batch.map.callCount == 1) {
-    statsInfo = batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"] + ".dwr";
+    urlPostfix = batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"] + ".dwr";
   }
   else {
-    statsInfo = "Multiple." + batch.map.callCount + ".dwr";
+    urlPostfix = "Multiple." + batch.map.callCount + ".dwr";
+  }
+  if (DWREngine._httpSessionId != "") {
+    urlPostfix += ";jsessionid=" + DWREngine._httpSessionId;
   }
 
   // Get setup for XMLHttpRequest if possible
@@ -663,10 +666,9 @@ DWREngine._sendData = function(batch) {
         if (qval == "") DWREngine._handleError("Found empty qval for qkey=" + qkey);
         query += qkey + "=" + qval + "&";
       }
-      query += "jsessionid=" + DWREngine._httpSessionId;
 
       try {
-        batch.req.open("GET", batch.path + "/plainjs/" + statsInfo + "?" + query, batch.async);
+        batch.req.open("GET", batch.path + "/plainjs/" + urlPostfix + "?" + query, batch.async);
         batch.req.send(null);
         if (!batch.async) {
           DWREngine._stateChange(batch);
@@ -688,7 +690,7 @@ DWREngine._sendData = function(batch) {
         //   if (navigator.userAgent.indexOf('Gecko') >= 0) {
         //     batch.req.setRequestHeader('Connection', 'close');
         //   }
-        batch.req.open("POST", batch.path + "/plainjs/" + statsInfo, batch.async);
+        batch.req.open("POST", batch.path + "/plainjs/" + urlPostfix, batch.async);
         batch.req.setRequestHeader('Content-Type', 'text/plain');
         batch.req.send(query);
         if (!batch.async) DWREngine._stateChange(batch);
@@ -706,15 +708,16 @@ DWREngine._sendData = function(batch) {
     document.body.appendChild(batch.div);
     batch.iframe = document.getElementById(idname);
     batch.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
+
     // Settings that vary if we are polling
     var baseUrl;
     if (batch.isPoll) {
       DWREngine._pollFrame = batch.iframe;
       DWREngine._pollCometSize = 0;
-      baseUrl = batch.path + "/plainjs/" + statsInfo;
+      baseUrl = batch.path + "/plainjs/" + urlPostfix;
     }
     else {
-      baseUrl = batch.path + "/htmljs/" + statsInfo;
+      baseUrl = batch.path + "/htmljs/" + urlPostfix;
     }
     if (batch.verb == "GET") {
       for (prop in batch.map) {
@@ -758,7 +761,7 @@ DWREngine._sendData = function(batch) {
     query = query.substring(0, query.length - 1);
     batch.script = document.createElement('script');
     batch.script.id = "dwr-st-" + batch.map["c0-id"];
-    batch.script.src = batch.scriptTagBase + batch.path + "/plainjs/" + statsInfo + "?" + query;
+    batch.script.src = batch.scriptTagBase + batch.path + "/plainjs/" + urlPostfix + "?" + query;
     document.body.appendChild(batch.script);
   }
 };
