@@ -141,7 +141,7 @@ public final class OutboundContext
         /**
          * @param object The object to wrap
          */
-        private ReferenceWrapper(Object object)
+        protected ReferenceWrapper(Object object)
         {
             this.object = object;
         }
