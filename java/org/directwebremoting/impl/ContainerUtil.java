@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -141,9 +142,14 @@ public class ContainerUtil
             {
                 foundConfig = true;
 
-                DwrXmlConfigurator local = new DwrXmlConfigurator();
-                local.setServletResourceName(value);
-                local.configure(container);
+                StringTokenizer st = new StringTokenizer(value, "\n,"); //$NON-NLS-1$
+                while (st.hasMoreTokens())
+                {
+                    String fileName = st.nextToken().trim();
+                    DwrXmlConfigurator local = new DwrXmlConfigurator();
+                    local.setServletResourceName(fileName);
+                    local.configure(container);
+                }
             }
             else if (name.equals(INIT_CUSTOM_CONFIGURATOR))
             {
