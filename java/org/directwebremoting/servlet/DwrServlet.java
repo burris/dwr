@@ -146,6 +146,11 @@ public class DwrServlet extends HttpServlet
                     log.error("Caught impossible Throwable", ex); //$NON-NLS-1$
                     handleAnnotationFailure(delayedIOException);
                 }
+                else if (ex.getClass().getName().equals(LinkageError.class.getName()))
+                {
+                    log.error("Caught impossible Throwable", ex); //$NON-NLS-1$
+                    handleAnnotationFailure(delayedIOException);
+                }
                 else if (ex instanceof Error)
                 {
                     throw (Error) ex;
