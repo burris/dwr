@@ -53,6 +53,14 @@
     </create>
     <convert converter="bean" match="uk.ltd.getahead.dwrdemo.chat.Message"/>
 
+    <create creator="new" javascript="CoBrowse">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.cobrowse.CoBrowse"/>
+    </create>
+
+    <create creator="new" javascript="Whiteboard">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.whiteboard.Whiteboard"/>
+    </create>
+
     <create creator="script" javascript="EmailValidator" scope="application">
       <param name="language" value="beanshell"/>
       <param name="script">
