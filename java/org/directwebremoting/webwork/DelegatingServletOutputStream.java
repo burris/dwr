@@ -45,11 +45,6 @@ public class DelegatingServletOutputStream extends ServletOutputStream
         this.targetStream = targetStream;
     }
 
-    public OutputStream getTargetStream()
-    {
-        return targetStream;
-    }
-
     public void write(int b) throws IOException
     {
         this.targetStream.write(b);
@@ -67,4 +62,8 @@ public class DelegatingServletOutputStream extends ServletOutputStream
         this.targetStream.close();
     }
 
+//  public OutputStream getTargetStream()
+//  {
+//      return targetStream;
+//  }
 }

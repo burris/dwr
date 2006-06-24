@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.util.Assert;
-import org.springframework.web.util.WebUtils;
 
 /**
  * Mock implementation of the HttpServletResponse interface.
@@ -52,16 +50,13 @@ import org.springframework.web.util.WebUtils;
  */
 public class MockHttpServletResponse implements HttpServletResponse
 {
-
-    public static final int DEFAULT_SERVER_PORT = 80;
-
-    private static final String CHARSET_PREFIX = "charset=";
+    private static final String CHARSET_PREFIX = "charset="; //$NON-NLS-1$
 
     //---------------------------------------------------------------------
     // ServletResponse properties
     //---------------------------------------------------------------------
 
-    private String characterEncoding = WebUtils.DEFAULT_CHARACTER_ENCODING;
+    private String characterEncoding = "ISO-8859-1"; //$NON-NLS-1$
 
     private final ByteArrayOutputStream content = new ByteArrayOutputStream();
 
