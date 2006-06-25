@@ -191,12 +191,20 @@ public class DwrpPlainJsMarshaller implements Marshaller
 
             // Which method are we using?
             Method method = findMethod(call, inctx);
-            call.setMethod(method);
             if (method == null)
             {
                 String name = call.getScriptName() + '.' + call.getMethodName();
-                throw new IllegalArgumentException(Messages.getString("DefaultRemoter.UnknownMethod", name)); //$NON-NLS-1$
+                String error = Messages.getString("DefaultRemoter.UnknownMethod", name); //$NON-NLS-1$
+                log.warn("Marshalling exception: " + error); //$NON-NLS-1$
+
+                call.setMethod(null);
+                call.setParameters(null);
+                call.setException(new IllegalArgumentException(error));
+
+                continue callLoop;
             }
+
+            call.setMethod(method);
 
             // Check this method is accessible
             String reason = accessControl.getReasonToNotExecute(creator, call.getScriptName(), method);
@@ -318,8 +326,7 @@ public class DwrpPlainJsMarshaller implements Marshaller
 
         if (available.isEmpty())
         {
-            String name = call.getScriptName() + '.' + call.getMethodName();
-            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.UnknownMethod", name)); //$NON-NLS-1$
+            return null;
         }
 
         // At the moment we are just going to take the first match, for a
