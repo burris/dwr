@@ -17,7 +17,6 @@ package org.directwebremoting.impl;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Collection;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -27,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.ConverterManager;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
@@ -41,7 +39,7 @@ import org.directwebremoting.util.VersionUtil;
  * A default implementation of WebContext
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultWebContext implements WebContext
+public class DefaultWebContext extends DefaultServerContext implements WebContext
 {
     /**
      * Create a new DefaultWebContext
@@ -54,11 +52,10 @@ public class DefaultWebContext implements WebContext
      */
     public DefaultWebContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context, Container container)
     {
+        super(config, context, container);
+
         this.request = request;
         this.response = response;
-        this.config = config;
-        this.context = context;
-        this.container = container;
     }
 
     /* (non-Javadoc)
@@ -92,30 +89,6 @@ public class DefaultWebContext implements WebContext
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.WebContext#getScriptSessionsByPage(java.lang.String)
-     */
-    public Collection getScriptSessionsByPage(String otherPage)
-    {
-        return getScriptSessionManager().getScriptSessionsByPage(otherPage);
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.WebContext#getAllScriptSessions()
-     */
-    public Collection getAllScriptSessions()
-    {
-        return getScriptSessionManager().getAllScriptSessions();
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.WebContext#getContainer()
-     */
-    public Container getContainer()
-    {
-        return container;
-    }
-
-    /* (non-Javadoc)
      * @see org.directwebremoting.WebContext#getSession()
      */
     public HttpSession getSession()
@@ -129,22 +102,6 @@ public class DefaultWebContext implements WebContext
     public HttpSession getSession(boolean create)
     {
         return request.getSession(create);
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.WebContext#getServletConfig()
-     */
-    public ServletConfig getServletConfig()
-    {
-        return config;
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.WebContext#getServletContext()
-     */
-    public ServletContext getServletContext()
-    {
-        return context;
     }
 
     /* (non-Javadoc)
@@ -199,34 +156,6 @@ public class DefaultWebContext implements WebContext
     }
 
     /**
-     * Internal helper for getting at a ScriptSessionManager
-     * @return Our ScriptSessionManager
-     */
-    private ScriptSessionManager getScriptSessionManager()
-    {
-        if (sessionManager == null)
-        {
-            sessionManager = (ScriptSessionManager) container.getBean(ScriptSessionManager.class.getName());
-        }
-        
-        return sessionManager;
-    }
-
-    /**
-     * Internal helper for getting at a ConverterManager
-     * @return Our ConverterManager
-     */
-    private ConverterManager getConverterManager()
-    {
-        if (converterManager == null)
-        {
-            converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
-        }
-        
-        return converterManager;
-    }
-
-    /**
      * The unique ID (like a session ID) assigned to the current page
      */
     private String scriptSessionId = null;
@@ -245,18 +174,4 @@ public class DefaultWebContext implements WebContext
      * The HttpServletResponse associated with the current request
      */
     private HttpServletResponse response = null;
-
-    /**
-     * The ServletConfig associated with the current request
-     */
-    private ServletConfig config = null;
-
-    /**
-     * The ServletContext associated with the current request
-     */
-    private ServletContext context = null;
-
-    private Container container = null;
-    private ScriptSessionManager sessionManager = null;
-    private ConverterManager converterManager = null;
 }

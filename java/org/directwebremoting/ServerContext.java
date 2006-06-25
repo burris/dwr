@@ -66,12 +66,6 @@ public interface ServerContext
     Container getContainer();
 
     /**
-     * An attribute used by {@link WebContext#forwardToString(String)} to inform
-     * anyone that wants to know that this is a request from DWR.
-     */
-    public static final String ATTRIBUTE_DWR = "org.directwebremoting"; //$NON-NLS-1$
-
-    /**
      * Attempt to convert from a Java object to a Javascript expression for
      * passing to eval in a browser.
      * @param data The object to convert
@@ -85,7 +79,4 @@ public interface ServerContext
      * @return The current version number.
      */
     String getVersion();
-
-
 }
-

@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.Configurator;
 import org.directwebremoting.DwrConstants;
+import org.directwebremoting.ServerContextBuilder;
+import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextBuilder;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.impl.ContainerUtil;
@@ -84,6 +86,10 @@ public class DwrServlet extends HttpServlet
 
             // Now we have set the implementations we can set the WebContext up
             WebContextFactory.setWebContextBuilder(webContextBuilder);
+
+            // We can also setup the ServerContext
+            ServerContextBuilder serverContextBuilder = (ServerContextBuilder) container.getBean(ServerContextBuilder.class.getName());
+            ServerContextFactory.setServerContextBuilder(serverContextBuilder);
 
             ContainerUtil.prepareForWebContextFilter(config, container, webContextBuilder, this);
             webContextBuilder.set(null, null, getServletConfig(), getServletContext(), container);
@@ -228,19 +234,28 @@ public class DwrServlet extends HttpServlet
     }
 
     /**
+     * Accessor for the DWR IoC container.
+     * @return DWR's IoC container
+     */
+    public DefaultContainer getContainer()
+    {
+        return container;
+    }
+
+    /**
      * Our IoC container
      */
-    protected DefaultContainer container;
+    private DefaultContainer container;
 
     /**
      * The processor will actually handle the http requests
      */
-    protected UrlProcessor processor;
+    private UrlProcessor processor;
 
     /**
      * The WebContext that keeps http objects local to a thread
      */
-    protected WebContextBuilder webContextBuilder;
+    private WebContextBuilder webContextBuilder;
 
     /**
      * The log stream

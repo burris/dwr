@@ -37,6 +37,7 @@ import org.directwebremoting.CreatorManager;
 import org.directwebremoting.DebugPageGenerator;
 import org.directwebremoting.Remoter;
 import org.directwebremoting.ScriptSessionManager;
+import org.directwebremoting.ServerContextBuilder;
 import org.directwebremoting.ServerLoadMonitor;
 import org.directwebremoting.WebContextBuilder;
 import org.directwebremoting.dwrp.DefaultConverterManager;
@@ -70,6 +71,7 @@ public class ContainerUtil
         defaultContainer.addParameter(CreatorManager.class.getName(), DefaultCreatorManager.class.getName());
         defaultContainer.addParameter(UrlProcessor.class.getName(), UrlProcessor.class.getName());
         defaultContainer.addParameter(WebContextBuilder.class.getName(), DefaultWebContextBuilder.class.getName());
+        defaultContainer.addParameter(ServerContextBuilder.class.getName(), DefaultServerContextBuilder.class.getName());
         defaultContainer.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
         defaultContainer.addParameter(Remoter.class.getName(), DefaultRemoter.class.getName());
         defaultContainer.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
@@ -195,7 +197,7 @@ public class ContainerUtil
      * @param container The container to publish
      * @param config Source of initParams to dictate publishing and contexts to publish to
      */
-    public static void publishContainer(DefaultContainer container, ServletConfig config)
+    public static void publishContainer(Container container, ServletConfig config)
     {
         String publishName = config.getInitParameter(INIT_PUBLISH_CONTAINER);
         if (publishName != null)

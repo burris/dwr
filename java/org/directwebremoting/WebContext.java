@@ -74,6 +74,12 @@ public interface WebContext extends ServerContext
     HttpServletResponse getHttpServletResponse();
 
     /**
+     * An attribute used by {@link WebContext#forwardToString(String)} to inform
+     * anyone that wants to know that this is a request from DWR.
+     */
+    public static final String ATTRIBUTE_DWR = "org.directwebremoting"; //$NON-NLS-1$
+
+    /**
      * Forward a request to a given URL and catch the data written to it.
      * It is possible to distinguish requests that arrive normally and requests
      * that come from a DWR forwardToString() by the presence of a request

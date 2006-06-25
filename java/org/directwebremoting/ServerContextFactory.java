@@ -30,6 +30,27 @@ public class ServerContextFactory
      */
     public static ServerContext get(ServletContext ctx)
     {
-        return null;
+        if (builder == null)
+        {
+            return null;
+        }
+
+        return builder.get(ctx);
     }
+
+    /**
+     * Internal method to allow us to get the ServerContextBuilder from which we
+     * will get ServerContext objects.
+     * Do not call this method from outside of DWR.
+     * @param builder The factory object (from DwrServlet)
+     */
+    public static void setServerContextBuilder(ServerContextBuilder builder)
+    {
+        ServerContextFactory.builder = builder;
+    }
+
+    /**
+     * The ServerContextBuilder from which we will get ServerContext objects
+     */
+    private static ServerContextBuilder builder;
 }
