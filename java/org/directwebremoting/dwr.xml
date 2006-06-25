@@ -11,6 +11,7 @@
     <creator id="spring" class="org.directwebremoting.spring.SpringCreator"/>
     <creator id="script" class="org.directwebremoting.create.ScriptedCreator"/>
     <creator id="struts" class="org.directwebremoting.struts.StrutsCreator"/>
+    <creator id="ejb3" class="org.directwebremoting.create.Ejb3Creator"/>
 
     <converter id="null" class="org.directwebremoting.convert.NullConverter"/>
     <converter id="enum" class="org.directwebremoting.convert.EnumConverter"/>
@@ -29,6 +30,8 @@
     <converter id="bean" class="org.directwebremoting.convert.BeanConverter"/>
     <converter id="object" class="org.directwebremoting.convert.ObjectConverter"/>
     <converter id="hibernate" class="org.directwebremoting.convert.HibernateBeanConverter"/>
+    <converter id="url" class="org.directwebremoting.convert.URLConverter"/>
+    <converter id="exception" class="org.directwebremoting.convert.ExceptionConverter"/>
   </init>
 
   <allow>
@@ -61,6 +64,7 @@
     <convert converter="date" match="java.sql.Time"/>
     <convert converter="date" match="java.sql.Timestamp"/>
     <convert converter="date" match="java.util.Calendar"/>
+    <convert converter="url" match="java.net.URL"/>
 
     <convert converter="array" match="[Z"/>
     <convert converter="array" match="[B"/>

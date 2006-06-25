@@ -61,10 +61,7 @@ public class DOMConverter extends BaseV20Converter implements Converter
                 buildFactory = DocumentBuilderFactory.newInstance();
             }
 
-            if (builder == null)
-            {
-                builder = buildFactory.newDocumentBuilder();
-            }
+            DocumentBuilder builder = buildFactory.newDocumentBuilder();
 
             InputSource is = new InputSource(new StringReader(value));
             Document doc = builder.parse(is);
@@ -100,10 +97,7 @@ public class DOMConverter extends BaseV20Converter implements Converter
 
         try
         {
-            if (transformer == null)
-            {
-                transformer = xslFact.newTransformer();
-            }
+            Transformer transformer = xslFact.newTransformer();
 
             // Using XSLT to convert to a stream. Setup the source
             Source source;
@@ -145,11 +139,13 @@ public class DOMConverter extends BaseV20Converter implements Converter
         }
     }
 
+    /**
+     * How we create new transformers
+     */
     private TransformerFactory xslFact = TransformerFactory.newInstance();
 
-    private Transformer transformer = null;
-
+    /**
+     * How we create new documents
+     */
     private DocumentBuilderFactory buildFactory = null;
-
-    private DocumentBuilder builder = null;
 }
