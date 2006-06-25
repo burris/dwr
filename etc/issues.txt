@@ -1,5 +1,19 @@
 
-Killing a comet request
+DWRUtil.setOptions gets the wrong order in Opera
+
+ActiveX off support is broken
+
+Audit all MarshallExceptions - they could go to the client
+
+make sure that the exec calls never pass back an exception. catch and emit some good javascript
+
+timeout is broken
+
+IFrame GET is broken with Safari
+	iframe is only really useful with IE6 (with activex turned off) so we can
+	ignore this breakage
+
+Comet requests kill IE
 	How to reproduce:
 	(I use DWR 1.1.1)
 	Use XMLHttpRequest method and Internet Explorer (tested at
@@ -9,57 +23,7 @@ Killing a comet request
 	white screen, an empty status bar...
 	One has to restart IE.	
 	As a workaround I tried the IFrame method but it does not seem to work with
-	multiple asynchronous requests (neither on Firefox nor on IE).
-
-
-ScriptSession was invalidated
-	I'm using reverse ajax in M2.
-	I get sometimes alerts with 'ScriptSession was invalidated', I'm not
-	sure what causes them, but it seems that after an alert or two
-	everything works OK; is there a place to disable or catch them?
-	
-
-
-XHR headers
-	I also read a recent posted question on setting
-	headers, and you asked why it was needed.
-	
-	Let me explain where I see a need.
-	
-	At our site, we use Spring and Acegi where we have
-	written and/or use Acegi filters that look at the
-	request authentication information in the request
-	header.  Typically this is WSSE authentication
-	information.
-	
-	As I started to look at DWR, I wanted to continue to
-	leverage this capability, but to do so, I would need
-	to set the request headers with the appropriate
-	information.  If successful the filter will just pass
-	the information to the DWR servlet for processing.
-	
-	Can you tell me if there is a way in either version of
-	DWR to set this information? Of if you see another way
-	around this, that would be helpful.
-
-ScriptSession has been invalided
-	We get this "ScriptSession has been invalided" error every once in a while.
-
-Stuff I'm working on:
-- Accessibility. DWR should integrate with screen readers to tell them when a page has changed
-
-Stuff that would be cool:
-- WDDX stuff from Rob Gonda
-- Overloaded objects marshaled to correct types
-- Hierarchical DWRUtil.[g|s]etValues
-
-Audit all MarshallExceptions - they could go to the client
-
-accessibility
-
-make sure that the exec calls never pass back an exception. catch and emit some good javascript
-
-onbackbutton, onforwardbutton
+	multiple asynchronous requests (neither on Firefox nor on IE).	
 
 DwrUtil serious bug
 	I believe I found a bug in DWR 2.0 milestone 2:
@@ -106,7 +70,6 @@ DwrUtil serious bug
 		OutboundVariable elementIdOv = getWebContext().toJavascript(elementId, 
 		outputContext);
 		OutboundVariable valueOv = getWebContext().toJavascript(value, outputContext);
-	
 
 Multiple call issue
 	When calling the same function 4 times consecutively passing a different
@@ -121,25 +84,6 @@ Multiple call issue
 	LabBean.getMaterials(displayMaterialReversedItems, 2);
 	LabBean.getMaterials(displayMaterialReversedJewels, 1);
 	LabBean.getMaterials(displayMaterialItems, 2);
-
-ie7 testing
-
-timeout is broken
-
-problems with oc4j??
-	This is a berif description and I will send you my code soon.
-	In my code I'm trying to call a java method from the jscript, where the java
-	method returns a vector of objects and the returned value is reterived from
-	the database, so every time the returned vector size could be changed, but
-	in my case the returned vector has the same size every time however I'm sure
-	that this vector is changed. What I could understand till now that this
-	problem still accoured even I have restarted the jDeveloper and the whole
-	windows.
-	Thank you for your interest, and I will send you the code ASAP.
-
-IFrame GET is broken with Safari
-	iframe is only really useful with IE6 (with activex turned off) so we can
-	ignore this breakage
 
 Broken signatures
 	We are users of DWR and have been trying to pass a javascript array of
@@ -219,13 +163,6 @@ Broken signatures
 	substitution problem.
 	Thanks Dan.
 
-Simple Date format
-	There are also notes here:
-	http://getahead.ltd.uk/dwr/server/dwrxml/converters
-	This is something that keeps on being mentioned. At some stage maybe we
-	should consider creating a simple Javascript version of SimpleDateFormat
-	that would help people get this job done more quickly.
-
 Beans extending hashmap - Kristján Bjarni Guðmundsson <kristjg@hugvit.is>
 	I have a class that extends HashMap, and I define that it should be
 	converted using the bean converter, however it always get converted
@@ -233,15 +170,6 @@ Beans extending hashmap - Kristján Bjarni Guðmundsson <kristjg@hugvit.is>
 	converted as a bean?
 	Joe: This ought to work because DWR should pick the more specific
 	declaration. I'll add it to the list of issues.
-
-Response Size Limits
-    My collection has 20.000 objects(string not so large) the size of each
-    object is 74 bytes. After 20 thousands elements I have problems, the client
-    side doesn't show me the result. Do u have any idea to help?  or something?
-    i got the firebug but didn't help. Sometime I received a dialog box
-    "InternalError: Too many literals".
-
-Test with Dojo and Prototype.
 
 Asynchronous batches
 	I set my call to be synchronous:	
@@ -259,42 +187,3 @@ Asynchronous batches
 	     var responseBatch = DWREngine._batches[DWREngine._batches.length-1];
 	Because chain of calls stops at this moment DWREngine._clearUp(batch)
 	never gets called for synchronous call.
-
-Add checks for Javascript reserved names
-	In using DWR one nasty issue I came across was that my bean had a property
-	called default - my ajax call kept failing and I couldn't figure out why
-	till I looked at the generated variables and saw that it was because the
-	generated code put in a value for default and javascript didn't like it.
-	Maybe as a warning, look at bean properties and see if there are a conflicts
-	with reserved keywords.
-
-New Converters for java.util.Currency and java.net.URL
-
-Response already committed
-	Is it normal to get "INFO [org.apache.jk.core.MsgContext] - Response already
-	committed" message to log files every 25 secs when you have called the
-	"DWREngine.setReverseAjax(true)"? I know that the long request is cut out
-	around every 30 sec or so, so I believe the message is coming from that, the
-	question is more that is this normal? I'm using tomcat 5.5.7 and apache httpd
-	2.0 with jk_mod. I've tested this with my own code and with the 2.0M2 example
-	chat code.
-	...
-	Thanks for quick reply. It's definetly something to do with the Apache
-	facading the tomcat. When I connected straight to tomcat it doesn't write
-	that to the log. Here is the threads from the debug if this helps you at all:
-	TP-Processor2@4 daemon, priority=5, in group 'main', status: 'RUNNING'
-	action():249, MsgContext.java
-	action():182, Response.java
-	doFlush():322, OutputBuffer.java
-	flush():293, OutputBuffer.java
-	flush():94, CoyoteWriter.java
-	flush():270, PrintWriter.java
-	checkError():306, PrintWriter.java
-	sendScript():417, DwrpPlainJsMarshaller.java
-	marshallOutbound():367, DwrpPlainJsMarshaller.java
-	handle():131, UrlProcessor.java
-	doPost():188, DwrServlet.java
-	service():709, HttpServlet.java
-	service():802, HttpServlet.java
-	...
-
