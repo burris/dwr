@@ -31,7 +31,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" sourcepath="/library/jarlib/bsf-2.3/bsf-src-2.3.0.zip" kind="lib" path="jar/bsf-2.3.jar"/>
-	<classpathentry exported="true" sourcepath="/library/jarlib/spring-1.1.2/spring-framework-1.1.2-with-dependencies.zip" kind="lib" path="jar/spring.jar">
+	<classpathentry exported="true" sourcepath="/eliza/jar/spring-2.0/spring-framework-2.0-m5-with-dependencies.zip" kind="lib" path="jar/spring.jar">
 		<attributes>
 			<attribute value="http://www.springframework.org/docs/api/" name="javadoc_location"/>
 		</attributes>
