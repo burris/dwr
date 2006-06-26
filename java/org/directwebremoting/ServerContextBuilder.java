@@ -25,7 +25,7 @@ import javax.servlet.ServletContext;
 public interface ServerContextBuilder
 {
     /**
-     * Make the current thread know what the current request is.
+     * Make the current webapp know what the current config/context is.
      * This method is only for use internally to DWR.
      * @param config The servlet configuration
      * @param context The servlet context

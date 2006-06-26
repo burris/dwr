@@ -18,6 +18,8 @@ package org.directwebremoting.proxy.dwrutil;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.ScriptSession;
@@ -42,21 +44,62 @@ import org.directwebremoting.proxy.ScriptProxy;
 public class DwrUtil extends ScriptProxy
 {
     /**
-     * Build a DwrUtil that acts on a single ScriptSession.
-     * @param scriptSession The page to affect
+     * Http thread constructor, that affects no browsers.
+     * Calls to {@link DwrUtil#addScriptSession(ScriptSession)} or to
+     * {@link DwrUtil#addScriptSessions(Collection)} will be needed  
      */
-    public DwrUtil(ScriptSession scriptSession)
+    public DwrUtil()
     {
-        addScriptSession(scriptSession);
+        super();
     }
 
     /**
-     * Build a DwrUtil that acts on a number of ScriptSessions
-     * @param dests A collection of ScriptSessions that we should act on.
+     * Non-http thread constructor, that affects no browsers.
+     * Calls to {@link DwrUtil#addScriptSession(ScriptSession)} or to
+     * {@link DwrUtil#addScriptSessions(Collection)} will be needed
+     * @param sctx The servlet context to allow us to locate a webapp
      */
-    public DwrUtil(Collection dests)
+    public DwrUtil(ServletContext sctx)
     {
-        addScriptSessions(dests);
+        super(sctx);
+    }
+
+    /**
+     * Http thread constructor that alters a single browser
+     * @param scriptSession The browser to alter
+     */
+    public DwrUtil(ScriptSession scriptSession)
+    {
+        super(scriptSession);
+    }
+
+    /**
+     * Non-http thread constructor that alters a single browser
+     * @param scriptSession The browser to alter
+     * @param sctx The servlet context to allow us to locate a webapp
+     */
+    public DwrUtil(ScriptSession scriptSession, ServletContext sctx)
+    {
+        super(scriptSession, sctx);
+    }
+
+    /**
+     * Http thread constructor that alters a number of browsers
+     * @param scriptSessions A collection of ScriptSessions that we should act on.
+     */
+    public DwrUtil(Collection scriptSessions)
+    {
+        super(scriptSessions);
+    }
+
+    /**
+     * Non-http thread constructor that alters a number of browsers
+     * @param scriptSessions The browsers to alter
+     * @param sctx The servlet context to allow us to locate a webapp
+     */
+    public DwrUtil(Collection scriptSessions, ServletContext sctx)
+    {
+        super(scriptSessions, sctx);
     }
 
     /**
@@ -83,8 +126,8 @@ public class DwrUtil extends ScriptProxy
      */
     public void setValue(String elementId, String value, boolean escapeHtml) throws MarshallException
     {
-        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
-        OutboundVariable valueOv = getWebContext().toJavascript(value);
+        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
+        OutboundVariable valueOv = getServerContext().toJavascript(value);
         String options = escapeHtml ? ", {escapeHtml:true}" : ""; //$NON-NLS-1$ //$NON-NLS-2$
 
         StringBuffer script = new StringBuffer();
@@ -111,7 +154,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void setValues(Map values, boolean escapeHtml) throws MarshallException
     {
-        OutboundVariable valuesOv = getWebContext().toJavascript(values);
+        OutboundVariable valuesOv = getServerContext().toJavascript(values);
         String options = escapeHtml ? "{escapeHtml:true}" : "null"; //$NON-NLS-1$ //$NON-NLS-2$
 
         StringBuffer script = new StringBuffer();
@@ -135,8 +178,8 @@ public class DwrUtil extends ScriptProxy
      */
     public void addOptions(String elementId, String[] array) throws MarshallException
     {
-        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
-        OutboundVariable arrayOv = getWebContext().toJavascript(array);
+        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
+        OutboundVariable arrayOv = getServerContext().toJavascript(array);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -161,9 +204,9 @@ public class DwrUtil extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String property) throws MarshallException
     {
-        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
-        OutboundVariable arrayOv = getWebContext().toJavascript(array);
-        OutboundVariable propertyOv = getWebContext().toJavascript(property);
+        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
+        OutboundVariable arrayOv = getServerContext().toJavascript(array);
+        OutboundVariable propertyOv = getServerContext().toJavascript(property);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -191,10 +234,10 @@ public class DwrUtil extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String valueProperty, String textProperty) throws MarshallException
     {
-        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
-        OutboundVariable arrayOv = getWebContext().toJavascript(array);
-        OutboundVariable valuePropertyOv = getWebContext().toJavascript(valueProperty);
-        OutboundVariable textPropertyOv = getWebContext().toJavascript(textProperty);
+        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
+        OutboundVariable arrayOv = getServerContext().toJavascript(array);
+        OutboundVariable valuePropertyOv = getServerContext().toJavascript(valueProperty);
+        OutboundVariable textPropertyOv = getServerContext().toJavascript(textProperty);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -221,7 +264,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void removeAllOptions(String elementId) throws MarshallException
     {
-        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -254,7 +297,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void removeAllRows(String elementId) throws MarshallException
     {
-        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -274,7 +317,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void cloneNode(String elementId) throws MarshallException
     {
-        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
@@ -296,7 +339,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void cloneNode(String elementId, String idPrefix, String idSuffix) throws MarshallException
     {
-        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
+        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
 
         StringBuffer options = new StringBuffer();
         options.append("{"); //$NON-NLS-1$

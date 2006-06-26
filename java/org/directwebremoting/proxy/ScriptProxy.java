@@ -20,8 +20,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.directwebremoting.ScriptSession;
-import org.directwebremoting.WebContext;
+import org.directwebremoting.ServerContext;
+import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
 
 /**
@@ -30,19 +33,61 @@ import org.directwebremoting.WebContextFactory;
 public class ScriptProxy
 {
     /**
-     * 
+     * Http thread constructor
      */
     public ScriptProxy()
     {
-        webContext = WebContextFactory.get();
+        serverContext = WebContextFactory.get();
     }
 
     /**
-     * @param scriptSessions 
+     * Non-http thread constructor
+     * @param sctx The servlet context to allow us to locate a webapp
+     */
+    public ScriptProxy(ServletContext sctx)
+    {
+        serverContext = ServerContextFactory.get(sctx);
+    }
+
+    /**
+     * Http thread constructor
+     * @param scriptSession The browser to alter
+     */
+    public ScriptProxy(ScriptSession scriptSession)
+    {
+        serverContext = WebContextFactory.get();
+        scriptSessions.add(scriptSession);
+    }
+
+    /**
+     * Non-http thread constructor
+     * @param scriptSession The browser to alter
+     * @param sctx The servlet context to allow us to locate a webapp
+     */
+    public ScriptProxy(ScriptSession scriptSession, ServletContext sctx)
+    {
+        serverContext = ServerContextFactory.get(sctx);
+        scriptSessions.add(scriptSession);
+    }
+
+    /**
+     * Http thread constructor
+     * @param scriptSessions The browsers to alter
      */
     public ScriptProxy(Collection scriptSessions)
     {
-        webContext = WebContextFactory.get();
+        serverContext = WebContextFactory.get();
+        this.scriptSessions.addAll(scriptSessions);
+    }
+
+    /**
+     * Non-http thread constructor
+     * @param scriptSessions The browsers to alter
+     * @param sctx The servlet context to allow us to locate a webapp
+     */
+    public ScriptProxy(Collection scriptSessions, ServletContext sctx)
+    {
+        serverContext = ServerContextFactory.get(sctx);
         this.scriptSessions.addAll(scriptSessions);
     }
 
@@ -78,15 +123,15 @@ public class ScriptProxy
     /**
      * @return the webContext
      */
-    protected WebContext getWebContext()
+    protected ServerContext getServerContext()
     {
-        return webContext;
+        return serverContext;
     }
 
     /**
      * We're going to need this for converting data
      */
-    private final WebContext webContext;
+    private final ServerContext serverContext;
 
     /**
      * The browsers that we affect.

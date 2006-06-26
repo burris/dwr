@@ -196,6 +196,7 @@ DWREngine.beginBatch = function() {
   }
   // Setup a batch
   DWREngine._batch = {
+    headers:{},
     map:{ callCount:0 },
     paramCount:0,
     ids:[],
@@ -398,52 +399,41 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   DWREngine._batch.ids.push(id);
 
   // batchMetaData stuff the we allow in callMetaData for convenience
-  if (callData.method != null) {
-    DWREngine._batch.method = callData.method;
-    delete callData.method;
-  }
-  if (callData.verb != null) {
-    DWREngine._batch.verb = callData.verb;
-    delete callData.verb;
-  }
-  if (callData.async != null) {
-    DWREngine._batch.async = callData.async;
-    delete callData.async;
-  }
-  if (callData.timeout != null) {
-    DWREngine._batch.timeout = callData.timeout;
-    delete callData.timeout;
-  }
+  if (callData.method != null) DWREngine._batch.method = callData.method;
+  if (callData.verb != null) DWREngine._batch.verb = callData.verb;
+  if (callData.async != null) DWREngine._batch.async = callData.async;
+  if (callData.timeout != null) DWREngine._batch.timeout = callData.timeout;
 
   // callMetaData stuff that we handle with the rest of the batchMetaData
-  if (callData.preHook != null) {
-    DWREngine._batch.preHooks.unshift(callData.preHook);
-    delete callData.preHook;
-  }
-  if (callData.postHook != null) {
-    DWREngine._batch.postHooks.push(callData.postHook);
-    delete callData.postHook;
-  }
+  if (callData.preHook != null) DWREngine._batch.preHooks.unshift(callData.preHook);
+  if (callData.postHook != null) DWREngine._batch.postHooks.push(callData.postHook);
 
   // ScriptTag method parameter - the scriptTagBase
-  if (callData.scriptTagBase != null) {
-    DWREngine._batch.scriptTagBase = callData.scriptTagBase;
-    delete callData.scriptTagBase;
-  }
+  if (callData.scriptTagBase != null) DWREngine._batch.scriptTagBase = callData.scriptTagBase;
 
   // Default the error and warning handlers
   if (callData.errorHandler == null) callData.errorHandler = DWREngine._errorHandler;
   if (callData.warningHandler == null) callData.warningHandler = DWREngine._warningHandler;
 
-  // Save the callMetaData
-  DWREngine._handlersMap[id] = callData;
+  // Save the handlers for later
+  DWREngine._handlersMap[id] = {
+    errorHandler:callData.errorHandler,
+    warningHandler:callData.warningHandler,
+    callback:callData.callback
+  };
 
   // Copy extra callData into the map
   var data, prop;
-  for (prop in callData) {
-    data = callData[prop];
-    if (typeof data != "function") {
-      DWREngine._batch.map[prop] = "" + data;
+  if (callData.parameters) {
+    for (prop in callData.parameters) {
+      data = callData[prop];
+      if (typeof data != "function") DWREngine._batch.map[prop] = "" + data;
+    }
+  }
+  if (callData.headers) {
+    for (prop in callData.headers) {
+      data = callData[prop];
+      if (typeof data != "function") DWREngine._batch.headers[prop] = "" + data;
     }
   }
 
@@ -492,6 +482,7 @@ DWREngine._poll = function(overridePath) {
     isPoll:true,
     verb:"POST",
     async:true,
+    headers:{},
     paramCount:0,
     ids:[ id ],
     path:(overridePath) ? overridePath : DWREngine._defaultPath,
@@ -638,22 +629,20 @@ DWREngine._sendData = function(batch) {
   if (batch.req) {
     // Proceed using XMLHttpRequest
     if (batch.async) {
-      batch.req.onreadystatechange = function() {
-        DWREngine._stateChange(batch);
-      };
+      batch.req.onreadystatechange = function() { DWREngine._stateChange(batch); };
     }
     // If we're polling, record this for monitoring
     if (batch.isPoll) DWREngine._pollReq = batch.req;
     // Workaround for Safari 1.x POST bug
     var indexSafari = navigator.userAgent.indexOf('Safari/');
     if (indexSafari >= 0) {
-      // So this is Safari, are we on 1.x? POST is broken
       var version = navigator.userAgent.substring(indexSafari + 7);
-      var verNum = parseInt(version, 10);
-      if (verNum < 400) {
-        batch.verb == "GET";
-      }
+      if (parseInt(version, 10) < 400) batch.verb == "GET";
     }
+    for (prop in batch.headers) {
+      batch.req.setRequestHeader(prop, batch.headers[prop]);
+    }
+
     if (batch.verb == "GET") {
       // Some browsers (Opera/Safari2) seem to fail to convert the value
       // of batch.map.callCount to a string in the loop below so we do it
@@ -670,9 +659,7 @@ DWREngine._sendData = function(batch) {
       try {
         batch.req.open("GET", batch.path + "/plainjs/" + urlPostfix + "?" + query, batch.async);
         batch.req.send(null);
-        if (!batch.async) {
-          DWREngine._stateChange(batch);
-        }
+        if (!batch.async) DWREngine._stateChange(batch);
       }
       catch (ex) {
         DWREngine._handleMetaDataError(null, ex);
@@ -686,12 +673,8 @@ DWREngine._sendData = function(batch) {
       }
 
       try {
-        // This might include Safari too, but it shouldn't do any harm
-        //   if (navigator.userAgent.indexOf('Gecko') >= 0) {
-        //     batch.req.setRequestHeader('Connection', 'close');
-        //   }
         batch.req.open("POST", batch.path + "/plainjs/" + urlPostfix, batch.async);
-        batch.req.setRequestHeader('Content-Type', 'text/plain');
+        if (!batch.headers['Content-Type']) batch.req.setRequestHeader('Content-Type', 'text/plain');
         batch.req.send(query);
         if (!batch.async) DWREngine._stateChange(batch);
       }
@@ -860,12 +843,9 @@ DWREngine._handleServerError = function(id, error) {
   // Clear this callback out of the list - we don't need it any more
   var handlers = DWREngine._handlersMap[id];
   DWREngine._handlersMap[id] = null;
-  if (error.message) {
-    DWREngine._handleMetaDataError(handlers, error.message, error);
-  }
-  else {
-    DWREngine._handleMetaDataError(handlers, error);
-  }
+
+  if (error.message) DWREngine._handleMetaDataError(handlers, error.message, error);
+  else DWREngine._handleMetaDataError(handlers, error);
 };
 
 /** @private This is a hack to make the context be this window */
@@ -880,10 +860,8 @@ DWREngine._abortRequest = function(batch) {
     if (batch.req) batch.req.abort();
     // Call all the timeout errorHandlers
     var handlers;
-    var id;
     for (var i = 0; i < batch.ids.length; i++) {
-      id = batch.ids[i];
-      handlers = DWREngine._handlersMap[id];
+      handlers = DWREngine._handlersMap[batch.ids[i]];
       DWREngine._handleMetaDataError(handlers, "Timeout");
     }
   }
@@ -967,15 +945,12 @@ DWREngine._serializeAll = function(batch, referto, data, name) {
   case "boolean":
     batch.map[name] = "boolean:" + data;
     break;
-
   case "number":
     batch.map[name] = "number:" + data;
     break;
-
   case "string":
     batch.map[name] = "string:" + encodeURIComponent(data);
     break;
-
   case "object":
     if (data instanceof String) batch.map[name] = "String:" + encodeURIComponent(data);
     else if (data instanceof Boolean) batch.map[name] = "Boolean:" + data;
@@ -984,11 +959,9 @@ DWREngine._serializeAll = function(batch, referto, data, name) {
     else if (data instanceof Array) batch.map[name] = DWREngine._serializeArray(batch, referto, data, name);
     else batch.map[name] = DWREngine._serializeObject(batch, referto, data, name);
     break;
-
   case "function":
     // We just ignore functions.
     break;
-
   default:
     DWREngine._handleWarning("Unexpected type: " + typeof data + ", attempting default converter.");
     batch.map[name] = "default:" + data;
@@ -1025,17 +998,12 @@ DWREngine._serializeObject = function(batch, referto, data, name) {
   // treat objects as an associative arrays
   var reply = "Object:{";
   var element;
-  for (element in data)  {
-    if (element != "dwrSerialize") {
-      batch.paramCount++;
-      var childName = "c" + DWREngine._batch.map.callCount + "-e" + batch.paramCount;
-      DWREngine._serializeAll(batch, referto, data[element], childName);
+  for (element in data) {
+    batch.paramCount++;
+    var childName = "c" + DWREngine._batch.map.callCount + "-e" + batch.paramCount;
+    DWREngine._serializeAll(batch, referto, data[element], childName);
 
-      reply += encodeURIComponent(element);
-      reply += ":reference:";
-      reply += childName;
-      reply += ", ";
-    }
+    reply += encodeURIComponent(element) + ":reference:" + childName + ", ";
   }
 
   if (reply.substring(reply.length - 2) == ", ") {
@@ -1052,13 +1020,9 @@ DWREngine._serializeXml = function(batch, referto, data, name) {
   if (ref) return ref;
 
   var output;
-  if (window.XMLSerializer) {
-    var serializer = new XMLSerializer();
-    output = serializer.serializeToString(data);
-  }
-  else {
-    output = data.toXml;
-  }
+  if (window.XMLSerializer) output = new XMLSerializer().serializeToString(data);
+  else output = data.toXml;
+
   return "XML:" + encodeURIComponent(output);
 };
 
@@ -1096,8 +1060,7 @@ DWREngine._unserializeDocument = function(xml) {
   }
   else if (window.ActiveXObject) {
     dom = DWREngine._newActiveXObject(DWREngine._DOMDocument);
-    dom.loadXML(xml);
-    // What happens on parse fail with IE?
+    dom.loadXML(xml); // What happens on parse fail with IE?
     return dom;
   }
   else {
@@ -1118,131 +1081,7 @@ DWREngine._newActiveXObject = function(axarray) {
       returnValue = new ActiveXObject(axarray[i]);
       break;
     }
-    catch (ex) {
-    }
+    catch (ex) { /* ignore */ }
   }
   return returnValue;
 };
-
-/** @private To make up for the lack of encodeURIComponent() on IE5.0 */
-if (typeof window.encodeURIComponent === 'undefined') {
-  DWREngine._utf8 = function(wide) {
-    wide = "" + wide; // Make sure it is a string
-    var c;
-    var s;
-    var enc = "";
-    var i = 0;
-    while (i < wide.length) {
-      c = wide.charCodeAt(i++);
-      // handle UTF-16 surrogates
-      if (c >= 0xDC00 && c < 0xE000) continue;
-      if (c >= 0xD800 && c < 0xDC00) {
-        if (i >= wide.length) continue;
-        s = wide.charCodeAt(i++);
-        if (s < 0xDC00 || c >= 0xDE00) continue;
-        c = ((c - 0xD800) << 10) + (s - 0xDC00) + 0x10000;
-      }
-      // output value
-      if (c < 0x80) {
-        enc += String.fromCharCode(c);
-      }
-      else if (c < 0x800) {
-        enc += String.fromCharCode(0xC0 + (c >> 6), 0x80 + (c & 0x3F));
-      }
-      else if (c < 0x10000) {
-        enc += String.fromCharCode(0xE0 + (c >> 12), 0x80 + (c >> 6 & 0x3F), 0x80 + (c & 0x3F));
-      }
-      else {
-        enc += String.fromCharCode(0xF0 + (c >> 18), 0x80 + (c >> 12 & 0x3F), 0x80 + (c >> 6 & 0x3F), 0x80 + (c & 0x3F));
-      }
-    }
-    return enc;
-  }
-
-  DWREngine._hexchars = "0123456789ABCDEF";
-
-  DWREngine._toHex = function(n) {
-    return DWREngine._hexchars.charAt(n >> 4) + DWREngine._hexchars.charAt(n & 0xF);
-  }
-
-  DWREngine._okURIchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
-
-  window.encodeURIComponent = function(s)  {
-    s = DWREngine._utf8(s);
-    var c;
-    var enc = "";
-    for (var i= 0; i<s.length; i++) {
-      if (DWREngine._okURIchars.indexOf(s.charAt(i)) == -1) {
-        enc += "%" + DWREngine._toHex(s.charCodeAt(i));
-      }
-      else {
-        enc += s.charAt(i);
-      }
-    }
-    return enc;
-  }
-}
-
-/** @private To make up for the lack of Array.splice() on IE5.0 */
-if (typeof Array.prototype.splice === 'undefined') {
-  Array.prototype.splice = function(ind, cnt)
-  {
-    if (arguments.length == 0) return ind;
-    if (typeof ind != "number") ind = 0;
-    if (ind < 0) ind = Math.max(0,this.length + ind);
-    if (ind > this.length) {
-      if (arguments.length > 2) ind = this.length;
-      else return [];
-    }
-    if (arguments.length < 2) cnt = this.length-ind;
-
-    cnt = (typeof cnt == "number") ? Math.max(0, cnt) : 0;
-    removeArray = this.slice(ind, ind + cnt);
-    endArray = this.slice(ind + cnt);
-    this.length = ind;
-
-    for (var i = 2; i < arguments.length; i++) this[this.length] = arguments[i];
-    for (i = 0; i < endArray.length; i++) this[this.length] = endArray[i];
-
-    return removeArray;
-  }
-}
-
-/** @private To make up for the lack of Array.shift() on IE5.0 */
-if (typeof Array.prototype.shift === 'undefined') {
-  Array.prototype.shift = function(str) {
-    var val = this[0];
-    for (var i = 1; i < this.length; ++i) this[i - 1] = this[i];
-    this.length--;
-    return val;
-  }
-}
-
-/** @private To make up for the lack of Array.unshift() on IE5.0 */
-if (typeof Array.prototype.unshift === 'undefined') {
-  Array.prototype.unshift = function() {
-    var i = unshift.arguments.length;
-    for (var j = this.length - 1; j >= 0; --j) this[j + i] = this[j];
-    for (j = 0; j < i; ++j) this[j] = unshift.arguments[j];
-  }
-}
-
-/** @private To make up for the lack of Array.push() on IE5.0 */
-if (typeof Array.prototype.push === 'undefined') {
-  Array.prototype.push = function() {
-    var sub = this.length;
-    for (var i = 0; i < push.arguments.length; ++i) {
-      this[sub] = push.arguments[i];
-      sub++;
-    }
-  }
-}
-
-/** @private To make up for the lack of Array.pop() on IE5.0 */
-if (typeof Array.prototype.pop === 'undefined') {
-  Array.prototype.pop = function() {
-    var lastElement = this[this.length - 1];
-    this.length--;
-    return lastElement;
-  }
-}

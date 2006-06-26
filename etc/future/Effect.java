@@ -15,15 +15,12 @@
  */
 package org.directwebremoting.proxy.scriptaculous;
 
-import java.util.Collection;
-
-import javax.servlet.ServletContext;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundVariable;
-import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
-import org.directwebremoting.proxy.dwrutil.DwrUtil;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -31,72 +28,13 @@ import org.directwebremoting.proxy.dwrutil.DwrUtil;
 public class Effect extends ScriptProxy
 {
     /**
-     * Http thread constructor, that affects no browsers.
-     * Calls to {@link DwrUtil#addScriptSession(ScriptSession)} or to
-     * {@link DwrUtil#addScriptSessions(Collection)} will be needed  
-     */
-    public Effect()
-    {
-        super();
-    }
-
-    /**
-     * Non-http thread constructor, that affects no browsers.
-     * Calls to {@link Effect#addScriptSession(ScriptSession)} or to
-     * {@link Effect#addScriptSessions(Collection)} will be needed
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public Effect(ServletContext sctx)
-    {
-        super(sctx);
-    }
-
-    /**
-     * Http thread constructor that alters a single browser
-     * @param scriptSession The browser to alter
-     */
-    public Effect(ScriptSession scriptSession)
-    {
-        super(scriptSession);
-    }
-
-    /**
-     * Non-http thread constructor that alters a single browser
-     * @param scriptSession The browser to alter
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public Effect(ScriptSession scriptSession, ServletContext sctx)
-    {
-        super(scriptSession, sctx);
-    }
-
-    /**
-     * Http thread constructor that alters a number of browsers
-     * @param scriptSessions A collection of ScriptSessions that we should act on.
-     */
-    public Effect(Collection scriptSessions)
-    {
-        super(scriptSessions);
-    }
-
-    /**
-     * Non-http thread constructor that alters a number of browsers
-     * @param scriptSessions The browsers to alter
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public Effect(Collection scriptSessions, ServletContext sctx)
-    {
-        super(scriptSessions, sctx);
-    }
-
-    /**
      * Call the script.aculo.us <code>Effect.fade()</code> function.
      * @param elementId The element to effect
      * @throws MarshallException
      */
-    public void fade(String elementId) throws MarshallException
+    public void fade(String elementId, Map params) throws MarshallException
     {
-        callEffect(elementId, "fade"); //$NON-NLS-1$
+        callEffect(elementId, "Fade"); //$NON-NLS-1$
     }
 
     /**
@@ -106,7 +44,7 @@ public class Effect extends ScriptProxy
      */
     public void appear(String elementId) throws MarshallException
     {
-        callEffect(elementId, "appear"); //$NON-NLS-1$
+        callEffect(elementId, "Appear"); //$NON-NLS-1$
     }
 
     /**
@@ -116,7 +54,7 @@ public class Effect extends ScriptProxy
      */
     public void puff(String elementId) throws MarshallException
     {
-        callEffect(elementId, "puff"); //$NON-NLS-1$
+        callEffect(elementId, "Puff"); //$NON-NLS-1$
     }
 
     /**
@@ -126,7 +64,7 @@ public class Effect extends ScriptProxy
      */
     public void blindUp(String elementId) throws MarshallException
     {
-        callEffect(elementId, "blindUp"); //$NON-NLS-1$
+        callEffect(elementId, "BlindUp"); //$NON-NLS-1$
     }
 
     /**
@@ -136,7 +74,7 @@ public class Effect extends ScriptProxy
      */
     public void blindDown(String elementId) throws MarshallException
     {
-        callEffect(elementId, "blindDown"); //$NON-NLS-1$
+        callEffect(elementId, "BlindDown"); //$NON-NLS-1$
     }
 
     /**
@@ -146,7 +84,7 @@ public class Effect extends ScriptProxy
      */
     public void switchOff(String elementId) throws MarshallException
     {
-        callEffect(elementId, "switchOff"); //$NON-NLS-1$
+        callEffect(elementId, "SwitchOff"); //$NON-NLS-1$
     }
 
     /**
@@ -156,7 +94,7 @@ public class Effect extends ScriptProxy
      */
     public void dropOut(String elementId) throws MarshallException
     {
-        callEffect(elementId, "dropOut"); //$NON-NLS-1$
+        callEffect(elementId, "DropOut"); //$NON-NLS-1$
     }
 
     /**
@@ -166,7 +104,7 @@ public class Effect extends ScriptProxy
      */
     public void shake(String elementId) throws MarshallException
     {
-        callEffect(elementId, "shake"); //$NON-NLS-1$
+        callEffect(elementId, "Shake"); //$NON-NLS-1$
     }
 
     /**
@@ -176,7 +114,7 @@ public class Effect extends ScriptProxy
      */
     public void slideDown(String elementId) throws MarshallException
     {
-        callEffect(elementId, "slideDown"); //$NON-NLS-1$
+        callEffect(elementId, "SlideDown"); //$NON-NLS-1$
     }
 
     /**
@@ -186,7 +124,7 @@ public class Effect extends ScriptProxy
      */
     public void slideUp(String elementId) throws MarshallException
     {
-        callEffect(elementId, "slideUp"); //$NON-NLS-1$
+        callEffect(elementId, "SlideUp"); //$NON-NLS-1$
     }
 
     /**
@@ -196,7 +134,7 @@ public class Effect extends ScriptProxy
      */
     public void squish(String elementId) throws MarshallException
     {
-        callEffect(elementId, "squish"); //$NON-NLS-1$
+        callEffect(elementId, "Squish"); //$NON-NLS-1$
     }
 
     /**
@@ -206,7 +144,7 @@ public class Effect extends ScriptProxy
      */
     public void grow(String elementId) throws MarshallException
     {
-        callEffect(elementId, "grow"); //$NON-NLS-1$
+        callEffect(elementId, "Grow"); //$NON-NLS-1$
     }
 
     /**
@@ -216,7 +154,7 @@ public class Effect extends ScriptProxy
      */
     public void shrink(String elementId) throws MarshallException
     {
-        callEffect(elementId, "shrink"); //$NON-NLS-1$
+        callEffect(elementId, "Shrink"); //$NON-NLS-1$
     }
 
     /**
@@ -226,7 +164,7 @@ public class Effect extends ScriptProxy
      */
     public void pulsate(String elementId) throws MarshallException
     {
-        callEffect(elementId, "pulsate"); //$NON-NLS-1$
+        callEffect(elementId, "Pulsate"); //$NON-NLS-1$
     }
 
     /**
@@ -236,7 +174,7 @@ public class Effect extends ScriptProxy
      */
     public void fold(String elementId) throws MarshallException
     {
-        callEffect(elementId, "fold"); //$NON-NLS-1$
+        callEffect(elementId, "Fold"); //$NON-NLS-1$
     }
 
     /**
@@ -246,16 +184,43 @@ public class Effect extends ScriptProxy
      */
     private void callEffect(String elementId, String function) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
+        addScript(getEffect(elementId, function, null));
+    }
+    
+    public String getEffect(String elementId, String function, Map params) {
+        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
-            .append("Effect.") //$NON-NLS-1$
+            .append("new Effect.") //$NON-NLS-1$
             .append(function)
             .append("(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+            .append(elementIdOv.getAssignCode());
+        
+            // If the parameter Map is non-empty, construct a
+            // a corresponding javascript array and place it
+            // it in the Scriptaculous Effect constructor
+            if (params != null && params.size() >0) {
+                script.append(", {");
+                for (Iterator it = params.entrySet().iterator();it.hasNext();) {
+                    Map.Entry entry = (Map.Entry)it.next();
+                    script.append(entry.getKey());
+                    script.append(": '");
+                    script.append(entry.getValue());
+                    script.append("'");
+                    if (it.hasNext()) {
+                        script.append(",");
+                    } else {
+                        script.append("}");
+                    }
+                }
+            }
+            script.append(");"); //$NON-NLS-1$     
+        return script.toString();
+        
     }
-}
+ }
+
+
+
+

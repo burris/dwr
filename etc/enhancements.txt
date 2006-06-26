@@ -5,8 +5,6 @@ onbackbutton, onforwardbutton
 
 Make ScriptSession invalidation not happen due to polling
 
-Accessibility. DWR should integrate with screen readers to tell them when a page has changed
-
 Overloaded objects marshaled to correct types
 
 Hierarchical DWRUtil.[g|s]etValues

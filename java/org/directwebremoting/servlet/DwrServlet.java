@@ -90,6 +90,7 @@ public class DwrServlet extends HttpServlet
             // We can also setup the ServerContext
             ServerContextBuilder serverContextBuilder = (ServerContextBuilder) container.getBean(ServerContextBuilder.class.getName());
             ServerContextFactory.setServerContextBuilder(serverContextBuilder);
+            serverContextBuilder.set(getServletConfig(), getServletContext(), container);
 
             ContainerUtil.prepareForWebContextFilter(config, container, webContextBuilder, this);
             webContextBuilder.set(null, null, getServletConfig(), getServletContext(), container);

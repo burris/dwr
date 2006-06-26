@@ -10,10 +10,18 @@
   <allow>
 
     <!--
-    <filter class="org.directwebremoting.filter.ExtraLatencyAjaxFilter">
+    <filter class="uk.ltd.getahead.dwrdemo.filter.ExtraLatencyAjaxFilter">
       <param name="delay" value="200"/>
     </filter>
     -->
+
+    <create creator="new" javascript="Demo">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.simpletext.Demo"/>
+    </create>
+
+    <create creator="new" javascript="Clock" scope="application">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.clock.Clock"/>
+    </create>
 
     <create creator="new" javascript="LiveHelp" scope="application">
       <param name="class" value="uk.ltd.getahead.dwrdemo.livehelp.LiveHelp"/>
@@ -32,9 +40,9 @@
       <exclude method="getHours"/>
       <auth method="getMinutes" role="admin"/>
       <auth method="getMinutes" role="devel"/>
-      <filter class="uk.ltd.getahead.dwrdemo.test.Logging1AjaxFilter"/>
-      <filter class="uk.ltd.getahead.dwrdemo.test.Logging2AjaxFilter"/>
-      <filter class="uk.ltd.getahead.dwrdemo.test.RandomSecurityAjaxFilter"/>
+      <filter class="uk.ltd.getahead.dwrdemo.filter.Logging1AjaxFilter"/>
+      <filter class="uk.ltd.getahead.dwrdemo.filter.Logging2AjaxFilter"/>
+      <filter class="uk.ltd.getahead.dwrdemo.filter.RandomSecurityAjaxFilter"/>
     </create>
 
     <convert converter="bean" match="$Proxy*"/>

@@ -57,17 +57,10 @@ function callOnLoad(load) {
 /**
  * eval() breaks when we use it to get an object using the { a:42, b:'x' }
  * syntax because it thinks that { and } surround a block and not an object
- * So we wrap it in an array and extract the first element to get around
- * this.
- * The regex = [start of line][whitespace]{[stuff]}[whitespace][end of line]
+ * So we wrap it in () to get around this.
  */
 function objectEval(text) {
-  text = text.replace(/\n/g, " ");
-  text = text.replace(/\r/g, " ");
-  if (text.match(/^\s*\{.*\}\s*$/)) {
-    text = "[" + text + "][0]";
-  }
-  return eval(text);
+  return eval("(" + text + ")");
 }
 
 /**

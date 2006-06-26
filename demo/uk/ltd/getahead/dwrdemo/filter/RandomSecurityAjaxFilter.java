@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwrdemo.test;
+package uk.ltd.getahead.dwrdemo.filter;
 
 import java.lang.reflect.Method;
 

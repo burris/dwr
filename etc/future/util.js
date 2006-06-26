@@ -25,8 +25,12 @@ function DWRUtil() { }
  * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
  */
 DWRUtil.onReturn = function(event, action) {
-  if (!event) event = window.event;
-  if (event && event.keyCode && event.keyCode == 13) action();
+  if (!event) {
+    event = window.event;
+  }
+  if (event && event.keyCode && event.keyCode == 13) {
+    action();
+  }
 };
 
 /**
@@ -34,8 +38,12 @@ DWRUtil.onReturn = function(event, action) {
  * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
  */
 DWRUtil.selectRange = function(ele, start, end) {
-  ele = DWRUtil._getElementById(ele, "selectRange()");
-  if (ele == null) return;
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("selectRange() can't find an element with id: " + orig + ".");
+    return;
+  }
   if (ele.setSelectionRange) {
     ele.setSelectionRange(start, end);
   }
@@ -47,6 +55,24 @@ DWRUtil.selectRange = function(ele, start, end) {
   }
   ele.focus();
 };
+
+/**
+ * @private Experimental for getting the selected text
+ */
+DWRUtil._getSelection = function(ele) {
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("selectRange() can't find an element with id: " + orig + ".");
+    return;
+  }
+  return ele.value.substring(ele.selectionStart, ele.selectionEnd);
+
+  // if (window.getSelection) return window.getSelection().getRangeAt(0);
+  // else if (document.getSelection) return document.getSelection();
+  // else if (document.selection) return document.selection.createRange().text;
+  // return "";
+}
 
 /**
  * Find the element in the current HTML document with the given id or ids
@@ -67,7 +93,7 @@ if (!$ && document.getElementById) {
       elements.push(element);
     }
     return elements;
-  };
+  }
 }
 else if (!$ && document.all) {
   $ = function() {
@@ -83,7 +109,7 @@ else if (!$ && document.all) {
       elements.push(element);
     }
     return elements;
-  };
+  }
 }
 
 /**
@@ -259,59 +285,7 @@ DWRUtil.useLoadingMessage = function(message) {
   DWREngine.setPostHook(function() {
     $('disabledZone').style.visibility = 'hidden';
   });
-};
-
-/**
- * Set a global highlight handler
- */
-DWRUtil.setHighlightHandler = function(handler) {
-  DWRUtil._highlightHandler = handler;
-};
-
-/**
- * An example highlight handler
- */
-DWRUtil.yellowFadeHighlightHandler = function(ele) {
-  DWRUtil._yellowFadeProcess(ele, 0);
-};
-DWRUtil._yellowFadeSteps = [ "90", "98", "a0", "a8", "b0", "b8", "c0", "c8", "d0", "d8", "e0", "e8", "f0", "f8" ];
-DWRUtil._yellowFadeProcess = function(ele, colorIndex) {
-  ele = $(ele);
-  if (colorIndex < DWRUtil._yellowFadeSteps.length) {
-    alert("setting to " + DWRUtil._yellowFadeSteps[colorIndex]);
-    ele.style.backgroundColor = "#ffff" + DWRUtil._yellowFadeSteps[colorIndex];
-    setTimeout("DWRUtil._yellowFadeProcess(" + (colorIndex + 1) + ",'" + ele.id + "')", 200);
-  }
-  else {
-    alert("setting to transparent");
-    ele.style.backgroundColor = "transparent";
-  }
-};
-
-/**
- * A focus highlight handler
- */
-DWRUtil.focusHighlightHandler = function(ele) {
-  try {
-    ele.focus();
-  }
-  catch (ex) { /* ignore */ }
-};
-
-/** @private the current global highlight style */
-DWRUtil._highlightHandler = null;
-
-/**
- * Highlight that an element has changed
- */
-DWRUtil.highlight = function(ele, options) {
-  if (options && options.highlightHandler) {
-    options.highlightHandler($(ele));
-  }
-  else if (DWRUtil._highlightHandler != null) {
-    DWRUtil._highlightHandler($(ele));
-  }
-};
+}
 
 /**
  * Set the value an HTML element to the specified value.
@@ -319,35 +293,38 @@ DWRUtil.highlight = function(ele, options) {
  */
 DWRUtil.setValue = function(ele, val, options) {
   if (val == null) val = "";
-  if (options == null) options = {};
-  if (options.escapeHtml) {
-    val = val.replace(/&/, "&amp;");
-    val = val.replace(/'/, "&apos;");
-    val = val.replace(/</, "&lt;");
-    val = val.replace(/>/, "&gt;");
+  if (options != null) {
+    if (options.escapeHtml) {
+      val = val.replace(/&/, "&amp;");
+      val = val.replace(/'/, "&apos;");
+      val = val.replace(/</, "&lt;");
+      val = val.replace(/>/, "&gt;");
+    }
   }
 
   var orig = ele;
   var nodes, node, i;
-  ele = $(ele);
 
+  ele = $(ele);
   // We can work with names and need to sometimes for radio buttons
   if (ele == null) {
     nodes = document.getElementsByName(orig);
-    if (nodes.length >= 1) ele = nodes.item(0);
+    if (nodes.length >= 1) {
+      ele = nodes.item(0);
+    }
   }
-
   if (ele == null) {
     DWRUtil.debug("setValue() can't find an element with id/name: " + orig + ".");
     return;
   }
 
-  // All paths now lead to some update so we highlight a change
-  DWRUtil.highlight(ele, options);
-
   if (DWRUtil._isHTMLElement(ele, "select")) {
-    if (ele.type == "select-multiple" && DWRUtil._isArray(val)) DWRUtil._selectListItems(ele, val);
-    else DWRUtil._selectListItem(ele, val);
+    if (ele.type == "select-multiple" && DWRUtil._isArray(val)) {
+      DWRUtil._selectListItems(ele, val);
+    }
+    else {
+      DWRUtil._selectListItem(ele, val);
+    }
     return;
   }
 
@@ -358,14 +335,21 @@ DWRUtil.setValue = function(ele, val, options) {
       if (nodes != null && nodes.length > 1) {
         for (i = 0; i < nodes.length; i++) {
           node = nodes.item(i);
-          if (node.type == "radio") node.checked = (node.value == val);
+          if (node.type == "radio") {
+            node.checked = (node.value == val);
+          }
         }
       }
-      else ele.checked = (val == true);
+      else {
+        ele.checked = (val == true);
+      }
     }
-    else if (ele.type == "checkbox") ele.checked = val;
-    else ele.value = val;
-
+    else if (ele.type == "checkbox") {
+      ele.checked = val;
+    }
+    else {
+      ele.value = val;
+    }
     return;
   }
 
@@ -377,7 +361,10 @@ DWRUtil.setValue = function(ele, val, options) {
   // If the value to be set is a DOM object then we try importing the node
   // rather than serializing it out
   if (val.nodeType) {
-    if (val.nodeType == 9 /*Node.DOCUMENT_NODE*/) val = val.documentElement;
+    if (val.nodeType == 9 /*Node.DOCUMENT_NODE*/) {
+      val = val.documentElement;
+    }
+
     val = DWRUtil._importNode(ele.ownerDocument, val, true);
     ele.appendChild(val);
     return;
@@ -426,7 +413,7 @@ DWRUtil._selectListItems = function(ele, val) {
 DWRUtil._selectListItem = function(ele, val) {
   // We deal with select list elements by selecting the matching option
   // Begin by searching through the values
-  var found = false;
+  var found  = false;
   var i;
   for (i = 0; i < ele.options.length; i++) {
     if (ele.options[i].value == val) {
@@ -449,7 +436,7 @@ DWRUtil._selectListItem = function(ele, val) {
       ele.options[i].selected = false;
     }
   }
-};
+}
 
 /**
  * Read the current value for a given HTML element.
@@ -506,8 +493,6 @@ DWRUtil.getValue = function(ele, options) {
     case "checkbox":
     case "check-box":
     case "radio":
-      // if (ele.checked && ele.value != "") return ele.value;
-      // else
       return ele.checked;
     default:
       return ele.value;
@@ -530,8 +515,13 @@ DWRUtil.getValue = function(ele, options) {
  * @see http://getahead.ltd.uk/dwr/browser/util/gettext
  */
 DWRUtil.getText = function(ele) {
-  ele = DWRUtil._getElementById(ele, "getText()");
-  if (ele == null) return null;
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("getText() can't find an element with id: " + orig + ".");
+    return "";
+  }
+
   if (!DWRUtil._isHTMLElement(ele, "select")) {
     DWRUtil.debug("getText() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele) + " from  id: " + orig + ".");
     return "";
@@ -601,8 +591,12 @@ DWRUtil.getValues = function(data) {
  * @see http://getahead.ltd.uk/dwr/browser/lists
  */
 DWRUtil.addOptions = function(ele, data) {
-  ele = DWRUtil._getElementById(ele, "addOptions()");
-  if (ele == null) return;
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("addOptions() can't find an element with id: " + orig + ".");
+    return;
+  }
   var useOptions = DWRUtil._isHTMLElement(ele, "select");
   var useLi = DWRUtil._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {
@@ -611,7 +605,10 @@ DWRUtil.addOptions = function(ele, data) {
   }
   if (data == null) return;
 
-  var text, value, li;
+  var text;
+  var value;
+  var opt;
+  var li;
   if (DWRUtil._isArray(data)) {
     // Loop through the data that we do have
     for (var i = 0; i < data.length; i++) {
@@ -621,11 +618,20 @@ DWRUtil.addOptions = function(ele, data) {
             text = DWRUtil._getValueFrom(data[i], arguments[3]);
             value = DWRUtil._getValueFrom(data[i], arguments[2]);
           }
-          else text = value = DWRUtil._getValueFrom(data[i], arguments[2]);
+          else {
+            value = DWRUtil._getValueFrom(data[i], arguments[2]);
+            text = value;
+          }
         }
-        else text = value = DWRUtil._getValueFrom(data[i], arguments[3]);
-
-        if (text || value) ele.options[ele.options.length] = new Option(text, value);
+        else
+        {
+          text = DWRUtil._getValueFrom(data[i], arguments[3]);
+          value = text;
+        }
+        if (text || value) {
+          opt = new Option(text, value);
+          ele.options[ele.options.length] = opt;
+        }
       }
       else {
         li = document.createElement("li");
@@ -638,32 +644,44 @@ DWRUtil.addOptions = function(ele, data) {
     }
   }
   else if (arguments[3] != null) {
-    if (!useOptions) {
-      alert("DWRUtil.addOptions can only create select lists from objects.");
-      return;
-    }
     for (var prop in data) {
+      if (!useOptions) {
+        alert("DWRUtil.addOptions can only create select lists from objects.");
+        return;
+      }
       value = DWRUtil._getValueFrom(data[prop], arguments[2]);
       text = DWRUtil._getValueFrom(data[prop], arguments[3]);
-
-      if (text || value) ele.options[ele.options.length] = new Option(text, value);
-    }
-  }
-  else {
-    if (!useOptions) {
-      DWRUtil.debug("DWRUtil.addOptions can only create select lists from objects.");
-      return;
-    }
-    for (var prop in data) {
-      if (typeof data[prop] != "function") {
-        if (arguments[2]) ele.options[ele.options.length] = new Option(prop, data[prop]);
-        else ele.options[ele.options.length] = new Option(data[prop], prop);
+      if (text || value) {
+        opt = new Option(text, value);
+        ele.options[ele.options.length] = opt;
       }
     }
   }
-
-  // All error routes through this function result in a return, so highlight now
-  DWRUtil.highlight(ele, options);
+  else {
+    for (var prop in data) {
+      if (!useOptions) {
+        DWRUtil.debug("DWRUtil.addOptions can only create select lists from objects.");
+        return;
+      }
+      if (typeof data[prop] == "function") {
+        // Skip this one it's a function.
+        text = null;
+        value = null;
+      }
+      else if (arguments[2]) {
+        text = prop;
+        value = data[prop];
+      }
+      else {
+        text = data[prop];
+        value = prop;
+      }
+      if (text || value) {
+        opt = new Option(text, value);
+        ele.options[ele.options.length] = opt;
+      }
+    }
+  }
 };
 
 /**
@@ -673,15 +691,19 @@ DWRUtil._getValueFrom = function(data, method) {
   if (method == null) return data;
   else if (typeof method == 'function') return method(data);
   else return data[method];
-};
+}
 
 /**
  * Remove all the options from a select list (specified by id)
  * @see http://getahead.ltd.uk/dwr/browser/lists
  */
 DWRUtil.removeAllOptions = function(ele) {
-  ele = DWRUtil._getElementById(ele, "removeAllOptions()");
-  if (ele == null) return;
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("removeAllOptions() can't find an element with id: " + orig + ".");
+    return;
+  }
   var useOptions = DWRUtil._isHTMLElement(ele, "select");
   var useLi = DWRUtil._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {
@@ -703,8 +725,12 @@ DWRUtil.removeAllOptions = function(ele) {
  * @see http://getahead.ltd.uk/dwr/browser/tables
  */
 DWRUtil.addRows = function(ele, data, cellFuncs, options) {
-  ele = DWRUtil._getElementById(ele, "addRows()");
-  if (ele == null) return;
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("addRows() can't find an element with id: " + orig + ".");
+    return;
+  }
   if (!DWRUtil._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"])) {
     DWRUtil.debug("addRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
     return;
@@ -737,8 +763,6 @@ DWRUtil.addRows = function(ele, data, cellFuncs, options) {
       rowNum++;
     }
   }
-
-  DWRUtil.highlight(ele, options);
 };
 
 /**
@@ -754,9 +778,12 @@ DWRUtil._addRowInner = function(cellFuncs, options) {
     options.cellNum = cellNum;
     var td = options.cellCreator(options);
     if (td != null) {
-      if (reply != null) {
+      if (reply == null) {
         if (DWRUtil._isHTMLElement(reply)) td.appendChild(reply);
-        else td.innerHTML = reply;
+        else {
+          var text = document.createText(reply);
+          td.appendChild(text);
+        }
       }
       tr.appendChild(td);
     }
@@ -783,8 +810,12 @@ DWRUtil._defaultCellCreator = function(options) {
  * @see http://getahead.ltd.uk/dwr/browser/tables
  */
 DWRUtil.removeAllRows = function(ele) {
-  ele = DWRUtil._getElementById(ele, "removeAllRows()");
-  if (ele == null) return;
+  var orig = ele;
+  ele = $(ele);
+  if (ele == null) {
+    DWRUtil.debug("removeAllRows() can't find an element with id: " + orig + ".");
+    return;
+  }
   if (!DWRUtil._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"])) {
     DWRUtil.debug("removeAllRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
     return;
@@ -792,112 +823,6 @@ DWRUtil.removeAllRows = function(ele) {
   while (ele.childNodes.length > 0) {
     ele.removeChild(ele.firstChild);
   }
-};
-
-/**
- * $(ele).className = "X", that we can call from Java easily
- */
-DWRUtil.setClassName = function(ele, className) {
-  ele = DWRUtil._getElementById(ele, "setClassName()");
-  if (ele == null) return;
-  ele.className = className;
-};
-
-/**
- * $(ele).className += "X", that we can call from Java easily.
- */
-DWRUtil.addClassName = function(ele, className) {
-  ele = DWRUtil._getElementById(ele, "addClassName()");
-  if (ele == null) return;
-  ele.className += " " + className;
-};
-
-/**
- * $(ele).className -= "X", that we can call from Java easily
- * From code originally by Gavin Kistner
- */
-DWRUtil.removeClassName = function(ele, className) {
-  ele = DWRUtil._getElementById(ele, "removeClassName()");
-  if (ele == null) return;
-  var regex = new RegExp("(^|\\s)" + className + "(\\s|$)", 'g');
-  ele.className = ele.className.replace(regex, '');
-};
-
-/**
- * $(ele).className |= "X", that we can call from Java easily.
- */
-DWRUtil.toggleClassName = function(ele, className) {
-  ele = DWRUtil._getElementById(ele, "toggleClassName()");
-  if (ele == null) return;
-  var regex = new RegExp("(^|\\s)" + className + "(\\s|$)");
-  if (regex.test(element.className)) {
-    ele.className = ele.className.replace(regex, '');
-  }
-  else {
-    ele.className += " " + className;
-  }
-};
-
-/**
- * Clone a node and insert it into the document just above the 'template' node
- * @see http://getahead.ltd.uk/dwr/???
- */
-DWRUtil.cloneNode = function(ele, options) {
-  ele = DWRUtil._getElementById(ele, "cloneNode()");
-  if (ele == null) return null;
-  if (options == null) options = {};
-  var clone = ele.cloneNode(true);
-  if (options.idPrefix || options.idSuffix) {
-    DWRUtil._updateIds(clone, options);
-  }
-  else {
-    DWRUtil._removeIds(clone);
-  }
-  ele.parentNode.insertBefore(clone, ele);
-  return clone;
-};
-
-/**
- * @private Update all of the ids in an element tree
- */
-DWRUtil._updateIds = function(ele, options) {
-  if (options == null) options = {};
-  if (ele.id) {
-    ele.setAttribute("id", (options.idPrefix || "") + ele.id + (options.idSuffix || ""));
-  }
-  var children = ele.childNodes;
-  for (var i = 0; i < children.length; i++) {
-    var child = children.item(i);
-    if (child.nodeType == 1 /*Node.ELEMENT_NODE*/) {
-      DWRUtil._updateIds(child, options);
-    }
-  }
-};
-
-/**
- * @private Remove all the Ids from an element
- */
-DWRUtil._removeIds = function(ele) {
-  if (ele.id) ele.removeAttribute("id");
-  var children = ele.childNodes;
-  for (var i = 0; i < children.length; i++) {
-    var child = children.item(i);
-    if (child.nodeType == 1 /*Node.ELEMENT_NODE*/) {
-      DWRUtil._removeIds(child);
-    }
-  }
-};
-
-/**
- * @private Helper to turn a string into an element with an error message
- */
-DWRUtil._getElementById = function(ele, source) {
-  var orig = ele;
-  ele = $(ele);
-  if (ele == null) {
-    DWRUtil.debug(source + " can't find an element with id: " + orig + ".");
-  }
-  return ele;
 };
 
 /**
@@ -910,11 +835,14 @@ DWRUtil._isHTMLElement = function(ele, nodeName) {
   if (ele == null || typeof ele != "object" || ele.nodeName == null) {
     return false;
   }
+
   if (nodeName != null) {
     var test = ele.nodeName.toLowerCase();
+
     if (typeof nodeName == "string") {
       return test == nodeName.toLowerCase();
     }
+
     if (DWRUtil._isArray(nodeName)) {
       var match = false;
       for (var i = 0; i < nodeName.length && !match; i++) {
@@ -924,9 +852,11 @@ DWRUtil._isHTMLElement = function(ele, nodeName) {
       }
       return match;
     }
+
     DWRUtil.debug("DWRUtil._isHTMLElement was passed test node name that is neither a string or array of strings");
     return false;
   }
+
   return true;
 };
 
@@ -936,7 +866,7 @@ DWRUtil._isHTMLElement = function(ele, nodeName) {
 DWRUtil._detailedTypeOf = function(x) {
   var reply = typeof x;
   if (reply == "object") {
-    reply = Object.prototype.toString.apply(x); // Returns "[object class]"
+    reply = Object.prototype.toString.apply(x);  // Returns "[object class]"
     reply = reply.substring(8, reply.length-1);  // Just get the class bit
   }
   return reply;
@@ -987,32 +917,11 @@ DWRUtil._importNode = function(doc, importedNode, deep) {
   }
 
   return newNode;
-};
-
-/** The array of current debug items */
-DWRUtil._debugDisplay = [];
-
-/** What is the maximum length of the debug items array */
-DWRUtil._debugMaxLength = 50;
+}
 
 /**
  * Used internally when some message needs to get to the programmer
  */
 DWRUtil.debug = function(message) {
-  var debug = $("dwr-debug");
-  if (debug) {
-    while (DWRUtil._debugDisplay.length >= DWRUtil._debugMaxLength) {
-      DWRUtil._debugDisplay.shift();
-    }
-    DWRUtil._debugDisplay.push(message);
-    var contents = "";
-    for (var i = 0; i < DWRUtil._debugDisplay.length; i++) {
-      contents += DWRUtil._debugDisplay[i] + "<br/>";
-    }
-    DWRUtil.setValue("dwr-debug", contents);
-  }
-  else if (window.console) window.console.log(message);
-  else if (window.opera && window.opera.postError) window.opera.postError(message);
-  //else if (window.navigator.product == "Gecko") window.dump(message + "\n");
   alert(message);
-};
+}
