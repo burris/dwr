@@ -274,16 +274,14 @@ DWRUtil.setHighlightHandler = function(handler) {
 DWRUtil.yellowFadeHighlightHandler = function(ele) {
   DWRUtil._yellowFadeProcess(ele, 0);
 };
-DWRUtil._yellowFadeSteps = [ "90", "98", "a0", "a8", "b0", "b8", "c0", "c8", "d0", "d8", "e0", "e8", "f0", "f8" ];
+DWRUtil._yellowFadeSteps = [ "d0", "b0", "a0", "90", "98", "a0", "a8", "b0", "b8", "c0", "c8", "d0", "d8", "e0", "e8", "f0", "f8" ];
 DWRUtil._yellowFadeProcess = function(ele, colorIndex) {
   ele = $(ele);
   if (colorIndex < DWRUtil._yellowFadeSteps.length) {
-    alert("setting to " + DWRUtil._yellowFadeSteps[colorIndex]);
     ele.style.backgroundColor = "#ffff" + DWRUtil._yellowFadeSteps[colorIndex];
-    setTimeout("DWRUtil._yellowFadeProcess(" + (colorIndex + 1) + ",'" + ele.id + "')", 200);
+    setTimeout("DWRUtil._yellowFadeProcess('" + ele.id + "'," + (colorIndex + 1) + ")", 200);
   }
   else {
-    alert("setting to transparent");
     ele.style.backgroundColor = "transparent";
   }
 };
@@ -456,9 +454,7 @@ DWRUtil._selectListItem = function(ele, val) {
  * @see http://getahead.ltd.uk/dwr/browser/util/getvalue
  */
 DWRUtil.getValue = function(ele, options) {
-  if (options == null) {
-    options = {};
-  }
+  if (options == null) options = {};
   var orig = ele;
   ele = $(ele);
   // We can work with names and need to sometimes for radio buttons, and IE has
@@ -600,9 +596,10 @@ DWRUtil.getValues = function(data) {
  * Add options to a list from an array or map.
  * @see http://getahead.ltd.uk/dwr/browser/lists
  */
-DWRUtil.addOptions = function(ele, data) {
+DWRUtil.addOptions = function(ele, data, options) {
   ele = DWRUtil._getElementById(ele, "addOptions()");
   if (ele == null) return;
+  if (options == null) options = {};
   var useOptions = DWRUtil._isHTMLElement(ele, "select");
   var useLi = DWRUtil._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {

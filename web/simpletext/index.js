@@ -1,7 +1,8 @@
 
 function update() {
-  Demo.getServerInfo(function(data) {
-    DWRUtil.setValue("reply", data);
+  var name = DWRUtil.getValue("demoName");
+  Demo.sayHello(name, function(data) {
+    DWRUtil.setValue("demoReply", data);
   });
 }
 

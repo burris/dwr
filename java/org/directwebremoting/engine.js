@@ -324,6 +324,13 @@ DWREngine._pollCometInterval = 200;
 /** Do we do a document.reload if we get a text/html reply? */
 DWREngine._textHtmlHandler = null;
 
+/** Undocumented interceptors - do not use */
+DWREngine._postSeperator = "\n";
+DWREngine._defaultInterceptor = function(data) {return data;}
+DWREngine._urlRewriteHandler = DWREngine._defaultInterceptor;
+DWREngine._contentRewriteHandler = DWREngine._defaultInterceptor;
+DWREngine._replyRewriteHandler = DWREngine._defaultInterceptor;
+
 /**
  * @private Send a request. Called by the Javascript interface stub
  * @param path part of URL after the host and before the exec bit without leading or trailing /s
@@ -617,13 +624,13 @@ DWREngine._sendData = function(batch) {
       batch.req = new XMLHttpRequest();
     }
     // IE5 for the mac claims to support window.ActiveXObject, but throws an error when it's used
-    else if (window.ActiveXObject && !(navigator.userAgent.indexOf('Mac') >= 0 && navigator.userAgent.indexOf("MSIE") >= 0)) {
+    else if (window.ActiveXObject && !(navigator.userAgent.indexOf("Mac") >= 0 && navigator.userAgent.indexOf("MSIE") >= 0)) {
       batch.req = DWREngine._newActiveXObject(DWREngine._XMLHTTP);
     }
   }
 
   var query = "";
-  var prop;
+  var prop, url;
 
   // This equates to (batch.method == XHR && browser supports XHR)
   if (batch.req) {
@@ -634,7 +641,7 @@ DWREngine._sendData = function(batch) {
     // If we're polling, record this for monitoring
     if (batch.isPoll) DWREngine._pollReq = batch.req;
     // Workaround for Safari 1.x POST bug
-    var indexSafari = navigator.userAgent.indexOf('Safari/');
+    var indexSafari = navigator.userAgent.indexOf("Safari/");
     if (indexSafari >= 0) {
       var version = navigator.userAgent.substring(indexSafari + 7);
       if (parseInt(version, 10) < 400) batch.verb == "GET";
@@ -657,7 +664,9 @@ DWREngine._sendData = function(batch) {
       }
 
       try {
-        batch.req.open("GET", batch.path + "/plainjs/" + urlPostfix + "?" + query, batch.async);
+        url = batch.path + "/plainjs/" + urlPostfix + "?" + query;
+        url = DWREngine._urlRewriteHandler(url);
+        batch.req.open("GET", url, batch.async);
         batch.req.send(null);
         if (!batch.async) DWREngine._stateChange(batch);
       }
@@ -668,13 +677,16 @@ DWREngine._sendData = function(batch) {
     else {
       for (prop in batch.map) {
         if (typeof batch.map[prop] != "function") {
-          query += prop + "=" + batch.map[prop] + "\n";
+          query += prop + "=" + batch.map[prop] + DWREngine._postSeperator;
         }
       }
 
       try {
-        batch.req.open("POST", batch.path + "/plainjs/" + urlPostfix, batch.async);
-        if (!batch.headers['Content-Type']) batch.req.setRequestHeader('Content-Type', 'text/plain');
+        url = batch.path + "/plainjs/" + urlPostfix;
+        url = DWREngine._urlRewriteHandler(url);
+        batch.req.open("POST", url, batch.async);
+        if (!batch.headers["Content-Type"]) batch.req.setRequestHeader("Content-Type", "text/plain");
+        query = DWREngine._contentRewriteHandler(query);
         batch.req.send(query);
         if (!batch.async) DWREngine._stateChange(batch);
       }
@@ -686,21 +698,20 @@ DWREngine._sendData = function(batch) {
   else if (batch.method != DWREngine.ScriptTag) {
     var idname = "dwr-if-" + batch.map["c0-id"];
     // Proceed using iframe
-    batch.div = document.createElement('div');
+    batch.div = document.createElement("div");
     batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' width='0' height='0' id='" + idname + "' name='" + idname + "'></iframe>";
     document.body.appendChild(batch.div);
     batch.iframe = document.getElementById(idname);
-    batch.iframe.setAttribute('style', 'width:0px; height:0px; border:0px;');
+    batch.iframe.setAttribute("style", "width:0px; height:0px; border:0px;");
 
     // Settings that vary if we are polling
-    var baseUrl;
     if (batch.isPoll) {
       DWREngine._pollFrame = batch.iframe;
       DWREngine._pollCometSize = 0;
-      baseUrl = batch.path + "/plainjs/" + urlPostfix;
+      url = batch.path + "/plainjs/" + urlPostfix;
     }
     else {
-      baseUrl = batch.path + "/htmljs/" + urlPostfix;
+      url = batch.path + "/htmljs/" + urlPostfix;
     }
     if (batch.verb == "GET") {
       for (prop in batch.map) {
@@ -709,22 +720,25 @@ DWREngine._sendData = function(batch) {
         }
       }
       query = query.substring(0, query.length - 1);
+      url = url + "?" + query;
+      url = DWREngine._urlRewriteHandler(url);
 
-      batch.iframe.setAttribute('src', baseUrl + "?" + query);
+      batch.iframe.setAttribute("src", url);
       document.body.appendChild(batch.iframe);
     }
     else {
-      batch.form = document.createElement('form');
-      batch.form.setAttribute('id', 'dwr-form');
-      batch.form.setAttribute('action', baseUrl);
-      batch.form.setAttribute('target', idname);
+      url = DWREngine._urlRewriteHandler(url);
+      batch.form = document.createElement("form");
+      batch.form.setAttribute("id", "dwr-form");
+      batch.form.setAttribute("action", url);
+      batch.form.setAttribute("target", idname);
       batch.form.target = idname;
-      batch.form.setAttribute('method', 'post');
+      batch.form.setAttribute("method", "POST");
       for (prop in batch.map) {
-        var formInput = document.createElement('input');
-        formInput.setAttribute('type', 'hidden');
-        formInput.setAttribute('name', prop);
-        formInput.setAttribute('value', batch.map[prop]);
+        var formInput = document.createElement("input");
+        formInput.setAttribute("type", "hidden");
+        formInput.setAttribute("name", prop);
+        formInput.setAttribute("value", batch.map[prop]);
         batch.form.appendChild(formInput);
       }
       document.body.appendChild(batch.form);
@@ -742,9 +756,11 @@ DWREngine._sendData = function(batch) {
       }
     }
     query = query.substring(0, query.length - 1);
-    batch.script = document.createElement('script');
+    batch.script = document.createElement("script");
     batch.script.id = "dwr-st-" + batch.map["c0-id"];
-    batch.script.src = batch.scriptTagBase + batch.path + "/plainjs/" + urlPostfix + "?" + query;
+    url = batch.scriptTagBase + batch.path + "/plainjs/" + urlPostfix + "?" + query;
+    url = DWREngine._urlRewriteHandler(url);
+    batch.script.src = url;
     document.body.appendChild(batch.script);
   }
 };
@@ -754,13 +770,14 @@ DWREngine._stateChange = function(batch) {
   if (!batch.completed && batch.req.readyState == 4) {
     try {
       var reply = batch.req.responseText;
+      reply = DWREngine._replyRewriteHandler(reply);
 
       if (reply == null || reply == "") {
         DWREngine._handleMetaDataWarning(null, "No data received from server");
         return;
       }
 
-      var contentType = batch.req.getResponseHeader('Content-Type');
+      var contentType = batch.req.getResponseHeader("Content-Type");
       if (!contentType.match(/^text\/plain/) && !contentType.match(/^text\/javascript/)) {
         if (DWREngine._textHtmlHandler && contentType.match(/^text\/html/)) {
           DWREngine._textHtmlHandler();
@@ -816,7 +833,7 @@ DWREngine._handleResponse = function(id, reply) {
   // Clear this callback out of the list - we don't need it any more
   var handlers = DWREngine._handlersMap[id];
   DWREngine._handlersMap[id] = null;
-  // TODO: How can we do this - delete DWREngine._handlersMap.id
+
   if (handlers) {
     // Error handlers inside here indicate an error that is nothing to do
     // with DWR so we handle them differently.
@@ -1064,7 +1081,7 @@ DWREngine._unserializeDocument = function(xml) {
     return dom;
   }
   else {
-    var div = document.createElement('div');
+    var div = document.createElement("div");
     div.innerHTML = xml;
     return div;
   }

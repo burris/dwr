@@ -30,17 +30,12 @@ public class Demo
 {
     /**
      * Return a server side string to display on the client in real time
+     * @param name The name of person to say hello to
      * @return A demo string
      */
-    public String getServerInfo()
+    public String sayHello(String name)
     {
-        WebContext wctx = WebContextFactory.get();
-
-        return wctx.getServletContext().getServerInfo()
-               + " running on JDK " //$NON-NLS-1$
-               + System.getProperty("java.specification.version") //$NON-NLS-1$
-               + " using DWR " //$NON-NLS-1$
-               + wctx.getVersion();
+        return "Hello, " + name; //$NON-NLS-1$
     }
 
     /**
@@ -51,6 +46,7 @@ public class Demo
      */
     public String getInclude() throws ServletException, IOException
     {
-        return WebContextFactory.get().forwardToString("/simpletext/forward.html"); //$NON-NLS-1$
+        WebContext wctx = WebContextFactory.get();
+        return wctx.forwardToString("/simpletext/forward.html"); //$NON-NLS-1$
     }
 }

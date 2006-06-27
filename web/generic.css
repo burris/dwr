@@ -35,7 +35,7 @@ table.plain th { border:0; }
 ul.inlineList li { display:inline; padding:0px 5px; }
 ul.inlineList { list-style-type:none; padding:0; margin:5px; }
 
-pre { background:#f0f8f0; border-left:5px dotted #ddd; border-right:5px dotted #ddd; padding:5px 10px; }
+pre { background:#f4f4f4; padding:10px; }
 
 .xmlReply { background:#f8eeff; padding:4px; margin:4px; }
 

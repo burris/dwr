@@ -22,53 +22,44 @@ text fetched from a web server.</p>
 
 <h2>Demo</h2>
 
-<p>Query Server: <input value="Execute" type="button" onclick="update()"/>
-<br/>Server Information: <span id="reply" style="background:#eeffdd; padding-left:4px; padding-right:4px;"></span></p>
+<p>
+  Name:
+  <input type="text" id="demoName"/>
+  <input value="Send" type="button" onclick="update()"/>
+  <br/>
+  Reply: <span id="demoReply" style="background:#eeffdd; padding-left:4px; padding-right:4px;"></span>
+</p>
 
 <h2>How it works</h2>
-<p>When you click on the "Execute" button the on-click event gets called:
-<code>onclick="update()"</code>. The <code>update()</code> function looks like
-this:</p>
+<p>When you click on the "Send" button the browser calls on-click event, which
+calls the <code>update()</code> function:</p>
 
 <pre>
 function update() {
-  Demo.getServerInfo(loadinfo);
+  var name = DWRUtil.getValue("demoName");
+  Demo.sayHello(name, loadinfo);
 }
 </pre>
 
 <p>DWR is asynchronous due to the way Javascript works so it won't halt the web
 browser while we are waiting for the background HTTP request to return.
-So the parameter (<code>loadinfo</code>) gives DWR somewhere to put the data
-when the call has returned.</p>
+So the parameter <code>loadinfo</code> names a function to be called when the
+call has returned.</p>
 
-<p>The Javascript proxy methods produced by DWR all have 1 extra parameter at
-the start which is the name of a function to which to give the returned data.</p>
-
-<p>First DWR arranges for the <code>Demo.getServerInfo()</code> Java code to be
-called:</p>
+<p>On the server, DWR calls the <code>Demo.sayHello()</code> Java method:</p>
 
 <pre>
-public String getServerInfo() {
-    WebContext wctx = WebContextFactory.get();
-
-    return wctx.getServletContext().getServerInfo()
-           + " running on JDK "
-           + System.getProperty("java.specification.version")
-           + " using DWR "
-           + wctx.getVersion();
+public String sayHello(String name) {
+    return "Hello, " + name;
 }
 </pre>
-
-<p>Normally the code called by DWR is a simple POJO that knows nothing about
-the web. In this demonstration we want to find out about the web server so we
-use the <code>WebContext</code> class to get access to the ServletContext.</p>
 
 <p>When this method returns, DWR calls <code>loadinfo()</code> function which
 moves the text to the reply span:</p>
 
 <pre>
 function loadinfo(data) {
-  DWRUtil.setValue("reply", data);
+  DWRUtil.setValue("demoReply", data);
 }
 </pre>
 
@@ -82,15 +73,15 @@ this:</p>
 
 <pre>
 function update() {
-  Demo.getServerInfo(function(data) {
-    DWRUtil.setValue("reply", data);
+  var name = DWRUtil.getValue("demoName");
+  Demo.sayHello(name, function(data) {
+    DWRUtil.setValue("demoReply", data);
   });
 }
 </pre>
 
 <p>And that's it. In effect we have written much less than 10 lines of code to
-get data from the server, and display it in the browser. I'm not sure it gets
-much simpler than that!</p>
+get data from the server, and display it in the browser.</p>
 
 <h2>Resource Forward Demo</h2>
 
@@ -101,22 +92,23 @@ Included Page:</p>
 
 <h2>How it works</h2>
 
+<p>Normally the code called by DWR is a simple POJO that knows nothing about
+the web. In this demonstration we want to find out about the web server so we
+use the <code>WebContext</code> class to get access to the ServletContext.</p>
+
 <p>This example is very similar, the only difference is that we are using the
 contents of <a href="forward.html">this HTML page</a>, and using the WebContext
 class to allow us to get data from other pages. There are no iframes used in
 this example - just DWR and a humble div.</p>
 
-<p>The code is all very similar to the above example except for slightly different Java code:</p>
+<p>The code is similar to the above example except for different Java code:</p>
 
 <pre>
-public String getInclude() throws ServletException, IOException {
-  return WebContextFactory.get().forwardToString("/forward.jsp");
+public String getInclude() {
+    WebContext wctx = WebContextFactory.get();
+    return wctx.forwardToString("/simpletext/forward.html");
 }
 </pre>
-
-
-
-
 
 </body>
 </html>
