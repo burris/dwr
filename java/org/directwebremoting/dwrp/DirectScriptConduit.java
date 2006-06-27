@@ -19,7 +19,7 @@ public class DirectScriptConduit implements ScriptConduit
      * @param out The stream to write to
      * @param marshaller The marshaller that we ask to re-write our Javascript
      */
-    public DirectScriptConduit(PrintWriter out, DwrpPlainJsMarshaller marshaller)
+    public DirectScriptConduit(PrintWriter out, DwrpBaseMarshaller marshaller)
     {
         if (out == null)
         {
@@ -128,7 +128,7 @@ public class DirectScriptConduit implements ScriptConduit
      * The marshaller needs to be able to rewrite scripts depending on plain or
      * html modes
      */
-    private DwrpPlainJsMarshaller marshaller;
+    private DwrpBaseMarshaller marshaller;
 
     /**
      * Our ID, to get around serialization issues

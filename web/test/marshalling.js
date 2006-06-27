@@ -348,8 +348,11 @@ function setSettings() {
   if (method == "iframe") {
     DWREngine.setMethod(DWREngine.IFrame);
   }
-  else {
+  else if (method == "xhr") {
     DWREngine.setMethod(DWREngine.XMLHttpRequest);
+  }
+  else {
+    DWREngine.setMethod(DWREngine.ScriptTag);
   }
 
   // Set the verb

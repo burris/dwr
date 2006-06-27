@@ -16,11 +16,8 @@
 
 /**
  * Declare a constructor function to which we can add real functions.
- * @constructor
  */
-if (DWREngine == null) {
-  var DWREngine = {};
-}
+if (DWREngine == null) var DWREngine = {};
 
 /**
  * The real session id should be filled in by the server
@@ -415,9 +412,6 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   if (callData.preHook != null) DWREngine._batch.preHooks.unshift(callData.preHook);
   if (callData.postHook != null) DWREngine._batch.postHooks.push(callData.postHook);
 
-  // ScriptTag method parameter - the scriptTagBase
-  if (callData.scriptTagBase != null) DWREngine._batch.scriptTagBase = callData.scriptTagBase;
-
   // Default the error and warning handlers
   if (callData.errorHandler == null) callData.errorHandler = DWREngine._errorHandler;
   if (callData.warningHandler == null) callData.warningHandler = DWREngine._warningHandler;
@@ -746,10 +740,6 @@ DWREngine._sendData = function(batch) {
 	}
   }
   else {
-    if (!batch.scriptTagBase) {
-      DWREngine._handleError("Please specify the scriptTagBase property within the call data.");
-      return;
-    }
     for (prop in batch.map) {
       if (typeof batch.map[prop] != "function") {
         query += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
@@ -758,7 +748,7 @@ DWREngine._sendData = function(batch) {
     query = query.substring(0, query.length - 1);
     batch.script = document.createElement("script");
     batch.script.id = "dwr-st-" + batch.map["c0-id"];
-    url = batch.scriptTagBase + batch.path + "/plainjs/" + urlPostfix + "?" + query;
+    url = batch.path + "/plainjs/" + urlPostfix + "?" + query;
     url = DWREngine._urlRewriteHandler(url);
     batch.script.src = url;
     document.body.appendChild(batch.script);

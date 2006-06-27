@@ -18,8 +18,6 @@ package org.directwebremoting.dwrp;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.MimeConstants;
 
@@ -27,7 +25,7 @@ import org.directwebremoting.util.MimeConstants;
  * A version of the Plain Javascript Marshaller that uses iframe syntax
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrpHtmlJsMarshaller extends DwrpPlainJsMarshaller
+public class DwrpHtmlJsMarshaller extends DwrpBaseMarshaller
 {
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.DwrpPlainJsMarshaller#getOutboundMimeType()
@@ -40,23 +38,31 @@ public class DwrpHtmlJsMarshaller extends DwrpPlainJsMarshaller
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.DwrpPlainJsMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter, javax.servlet.http.HttpServletResponse)
      */
-    protected void sendOutboundScriptPrefix(PrintWriter out, HttpServletResponse response) throws IOException
+    protected void sendOutboundScriptPrefix(PrintWriter out) throws IOException
     {
-        sendScript(out, response, "<html><body><script type='text/javascript'>"); //$NON-NLS-1$
+        synchronized (out)
+        {
+            out.println("<html><body><script type='text/javascript'>"); //$NON-NLS-1$
+            out.flush();
+        }
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.DwrpPlainJsMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter, javax.servlet.http.HttpServletResponse)
      */
-    protected void sendOutboundScriptSuffix(PrintWriter out, HttpServletResponse response) throws IOException
+    protected void sendOutboundScriptSuffix(PrintWriter out) throws IOException
     {
-        sendScript(out, response, "</script></body></html>"); //$NON-NLS-1$
+        synchronized (out)
+        {
+            out.println("</script></body></html>"); //$NON-NLS-1$
+            out.flush();
+        }
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.DwrpPlainJsMarshaller#sendScript(java.io.PrintWriter, javax.servlet.http.HttpServletResponse, java.lang.String)
      */
-    protected void sendScript(PrintWriter out, HttpServletResponse response, String script) throws IOException
+    protected void sendScript(PrintWriter out, String script) throws IOException
     {
         synchronized (out)
         {
@@ -67,7 +73,6 @@ public class DwrpHtmlJsMarshaller extends DwrpPlainJsMarshaller
             out.println(ConversionConstants.SCRIPT_END_MARKER);
 
             out.flush();
-            response.flushBuffer();
         }
     }
 }
