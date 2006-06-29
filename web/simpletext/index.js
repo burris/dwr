@@ -5,9 +5,3 @@ function update() {
     DWRUtil.setValue("demoReply", data);
   });
 }
-
-function forward() {
-  Demo.getInclude(function(data) {
-    DWRUtil.setValue("forward", data);
-  });
-}

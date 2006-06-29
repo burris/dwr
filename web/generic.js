@@ -84,8 +84,8 @@ function testEquals(actual, expected, depth) {
     return true; // we wont get here of course ...
   }
 
-  if (expected instanceof Object) {
-    if (!(actual instanceof Object)) {
+  if (typeof expected == "object") {
+    if (!(typeof actual == "object")) {
       return "expected object, actual not an object";
     }
 
@@ -106,7 +106,6 @@ function testEquals(actual, expected, depth) {
     if (actualLength != expectedLength) {
       return "expected object size = " + expectedLength + ", actual object size = " + actualLength;
     }
-
     return true;
   }
 
@@ -118,11 +117,9 @@ function testEquals(actual, expected, depth) {
     if (!(actual instanceof Array)) {
       return "expected array, actual not an array";
     }
-
     if (actual.length != expected.length) {
       return "expected array length = " + expected.length + ", actual array length = " + actual.length;
     }
-
     for (var i = 0; i < actual.length; i++) {
       var inner = testEquals(actual[i], expected[i], depth + 1);
       if (typeof inner != "boolean" || !inner) {

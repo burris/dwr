@@ -7,12 +7,6 @@ Audit all MarshallExceptions - they could go to the client
 
 make sure that the exec calls never pass back an exception. catch and emit some good javascript
 
-timeout is broken
-
-IFrame GET is broken with Safari
-	iframe is only really useful with IE6 (with activex turned off) so we can
-	ignore this breakage
-
 Comet requests kill IE
 	How to reproduce:
 	(I use DWR 1.1.1)
@@ -187,3 +181,7 @@ Asynchronous batches
 	     var responseBatch = DWREngine._batches[DWREngine._batches.length-1];
 	Because chain of calls stops at this moment DWREngine._clearUp(batch)
 	never gets called for synchronous call.
+
+IFrame GET is broken with Safari
+	iframe is only really useful with IE6 (with activex turned off) so we can
+	ignore this breakage

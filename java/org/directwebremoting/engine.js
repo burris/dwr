@@ -595,10 +595,7 @@ DWREngine._sendData = function(batch) {
   batch.preHooks = null;
   // Set a timeout
   if (batch.timeout && batch.timeout != 0) {
-    batch.interval = setInterval(function() {
-      clearInterval(batch.interval);
-      DWREngine._abortRequest(batch);
-    }, batch.timeout);
+    batch.interval = setInterval(function() { DWREngine._abortRequest(batch); }, batch.timeout);
   }
   // A quick string to help people that use web log analysers
   var urlPostfix;
@@ -632,14 +629,17 @@ DWREngine._sendData = function(batch) {
     if (batch.async) {
       batch.req.onreadystatechange = function() { DWREngine._stateChange(batch); };
     }
+
     // If we're polling, record this for monitoring
     if (batch.isPoll) DWREngine._pollReq = batch.req;
+
     // Workaround for Safari 1.x POST bug
     var indexSafari = navigator.userAgent.indexOf("Safari/");
     if (indexSafari >= 0) {
       var version = navigator.userAgent.substring(indexSafari + 7);
       if (parseInt(version, 10) < 400) batch.verb == "GET";
     }
+
     for (prop in batch.headers) {
       batch.req.setRequestHeader(prop, batch.headers[prop]);
     }
@@ -862,7 +862,8 @@ DWREngine._eval = function(script) {
 
 /** @private Called as a result of a request timeout */
 DWREngine._abortRequest = function(batch) {
-  if (batch && batch.metadata != null && !batch.completed) {
+  if (batch && !batch.completed) {
+    clearInterval(batch.interval);
     DWREngine._clearUp(batch);
     if (batch.req) batch.req.abort();
     // Call all the timeout errorHandlers
