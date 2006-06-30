@@ -93,7 +93,7 @@ public class AnnotationsConfigurator implements Configurator
      */
     private void processClass(Class<?> clazz, Container container) throws InstantiationException, IllegalAccessException
     {
-        Create createAnn = clazz.getAnnotation(Create.class);
+        RemoteProxy createAnn = clazz.getAnnotation(RemoteProxy.class);
         if (createAnn != null)
         {
             processCreate(clazz, createAnn, container);
@@ -113,12 +113,12 @@ public class AnnotationsConfigurator implements Configurator
     }
 
     /**
-     * Process the @Create annotaion on a given class
-     * @param clazz The class annotated with @Create
+     * Process the @RemoteProxy annotaion on a given class
+     * @param clazz The class annotated with @RemoteProxy
      * @param createAnn The annotation
      * @param container The IoC container to configure
      */
-    private void processCreate(Class<?> clazz, Create createAnn, Container container)
+    private void processCreate(Class<?> clazz, RemoteProxy createAnn, Container container)
     {
         Class<? extends Creator> creator = createAnn.creator();
         String creatorClass = creator.getName();
