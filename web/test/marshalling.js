@@ -454,8 +454,13 @@ function testResults(data, index) {
 }
 
 function catchFailure(data) {
-  // which test have we just run?
-  failures.innerHTML += "Unknown Test<br/>&nbsp;&nbsp;Error: " + data + "<br/>";
+  failures.innerHTML += "Unknown Failure:&nbsp; " + data + "<br/>";
+  failcount++;
+  failreport.innerHTML = failcount;
+}
+
+function contentFailure() {
+  failures.innerHTML += "Unknown Test: text/html content found.<br/>";
   failcount++;
   failreport.innerHTML = failcount;
 }
@@ -478,6 +483,7 @@ function init() {
 
   DWREngine.setErrorHandler(catchFailure);
   DWREngine.setWarningHandler(catchFailure);
+  DWREngine.setTextHtmlHandler(contentFailure);
 
   DWRUtil.addRows("chart", tests, [
     function(row, options) { return options.rowNum; },
