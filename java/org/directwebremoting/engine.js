@@ -1030,7 +1030,8 @@ DWREngine._serializeXml = function(batch, referto, data, name) {
 
   var output;
   if (window.XMLSerializer) output = new XMLSerializer().serializeToString(data);
-  else output = data.toXml;
+  else if (data.toXml) output = data.toXml;
+  else output = data.innerHTML;
 
   return "XML:" + encodeURIComponent(output);
 };
