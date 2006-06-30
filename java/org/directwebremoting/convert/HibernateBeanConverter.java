@@ -141,11 +141,20 @@ public class HibernateBeanConverter extends BeanConverter
                     methods.put(key, method);
                 }
 
-                Boolean reply = (Boolean) isPropertyInitialized.invoke(null, new Object[] { data, property });
-                Boolean reply2 = (Boolean) isInitialized.invoke(null, new Object[] { method.invoke(data, new Object[] {}) });
+                if (method == null)
+                {
+                    log.warn("Failed to find property: " + property); //$NON-NLS-1$
+                    return false;
+                }
 
-                boolean inited = reply.booleanValue() && reply2.booleanValue();
-                if (!inited)
+                Boolean reply = (Boolean) isPropertyInitialized.invoke(null, new Object[] { data, property });
+                if (!reply.booleanValue())
+                {
+                    return false;
+                }
+
+                reply = (Boolean) isInitialized.invoke(null, new Object[] { method.invoke(data, new Object[] {}) });
+                if (!reply.booleanValue())
                 {
                     return false;
                 }

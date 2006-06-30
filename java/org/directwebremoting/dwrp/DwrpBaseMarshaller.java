@@ -541,9 +541,8 @@ public abstract class DwrpBaseMarshaller implements Marshaller
         //      http://developer.apple.com/internet/safari/uamatrix.html
         if (paramMap.size() == 1)
         {
-            log.debug("Using Broken Safari POST mode"); //$NON-NLS-1$
-
             // This looks like a broken Mac where the line endings are confused
+            log.debug("Using Broken Safari POST mode"); //$NON-NLS-1$
 
             // Iterators insist that we call hasNext() before we start
             Iterator it = paramMap.keySet().iterator();
