@@ -757,61 +757,68 @@ DWREngine._sendData = function(batch) {
 
 /** @private Called by XMLHttpRequest to indicate that something has happened */
 DWREngine._stateChange = function(batch) {
-  if (!batch.completed && batch.req.readyState == 4) {
-    try {
-      var reply = batch.req.responseText;
-      reply = DWREngine._replyRewriteHandler(reply);
+  var toEval;
+  try {
+    if (batch.completed || batch.req.readyState != 4) {
+      return;
+    }
 
-      if (reply == null || reply == "") {
-        DWREngine._handleMetaDataWarning(null, "No data received from server");
-      }
-      else {
-        var contentType = batch.req.getResponseHeader("Content-Type");
-        if (!contentType.match(/^text\/plain/) && !contentType.match(/^text\/javascript/)) {
-          if (DWREngine._textHtmlHandler && contentType.match(/^text\/html/)) {
-            DWREngine._textHtmlHandler();
-          }
-          else {
-            DWREngine._handleMetaDataWarning(null, "Invalid content type from server: '" + contentType + "'");
-          }
+    var reply = batch.req.responseText;
+    reply = DWREngine._replyRewriteHandler(reply);
+
+    if (reply == null || reply == "") {
+      DWREngine._handleMetaDataWarning(null, "No data received from server");
+    }
+    else {
+      var contentType = batch.req.getResponseHeader("Content-Type");
+      if (!contentType.match(/^text\/plain/) && !contentType.match(/^text\/javascript/)) {
+        if (DWREngine._textHtmlHandler && contentType.match(/^text\/html/)) {
+          DWREngine._textHtmlHandler();
         }
         else {
-          // Skip checking the xhr.status because the above will do for most errors
-          // and because it causes Mozilla to error
+          DWREngine._handleMetaDataWarning(null, "Invalid content type from server: '" + contentType + "'");
+        }
+      }
+      else {
+        // Skip checking the xhr.status because the above will do for most errors
+        // and because it causes Mozilla to error
 
-          // Comet replies might have already partially executed
-          if (batch.req == DWREngine._pollReq) {
-            DWREngine._processCometResponse(reply);
+        // Comet replies might have already partially executed
+        if (batch.req == DWREngine._pollReq) {
+          DWREngine._processCometResponse(reply);
+        }
+        else {
+          if (reply.search("DWREngine._handle") == -1) {
+            DWREngine._handleMetaDataWarning(null, "Invalid reply from server");
           }
           else {
-            if (reply.search("DWREngine._handle") == -1) {
-              DWREngine._handleMetaDataWarning(null, "Invalid reply from server");
-            }
-            else {
-              eval(reply);
-            }
+            toEval = reply;
           }
         }
       }
+    }
+  }
+  catch (ex) {
+    if (ex == null) ex = "Unknown error occured";
+    DWREngine._handleMetaDataWarning(null, ex);
+  }
+  finally {
+    // We're done. Clear up
+    DWREngine._clearUp(batch);
 
+    // If there is anything on the queue waiting to go out, then send it.
+    // We don't need to check for ordered mode, here because when ordered mode
+    // gets turned off, we still process *waiting* batches in an ordered way.
+    if (DWREngine._batchQueue.length != 0) {
+      var sendbatch = DWREngine._batchQueue.shift();
+      DWREngine._sendData(sendbatch);
+      DWREngine._batches[DWREngine._batches.length] = sendbatch;
+    }
+  }
 
-      // We're done. Clear up
-      DWREngine._clearUp(batch);
-    }
-    catch (ex) {
-      if (ex == null) ex = "Unknown error occured";
-      DWREngine._handleMetaDataWarning(null, ex);
-    }
-    finally {
-      // If there is anything on the queue waiting to go out, then send it.
-      // We don't need to check for ordered mode, here because when ordered mode
-      // gets turned off, we still process *waiting* batches in an ordered way.
-      if (DWREngine._batchQueue.length != 0) {
-        var sendbatch = DWREngine._batchQueue.shift();
-        DWREngine._sendData(sendbatch);
-        DWREngine._batches[DWREngine._batches.length] = sendbatch;
-      }
-    }
+  // Outside of the try/catch so errors propogate normally:
+  if (toEval != null) {
+    eval(toEval);
   }
 };
 
