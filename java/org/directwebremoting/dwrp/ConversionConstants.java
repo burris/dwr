@@ -65,7 +65,7 @@ public interface ConversionConstants
     /**
      * The parameter that specifies the current page
      */
-    public static final Object INBOUND_KEY_PAGE = "page"; //$NON-NLS-1$
+    public static final String INBOUND_KEY_PAGE = "page"; //$NON-NLS-1$
 
     /**
      * The inbound key to define the class to be used.
@@ -87,6 +87,11 @@ public interface ConversionConstants
      * What prefix do we put to the environment paramters
      */
     public static final String INBOUND_KEY_ENV = "e"; //$NON-NLS-1$
+
+    /**
+     * The inbound key to declare if the XHR.responseText is readable when half filled
+     */
+    public static final String INBOUND_KEY_PARTIAL_RESPONSE = "partialResponse"; //$NON-NLS-1$
 
     /**
      * The character to use to distinguish between the variable name and the
@@ -139,6 +144,16 @@ public interface ConversionConstants
      * null is sometimes needed in a javascript map
      */
     public static final String INBOUND_NULL = "null"; //$NON-NLS-1$
+
+    /**
+     * The marker to indicate that the output is from data inserted into the call
+     */
+    public static final String SCRIPT_CALL_INSERT = "//#DWR-INSERT"; //$NON-NLS-1$
+
+    /**
+     * The marker to indicate that the output is a reply to the call
+     */
+    public static final String SCRIPT_CALL_REPLY = "//#DWR-REPLY"; //$NON-NLS-1$
 
     /**
      * The marker to indicate the start of a evalable script block

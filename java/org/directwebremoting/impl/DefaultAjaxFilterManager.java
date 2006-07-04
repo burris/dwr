@@ -75,9 +75,18 @@ public class DefaultAjaxFilterManager implements AjaxFilterManager
         classBased.add(filter);
     }
 
+    /**
+     * The base filter that actually does the execution
+     */
     private AjaxFilter executor = new ExecuteAjaxFilter();
 
+    /**
+     * The list of all global filters
+     */
     private List global = new ArrayList();
 
+    /**
+     * The map of lists of class based filters
+     */
     private Map classBasedMap = new HashMap();
 }

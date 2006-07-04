@@ -129,7 +129,7 @@ public class DefaultWebContext extends DefaultServerContext implements WebContex
         StringBuffer buffer = sout.getBuffer();
 
         HttpServletResponse realResponse = getHttpServletResponse();
-        HttpServletResponse fakeResponse = new SwallowingHttpServletResponse(realResponse, sout);
+        HttpServletResponse fakeResponse = new SwallowingHttpServletResponse(sout, realResponse.getCharacterEncoding());
 
         HttpServletRequest realRequest = getHttpServletRequest();
         realRequest.setAttribute(WebContext.ATTRIBUTE_DWR, Boolean.TRUE);

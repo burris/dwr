@@ -34,7 +34,7 @@ public interface ScriptSession
      * @return the object with the specified name
      * @throws IllegalStateException if the page has been invalidated
      */
-    public Object getAttribute(String name);
+    Object getAttribute(String name);
 
     /**
      * Binds an object to this session, using the name specified.
@@ -54,7 +54,7 @@ public interface ScriptSession
      * @param value the object to be bound
      * @throws IllegalStateException if the page has been invalidated
      */
-    public void setAttribute(String name, Object value);
+    void setAttribute(String name, Object value);
 
     /**
      * Removes the object bound with the specified name from this session.
@@ -68,7 +68,7 @@ public interface ScriptSession
      * @param name the name of the object to remove from this session
      * @throws IllegalStateException if the page has been invalidated
      */
-    public void removeAttribute(String name);
+    void removeAttribute(String name);
 
     /**
      * Returns an <code>Enumeration</code> of <code>String</code> objects
@@ -77,20 +77,20 @@ public interface ScriptSession
      *     names of all the objects bound to this session
      * @throws IllegalStateException if the page has been invalidated
      */
-    public Iterator getAttributeNames();
+    Iterator getAttributeNames();
 
     /**
      * Invalidates this session then unbinds any objects bound to it. 
      * @throws IllegalStateException if the page has been invalidated
      */
-    public void invalidate();
+    void invalidate();
 
     /**
      * Add a script to the list waiting for remote execution.
      * The version automatically wraps the string in a ClientScript object.
      * @param script The script to execute
      */
-    public void addScript(String script);
+    void addScript(String script);
 
     /**
      * Returns a string containing the unique identifier assigned to this
@@ -99,7 +99,7 @@ public interface ScriptSession
      * @return a string specifying the identifier assigned to this session
      * @throws IllegalStateException if the page has been invalidated
      */
-    public String getId();
+    String getId();
 
     /**
      * Returns the time when this session was created, measured in milliseconds
@@ -107,7 +107,7 @@ public interface ScriptSession
      * @return when was this page created, in milliseconds since 1/1/1970 GMT
      * @throws IllegalStateException if the page has been invalidated
      */
-    public long getCreationTime();
+    long getCreationTime();
 
     /**
      * Returns the last time the client sent a request associated with this
@@ -118,7 +118,7 @@ public interface ScriptSession
      * @return when was this page last accessed, in milliseconds since 1/1/1970 GMT
      * @throws IllegalStateException if the page has been invalidated
      */
-    public long getLastAccessedTime();
+    long getLastAccessedTime();
 
     /**
      * While a Marshaller is processing a request it can register a
@@ -130,28 +130,30 @@ public interface ScriptSession
      * @param conduit The new ScriptConduit
      * @see ScriptSession#removeScriptConduit(ScriptConduit)
      */
-    public void addScriptConduit(ScriptConduit conduit);
+    void addScriptConduit(ScriptConduit conduit);
 
     /**
      * Remove a ScriptConduit.
      * @param conduit The ScriptConduit to remove
      * @see ScriptSession#addScriptConduit(ScriptConduit)
      */
-    public void removeScriptConduit(ScriptConduit conduit);
+    void removeScriptConduit(ScriptConduit conduit);
 
     /**
-     * @return number of scripts queued within session
+     * For internal use only.
+     * Allows for checking to see if there is data waiting to be returned
+     * @return true if there are no waiting scripts
      */
-    public int getQueuedScripts();
+    boolean hasWaitingScripts();
 
     /**
-     * 
+     * Accessor for the mutex used to synchronize access to
      * @return The mutex object used by the script session
      */
-    public Object getScriptLock();
+    Object getScriptLock();
 
     /**
      * Flush the session conduits
      */
-    public void flushConduits();
+    void flushConduits();
 }

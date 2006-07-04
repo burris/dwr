@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
@@ -160,10 +162,6 @@ public class DefaultScriptSession implements ScriptSession
                         {
                             conduit.flush();
                         }
-                        else
-                        {
-                            it.remove();
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -249,6 +247,8 @@ public class DefaultScriptSession implements ScriptSession
         // And add the conduit into the list
         synchronized (scriptLock)
         {
+            conduits.add(conduit);
+
             // If there are any outstanding scripts, dump them to the new conduit
             try
             {
@@ -269,9 +269,7 @@ public class DefaultScriptSession implements ScriptSession
             catch (Exception ex)
             {
                 log.warn("Failed to catch-up write to a ScriptConduit"); //$NON-NLS-1$
-            }                
-
-            conduits.add(conduit);
+            }
         }
     }
 
@@ -287,17 +285,25 @@ public class DefaultScriptSession implements ScriptSession
             boolean removed = conduits.remove(conduit);
             if (!removed)
             {
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Missing ScriptConduit: " + conduit + ". We do know about:"); //$NON-NLS-1$ //$NON-NLS-2$
-                    for (Iterator it = conduits.iterator(); it.hasNext();)
-                    {
-                        ScriptConduit c = (ScriptConduit) it.next();
-                        log.debug("- " + c); //$NON-NLS-1$
-                    }
-                }
+                log.error("Attempt to remove unattached ScriptConduit: " + conduit); //$NON-NLS-1$
+                debug();
+                new Exception().printStackTrace();
+            }
+        }
+    }
 
-                throw new IllegalStateException("Attempt to remove unattached ScriptConduit: " + conduit); //$NON-NLS-1$
+    /**
+     * Some debug output
+     */
+    private void debug()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug("Known ScriptConduits:"); //$NON-NLS-1$
+            for (Iterator it = conduits.iterator(); it.hasNext();)
+            {
+                ScriptConduit c = (ScriptConduit) it.next();
+                log.debug("- " + c); //$NON-NLS-1$
             }
         }
     }
@@ -349,13 +355,13 @@ public class DefaultScriptSession implements ScriptSession
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSession#queueScripts()
+     * @see org.directwebremoting.ScriptSession#hasWaitingScripts()
      */
-    public int getQueuedScripts()
+    public boolean hasWaitingScripts()
     {
         synchronized (scriptLock)
         {
-            return scripts.size();
+            return !scripts.isEmpty();
         }
     }
 
@@ -366,11 +372,11 @@ public class DefaultScriptSession implements ScriptSession
     {
         return "DefaultScriptSession[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     /**
      * The script conduits that we can use to transfer data to the browser
      */
-    protected final List conduits = new ArrayList();
+    protected final SortedSet conduits = new TreeSet();
 
     /**
      * The list of waiting scripts

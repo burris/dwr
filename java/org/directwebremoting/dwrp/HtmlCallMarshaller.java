@@ -25,10 +25,10 @@ import org.directwebremoting.util.MimeConstants;
  * A version of the Plain Javascript Marshaller that uses iframe syntax
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrpHtmlJsMarshaller extends DwrpBaseMarshaller
+public class HtmlCallMarshaller extends BaseCallMarshaller
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.DwrpPlainJsMarshaller#getOutboundMimeType()
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
      */
     protected String getOutboundMimeType()
     {
@@ -36,43 +36,46 @@ public class DwrpHtmlJsMarshaller extends DwrpBaseMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.DwrpPlainJsMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter, javax.servlet.http.HttpServletResponse)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter)
      */
     protected void sendOutboundScriptPrefix(PrintWriter out) throws IOException
     {
         synchronized (out)
         {
             out.println("<html><body><script type='text/javascript'>"); //$NON-NLS-1$
-            out.flush();
         }
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.DwrpPlainJsMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter, javax.servlet.http.HttpServletResponse)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter)
      */
     protected void sendOutboundScriptSuffix(PrintWriter out) throws IOException
     {
         synchronized (out)
         {
             out.println("</script></body></html>"); //$NON-NLS-1$
-            out.flush();
         }
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.DwrpPlainJsMarshaller#sendScript(java.io.PrintWriter, javax.servlet.http.HttpServletResponse, java.lang.String)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendScript(java.io.PrintWriter, java.lang.String)
      */
     protected void sendScript(PrintWriter out, String script) throws IOException
     {
+        if (script.trim().length() == 0)
+        {
+            return;
+        }
+
         synchronized (out)
         {
             String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");"; //$NON-NLS-1$ //$NON-NLS-2$
-
-            out.println(ConversionConstants.SCRIPT_START_MARKER);
             out.println(modScript);
-            out.println(ConversionConstants.SCRIPT_END_MARKER);
 
-            out.flush();
+            if (out.checkError())
+            {
+                throw new IOException("Error flushing buffered stream"); //$NON-NLS-1$
+            }
         }
     }
 }

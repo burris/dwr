@@ -102,10 +102,6 @@
     <convert converter="servlet" match="javax.servlet.http.HttpServletResponse"/>
     <convert converter="servlet" match="javax.servlet.http.HttpSession"/>
 
-    <create creator="new" javascript="DWRSystem" scope="application">
-      <param name="class" value="org.directwebremoting.remoted.DwrSystem"/>
-    </create>
-
   </allow>
 
 </dwr>

@@ -133,7 +133,7 @@ DWREngine.setPolling = function() {
 DWREngine.setReverseAjax = function(reverseAjax) {
   DWREngine._reverseAjax = reverseAjax;
   if (DWREngine._reverseAjax) {
-    DWREngine._triggerNextPoll(0);
+    DWREngine._poll();
   }
 };
 
@@ -175,10 +175,8 @@ DWREngine.defaultMessageHandler = function(message) {
     alert("Error: " + message.description);
   }
   else {
-    // Ignore NS_ERROR_NOT_AVAILABLE
-    if (message.toString().indexOf("0x80040111") == -1) {
-      alert(message);
-    }
+    // Ignore NS_ERROR_NOT_AVAILABLE if Mozilla is being narky
+    if (message.toString().indexOf("0x80040111") == -1) alert(message);
   }
 };
 
@@ -191,14 +189,9 @@ DWREngine.beginBatch = function() {
     DWREngine._handleError("Batch already started.");
     return;
   }
-  // Setup a batch
   DWREngine._batch = {
-    headers:{},
-    map:{ callCount:0 },
-    paramCount:0,
-    ids:[],
-    preHooks:[],
-    postHooks:[]
+    headers:{}, map:{ callCount:0 }, paramCount:0,
+    ids:[], preHooks:[], postHooks:[]
   };
 };
 
@@ -402,17 +395,12 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   var prefix = "c" + DWREngine._batch.map.callCount + "-";
   DWREngine._batch.ids.push(id);
 
-  // batchMetaData stuff the we allow in callMetaData for convenience
   if (callData.method != null) DWREngine._batch.method = callData.method;
   if (callData.verb != null) DWREngine._batch.verb = callData.verb;
   if (callData.async != null) DWREngine._batch.async = callData.async;
   if (callData.timeout != null) DWREngine._batch.timeout = callData.timeout;
-
-  // callMetaData stuff that we handle with the rest of the batchMetaData
   if (callData.preHook != null) DWREngine._batch.preHooks.unshift(callData.preHook);
   if (callData.postHook != null) DWREngine._batch.postHooks.push(callData.postHook);
-
-  // Default the error and warning handlers
   if (callData.errorHandler == null) callData.errorHandler = DWREngine._errorHandler;
   if (callData.warningHandler == null) callData.warningHandler = DWREngine._warningHandler;
 
@@ -442,7 +430,6 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   DWREngine._batch.map.httpSessionId = DWREngine._httpSessionId;
   DWREngine._batch.map.scriptSessionId = DWREngine._scriptSessionId;
   DWREngine._batch.map.page = window.location.pathname;
-
   DWREngine._batch.map[prefix + "scriptName"] = scriptName;
   DWREngine._batch.map[prefix + "methodName"] = methodName;
   DWREngine._batch.map[prefix + "id"] = id;
@@ -454,63 +441,49 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
 
   // Now we have finished remembering the call, we incr the call count
   DWREngine._batch.map.callCount++;
-  if (singleShot) {
-    DWREngine.endBatch();
-  }
+  if (singleShot) DWREngine.endBatch();
 };
 
 /** @private Poll the server to see if there is any data waiting */
 DWREngine._poll = function(overridePath) {
-  if (!DWREngine._reverseAjax) {
-    return;
-  }
+  if (!DWREngine._reverseAjax) return;
   // Get a unique ID for this call
   var random = Math.floor(Math.random() * 10001);
   var id = (random + "_" + new Date().getTime()).toString();
   // Create a batch object that describes how we are to call the server
   var batch = {
-    completed:false,
     map:{
-      callCount:1,
-      'c0-scriptName':'DWRSystem',
-      'c0-methodName':'poll',
-      'c0-id':id,
+      id:id,
       httpSessionId:DWREngine._httpSessionId,
       scriptSessionId:DWREngine._scriptSessionId,
       page:window.location.pathname
     },
-    method:DWREngine._pollMethod,
-    isPoll:true,
-    verb:"POST",
-    async:true,
-    headers:{},
-    paramCount:0,
-    ids:[ id ],
+    method:DWREngine._pollMethod, completed:false, isPoll:true, verb:"POST",
+    async:true, headers:{}, ids:[ id ], paramCount:0,
     path:(overridePath) ? overridePath : DWREngine._defaultPath,
-    preHooks:(DWREngine._preHook) ? [ DWREngine._preHook ] : [],
-    postHooks:(DWREngine._postHook) ? [ DWREngine._postHook ] : [],
-    timeout:0
+    preHooks:[], postHooks:[], timeout:0
   };
-  // IE can't handle XHR polling, so we must back off to iframe
-  if (!window.XMLHttpRequest && DWREngine._pollMethod == DWREngine.XMLHttpRequest) {
-    batch.method = DWREngine.IFrame;
+  if (window.XMLHttpRequest != null) {
+    // Mozilla case where XHR.responseText filled as call proceeds
+    batch.map.partialResponse = "true";
+  }
+  else {
+    // The IE case where XHR.responseText is not filled until call is closed
+    batch.map.partialResponse = "false";
   }
   // Create an entry in the handlers map for what happens when the reply arrives
   DWREngine._handlersMap[id] = {
     errorHandler:DWREngine._errorHandler,
     warningHandler:DWREngine._warningHandler,
-    callback:DWREngine._triggerNextPoll
+    callback:function(pause) { setTimeout("DWREngine._poll()", pause); }
   };
   // Send the data
   DWREngine._sendData(batch);
   DWREngine._batches[DWREngine._batches.length] = batch;
-  DWREngine._checkCometPoll();
+  if (batch.map.partialResponse == "true") {
+    DWREngine._checkCometPoll();
+  }
 };
-
-/** @private Setup an interval to kick off the next poll */
-DWREngine._triggerNextPoll = function(pause) {
-  setTimeout("DWREngine._poll()", pause);
-}
 
 /** @private Check for reverse Ajax activity */
 DWREngine._checkCometPoll = function() {
@@ -533,7 +506,7 @@ DWREngine._checkCometPoll = function() {
       // IE complains for no good reason for both options above. Ignore.
     }
   }
-}
+};
 
 /** @private Extract the whole (executed an all) text from the current iframe */
 DWREngine._getTextFromCometIFrame = function() {
@@ -554,7 +527,7 @@ DWREngine._getTextFromCometIFrame = function() {
   // IE plays silly-pants and adds <PRE>...</PRE> for some unknown reason
   if (text.indexOf("<PRE>") == 0) text = text.substring(5, text.length - 7);
   return text;
-}
+};
 
 /** @private Some more text might have come in, test and execute the new stuff */
 DWREngine._processCometResponse = function(response) {
@@ -582,7 +555,7 @@ DWREngine._processCometResponse = function(response) {
       // }
     }
   }
-}
+};
 
 /** @private Actually send the block of data in the batch object. */
 DWREngine._sendData = function(batch) {
@@ -597,17 +570,6 @@ DWREngine._sendData = function(batch) {
   if (batch.timeout && batch.timeout != 0) {
     batch.interval = setInterval(function() { DWREngine._abortRequest(batch); }, batch.timeout);
   }
-  // A quick string to help people that use web log analysers
-  var urlPostfix;
-  if (batch.map.callCount == 1) {
-    urlPostfix = batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"] + ".dwr";
-  }
-  else {
-    urlPostfix = "Multiple." + batch.map.callCount + ".dwr";
-  }
-  if (DWREngine._httpSessionId != "") {
-    urlPostfix += ";jsessionid=" + DWREngine._httpSessionId;
-  }
 
   // Get setup for XMLHttpRequest if possible
   if (batch.method == DWREngine.XMLHttpRequest) {
@@ -620,73 +582,33 @@ DWREngine._sendData = function(batch) {
     }
   }
 
-  var query = "";
-  var prop, url;
-
-  // This equates to (batch.method == XHR && browser supports XHR)
+  var prop, request;
   if (batch.req) {
     // Proceed using XMLHttpRequest
     if (batch.async) {
       batch.req.onreadystatechange = function() { DWREngine._stateChange(batch); };
     }
-
     // If we're polling, record this for monitoring
     if (batch.isPoll) DWREngine._pollReq = batch.req;
-
     // Workaround for Safari 1.x POST bug
     var indexSafari = navigator.userAgent.indexOf("Safari/");
     if (indexSafari >= 0) {
       var version = navigator.userAgent.substring(indexSafari + 7);
       if (parseInt(version, 10) < 400) batch.verb == "GET";
     }
-
-    for (prop in batch.headers) {
-      batch.req.setRequestHeader(prop, batch.headers[prop]);
+    batch.mode = batch.isPoll ? DWREngine._ModePlainPoll : DWREngine._ModePlainCall;
+    request = DWREngine._constructRequest(batch);
+    try {
+      batch.req.open(batch.verb, request.url, batch.async);
+      for (prop in batch.headers) {
+        batch.req.setRequestHeader(prop, batch.headers[prop]);
+      }
+      if (!batch.headers["Content-Type"]) batch.req.setRequestHeader("Content-Type", "text/plain");
+      batch.req.send(request.body);
+      if (!batch.async) DWREngine._stateChange(batch);
     }
-
-    if (batch.verb == "GET") {
-      // Some browsers (Opera/Safari2) seem to fail to convert the value
-      // of batch.map.callCount to a string in the loop below so we do it
-      // manually here.
-      batch.map.callCount = "" + batch.map.callCount;
-
-      for (prop in batch.map) {
-        var qkey = encodeURIComponent(prop);
-        var qval = encodeURIComponent(batch.map[prop]);
-        if (qval == "") DWREngine._handleError("Found empty qval for qkey=" + qkey);
-        query += qkey + "=" + qval + "&";
-      }
-
-      try {
-        url = batch.path + "/plainjs/" + urlPostfix + "?" + query;
-        url = DWREngine._urlRewriteHandler(url);
-        batch.req.open("GET", url, batch.async);
-        batch.req.send(null);
-        if (!batch.async) DWREngine._stateChange(batch);
-      }
-      catch (ex) {
-        DWREngine._handleMetaDataError(null, ex);
-      }
-    }
-    else {
-      for (prop in batch.map) {
-        if (typeof batch.map[prop] != "function") {
-          query += prop + "=" + batch.map[prop] + DWREngine._postSeperator;
-        }
-      }
-
-      try {
-        url = batch.path + "/plainjs/" + urlPostfix;
-        url = DWREngine._urlRewriteHandler(url);
-        batch.req.open("POST", url, batch.async);
-        if (!batch.headers["Content-Type"]) batch.req.setRequestHeader("Content-Type", "text/plain");
-        query = DWREngine._contentRewriteHandler(query);
-        batch.req.send(query);
-        if (!batch.async) DWREngine._stateChange(batch);
-      }
-      catch (ex) {
-        DWREngine._handleMetaDataError(null, ex);
-      }
+    catch (ex) {
+      DWREngine._handleMetaDataError(null, ex);
     }
   }
   else if (batch.method != DWREngine.ScriptTag) {
@@ -697,37 +619,24 @@ DWREngine._sendData = function(batch) {
     document.body.appendChild(batch.div);
     batch.iframe = document.getElementById(idname);
     batch.iframe.setAttribute("style", "width:0px; height:0px; border:0px;");
-
-    // Settings that vary if we are polling
+    batch.mode = batch.isPoll ? DWREngine._ModeHtmlPoll : DWREngine._ModeHtmlCall;
     if (batch.isPoll) {
+      // Settings that vary if we are polling
       DWREngine._pollFrame = batch.iframe;
       DWREngine._pollCometSize = 0;
-      url = batch.path + "/plainjs/" + urlPostfix;
     }
-    else {
-      url = batch.path + "/htmljs/" + urlPostfix;
-    }
+    request = DWREngine._constructRequest(batch);
     if (batch.verb == "GET") {
-      for (prop in batch.map) {
-        if (typeof batch.map[prop] != "function") {
-          query += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
-        }
-      }
-      query = query.substring(0, query.length - 1);
-      url = url + "?" + query;
-      url = DWREngine._urlRewriteHandler(url);
-
-      batch.iframe.setAttribute("src", url);
+      batch.iframe.setAttribute("src", request.url);
       document.body.appendChild(batch.iframe);
     }
     else {
-      url = DWREngine._urlRewriteHandler(url);
       batch.form = document.createElement("form");
       batch.form.setAttribute("id", "dwr-form");
-      batch.form.setAttribute("action", url);
+      batch.form.setAttribute("action", request.url);
       batch.form.setAttribute("target", idname);
       batch.form.target = idname;
-      batch.form.setAttribute("method", "POST");
+      batch.form.setAttribute("method", batch.verb);
       for (prop in batch.map) {
         var formInput = document.createElement("input");
         formInput.setAttribute("type", "hidden");
@@ -740,34 +649,87 @@ DWREngine._sendData = function(batch) {
 	}
   }
   else {
-    for (prop in batch.map) {
-      if (typeof batch.map[prop] != "function") {
-        query += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
-      }
-    }
-    query = query.substring(0, query.length - 1);
+    batch.verb = "GET"; // There's no such thing as ScriptTag using POST
+    batch.mode = batch.isPoll ? DWREngine._ModePlainPoll : DWREngine._ModePlainCall;
+    request = DWREngine._constructRequest(batch);
     batch.script = document.createElement("script");
     batch.script.id = "dwr-st-" + batch.map["c0-id"];
-    url = batch.path + "/plainjs/" + urlPostfix + "?" + query;
-    url = DWREngine._urlRewriteHandler(url);
-    batch.script.src = url;
+    batch.script.src = request.url;
     document.body.appendChild(batch.script);
   }
+};
+
+DWREngine._ModePlainCall = "/plaincall/";
+DWREngine._ModeHtmlCall = "/htmlcall/";
+DWREngine._ModePlainPoll = "/plainpoll/";
+DWREngine._ModeHtmlPoll = "/htmlpoll/";
+
+/** @private Work out what the URL should look like */
+DWREngine._constructRequest = function(batch) {
+  // A quick string to help people that use web log analysers
+  var request = { url:batch.path + batch.mode, body:null };
+  if (batch.map.callCount == 0) {
+    request.url += "ReverseAjax.dwr";
+  }
+  else if (batch.map.callCount == 1) {
+    request.url += batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"] + ".dwr";
+  }
+  else {
+    request.url += "Multiple." + batch.map.callCount + ".dwr";
+  }
+  request.url += ";jsessionid=" + DWREngine._httpSessionId;
+
+  var prop;
+  if (batch.verb == "GET") {
+    // Some browsers (Opera/Safari2) seem to fail to convert the callCount value
+    // to a string in the loop below so we do it manually here.
+    batch.map.callCount = "" + batch.map.callCount;
+    request.url += "?";
+    for (prop in batch.map) {
+      if (typeof batch.map[prop] != "function") {
+        request.url += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
+      }
+    }
+    request.url = request.url.substring(0, request.url.length - 1);
+  }
+  else {
+    // PERFORMANCE: for iframe mode this is thrown away.
+    request.body = "";
+    for (prop in batch.map) {
+      if (typeof batch.map[prop] != "function") {
+        request.body += prop + "=" + batch.map[prop] + DWREngine._postSeperator;
+      }
+    }
+    request.body = DWREngine._contentRewriteHandler(request.body);
+  }
+  request.url = DWREngine._urlRewriteHandler(request.url);
+  return request;
 };
 
 /** @private Called by XMLHttpRequest to indicate that something has happened */
 DWREngine._stateChange = function(batch) {
   var toEval;
-  try {
-    if (batch.completed || batch.req.readyState != 4) {
-      return;
-    }
 
+  try {
+    if (batch.completed || batch.req.readyState != 4) return;
+  }
+  catch (ex) {
+    DWREngine._handleMetaDataWarning(null, ex);
+    // It's broken - clear up and forget this call
+    DWREngine._clearUp(batch);
+    return;
+  }
+
+  try {
     var reply = batch.req.responseText;
     reply = DWREngine._replyRewriteHandler(reply);
+    var status = batch.req.status; // causes Mozilla to except on page moves
 
     if (reply == null || reply == "") {
       DWREngine._handleMetaDataWarning(null, "No data received from server");
+    }
+    else if (status == 501) {
+      DWREngine._handleMetaDataWarning(null, reply);
     }
     else {
       var contentType = batch.req.getResponseHeader("Content-Type");
@@ -776,7 +738,7 @@ DWREngine._stateChange = function(batch) {
           DWREngine._textHtmlHandler();
         }
         else {
-          DWREngine._handleMetaDataWarning(null, "Invalid content type from server: '" + contentType + "'");
+          DWREngine._handleMetaDataWarning(null, "Invalid content type: '" + contentType + "'");
         }
       }
       else {
@@ -784,11 +746,11 @@ DWREngine._stateChange = function(batch) {
         // and because it causes Mozilla to error
 
         // Comet replies might have already partially executed
-        if (batch.req == DWREngine._pollReq) {
+        if (batch.req == DWREngine._pollReq && batch.map.partialResponse == "true") {
           DWREngine._processCometResponse(reply);
         }
         else {
-          if (reply.search("DWREngine._handle") == -1) {
+          if (reply.search("//#DWR") == -1) {
             DWREngine._handleMetaDataWarning(null, "Invalid reply from server");
           }
           else {
@@ -799,27 +761,16 @@ DWREngine._stateChange = function(batch) {
     }
   }
   catch (ex) {
-    if (ex == null) ex = "Unknown error occured";
+    // if (ex == null) ex = "Unknown error occured";
     DWREngine._handleMetaDataWarning(null, ex);
-  }
-  finally {
-    // We're done. Clear up
-    DWREngine._clearUp(batch);
-
-    // If there is anything on the queue waiting to go out, then send it.
-    // We don't need to check for ordered mode, here because when ordered mode
-    // gets turned off, we still process *waiting* batches in an ordered way.
-    if (DWREngine._batchQueue.length != 0) {
-      var sendbatch = DWREngine._batchQueue.shift();
-      DWREngine._sendData(sendbatch);
-      DWREngine._batches[DWREngine._batches.length] = sendbatch;
-    }
   }
 
   // Outside of the try/catch so errors propogate normally:
   if (toEval != null) {
     eval(toEval);
   }
+
+  DWREngine._clearUp(batch);
 };
 
 /**
@@ -866,7 +817,7 @@ DWREngine._handleServerError = function(id, error) {
 /** @private This is a hack to make the context be this window */
 DWREngine._eval = function(script) {
   return eval(script);
-}
+};
 
 /** @private Called as a result of a request timeout */
 DWREngine._abortRequest = function(batch) {
@@ -920,6 +871,15 @@ DWREngine._clearUp = function(batch) {
   }
 
   batch.completed = true;
+
+  // If there is anything on the queue waiting to go out, then send it.
+  // We don't need to check for ordered mode, here because when ordered mode
+  // gets turned off, we still process *waiting* batches in an ordered way.
+  if (DWREngine._batchQueue.length != 0) {
+    var sendbatch = DWREngine._batchQueue.shift();
+    DWREngine._sendData(sendbatch);
+    DWREngine._batches[DWREngine._batches.length] = sendbatch;
+  }
 };
 
 /** @private Generic error handling routing to save having null checks everywhere */

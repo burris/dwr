@@ -109,8 +109,13 @@ public class DefaultAccessControl implements AccessControl
             return Messages.getString("ExecuteQuery.DeniedByAccessRules"); //$NON-NLS-1$
         }
 
-        if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY) &&
-            !creator.getType().getName().startsWith(PACKAGE_DWR_ALLOW))
+        // We ban some methods from Object too
+        if (method.getDeclaringClass() == Object.class)
+        {
+            return Messages.getString("ExecuteQuery.DeniedObjectMethod"); //$NON-NLS-1$
+        }
+
+        if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY))
         {
             return Messages.getString("ExecuteQuery.DeniedCoreDWR"); //$NON-NLS-1$
         }
@@ -120,17 +125,10 @@ public class DefaultAccessControl implements AccessControl
         {
             Class paramType = method.getParameterTypes()[j];
 
-            if (paramType.getName().startsWith(PACKAGE_DWR_DENY) && 
-                !paramType.getName().startsWith(PACKAGE_DWR_ALLOW))
+            if (paramType.getName().startsWith(PACKAGE_DWR_DENY))
             {
                 return Messages.getString("ExecuteQuery.DeniedParamDWR"); //$NON-NLS-1$
             }
-        }
-
-        // We ban some methods from Object too
-        if (method.getDeclaringClass() == Object.class)
-        {
-            return Messages.getString("ExecuteQuery.DeniedObjectMethod"); //$NON-NLS-1$
         }
 
         return null;
@@ -301,11 +299,6 @@ public class DefaultAccessControl implements AccessControl
      * My package name, so we can ban DWR classes from being created or marshalled
      */
     private static final String PACKAGE_DWR_DENY = "org.directwebremoting."; //$NON-NLS-1$
-
-    /**
-     * My package name, so we can ban DWR classes from being created or marshalled
-     */
-    private static final String PACKAGE_DWR_ALLOW = "org.directwebremoting.remoted."; //$NON-NLS-1$
 
     /**
      * The log stream

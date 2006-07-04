@@ -24,10 +24,10 @@ import org.directwebremoting.util.MimeConstants;
  * A Marshaller that outputs plain Javascript.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrpPlainJsMarshaller extends DwrpBaseMarshaller
+public class PlainCallMarshaller extends BaseCallMarshaller
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.DwrpBaseMarshaller#getOutboundMimeType()
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
      */
     protected String getOutboundMimeType()
     {
@@ -35,14 +35,14 @@ public class DwrpPlainJsMarshaller extends DwrpBaseMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.DwrpBaseMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter)
      */
     protected void sendOutboundScriptPrefix(PrintWriter out) throws IOException
     {
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.DwrpBaseMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter)
      */
     protected void sendOutboundScriptSuffix(PrintWriter out) throws IOException
     {
@@ -63,9 +63,7 @@ public class DwrpPlainJsMarshaller extends DwrpBaseMarshaller
 
         synchronized (out)
         {
-            out.println(ConversionConstants.SCRIPT_START_MARKER);
             out.println(script);
-            out.println(ConversionConstants.SCRIPT_END_MARKER);
 
             if (out.checkError())
             {

@@ -41,8 +41,9 @@ import org.directwebremoting.ServerContextBuilder;
 import org.directwebremoting.ServerLoadMonitor;
 import org.directwebremoting.WebContextBuilder;
 import org.directwebremoting.dwrp.DefaultConverterManager;
-import org.directwebremoting.dwrp.DwrpHtmlJsMarshaller;
-import org.directwebremoting.dwrp.DwrpPlainJsMarshaller;
+import org.directwebremoting.dwrp.HtmlCallMarshaller;
+import org.directwebremoting.dwrp.PlainCallMarshaller;
+import org.directwebremoting.dwrp.PollHandler;
 import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
@@ -75,8 +76,9 @@ public class ContainerUtil
         defaultContainer.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
         defaultContainer.addParameter(Remoter.class.getName(), DefaultRemoter.class.getName());
         defaultContainer.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
-        defaultContainer.addParameter(DwrpHtmlJsMarshaller.class.getName(), DwrpHtmlJsMarshaller.class.getName());
-        defaultContainer.addParameter(DwrpPlainJsMarshaller.class.getName(), DwrpPlainJsMarshaller.class.getName());
+        defaultContainer.addParameter(HtmlCallMarshaller.class.getName(), HtmlCallMarshaller.class.getName());
+        defaultContainer.addParameter(PlainCallMarshaller.class.getName(), PlainCallMarshaller.class.getName());
+        defaultContainer.addParameter(PollHandler.class.getName(), PollHandler.class.getName());
         defaultContainer.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
         defaultContainer.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
 

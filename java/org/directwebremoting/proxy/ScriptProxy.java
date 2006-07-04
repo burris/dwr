@@ -28,6 +28,9 @@ import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
 
 /**
+ * Class to help people send scripts to collections of browsers.
+ * ScriptProxy also is the base class for the Java implementations of DwrUtil
+ * and Scriptaculous.Effect.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class ScriptProxy

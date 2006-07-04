@@ -24,12 +24,22 @@ public class PathConstants
     /**
      * Path to plain Javascript Marshalled execution
      */
-    public static final String PATH_PLAINJS = "/plainjs"; //$NON-NLS-1$
+    public static final String PATH_PLAIN_CALL = "/plaincall"; //$NON-NLS-1$
 
     /**
      * Path to HTML wrapped Javascript Marshalled execution
      */
-    public static final String PATH_HTMLJS = "/htmljs"; //$NON-NLS-1$
+    public static final String PATH_HTML_CALL = "/htmlcall"; //$NON-NLS-1$
+
+    /**
+     * Path to plain Javascript Marshalled execution
+     */
+    public static final String PATH_PLAIN_POLL = "/plainpoll"; //$NON-NLS-1$
+
+    /**
+     * Path to HTML wrapper Marshalled execution
+     */
+    public static final String PATH_HTML_POLL = "/htmlpoll"; //$NON-NLS-1$
 
     /**
      * Path to the interface creator

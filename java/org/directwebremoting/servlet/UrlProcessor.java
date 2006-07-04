@@ -34,12 +34,13 @@ import org.directwebremoting.Remoter;
 import org.directwebremoting.Replies;
 import org.directwebremoting.ScriptSessionManager;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.dwrp.DwrpHtmlJsMarshaller;
-import org.directwebremoting.dwrp.DwrpPlainJsMarshaller;
+import org.directwebremoting.dwrp.HtmlCallMarshaller;
+import org.directwebremoting.dwrp.PlainCallMarshaller;
+import org.directwebremoting.dwrp.PollHandler;
 import org.directwebremoting.impl.DefaultScriptSessionManager;
+import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.JavascriptUtil;
-import org.directwebremoting.util.ContinuationUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.MimeConstants;
@@ -124,17 +125,25 @@ public class UrlProcessor
                 PrintWriter out = response.getWriter();
                 out.print(script);
             }
-            else if (pathInfo.startsWith(PathConstants.PATH_PLAINJS))
+            else if (pathInfo.startsWith(PathConstants.PATH_PLAIN_POLL))
             {
-                Calls calls = plainJsMarshaller.marshallInbound(request, response);
-                Replies replies = remoter.execute(calls);
-                plainJsMarshaller.marshallOutbound(replies, request, response);
+                pollHandler.doPoll(request, response, true);
             }
-            else if (pathInfo.startsWith(PathConstants.PATH_HTMLJS))
+            else if (pathInfo.startsWith(PathConstants.PATH_HTML_POLL))
             {
-                Calls calls = htmlJsMarshaller.marshallInbound(request, response);
+                pollHandler.doPoll(request, response, false);
+            }
+            else if (pathInfo.startsWith(PathConstants.PATH_PLAIN_CALL))
+            {
+                Calls calls = plainCallMarshaller.marshallInbound(request, response);
                 Replies replies = remoter.execute(calls);
-                htmlJsMarshaller.marshallOutbound(replies, request, response);
+                plainCallMarshaller.marshallOutbound(replies, request, response);
+            }
+            else if (pathInfo.startsWith(PathConstants.PATH_HTML_CALL))
+            {
+                Calls calls = htmlCallMarshaller.marshallInbound(request, response);
+                Replies replies = remoter.execute(calls);
+                htmlCallMarshaller.marshallOutbound(replies, request, response);
             }
             else if (pathInfo.equalsIgnoreCase(PathConstants.FILE_ENGINE))
             {
@@ -163,7 +172,7 @@ public class UrlProcessor
         catch (Exception ex)
         {
             // Allow Jetty RequestRetry exception to propogate to container
-            ContinuationUtil.rethrowIfContinuation(ex);
+            Continuation.rethrowIfContinuation(ex);
 
             log.warn("Error: " + ex); //$NON-NLS-1$
             if (ex instanceof SecurityException && log.isDebugEnabled())
@@ -173,23 +182,19 @@ public class UrlProcessor
                 log.debug("- Request URL:" + request.getRequestURL()); //$NON-NLS-1$
                 log.debug("- Query:      " + request.getQueryString()); //$NON-NLS-1$
                 log.debug("- Method:     " + request.getMethod()); //$NON-NLS-1$
-
-                log.warn("Stack Trace:", ex); //$NON-NLS-1$
             }
 
+            // We are going to act on this in engine.js so we are hoping that
+            // that SC_NOT_IMPLEMENTED (501) is not something that the servers
+            // use that much. I would have used something unassigned like 506+
+            // But that could cause future problems and might not get through
+            // proxies and the like
+            response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
             response.setContentType(MimeConstants.MIME_HTML);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             PrintWriter out = response.getWriter();
-            out.println("<html><head><title>Error</title</head><body>"); //$NON-NLS-1$
-            out.println("<p><b>Error</b>: " + ex.getMessage() + "</p>"); //$NON-NLS-1$ //$NON-NLS-2$
-            out.println("<p>For further information about DWR see:</p><ul>"); //$NON-NLS-1$
-            out.println("<li><a href='http://getahead.ltd.uk/dwr/documentation'>DWR Documentation</a></li>"); //$NON-NLS-1$
-            out.println("<li><a href='http://getahead.ltd.uk/dwr/support'>DWR Mailing List</a></li>"); //$NON-NLS-1$
-            out.println("</ul>"); //$NON-NLS-1$
-            out.println("<script type='text/javascript'>"); //$NON-NLS-1$
-            out.println("alert('" + ex.getMessage() + "');"); //$NON-NLS-1$ //$NON-NLS-2$
-            out.println("</script>"); //$NON-NLS-1$
-            out.println("</body></html>"); //$NON-NLS-1$
+            out.println(ex.getMessage());
+
+            log.warn("Sent 501", ex); //$NON-NLS-1$
         }
     }
 
@@ -385,7 +390,7 @@ public class UrlProcessor
     }
 
     /**
-     *
+     * Setter for the debug page generator
      * @param debugPageGenerator
      */
     public void setDebugPageGenerator(DebugPageGenerator debugPageGenerator)
@@ -395,20 +400,29 @@ public class UrlProcessor
 
     /**
      * Setter for the Plain Javascript Marshaller
-     * @param marshaller
+     * @param marshaller The new marshaller
      */
-    public void setPlainJsMarshaller(DwrpPlainJsMarshaller marshaller)
+    public void setPlainCallMarshaller(PlainCallMarshaller marshaller)
     {
-        this.plainJsMarshaller = marshaller;
+        this.plainCallMarshaller = marshaller;
     }
 
     /**
      * Setter for the HTML Javascript Marshaller
-     * @param marshaller
+     * @param marshaller The new marshaller
      */
-    public void setHtmlJsMarshaller(DwrpHtmlJsMarshaller marshaller)
+    public void setHtmlCallMarshaller(HtmlCallMarshaller marshaller)
     {
-        this.htmlJsMarshaller = marshaller;
+        this.htmlCallMarshaller = marshaller;
+    }
+
+    /**
+     * Setter for Poll Handler
+     * @param marshaller The new marshaller
+     */
+    public void setPollMarshaller(PollHandler marshaller)
+    {
+        this.pollHandler = marshaller;
     }
 
     /**
@@ -486,12 +500,17 @@ public class UrlProcessor
     /**
      * The 'HTML Javascript' method by which objects are marshalled
      */
-    protected DwrpPlainJsMarshaller plainJsMarshaller = null;
+    protected PlainCallMarshaller plainCallMarshaller = null;
 
     /**
      * The 'Plain Javascript' method by which objects are marshalled
      */
-    protected DwrpHtmlJsMarshaller htmlJsMarshaller = null;
+    protected HtmlCallMarshaller htmlCallMarshaller = null;
+
+    /**
+     * The method by which poll requests are handled
+     */
+    protected PollHandler pollHandler = null;
 
     /**
      * The bean to execute remote requests and generate interfaces

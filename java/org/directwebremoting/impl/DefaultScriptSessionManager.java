@@ -120,10 +120,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         synchronized (sessionLock)
         {
             ScriptSession removed = (ScriptSession) sessionMap.remove(session.getId());
-
             if (!session.equals(removed))
             {
-                throw new IllegalStateException("Can't remove session from all sessons, session=" + session + " removed=" + removed); //$NON-NLS-1$ //$NON-NLS-2$
+                log.error("ScriptSession already removed from manager. session=" + session + " removed=" + removed); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             int removeCount = 0;
@@ -140,7 +139,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
 
             if (removeCount != 1)
             {
-                throw new IllegalStateException("Remove count=" + removeCount); //$NON-NLS-1$
+                log.error("DefaultScriptSessionManager.invalidate(): removeCount=" + removeCount + " when invalidating: " + session); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }

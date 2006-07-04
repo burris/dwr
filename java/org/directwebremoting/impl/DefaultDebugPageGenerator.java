@@ -68,6 +68,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         {
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
+
             buffer.append("<li><a href='"); //$NON-NLS-1$
             buffer.append(root);
             buffer.append(PathConstants.PATH_TEST);

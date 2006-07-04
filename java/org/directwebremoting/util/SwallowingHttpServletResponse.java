@@ -18,31 +18,29 @@ package org.directwebremoting.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
  * Used by ExecutionContext to forward results back via javascript
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public final class SwallowingHttpServletResponse extends HttpServletResponseWrapper implements HttpServletResponse
+public final class SwallowingHttpServletResponse implements HttpServletResponse
 {
     /**
-     * @param response The real HttpServletResponse
+     * Create a new HttpServletResponse that allows you to catch the body
      * @param sout The place we copy responses to
+     * @param encoding The output encoding
      */
-    public SwallowingHttpServletResponse(HttpServletResponse response, Writer sout)
+    public SwallowingHttpServletResponse(Writer sout, String encoding)
     {
-        super(response);
-
         pout = new PrintWriter(sout);
-        oout = new WriterOutputStream(sout, response.getCharacterEncoding());
+        oout = new WriterOutputStream(sout, encoding);
 
-        // Ignored, but we might as well start with a realistic value in case
-        // anyone wants to work with the buffer size.
-        bufferSize = response.getBufferSize();
+        this.encoding = encoding;
     }
 
     /* (non-Javadoc)
@@ -159,6 +157,126 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
         return bufferSize;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getLocale()
+     */
+    public Locale getLocale()
+    {
+        return locale;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setLocale(java.util.Locale)
+     */
+    public void setLocale(Locale locale)
+    {
+        this.locale = locale;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getCharacterEncoding()
+     */
+    public String getCharacterEncoding()
+    {
+        return encoding;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
+     */
+    public void setContentType(String type)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)
+     */
+    public void addCookie(Cookie cookie)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     */
+    public void addDateHeader(String name, long date)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     */
+    public void addHeader(String name, String value)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     */
+    public void addIntHeader(String name, int value)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     */
+    public void setDateHeader(String name, long date)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+     */
+    public void setHeader(String name, String value)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     */
+    public void setIntHeader(String name, int value)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
+     */
+    public boolean containsHeader(String name)
+    {
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
+     */
+    public String encodeRedirectURL(String url)
+    {
+        return url;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectUrl(java.lang.String)
+     */
+    public String encodeRedirectUrl(String url)
+    {
+        return url;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
+     */
+    public String encodeURL(String url)
+    {
+        return url;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
+     */
+    public String encodeUrl(String url)
+    {
+        return url;
+    }
+
     /**
      * The log stream
      */
@@ -177,5 +295,15 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
     /**
      * The ignored buffer size
      */
-    private int bufferSize;
+    private int bufferSize = 0;
+
+    /**
+     * Locale setting: defaults to platform default
+     */
+    private Locale locale = Locale.getDefault();
+
+    /**
+     * The character encoding used
+     */
+    private String encoding;
 }

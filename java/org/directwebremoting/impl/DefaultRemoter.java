@@ -35,7 +35,7 @@ import org.directwebremoting.Replies;
 import org.directwebremoting.Reply;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.util.ContinuationUtil;
+import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
@@ -316,13 +316,16 @@ public class DefaultRemoter implements Remoter
         catch (InvocationTargetException ex)
         {
             // Allow Jetty RequestRetry exception to propogate to container
-            ContinuationUtil.rethrowIfContinuation(ex.getTargetException());
+            Continuation.rethrowIfContinuation(ex);
 
             log.warn("Method execution failed: ", ex.getTargetException()); //$NON-NLS-1$
             return new Reply(call.getId(), null, ex.getTargetException());
         }
         catch (Exception ex)
         {
+            // Allow Jetty RequestRetry exception to propogate to container
+            Continuation.rethrowIfContinuation(ex);
+
             log.warn("Method execution failed: ", ex); //$NON-NLS-1$
             return new Reply(call.getId(), null, ex);
         }
