@@ -1,9 +1,11 @@
 
-DWRUtil.getValues should handle multiple select list
-
 onbackbutton, onforwardbutton
 
 Make ScriptSession invalidation not happen due to polling
+
+-- Below the line for DWR 2.0 --------------------------------------------------
+
+DWRUtil.getValues should handle multiple select list
 
 Overloaded objects marshaled to correct types
 
