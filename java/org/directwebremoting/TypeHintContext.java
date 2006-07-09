@@ -325,6 +325,7 @@ public class TypeHintContext
         try
         {
             tempParameterizedTypeClass = LocalUtil.classForName("java.lang.reflect.ParameterizedType"); //$NON-NLS-1$
+            log.debug("JDK1.5 reflection available."); //$NON-NLS-1$
         }
         catch (Exception ex)
         {
@@ -354,7 +355,7 @@ public class TypeHintContext
         }
         catch (Exception ex)
         {
-            log.debug("Error finding XXX: JDK1.5 reflection not available."); //$NON-NLS-1$
+            log.debug("Error finding ParameterizedType.getActualTypeArguments(): JDK1.5 reflection not available."); //$NON-NLS-1$
             failures++;
         }
 
@@ -368,7 +369,7 @@ public class TypeHintContext
         }
         catch (Exception ex)
         {
-            log.debug("Error finding XXX: JDK1.5 reflection not available."); //$NON-NLS-1$
+            log.debug("Error finding ParameterizedType.getRawType(): JDK1.5 reflection not available."); //$NON-NLS-1$
             failures++;
         }
 
