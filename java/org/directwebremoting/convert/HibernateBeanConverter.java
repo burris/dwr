@@ -31,7 +31,7 @@ import org.directwebremoting.util.Messages;
  * BeanConverter that works with Hibernate3 to get BeanInfo.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class HibernateBeanConverter extends BeanConverter
+public class HibernateBeanConverter extends BasicBeanConverter
 {
     /**
      * Simple ctor
@@ -113,7 +113,7 @@ public class HibernateBeanConverter extends BeanConverter
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.convert.BeanConverter#isAvailable(java.lang.Object, java.lang.String)
+     * @see org.directwebremoting.convert.BasicBeanConverter#isAvailable(java.lang.Object, java.lang.String)
      */
     public boolean isAvailable(Object data, String property)
     {

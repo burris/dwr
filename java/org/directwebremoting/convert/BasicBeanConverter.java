@@ -15,40 +15,44 @@
  */
 package org.directwebremoting.convert;
 
-import java.lang.reflect.Field;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import org.directwebremoting.Converter;
 import org.directwebremoting.InboundContext;
 import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.TypeHintContext;
 import org.directwebremoting.dwrp.ConversionConstants;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
- * Convert a Javascript associative array into a JavaBean
+ * BasicBeanConverter is a base to [Bean|Exception|Hibernate]Converter.
+ * BasicBeanConverter provides implementaions of
+ * {@link #convertInbound(Class, InboundVariable, InboundContext)} and
+ * {@link #convertOutbound(Object, OutboundContext)} to {@link BasicObjectConverter}
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ObjectConverter extends BasicObjectConverter implements Converter
+public abstract class BasicBeanConverter extends BasicObjectConverter
 {
     /**
-     * Do we force accessibility for private fields
-     * @param force "true|false" to set the force accessibility flag
+     * Some child converters (like Hibernate at least) need to check that a
+     * property should be marshalled. This allows them to veto a marshal
+     * @param data The object to check on
+     * @param property The property of the <code>data</code> object
+     * @return true if we should continue and marshall it.
      */
-    public void setForce(String force)
-    {
-        this.force = Boolean.valueOf(force).booleanValue();
-    }
+    public abstract boolean isAvailable(Object data, String property);
 
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
@@ -89,12 +93,13 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
 
             // We know what we are converting to, so we create a map of property
             // names against PropertyDescriptors to speed lookup later
-            Field[] fields = getAllFields(bean);
+            BeanInfo info = getBeanInfo(bean);
+            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             Map props = new HashMap();
-            for (int i = 0; i < fields.length; i++)
+            for (int i = 0; i < descriptors.length; i++)
             {
-                String key = fields[i].getName();
-                props.put(key, fields[i]);
+                String key = descriptors[i].getName();
+                props.put(key, descriptors[i]);
             }
 
             // We should put the new object into the working map in case it
@@ -128,46 +133,34 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                 String key = token.substring(0, colonpos).trim();
                 String val = token.substring(colonpos + 1).trim();
 
-                Field field = (Field) props.get(key);
-                if (field == null)
+                Method setter = null;
+                PropertyDescriptor descriptor = (PropertyDescriptor) props.get(key);
+                if (descriptor == null)
                 {
-                    log.warn("No field for " + key); //$NON-NLS-1$
-                    StringBuffer all = new StringBuffer();
-                    for (Iterator it = props.keySet().iterator(); it.hasNext();)
-                    {
-                        all.append(it.next());
-                        if (it.hasNext())
-                        {
-                            all.append(',');
-                        }
-                    }
-                    log.warn("Fields exist for (" + all + ")."); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.warn("Null descriptor for key=" + key); //$NON-NLS-1$
+                    continue;
+                }
+
+                setter = descriptor.getWriteMethod();
+                if (setter == null)
+                {
+                    log.warn("setter method for property " + key + " is not visible to DWR."); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.info("You can add a public set" + Character.toTitleCase(key.charAt(0)) + key.substring(1) + "() method, or switch to using the ObjectConverter to read from members directly."); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 else
                 {
-                    Class propType = field.getType();
+                    Class propType = descriptor.getPropertyType();
 
                     String[] split = LocalUtil.splitInbound(val);
-                    String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
                     String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
+                    String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
 
                     InboundVariable nested = new InboundVariable(iv.getLookup(), null, splitType, splitValue);
 
-                    if (!field.isAccessible())
-                    {
-                        if (force)
-                        {
-                            field.setAccessible(true);
-                        }
-                        else
-                        {
-                            log.debug("Field: " + field.getName() + " is not accessible. use <param name='force' value='true'/>"); //$NON-NLS-1$ //$NON-NLS-2$
-                            continue;
-                        }
-                    }
+                    TypeHintContext incc = new TypeHintContext(converterManager, setter, 0);
+                    Object output = converterManager.convertInbound(propType, nested, inctx, incc);
 
-                    Object output = converterManager.convertInbound(propType, nested, inctx, inctx.getCurrentTypeHintContext());
-                    field.set(bean, output);
+                    setter.invoke(bean, new Object[] { output });
                 }
             }
 
@@ -196,14 +189,22 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
 
         try
         {
-            Field[] fields = getAllFields(data);
-            for (int i = 0; i < fields.length; i++)
+            BeanInfo info = getBeanInfo(data);
+            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+            for (int i = 0; i < descriptors.length; i++)
             {
-                Field field = fields[i];
-                String name = field.getName();
+                PropertyDescriptor descriptor = descriptors[i];
+                String name = descriptor.getName();
 
                 try
                 {
+                    // We don't marshall things we can't read
+                    Method getter = descriptor.getReadMethod();
+                    if (getter == null)
+                    {
+                        continue;
+                    }
+
                     // We don't marshall getClass()
                     if (name.equals("class")) //$NON-NLS-1$
                     {
@@ -217,20 +218,13 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                         continue;
                     }
 
-                    if (!field.isAccessible())
+                    if (!isAvailable(data, name))
                     {
-                        if (force)
-                        {
-                            field.setAccessible(true);
-                        }
-                        else
-                        {
-                            log.debug("Field: " + field.getName() + " is not accessible. use <param name='force' value='true'/>"); //$NON-NLS-1$ //$NON-NLS-2$
-                            continue;
-                        }
+                        log.debug("Skipping marshalling " + name + " due to availability rules"); //$NON-NLS-1$ //$NON-NLS-2$
+                        continue;
                     }
 
-                    Object value = field.get(data);
+                    Object value = getter.invoke(data, new Object[0]);
                     OutboundVariable nested = getConverterManager().convertOutbound(value, outctx);
 
                     ovs.put(name, nested);
@@ -241,7 +235,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                 }
             }
         }
-        catch (Exception ex)
+        catch (IntrospectionException ex)
         {
             throw new MarshallException(ex);
         }
@@ -251,40 +245,19 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
     }
 
     /**
-     * Get the fields from a bean. You can't use <code>class.getFields()</code>
-     * in place of this because it only gives you accessible fields, and
-     * although <code>class.getDeclaredFields()</code> does give in-accessible
-     * fields is doesn't walk up the tree.
+     * HibernateBeanConverter (and maybe others) may want to provide alternate
+     * versions of bean.getClass()
      * @param bean The class to find bean info from
-     * @return An array of all the fields for the given object
+     * @return BeanInfo for the given class
+     * @throws IntrospectionException
      */
-    protected Field[] getAllFields(Object bean)
+    protected BeanInfo getBeanInfo(Object bean) throws IntrospectionException
     {
-        Set allFields = new HashSet();
-
-        Class clazz = bean.getClass();
-
-        while (clazz != Object.class)
-        {
-            Field[] fields = clazz.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++)
-            {
-                allFields.add(fields[i]);
-            }
-
-            clazz = clazz.getSuperclass();
-        }
-
-        return (Field[]) allFields.toArray(new Field[allFields.size()]);
+        return Introspector.getBeanInfo(bean.getClass());
     }
-
-    /**
-     * Do we force accessibillity for hidden fields
-     */
-    private boolean force;
 
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(ObjectConverter.class);
+    private static final Logger log = Logger.getLogger(BasicBeanConverter.class);
 }
