@@ -19,6 +19,11 @@
       <param name="class" value="uk.ltd.getahead.dwrdemo.simpletext.Demo"/>
     </create>
 
+    <create creator="new" javascript="People" scope="script">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.people.People"/>
+    </create>
+    <convert match="uk.ltd.getahead.dwrdemo.people.Person" converter="bean"/>
+
     <create creator="new" javascript="Clock" scope="application">
       <param name="class" value="uk.ltd.getahead.dwrdemo.clock.Clock"/>
     </create>

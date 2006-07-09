@@ -3,14 +3,15 @@
 <head>
   <title>Simple Text Generation Demo</title>
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
-  <script type='text/javascript' src='../dwr/interface/TableEdit.js'> </script>
+  <script type='text/javascript' src='../tabs/tabs.js'> </script>
   <script type='text/javascript' src='../dwr/engine.js'> </script>
   <script type='text/javascript' src='../dwr/util.js'> </script>
-  <script type='text/javascript' src='/js/generic.js'> </script>
+  <script type='text/javascript' src='../dwr/interface/People.js'> </script>
   <script type="text/javascript" src='index.js'> </script>
+  <link rel="stylesheet" type="text/css" href="../tabs/tabs.css" />
   <link rel="stylesheet" type="text/css" href="../generic.css" />
 </head>
-<body onload="DWRUtil.useLoadingMessage();">
+<body onload="init();">
 <div id="page-title">[
   <a href="http://getahead.ltd.uk/dwr/">DWR Website</a> |
   <a href="..">Web Application Index</a>
@@ -22,102 +23,132 @@
 <b>Cookies</b>. DWR can use application, session and request scope to store
 beans</p>
 
-<h2>Demo</h2>
+<ul id="tabList">
+  <li><a href="#" tabId="demoDiv">Demo</a></li>
+  <li><a href="#" tabId="explainDiv">How it works</a></li>
+  <li><a href="#" tabId="sourceDiv">Source</a></li>
+</ul>
 
-<table border="1" class="rowed">
-<thead>
-<tr>
-<th>Name</th>
-<th>Address</th>
-<th>Salary</th>
-<th colspan="2">Actions</th>
-</tr>
+<div id="tabContents">
 
-</thead>
-  <tbody id="peoplebody">
-</tbody>
+  <div id="demoDiv">
 
-</table>
+    <h3>All People</h3>
+    <table border="1" class="rowed grey">
+      <thead>
+        <tr>
+          <th>Person</th>
+          <th>Salary</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="peoplebody">
+        <tr id="pattern">
+          <td>
+            <span id="tableName">Name</span><br/>
+            <small>&nbsp;&nbsp;<span id="tableAddress">Address</span></small>
+          </td>
+          <td>$<span id="tableSalary">Salary</span></td>
+          <td>
+            <input id="edit" type="button" value="Edit" onclick="editClicked(this.id)"/>
+            <input id="delete" type="button" value="Delete" onclick="deleteClicked(this.id)"/>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3>Edit Person</h3>
+    <table class="plain">
+      <tr>
+        <td>Name:</td>
+        <td><input id="name" type="text"/></td>
+      </tr>
+      <tr>
+        <td>Salary:</td>
+        <td><input id="salary" type="text"/></td>
+      </tr>
+      <tr>
+        <td>Address:</td>
+        <td><input type="text" id="address"/></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="right">
+          <small>(ID=<span id="id">-1</span>)</small>
+          <input type="button" value="Save" onclick="writePerson()"/>
+          <input type="button" value="Clear" onclick="clearPerson()"/>
+       </td>
+      </tr>
+    </table>
 
-<h4>Edit Person</h4>
+  </div>
 
-<table>
-<tr>
+  <div id="explainDiv">
+    <h2>How it works</h2>
+    <p>This demo introduces form editing using DWRUtil.setValues and getValues.
+    The input fields in the form above have ids that are the same as the
+    properties of the Person bean, so DWRUtil.setValues and getValues can
+    automatically generate a bean to post to the server.</p>
 
-<td>ID:</td>
-<td><span id="id">-1</span></td>
-
-</tr>
-<tr>
-
-<td>Name:</td>
-<td><input id="name" type="text"/></td>
-
-</tr>
-<tr>
-
-<td>Salary:</td>
-<td><input id="salary" type="text"/></td>
-
-</tr>
-<tr>
-
-<td>Address:</td>
-<td><input type="text" id="address"/></td>
-
-</tr>
-<tr>
-
-<td colspan="2" align="right">
-<input type="button" value="Save" onclick="writePerson()"/>
-<input type="button" value="Clear" onclick="clearPerson()"/>
-</td>
-
-</tr>
-</table>
-
-<h2>How it works</h2>
-
-<p>This demo introduces form editing using DWRUtil.setValues and getValues.
-The input fields in the form above have ids that are the same as the properties
-of the Person bean, so DWRUtil.setValues and getValues can automatically
-generate a bean to post to the server.</p>
-
-<p>The Java code is fairly simple. We've seen Person on the
-<a href="/dwr/examples/form">Live Forms</a> page. The extra code in Demo looks
-like this:</p>
+    <p>The Java code is fairly simple. We've seen Person on the
+    <a href="/dwr/examples/form">Live Forms</a> page. The extra code in Demo
+    looks like this:</p>
 
 <pre>
-public Collection getAllPeople()
-{
-    return people.values();
-}
-
-public Person getPerson(int id)
-{
-    return (Person) people.get(new Integer(id));
-}
-
-public boolean deletePerson(Person toDelete)
-{
-    return people.remove(new Integer(toDelete.getId())) != null;
-}
-
-public void addPerson(Person toAdd)
-{
-    if (toAdd.getId() == -1)
-    {
-        toAdd.setId(nextId++);
-    }
-
-    people.put(new Integer(toAdd.getId()), toAdd);
-}
-
-private static int nextId = 10;
-private Map people = new HashMap();
 </pre>
 
-<p>There is also a createPeople() function that populates the people Map.</p>
+    <p>There is also a createPeople() function that populates the people Map.</p>
+  <div id="sourceDiv">
+
+<h2>HTML source:</h2>
+<pre>
+&lt;p&gt;
+  Name:
+  &lt;input type="text" id="demoName"/&gt;
+  &lt;input value="Send" type="button" onclick="update()"/&gt;
+  &lt;br/&gt;
+  Reply: &lt;span id="demoReply"&gt;&lt;/span&gt;
+&lt;/p&gt;
+</pre>
+
+<h2>Javascript source:</h2>
+<pre>
+function update() {
+  var name = DWRUtil.getValue("demoName");
+  Demo.sayHello(name, function(data) {
+    DWRUtil.setValue("demoReply", data);
+  });
+}
+</pre>
+
+<h2>Java source:</h2>
+<pre>
+package uk.ltd.getahead.dwrdemo.simpletext;
+
+public class Demo {
+    public String sayHello(String name) {
+        return "Hello, " + name;
+    }
+}
+</pre>
+
+<h2>dwr.xml</h2>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE dwr PUBLIC
+    "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN"
+    "http://www.getahead.ltd.uk/dwr/dwr20.dtd"&gt;
+
+&lt;dwr&gt;
+  &lt;allow&gt;
+    &lt;create creator="new" javascript="Demo"&gt;
+      &lt;param name="class" value="uk.ltd.getahead.dwrdemo.simpletext.Demo"/&gt;
+    &lt;/create&gt;
+  &lt;/allow&gt;
+&lt;/dwr&gt;
+</pre>
+
+  </div>
+
+</div>
 
 </body>
 </html>

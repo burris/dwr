@@ -52,7 +52,11 @@ function update() {
   Demo.sayHello(name, loadinfo);
 }
 </pre>
-    
+
+    <p><code>DWRUtil.getValue()</code> is a utility to get the value of any
+    element, in this case an input field, but it could be a div or a select
+    box.</p>
+
     <p>DWR is asynchronous due to the way Javascript works so it won't halt the web
     browser while we are waiting for the background HTTP request to return.
     So the parameter <code>loadinfo</code> names a function to be called when the

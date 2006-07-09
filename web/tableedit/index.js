@@ -1,34 +1,38 @@
+
+var peopleCache = { };
+var viewed = -1;
+
 function update() {
-  Demo.getAllPeople(fillTable);
+  People.getAllPeople(function(people) {
+    var person;
+    for (var i = 0; i < people.length; i++) {
+      person = people[i];
+      DWRUtil.setValue("tableName", person.name);
+      DWRUtil.setValue("tableSalary", person.salary);
+      DWRUtil.setValue("tableAddress", person.address);
+      DWRUtil.cloneNode("pattern", { idSuffix:"" + i });
+      peopleCache[i] = person;
+    }
+  });
+  //$("pattern").style.display = "none";
 }
 
-var getName = function(person) { return person.name };
-var getDoB = function(person) { return person.address }; // if we return to using dates, add .toLocaleDateString()
-var getSalary = function(person) { return person.salary };
-var getEdit = function(person) {
-  return '<input type="button" value="Edit" onclick="readPerson('+person.id+')"/>';
-};
-var getDelete = function(person) {
-  return '<input type="button" value="Delete" onclick="deletePerson('+person.id+', \''+person.name+'\')"/>';
-};
-function fillTable(people) {
-  DWRUtil.removeAllRows("peoplebody");
-  DWRUtil.addRows("peoplebody", people, [ getName, getDoB, getSalary, getEdit, getDelete ])
-}
-
-function readPerson(id) {
-  Demo.getPerson(fillForm, id);
+function editClicked(id) {
+  // we were passed element.id which includes "edit" so we strip that off
+  viewed = id.substring(4);
+  var person = peopleCache[viewed];
+  DWRUtil.setValues(person);
 }
 
 function deletePerson(personid, name) {
   if (confirm("Are you sure you want to delete " + name + "?")) {
-    Demo.deletePerson(update, { id:personid });
+    People.deletePerson(update, { id:personid });
   }
 }
 
 function writePerson() {
   DWRUtil.getValues(person);
-  Demo.addPerson(update, person);
+  People.addPerson(update, person);
 }
 
 var person = { id:-1, name:null, address:null, salary:null };
@@ -38,14 +42,8 @@ function clearPerson() {
   DWRUtil.setValues(person);
 }
 
-function fillForm(aperson) {
-  person = aperson;
-  DWRUtil.setValues(person);
-}
-
 function init() {
   DWRUtil.useLoadingMessage();
+  Tabs.init('tabList', 'tabContents');
   update();
 }
-
-callOnLoad(init);
