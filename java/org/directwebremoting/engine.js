@@ -600,10 +600,15 @@ DWREngine._sendData = function(batch) {
     request = DWREngine._constructRequest(batch);
     try {
       batch.req.open(batch.verb, request.url, batch.async);
-      for (prop in batch.headers) {
-        batch.req.setRequestHeader(prop, batch.headers[prop]);
+      try {
+        for (prop in batch.headers) {
+          batch.req.setRequestHeader(prop, batch.headers[prop]);
+        }
+        if (!batch.headers["Content-Type"]) batch.req.setRequestHeader("Content-Type", "text/plain");
       }
-      if (!batch.headers["Content-Type"]) batch.req.setRequestHeader("Content-Type", "text/plain");
+      catch (ex) {
+        DWREngine._handleMetaDataError(null, ex);
+      }
       batch.req.send(request.body);
       if (!batch.async) DWREngine._stateChange(batch);
     }
