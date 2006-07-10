@@ -300,7 +300,17 @@ public class UrlProcessor
             return false;
         }
 
-        long modifiedSince = req.getDateHeader(HttpConstants.HEADER_IF_MODIFIED);
+        long modifiedSince = -1;
+        try
+        {
+            // HACK: Webfear appears to get confused sometimes
+            modifiedSince = req.getDateHeader(HttpConstants.HEADER_IF_MODIFIED);
+        }
+        catch (RuntimeException ex)
+        {
+            log.warn("Websphere/RAD date failure. If you understand why this might happen please report to dwr-users mailing list"); //$NON-NLS-1$
+        }
+
         if (modifiedSince != -1)
         {
             // Browsers are only accurate to the second
