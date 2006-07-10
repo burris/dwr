@@ -152,14 +152,8 @@ public abstract class ScriptConduit implements Comparable
     }
 
     /**
-     * Get the next unique ID in a thread safe way
-     * @return a unique id
+     * Cached short classname for toString()
      */
-    private static synchronized long getNextId()
-    {
-        return nextId++;
-    }
-
     private static String classname = null;
 
     /**
@@ -171,6 +165,15 @@ public abstract class ScriptConduit implements Comparable
      * Our ID, to get around serialization issues
      */
     private final long id = getNextId();
+
+    /**
+     * Get the next unique ID in a thread safe way
+     * @return a unique id
+     */
+    private static synchronized long getNextId()
+    {
+        return nextId++;
+    }
 
     /**
      * The next ID, to get around serialization issues
