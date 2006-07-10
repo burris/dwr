@@ -682,7 +682,10 @@ DWREngine._constructRequest = function(batch) {
   else {
     request.url += "Multiple." + batch.map.callCount + ".dwr";
   }
-  request.url += ";jsessionid=" + DWREngine._httpSessionId;
+  // Play nice with url re-writing
+  if (location.href.match(/jsessionid/)) {
+    request.url += ";jsessionid=" + DWREngine._httpSessionId;
+  }
 
   var prop;
   if (batch.verb == "GET") {
