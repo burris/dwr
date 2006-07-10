@@ -122,6 +122,14 @@ public class Person
         return 5924 + id;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        return "Person[id=" + id + ",name=" + name + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
     private String name;
     private String address;
     private float salary;

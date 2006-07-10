@@ -16,8 +16,11 @@
 package uk.ltd.getahead.dwrdemo.people;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
+
+import org.directwebremoting.util.Logger;
 
 /**
  * A container for a set of people
@@ -30,9 +33,10 @@ public class People
      */
     public People()
     {
-        for (int i = 0; i < 10; i++)
+        log.debug("Generating a new set of random people"); //$NON-NLS-1$
+        for (int i = 0; i < 5; i++)
         {
-            people.add(getRandomPerson(i));
+            people.add(getRandomPerson());
         }
     }
 
@@ -51,7 +55,25 @@ public class People
      */
     public void setPerson(Person person)
     {
+        log.debug("Adding person: " + person); //$NON-NLS-1$
+        if (person.getId() == -1)
+        {
+            person.setId(getNextId());
+        }
+
+        people.remove(person);
         people.add(person);
+    }
+
+    /**
+     * Delete a person from the set of people
+     * @param person The person to delete
+     */
+    public void deletePerson(Person person)
+    {
+        log.debug("Removing person: " + person); //$NON-NLS-1$
+        people.remove(person);
+        debug();
     }
 
     /**
@@ -61,15 +83,12 @@ public class People
 
     /**
      * Create a random person
-     * @param id The id of the new person
      * @return a random person
      */
-    private Person getRandomPerson(int id)
+    private Person getRandomPerson()
     {
-        Random random = new Random();
-
         Person person = new Person();
-        person.setId(id);
+        person.setId(getNextId());
 
         String firstname = FIRSTNAMES[random.nextInt(FIRSTNAMES.length)];
         String surname = SURNAMES[random.nextInt(SURNAMES.length)];
@@ -87,6 +106,34 @@ public class People
 
         return person;
     }
+
+    /**
+     * List the current people so we know what is going on
+     */
+    protected void debug()
+    {
+        for (Iterator it = people.iterator(); it.hasNext();)
+        {
+            Person person = (Person) it.next();
+            log.debug(person.toString());
+        }
+    }
+
+    /**
+     * Get the next unique ID in a thread safe way
+     * @return a unique id
+     */
+    private static synchronized int getNextId()
+    {
+        return nextId++;
+    }
+
+    /**
+     * The next ID, to get around serialization issues
+     */
+    private static int nextId = 1;
+
+    private Random random = new Random();
 
     private static final String[] FIRSTNAMES = 
     {
@@ -115,4 +162,9 @@ public class People
         "Birmingham", "Kettering", "Paris", "San Francisco", "New York", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
         "San Mateo", "Barcelona", //$NON-NLS-1$ //$NON-NLS-2$
     };
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(People.class);
 }

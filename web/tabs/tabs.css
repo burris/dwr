@@ -4,7 +4,7 @@
 
 #tabList li a { border:1px solid #bbb; padding:3px 0.5em; margin-left:3px; }
 
-#tabList li a.linkSelected { background:#fff; border-bottom:2px solid white; }
+#tabList li a.linkSelected { background:#fff; border-bottom:2px solid white; font-weight:bold; }
 #tabList li a.linkUnselected { background:#eee; border-bottom:1px solid #eee; }
 
 #tabList li a:link, #tablist li a:visited { color:navy; }
