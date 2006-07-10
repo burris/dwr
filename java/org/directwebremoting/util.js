@@ -779,15 +779,23 @@ DWRUtil._defaultCellCreator = function(options) {
  * Remove all the children of a given node.
  * @see http://getahead.ltd.uk/dwr/browser/tables
  */
-DWRUtil.removeAllRows = function(ele) {
+DWRUtil.removeAllRows = function(ele, options) {
   ele = DWRUtil._getElementById(ele, "removeAllRows()");
   if (ele == null) return;
+  if (!options) options = {};
+  if (!options.filter) options.filter = function() { return true; };
   if (!DWRUtil._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"])) {
     DWRUtil.debug("removeAllRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
     return;
   }
-  while (ele.childNodes.length > 0) {
-    ele.removeChild(ele.firstChild);
+  var child = ele.firstChild;
+  var next;
+  while (child != null) {
+    next = child.nextSibling;
+    if (options.filter(child)) {
+      ele.removeChild(child);
+    }
+    child = next;
   }
 };
 
