@@ -224,14 +224,14 @@ DWREngine.endBatch = function(options) {
   // If we are in ordered mode, then we don't send unless the list of sent
   // items is empty
   if (!DWREngine._ordered) {
-    DWREngine._sendData(batch);
     DWREngine._batches[DWREngine._batches.length] = batch;
+    DWREngine._sendData(batch);
   }
   else {
     if (DWREngine._batches.length == 0) {
       // We aren't waiting for anything, go now.
-      DWREngine._sendData(batch);
       DWREngine._batches[DWREngine._batches.length] = batch;
+      DWREngine._sendData(batch);
     }
     else {
       // Push the batch onto the waiting queue
@@ -800,7 +800,7 @@ DWREngine._handleResponse = function(id, reply) {
   }
 
   // Finalize the call for IFrame transport 
-  var responseBatch = DWREngine._batches[DWREngine._batches.length-1];
+  var responseBatch = DWREngine._batches[DWREngine._batches.length - 1];
   if (responseBatch.method == DWREngine.IFrame) {
     // Only finalize after the last call has been handled
     if (responseBatch.map["c"+(responseBatch.map.callCount-1)+"-id"] == id) {
@@ -882,8 +882,8 @@ DWREngine._clearUp = function(batch) {
   // gets turned off, we still process *waiting* batches in an ordered way.
   if (DWREngine._batchQueue.length != 0) {
     var sendbatch = DWREngine._batchQueue.shift();
-    DWREngine._sendData(sendbatch);
     DWREngine._batches[DWREngine._batches.length] = sendbatch;
+    DWREngine._sendData(sendbatch);
   }
 };
 
