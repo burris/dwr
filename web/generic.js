@@ -1,4 +1,15 @@
 
+/**
+ * Make up for hole in Safari:
+ */
+if (!String.prototype.localeCompare) {
+  String.prototype.localeCompare = function(other) {
+    if (this < other) return -1;
+    else if (this > other) return 1;
+    else return 0;
+  }
+}
+
 function setEnabled(ele, state) {
   var orig = ele;
   ele = $(ele);

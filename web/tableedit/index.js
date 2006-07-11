@@ -41,7 +41,7 @@ function deleteClicked(eleid) {
   var person = peopleCache[eleid.substring(6)];
   if (confirm("Are you sure you want to delete " + person.name + "?")) {
     DWREngine.beginBatch();
-    People.deletePerson({ id:id });
+    People.deletePerson({ id:person.id });
     fillTable();
     DWREngine.endBatch();
   }

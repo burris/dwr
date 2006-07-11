@@ -1,19 +1,21 @@
 @CHARSET "ISO-8859-1";
 
-body { font-family:century gothic, verdana, arial, sans-serif; color:#666;
-  margin:60px 40px 0px 40px;
+body { margin:60px 40px 0px 40px; color:#666;
+  font-family:'Century Gothic', Helvetica, Arial, clean, sans-serif;
 }
 
 select, textarea, input[type='text'], input[type='password'] {
-  font-family:Century Gothic; font-size:1em; padding:0px 3px; margin:2px;
-  border:1px solid #999;
+  font-family:'Century Gothic', Helvetica, Arial, clean, sans-serif;
+  font-size:1em; padding:0px 3px; margin:2px; border:1px solid #999;
 }
 
 select, textarea, input[type='text'], input[type='password']
 { -moz-border-radius:5px; }
 
-button, input[type='button'], input[type='submit'], input[type='cancel']
-{ font-family:Century Gothic; font-size:1em; }
+button, input[type='button'], input[type='submit'], input[type='cancel'] {
+  font-family:'Century Gothic', Helvetica, Arial, clean, sans-serif;
+  font-size:1em;
+}
 
 a { color:Blue; text-decoration:none; }
 a:hover { background-color:#ffc; color:#fc6; }
@@ -54,9 +56,8 @@ pre { background:#f4f4f4; padding:10px; }
 }
 
 #page-title { background-color:#7272a2; border:1px solid #000000;
-  border-top:0; padding:5px; font-size:6pt; line-height:1.8em;
-  font-family:verdana, arial, sans-serif; position:absolute; top:0; left:0;
-  width:100%; color:#ccc;
+  border-top:0; padding:5px; font-size:80%; line-height:1.8em;
+  position:absolute; top:0; left:0; width:100%; color:#ccc;
 }
 #page-title a { text-decoration:none; color:white; }
 #page-title a:hover { background-color:#7272a2; color:#ff3; }
