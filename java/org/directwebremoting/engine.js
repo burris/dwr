@@ -401,6 +401,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   if (callData.timeout != null) DWREngine._batch.timeout = callData.timeout;
   if (callData.preHook != null) DWREngine._batch.preHooks.unshift(callData.preHook);
   if (callData.postHook != null) DWREngine._batch.postHooks.push(callData.postHook);
+
   if (callData.errorHandler == null) callData.errorHandler = DWREngine._errorHandler;
   if (callData.warningHandler == null) callData.warningHandler = DWREngine._warningHandler;
 
