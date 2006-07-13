@@ -20,10 +20,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.directwebremoting.Container;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
+import org.directwebremoting.util.Logger;
 
 /**
  * A collection of utilities that are useful to more than one Converter
@@ -31,6 +34,13 @@ import org.directwebremoting.util.LocalUtil;
  */
 public class ConverterUtil
 {
+    /**
+     * Prevent instansiation.
+     */
+    private ConverterUtil()
+    {
+    }
+
     /**
      * Generate an array declaration for a list of Outbound variables
      * @param ov The OutboundVariable to declare
@@ -273,13 +283,13 @@ public class ConverterUtil
         String escaped = JavascriptUtil.escapeJavaScript(output);
 
         // For short strings inline them
-        if (escaped.length() < INLINE_LENGTH)
+        if (escaped.length() < stringInlineLength)
         {
             return new OutboundVariable("", '\"' + escaped + '\"'); //$NON-NLS-1$
         }
 
         // For medium length strings do it in a separate variable
-        if (escaped.length() < WRAP_LENGTH)
+        if (escaped.length() < stringWrapLength)
         {
             OutboundVariable ov = outctx.createOutboundVariable(output);
             String varname = ov.getAssignCode();
@@ -303,7 +313,7 @@ public class ConverterUtil
         {
             String tempvar = outctx.getNextVariableName();
 
-            int end = start + WRAP_LENGTH;
+            int end = start + stringWrapLength;
             if (end >= escaped.length())
             {
                 end = escaped.length();
@@ -364,10 +374,49 @@ public class ConverterUtil
     /**
      * The length at which we stop inlining strings
      */
-    private static final int INLINE_LENGTH = 20;
+    private static int stringInlineLength = 20;
 
     /**
      * Strings longer than this are chopped up into smaller strings
      */
-    private static final int WRAP_LENGTH = 256;
+    private static int stringWrapLength = 2048;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(ConverterUtil.class);
+
+    /**
+     * 
+     */
+    static
+    {
+        Container container = WebContextFactory.get().getContainer();
+
+        String stringWrapLengthStr = (String) container.getBean("stringWrapLength"); //$NON-NLS-1$
+        if (stringWrapLengthStr != null)
+        {
+            try
+            {
+                stringWrapLength = Integer.parseInt(stringWrapLengthStr);
+            }
+            catch (NumberFormatException ex)
+            {
+                log.warn("Error converting stringWrapLength setting to an integer: '" + stringWrapLengthStr + "'", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            }            
+        }
+
+        String stringInlineLengthStr = (String) container.getBean("stringInlineLength"); //$NON-NLS-1$
+        if (stringInlineLengthStr != null)
+        {
+            try
+            {
+                stringInlineLength = Integer.parseInt(stringInlineLengthStr);
+            }
+            catch (NumberFormatException ex)
+            {
+                log.warn("Error converting stringInlineLength setting to a integer: '" + stringInlineLengthStr + "'", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            }            
+        }
+    }
 }
