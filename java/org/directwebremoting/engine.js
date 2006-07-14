@@ -205,16 +205,18 @@ DWREngine.endBatch = function(options) {
     DWREngine._handleError("No batch in progress.");
     return;
   }
-  // Merge the global batch level properties into the batch meta data
+  // The hooks need to be merged carefully to preserve ordering
   if (options && options.preHook) batch.preHooks.unshift(options.preHook);
   if (options && options.postHook) batch.postHooks.push(options.postHook);
   if (DWREngine._preHook) batch.preHooks.unshift(DWREngine._preHook);
   if (DWREngine._postHook) batch.postHooks.push(DWREngine._postHook);
-
-  if (batch.method == null) batch.method = DWREngine._method;
-  if (batch.verb == null) batch.verb = DWREngine._verb;
-  if (batch.async == null) batch.async = DWREngine._async;
-  if (batch.timeout == null) batch.timeout = DWREngine._timeout;
+  // Other props. priority: batch, call, global - the order in which they were set
+  var propnames = [ "method", "verb", "async", "timeout" ];
+  var propname;
+  while (propname = propnames.shift()) {
+    if (options[propname] != null) batch[propname] = options[propname];
+    if (batch[propname] == null) batch[propname] = DWREngine["_" + propname];
+  }
 
   batch.completed = false;
 
