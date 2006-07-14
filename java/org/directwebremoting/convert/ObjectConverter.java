@@ -16,6 +16,7 @@
 package org.directwebremoting.convert;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -153,7 +154,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
 
                     InboundVariable nested = new InboundVariable(iv.getLookup(), null, splitType, splitValue);
 
-                    if (!field.isAccessible())
+                    if (!Modifier.isPublic(field.getModifiers()))
                     {
                         if (force)
                         {
