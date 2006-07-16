@@ -40,7 +40,7 @@ public final class OutboundContext
 
         try
         {
-            assign = (Map) LocalUtil.classForName("java.util.IdentityHashMap").newInstance(); //$NON-NLS-1$
+            assign = (Map) LocalUtil.classForName("java.util.IdentityHashMap").newInstance();
             referenceWrappers = false;
         }
         catch (Exception ex)
@@ -114,7 +114,7 @@ public final class OutboundContext
     /**
      * The prefix for outbound variable names the we generate
      */
-    private static final String OUTBOUND_VARIABLE_PREFIX = "s"; //$NON-NLS-1$
+    private static final String OUTBOUND_VARIABLE_PREFIX = "s";
 
     /**
      * The map of objects to how we converted them last time

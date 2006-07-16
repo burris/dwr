@@ -52,6 +52,6 @@ public class ConstructorConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return new OutboundVariable("", '\'' + JavascriptUtil.escapeJavaScript(data.toString()) + '\''); //$NON-NLS-1$
+        return new OutboundVariable("", '\'' + JavascriptUtil.escapeJavaScript(data.toString()) + '\'');
     }
 }

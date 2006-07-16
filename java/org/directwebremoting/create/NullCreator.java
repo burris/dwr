@@ -37,7 +37,7 @@ public class NullCreator extends AbstractCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname));
         }
     }
 
@@ -54,7 +54,7 @@ public class NullCreator extends AbstractCreator implements Creator
      */
     public Object getInstance() throws InstantiationException
     {
-        throw new InstantiationException(Messages.getString("NullCreator.DontCallMe")); //$NON-NLS-1$
+        throw new InstantiationException(Messages.getString("NullCreator.DontCallMe"));
     }
 
     private Class clazz;

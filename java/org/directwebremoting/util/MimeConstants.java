@@ -27,15 +27,15 @@ public class MimeConstants
      * adding "; charset=utf-8" to the end of these 3 strings and altering the
      * marshalling to assume utf-8, which it currently does not.
      */
-    public static final String MIME_PLAIN = "text/plain"; //$NON-NLS-1$
+    public static final String MIME_PLAIN = "text/plain";
 
     /**
      * MIME constant for HTML
      */
-    public static final String MIME_HTML = "text/html"; //$NON-NLS-1$
+    public static final String MIME_HTML = "text/html";
 
     /**
      * MIME constant for Javascript
      */
-    public static final String MIME_JS = "text/javascript"; //$NON-NLS-1$
+    public static final String MIME_JS = "text/javascript";
 }

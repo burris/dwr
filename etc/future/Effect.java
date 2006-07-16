@@ -34,7 +34,7 @@ public class Effect extends ScriptProxy
      */
     public void fade(String elementId, Map params) throws MarshallException
     {
-        callEffect(elementId, "Fade"); //$NON-NLS-1$
+        callEffect(elementId, "Fade");
     }
 
     /**
@@ -44,7 +44,7 @@ public class Effect extends ScriptProxy
      */
     public void appear(String elementId) throws MarshallException
     {
-        callEffect(elementId, "Appear"); //$NON-NLS-1$
+        callEffect(elementId, "Appear");
     }
 
     /**
@@ -54,7 +54,7 @@ public class Effect extends ScriptProxy
      */
     public void puff(String elementId) throws MarshallException
     {
-        callEffect(elementId, "Puff"); //$NON-NLS-1$
+        callEffect(elementId, "Puff");
     }
 
     /**
@@ -64,7 +64,7 @@ public class Effect extends ScriptProxy
      */
     public void blindUp(String elementId) throws MarshallException
     {
-        callEffect(elementId, "BlindUp"); //$NON-NLS-1$
+        callEffect(elementId, "BlindUp");
     }
 
     /**
@@ -74,7 +74,7 @@ public class Effect extends ScriptProxy
      */
     public void blindDown(String elementId) throws MarshallException
     {
-        callEffect(elementId, "BlindDown"); //$NON-NLS-1$
+        callEffect(elementId, "BlindDown");
     }
 
     /**
@@ -84,7 +84,7 @@ public class Effect extends ScriptProxy
      */
     public void switchOff(String elementId) throws MarshallException
     {
-        callEffect(elementId, "SwitchOff"); //$NON-NLS-1$
+        callEffect(elementId, "SwitchOff");
     }
 
     /**
@@ -94,7 +94,7 @@ public class Effect extends ScriptProxy
      */
     public void dropOut(String elementId) throws MarshallException
     {
-        callEffect(elementId, "DropOut"); //$NON-NLS-1$
+        callEffect(elementId, "DropOut");
     }
 
     /**
@@ -104,7 +104,7 @@ public class Effect extends ScriptProxy
      */
     public void shake(String elementId) throws MarshallException
     {
-        callEffect(elementId, "Shake"); //$NON-NLS-1$
+        callEffect(elementId, "Shake");
     }
 
     /**
@@ -114,7 +114,7 @@ public class Effect extends ScriptProxy
      */
     public void slideDown(String elementId) throws MarshallException
     {
-        callEffect(elementId, "SlideDown"); //$NON-NLS-1$
+        callEffect(elementId, "SlideDown");
     }
 
     /**
@@ -124,7 +124,7 @@ public class Effect extends ScriptProxy
      */
     public void slideUp(String elementId) throws MarshallException
     {
-        callEffect(elementId, "SlideUp"); //$NON-NLS-1$
+        callEffect(elementId, "SlideUp");
     }
 
     /**
@@ -134,7 +134,7 @@ public class Effect extends ScriptProxy
      */
     public void squish(String elementId) throws MarshallException
     {
-        callEffect(elementId, "Squish"); //$NON-NLS-1$
+        callEffect(elementId, "Squish");
     }
 
     /**
@@ -144,7 +144,7 @@ public class Effect extends ScriptProxy
      */
     public void grow(String elementId) throws MarshallException
     {
-        callEffect(elementId, "Grow"); //$NON-NLS-1$
+        callEffect(elementId, "Grow");
     }
 
     /**
@@ -154,7 +154,7 @@ public class Effect extends ScriptProxy
      */
     public void shrink(String elementId) throws MarshallException
     {
-        callEffect(elementId, "Shrink"); //$NON-NLS-1$
+        callEffect(elementId, "Shrink");
     }
 
     /**
@@ -164,7 +164,7 @@ public class Effect extends ScriptProxy
      */
     public void pulsate(String elementId) throws MarshallException
     {
-        callEffect(elementId, "Pulsate"); //$NON-NLS-1$
+        callEffect(elementId, "Pulsate");
     }
 
     /**
@@ -174,7 +174,7 @@ public class Effect extends ScriptProxy
      */
     public void fold(String elementId) throws MarshallException
     {
-        callEffect(elementId, "Fold"); //$NON-NLS-1$
+        callEffect(elementId, "Fold");
     }
 
     /**
@@ -192,9 +192,9 @@ public class Effect extends ScriptProxy
 
         StringBuffer script = new StringBuffer();
         script.append(elementIdOv.getInitCode())
-            .append("new Effect.") //$NON-NLS-1$
+            .append("new Effect.")
             .append(function)
-            .append("(") //$NON-NLS-1$
+            .append("(")
             .append(elementIdOv.getAssignCode());
         
             // If the parameter Map is non-empty, construct a
@@ -215,7 +215,7 @@ public class Effect extends ScriptProxy
                     }
                 }
             }
-            script.append(");"); //$NON-NLS-1$     
+            script.append(");");     
         return script.toString();
         
     }

@@ -69,7 +69,7 @@ public final class InboundVariable
                 maxDepth++;
                 if (maxDepth > 20)
                 {
-                    throw new IllegalStateException("Max depth exceeded when dereferencing " + value); //$NON-NLS-1$
+                    throw new IllegalStateException("Max depth exceeded when dereferencing " + value);
                 }
             }
 
@@ -95,7 +95,7 @@ public final class InboundVariable
             dereferenced = attemptDereference();
             if (!dereferenced)
             {
-                log.error(Messages.getString("InboundVariable.MissingVariable", value)); //$NON-NLS-1$
+                log.error(Messages.getString("InboundVariable.MissingVariable", value));
             }
         }
     }

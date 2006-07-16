@@ -66,7 +66,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         // almost all the time
         // if (BSFManager.isLanguageRegistered(language))
         // {
-        //     throw new IllegalArgumentException(Messages.getString("ScriptedCreator.IllegalLanguage", language)); //$NON-NLS-1$
+        //     throw new IllegalArgumentException(Messages.getString("ScriptedCreator.IllegalLanguage", language));
         // }
         this.language = language;
     }
@@ -132,7 +132,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     {
         if (scriptSrc != null)
         {
-            throw new IllegalArgumentException(Messages.getString("ScriptCreator.MultipleScript")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("ScriptCreator.MultipleScript"));
         }
 
         this.scriptPath = scriptPath;
@@ -152,7 +152,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         File scriptFile = new File(sc.getRealPath(scriptPath));
         if (scriptModified < scriptFile.lastModified())
         {
-            log.debug("Script has been updated."); //$NON-NLS-1$
+            log.debug("Script has been updated.");
             clazz = null; // make sure that this gets re-compiled.
             return true;
         }
@@ -173,7 +173,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
 
         if (scriptPath == null)
         {
-            throw new InstantiationException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
+            throw new InstantiationException(Messages.getString("ScriptedCreator.MissingScript"));
         }
 
         if (cachedScript != null && (!reloadable || !scriptUpdated()))
@@ -182,7 +182,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         }
 
         // load the script from the path
-        log.debug("Loading Script from Path: " + scriptPath); //$NON-NLS-1$
+        log.debug("Loading Script from Path: " + scriptPath);
         RandomAccessFile in = null;
 
         try
@@ -195,7 +195,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             // default platform encoding then we will need a new param that is
             // used here.
             scriptModified = scriptFile.lastModified();
-            in = new RandomAccessFile(scriptFile, "r"); //$NON-NLS-1$
+            in = new RandomAccessFile(scriptFile, "r");
             byte bytes[] = new byte[(int) in.length()];
             in.readFully(bytes);
             cachedScript = new String(bytes);
@@ -205,7 +205,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         catch (Exception ex)
         {
             log.error(ex.getMessage(), ex);
-            throw new InstantiationException(Messages.getString("ScriptCreator.MissingScript")); //$NON-NLS-1$
+            throw new InstantiationException(Messages.getString("ScriptCreator.MissingScript"));
         }
         finally
         {
@@ -220,12 +220,12 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     {
         if (scriptPath != null)
         {
-            throw new IllegalArgumentException(Messages.getString("ScriptCreator.MultipleScript")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("ScriptCreator.MultipleScript"));
         }
 
         if (scriptSrc == null || scriptSrc.trim().length() == 0)
         {
-            throw new IllegalArgumentException(Messages.getString("ScriptedCreator.MissingScript")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("ScriptedCreator.MissingScript"));
         }
 
         this.scriptSrc = scriptSrc;
@@ -243,7 +243,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname));
         }
     }
 
@@ -260,7 +260,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             }
             catch (InstantiationException ex)
             {
-                log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
+                log.error("Failed to instansiate object to detect type.", ex);
                 return Object.class;
             }
         }
@@ -285,19 +285,19 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             try
             {
                 WebContext context = WebContextFactory.get();
-                bsfman.declareBean("context", context, context.getClass()); //$NON-NLS-1$
+                bsfman.declareBean("context", context, context.getClass());
             }
             catch (BSFException ex)
             {
-                log.warn("Failed to register WebContext with scripting engine: " + ex.getMessage()); //$NON-NLS-1$
+                log.warn("Failed to register WebContext with scripting engine: " + ex.getMessage());
             }
 
-            return bsfman.eval(language, (null == scriptPath ? "dwr.xml" : scriptPath), 0, 0, getScript()); //$NON-NLS-1$
+            return bsfman.eval(language, (null == scriptPath ? "dwr.xml" : scriptPath), 0, 0, getScript());
         }
         catch (Exception ex)
         {
-            log.error("Error executing script", ex); //$NON-NLS-1$
-            throw new InstantiationException(Messages.getString("Creator.IllegalAccess")); //$NON-NLS-1$
+            log.error("Error executing script", ex);
+            throw new InstantiationException(Messages.getString("Creator.IllegalAccess"));
         }
     }
 

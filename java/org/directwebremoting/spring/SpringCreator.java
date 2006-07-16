@@ -68,7 +68,7 @@ public class SpringCreator extends AbstractCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname));
         }
     }
 
@@ -83,9 +83,9 @@ public class SpringCreator extends AbstractCreator implements Creator
         {
             String key = (String) it.next();
             String value = (String) params.get(key);
-            if (key.startsWith("location")) //$NON-NLS-1$
+            if (key.startsWith("location"))
             {
-                log.debug("Adding configLocation: " + value + " from parameter: " + key); //$NON-NLS-1$ //$NON-NLS-2$
+                log.debug("Adding configLocation: " + value + " from parameter: " + key);
                 locValues.add(value);
             }
         }
@@ -106,7 +106,7 @@ public class SpringCreator extends AbstractCreator implements Creator
             }
             catch (InstantiationException ex)
             {
-                log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
+                log.error("Failed to instansiate object to detect type.", ex);
                 return Object.class;
             }
         }
@@ -133,11 +133,11 @@ public class SpringCreator extends AbstractCreator implements Creator
 
             if (factory == null)
             {
-                log.error("DWR can't find a spring config. See following info logs for solutions"); //$NON-NLS-1$
-                log.info("- Option 1. In dwr.xml, <create creator='spring' ...> add <param name='location1' value='beans.xml'/> for each spring config file."); //$NON-NLS-1$
-                log.info("- Option 2. Use a spring org.springframework.web.context.ContextLoaderListener."); //$NON-NLS-1$
-                log.info("- Option 3. Call SpringCreator.setOverrideBeanFactory() from your web-app"); //$NON-NLS-1$
-                throw new InstantiationException(Messages.getString("SpringCreator.MissingConfig")); //$NON-NLS-1$
+                log.error("DWR can't find a spring config. See following info logs for solutions");
+                log.info("- Option 1. In dwr.xml, <create creator='spring' ...> add <param name='location1' value='beans.xml'/> for each spring config file.");
+                log.info("- Option 2. Use a spring org.springframework.web.context.ContextLoaderListener.");
+                log.info("- Option 3. Call SpringCreator.setOverrideBeanFactory() from your web-app");
+                throw new InstantiationException(Messages.getString("SpringCreator.MissingConfig"));
             }
 
             return factory.getBean(beanName);
@@ -148,7 +148,7 @@ public class SpringCreator extends AbstractCreator implements Creator
         }
         catch (Exception ex)
         {
-            log.error("Error", ex); //$NON-NLS-1$
+            log.error("Error", ex);
             throw new InstantiationException(ex.toString());
         }
     }
@@ -161,7 +161,7 @@ public class SpringCreator extends AbstractCreator implements Creator
         // If someone has set a resource name then we need to load that.
         if (configLocation != null && configLocation.length > 0)
         {
-            log.info("Spring BeanFactory via ClassPathXmlApplicationContext using " + configLocation.length + "configLocations."); //$NON-NLS-1$ //$NON-NLS-2$
+            log.info("Spring BeanFactory via ClassPathXmlApplicationContext using " + configLocation.length + "configLocations.");
             return new ClassPathXmlApplicationContext(configLocation);
         }
 

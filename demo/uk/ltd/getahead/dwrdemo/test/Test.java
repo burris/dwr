@@ -512,7 +512,7 @@ public class Test
             return (TestBean) Proxy.newProxyInstance(TestBean.class.getClassLoader(), new Class[] { TestBean.class }, new TestBeanInvocationHandler());
 
         default :
-            throw new IllegalArgumentException("" + type); //$NON-NLS-1$
+            throw new IllegalArgumentException("" + type);
         }
     }
 
@@ -530,27 +530,27 @@ public class Test
     {
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
         {
-            if (method.getName().equals("getInteger")) //$NON-NLS-1$
+            if (method.getName().equals("getInteger"))
             {
                 return new Integer(42);
             }
 
-            if (method.getName().equals("getString")) //$NON-NLS-1$
+            if (method.getName().equals("getString"))
             {
-                return "Slartibartfast"; //$NON-NLS-1$
+                return "Slartibartfast";
             }
 
-            if (method.getName().equals("equals")) //$NON-NLS-1$
+            if (method.getName().equals("equals"))
             {
                 return new Boolean(equals(args[0]));
             }
 
-            if (method.getName().equals("hashCode")) //$NON-NLS-1$
+            if (method.getName().equals("hashCode"))
             {
                 return new Integer(hashCode());
             }
 
-            log.error("Failed on method: " + method); //$NON-NLS-1$
+            log.error("Failed on method: " + method);
             return null;
         }
     }
@@ -565,10 +565,10 @@ public class Test
 
         Map reply = new HashMap();
 
-        reply.put("client-object", client); //$NON-NLS-1$
-        reply.put("client-string", client.toString()); //$NON-NLS-1$
-        reply.put("server-object", server); //$NON-NLS-1$
-        reply.put("server-string", server.toString()); //$NON-NLS-1$
+        reply.put("client-object", client);
+        reply.put("client-string", client.toString());
+        reply.put("server-object", server);
+        reply.put("server-string", server.toString());
 
         return reply;
     }
@@ -585,13 +585,13 @@ public class Test
             return new InnerFoo();
 
         case 1:
-            return new Foo() { public String getString() { return "anon foo"; }}; //$NON-NLS-1$
+            return new Foo() { public String getString() { return "anon foo"; }};
 
         case 4:
             return (Foo) Proxy.newProxyInstance(Foo.class.getClassLoader(), new Class[] { Foo.class }, new TestBeanInvocationHandler());
 
         default :
-            throw new IllegalArgumentException("" + type); //$NON-NLS-1$
+            throw new IllegalArgumentException("" + type);
         }
     }
 
@@ -605,7 +605,7 @@ public class Test
     /** */
     public class InnerFoo implements Foo
     {
-        public String getString() { return "inner foo"; } //$NON-NLS-1$
+        public String getString() { return "inner foo"; }
     }
 
     /**
@@ -639,10 +639,10 @@ public class Test
      */
     public TestBean[] getNestingTest()
     {
-        TestBean a = new TestBean(0, "!\"$%^&*()_1", null); //$NON-NLS-1$
-        TestBean b = new TestBean(0, "!\"$%^&*()_2", a); //$NON-NLS-1$
-        TestBean c = new TestBean(0, "!\"$%^&*()_3", b); //$NON-NLS-1$
-        TestBean d = new TestBean(0, "!\"$%^&*()_4", c); //$NON-NLS-1$
+        TestBean a = new TestBean(0, "!\"$%^&*()_1", null);
+        TestBean b = new TestBean(0, "!\"$%^&*()_2", a);
+        TestBean c = new TestBean(0, "!\"$%^&*()_3", b);
+        TestBean d = new TestBean(0, "!\"$%^&*()_4", c);
 
         TestBean[] reply = new TestBean[]
         {
@@ -659,7 +659,7 @@ public class Test
      */
     public String stringStringParam(String param1, String param2)
     {
-        return "param1='" + param1 + "' param2='" + param2 + "'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return "param1='" + param1 + "' param2='" + param2 + "'";
     }
 
     /**
@@ -670,12 +670,12 @@ public class Test
      */
     public String slowStringParam(String param, long delay) throws InterruptedException
     {
-        log.debug("About to wait for: " + delay); //$NON-NLS-1$
+        log.debug("About to wait for: " + delay);
         synchronized (this)
         {
             wait(delay);
         }
-        log.debug("Done waiting for: " + delay); //$NON-NLS-1$
+        log.debug("Done waiting for: " + delay);
 
         return param;
     }
@@ -686,10 +686,10 @@ public class Test
      */
     public Map reply(Map data)
     {
-        String failReport = (String) data.get("failreport"); //$NON-NLS-1$
+        String failReport = (String) data.get("failreport");
 
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-        String userAgentHttp = request.getHeader("User-Agent"); //$NON-NLS-1$
+        String userAgentHttp = request.getHeader("User-Agent");
         userAgentHttp = simplfyUserAgent(userAgentHttp);
         if (userAgentHttp.length() > 100)
         {
@@ -700,15 +700,15 @@ public class Test
         {
             try
             {
-                String home = System.getProperty("user.home"); //$NON-NLS-1$
-                Writer out = new FileWriter(home + File.separator + "test.log", true); //$NON-NLS-1$
-                // URL url = ExecutionContext.get().getServletContext().getResource("/test.log"); //$NON-NLS-1$
+                String home = System.getProperty("user.home");
+                Writer out = new FileWriter(home + File.separator + "test.log", true);
+                // URL url = ExecutionContext.get().getServletContext().getResource("/test.log");
                 // OutputStream out = url.openConnection().getOutputStream();
                 logfile = new PrintWriter(out);
             }
             catch (Exception ex)
             {
-                log.error("Failed to open test log file", ex); //$NON-NLS-1$
+                log.error("Failed to open test log file", ex);
             }
         }
 
@@ -726,11 +726,11 @@ public class Test
                 {
                     value = value.substring(0, 1000);
                 }
-                logfile.write("\n" + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$                
+                logfile.write("\n" + key + "=" + value);                
             }
-            logfile.write("\nuseragent-http=" + userAgentHttp); //$NON-NLS-1$
-            logfile.write("\naddr=" + request.getRemoteAddr()); //$NON-NLS-1$
-            logfile.write("\n"); //$NON-NLS-1$
+            logfile.write("\nuseragent-http=" + userAgentHttp);
+            logfile.write("\naddr=" + request.getRemoteAddr());
+            logfile.write("\n");
             logfile.flush();
         }
 
@@ -764,17 +764,17 @@ public class Test
     public static String simplfyUserAgent(String sent)
     {
         // Firefox
-        int offset = sent.indexOf("Firefox"); //$NON-NLS-1$
+        int offset = sent.indexOf("Firefox");
         if (offset > 10)
         {
             return sent.substring(offset);
         }
 
         // IE
-        offset = sent.indexOf("MSIE"); //$NON-NLS-1$
+        offset = sent.indexOf("MSIE");
         if (offset > 10)
         {
-            int end = sent.indexOf(";", offset); //$NON-NLS-1$
+            int end = sent.indexOf(";", offset);
             if (end == -1)
             {
                 end = sent.length();
@@ -783,10 +783,10 @@ public class Test
         }
 
         // Konq
-        offset = sent.indexOf("Konqueror"); //$NON-NLS-1$
+        offset = sent.indexOf("Konqueror");
         if (offset > 10)
         {
-            int end = sent.indexOf(";", offset); //$NON-NLS-1$
+            int end = sent.indexOf(";", offset);
             if (end == -1)
             {
                 end = sent.length();
@@ -795,10 +795,10 @@ public class Test
         }
 
         // Safari
-        offset = sent.indexOf("Safari"); //$NON-NLS-1$
+        offset = sent.indexOf("Safari");
         if (offset > 10)
         {
-            int end = sent.indexOf(";", offset); //$NON-NLS-1$
+            int end = sent.indexOf(";", offset);
             if (end == -1)
             {
                 end = sent.length();
@@ -807,10 +807,10 @@ public class Test
         }
 
         // Opera
-        offset = sent.indexOf("Opera"); //$NON-NLS-1$
+        offset = sent.indexOf("Opera");
         if (offset > -1)
         {
-            int end = sent.indexOf(" ", offset); //$NON-NLS-1$
+            int end = sent.indexOf(" ", offset);
             if (end == -1)
             {
                 end = sent.length();
@@ -826,7 +826,7 @@ public class Test
      */
     public String delete()
     {
-        return "You can't touch me"; //$NON-NLS-1$
+        return "You can't touch me";
     }
 
     /**
@@ -835,7 +835,7 @@ public class Test
     protected String protectedMethod()
     {
         privateMethod();
-        return "You can't touch me"; //$NON-NLS-1$
+        return "You can't touch me";
     }
 
     /**
@@ -843,7 +843,7 @@ public class Test
      */
     private String privateMethod()
     {
-        return "You can't touch me"; //$NON-NLS-1$
+        return "You can't touch me";
     }
 
     /**
@@ -851,7 +851,7 @@ public class Test
      */
     public static String staticMethod()
     {
-        return "static Test.staticMethod() says hello."; //$NON-NLS-1$
+        return "static Test.staticMethod() says hello.";
     }
 
     /**
@@ -860,7 +860,7 @@ public class Test
      */
     public String dangerOverload(String param1)
     {
-        return "Test.dangerOverload(" + param1 + ") says hello.";  //$NON-NLS-1$//$NON-NLS-2$
+        return "Test.dangerOverload(" + param1 + ") says hello."; //$NON-NLS-2$
     }
 
     /**
@@ -868,7 +868,7 @@ public class Test
      */
     public String dangerOverload()
     {
-        return "Test.dangerOverload() says hello."; //$NON-NLS-1$
+        return "Test.dangerOverload() says hello.";
     }
 
     /**
@@ -878,7 +878,7 @@ public class Test
      */
     public String error(InboundContext cx)
     {
-        return "You should not see this: " + cx; //$NON-NLS-1$
+        return "You should not see this: " + cx;
     }
 
     /**
@@ -889,7 +889,7 @@ public class Test
      */
     public String getInsert() throws ServletException, IOException
     {
-        return WebContextFactory.get().forwardToString("/insert.html"); //$NON-NLS-1$
+        return WebContextFactory.get().forwardToString("/insert.html");
     }
 
     /**

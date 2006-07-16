@@ -55,7 +55,7 @@ public class DefaultAccessControl implements AccessControl
             HttpServletRequest req = WebContextFactory.get().getHttpServletRequest();
             if (req == null)
             {
-                log.warn("Missing HttpServletRequest roles can not be checked"); //$NON-NLS-1$
+                log.warn("Missing HttpServletRequest roles can not be checked");
             }
             else
             {
@@ -79,11 +79,11 @@ public class DefaultAccessControl implements AccessControl
                     buffer.append(role);
                     if (it.hasNext())
                     {
-                        buffer.append(", "); //$NON-NLS-1$
+                        buffer.append(", ");
                     }
                 }
 
-                return Messages.getString("ExecuteQuery.DeniedByJ2EERoles", buffer.toString()); //$NON-NLS-1$
+                return Messages.getString("ExecuteQuery.DeniedByJ2EERoles", buffer.toString());
             }
         }
 
@@ -100,24 +100,24 @@ public class DefaultAccessControl implements AccessControl
         // Is it public
         if (!Modifier.isPublic(method.getModifiers()))
         {
-            return Messages.getString("ExecuteQuery.DeniedNonPublic"); //$NON-NLS-1$
+            return Messages.getString("ExecuteQuery.DeniedNonPublic");
         }
 
         // Do access controls allow it?
         if (!isExecutable(className, methodName))
         {
-            return Messages.getString("ExecuteQuery.DeniedByAccessRules"); //$NON-NLS-1$
+            return Messages.getString("ExecuteQuery.DeniedByAccessRules");
         }
 
         // We ban some methods from Object too
         if (method.getDeclaringClass() == Object.class)
         {
-            return Messages.getString("ExecuteQuery.DeniedObjectMethod"); //$NON-NLS-1$
+            return Messages.getString("ExecuteQuery.DeniedObjectMethod");
         }
 
         if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY))
         {
-            return Messages.getString("ExecuteQuery.DeniedCoreDWR"); //$NON-NLS-1$
+            return Messages.getString("ExecuteQuery.DeniedCoreDWR");
         }
 
         // Check the parameters are not DWR internal either
@@ -127,7 +127,7 @@ public class DefaultAccessControl implements AccessControl
 
             if (paramType.getName().startsWith(PACKAGE_DWR_DENY))
             {
-                return Messages.getString("ExecuteQuery.DeniedParamDWR"); //$NON-NLS-1$
+                return Messages.getString("ExecuteQuery.DeniedParamDWR");
             }
         }
 
@@ -174,7 +174,7 @@ public class DefaultAccessControl implements AccessControl
         {
             if (policy.rules.size() > 0)
             {
-                throw new IllegalArgumentException(Messages.getString("DefaultAccessControl.MixedIncludesAndExcludes", scriptName)); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("DefaultAccessControl.MixedIncludesAndExcludes", scriptName));
             }
 
             policy.defaultAllow = false;
@@ -197,7 +197,7 @@ public class DefaultAccessControl implements AccessControl
         {
             if (policy.rules.size() > 0)
             {
-                throw new IllegalArgumentException(Messages.getString("DefaultAccessControl.MixedIncludesAndExcludes", scriptName)); //$NON-NLS-1$
+                throw new IllegalArgumentException(Messages.getString("DefaultAccessControl.MixedIncludesAndExcludes", scriptName));
             }
 
             policy.defaultAllow = true;
@@ -240,7 +240,7 @@ public class DefaultAccessControl implements AccessControl
         {
             // We are in default allow mode so the rules are exclusions and we
             // have a match, so this method is excluded.
-            //log.debug("method excluded for creator " + type + " due to defaultAllow=" + policy.defaultAllow + " and rule: " + match); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            //log.debug("method excluded for creator " + type + " due to defaultAllow=" + policy.defaultAllow + " and rule: " + match);
             return false;
         }
 
@@ -252,7 +252,7 @@ public class DefaultAccessControl implements AccessControl
         {
             // We are in default deny mode so the rules are inclusions and we
             // do not have a match, so this method is excluded.
-            //log.debug("method excluded for creator " + type + " due to defaultAllow=" + policy.defaultAllow + " and rule: " + match); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            //log.debug("method excluded for creator " + type + " due to defaultAllow=" + policy.defaultAllow + " and rule: " + match);
             return false;
         }
 
@@ -298,7 +298,7 @@ public class DefaultAccessControl implements AccessControl
     /**
      * My package name, so we can ban DWR classes from being created or marshalled
      */
-    private static final String PACKAGE_DWR_DENY = "org.directwebremoting."; //$NON-NLS-1$
+    private static final String PACKAGE_DWR_DENY = "org.directwebremoting.";
 
     /**
      * The log stream

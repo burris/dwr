@@ -72,7 +72,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void sendError(int sc, String msg)
     {
-        log.warn("Ignoring call to sendError(" + sc + ", " + msg + ')'); //$NON-NLS-1$ //$NON-NLS-2$
+        log.warn("Ignoring call to sendError(" + sc + ", " + msg + ')');
     }
 
     /* (non-Javadoc)
@@ -80,7 +80,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void sendError(int sc)
     {
-        log.warn("Ignoring call to sendError(" + sc + ')'); //$NON-NLS-1$
+        log.warn("Ignoring call to sendError(" + sc + ')');
     }
 
     /* (non-Javadoc)
@@ -88,7 +88,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void sendRedirect(String location)
     {
-        log.warn("Ignoring call to sendRedirect(" + location + ')'); //$NON-NLS-1$
+        log.warn("Ignoring call to sendRedirect(" + location + ')');
     }
 
     /* (non-Javadoc)
@@ -96,7 +96,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void setStatus(int sc)
     {
-        log.warn("Ignoring call to setStatus(" + sc + ')'); //$NON-NLS-1$
+        log.warn("Ignoring call to setStatus(" + sc + ')');
     }
 
     /**
@@ -105,7 +105,7 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
      */
     public void setStatus(int sc, String sm)
     {
-        log.warn("Ignoring call to setStatus(" + sc + ", " + sm + ')'); //$NON-NLS-1$ //$NON-NLS-2$
+        log.warn("Ignoring call to setStatus(" + sc + ", " + sm + ')');
     }
 
     /* (non-Javadoc)

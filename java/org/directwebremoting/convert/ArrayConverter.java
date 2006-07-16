@@ -55,7 +55,7 @@ public class ArrayConverter extends BaseV20Converter implements Converter
     {
         if (!paramType.isArray())
         {
-            throw new MarshallException(Messages.getString("ArrayConverter.ClassIsNotAnArray", paramType.getName())); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("ArrayConverter.ClassIsNotAnArray", paramType.getName()));
         }
 
         String value = iv.getValue();
@@ -113,13 +113,13 @@ public class ArrayConverter extends BaseV20Converter implements Converter
     {
         if (!data.getClass().isArray())
         {
-            throw new MarshallException(Messages.getString("ArrayConverter.ClassIsNotAnArray", data.getClass().getName())); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("ArrayConverter.ClassIsNotAnArray", data.getClass().getName()));
         }
 
         int size = Array.getLength(data);
         if (size == 0)
         {
-            return new OutboundVariable("", "[]"); //$NON-NLS-1$ //$NON-NLS-2$
+            return new OutboundVariable("", "[]");
         }
 
         OutboundVariable ov = new OutboundVariable();
@@ -138,8 +138,8 @@ public class ArrayConverter extends BaseV20Converter implements Converter
             }
             catch (Exception ex)
             {
-                nested = new OutboundVariable("", "'Conversion Error. See console log.'"); //$NON-NLS-1$ //$NON-NLS-2$
-                log.warn("Failed to convert array member " + i + ". Conversion error for type: " + data.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$
+                nested = new OutboundVariable("", "'Conversion Error. See console log.'");
+                log.warn("Failed to convert array member " + i + ". Conversion error for type: " + data.getClass().getName(), ex);
             }
             ovs.add(nested);
         }

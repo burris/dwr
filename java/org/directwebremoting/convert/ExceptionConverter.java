@@ -27,7 +27,7 @@ public class ExceptionConverter extends BeanConverter
     protected boolean isAllowed(String property)
     {
         // We never send stack traces to the client
-        if ("stackTrace".equals(property)) //$NON-NLS-1$
+        if ("stackTrace".equals(property))
         {
             return false;
         }

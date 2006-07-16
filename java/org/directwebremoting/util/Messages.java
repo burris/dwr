@@ -45,7 +45,7 @@ public class Messages
         }
         catch (MissingResourceException ex)
         {
-            log.error("Missing I18N string: " + key, ex); //$NON-NLS-1$
+            log.error("Missing I18N string: " + key, ex);
             return '!' + key + '!';
         }
     }
@@ -128,7 +128,7 @@ public class Messages
             }
             buffer.append(']');
 
-            log.error("Missing I18N string: " + key + ". Params: " + buffer.toString()); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Missing I18N string: " + key + ". Params: " + buffer.toString());
             return '!' + key + '!' + buffer.toString() + '!';
         }
     }
@@ -141,5 +141,5 @@ public class Messages
     /**
      * The lookup bundle
      */
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("org.directwebremoting.messages"); //$NON-NLS-1$
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("org.directwebremoting.messages");
 }

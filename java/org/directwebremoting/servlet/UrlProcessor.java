@@ -82,7 +82,7 @@ public class UrlProcessor
             {
                 pathInfo = request.getServletPath();
                 servletPath = PathConstants.PATH_ROOT;
-                log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + contextPath + "; servletPath=" + servletPath); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.debug("Default servlet suspected. pathInfo=" + pathInfo + "; contextPath=" + contextPath + "; servletPath=" + servletPath);
             }
 
             if (pathInfo == null || pathInfo.length() == 0 || pathInfo.equals(PathConstants.PATH_ROOT))
@@ -100,8 +100,8 @@ public class UrlProcessor
             else if (pathInfo.startsWith(PathConstants.PATH_TEST))
             {
                 String scriptName = pathInfo;
-                scriptName = LocalUtil.replace(scriptName, PathConstants.PATH_TEST, ""); //$NON-NLS-1$
-                scriptName = LocalUtil.replace(scriptName, PathConstants.PATH_ROOT, ""); //$NON-NLS-1$
+                scriptName = LocalUtil.replace(scriptName, PathConstants.PATH_TEST, "");
+                scriptName = LocalUtil.replace(scriptName, PathConstants.PATH_ROOT, "");
 
                 String page = debugPageGenerator.generateTestPage(contextPath + servletPath, scriptName);
 
@@ -112,8 +112,8 @@ public class UrlProcessor
             else if (pathInfo.startsWith(PathConstants.PATH_INTERFACE))
             {
                 String scriptName = pathInfo;
-                scriptName = LocalUtil.replace(scriptName, PathConstants.PATH_INTERFACE, ""); //$NON-NLS-1$
-                scriptName = LocalUtil.replace(scriptName, PathConstants.EXTENSION_JS, ""); //$NON-NLS-1$
+                scriptName = LocalUtil.replace(scriptName, PathConstants.PATH_INTERFACE, "");
+                scriptName = LocalUtil.replace(scriptName, PathConstants.EXTENSION_JS, "");
                 String path = contextPath + servletPath;
 
                 String script = remoter.generateInterfaceScript(scriptName, path);
@@ -165,7 +165,7 @@ public class UrlProcessor
             }
             else
             {
-                log.warn("Page not found (" + pathInfo + "). In debug/test mode try viewing /[WEB-APP]/dwr/"); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("Page not found (" + pathInfo + "). In debug/test mode try viewing /[WEB-APP]/dwr/");
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
         }
@@ -174,14 +174,14 @@ public class UrlProcessor
             // Allow Jetty RequestRetry exception to propogate to container
             Continuation.rethrowIfContinuation(ex);
 
-            log.warn("Error: " + ex); //$NON-NLS-1$
+            log.warn("Error: " + ex);
             if (ex instanceof SecurityException && log.isDebugEnabled())
             {
-                log.debug("- User Agent: " + request.getHeader(HttpConstants.HEADER_USER_AGENT)); //$NON-NLS-1$
-                log.debug("- Remote IP:  " + request.getRemoteAddr()); //$NON-NLS-1$
-                log.debug("- Request URL:" + request.getRequestURL()); //$NON-NLS-1$
-                log.debug("- Query:      " + request.getQueryString()); //$NON-NLS-1$
-                log.debug("- Method:     " + request.getMethod()); //$NON-NLS-1$
+                log.debug("- User Agent: " + request.getHeader(HttpConstants.HEADER_USER_AGENT));
+                log.debug("- Remote IP:  " + request.getRemoteAddr());
+                log.debug("- Request URL:" + request.getRequestURL());
+                log.debug("- Query:      " + request.getQueryString());
+                log.debug("- Method:     " + request.getMethod());
             }
 
             // We are going to act on this in engine.js so we are hoping that
@@ -194,7 +194,7 @@ public class UrlProcessor
             PrintWriter out = response.getWriter();
             out.println(ex.getMessage());
 
-            log.warn("Sent 501", ex); //$NON-NLS-1$
+            log.warn("Sent 501", ex);
         }
     }
 
@@ -212,9 +212,9 @@ public class UrlProcessor
     {
         if (dynamic)
         {
-            response.setHeader("pragma", "public"); //$NON-NLS-1$ //$NON-NLS-2$
-            response.setHeader("Expires", "0"); //$NON-NLS-1$ //$NON-NLS-2$
-            response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0"); //$NON-NLS-1$ //$NON-NLS-2$
+            response.setHeader("pragma", "public");
+            response.setHeader("Expires", "0");
+            response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
         }
 
         if (!dynamic && isUpToDate(request, path))
@@ -236,7 +236,7 @@ public class UrlProcessor
                 InputStream raw = getClass().getResourceAsStream(resource);
                 if (raw == null)
                 {
-                    throw new IOException("Failed to find resource: " + resource); //$NON-NLS-1$
+                    throw new IOException("Failed to find resource: " + resource);
                 }
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(raw));
@@ -308,7 +308,7 @@ public class UrlProcessor
         }
         catch (RuntimeException ex)
         {
-            log.warn("Websphere/RAD date failure. If you understand why this might happen please report to dwr-users mailing list"); //$NON-NLS-1$
+            log.warn("Websphere/RAD date failure. If you understand why this might happen please report to dwr-users mailing list");
         }
 
         if (modifiedSince != -1)
@@ -326,7 +326,7 @@ public class UrlProcessor
             {
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Sending 304 for " + path + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + servletContainerStartTime); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    log.debug("Sending 304 for " + path + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + servletContainerStartTime);
                 }
                 return true;
             }
@@ -343,7 +343,7 @@ public class UrlProcessor
                 // There is an ETag, but no If-Modified-Since
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Sending 304 for " + path + " Old ETag=" + givenEtag + ", New ETag=" + etag); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    log.debug("Sending 304 for " + path + " Old ETag=" + givenEtag + ", New ETag=" + etag);
                 }
                 return true;
             }
@@ -357,7 +357,7 @@ public class UrlProcessor
         {
             if (log.isDebugEnabled())
             {
-                log.debug("Sending 304 for " + path); //$NON-NLS-1$
+                log.debug("Sending 304 for " + path);
             }
             return true;
         }
@@ -463,7 +463,7 @@ public class UrlProcessor
         long now = System.currentTimeMillis();
         servletContainerStartTime = now - (now % 1000);
 
-        etag = "\"" + servletContainerStartTime + '\"'; //$NON-NLS-1$
+        etag = "\"" + servletContainerStartTime + '\"';
     }
 
     /**
@@ -530,12 +530,12 @@ public class UrlProcessor
     /**
      * The session id parameter that goes in engine.js
      */
-    protected static final String PARAM_HTTP_SESSIONID = "${httpSessionId}"; //$NON-NLS-1$
+    protected static final String PARAM_HTTP_SESSIONID = "${httpSessionId}";
 
     /**
      * The page id parameter that goes in engine.js
      */
-    protected static final String PARAM_SCRIPT_SESSIONID = "${scriptSessionId}"; //$NON-NLS-1$
+    protected static final String PARAM_SCRIPT_SESSIONID = "${scriptSessionId}";
 
     /**
      * The log stream

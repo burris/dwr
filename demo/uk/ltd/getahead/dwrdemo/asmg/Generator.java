@@ -41,10 +41,10 @@ public class Generator
      */
     public String generateAntiSpamMailto(String name, String email)
     {
-        StringTokenizer st = new StringTokenizer(email, "@"); //$NON-NLS-1$
+        StringTokenizer st = new StringTokenizer(email, "@");
         if (st.countTokens() != 2)
         {
-            throw new IllegalArgumentException("Invalid email address: " + email); //$NON-NLS-1$
+            throw new IllegalArgumentException("Invalid email address: " + email);
         }
 
         String before = st.nextToken();
@@ -52,28 +52,28 @@ public class Generator
 
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("Contact "); //$NON-NLS-1$
+        buffer.append("Contact ");
         buffer.append(name);
-        buffer.append(" using: <span id=\"asmgLink\"></span>\n"); //$NON-NLS-1$
-        buffer.append("<script type='text/javascript'>\n"); //$NON-NLS-1$
+        buffer.append(" using: <span id=\"asmgLink\"></span>\n");
+        buffer.append("<script type='text/javascript'>\n");
 
-        buffer.append("var before = '"); //$NON-NLS-1$
+        buffer.append("var before = '");
         buffer.append(before);
-        buffer.append("';\n"); //$NON-NLS-1$;
+        buffer.append("';\n");
 
-        buffer.append("var after = '"); //$NON-NLS-1$
+        buffer.append("var after = '");
         buffer.append(after);
-        buffer.append("';\n"); //$NON-NLS-1$;
+        buffer.append("';\n");
 
-        buffer.append("var link = \"<a href='mail\" + \"to:\" + before + '@' + after + \"'>\" + before + '@' + after + \"</a>\";\n"); //$NON-NLS-1$;
+        buffer.append("var link = \"<a href='mail\" + \"to:\" + before + '@' + after + \"'>\" + before + '@' + after + \"</a>\";\n");
 
-        buffer.append("document.getElementById(\"asmgLink\").innerHTML = link;\n"); //$NON-NLS-1$
-        buffer.append("</script>\n"); //$NON-NLS-1$
-        buffer.append("<noscript>["); //$NON-NLS-1$
+        buffer.append("document.getElementById(\"asmgLink\").innerHTML = link;\n");
+        buffer.append("</script>\n");
+        buffer.append("<noscript>[");
         buffer.append(before);
-        buffer.append(" at "); //$NON-NLS-1$
+        buffer.append(" at ");
         buffer.append(after);
-        buffer.append("]</noscript>\n"); //$NON-NLS-1$
+        buffer.append("]</noscript>\n");
 
         return buffer.toString();
     }

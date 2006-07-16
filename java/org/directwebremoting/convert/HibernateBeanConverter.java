@@ -44,46 +44,46 @@ public class HibernateBeanConverter extends BasicBeanConverter
         try
         {
             hibernate = LocalUtil.classForName(CLASS_HIBERNATE3);
-            log.info("Found Hibernate3 class: " + hibernate.getName()); //$NON-NLS-1$
+            log.info("Found Hibernate3 class: " + hibernate.getName());
         }
         catch (Exception ex)
         {
             try
             {
                 hibernate = LocalUtil.classForName(CLASS_HIBERNATE2);
-                log.info("Found Hibernate2 class: " + hibernate.getName()); //$NON-NLS-1$
+                log.info("Found Hibernate2 class: " + hibernate.getName());
             }
             catch (Exception ex2)
             {
-                throw new ClassNotFoundException(Messages.getString("HibernateBeanConverter.MissingClass")); //$NON-NLS-1$
+                throw new ClassNotFoundException(Messages.getString("HibernateBeanConverter.MissingClass"));
             }
         }
 
         try
         {
-            getClass = hibernate.getMethod("getClass", new Class[] { Object.class }); //$NON-NLS-1$
+            getClass = hibernate.getMethod("getClass", new Class[] { Object.class });
         }
         catch (Exception ex)
         {
-            throw new ClassNotFoundException(Messages.getString("HibernateBeanConverter.MissingGetClass")); //$NON-NLS-1$
+            throw new ClassNotFoundException(Messages.getString("HibernateBeanConverter.MissingGetClass"));
         }
 
         try
         {
-            isPropertyInitialized = hibernate.getMethod("isPropertyInitialized", new Class[] { Object.class, String.class }); //$NON-NLS-1$
+            isPropertyInitialized = hibernate.getMethod("isPropertyInitialized", new Class[] { Object.class, String.class });
         }
         catch (Exception ex)
         {
-            log.info("Hibernate.isPropertyInitialized() is not available in Hibernate2 so initialization checks will not take place"); //$NON-NLS-1$
+            log.info("Hibernate.isPropertyInitialized() is not available in Hibernate2 so initialization checks will not take place");
         }
 
         try
         {
-            isInitialized = hibernate.getMethod("isInitialized", new Class[] { Object.class }); //$NON-NLS-1$
+            isInitialized = hibernate.getMethod("isInitialized", new Class[] { Object.class });
         }
         catch (Exception ex)
         {
-            log.info("Hibernate.isInitialized() is not available - verify you have the Hibernate jar on your classpath"); //$NON-NLS-1$
+            log.info("Hibernate.isInitialized() is not available - verify you have the Hibernate jar on your classpath");
         }
     }
 
@@ -107,7 +107,7 @@ public class HibernateBeanConverter extends BasicBeanConverter
         }
         catch (Exception ex)
         {
-            log.error("Logic Error", ex); //$NON-NLS-1$
+            log.error("Logic Error", ex);
             throw new IntrospectionException(ex.getMessage());
         }
     }
@@ -143,7 +143,7 @@ public class HibernateBeanConverter extends BasicBeanConverter
 
                 if (method == null)
                 {
-                    log.warn("Failed to find property: " + property); //$NON-NLS-1$
+                    log.warn("Failed to find property: " + property);
                     return false;
                 }
 
@@ -164,7 +164,7 @@ public class HibernateBeanConverter extends BasicBeanConverter
         }
         catch (Exception ex)
         {
-            log.error("Failed in checking Hibernate the availability of " + property, ex); //$NON-NLS-1$
+            log.error("Failed in checking Hibernate the availability of " + property, ex);
             return false;
         }
     }
@@ -177,12 +177,12 @@ public class HibernateBeanConverter extends BasicBeanConverter
     /**
      * The Hibernate utility class under Hibernate2
      */
-    private static final String CLASS_HIBERNATE2 = "net.sf.hibernate.Hibernate"; //$NON-NLS-1$
+    private static final String CLASS_HIBERNATE2 = "net.sf.hibernate.Hibernate";
 
     /**
      * The Hibernate utility class under Hibernate3
      */
-    private static final String CLASS_HIBERNATE3 = "org.hibernate.Hibernate"; //$NON-NLS-1$
+    private static final String CLASS_HIBERNATE3 = "org.hibernate.Hibernate";
 
     /**
      * The cached getClass method from Hibernate

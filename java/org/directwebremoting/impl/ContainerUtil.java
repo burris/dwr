@@ -82,9 +82,9 @@ public class ContainerUtil
         defaultContainer.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
         defaultContainer.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
 
-        defaultContainer.addParameter("debug", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-        defaultContainer.addParameter("allowImpossibleTests", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-        defaultContainer.addParameter("scriptCompressed", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        defaultContainer.addParameter("debug", "false");
+        defaultContainer.addParameter("allowImpossibleTests", "false");
+        defaultContainer.addParameter("scriptCompressed", "false");
     }
 
     /**
@@ -146,7 +146,7 @@ public class ContainerUtil
             {
                 foundConfig = true;
 
-                StringTokenizer st = new StringTokenizer(value, "\n,"); //$NON-NLS-1$
+                StringTokenizer st = new StringTokenizer(value, "\n,");
                 while (st.hasMoreTokens())
                 {
                     String fileName = st.nextToken().trim();
@@ -163,11 +163,11 @@ public class ContainerUtil
                 {
                     Configurator configurator = (Configurator) LocalUtil.classNewInstance(INIT_CUSTOM_CONFIGURATOR, value, Configurator.class);
                     configurator.configure(container);
-                    log.debug("Loaded config from: " + value); //$NON-NLS-1$
+                    log.debug("Loaded config from: " + value);
                 }
                 catch (Exception ex)
                 {
-                    log.warn("Failed to start custom configurator", ex); //$NON-NLS-1$
+                    log.warn("Failed to start custom configurator", ex);
                 }
             }
         }
@@ -187,7 +187,7 @@ public class ContainerUtil
         {
             Configurator configurator = (Configurator) it.next();
 
-            log.debug("** Adding config from " + configurator); //$NON-NLS-1$
+            log.debug("** Adding config from " + configurator);
             configurator.configure(container);
         }
     }
@@ -214,10 +214,10 @@ public class ContainerUtil
      */
     public static void logStartup(ServletConfig config)
     {
-        log.info("DWR Version " + VersionUtil.getVersion() + " starting."); //$NON-NLS-1$ //$NON-NLS-2$
-        log.info("- Servlet Engine: " + config.getServletContext().getServerInfo()); //$NON-NLS-1$
-        log.info("- Java Version:   " + System.getProperty("java.version"));  //$NON-NLS-1$//$NON-NLS-2$
-        log.info("- Java Vendor:    " + System.getProperty("java.vendor"));  //$NON-NLS-1$//$NON-NLS-2$
+        log.info("DWR Version " + VersionUtil.getVersion() + " starting.");
+        log.info("- Servlet Engine: " + config.getServletContext().getServerInfo());
+        log.info("- Java Version:   " + System.getProperty("java.version")); //$NON-NLS-2$
+        log.info("- Java Vendor:    " + System.getProperty("java.vendor")); //$NON-NLS-2$
     }
 
     /**
@@ -229,8 +229,8 @@ public class ContainerUtil
         if (log.isDebugEnabled())
         {
             // Container level debug
-            log.debug("Container"); //$NON-NLS-1$
-            log.debug("  Type: " + container.getClass().getName()); //$NON-NLS-1$
+            log.debug("Container");
+            log.debug("  Type: " + container.getClass().getName());
             Collection beanNames = container.getBeanNames();
             for (Iterator it = beanNames.iterator(); it.hasNext();)
             {
@@ -239,39 +239,39 @@ public class ContainerUtil
 
                 if (object instanceof String)
                 {
-                    log.debug("  Param: " + name + " = " + object + " (" + object.getClass().getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    log.debug("  Param: " + name + " = " + object + " (" + object.getClass().getName() + ")");
                 }
                 else
                 {
-                    log.debug("  Bean: " + name + " = " + object + " (" + object.getClass().getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    log.debug("  Bean: " + name + " = " + object + " (" + object.getClass().getName() + ")");
                 }
             }
 
             // AccessControl debugging
             AccessControl accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
-            log.debug("AccessControl"); //$NON-NLS-1$
-            log.debug("  Type: " + accessControl.getClass().getName()); //$NON-NLS-1$
+            log.debug("AccessControl");
+            log.debug("  Type: " + accessControl.getClass().getName());
 
             // AjaxFilterManager debugging
             AjaxFilterManager ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
-            log.debug("AjaxFilterManager"); //$NON-NLS-1$
-            log.debug("  Type: " + ajaxFilterManager.getClass().getName()); //$NON-NLS-1$
+            log.debug("AjaxFilterManager");
+            log.debug("  Type: " + ajaxFilterManager.getClass().getName());
 
             // ConverterManager debugging
             ConverterManager converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
-            log.debug("ConverterManager"); //$NON-NLS-1$
-            log.debug("  Type: " + converterManager.getClass().getName()); //$NON-NLS-1$
+            log.debug("ConverterManager");
+            log.debug("  Type: " + converterManager.getClass().getName());
 
             // CreatorManager debugging
             CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
-            log.debug("CreatorManager"); //$NON-NLS-1$
-            log.debug("  Type: " + creatorManager.getClass().getName()); //$NON-NLS-1$
+            log.debug("CreatorManager");
+            log.debug("  Type: " + creatorManager.getClass().getName());
             Collection creatorNames = creatorManager.getCreatorNames();
             for (Iterator it = creatorNames.iterator(); it.hasNext();)
             {
                 String creatorName = (String) it.next();
                 Creator creator = creatorManager.getCreator(creatorName);
-                log.debug("  Creator: " + creatorName + " = " + creator + " (" + creator.getClass().getName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                log.debug("  Creator: " + creatorName + " = " + creator + " (" + creator.getClass().getName() + ")");
             }
         }
     }
@@ -280,29 +280,29 @@ public class ContainerUtil
      * Init parameter: Set a dwr.xml config file.
      * This is only a prefix since we might have more than 1 config file.
      */
-    public static final String INIT_CONFIG = "config"; //$NON-NLS-1$
+    public static final String INIT_CONFIG = "config";
 
     /**
      * Init parameter: Skip reading the default config file if none are specified.
      */
-    public static final String INIT_SKIP_DEFAULT = "skipDefaultConfig"; //$NON-NLS-1$
+    public static final String INIT_SKIP_DEFAULT = "skipDefaultConfig";
 
     /**
      * Init parameter: If we are doing Servlet.log logging, to what level?
      */
-    public static final String INIT_LOGLEVEL = "logLevel"; //$NON-NLS-1$
+    public static final String INIT_LOGLEVEL = "logLevel";
 
     /**
      * Init parameter: Should we publish the container to the servlet context,
      * and if so, under what name?
      */
-    public static final String INIT_PUBLISH_CONTAINER = "publishContainerAs"; //$NON-NLS-1$
+    public static final String INIT_PUBLISH_CONTAINER = "publishContainerAs";
 
     /**
      * Init parameter: If you wish to use a custom configurator, place its
      * class name here
      */
-    public static final String INIT_CUSTOM_CONFIGURATOR = "customConfigurator"; //$NON-NLS-1$
+    public static final String INIT_CUSTOM_CONFIGURATOR = "customConfigurator";
 
     /**
      * The log stream

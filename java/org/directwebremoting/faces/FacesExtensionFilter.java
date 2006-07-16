@@ -88,7 +88,7 @@ public class FacesExtensionFilter implements Filter
             catch (IllegalStateException ex)
             {
                 // Perhaps the FacesContext has already been released?
-                log.warn("Double release of faces context?", ex); //$NON-NLS-1$
+                log.warn("Double release of faces context?", ex);
             }
         }
     }

@@ -20,7 +20,7 @@ diff -u -r1.4 DwrUtil.java
 +        Cell[] cells = row.getCells();
 +        String[] data = new String[cells.length];
 +        for(int i=0; i<cells.length ;i++) {
-+            data[i] = "function(data) { return '"+cells[i].getInnerHtml()+"'; }"; //$NON-NLS-1$ //$NON-NLS-2$
++            data[i] = "function(data) { return '"+cells[i].getInnerHtml()+"'; }";
 +        }
          
 +        OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
@@ -28,13 +28,13 @@ diff -u -r1.4 DwrUtil.java
 +
 +        StringBuffer script = new StringBuffer();
 +        script.append(elementIdOv.getInitCode())
-+            .append("DWRUtil.addRows(") //$NON-NLS-1$
++            .append("DWRUtil.addRows(")
 +            .append(elementIdOv.getAssignCode())
 +            .append(',')
-+            .append("['*']") //$NON-NLS-1$
++            .append("['*']")
 +            .append(',')
 +            .append(Arrays.asList(data))
-+            .append(");"); //$NON-NLS-1$
++            .append(");");
 +
 +        addScript(script.toString());        
      }

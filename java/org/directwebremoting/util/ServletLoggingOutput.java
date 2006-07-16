@@ -177,29 +177,29 @@ public class ServletLoggingOutput implements LoggingOutput
      */
     public static void setLevel(String logLevel)
     {
-        if (logLevel.equalsIgnoreCase("FATAL")) //$NON-NLS-1$
+        if (logLevel.equalsIgnoreCase("FATAL"))
         {
             setLevel(LEVEL_FATAL);
         }
-        else if (logLevel.equalsIgnoreCase("ERROR")) //$NON-NLS-1$
+        else if (logLevel.equalsIgnoreCase("ERROR"))
         {
             setLevel(LEVEL_ERROR);
         }
-        else if (logLevel.equalsIgnoreCase("WARN")) //$NON-NLS-1$
+        else if (logLevel.equalsIgnoreCase("WARN"))
         {
             setLevel(LEVEL_WARN);
         }
-        else if (logLevel.equalsIgnoreCase("INFO")) //$NON-NLS-1$
+        else if (logLevel.equalsIgnoreCase("INFO"))
         {
             setLevel(LEVEL_INFO);
         }
-        else if (logLevel.equalsIgnoreCase("DEBUG")) //$NON-NLS-1$
+        else if (logLevel.equalsIgnoreCase("DEBUG"))
         {
             setLevel(LEVEL_DEBUG);
         }
         else
         {
-            throw new IllegalArgumentException("Unknown log level: " + logLevel); //$NON-NLS-1$
+            throw new IllegalArgumentException("Unknown log level: " + logLevel);
         }
     }
 

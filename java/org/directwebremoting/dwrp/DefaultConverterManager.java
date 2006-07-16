@@ -45,7 +45,7 @@ public class DefaultConverterManager implements ConverterManager
     {
         if (!LocalUtil.isJavaIdentifier(id))
         {
-            log.error("Illegal identifier: '" + id + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Illegal identifier: '" + id + "'");
             return;
         }
 
@@ -64,7 +64,7 @@ public class DefaultConverterManager implements ConverterManager
         Class clazz = (Class) converterTypes.get(type);
         if (clazz == null)
         {
-            log.info("Type '" + match + "' is not convertable due to missing converter '" + type + "'. This is only an problem if you wanted to use it."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Type '" + match + "' is not convertable due to missing converter '" + type + "'. This is only an problem if you wanted to use it.");
             return;
         }
 
@@ -86,7 +86,7 @@ public class DefaultConverterManager implements ConverterManager
         Converter other = (Converter) converters.get(match);
         if (other != null)
         {
-            log.warn("Clash of converters for " + match + ". Using " + converter.getClass().getName() + " in place of " + other.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.warn("Clash of converters for " + match + ". Using " + converter.getClass().getName() + " in place of " + other.getClass().getName());
         }
 
         converters.put(match, converter);
@@ -111,7 +111,7 @@ public class DefaultConverterManager implements ConverterManager
             Converter converter = getConverter(paramType);
             if (converter == null)
             {
-                throw new MarshallException(Messages.getString("DefaultConverterManager.MissingConverter", paramType.getName())); //$NON-NLS-1$
+                throw new MarshallException(Messages.getString("DefaultConverterManager.MissingConverter", paramType.getName()));
             }
 
             // We only think about doing a null conversion ourselves once we are
@@ -138,7 +138,7 @@ public class DefaultConverterManager implements ConverterManager
     {
         if (object == null)
         {
-            return new OutboundVariable("", "null"); //$NON-NLS-1$ //$NON-NLS-2$
+            return new OutboundVariable("", "null");
         }
 
         // Check to see if we have done this one already
@@ -146,16 +146,16 @@ public class DefaultConverterManager implements ConverterManager
         if (ov != null)
         {
             // So the object as been converted already, we just need to refer to it.
-            return new OutboundVariable("", ov.getAssignCode()); //$NON-NLS-1$
+            return new OutboundVariable("", ov.getAssignCode());
         }
 
         // So we will have to do the conversion
         Converter converter = getConverter(object);
         if (converter == null)
         {
-            log.error(Messages.getString("DefaultConverterManager.MissingConverter", object.getClass().getName())); //$NON-NLS-1$
+            log.error(Messages.getString("DefaultConverterManager.MissingConverter", object.getClass().getName()));
             String varName = converted.getNextVariableName();
-            return new OutboundVariable("var " + varName + "=null;", varName); //$NON-NLS-1$ //$NON-NLS-2$
+            return new OutboundVariable("var " + varName + "=null;", varName);
         }
 
         return converter.convertOutbound(object, converted);
@@ -220,9 +220,9 @@ public class DefaultConverterManager implements ConverterManager
 
         // Before we start trying for a match on package parts we check for
         // dynamic proxies
-        if (lookup.startsWith("$Proxy")) //$NON-NLS-1$
+        if (lookup.startsWith("$Proxy"))
         {
-            converter = (Converter) converters.get("$Proxy*"); //$NON-NLS-1$
+            converter = (Converter) converters.get("$Proxy*");
             if (converter != null)
             {
                 return converter;
@@ -232,7 +232,7 @@ public class DefaultConverterManager implements ConverterManager
         while (true)
         {
             // Can we find a converter using wildcards?
-            converter = (Converter) converters.get(lookup + ".*"); //$NON-NLS-1$
+            converter = (Converter) converters.get(lookup + ".*");
             if (converter != null)
             {
                 return converter;
@@ -353,5 +353,5 @@ public class DefaultConverterManager implements ConverterManager
      * The properties that we don't warn about if they don't exist.
      * @see DefaultConverterManager#addConverter(String, String, Map)
      */
-    private static List ignore = Arrays.asList(new String[] { "converter", "match" }); //$NON-NLS-1$ //$NON-NLS-2$
+    private static List ignore = Arrays.asList(new String[] { "converter", "match" });
 }

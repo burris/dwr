@@ -123,11 +123,11 @@ public class DwrServlet extends HttpServlet
 
             try
             {
-                Class annotationCfgClass = LocalUtil.classForName("org.directwebremoting.annotations.AnnotationsConfigurator"); //$NON-NLS-1$
+                Class annotationCfgClass = LocalUtil.classForName("org.directwebremoting.annotations.AnnotationsConfigurator");
 
                 Configurator configurator = (Configurator) annotationCfgClass.newInstance();
                 configurator.configure(container);
-                log.debug("Java5 AnnotationsConfigurator enabled"); //$NON-NLS-1$
+                log.debug("Java5 AnnotationsConfigurator enabled");
             }
             catch (UnsupportedClassVersionError ex)
             {
@@ -138,24 +138,24 @@ public class DwrServlet extends HttpServlet
             {
                 // This will happen when run in an IDE without the java5 tree
                 handleAnnotationFailure(delayedIOException);
-                log.warn("AnnotationsConfigurator is missing. Are you running from within an IDE?"); //$NON-NLS-1$
+                log.warn("AnnotationsConfigurator is missing. Are you running from within an IDE?");
             }
             catch (Exception ex)
             {
                 // This happens if there is a bug in AnnotationsConfigurator
-                log.warn("Failed to start annotations", ex); //$NON-NLS-1$
+                log.warn("Failed to start annotations", ex);
                 handleAnnotationFailure(delayedIOException);
             }
             catch (Throwable ex)
             {
                 if (ex.getClass().getName().equals(UnsupportedClassVersionError.class.getName()))
                 {
-                    log.error("Caught impossible Throwable", ex); //$NON-NLS-1$
+                    log.error("Caught impossible Throwable", ex);
                     handleAnnotationFailure(delayedIOException);
                 }
                 else if (ex.getClass().getName().equals(LinkageError.class.getName()))
                 {
-                    log.error("Caught impossible Throwable", ex); //$NON-NLS-1$
+                    log.error("Caught impossible Throwable", ex);
                     handleAnnotationFailure(delayedIOException);
                 }
                 else if (ex instanceof Error)
@@ -166,7 +166,7 @@ public class DwrServlet extends HttpServlet
                 {
                     // This can't happen: We've handled all Exceptions, and
                     // Errors, so we can't get to execute this code.
-                    log.error("Ilogical catch state", ex); //$NON-NLS-1$
+                    log.error("Ilogical catch state", ex);
                     handleAnnotationFailure(delayedIOException);
                 }
             }
@@ -175,12 +175,12 @@ public class DwrServlet extends HttpServlet
         }
         catch (ExceptionInInitializerError ex)
         {
-            log.fatal("ExceptionInInitializerError. Nested exception:", ex.getException()); //$NON-NLS-1$
+            log.fatal("ExceptionInInitializerError. Nested exception:", ex.getException());
             throw new ServletException(ex);
         }
         catch (Exception ex)
         {
-            log.fatal("DwrServlet.init() failed", ex); //$NON-NLS-1$
+            log.fatal("DwrServlet.init() failed", ex);
             throw new ServletException(ex);
         }
         finally
@@ -197,7 +197,7 @@ public class DwrServlet extends HttpServlet
      */
     private void handleAnnotationFailure(IOException delayedIOException) throws IOException
     {
-        log.debug("Java5 AnnotationsConfigurator disabled"); //$NON-NLS-1$
+        log.debug("Java5 AnnotationsConfigurator disabled");
 
         // So we can't to annotation config.
         // If dwr.xml based config failed then we are in trouble

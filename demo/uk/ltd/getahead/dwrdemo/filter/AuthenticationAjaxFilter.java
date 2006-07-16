@@ -31,7 +31,7 @@ public class AuthenticationAjaxFilter implements AjaxFilter
             return chain.doFilter(object, method, params);
         }
 
-        throw new SecurityException("Not authenticated"); //$NON-NLS-1$
+        throw new SecurityException("Not authenticated");
     }
 
     /**
@@ -53,7 +53,7 @@ public class AuthenticationAjaxFilter implements AjaxFilter
     /**
      * What is the name of the authenticate method?
      */
-    private String authenticateName = "authenticate"; //$NON-NLS-1$
+    private String authenticateName = "authenticate";
 
     /**
      * Accessor for the current user
@@ -78,5 +78,5 @@ public class AuthenticationAjaxFilter implements AjaxFilter
     /**
      * The session key
      */
-    private static final String USER = "org.directwebremoting.filter.AuthenticationAjaxFilter.USER"; //$NON-NLS-1$
+    private static final String USER = "org.directwebremoting.filter.AuthenticationAjaxFilter.USER";
 }

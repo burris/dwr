@@ -49,6 +49,6 @@ public class NullConverter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return new OutboundVariable("", "null"); //$NON-NLS-1$ //$NON-NLS-2$
+        return new OutboundVariable("", "null");
     }
 }

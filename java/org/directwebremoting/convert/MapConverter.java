@@ -65,12 +65,12 @@ public class MapConverter implements Converter
 
         if (!value.startsWith(ConversionConstants.INBOUND_MAP_START))
         {
-            throw new IllegalArgumentException(Messages.getString("MapConverter.MissingOpener", ConversionConstants.INBOUND_MAP_START)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("MapConverter.MissingOpener", ConversionConstants.INBOUND_MAP_START));
         }
 
         if (!value.endsWith(ConversionConstants.INBOUND_MAP_END))
         {
-            throw new IllegalArgumentException(Messages.getString("MapConverter.MissingCloser", ConversionConstants.INBOUND_MAP_START)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("MapConverter.MissingCloser", ConversionConstants.INBOUND_MAP_START));
         }
 
         value = value.substring(1, value.length() - 1);
@@ -110,7 +110,7 @@ public class MapConverter implements Converter
             InboundContext incx = iv.getLookup();
 
             // Loop through the property declarations
-            StringTokenizer st = new StringTokenizer(value, ","); //$NON-NLS-1$
+            StringTokenizer st = new StringTokenizer(value, ",");
             int size = st.countTokens();
             for (int i = 0; i < size; i++)
             {
@@ -123,7 +123,7 @@ public class MapConverter implements Converter
                 int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
                 if (colonpos == -1)
                 {
-                    throw new MarshallException(Messages.getString("MapConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token)); //$NON-NLS-1$
+                    throw new MarshallException(Messages.getString("MapConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
                 }
 
                 // Convert the value part of the token by splitting it into the
@@ -165,7 +165,7 @@ public class MapConverter implements Converter
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         // First we just collect our converted children
-        Map ovs = (Map) LocalUtil.classNewInstance("OrderedConvertOutbound", "java.util.LinkedHashMap", Map.class); //$NON-NLS-1$ //$NON-NLS-2$
+        Map ovs = (Map) LocalUtil.classNewInstance("OrderedConvertOutbound", "java.util.LinkedHashMap", Map.class);
         if (ovs == null)
         {
             ovs = new HashMap();
@@ -185,7 +185,7 @@ public class MapConverter implements Converter
             // It would be nice to check for Enums here
             if (!(key instanceof String) && !sentNonStringWarning)
             {
-                log.warn("--Javascript does not support non string keys. Converting '" + key.getClass().getName() + "' using toString()"); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("--Javascript does not support non string keys. Converting '" + key.getClass().getName() + "' using toString()");
                 sentNonStringWarning = true;
             }
 

@@ -47,7 +47,7 @@ public class AnnotationsConfigurator implements Configurator
      */
     public void configure(Container container)
     {
-        Object data = container.getBean("classes"); //$NON-NLS-1$
+        Object data = container.getBean("classes");
         if (data == null)
         {
             return;
@@ -56,7 +56,7 @@ public class AnnotationsConfigurator implements Configurator
         if (data instanceof String)
         {
             String classesStr = (String) data;
-            String[] classNames = classesStr.split(","); //$NON-NLS-1$
+            String[] classNames = classesStr.split(",");
             for (int i = 0; i < classNames.length; i++)
             {
                 String className = classNames[i].trim();
@@ -67,7 +67,7 @@ public class AnnotationsConfigurator implements Configurator
                 }
                 catch (Exception ex)
                 {
-                    log.error("Failed to process class: " + className, ex); //$NON-NLS-1$
+                    log.error("Failed to process class: " + className, ex);
                 }
             }
         }
@@ -79,7 +79,7 @@ public class AnnotationsConfigurator implements Configurator
             }
             catch (Exception ex)
             {
-                log.error("Failed to process class: " + data.getClass().getName(), ex); //$NON-NLS-1$
+                log.error("Failed to process class: " + data.getClass().getName(), ex);
             }
         }
     }
@@ -126,16 +126,16 @@ public class AnnotationsConfigurator implements Configurator
         ScriptScope scope = createAnn.scope();
 
         CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
-        String creatorName = LocalUtil.replace(creatorClass, ".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+        String creatorName = LocalUtil.replace(creatorClass, ".", "_");
         creatorManager.addCreatorType(creatorName, creatorClass);
 
         Map<String, String> params = new HashMap<String, String>();
         if (NewCreator.class.isAssignableFrom(NewCreator.class))
         {
-            params.put("class", clazz.getName()); //$NON-NLS-1$
+            params.put("class", clazz.getName());
         }
         params.putAll(creatorParams);
-        params.put("scope", scope.getValue()); //$NON-NLS-1$
+        params.put("scope", scope.getValue());
 
         String name = createAnn.name();
         if (name == null || name.length() == 0)
@@ -145,12 +145,12 @@ public class AnnotationsConfigurator implements Configurator
 
         try
         {
-            log.info("Adding class " + clazz.getName() + " as " + name); //$NON-NLS-1$ //$NON-NLS-2$
+            log.info("Adding class " + clazz.getName() + " as " + name);
             creatorManager.addCreator(name, creatorName, params);
         }
         catch (Exception ex)
         {
-            log.error("Failed to add class as Creator: " + clazz.getName(), ex); //$NON-NLS-1$
+            log.error("Failed to add class as Creator: " + clazz.getName(), ex);
         }
 
         AccessControl accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
@@ -222,7 +222,7 @@ public class AnnotationsConfigurator implements Configurator
         Map<String, String> params = getParamsMap(convertAnn.params());
 
         ConverterManager converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
-        String converterName = LocalUtil.replace(converterClass, ".", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+        String converterName = LocalUtil.replace(converterClass, ".", "_");
         converterManager.addConverterType(converterName, converterClass);
 
         if (BeanConverter.class.isAssignableFrom(converter))
@@ -261,7 +261,7 @@ public class AnnotationsConfigurator implements Configurator
             if (properties.length() > 0)
             {
                 properties.deleteCharAt(0);
-                params.put("include", properties.toString()); //$NON-NLS-1$
+                params.put("include", properties.toString());
             }
         }
 
@@ -280,7 +280,7 @@ public class AnnotationsConfigurator implements Configurator
     {
         if (!AjaxFilter.class.isAssignableFrom(clazz))
         {
-            throw new IllegalArgumentException(clazz.getName() + " is not an AjaxFilter implementation"); //$NON-NLS-1$
+            throw new IllegalArgumentException(clazz.getName() + " is not an AjaxFilter implementation");
         }
 
         Map<String, String> filterParams = getParamsMap(globalFilterAnn.params());
@@ -316,12 +316,12 @@ public class AnnotationsConfigurator implements Configurator
     /**
      * The getter prefix for boolean variables
      */
-    private static final String METHOD_PREFIX_IS = "is"; //$NON-NLS-1$
+    private static final String METHOD_PREFIX_IS = "is";
 
     /**
      * The getter prefix for non-boolean variables
      */
-    private static final String METHOD_PREFIX_GET = "get"; //$NON-NLS-1$
+    private static final String METHOD_PREFIX_GET = "get";
 
     /**
      * The log stream

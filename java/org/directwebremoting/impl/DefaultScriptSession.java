@@ -45,7 +45,7 @@ public class DefaultScriptSession implements ScriptSession
         this.id = id;
         if (id == null)
         {
-            throw new IllegalArgumentException("id can not be null"); //$NON-NLS-1$
+            throw new IllegalArgumentException("id can not be null");
         }
 
         this.manager = manager;
@@ -133,7 +133,7 @@ public class DefaultScriptSession implements ScriptSession
 
         if (script == null)
         {
-            throw new NullPointerException("null script"); //$NON-NLS-1$
+            throw new NullPointerException("null script");
         }
 
         // First we try to add the script to an existing conduit
@@ -161,7 +161,7 @@ public class DefaultScriptSession implements ScriptSession
                     }
                     catch (Exception ex)
                     {
-                        log.warn("Failed to write to ScriptConduit, removing from list: " + conduit); //$NON-NLS-1$
+                        log.warn("Failed to write to ScriptConduit, removing from list: " + conduit);
                         it.remove();
                     }
                 }
@@ -197,7 +197,7 @@ public class DefaultScriptSession implements ScriptSession
                     }
                     catch (Exception ex)
                     {
-                        log.warn("Failed to flush to ScriptConduit, removing from list: " + conduit); //$NON-NLS-1$
+                        log.warn("Failed to flush to ScriptConduit, removing from list: " + conduit);
                         it.remove();
                     }
                 }
@@ -229,7 +229,7 @@ public class DefaultScriptSession implements ScriptSession
 
         if (invalidated)
         {
-            log.warn("ScriptSession has been invalidated."); //$NON-NLS-1$
+            log.warn("ScriptSession has been invalidated.");
         }
     }
 
@@ -264,7 +264,7 @@ public class DefaultScriptSession implements ScriptSession
             }
             catch (Exception ex)
             {
-                log.warn("Failed to catch-up write to a ScriptConduit"); //$NON-NLS-1$
+                log.warn("Failed to catch-up write to a ScriptConduit");
             }
         }
     }
@@ -281,7 +281,7 @@ public class DefaultScriptSession implements ScriptSession
             boolean removed = conduits.remove(conduit);
             if (!removed)
             {
-                log.error("Attempt to remove unattached ScriptConduit: " + conduit); //$NON-NLS-1$
+                log.error("Attempt to remove unattached ScriptConduit: " + conduit);
                 debug();
                 new Exception().printStackTrace();
             }
@@ -295,11 +295,11 @@ public class DefaultScriptSession implements ScriptSession
     {
         if (log.isDebugEnabled())
         {
-            log.debug("Known ScriptConduits:"); //$NON-NLS-1$
+            log.debug("Known ScriptConduits:");
             for (Iterator it = conduits.iterator(); it.hasNext();)
             {
                 ScriptConduit c = (ScriptConduit) it.next();
-                log.debug("- " + c); //$NON-NLS-1$
+                log.debug("- " + c);
             }
         }
     }
@@ -366,7 +366,7 @@ public class DefaultScriptSession implements ScriptSession
      */
     public String toString()
     {
-        return "DefaultScriptSession[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "DefaultScriptSession[id=" + id + "]";
     }
 
     /**

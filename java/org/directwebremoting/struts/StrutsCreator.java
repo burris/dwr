@@ -46,12 +46,12 @@ public class StrutsCreator extends AbstractCreator implements Creator
     {
         try
         {
-            moduleUtilsClass = LocalUtil.classForName("org.apache.struts.util.ModuleUtils"); //$NON-NLS-1$
-            getInstanceMethod = moduleUtilsClass.getMethod("getInstance", new Class[0]); //$NON-NLS-1$
-            getModuleNameMethod = moduleUtilsClass.getMethod("getModuleName", new Class[] { String.class, ServletContext.class }); //$NON-NLS-1$
-            getModuleConfigMethod = moduleUtilsClass.getMethod("getModuleConfig", new Class[] { String.class, ServletContext.class }); //$NON-NLS-1$
+            moduleUtilsClass = LocalUtil.classForName("org.apache.struts.util.ModuleUtils");
+            getInstanceMethod = moduleUtilsClass.getMethod("getInstance", new Class[0]);
+            getModuleNameMethod = moduleUtilsClass.getMethod("getModuleName", new Class[] { String.class, ServletContext.class });
+            getModuleConfigMethod = moduleUtilsClass.getMethod("getModuleConfig", new Class[] { String.class, ServletContext.class });
 
-            log.debug("Using Struts 1.2 based ModuleUtils code"); //$NON-NLS-1$
+            log.debug("Using Struts 1.2 based ModuleUtils code");
         }
         catch (Exception ex)
         {
@@ -60,7 +60,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
             getModuleNameMethod = null;
             getModuleConfigMethod = null;
 
-            log.debug("Failed to find Struts 1.2 ModuleUtils code. Falling back to 1.1 based code"); //$NON-NLS-1$
+            log.debug("Failed to find Struts 1.2 ModuleUtils code. Falling back to 1.1 based code");
         }
     }
 
@@ -91,8 +91,8 @@ public class StrutsCreator extends AbstractCreator implements Creator
                         // ModuleUtils utils = ModuleUtils.getInstance();
                         Object utils = getInstanceMethod.invoke(null, new Object[0]);
 
-                        // String moduleName = utils.getModuleName("/", wc.getServletContext()); //$NON-NLS-1$
-                        String moduleName = (String) getModuleNameMethod.invoke(utils, new Object[] { "/", wc.getServletContext() }); //$NON-NLS-1$
+                        // String moduleName = utils.getModuleName("/", wc.getServletContext());
+                        String moduleName = (String) getModuleNameMethod.invoke(utils, new Object[] { "/", wc.getServletContext() });
 
                         // moduleConfig = utils.getModuleConfig(moduleName, wc.getServletContext());
                         moduleConfig = (ModuleConfig) getModuleConfigMethod.invoke(utils, new Object[] { moduleName, wc.getServletContext() });
@@ -107,7 +107,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
                     HttpServletRequest request = wc.getHttpServletRequest();
                     if (request == null)
                     {
-                        log.warn("Using a FakeHttpServletRequest as part of setup"); //$NON-NLS-1$
+                        log.warn("Using a FakeHttpServletRequest as part of setup");
                         request = new FakeHttpServletRequest();
                     }
 
@@ -122,7 +122,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", moduleConfig.findFormBeanConfig(formBean).getType())); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", moduleConfig.findFormBeanConfig(formBean).getType()));
         }
     }
 
@@ -135,7 +135,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
         ActionForm formInstance = (ActionForm) WebContextFactory.get().getSession().getAttribute(formBean);
         if (formInstance == null)
         {
-            throw new InstantiationException(Messages.getString("Creator.IllegalAccess")); //$NON-NLS-1$
+            throw new InstantiationException(Messages.getString("Creator.IllegalAccess"));
         }
 
         return formInstance;

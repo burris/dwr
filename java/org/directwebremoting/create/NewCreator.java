@@ -38,12 +38,12 @@ public class NewCreator extends AbstractCreator implements Creator
         }
         catch (ExceptionInInitializerError ex)
         {
-            log.warn("Class load error", ex); //$NON-NLS-1$
-            throw new IllegalArgumentException(Messages.getString("Creator.ClassLoadError", classname)); //$NON-NLS-1$
+            log.warn("Class load error", ex);
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassLoadError", classname));
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname));
         }
     }
 
@@ -66,7 +66,7 @@ public class NewCreator extends AbstractCreator implements Creator
         }
         catch (IllegalAccessException ex)
         {
-            throw new InstantiationException(Messages.getString("Creator.IllegalAccess")); //$NON-NLS-1$
+            throw new InstantiationException(Messages.getString("Creator.IllegalAccess"));
         }
     }
 

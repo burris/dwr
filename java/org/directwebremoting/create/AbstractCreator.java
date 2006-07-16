@@ -107,7 +107,7 @@ public abstract class AbstractCreator implements Creator
     {
         if (!cscope.equals(SCRIPT) && !cscope.equals(PAGE) && !cscope.equals(REQUEST) && !cscope.equals(SESSION) && !cscope.equals(APPLICATION))
         {
-            throw new IllegalArgumentException(Messages.getString("AbstractCreator.IllegalScope", cscope)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("AbstractCreator.IllegalScope", cscope));
         }
     }
 
@@ -116,6 +116,6 @@ public abstract class AbstractCreator implements Creator
      */
     public String toString()
     {
-        return LocalUtil.getShortClassName(getClass()) + "[" + getJavascript() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return LocalUtil.getShortClassName(getClass()) + "[" + getJavascript() + "]";
     }
 }

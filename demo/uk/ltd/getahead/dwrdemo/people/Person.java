@@ -127,7 +127,7 @@ public class Person
      */
     public String toString()
     {
-        return "Person[id=" + id + ",name=" + name + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return "Person[id=" + id + ",name=" + name + "]";
     }
 
     private String name;

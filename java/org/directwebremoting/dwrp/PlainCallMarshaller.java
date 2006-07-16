@@ -59,7 +59,7 @@ public class PlainCallMarshaller extends BaseCallMarshaller
 
             if (out.checkError())
             {
-                throw new IOException("Error flushing buffered stream"); //$NON-NLS-1$
+                throw new IOException("Error flushing buffered stream");
             }
         }
     }

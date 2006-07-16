@@ -69,12 +69,12 @@ public class CollectionConverter extends BaseV20Converter implements Converter
 
         if (!value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
         {
-            throw new IllegalArgumentException(Messages.getString("CollectionConverter.MissingOpener", ConversionConstants.INBOUND_ARRAY_START)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("CollectionConverter.MissingOpener", ConversionConstants.INBOUND_ARRAY_START));
         }
 
         if (!value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
         {
-            throw new IllegalArgumentException(Messages.getString("CollectionConverter.MissingCloser", ConversionConstants.INBOUND_ARRAY_END)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("CollectionConverter.MissingCloser", ConversionConstants.INBOUND_ARRAY_END));
         }
 
         value = value.substring(1, value.length() - 1);
@@ -126,7 +126,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             }
             else
             {
-                throw new MarshallException(Messages.getString("CollectionConverter.ConvertError") + paramType.getName()); //$NON-NLS-1$
+                throw new MarshallException(Messages.getString("CollectionConverter.ConvertError") + paramType.getName());
             }
 
             // We should put the new object into the working map in case it
@@ -186,12 +186,12 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         }
         else
         {
-            throw new MarshallException(Messages.getString("CollectionConverter.ConvertFailed", data.getClass().getName())); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("CollectionConverter.ConvertFailed", data.getClass().getName()));
         }
 
         if (size == 0)
         {
-            return new OutboundVariable("", "[]"); //$NON-NLS-1$ //$NON-NLS-2$
+            return new OutboundVariable("", "[]");
         }
 
         OutboundVariable ov = new OutboundVariable();
@@ -212,8 +212,8 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             }
             catch (Exception ex)
             {
-                nested = new OutboundVariable("", "'Conversion Error. See console log.'"); //$NON-NLS-1$ //$NON-NLS-2$
-                log.warn("Failed to convert array member " + i + ". Conversion error for type: " + data.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$
+                nested = new OutboundVariable("", "'Conversion Error. See console log.'");
+                log.warn("Failed to convert array member " + i + ". Conversion error for type: " + data.getClass().getName(), ex);
             }
             ovs.add(nested);
             i++;

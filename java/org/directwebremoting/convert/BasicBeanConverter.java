@@ -69,12 +69,12 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
 
         if (!value.startsWith(ConversionConstants.INBOUND_MAP_START))
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.MissingOpener", ConversionConstants.INBOUND_MAP_START)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.MissingOpener", ConversionConstants.INBOUND_MAP_START));
         }
 
         if (!value.endsWith(ConversionConstants.INBOUND_MAP_END))
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.MissingCloser", ConversionConstants.INBOUND_MAP_START)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.MissingCloser", ConversionConstants.INBOUND_MAP_START));
         }
 
         value = value.substring(1, value.length() - 1);
@@ -127,7 +127,7 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
                 int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
                 if (colonpos == -1)
                 {
-                    throw new MarshallException(Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token)); //$NON-NLS-1$
+                    throw new MarshallException(Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
                 }
 
                 String key = token.substring(0, colonpos).trim();
@@ -137,15 +137,15 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
                 PropertyDescriptor descriptor = (PropertyDescriptor) props.get(key);
                 if (descriptor == null)
                 {
-                    log.warn("Null descriptor for key=" + key); //$NON-NLS-1$
+                    log.warn("Null descriptor for key=" + key);
                     continue;
                 }
 
                 setter = descriptor.getWriteMethod();
                 if (setter == null)
                 {
-                    log.warn("setter method for property " + key + " is not visible to DWR."); //$NON-NLS-1$ //$NON-NLS-2$
-                    log.info("You can add a public set" + Character.toTitleCase(key.charAt(0)) + key.substring(1) + "() method, or switch to using the ObjectConverter to read from members directly."); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.warn("setter method for property " + key + " is not visible to DWR.");
+                    log.info("You can add a public set" + Character.toTitleCase(key.charAt(0)) + key.substring(1) + "() method, or switch to using the ObjectConverter to read from members directly.");
                 }
                 else
                 {
@@ -206,7 +206,7 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
                     }
 
                     // We don't marshall getClass()
-                    if (name.equals("class")) //$NON-NLS-1$
+                    if (name.equals("class"))
                     {
                         continue;
                     }
@@ -214,13 +214,13 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
                     // Access rules mean we might not want to do this one
                     if (!isAllowed(name))
                     {
-                        log.debug("Skipping marshalling " + name + " due to include/exclude rules"); //$NON-NLS-1$ //$NON-NLS-2$
+                        log.debug("Skipping marshalling " + name + " due to include/exclude rules");
                         continue;
                     }
 
                     if (!isAvailable(data, name))
                     {
-                        log.debug("Skipping marshalling " + name + " due to availability rules"); //$NON-NLS-1$ //$NON-NLS-2$
+                        log.debug("Skipping marshalling " + name + " due to availability rules");
                         continue;
                     }
 
@@ -231,7 +231,7 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
                 }
                 catch (Exception ex)
                 {
-                    log.warn("Failed to convert " + name, ex); //$NON-NLS-1$
+                    log.warn("Failed to convert " + name, ex);
                 }
             }
         }

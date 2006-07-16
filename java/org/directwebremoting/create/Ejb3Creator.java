@@ -68,7 +68,7 @@ public class Ejb3Creator extends AbstractCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("Creator.BeanClassNotFound", clazz)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("Creator.BeanClassNotFound", clazz));
         }
     }
 
@@ -77,26 +77,26 @@ public class Ejb3Creator extends AbstractCreator implements Creator
      */
     public Object getInstance() throws InstantiationException
     {
-        String type = remote ? "remote" : "local"; //$NON-NLS-1$ //$NON-NLS-2$
+        String type = remote ? "remote" : "local";
 
         try
         {
             Properties props = new Properties();
-            props.load(getClass().getResourceAsStream("/jndi.properties")); //$NON-NLS-1$
+            props.load(getClass().getResourceAsStream("/jndi.properties"));
             Context jndi = new InitialContext(props);
 
-            return jndi.lookup(bean + beanNamePostfix + "/" + type); //$NON-NLS-1$
+            return jndi.lookup(bean + beanNamePostfix + "/" + type);
         }
         catch (Exception ex)
         {
-            throw new InstantiationException(bean + "/" + type + " not bound:" + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new InstantiationException(bean + "/" + type + " not bound:" + ex.getMessage());
         }
     }
 
     /**
      * Constant for local/remote lookup
      */
-    private final static String LOCAL = "local"; //$NON-NLS-1$
+    private final static String LOCAL = "local";
 
     /**
      * Are we using a remote interface? Default == true
@@ -116,5 +116,5 @@ public class Ejb3Creator extends AbstractCreator implements Creator
     /**
      * A suffix to help lookup
      */
-    private String beanNamePostfix = "Bean"; //$NON-NLS-1$
+    private String beanNamePostfix = "Bean";
 }

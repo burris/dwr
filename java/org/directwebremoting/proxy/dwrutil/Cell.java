@@ -26,7 +26,7 @@ public class Cell extends HtmlElement
      */
     public Cell()
     {
-        innerHtml = ""; //$NON-NLS-1$
+        innerHtml = "";
     }
 
     /**

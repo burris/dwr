@@ -44,13 +44,13 @@ public final class Logger
             try
             {
                 LoggingOutput internal = new CommonsLoggingOutput(Logger.class);
-                internal.info("Logging using commons-logging."); //$NON-NLS-1$
+                internal.info("Logging using commons-logging.");
                 commonsLoggingAvailable = true;
             }
             catch (NoClassDefFoundError ex)
             {
                 LoggingOutput internal = new ServletLoggingOutput();
-                internal.info("Logging using servlet.log."); //$NON-NLS-1$
+                internal.info("Logging using servlet.log.");
                 commonsLoggingAvailable = false;
             }
 

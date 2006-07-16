@@ -106,8 +106,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getMethod()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getMethod() to remain plausible."); //$NON-NLS-1$
-        return "GET"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getMethod() to remain plausible.");
+        return "GET";
     }
 
     /* (non-Javadoc)
@@ -131,8 +131,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getContextPath()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getContextPath() to remain plausible."); //$NON-NLS-1$
-        return ""; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getContextPath() to remain plausible.");
+        return "";
     }
 
     /* (non-Javadoc)
@@ -180,8 +180,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getRequestURI()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getRequestURI() to remain plausible."); //$NON-NLS-1$
-        return "/"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getRequestURI() to remain plausible.");
+        return "/";
     }
 
     /* (non-Javadoc)
@@ -189,8 +189,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public StringBuffer getRequestURL()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getRequestURL() to remain plausible."); //$NON-NLS-1$
-        return new StringBuffer("http://localhost/"); //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getRequestURL() to remain plausible.");
+        return new StringBuffer("http://localhost/");
     }
 
     /* (non-Javadoc)
@@ -198,8 +198,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getServletPath()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getServletPath() to remain plausible."); //$NON-NLS-1$
-        return ""; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getServletPath() to remain plausible.");
+        return "";
     }
 
     /* (non-Javadoc)
@@ -300,8 +300,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getContentType()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getContentType() to remain plausible."); //$NON-NLS-1$
-        return "text/plain"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getContentType() to remain plausible.");
+        return "text/plain";
     }
 
     /* (non-Javadoc)
@@ -326,8 +326,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getLocalAddr()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getLocalAddr() to remain plausible."); //$NON-NLS-1$
-        return "127.0.0.1"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getLocalAddr() to remain plausible.");
+        return "127.0.0.1";
     }
 
     /**
@@ -335,8 +335,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getLocalName()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getLocalName() to remain plausible."); //$NON-NLS-1$
-        return "localhost"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getLocalName() to remain plausible.");
+        return "localhost";
     }
 
     /**
@@ -344,7 +344,7 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public int getLocalPort()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getLocalPort() to remain plausible."); //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getLocalPort() to remain plausible.");
         return 80;
     }
 
@@ -385,8 +385,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getProtocol()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getProtocol() to remain plausible."); //$NON-NLS-1$
-        return "HTTP/1.1"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getProtocol() to remain plausible.");
+        return "HTTP/1.1";
     }
 
     /* (non-Javadoc)
@@ -394,8 +394,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getScheme()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getScheme() to remain plausible."); //$NON-NLS-1$
-        return "http"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getScheme() to remain plausible.");
+        return "http";
     }
 
     /* (non-Javadoc)
@@ -403,8 +403,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getServerName()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getServerName() to remain plausible."); //$NON-NLS-1$
-        return "localhost"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getServerName() to remain plausible.");
+        return "localhost";
     }
 
     /* (non-Javadoc)
@@ -412,7 +412,7 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public int getServerPort()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getServerPort() to remain plausible."); //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getServerPort() to remain plausible.");
         return 80;
     }
 
@@ -421,7 +421,7 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public BufferedReader getReader() throws IOException
     {
-        return new BufferedReader(new StringReader("")); //$NON-NLS-1$
+        return new BufferedReader(new StringReader(""));
     }
 
     /* (non-Javadoc)
@@ -429,8 +429,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getRemoteAddr()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getRemoteAddr() to remain plausible."); //$NON-NLS-1$
-        return "localhost"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getRemoteAddr() to remain plausible.");
+        return "localhost";
     }
 
     /* (non-Javadoc)
@@ -438,8 +438,8 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public String getRemoteHost()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getRemoteHost() to remain plausible."); //$NON-NLS-1$
-        return "localhost"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getRemoteHost() to remain plausible.");
+        return "localhost";
     }
 
     /**
@@ -447,7 +447,7 @@ public class FakeHttpServletRequest implements HttpServletRequest
      */
     public int getRemotePort()
     {
-        log.warn("Inventing data in FakeHttpServletRequest.getRemotePort() to remain plausible."); //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpServletRequest.getRemotePort() to remain plausible.");
         return 80;
     }
 

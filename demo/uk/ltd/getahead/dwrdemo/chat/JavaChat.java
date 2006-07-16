@@ -33,15 +33,15 @@ public class JavaChat
 
         // Clear the input box in the browser that kicked off this page only
         DwrUtil utilThis = new DwrUtil(wctx.getScriptSession());
-        utilThis.setValue("text", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        utilThis.setValue("text", "");
 
         // For all the browsers on the current page:
         Collection sessions = wctx.getScriptSessionsByPage(currentPage);
         DwrUtil utilAll = new DwrUtil(sessions);
 
         // Clear the list and add in the new set of messages
-        utilAll.removeAllOptions("chatlog"); //$NON-NLS-1$
-        utilAll.addOptions("chatlog", messages, "text"); //$NON-NLS-1$ //$NON-NLS-2$
+        utilAll.removeAllOptions("chatlog");
+        utilAll.addOptions("chatlog", messages, "text");
     }
 
     /**

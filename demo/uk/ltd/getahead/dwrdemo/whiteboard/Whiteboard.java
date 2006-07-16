@@ -45,7 +45,7 @@ public class Whiteboard
 
         sessions.remove(wctx.getScriptSession());
         DwrUtil utilAll = new DwrUtil(sessions);
-        utilAll.setValue("whiteboardSource", text, false); //$NON-NLS-1$
+        utilAll.setValue("whiteboardSource", text, false);
     }
 
     /**
@@ -58,8 +58,8 @@ public class Whiteboard
         String ipaddr = wctx.getHttpServletRequest().getRemoteAddr();
 
         ScriptSession scriptSession = wctx.getScriptSession();
-        scriptSession.setAttribute("ipaddr", ipaddr); //$NON-NLS-1$
-        scriptSession.setAttribute("claim", new Boolean(value)); //$NON-NLS-1$
+        scriptSession.setAttribute("ipaddr", ipaddr);
+        scriptSession.setAttribute("claim", new Boolean(value));
 
         String currentPage = wctx.getCurrentPage();
 
@@ -70,13 +70,13 @@ public class Whiteboard
         {
             ScriptSession session = (ScriptSession) it.next();
             Map map = new HashMap();
-            map.put("ipaddr", session.getAttribute("ipaddr")); //$NON-NLS-1$ //$NON-NLS-2$
-            map.put("claim", session.getAttribute("claim")); //$NON-NLS-1$ //$NON-NLS-2$
+            map.put("ipaddr", session.getAttribute("ipaddr"));
+            map.put("claim", session.getAttribute("claim"));
             output.add(map);
         }
 
         DwrUtil utilAll = new DwrUtil(sessions);
-        utilAll.removeAllOptions("whiteboardUsers"); //$NON-NLS-1$
-        utilAll.addOptions("whiteboardUsers", output, "ipaddr"); //$NON-NLS-1$ //$NON-NLS-2$
+        utilAll.removeAllOptions("whiteboardUsers");
+        utilAll.addOptions("whiteboardUsers", output, "ipaddr");
     }
 }

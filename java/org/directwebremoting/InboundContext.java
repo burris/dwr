@@ -73,7 +73,7 @@ public final class InboundContext
         Object old = variables.put(key, cte);
         if (old != null)
         {
-            log.warn("Duplicate variable called: " + key); //$NON-NLS-1$
+            log.warn("Duplicate variable called: " + key);
         }
 
         String paramPrefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum +
@@ -123,7 +123,7 @@ public final class InboundContext
         Object old = converted.put(conversion, bean);
         if (old != null)
         {
-            log.warn("Duplicate variable conversion called: " + conversion); //$NON-NLS-1$
+            log.warn("Duplicate variable conversion called: " + conversion);
         }
     }
 
@@ -241,7 +241,7 @@ public final class InboundContext
          */
         public String toString()
         {
-            return "Conversion[" + inboundVariable + "," + type.getName() + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return "Conversion[" + inboundVariable + "," + type.getName() + "]";
         }
 
         private InboundVariable inboundVariable;
@@ -255,7 +255,7 @@ public final class InboundContext
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("InboundContext["); //$NON-NLS-1$
+        buffer.append("InboundContext[");
         for (Iterator it = variables.entrySet().iterator(); it.hasNext();)
         {
             Map.Entry entry = (Map.Entry) it.next();
@@ -264,7 +264,7 @@ public final class InboundContext
             buffer.append(entry.getValue());
             buffer.append(',');
         }
-        buffer.append("]"); //$NON-NLS-1$
+        buffer.append("]");
         return buffer.toString();
     }
 

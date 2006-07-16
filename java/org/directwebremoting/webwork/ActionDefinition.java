@@ -78,7 +78,7 @@ public class ActionDefinition
      */
     public String toString()
     {
-        return "[ActionDefinition: namespace=" + namespace + " action=" + action + " method=" + method + " executeResult=" + executeResult + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+        return "[ActionDefinition: namespace=" + namespace + " action=" + action + " method=" + method + " executeResult=" + executeResult + "]";
     }
 
     protected String namespace;

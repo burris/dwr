@@ -25,15 +25,15 @@ public interface DwrConstants
     /**
      * The package name because people need to load resources in this package.
      */
-    public static final String PACKAGE = "/org/directwebremoting"; //$NON-NLS-1$
+    public static final String PACKAGE = "/org/directwebremoting";
 
     /**
      * The system dwr.xml resource name
      */
-    public static final String FILE_DWR_XML = PACKAGE + "/dwr.xml"; //$NON-NLS-1$
+    public static final String FILE_DWR_XML = PACKAGE + "/dwr.xml";
 
     /**
      * The default dwr.xml file path
      */
-    public static final String DEFAULT_DWR_XML = "/WEB-INF/dwr.xml"; //$NON-NLS-1$
+    public static final String DEFAULT_DWR_XML = "/WEB-INF/dwr.xml";
 }

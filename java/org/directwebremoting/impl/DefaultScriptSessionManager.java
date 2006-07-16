@@ -122,7 +122,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             ScriptSession removed = (ScriptSession) sessionMap.remove(session.getId());
             if (!session.equals(removed))
             {
-                log.error("ScriptSession already removed from manager. session=" + session + " removed=" + removed); //$NON-NLS-1$ //$NON-NLS-2$
+                log.error("ScriptSession already removed from manager. session=" + session + " removed=" + removed);
             }
 
             int removeCount = 0;
@@ -139,7 +139,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
 
             if (removeCount != 1)
             {
-                log.error("DefaultScriptSessionManager.invalidate(): removeCount=" + removeCount + " when invalidating: " + session); //$NON-NLS-1$ //$NON-NLS-2$
+                log.error("DefaultScriptSessionManager.invalidate(): removeCount=" + removeCount + " when invalidating: " + session);
             }
         }
     }
@@ -199,14 +199,14 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         {
             synchronized (sessionLock)
             {
-                log.debug("DefaultScriptSessionManager containing the following sessions:"); //$NON-NLS-1$
+                log.debug("DefaultScriptSessionManager containing the following sessions:");
                 for (Iterator sit = sessionMap.entrySet().iterator(); sit.hasNext();)
                 {
                     Map.Entry idEntry = (Map.Entry) sit.next();
                     String id = (String) idEntry.getKey();
                     ScriptSession session = (ScriptSession) idEntry.getValue();
     
-                    log.debug("- " + id + "=" + session); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.debug("- " + id + "=" + session);
     
                     for (Iterator pit = pageSessionMap.entrySet().iterator(); pit.hasNext();)
                     {
@@ -216,7 +216,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     
                         if (pageSessions.contains(session))
                         {
-                            log.debug("  - on page=" + page); //$NON-NLS-1$
+                            log.debug("  - on page=" + page);
                         }
                     }
     
@@ -224,49 +224,49 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
                     {
                         DefaultScriptSession dss = (DefaultScriptSession) session;
     
-                        log.debug("  - creationTime=" + dss.creationTime); //$NON-NLS-1$
-                        log.debug("  - lastAccessedTime=" + dss.lastAccessedTime); //$NON-NLS-1$
+                        log.debug("  - creationTime=" + dss.creationTime);
+                        log.debug("  - lastAccessedTime=" + dss.lastAccessedTime);
     
                         // Debug the attributes
                         if (dss.attributes.size() == 0)
                         {
-                            log.debug("  - no attributes"); //$NON-NLS-1$
+                            log.debug("  - no attributes");
                         }
                         else
                         {
-                            log.debug("  - with attributes:"); //$NON-NLS-1$
+                            log.debug("  - with attributes:");
                             for (Iterator it = dss.attributes.entrySet().iterator(); it.hasNext();)
                             {
                                 Map.Entry entry = (Map.Entry) it.next();
-                                log.debug("    - " + entry.getKey() + "=" + entry.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+                                log.debug("    - " + entry.getKey() + "=" + entry.getValue());
                             }
                         }
     
                         // Debug the Conduits
                         if (dss.conduits.size() == 0)
                         {
-                            log.debug("  - no conduits"); //$NON-NLS-1$
+                            log.debug("  - no conduits");
                         }
                         else
                         {
-                            log.debug("  - with conduits:"); //$NON-NLS-1$
+                            log.debug("  - with conduits:");
                             for (Iterator it = dss.conduits.iterator(); it.hasNext();)
                             {
-                                log.debug("    - " + it.next()); //$NON-NLS-1$
+                                log.debug("    - " + it.next());
                             }
                         }
     
                         // Debug the Scripts
                         if (dss.scripts.size() == 0)
                         {
-                            log.debug("  - no waiting scripts"); //$NON-NLS-1$
+                            log.debug("  - no waiting scripts");
                         }
                         else
                         {
-                            log.debug("  - with waiting scripts:"); //$NON-NLS-1$
+                            log.debug("  - with waiting scripts:");
                             for (Iterator it = dss.scripts.iterator(); it.hasNext();)
                             {
-                                log.debug("    - " + it.next()); //$NON-NLS-1$
+                                log.debug("    - " + it.next());
                             }
                         }
                     }

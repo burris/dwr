@@ -61,10 +61,10 @@ public class Clock implements Runnable
             while (active)
             {
                 ServerContext sctx = ServerContextFactory.get(servletContext);
-                Collection sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html"); //$NON-NLS-1$
+                Collection sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html");
 
                 DwrUtil pages = new DwrUtil(sessions, servletContext);
-                pages.setValue("clockDisplay", new Date().toString()); //$NON-NLS-1$
+                pages.setValue("clockDisplay", new Date().toString());
 
                 Thread.sleep(1000);
             }

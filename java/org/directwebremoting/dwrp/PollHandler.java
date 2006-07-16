@@ -63,7 +63,7 @@ public class PollHandler
         Map parameters = (Map) request.getAttribute(ATTRIBUTE_PARAMETERS);
         if (parameters == null)
         {
-            if (request.getMethod().equals("GET")) //$NON-NLS-1$
+            if (request.getMethod().equals("GET"))
             {
                 parameters = ParseUtil.parseGet(request);
             }
@@ -97,7 +97,7 @@ public class PollHandler
             {
                 // Allow Jetty RequestRetry exception to propogate to container
                 Continuation.rethrowIfContinuation(ex);
-                log.warn("Error calling pollWait()", ex); //$NON-NLS-1$
+                log.warn("Error calling pollWait()", ex);
             }
 
             // Get the output stream and setup the mimetype
@@ -108,7 +108,7 @@ public class PollHandler
                 // This might be considered evil - altering the program flow
                 // depending on the log status, however DebuggingPrintWriter is
                 // very thin and only about logging
-                out = new DebuggingPrintWriter("", response.getWriter()); //$NON-NLS-1$
+                out = new DebuggingPrintWriter("", response.getWriter());
             }
             else
             {
@@ -122,7 +122,7 @@ public class PollHandler
             if (out instanceof DebuggingPrintWriter)
             {
                 DebuggingPrintWriter dpw = (DebuggingPrintWriter) out;
-                dpw.setPrefix("out(" + conduit.hashCode() + "): "); //$NON-NLS-1$ //$NON-NLS-2$
+                dpw.setPrefix("out(" + conduit.hashCode() + "): ");
             }
 
             try
@@ -141,19 +141,19 @@ public class PollHandler
                     int wait = serverLoadMonitor.getTimeToNextPoll();
                     Integer data = new Integer(wait);
 
-                    script.appendScript("DWREngine._handleResponse(") //$NON-NLS-1$
+                    script.appendScript("DWREngine._handleResponse(")
                           .appendData(callId)
                           .appendScript(',')
                           .appendData(data)
-                          .appendScript(");"); //$NON-NLS-1$
+                          .appendScript(");");
                 }
                 catch (Exception ex)
                 {
-                    script.appendScript("DWREngine._handleServerWarning(") //$NON-NLS-1$
+                    script.appendScript("DWREngine._handleServerWarning(")
                           .appendData(callId)
-                          .appendScript(", 'Error handling reverse ajax');"); //$NON-NLS-1$
+                          .appendScript(", 'Error handling reverse ajax');");
 
-                    log.warn("--Erroring: id[" + callId + "] message[" + ex.toString() + ']', ex); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.warn("--Erroring: id[" + callId + "] message[" + ex.toString() + ']', ex);
                 }
 
                 conduit.addScript(script);
@@ -226,7 +226,7 @@ public class PollHandler
                 catch (Exception ex)
                 {
                     Continuation.rethrowIfContinuation(ex);
-                    log.warn("Exception", ex); //$NON-NLS-1$
+                    log.warn("Exception", ex);
                     useSleep = true;
                 }
                 finally
@@ -253,7 +253,7 @@ public class PollHandler
                     }
                     catch (InterruptedException ex)
                     {
-                        log.warn("Interupted", ex); //$NON-NLS-1$
+                        log.warn("Interupted", ex);
                     }
                 }
                 finally
@@ -302,7 +302,7 @@ public class PollHandler
             }
             catch (InterruptedException ex)
             {
-                log.warn("Interupted", ex); //$NON-NLS-1$
+                log.warn("Interupted", ex);
             }
         }
     }
@@ -329,7 +329,7 @@ public class PollHandler
 
         if (id == null)
         {
-            throw new MarshallException(Messages.getString("PollHandler.MissingParameter", paramName)); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("PollHandler.MissingParameter", paramName));
         }
 
         return id;
@@ -348,7 +348,7 @@ public class PollHandler
         {
             if (!plain)
             {
-                out.println("<html><body><script type='text/javascript'>"); //$NON-NLS-1$
+                out.println("<html><body><script type='text/javascript'>");
             }
 
             out.println(ConversionConstants.SCRIPT_START_MARKER);
@@ -357,12 +357,12 @@ public class PollHandler
 
             if (!plain)
             {
-                out.println("</script></body></html>"); //$NON-NLS-1$
+                out.println("</script></body></html>");
             }
 
             if (out.checkError())
             {
-                throw new IOException("Error flushing buffered stream"); //$NON-NLS-1$
+                throw new IOException("Error flushing buffered stream");
             }
         }
     }
@@ -409,7 +409,7 @@ public class PollHandler
 
             if (out.checkError())
             {
-                throw new IOException("Error flushing buffered stream"); //$NON-NLS-1$
+                throw new IOException("Error flushing buffered stream");
             }
         }
 
@@ -460,7 +460,7 @@ public class PollHandler
             }
             catch (Exception ex)
             {
-                log.warn("Failed to notify all ScriptSession users", ex); //$NON-NLS-1$
+                log.warn("Failed to notify all ScriptSession users", ex);
             }
 
             // We have not done anything with the script, so
@@ -502,7 +502,7 @@ public class PollHandler
             }
             catch (Exception ex)
             {
-                log.warn("Exception in continuation.resume()", ex); //$NON-NLS-1$
+                log.warn("Exception in continuation.resume()", ex);
             }
 
             // never actually handle the script!
@@ -553,27 +553,27 @@ public class PollHandler
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_PARAMETERS = "org.directwebremoting.dwrp.parameters"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_PARAMETERS = "org.directwebremoting.dwrp.parameters";
 
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_CALL_ID = "org.directwebremoting.dwrp.callId"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_CALL_ID = "org.directwebremoting.dwrp.callId";
 
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_SESSION_ID = "org.directwebremoting.dwrp.sessionId"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_SESSION_ID = "org.directwebremoting.dwrp.sessionId";
 
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_PAGE = "org.directwebremoting.dwrp.page"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_PAGE = "org.directwebremoting.dwrp.page";
 
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_PARTIAL_RESPONSE = "org.directwebremoting.dwrp.partialResponse"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_PARTIAL_RESPONSE = "org.directwebremoting.dwrp.partialResponse";
 
     /**
      * The log stream

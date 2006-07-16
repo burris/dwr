@@ -24,65 +24,65 @@ public class PathConstants
     /**
      * Path to plain Javascript Marshalled execution
      */
-    public static final String PATH_PLAIN_CALL = "/plaincall"; //$NON-NLS-1$
+    public static final String PATH_PLAIN_CALL = "/plaincall";
 
     /**
      * Path to HTML wrapped Javascript Marshalled execution
      */
-    public static final String PATH_HTML_CALL = "/htmlcall"; //$NON-NLS-1$
+    public static final String PATH_HTML_CALL = "/htmlcall";
 
     /**
      * Path to plain Javascript Marshalled execution
      */
-    public static final String PATH_PLAIN_POLL = "/plainpoll"; //$NON-NLS-1$
+    public static final String PATH_PLAIN_POLL = "/plainpoll";
 
     /**
      * Path to HTML wrapper Marshalled execution
      */
-    public static final String PATH_HTML_POLL = "/htmlpoll"; //$NON-NLS-1$
+    public static final String PATH_HTML_POLL = "/htmlpoll";
 
     /**
      * Path to the interface creator
      */
-    public static final String PATH_INTERFACE = "/interface/"; //$NON-NLS-1$
+    public static final String PATH_INTERFACE = "/interface/";
 
     /**
      * Path to the generated test pages
      */
-    public static final String PATH_TEST = "/test/"; //$NON-NLS-1$
+    public static final String PATH_TEST = "/test/";
 
     /**
      * Path to the generated status pages
      */
-    public static final String PATH_STATUS = "/status/"; //$NON-NLS-1$
+    public static final String PATH_STATUS = "/status/";
 
     /**
      * Path to the root of the web app
      */
-    public static final String PATH_ROOT = "/"; //$NON-NLS-1$
+    public static final String PATH_ROOT = "/";
 
     /**
      * Index page name
      */
-    public static final String FILE_INDEX = "/index.html"; //$NON-NLS-1$
+    public static final String FILE_INDEX = "/index.html";
 
     /**
      * Util script name
      */
-    public static final String FILE_UTIL = "/util.js"; //$NON-NLS-1$
+    public static final String FILE_UTIL = "/util.js";
 
     /**
      * Engine helper name
      */
-    public static final String FILE_ENGINE = "/engine.js"; //$NON-NLS-1$
+    public static final String FILE_ENGINE = "/engine.js";
 
     /**
      * Help page name
      */
-    public static final String FILE_HELP = "/help.html"; //$NON-NLS-1$
+    public static final String FILE_HELP = "/help.html";
 
     /**
      * Extension for javascript files
      */
-    public static final String EXTENSION_JS = ".js"; //$NON-NLS-1$
+    public static final String EXTENSION_JS = ".js";
 }

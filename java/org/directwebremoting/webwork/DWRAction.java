@@ -39,7 +39,7 @@ public class DWRAction
      */
     private static final Logger log = Logger.getLogger(DWRAction.class);
 
-    private static final String DWRACTIONPROCESSOR_INIT_PARAM = "dwrActionProcessor"; //$NON-NLS-1$
+    private static final String DWRACTIONPROCESSOR_INIT_PARAM = "dwrActionProcessor";
     
     private static DWRAction s_instance;
 
@@ -141,11 +141,11 @@ public class DWRAction
         }
         catch (ConfigurationException ce)
         {
-            throw new ServletException("Cannot invoke action '" + actionDefinition.getAction() + "' in namespace '" + actionDefinition.getNamespace() + "'", ce); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            throw new ServletException("Cannot invoke action '" + actionDefinition.getAction() + "' in namespace '" + actionDefinition.getNamespace() + "'", ce);
         }
         catch (Exception e)
         {
-            throw new ServletException("Cannot invoke action '" + actionDefinition.getAction() + "' in namespace '" + actionDefinition.getNamespace() + "'", e); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            throw new ServletException("Cannot invoke action '" + actionDefinition.getAction() + "' in namespace '" + actionDefinition.getNamespace() + "'", e);
         }
         finally
         {
@@ -190,7 +190,7 @@ public class DWRAction
         }
         catch (UnsupportedEncodingException uee)
         {
-            log.warn("Cannot retrieve text output as string", uee); //$NON-NLS-1$
+            log.warn("Cannot retrieve text output as string", uee);
         }
 
         if (null == text)
@@ -201,7 +201,7 @@ public class DWRAction
             }
             catch (UnsupportedEncodingException uee)
             {
-                log.warn("Cannot retrieve text output as encoded byte array", uee); //$NON-NLS-1$
+                log.warn("Cannot retrieve text output as encoded byte array", uee);
                 text = new String(response.getContentAsByteArray());
             }
         }
@@ -234,7 +234,7 @@ public class DWRAction
      */
     private static IDWRActionProcessor loadActionProcessor(String actionProcessorClassName) throws ServletException
     {
-        if (null == actionProcessorClassName || "".equals(actionProcessorClassName)) //$NON-NLS-1$
+        if (null == actionProcessorClassName || "".equals(actionProcessorClassName))
         {
             return null;
         }
@@ -247,19 +247,19 @@ public class DWRAction
         }
         catch(ClassNotFoundException cnfe) 
         {
-            throw new ServletException("Cannot load DWRActionProcessor class '" + actionProcessorClassName + "'", cnfe); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new ServletException("Cannot load DWRActionProcessor class '" + actionProcessorClassName + "'", cnfe);
         }
         catch(IllegalAccessException iae)
         {
-            throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'. Default constructor is not visible", iae); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'. Default constructor is not visible", iae);
         }
         catch(InstantiationException ie) 
         {
-            throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'. No default constructor found", ie); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'. No default constructor found", ie);
         }
         catch(Throwable cause)
         {
-            throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'", cause); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'", cause);
         }
     }
 

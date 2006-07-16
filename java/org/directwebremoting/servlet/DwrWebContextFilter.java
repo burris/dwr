@@ -60,19 +60,19 @@ public class DwrWebContextFilter implements Filter
         Container container = (Container) servletContext.getAttribute(Container.class.getName());
         if (container == null)
         {
-            log.error("DwrWebContextFilter can not find ServletContext attribute for the DWR Container. Is DwrServlet configured in this web-application?"); //$NON-NLS-1$
+            log.error("DwrWebContextFilter can not find ServletContext attribute for the DWR Container. Is DwrServlet configured in this web-application?");
         }
 
         ServletConfig servletConfig = (ServletConfig) servletContext.getAttribute(ServletConfig.class.getName());
         if (servletConfig == null)
         {
-            log.error("DwrWebContextFilter can not find ServletContext attribute for the ServletConfig."); //$NON-NLS-1$
+            log.error("DwrWebContextFilter can not find ServletContext attribute for the ServletConfig.");
         }
 
         WebContextBuilder webContextBuilder = (WebContextBuilder) servletContext.getAttribute(WebContextBuilder.class.getName());
         if (webContextBuilder == null)
         {
-            log.error("DwrWebContextFilter can not find ServletContext attribute for the WebContextBuilder. WebContext will not be available."); //$NON-NLS-1$
+            log.error("DwrWebContextFilter can not find ServletContext attribute for the WebContextBuilder. WebContext will not be available.");
         }
         else
         {

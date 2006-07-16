@@ -141,7 +141,7 @@ public class IdGenerator
                 }
             }
 
-            log.debug("Using MessageDigest: " + digest.getAlgorithm()); //$NON-NLS-1$
+            log.debug("Using MessageDigest: " + digest.getAlgorithm());
         }
 
         return digest;
@@ -162,7 +162,7 @@ public class IdGenerator
      * The default message digest algorithm to use if we cannot use
      * the requested one.
      */
-    protected static final String DEFAULT_ALGORITHM = "MD5"; //$NON-NLS-1$
+    protected static final String DEFAULT_ALGORITHM = "MD5";
 
     /**
      * The message digest algorithm to be used when generating session

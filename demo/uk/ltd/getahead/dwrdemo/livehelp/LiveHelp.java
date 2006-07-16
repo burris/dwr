@@ -47,11 +47,11 @@ public class LiveHelp
     {
         DwrUtil utilAll = new DwrUtil(getUsersToAffect());
 
-        utilAll.addClassName(id, "disabled"); //$NON-NLS-1$
+        utilAll.addClassName(id, "disabled");
         String addr = WebContextFactory.get().getHttpServletRequest().getRemoteAddr();
-        utilAll.setValue(id + "Tip", addr); //$NON-NLS-1$
+        utilAll.setValue(id + "Tip", addr);
 
-        //utilAll.addScript("$('" + id + "').disabled = true;"); //$NON-NLS-1$ //$NON-NLS-2$
+        //utilAll.addScript("$('" + id + "').disabled = true;");
     }
 
     /**
@@ -62,10 +62,10 @@ public class LiveHelp
     {
         DwrUtil utilAll = new DwrUtil(getUsersToAffect());
 
-        utilAll.removeClassName(id, "disabled"); //$NON-NLS-1$
-        utilAll.setValue(id + "Tip", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        utilAll.removeClassName(id, "disabled");
+        utilAll.setValue(id + "Tip", "");
 
-        //utilAll.addScript("$('" + id + "').disabled = false;"); //$NON-NLS-1$ //$NON-NLS-2$
+        //utilAll.addScript("$('" + id + "').disabled = false;");
     }
 
     /**
@@ -82,7 +82,7 @@ public class LiveHelp
         // But not the current user!
         sessions.remove(wctx.getScriptSession());
 
-        log.debug("Affecting " + sessions.size() + " users"); //$NON-NLS-1$ //$NON-NLS-2$
+        log.debug("Affecting " + sessions.size() + " users");
 
         return sessions;
     }

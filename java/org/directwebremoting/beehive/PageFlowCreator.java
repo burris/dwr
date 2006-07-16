@@ -30,10 +30,10 @@ public class PageFlowCreator extends AbstractCreator implements Creator
         // noinspection EmptyCatchBlock
         try
         {
-            bhFlowClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowController"); //$NON-NLS-1$
+            bhFlowClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowController");
 
-            Class bhUtilClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowUtils"); //$NON-NLS-1$
-            bhGetter = bhUtilClass.getMethod("getCurrentPageFlow", new Class[] { HttpServletRequest.class }); //$NON-NLS-1$
+            Class bhUtilClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowUtils");
+            bhGetter = bhUtilClass.getMethod("getCurrentPageFlow", new Class[] { HttpServletRequest.class });
         }
         catch (Exception ex)
         {
@@ -43,10 +43,10 @@ public class PageFlowCreator extends AbstractCreator implements Creator
         // noinspection EmptyCatchBlock
         try
         {
-            wlFlowClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowController"); //$NON-NLS-1$
+            wlFlowClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowController");
 
-            Class wlUtilClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowUtils"); //$NON-NLS-1$
-            wlGetter = wlUtilClass.getMethod("getCurrentPageFlow", new Class[] { HttpServletRequest.class }); //$NON-NLS-1$
+            Class wlUtilClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowUtils");
+            wlGetter = wlUtilClass.getMethod("getCurrentPageFlow", new Class[] { HttpServletRequest.class });
         }
         catch (Exception ex)
         {
@@ -55,7 +55,7 @@ public class PageFlowCreator extends AbstractCreator implements Creator
 
         if ((bhGetter == null && wlGetter == null) || (bhFlowClass == null && wlFlowClass == null))
         {
-            throw new ClassNotFoundException("Beehive/Weblogic jar file not available."); //$NON-NLS-1$
+            throw new ClassNotFoundException("Beehive/Weblogic jar file not available.");
         }
     }
 
@@ -111,7 +111,7 @@ public class PageFlowCreator extends AbstractCreator implements Creator
             }
             catch (InstantiationException ex)
             {
-                log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
+                log.error("Failed to instansiate object to detect type.", ex);
                 return Object.class;
             }
         }

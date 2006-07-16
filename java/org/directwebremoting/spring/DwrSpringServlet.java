@@ -99,11 +99,11 @@ public class DwrSpringServlet extends HttpServlet
         }
         catch (InstantiationException ex)
         {
-            throw new BeanCreationException("Failed to instansiate", ex); //$NON-NLS-1$
+            throw new BeanCreationException("Failed to instansiate", ex);
         }
         catch (IllegalAccessException ex)
         {
-            throw new BeanCreationException("Access error", ex); //$NON-NLS-1$
+            throw new BeanCreationException("Access error", ex);
         }
 
         // retrieve the configurators from Spring (loaded by the ContextLoaderListener)
@@ -131,7 +131,7 @@ public class DwrSpringServlet extends HttpServlet
         }
         catch (Exception ex)
         {
-            log.fatal("init failed", ex); //$NON-NLS-1$
+            log.fatal("init failed", ex);
             throw new ServletException(ex);
         }
         finally

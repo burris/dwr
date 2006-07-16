@@ -192,8 +192,8 @@ public class JavascriptUtil
         }
         catch (IOException ex)
         {
-            log.error("IOExecption unexpected.", ex); //$NON-NLS-1$
-            throw new IllegalArgumentException("IOExecption unexpected."); //$NON-NLS-1$
+            log.error("IOExecption unexpected.", ex);
+            throw new IllegalArgumentException("IOExecption unexpected.");
         }
     }
 
@@ -240,8 +240,8 @@ public class JavascriptUtil
         }
         catch (IOException ex)
         {
-            log.error("IOExecption unexpected.", ex); //$NON-NLS-1$
-            throw new IllegalArgumentException("IOExecption unexpected."); //$NON-NLS-1$
+            log.error("IOExecption unexpected.", ex);
+            throw new IllegalArgumentException("IOExecption unexpected.");
         }
     }
 
@@ -331,8 +331,8 @@ public class JavascriptUtil
         }
         catch (IOException ex)
         {
-            log.error("IOExecption unexpected.", ex); //$NON-NLS-1$
-            throw new IllegalArgumentException("IOExecption unexpected."); //$NON-NLS-1$
+            log.error("IOExecption unexpected.", ex);
+            throw new IllegalArgumentException("IOExecption unexpected.");
         }
     }
 
@@ -381,8 +381,8 @@ public class JavascriptUtil
         }
         catch (IOException ex)
         {
-            log.error("IOExecption unexpected.", ex); //$NON-NLS-1$
-            throw new IllegalArgumentException("IOExecption unexpected."); //$NON-NLS-1$
+            log.error("IOExecption unexpected.", ex);
+            throw new IllegalArgumentException("IOExecption unexpected.");
         }
     }
 
@@ -420,8 +420,8 @@ public class JavascriptUtil
         }
         catch (IOException ex)
         {
-            log.error("IOExecption unexpected.", ex); //$NON-NLS-1$
-            throw new IllegalArgumentException("IOExecption unexpected."); //$NON-NLS-1$
+            log.error("IOExecption unexpected.", ex);
+            throw new IllegalArgumentException("IOExecption unexpected.");
         }
     }
 
@@ -437,7 +437,7 @@ public class JavascriptUtil
             return null;
         }
 
-        throw new UnsupportedOperationException("Variable name shrinking is not supported"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Variable name shrinking is not supported");
     }
 
     /**
@@ -478,17 +478,17 @@ public class JavascriptUtil
             // handle unicode
             if (ch > 0xfff)
             {
-                writer.append("\\u"); //$NON-NLS-1$
+                writer.append("\\u");
                 writer.append(hex(ch));
             }
             else if (ch > 0xff)
             {
-                writer.append("\\u0"); //$NON-NLS-1$
+                writer.append("\\u0");
                 writer.append(hex(ch));
             }
             else if (ch > 0x7f)
             {
-                writer.append("\\u00"); //$NON-NLS-1$
+                writer.append("\\u00");
                 writer.append(hex(ch));
             }
             else if (ch < 32)
@@ -518,12 +518,12 @@ public class JavascriptUtil
                 default:
                     if (ch > 0xf)
                     {
-                        writer.append("\\u00"); //$NON-NLS-1$
+                        writer.append("\\u00");
                         writer.append(hex(ch));
                     }
                     else
                     {
-                        writer.append("\\u000"); //$NON-NLS-1$
+                        writer.append("\\u000");
                         writer.append(hex(ch));
                     }
                     break;
@@ -611,7 +611,7 @@ public class JavascriptUtil
                     }
                     catch (NumberFormatException nfe)
                     {
-                        throw new IllegalArgumentException("Unable to parse unicode value: " + unicode + " cause: " + nfe); //$NON-NLS-1$ //$NON-NLS-2$
+                        throw new IllegalArgumentException("Unable to parse unicode value: " + unicode + " cause: " + nfe);
                     }
                 }
                 continue;
@@ -692,71 +692,71 @@ public class JavascriptUtil
     private static final String[] RESERVED_ARRAY = new String[]
     {
         // Reserved and used at ECMAScript 4
-        "as", //$NON-NLS-1$
-        "break", //$NON-NLS-1$
-        "case", //$NON-NLS-1$
-        "catch", //$NON-NLS-1$
-        "class", //$NON-NLS-1$
-        "const", //$NON-NLS-1$
-        "continue", //$NON-NLS-1$
-        "default", //$NON-NLS-1$
-        "delete", //$NON-NLS-1$
-        "do", //$NON-NLS-1$
-        "else", //$NON-NLS-1$
-        "export", //$NON-NLS-1$
-        "extends", //$NON-NLS-1$
-        "false", //$NON-NLS-1$
-        "finally", //$NON-NLS-1$
-        "for", //$NON-NLS-1$
-        "function", //$NON-NLS-1$
-        "if", //$NON-NLS-1$
-        "import", //$NON-NLS-1$
-        "in", //$NON-NLS-1$
-        "instanceof", //$NON-NLS-1$
-        "is", //$NON-NLS-1$
-        "namespace", //$NON-NLS-1$
-        "new", //$NON-NLS-1$
-        "null", //$NON-NLS-1$
-        "package", //$NON-NLS-1$
-        "private", //$NON-NLS-1$
-        "public", //$NON-NLS-1$
-        "return", //$NON-NLS-1$
-        "super", //$NON-NLS-1$
-        "switch", //$NON-NLS-1$
-        "this", //$NON-NLS-1$
-        "throw", //$NON-NLS-1$
-        "true", //$NON-NLS-1$
-        "try", //$NON-NLS-1$
-        "typeof", //$NON-NLS-1$
-        "use", //$NON-NLS-1$
-        "var", //$NON-NLS-1$
-        "void", //$NON-NLS-1$
-        "while", //$NON-NLS-1$
-        "with", //$NON-NLS-1$
+        "as",
+        "break",
+        "case",
+        "catch",
+        "class",
+        "const",
+        "continue",
+        "default",
+        "delete",
+        "do",
+        "else",
+        "export",
+        "extends",
+        "false",
+        "finally",
+        "for",
+        "function",
+        "if",
+        "import",
+        "in",
+        "instanceof",
+        "is",
+        "namespace",
+        "new",
+        "null",
+        "package",
+        "private",
+        "public",
+        "return",
+        "super",
+        "switch",
+        "this",
+        "throw",
+        "true",
+        "try",
+        "typeof",
+        "use",
+        "var",
+        "void",
+        "while",
+        "with",
         // Reserved for future use at ECMAScript 4
-        "abstract", //$NON-NLS-1$
-        "debugger", //$NON-NLS-1$
-        "enum", //$NON-NLS-1$
-        "goto", //$NON-NLS-1$
-        "implements", //$NON-NLS-1$
-        "interface", //$NON-NLS-1$
-        "native", //$NON-NLS-1$
-        "protected", //$NON-NLS-1$
-        "synchronized", //$NON-NLS-1$
-        "throws", //$NON-NLS-1$
-        "transient", //$NON-NLS-1$
-        "volatile", //$NON-NLS-1$
+        "abstract",
+        "debugger",
+        "enum",
+        "goto",
+        "implements",
+        "interface",
+        "native",
+        "protected",
+        "synchronized",
+        "throws",
+        "transient",
+        "volatile",
         // Reserved in ECMAScript 3, unreserved at 4 best to avoid anyway
-        "boolean", //$NON-NLS-1$
-        "byte", //$NON-NLS-1$
-        "char", //$NON-NLS-1$
-        "double", //$NON-NLS-1$
-        "final", //$NON-NLS-1$
-        "float", //$NON-NLS-1$
-        "int", //$NON-NLS-1$
-        "long", //$NON-NLS-1$
-        "short", //$NON-NLS-1$
-        "static", //$NON-NLS-1$
+        "boolean",
+        "byte",
+        "char",
+        "double",
+        "final",
+        "float",
+        "int",
+        "long",
+        "short",
+        "static",
 
         // I have seen the folowing list as 'best avoided for function names'
         // but it seems way to all encompassing, so I'm not going to include it
@@ -795,27 +795,27 @@ public class JavascriptUtil
         reserved.addAll(Arrays.asList(RESERVED_ARRAY));
     }
 
-    private static final String SPACE = " "; //$NON-NLS-1$
+    private static final String SPACE = " ";
 
     /**
      * How does a multi line comment start?
      */
-    private static final String COMMENT_ML_START = "/*"; //$NON-NLS-1$
+    private static final String COMMENT_ML_START = "/*";
 
     /**
      * How does a multi line comment end?
      */
-    private static final String COMMENT_ML_END = "*/"; //$NON-NLS-1$
+    private static final String COMMENT_ML_END = "*/";
 
     /**
      * How does a single line comment start?
      */
-    private static final String COMMENT_SL_START = "//"; //$NON-NLS-1$
+    private static final String COMMENT_SL_START = "//";
 
     /**
      * Sometimes we need to retain the comment because it has special meaning
      */
-    private static final String COMMENT_RETAIN = "@DWR"; //$NON-NLS-1$
+    private static final String COMMENT_RETAIN = "@DWR";
 
     /**
      * The log stream

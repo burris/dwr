@@ -59,7 +59,7 @@ public class DefaultCreatorManager implements CreatorManager
     {
         if (!LocalUtil.isJavaIdentifier(typeName))
         {
-            log.error("Illegal identifier: '" + typeName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Illegal identifier: '" + typeName + "'");
             return;
         }
 
@@ -77,14 +77,14 @@ public class DefaultCreatorManager implements CreatorManager
     {
         if (!LocalUtil.isJavaIdentifier(scriptName))
         {
-            log.error("Illegal identifier: '" + scriptName + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Illegal identifier: '" + scriptName + "'");
             return;
         }
 
         Class clazz = (Class) creatorTypes.get(typeName);
         if (clazz == null)
         {
-            log.error("Missing creator: " + typeName + " (while initializing creator for: " + scriptName + ".js)"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Missing creator: " + typeName + " (while initializing creator for: " + scriptName + ".js)");
             return;
         }
 
@@ -106,7 +106,7 @@ public class DefaultCreatorManager implements CreatorManager
         Creator other = (Creator) creators.get(scriptName);
         if (other != null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.DuplicateName", scriptName, other.getType().getName(), creator)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.DuplicateName", scriptName, other.getType().getName(), creator));
         }
 
         // Check that it can at least tell us what type of thing we will be getting
@@ -115,7 +115,7 @@ public class DefaultCreatorManager implements CreatorManager
             Class test = creator.getType();
             if (test == null)
             {
-                log.error("Creator: '" + creator + "' for " + scriptName + ".js is returning null for type queries."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.error("Creator: '" + creator + "' for " + scriptName + ".js is returning null for type queries.");
             }
             else
             {
@@ -124,11 +124,11 @@ public class DefaultCreatorManager implements CreatorManager
         }
         catch (NoClassDefFoundError ex)
         {
-            log.error("Missing class for creator '" + creator + "'. Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Missing class for creator '" + creator + "'. Cause: " + ex.getMessage());
         }
         catch (Exception ex)
         {
-            log.error("Error loading class for creator '" + creator + "'.", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Error loading class for creator '" + creator + "'.", ex);
         }
     }
 
@@ -153,7 +153,7 @@ public class DefaultCreatorManager implements CreatorManager
         Creator creator = (Creator) creators.get(scriptName);
         if (creator == null)
         {
-            StringBuffer buffer = new StringBuffer("Names of known classes are: "); //$NON-NLS-1$
+            StringBuffer buffer = new StringBuffer("Names of known classes are: ");
             for (Iterator it = creators.keySet().iterator(); it.hasNext();)
             {
                 String key = (String) it.next();
@@ -162,7 +162,7 @@ public class DefaultCreatorManager implements CreatorManager
             }
 
             log.warn(buffer.toString());
-            throw new SecurityException(Messages.getString("DefaultCreatorManager.MissingName", scriptName)); //$NON-NLS-1$
+            throw new SecurityException(Messages.getString("DefaultCreatorManager.MissingName", scriptName));
         }
 
         return creator;
@@ -200,5 +200,5 @@ public class DefaultCreatorManager implements CreatorManager
      * The properties that we don't warn about if they don't exist.
      * @see DefaultCreatorManager#addCreator(String, String, Map)
      */
-    private static List ignore = Arrays.asList(new String[] { "creator", "class" }); //$NON-NLS-1$ //$NON-NLS-2$
+    private static List ignore = Arrays.asList(new String[] { "creator", "class" });
 }

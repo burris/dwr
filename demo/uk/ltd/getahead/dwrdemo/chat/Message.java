@@ -24,10 +24,10 @@ public class Message
 
         try
         {
-            if (text.startsWith("http://")) //$NON-NLS-1$
+            if (text.startsWith("http://"))
             {
                 URL url = new URL(text);
-                text = "<a href='#' onclick='window.open(\"" + url.toExternalForm() + "\", \"\", \"resizable=yes,scrollbars=yes,status=yes\");'>" + url.toExternalForm() + "</a>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                text = "<a href='#' onclick='window.open(\"" + url.toExternalForm() + "\", \"\", \"resizable=yes,scrollbars=yes,status=yes\");'>" + url.toExternalForm() + "</a>";
             }
         }
         catch (MalformedURLException ex)

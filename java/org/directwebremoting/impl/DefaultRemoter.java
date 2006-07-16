@@ -61,12 +61,12 @@ public class DefaultRemoter implements Remoter
         StringBuffer buffer = new StringBuffer();
 
         buffer.append('\n');
-        buffer.append("// Provide a default path to DWREngine\n"); //$NON-NLS-1$
-        buffer.append("if (DWREngine == null) { var DWREngine = {}; }\n"); //$NON-NLS-1$
-        buffer.append("DWREngine._defaultPath = '" + actualPath + "';\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("// Provide a default path to DWREngine\n");
+        buffer.append("if (DWREngine == null) { var DWREngine = {}; }\n");
+        buffer.append("DWREngine._defaultPath = '" + actualPath + "';\n");
         buffer.append('\n');
-        buffer.append("function " + scriptName + "() { }\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append(scriptName + "._path = '" + actualPath + "';\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("function " + scriptName + "() { }\n");
+        buffer.append(scriptName + "._path = '" + actualPath + "';\n");
 
         Method[] methods = creator.getType().getMethods();
         for (int i = 0; i < methods.length; i++)
@@ -98,7 +98,7 @@ public class DefaultRemoter implements Remoter
             }
             else
             {
-                String key = scriptName + "." + method.getName(); //$NON-NLS-1$
+                String key = scriptName + "." + method.getName();
 
                 // For optimal performance we might synchronize on methodCache however
                 // since performance isn't a big issue we are prepared to cope with
@@ -128,33 +128,33 @@ public class DefaultRemoter implements Remoter
         StringBuffer buffer = new StringBuffer();
 
         String methodName = method.getName();
-        buffer.append(scriptName + '.' + methodName + " = function("); //$NON-NLS-1$
+        buffer.append(scriptName + '.' + methodName + " = function(");
         Class[] paramTypes = method.getParameterTypes();
         for (int j = 0; j < paramTypes.length; j++)
         {
             if (!LocalUtil.isServletClass(paramTypes[j]))
             {
-                buffer.append("p" + j + ", "); //$NON-NLS-1$ //$NON-NLS-2$
+                buffer.append("p" + j + ", ");
             }
         }
 
-        buffer.append("callback) {\n"); //$NON-NLS-1$
+        buffer.append("callback) {\n");
 
-        buffer.append("  DWREngine._execute(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        buffer.append("  DWREngine._execute(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', ");
         for (int j = 0; j < paramTypes.length; j++)
         {
             if (LocalUtil.isServletClass(paramTypes[j]))
             {
-                buffer.append("false, "); //$NON-NLS-1$
+                buffer.append("false, ");
             }
             else
             {
-                buffer.append("p" + j + ", "); //$NON-NLS-1$ //$NON-NLS-2$
+                buffer.append("p" + j + ", ");
             }
         }
 
-        buffer.append("callback);\n"); //$NON-NLS-1$
-        buffer.append("}\n"); //$NON-NLS-1$
+        buffer.append("callback);\n");
+        buffer.append("}\n");
 
         return buffer.toString();
     }
@@ -256,45 +256,45 @@ public class DefaultRemoter implements Remoter
             }
 
             // Some debug
-            log.info("Exec: " + call.getScriptName() + "." + call.getMethodName() + "()"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Exec: " + call.getScriptName() + "." + call.getMethodName() + "()");
             if (log.isDebugEnabled())
             {
                 StringBuffer buffer = new StringBuffer();
 
                 if (create)
                 {
-                    buffer.append("--Object created, "); //$NON-NLS-1$
+                    buffer.append("--Object created, ");
                     if (!scope.equals(Creator.PAGE))
                     {
-                        buffer.append(" stored in "); //$NON-NLS-1$
+                        buffer.append(" stored in ");
                         buffer.append(scope);
                     }
                     else
                     {
-                        buffer.append(" not stored"); //$NON-NLS-1$
+                        buffer.append(" not stored");
                     }
                 }
                 else
                 {
-                    buffer.append("--Object found in "); //$NON-NLS-1$
+                    buffer.append("--Object found in ");
                     buffer.append(scope);
                 }
-                buffer.append(". "); //$NON-NLS-1$
+                buffer.append(". ");
 
                 // It would be good to debug the params but it's not easy
-                //buffer.append("Call params ("); //$NON-NLS-1$
+                //buffer.append("Call params (");
                 //for (int j = 0; j < inctx.getParameterCount(callNum); j++)
                 //{
                 //    if (j != 0)
                 //    {
-                //        buffer.append(", "); //$NON-NLS-1$
+                //        buffer.append(", ");
                 //    }
                 //    InboundVariable param = inctx.getParameter(callNum, j);
                 //    buffer.append(param.toString());
                 //}
-                //buffer.append(") "); //$NON-NLS-1$
+                //buffer.append(") ");
 
-                buffer.append("id="); //$NON-NLS-1$
+                buffer.append("id=");
                 buffer.append(call.getId());
 
                 log.debug(buffer.toString());
@@ -318,7 +318,7 @@ public class DefaultRemoter implements Remoter
             // Allow Jetty RequestRetry exception to propogate to container
             Continuation.rethrowIfContinuation(ex);
 
-            log.warn("Method execution failed: ", ex.getTargetException()); //$NON-NLS-1$
+            log.warn("Method execution failed: ", ex.getTargetException());
             return new Reply(call.getId(), null, ex.getTargetException());
         }
         catch (Exception ex)
@@ -326,7 +326,7 @@ public class DefaultRemoter implements Remoter
             // Allow Jetty RequestRetry exception to propogate to container
             Continuation.rethrowIfContinuation(ex);
 
-            log.warn("Method execution failed: ", ex); //$NON-NLS-1$
+            log.warn("Method execution failed: ", ex);
             return new Reply(call.getId(), null, ex);
         }
     }

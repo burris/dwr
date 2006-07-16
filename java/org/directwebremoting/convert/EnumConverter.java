@@ -42,18 +42,18 @@ public class EnumConverter extends BaseV20Converter implements Converter
         Object[] values;
         try
         {
-            Method getter = paramType.getMethod("values", new Class[0]); //$NON-NLS-1$
+            Method getter = paramType.getMethod("values", new Class[0]);
             values = (Object[]) getter.invoke(paramType, null);
         }
         catch (NoSuchMethodException ex)
         {
             // We would like to have done: if (!paramType.isEnum())
             // But this catch block has the same effect
-            throw new MarshallException(Messages.getString("EnumConverter.TypeNotEnum", paramType)); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("EnumConverter.TypeNotEnum", paramType));
         }
         catch (Exception ex)
         {
-            throw new MarshallException(Messages.getString("EnumConverter.ReflectionError", paramType), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("EnumConverter.ReflectionError", paramType), ex);
         }
 
         for (int i = 0; i < values.length; i++)
@@ -65,7 +65,7 @@ public class EnumConverter extends BaseV20Converter implements Converter
             }
         }
 
-        throw new MarshallException(Messages.getString("EnumConverter.NoMatch", value, paramType)); //$NON-NLS-1$
+        throw new MarshallException(Messages.getString("EnumConverter.NoMatch", value, paramType));
     }
 
     /* (non-Javadoc)
@@ -73,6 +73,6 @@ public class EnumConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object object, OutboundContext outctx)
     {
-        return new OutboundVariable("", '\'' + object.toString() + '\''); //$NON-NLS-1$
+        return new OutboundVariable("", '\'' + object.toString() + '\'');
     }
 }

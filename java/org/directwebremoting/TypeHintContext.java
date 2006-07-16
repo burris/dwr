@@ -40,7 +40,7 @@ public class TypeHintContext
     {
         if (method == null)
         {
-            throw new IllegalArgumentException("The method can not be null"); //$NON-NLS-1$
+            throw new IllegalArgumentException("The method can not be null");
         }
 
         this.converterManager = converterManager;
@@ -54,7 +54,7 @@ public class TypeHintContext
         {
             if (parameterNumber >= types.length)
             {
-                throw new IllegalArgumentException("parameterNumber=" + parameterNumber + " is too big when method=" + method.getName() + " returns genericParameterTypes.length=" + types.length); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                throw new IllegalArgumentException("parameterNumber=" + parameterNumber + " is too big when method=" + method.getName() + " returns genericParameterTypes.length=" + types.length);
             }
 
             this.parameterType = types[parameterNumber];
@@ -106,7 +106,7 @@ public class TypeHintContext
 
                 if (newParameterNumber >= actualTypeArguments.length)
                 {
-                    throw new IllegalArgumentException("newParameterNumber=" + newParameterNumber + " is too big when parameterType=" + parameterType + " give actualTypeArguments.length=" + actualTypeArguments.length); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    throw new IllegalArgumentException("newParameterNumber=" + newParameterNumber + " is too big when parameterType=" + parameterType + " give actualTypeArguments.length=" + actualTypeArguments.length);
                 }
 
                 childType = actualTypeArguments[newParameterNumber];
@@ -138,7 +138,7 @@ public class TypeHintContext
             type = converterManager.getExtraTypeInfo(this);
             if (type != null)
             {
-                log.debug("Using type info from <signature> " + toString() + " of " + type); //$NON-NLS-1$ //$NON-NLS-2$
+                log.debug("Using type info from <signature> " + toString() + " of " + type);
                 return type;
             }
         }
@@ -155,19 +155,19 @@ public class TypeHintContext
                 if (rawType instanceof Class)
                 {
                     type = (Class) rawType;
-                    log.debug("Using type info from JDK5 ParameterizedType of " + type.getName() + " for " + toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.debug("Using type info from JDK5 ParameterizedType of " + type.getName() + " for " + toString());
                     return type;
                 }
             }
             else if (parameterType instanceof Class)
             {
                 type = (Class) parameterType;
-                log.debug("Using type info from JDK5 reflection of " + type.getName() + " for " + toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                log.debug("Using type info from JDK5 reflection of " + type.getName() + " for " + toString());
                 return type;
             }
         }
 
-        log.warn("Missing type info for " + toString() + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+        log.warn("Missing type info for " + toString() + ". Assuming this is a map with String keys. Please add to <signatures> in dwr.xml");
         return String.class;
     }
 
@@ -324,24 +324,24 @@ public class TypeHintContext
         Class tempParameterizedTypeClass;
         try
         {
-            tempParameterizedTypeClass = LocalUtil.classForName("java.lang.reflect.ParameterizedType"); //$NON-NLS-1$
-            log.debug("JDK1.5 reflection available."); //$NON-NLS-1$
+            tempParameterizedTypeClass = LocalUtil.classForName("java.lang.reflect.ParameterizedType");
+            log.debug("JDK1.5 reflection available.");
         }
         catch (Exception ex)
         {
             tempParameterizedTypeClass = null;
-            log.debug("JDK1.5 reflection not available. Generic parameters must use <signatures>."); //$NON-NLS-1$
+            log.debug("JDK1.5 reflection not available. Generic parameters must use <signatures>.");
             failures++;
         }
 
         Method tempGetGenericParameterTypesMethod = null;
         try
         {
-            tempGetGenericParameterTypesMethod = Method.class.getDeclaredMethod("getGenericParameterTypes", new Class[0]); //$NON-NLS-1$
+            tempGetGenericParameterTypesMethod = Method.class.getDeclaredMethod("getGenericParameterTypes", new Class[0]);
         }
         catch (Exception ex)
         {
-            log.debug("Error finding Method.getGenericParameterTypes(): JDK1.5 reflection not available."); //$NON-NLS-1$
+            log.debug("Error finding Method.getGenericParameterTypes(): JDK1.5 reflection not available.");
             failures++;
         }
 
@@ -350,12 +350,12 @@ public class TypeHintContext
         {
             if (tempParameterizedTypeClass != null)
             {
-                tempGetActualTypeArgumentsMethod = tempParameterizedTypeClass.getDeclaredMethod("getActualTypeArguments", new Class[0]); //$NON-NLS-1$
+                tempGetActualTypeArgumentsMethod = tempParameterizedTypeClass.getDeclaredMethod("getActualTypeArguments", new Class[0]);
             }
         }
         catch (Exception ex)
         {
-            log.debug("Error finding ParameterizedType.getActualTypeArguments(): JDK1.5 reflection not available."); //$NON-NLS-1$
+            log.debug("Error finding ParameterizedType.getActualTypeArguments(): JDK1.5 reflection not available.");
             failures++;
         }
 
@@ -364,12 +364,12 @@ public class TypeHintContext
         {
             if (tempParameterizedTypeClass != null)
             {
-                tempGetRawTypeMethod = tempParameterizedTypeClass.getDeclaredMethod("getRawType", new Class[0]); //$NON-NLS-1$
+                tempGetRawTypeMethod = tempParameterizedTypeClass.getDeclaredMethod("getRawType", new Class[0]);
             }
         }
         catch (Exception ex)
         {
-            log.debug("Error finding ParameterizedType.getRawType(): JDK1.5 reflection not available."); //$NON-NLS-1$
+            log.debug("Error finding ParameterizedType.getRawType(): JDK1.5 reflection not available.");
             failures++;
         }
 

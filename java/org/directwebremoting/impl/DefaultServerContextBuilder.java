@@ -41,7 +41,7 @@ public class DefaultServerContextBuilder implements ServerContextBuilder
         }
         catch (Exception ex)
         {
-            log.fatal("Failed to create an ExecutionContext", ex); //$NON-NLS-1$
+            log.fatal("Failed to create an ExecutionContext", ex);
         }
     }
 
@@ -56,7 +56,7 @@ public class DefaultServerContextBuilder implements ServerContextBuilder
     /**
      * The attribute under which we publish the ServerContext
      */
-    private static final String ATTRIBUTE_SERVER_CONTEXT = "org.directwebremoting.impl.ServerContext"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_SERVER_CONTEXT = "org.directwebremoting.impl.ServerContext";
 
     /**
      * The log stream

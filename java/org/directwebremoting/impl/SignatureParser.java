@@ -42,7 +42,7 @@ public class SignatureParser
     public SignatureParser(ConverterManager converterManager)
     {
         this.converterManager = converterManager;
-        packageImports.add("java.lang"); //$NON-NLS-1$
+        packageImports.add("java.lang");
     }
 
     /**
@@ -53,7 +53,7 @@ public class SignatureParser
     {
         try
         {
-            log.debug("Parsing extra type info: "); //$NON-NLS-1$
+            log.debug("Parsing extra type info: ");
 
             String reply = JavascriptUtil.stripMultiLineComments(sigtext);
             reply = JavascriptUtil.stripSingleLineComments(reply);
@@ -63,7 +63,7 @@ public class SignatureParser
             process = process.replace('\r', ' ');
             process = process.replace('\t', ' ');
 
-            StringTokenizer st = new StringTokenizer(process, ";"); //$NON-NLS-1$
+            StringTokenizer st = new StringTokenizer(process, ";");
             while (st.hasMoreTokens())
             {
                 String line = st.nextToken();
@@ -73,7 +73,7 @@ public class SignatureParser
                     continue;
                 }
 
-                if (line.startsWith("import ")) //$NON-NLS-1$
+                if (line.startsWith("import "))
                 {
                     parseImportLine(line);
                 }
@@ -85,7 +85,7 @@ public class SignatureParser
         }
         catch (Exception ex)
         {
-            log.error("Unexpected Error", ex); //$NON-NLS-1$
+            log.error("Unexpected Error", ex);
         }
     }
 
@@ -98,7 +98,7 @@ public class SignatureParser
         String shortcut = line.substring(7, line.length());
         shortcut = shortcut.trim();
 
-        if (line.endsWith(".*")) //$NON-NLS-1$
+        if (line.endsWith(".*"))
         {
             shortcut = shortcut.substring(0, shortcut.length() - 2);
             packageImports.add(shortcut);
@@ -108,7 +108,7 @@ public class SignatureParser
             int lastDot = line.lastIndexOf('.');
             if (lastDot == -1)
             {
-                log.error("Missing . from import statement: " + line); //$NON-NLS-1$
+                log.error("Missing . from import statement: " + line);
                 return;
             }
 
@@ -129,19 +129,19 @@ public class SignatureParser
 
         if (openBrace == -1)
         {
-            log.error("Missing ( in declaration: " + line); //$NON-NLS-1$
+            log.error("Missing ( in declaration: " + line);
             return;
         }
 
         if (closeBrace == -1)
         {
-            log.error("Missing ) in declaration: " + line); //$NON-NLS-1$
+            log.error("Missing ) in declaration: " + line);
             return;
         }
 
         if (openBrace > closeBrace)
         {
-            log.error("( Must come before ) in declaration: " + line); //$NON-NLS-1$
+            log.error("( Must come before ) in declaration: " + line);
             return;
         }
 
@@ -162,10 +162,10 @@ public class SignatureParser
         // Check that we have the right number
         if (method.getParameterTypes().length != paramNames.length)
         {
-            log.error("Parameter mismatch parsing signatures section in dwr.xml on line: " + line); //$NON-NLS-1$
-            log.info("- Reflected method had: " + method.getParameterTypes().length + " parameters: " + method.toString()); //$NON-NLS-1$ //$NON-NLS-2$
-            log.info("- Signatures section had: " + paramNames.length + " parameters"); //$NON-NLS-1$ //$NON-NLS-2$
-            log.info("- This can be caused by method overloading which is not supported by Javascript or DWR"); //$NON-NLS-1$
+            log.error("Parameter mismatch parsing signatures section in dwr.xml on line: " + line);
+            log.info("- Reflected method had: " + method.getParameterTypes().length + " parameters: " + method.toString());
+            log.info("- Signatures section had: " + paramNames.length + " parameters");
+            log.info("- This can be caused by method overloading which is not supported by Javascript or DWR");
             return;
         }
 
@@ -184,12 +184,12 @@ public class SignatureParser
 
                     if (log.isDebugEnabled())
                     {
-                        log.debug("- " + thc + " = " + clazz.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                        log.debug("- " + thc + " = " + clazz.getName());
                     }
                 }
                 else
                 {
-                    log.warn("Missing class (" + type + ") while parsing signature section on line: " + line); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.warn("Missing class (" + type + ") while parsing signature section on line: " + line);
                 }
             }
         }
@@ -207,7 +207,7 @@ public class SignatureParser
         // Handle inner classes
         if (itype.indexOf('.') != -1)
         {
-            log.debug("Inner class detected: " + itype); //$NON-NLS-1$
+            log.debug("Inner class detected: " + itype);
             itype = itype.replace('.', '$');
         }
 
@@ -223,7 +223,7 @@ public class SignatureParser
         }
         catch (Exception ex)
         {
-            // log.debug("Trying to find class in package imports"); //$NON-NLS-1$
+            // log.debug("Trying to find class in package imports");
         }
 
         for (Iterator it = packageImports.iterator(); it.hasNext();)
@@ -237,21 +237,21 @@ public class SignatureParser
             }
             catch (Exception ex)
             {
-                // log.debug("Not found: " + lookup); //$NON-NLS-1$
+                // log.debug("Not found: " + lookup);
             }
         }
 
-        log.error("Failed to find class: '" + itype + "' from <signature> block."); //$NON-NLS-1$ //$NON-NLS-2$
-        log.info("- Looked in the following class imports:"); //$NON-NLS-1$
+        log.error("Failed to find class: '" + itype + "' from <signature> block.");
+        log.info("- Looked in the following class imports:");
         for (Iterator it = classImports.entrySet().iterator(); it.hasNext();)
         {
             Map.Entry entry = (Map.Entry) it.next();
-            log.info("  - " + entry.getKey() + " -> " + entry.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
+            log.info("  - " + entry.getKey() + " -> " + entry.getValue());
         }
-        log.info("- Looked in the following package imports:"); //$NON-NLS-1$
+        log.info("- Looked in the following package imports:");
         for (Iterator it = packageImports.iterator(); it.hasNext();)
         {
-            log.info("  - " + it.next()); //$NON-NLS-1$
+            log.info("  - " + it.next());
         }
 
         return null;
@@ -268,19 +268,19 @@ public class SignatureParser
         int openGeneric = paramName.indexOf('<');
         if (openGeneric == -1)
         {
-            log.debug("No < in paramter declaration: " + paramName); //$NON-NLS-1$
+            log.debug("No < in paramter declaration: " + paramName);
             return new String[0];
         }
 
         int closeGeneric = paramName.lastIndexOf('>');
         if (closeGeneric == -1)
         {
-            log.error("Missing > in generic declaration: " + paramName); //$NON-NLS-1$
+            log.error("Missing > in generic declaration: " + paramName);
             return new String[0];
         }
 
         String generics = paramName.substring(openGeneric + 1, closeGeneric);
-        StringTokenizer st = new StringTokenizer(generics, ","); //$NON-NLS-1$
+        StringTokenizer st = new StringTokenizer(generics, ",");
         String[] types = new String[st.countTokens()];
         int i = 0;
         while (st.hasMoreTokens())
@@ -311,7 +311,7 @@ public class SignatureParser
         int lastDot = classMethodChop.lastIndexOf('.');
         if (lastDot == -1)
         {
-            log.error("Missing . to separate class name and method: " + classMethodChop); //$NON-NLS-1$
+            log.error("Missing . to separate class name and method: " + classMethodChop);
             return null;
         }
 
@@ -338,14 +338,14 @@ public class SignatureParser
                 }
                 else
                 {
-                    log.warn("Setting extra type info to overloaded methods may fail with <parameter .../>"); //$NON-NLS-1$
+                    log.warn("Setting extra type info to overloaded methods may fail with <parameter .../>");
                 }
             }
         }
 
         if (method == null)
         {
-            log.error("Unable to find method called: " + methodName + " on type: " + clazz.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Unable to find method called: " + methodName + " on type: " + clazz.getName());
         }
 
         return method;
@@ -369,7 +369,7 @@ public class SignatureParser
             {
                 if (inGeneric)
                 {
-                    log.error("Found < while parsing generic section: " + paramDecl); //$NON-NLS-1$
+                    log.error("Found < while parsing generic section: " + paramDecl);
                     break;
                 }
 
@@ -380,7 +380,7 @@ public class SignatureParser
             {
                 if (!inGeneric)
                 {
-                    log.error("Found > while not parsing generic section: " + paramDecl); //$NON-NLS-1$
+                    log.error("Found > while not parsing generic section: " + paramDecl);
                     break;
                 }
 

@@ -56,9 +56,9 @@ public class ConverterUtil
         if (init.length() == 0)
         {
             // Declare ourselves so recurrsion works
-            buffer.append("var "); //$NON-NLS-1$
+            buffer.append("var ");
             buffer.append(varname);
-            buffer.append("=["); //$NON-NLS-1$
+            buffer.append("=[");
 
             // Declare the non-recursive parts to the list
             boolean first = true;
@@ -74,7 +74,7 @@ public class ConverterUtil
                 if (nested.getAssignCode().equals(varname))
                 {
                     // We'll fill it in later
-                    buffer.append("null"); //$NON-NLS-1$
+                    buffer.append("null");
                 }
                 else
                 {
@@ -84,14 +84,14 @@ public class ConverterUtil
 
                 first = false;
             }
-            buffer.append("];"); //$NON-NLS-1$
+            buffer.append("];");
         }
         else
         {
             // Declare ourselves so recurrsion works
-            buffer.append("var "); //$NON-NLS-1$
+            buffer.append("var ");
             buffer.append(varname);
-            buffer.append("=[];"); //$NON-NLS-1$
+            buffer.append("=[];");
 
             // First we output all the init code
             buffer.append(init);
@@ -100,7 +100,7 @@ public class ConverterUtil
             buffer.append(varname);
             buffer.append('=');
             buffer.append(varname);
-            buffer.append(".concat(["); //$NON-NLS-1$
+            buffer.append(".concat([");
             boolean first = true;
             for (int i = 0; i < ovs.size(); i++)
             {
@@ -114,7 +114,7 @@ public class ConverterUtil
                 if (nested.getAssignCode().equals(varname))
                 {
                     // We'll fill it in later
-                    buffer.append("null"); //$NON-NLS-1$
+                    buffer.append("null");
                 }
                 else
                 {
@@ -124,7 +124,7 @@ public class ConverterUtil
 
                 first = false;
             }
-            buffer.append("]);"); //$NON-NLS-1$
+            buffer.append("]);");
         }
 
         // And now the recursive parts
@@ -137,12 +137,12 @@ public class ConverterUtil
                 buffer.append(varname);
                 buffer.append('[');
                 buffer.append(i);
-                buffer.append("]="); //$NON-NLS-1$
+                buffer.append("]=");
                 buffer.append(nested.getAssignCode());
                 buffer.append(';');
             }
         }
-        buffer.append("\r\n"); //$NON-NLS-1$
+        buffer.append("\r\n");
 
         ov.setInitCode(buffer.toString());
     }
@@ -164,9 +164,9 @@ public class ConverterUtil
         if (init.length() == 0)
         {
             // First loop through is for the stuff we can embed
-            buffer.append("var "); //$NON-NLS-1$
+            buffer.append("var ");
             buffer.append(varname);
-            buffer.append("={"); //$NON-NLS-1$
+            buffer.append("={");
 
             // And now declare our stuff
             boolean first = true;
@@ -196,14 +196,14 @@ public class ConverterUtil
                     first = false;
                 }
             }
-            buffer.append("};"); //$NON-NLS-1$
+            buffer.append("};");
         }
         else
         {
             // Declare ourselves so recursion works
-            buffer.append("var "); //$NON-NLS-1$
+            buffer.append("var ");
             buffer.append(varname);
-            buffer.append("={};"); //$NON-NLS-1$
+            buffer.append("={};");
 
             buffer.append(init);
 
@@ -239,14 +239,14 @@ public class ConverterUtil
             OutboundVariable nested = (OutboundVariable) entry.getValue();
 
             buffer.append(varname);
-            buffer.append("['"); //$NON-NLS-1$
+            buffer.append("['");
             buffer.append(name);
-            buffer.append("']="); //$NON-NLS-1$
+            buffer.append("']=");
             buffer.append(nested.getAssignCode());
             buffer.append(';');
         }
 
-        buffer.append("\r\n"); //$NON-NLS-1$
+        buffer.append("\r\n");
 
         ov.setInitCode(buffer.toString());
     }
@@ -285,7 +285,7 @@ public class ConverterUtil
         // For short strings inline them
         if (escaped.length() < stringInlineLength)
         {
-            return new OutboundVariable("", '\"' + escaped + '\"'); //$NON-NLS-1$
+            return new OutboundVariable("", '\"' + escaped + '\"');
         }
 
         // For medium length strings do it in a separate variable
@@ -293,7 +293,7 @@ public class ConverterUtil
         {
             OutboundVariable ov = outctx.createOutboundVariable(output);
             String varname = ov.getAssignCode();
-            ov.setInitCode("var " + varname + "=\"" + escaped + "\";\r\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ov.setInitCode("var " + varname + "=\"" + escaped + "\";\r\n");
             return ov;
         }
 
@@ -304,7 +304,7 @@ public class ConverterUtil
         StringBuffer initBody = new StringBuffer();
         StringBuffer initEnd = new StringBuffer();
 
-        initEnd.append("var "); //$NON-NLS-1$
+        initEnd.append("var ");
         initEnd.append(varname);
         initEnd.append('=');
 
@@ -349,11 +349,11 @@ public class ConverterUtil
                 end += 4;
             }
 
-            initBody.append("var "); //$NON-NLS-1$
+            initBody.append("var ");
             initBody.append(tempvar);
-            initBody.append("=\""); //$NON-NLS-1$
+            initBody.append("=\"");
             initBody.append(escaped.substring(start, end));
-            initBody.append("\";\r\n"); //$NON-NLS-1$
+            initBody.append("\";\r\n");
 
             initEnd.append(tempvar);
             if (end < escaped.length())
@@ -364,7 +364,7 @@ public class ConverterUtil
             start = end;
         }
 
-        initEnd.append(";\r\n"); //$NON-NLS-1$
+        initEnd.append(";\r\n");
         initBody.append(initEnd.toString());
 
         ov.setInitCode(initBody.toString());
@@ -393,7 +393,7 @@ public class ConverterUtil
     {
         Container container = WebContextFactory.get().getContainer();
 
-        String stringWrapLengthStr = (String) container.getBean("stringWrapLength"); //$NON-NLS-1$
+        String stringWrapLengthStr = (String) container.getBean("stringWrapLength");
         if (stringWrapLengthStr != null)
         {
             try
@@ -402,11 +402,11 @@ public class ConverterUtil
             }
             catch (NumberFormatException ex)
             {
-                log.warn("Error converting stringWrapLength setting to an integer: '" + stringWrapLengthStr + "'", ex); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("Error converting stringWrapLength setting to an integer: '" + stringWrapLengthStr + "'", ex);
             }            
         }
 
-        String stringInlineLengthStr = (String) container.getBean("stringInlineLength"); //$NON-NLS-1$
+        String stringInlineLengthStr = (String) container.getBean("stringInlineLength");
         if (stringInlineLengthStr != null)
         {
             try
@@ -415,7 +415,7 @@ public class ConverterUtil
             }
             catch (NumberFormatException ex)
             {
-                log.warn("Error converting stringInlineLength setting to a integer: '" + stringInlineLengthStr + "'", ex); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("Error converting stringInlineLength setting to a integer: '" + stringInlineLengthStr + "'", ex);
             }            
         }
     }

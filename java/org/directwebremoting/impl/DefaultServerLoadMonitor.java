@@ -105,11 +105,11 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
             postStreamWaitTime = totalPollTime;
         }
 
-        log.debug("hitsPerSecond=" + hitsPerSecond); //$NON-NLS-1$
-        log.debug("waitingThreads=" + waitingThreads); //$NON-NLS-1$
-        log.debug("timeToNextPoll=" + timeToNextPoll); //$NON-NLS-1$
-        log.debug("preStreamWaitTime=" + preStreamWaitTime); //$NON-NLS-1$
-        log.debug("postStreamWaitTime=" + postStreamWaitTime); //$NON-NLS-1$
+        log.debug("hitsPerSecond=" + hitsPerSecond);
+        log.debug("waitingThreads=" + waitingThreads);
+        log.debug("timeToNextPoll=" + timeToNextPoll);
+        log.debug("preStreamWaitTime=" + preStreamWaitTime);
+        log.debug("postStreamWaitTime=" + postStreamWaitTime);
     }
 
     /**

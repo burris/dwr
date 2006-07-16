@@ -126,15 +126,15 @@ public class DwrUtil extends ScriptProxy
      */
     public void setValue(String elementId, String value, boolean escapeHtml) throws MarshallException
     {
-        String options = escapeHtml ? ", {escapeHtml:true}" : ""; //$NON-NLS-1$ //$NON-NLS-2$
+        String options = escapeHtml ? ", {escapeHtml:true}" : "";
 
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.setValue(") //$NON-NLS-1$
+        script.appendScript("DWRUtil.setValue(")
               .appendData(elementId)
               .appendScript(',')
               .appendData(value)
               .appendScript(options)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 
@@ -149,14 +149,14 @@ public class DwrUtil extends ScriptProxy
      */
     public void setValues(Map values, boolean escapeHtml) throws MarshallException
     {
-        String options = escapeHtml ? "{escapeHtml:true}" : "null"; //$NON-NLS-1$ //$NON-NLS-2$
+        String options = escapeHtml ? "{escapeHtml:true}" : "null";
 
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.setValues(") //$NON-NLS-1$
+        script.appendScript("DWRUtil.setValues(")
               .appendData(values)
               .appendScript(',')
               .appendScript(options)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 
@@ -171,11 +171,11 @@ public class DwrUtil extends ScriptProxy
     public void addOptions(String elementId, String[] array) throws MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.addOptions(") //$NON-NLS-1$
+        script.appendScript("DWRUtil.addOptions(")
               .appendData(elementId)
               .appendScript(',')
               .appendData(array)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 
@@ -191,13 +191,13 @@ public class DwrUtil extends ScriptProxy
     public void addOptions(String elementId, Collection array, String property) throws MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.addOptions(") //$NON-NLS-1$
+        script.appendScript("DWRUtil.addOptions(")
               .appendData(elementId)
               .appendScript(',')
               .appendData(array)
               .appendScript(',')
               .appendData(property)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 
@@ -214,7 +214,7 @@ public class DwrUtil extends ScriptProxy
     public void addOptions(String elementId, Collection array, String valueProperty, String textProperty) throws MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.addOptions(") //$NON-NLS-1$
+        script.appendScript("DWRUtil.addOptions(")
               .appendData(elementId)
               .appendScript(',')
               .appendData(array)
@@ -222,7 +222,7 @@ public class DwrUtil extends ScriptProxy
               .appendData(valueProperty)
               .appendScript(',')
               .appendData(textProperty)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 
@@ -236,9 +236,9 @@ public class DwrUtil extends ScriptProxy
     public void removeAllOptions(String elementId) throws MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.removeAllOptions(") //$NON-NLS-1$
+        script.appendScript("DWRUtil.removeAllOptions(")
               .appendData(elementId)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 
@@ -265,9 +265,9 @@ public class DwrUtil extends ScriptProxy
     public void removeAllRows(String elementId) throws MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.removeAllRows(") //$NON-NLS-1$
+        script.appendScript("DWRUtil.removeAllRows(")
               .appendData(elementId)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 
@@ -281,9 +281,9 @@ public class DwrUtil extends ScriptProxy
     public void cloneNode(String elementId) throws MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.cloneNode(") //$NON-NLS-1$
+        script.appendScript("DWRUtil.cloneNode(")
               .appendData(elementId)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 
@@ -299,35 +299,35 @@ public class DwrUtil extends ScriptProxy
     public void cloneNode(String elementId, String idPrefix, String idSuffix) throws MarshallException
     {
         ScriptBuffer options = new ScriptBuffer();
-        options.appendScript("{"); //$NON-NLS-1$
+        options.appendScript("{");
 
         if (idPrefix != null)
         {
-            options.appendScript("idPrefix:'") //$NON-NLS-1$
+            options.appendScript("idPrefix:'")
                    .appendData(idPrefix)
-                   .appendScript("'");  //$NON-NLS-1$
+                   .appendScript("'"); 
         }
 
         if (idPrefix != null && idSuffix != null)
         {
-            options.appendScript(","); //$NON-NLS-1$
+            options.appendScript(",");
         }
 
         if (idSuffix != null)
         {
-            options.appendScript("idSuffix:'") //$NON-NLS-1$
+            options.appendScript("idSuffix:'")
                    .appendData(idSuffix)
-                   .appendScript("'");  //$NON-NLS-1$
+                   .appendScript("'"); 
         }
 
-        options.appendScript("}"); //$NON-NLS-1$
+        options.appendScript("}");
 
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.cloneNode(") //$NON-NLS-1$
+        script.appendScript("DWRUtil.cloneNode(")
               .appendData(elementId)
-              .appendScript(", ") //$NON-NLS-1$
+              .appendScript(", ")
               .appendData(options)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 
@@ -339,11 +339,11 @@ public class DwrUtil extends ScriptProxy
     public void setClassName(String elementId, String className)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.setClassName('") //$NON-NLS-1$
+        script.appendScript("DWRUtil.setClassName('")
               .appendData(elementId)
-              .appendScript("', '") //$NON-NLS-1$
+              .appendScript("', '")
               .appendData(className)
-              .appendScript("');"); //$NON-NLS-1$
+              .appendScript("');");
         addScript(script);
     }
 
@@ -355,11 +355,11 @@ public class DwrUtil extends ScriptProxy
     public void addClassName(String elementId, String className)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.addClassName('") //$NON-NLS-1$
+        script.appendScript("DWRUtil.addClassName('")
               .appendData(elementId)
-              .appendScript("', '") //$NON-NLS-1$
+              .appendScript("', '")
               .appendData(className)
-              .appendScript("');"); //$NON-NLS-1$
+              .appendScript("');");
         addScript(script);
     }
 
@@ -371,11 +371,11 @@ public class DwrUtil extends ScriptProxy
     public void removeClassName(String elementId, String className)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.removeClassName('") //$NON-NLS-1$
+        script.appendScript("DWRUtil.removeClassName('")
               .appendData(elementId)
-              .appendScript("', '") //$NON-NLS-1$
+              .appendScript("', '")
               .appendData(className)
-              .appendScript("');"); //$NON-NLS-1$
+              .appendScript("');");
         addScript(script);
     }
 
@@ -387,11 +387,11 @@ public class DwrUtil extends ScriptProxy
     public void toggleClassName(String elementId, String className)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWRUtil.toggleClassName('") //$NON-NLS-1$
+        script.appendScript("DWRUtil.toggleClassName('")
               .appendData(elementId)
-              .appendScript("', '") //$NON-NLS-1$
+              .appendScript("', '")
               .appendData(className)
-              .appendScript("');"); //$NON-NLS-1$
+              .appendScript("');");
         addScript(script);
     }
 
@@ -404,13 +404,13 @@ public class DwrUtil extends ScriptProxy
     public void setStyle(String elementId, String selector, String value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("$('") //$NON-NLS-1$
+        script.appendScript("$('")
               .appendData(elementId)
-              .appendScript("').style.") //$NON-NLS-1$
+              .appendScript("').style.")
               .appendData(selector)
-              .appendScript(" = '") //$NON-NLS-1$
+              .appendScript(" = '")
               .appendData(value)
-              .appendScript("';"); //$NON-NLS-1$
+              .appendScript("';");
         addScript(script);
     }
 }

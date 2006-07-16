@@ -133,7 +133,7 @@ public class SpringConfigurator implements Configurator
                         }
                         else
                         {
-                            throw new IllegalArgumentException(Messages.getString("SpringConfigurator.InvalidFilter", scriptName, obj)); //$NON-NLS-1$
+                            throw new IllegalArgumentException(Messages.getString("SpringConfigurator.InvalidFilter", scriptName, obj));
                         }
                     }
                 }

@@ -40,7 +40,7 @@ public class RandomSecurityAjaxFilter implements AjaxFilter
         }
         else
         {
-            throw new SecurityException("Wrong time. Try again later"); //$NON-NLS-1$
+            throw new SecurityException("Wrong time. Try again later");
         }
     }
 }

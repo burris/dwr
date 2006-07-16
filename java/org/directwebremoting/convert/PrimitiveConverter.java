@@ -45,11 +45,11 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
         }
         catch (NumberFormatException ex)
         {
-            throw new MarshallException(Messages.getString("PrimitiveConverter.FormatError", value, paramType.getName()), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("PrimitiveConverter.FormatError", value, paramType.getName()), ex);
         }
         catch (IllegalArgumentException ex)
         {
-            throw new MarshallException(Messages.getString("PrimitiveConverter.TypeNotPrimitive", paramType.getName()), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("PrimitiveConverter.TypeNotPrimitive", paramType.getName()), ex);
         }
     }
 
@@ -62,21 +62,21 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
 
         if (object.equals(Boolean.TRUE))
         {
-            return new OutboundVariable("", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+            return new OutboundVariable("", "true");
         }
         else if (object.equals(Boolean.FALSE))
         {
-            return new OutboundVariable("", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+            return new OutboundVariable("", "false");
         }
         else if (paramType == Character.class)
         {
             // Treat characters as strings
-            return new OutboundVariable("", '\"' + JavascriptUtil.escapeJavaScript(object.toString()) + '\"'); //$NON-NLS-1$
+            return new OutboundVariable("", '\"' + JavascriptUtil.escapeJavaScript(object.toString()) + '\"');
         }
         else
         {
             // We just use the default toString for all numbers
-            return new OutboundVariable("", object.toString()); //$NON-NLS-1$
+            return new OutboundVariable("", object.toString());
         }
     }
 }

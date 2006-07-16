@@ -128,7 +128,7 @@ public class Continuation
         }
 
         // Allow Jetty RequestRetry exception to propogate to container!
-        if ("org.mortbay.jetty.RetryRequest".equals(ex.getClass().getName())) //$NON-NLS-1$
+        if ("org.mortbay.jetty.RetryRequest".equals(ex.getClass().getName()))
         {
             throw (RuntimeException) ex;
         }
@@ -167,7 +167,7 @@ public class Continuation
      * The attribute under which Jetty stores it's Contuniations.
      * TODO: This feels like a mighty hack. I hope Greg doesn't change it without telling us!
      */
-    private static final String ATTRIBUTE_JETTY_CONTINUATION = "org.mortbay.jetty.ajax.Continuation"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_JETTY_CONTINUATION = "org.mortbay.jetty.ajax.Continuation";
 
     /**
      * Jetty code used by reflection to allow it to run outside of Jetty
@@ -201,15 +201,15 @@ public class Continuation
     {
         try
         {
-            continuationClass = LocalUtil.classForName("org.mortbay.util.ajax.Continuation"); //$NON-NLS-1$
-            suspendMethod = continuationClass.getMethod("suspend", new Class[] { Long.TYPE }); //$NON-NLS-1$
-            resumeMethod = continuationClass.getMethod("resume", new Class[] {}); //$NON-NLS-1$
-            getObject = continuationClass.getMethod("getObject", new Class[] {}); //$NON-NLS-1$
-            setObject = continuationClass.getMethod("setObject", new Class[] { Object.class }); //$NON-NLS-1$
+            continuationClass = LocalUtil.classForName("org.mortbay.util.ajax.Continuation");
+            suspendMethod = continuationClass.getMethod("suspend", new Class[] { Long.TYPE });
+            resumeMethod = continuationClass.getMethod("resume", new Class[] {});
+            getObject = continuationClass.getMethod("getObject", new Class[] {});
+            setObject = continuationClass.getMethod("setObject", new Class[] { Object.class });
         }
         catch (Exception ex)
         {
-            log.debug("No Jetty ContuniationSupport class, using standard Servlet API"); //$NON-NLS-1$
+            log.debug("No Jetty ContuniationSupport class, using standard Servlet API");
         }
     }
 }

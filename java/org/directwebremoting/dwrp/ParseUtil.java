@@ -72,8 +72,8 @@ public class ParseUtil
             {
                 // If there are any &s then this must be iframe post and all the
                 // parameters have got dumped on one line, split with &
-                log.debug("Using iframe POST mode"); //$NON-NLS-1$
-                StringTokenizer st = new StringTokenizer(line, "&"); //$NON-NLS-1$
+                log.debug("Using iframe POST mode");
+                StringTokenizer st = new StringTokenizer(line, "&");
                 while (st.hasMoreTokens())
                 {
                     String part = st.nextToken();
@@ -91,7 +91,7 @@ public class ParseUtil
         }
         catch (Exception ex)
         {
-            throw new MarshallException(Messages.getString("ExecuteQuery.InputReadFailed"), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("ExecuteQuery.InputReadFailed"), ex);
         }
 
         // If there is only 1 param then this must be a broken Safari. All
@@ -103,13 +103,13 @@ public class ParseUtil
         if (paramMap.size() == 1)
         {
             // This looks like a broken Mac where the line endings are confused
-            log.debug("Using Broken Safari POST mode"); //$NON-NLS-1$
+            log.debug("Using Broken Safari POST mode");
 
             // Iterators insist that we call hasNext() before we start
             Iterator it = paramMap.keySet().iterator();
             if (!it.hasNext())
             {
-                throw new IllegalStateException("No entries in non empty map!"); //$NON-NLS-1$
+                throw new IllegalStateException("No entries in non empty map!");
             }
 
             // So get the first
@@ -117,7 +117,7 @@ public class ParseUtil
             String value = (String) paramMap.get(key);
             String line = key + ConversionConstants.INBOUND_DECL_SEPARATOR + value;
 
-            StringTokenizer st = new StringTokenizer(line, "\n"); //$NON-NLS-1$
+            StringTokenizer st = new StringTokenizer(line, "\n");
             while (st.hasMoreTokens())
             {
                 String part = st.nextToken();
@@ -145,7 +145,7 @@ public class ParseUtil
         int sep = line.indexOf(ConversionConstants.INBOUND_DECL_SEPARATOR);
         if (sep == -1)
         {
-            log.warn("Missing separator in POST line: " + line); //$NON-NLS-1$
+            log.warn("Missing separator in POST line: " + line);
         }
         else
         {
@@ -181,7 +181,7 @@ public class ParseUtil
             }
             else
             {
-                throw new MarshallException(Messages.getString("ExecuteQuery.MultiValues", key)); //$NON-NLS-1$
+                throw new MarshallException(Messages.getString("ExecuteQuery.MultiValues", key));
             }
         }
 

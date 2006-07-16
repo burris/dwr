@@ -75,7 +75,7 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
         }
         else
         {
-            log.warn("List of beanNames does not include Spring beans since your BeanFactory is not a ListableBeanFactory."); //$NON-NLS-1$
+            log.warn("List of beanNames does not include Spring beans since your BeanFactory is not a ListableBeanFactory.");
         }
 
         // And append the DWR ones

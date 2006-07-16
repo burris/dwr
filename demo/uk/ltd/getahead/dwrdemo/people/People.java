@@ -33,7 +33,7 @@ public class People
      */
     public People()
     {
-        log.debug("Generating a new set of random people"); //$NON-NLS-1$
+        log.debug("Generating a new set of random people");
         for (int i = 0; i < 5; i++)
         {
             people.add(getRandomPerson());
@@ -55,7 +55,7 @@ public class People
      */
     public void setPerson(Person person)
     {
-        log.debug("Adding person: " + person); //$NON-NLS-1$
+        log.debug("Adding person: " + person);
         if (person.getId() == -1)
         {
             person.setId(getNextId());
@@ -71,7 +71,7 @@ public class People
      */
     public void deletePerson(Person person)
     {
-        log.debug("Removing person: " + person); //$NON-NLS-1$
+        log.debug("Removing person: " + person);
         people.remove(person);
         debug();
     }
@@ -92,13 +92,13 @@ public class People
 
         String firstname = FIRSTNAMES[random.nextInt(FIRSTNAMES.length)];
         String surname = SURNAMES[random.nextInt(SURNAMES.length)];
-        person.setName(firstname + " " + surname); //$NON-NLS-1$
+        person.setName(firstname + " " + surname);
 
-        String housenum = (random.nextInt(99) + 1) + " "; //$NON-NLS-1$
+        String housenum = (random.nextInt(99) + 1) + " ";
         String road1 = ROADS1[random.nextInt(ROADS1.length)];
         String road2 = ROADS2[random.nextInt(ROADS2.length)];
         String town = TOWNS[random.nextInt(TOWNS.length)];
-        String address = housenum + road1 + " " + road2 + ", " + town; //$NON-NLS-1$ //$NON-NLS-2$
+        String address = housenum + road1 + " " + road2 + ", " + town;
         person.setAddress(address);
 
         float salary = Math.round(10 + 90 * random.nextFloat()) * 1000;
@@ -137,30 +137,30 @@ public class People
 
     private static final String[] FIRSTNAMES = 
     {
-        "Fred", "Jim", "Shiela", "Jack", "Betty", "Jacob", "Martha", "Kelly", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
-        "Luke", "Matt", "Gemma", "Joe", "Ben", "Jessie", "Leanne", "Becky", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
+        "Fred", "Jim", "Shiela", "Jack", "Betty", "Jacob", "Martha", "Kelly",
+        "Luke", "Matt", "Gemma", "Joe", "Ben", "Jessie", "Leanne", "Becky",
     };
 
     private static final String[] SURNAMES = 
     {
-        "Sutcliffe", "MacDonald", "Duckworth", "Smith", "Wisner", "Iversen", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-        "Nield", "Turton", "Trelfer", "Wilson", "Johnson", "Cowan", "Daniels", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+        "Sutcliffe", "MacDonald", "Duckworth", "Smith", "Wisner", "Iversen",
+        "Nield", "Turton", "Trelfer", "Wilson", "Johnson", "Cowan", "Daniels",
     };
 
     private static final String[] ROADS1 =
     {
-        "Green", "Red", "Yellow", "Brown", "Blue", "Black", "White", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+        "Green", "Red", "Yellow", "Brown", "Blue", "Black", "White",
     };
 
     private static final String[] ROADS2 =
     {
-        "Close", "Drive", "Street", "Avenue", "Crescent", "Road", "Place", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+        "Close", "Drive", "Street", "Avenue", "Crescent", "Road", "Place",
     };
 
     private static final String[] TOWNS =
     {
-        "Birmingham", "Kettering", "Paris", "San Francisco", "New York", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-        "San Mateo", "Barcelona", //$NON-NLS-1$ //$NON-NLS-2$
+        "Birmingham", "Kettering", "Paris", "San Francisco", "New York",
+        "San Mateo", "Barcelona",
     };
 
     /**

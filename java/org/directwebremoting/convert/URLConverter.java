@@ -46,7 +46,7 @@ public class URLConverter extends BaseV20Converter implements Converter
         }
         catch (MalformedURLException ex)
         {
-            log.warn("Failed to create URL from string '" + urlString + "'. Returning null"); //$NON-NLS-1$ //$NON-NLS-2$
+            log.warn("Failed to create URL from string '" + urlString + "'. Returning null");
             return null;
         }
     }

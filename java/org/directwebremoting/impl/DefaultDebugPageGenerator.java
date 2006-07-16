@@ -52,36 +52,36 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     {
         if (!creatorManager.isDebug())
         {
-            log.warn("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable."); //$NON-NLS-1$
-            throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
+            log.warn("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable.");
+            throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied"));
         }
 
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("<html>\n"); //$NON-NLS-1$
-        buffer.append("<head><title>DWR Test Index</title></head>\n"); //$NON-NLS-1$
-        buffer.append("<body>\n"); //$NON-NLS-1$
+        buffer.append("<html>\n");
+        buffer.append("<head><title>DWR Test Index</title></head>\n");
+        buffer.append("<body>\n");
 
-        buffer.append("<h2>Classes known to DWR:</h2>\n"); //$NON-NLS-1$
-        buffer.append("<ul>\n"); //$NON-NLS-1$
+        buffer.append("<h2>Classes known to DWR:</h2>\n");
+        buffer.append("<ul>\n");
         for (Iterator it = creatorManager.getCreatorNames().iterator(); it.hasNext();)
         {
             String name = (String) it.next();
             Creator creator = creatorManager.getCreator(name);
 
-            buffer.append("<li><a href='"); //$NON-NLS-1$
+            buffer.append("<li><a href='");
             buffer.append(root);
             buffer.append(PathConstants.PATH_TEST);
             buffer.append(name);
-            buffer.append("'>"); //$NON-NLS-1$
+            buffer.append("'>");
             buffer.append(name);
-            buffer.append("</a> ("); //$NON-NLS-1$
+            buffer.append("</a> (");
             buffer.append(creator.getType().getName());
-            buffer.append(")</li>\n"); //$NON-NLS-1$
+            buffer.append(")</li>\n");
         }
-        buffer.append("</ul>\n"); //$NON-NLS-1$
+        buffer.append("</ul>\n");
 
-        buffer.append("</body></html>\n"); //$NON-NLS-1$
+        buffer.append("</body></html>\n");
 
         return buffer.toString();
     }
@@ -93,8 +93,8 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     {
         if (!creatorManager.isDebug())
         {
-            log.warn("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable."); //$NON-NLS-1$
-            throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
+            log.warn("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable.");
+            throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied"));
         }
 
         String interfaceURL = root + PathConstants.PATH_INTERFACE + scriptName + PathConstants.EXTENSION_JS;
@@ -109,56 +109,56 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         Method[] methods = creator.getType().getMethods();
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("<html>\n"); //$NON-NLS-1$
-        buffer.append("<head>\n"); //$NON-NLS-1$
-        buffer.append("  <title>DWR Test</title>\n"); //$NON-NLS-1$
-        buffer.append("  <!-- These paths use .. so that they still work behind a path mapping proxy. The fully qualified version is more cut and paste friendly. -->\n"); //$NON-NLS-1$
-        buffer.append("  <script type='text/javascript' src='" + proxyInterfaceURL + "'></script>\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append("  <script type='text/javascript' src='" + proxyEngineURL + "'></script>\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append("  <script type='text/javascript' src='" + proxyUtilURL + "'></script>\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append("  <script type='text/javascript'>\n"); //$NON-NLS-1$
-        buffer.append("  function objectEval(text)\n"); //$NON-NLS-1$
-        buffer.append("  {\n"); //$NON-NLS-1$
-        buffer.append("    // eval() breaks when we use it to get an object using the { a:42, b:'x' }\n"); //$NON-NLS-1$
-        buffer.append("    // syntax because it thinks that { and } surround a block and not an object\n"); //$NON-NLS-1$;
-        buffer.append("    // So we wrap it in an array and extract the first element to get around\n"); //$NON-NLS-1$
-        buffer.append("    // this.\n"); //$NON-NLS-1$
-        buffer.append("    // The regex = [start of line][whitespace]{[stuff]}[whitespace][end of line]\n"); //$NON-NLS-1$
-        buffer.append("    text = text.replace(/\\n/g, ' ');\n"); //$NON-NLS-1$
-        buffer.append("    text = text.replace(/\\r/g, ' ');\n"); //$NON-NLS-1$
-        buffer.append("    if (text.match(/^\\s*\\{.*\\}\\s*$/))\n"); //$NON-NLS-1$
-        buffer.append("    {\n"); //$NON-NLS-1$
-        buffer.append("      text = '[' + text + '][0]';\n"); //$NON-NLS-1$
-        buffer.append("    }\n"); //$NON-NLS-1$
-        buffer.append("    return eval(text);\n"); //$NON-NLS-1$
-        buffer.append("  }\n"); //$NON-NLS-1$
-        buffer.append("  </script>\n"); //$NON-NLS-1$
-        buffer.append("  <style>\n"); //$NON-NLS-1$
-        buffer.append("    input.itext { font-size: smaller; background: #E4E4E4; border: 0; }\n"); //$NON-NLS-1$
-        buffer.append("    input.ibutton { font-size: xx-small; border: 1px outset; margin: 0px; padding: 0px; }\n"); //$NON-NLS-1$
-        buffer.append("    span.reply { background: #ffffdd; white-space: pre; }\n"); //$NON-NLS-1$
-        buffer.append("    span.warning { font-size: smaller; color: red; }\n"); //$NON-NLS-1$
-        buffer.append("  </style>\n"); //$NON-NLS-1$
-        buffer.append("</head>\n"); //$NON-NLS-1$
-        buffer.append("<body onload='DWRUtil.useLoadingMessage()'>\n"); //$NON-NLS-1$
+        buffer.append("<html>\n");
+        buffer.append("<head>\n");
+        buffer.append("  <title>DWR Test</title>\n");
+        buffer.append("  <!-- These paths use .. so that they still work behind a path mapping proxy. The fully qualified version is more cut and paste friendly. -->\n");
+        buffer.append("  <script type='text/javascript' src='" + proxyInterfaceURL + "'></script>\n");
+        buffer.append("  <script type='text/javascript' src='" + proxyEngineURL + "'></script>\n");
+        buffer.append("  <script type='text/javascript' src='" + proxyUtilURL + "'></script>\n");
+        buffer.append("  <script type='text/javascript'>\n");
+        buffer.append("  function objectEval(text)\n");
+        buffer.append("  {\n");
+        buffer.append("    // eval() breaks when we use it to get an object using the { a:42, b:'x' }\n");
+        buffer.append("    // syntax because it thinks that { and } surround a block and not an object\n");
+        buffer.append("    // So we wrap it in an array and extract the first element to get around\n");
+        buffer.append("    // this.\n");
+        buffer.append("    // The regex = [start of line][whitespace]{[stuff]}[whitespace][end of line]\n");
+        buffer.append("    text = text.replace(/\\n/g, ' ');\n");
+        buffer.append("    text = text.replace(/\\r/g, ' ');\n");
+        buffer.append("    if (text.match(/^\\s*\\{.*\\}\\s*$/))\n");
+        buffer.append("    {\n");
+        buffer.append("      text = '[' + text + '][0]';\n");
+        buffer.append("    }\n");
+        buffer.append("    return eval(text);\n");
+        buffer.append("  }\n");
+        buffer.append("  </script>\n");
+        buffer.append("  <style>\n");
+        buffer.append("    input.itext { font-size: smaller; background: #E4E4E4; border: 0; }\n");
+        buffer.append("    input.ibutton { font-size: xx-small; border: 1px outset; margin: 0px; padding: 0px; }\n");
+        buffer.append("    span.reply { background: #ffffdd; white-space: pre; }\n");
+        buffer.append("    span.warning { font-size: smaller; color: red; }\n");
+        buffer.append("  </style>\n");
+        buffer.append("</head>\n");
+        buffer.append("<body onload='DWRUtil.useLoadingMessage()'>\n");
         buffer.append(BLANK);
 
-        buffer.append("<h2>Methods For: " + scriptName + " (" + creator.getType().getName() + ")</h2>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        buffer.append("<p>To use this class in your javascript you will need the following script includes:</p>\n"); //$NON-NLS-1$
-        buffer.append("<pre>\n"); //$NON-NLS-1$
-        buffer.append("  &lt;script type='text/javascript' src='<a href='" + interfaceURL + "'>" + interfaceURL + "</a>'&gt;&lt;/script&gt;\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        buffer.append("  &lt;script type='text/javascript' src='<a href='" + engineURL + "'>" + engineURL + "</a>'&gt;&lt;/script&gt;\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        buffer.append("</pre>\n"); //$NON-NLS-1$
+        buffer.append("<h2>Methods For: " + scriptName + " (" + creator.getType().getName() + ")</h2>\n");
+        buffer.append("<p>To use this class in your javascript you will need the following script includes:</p>\n");
+        buffer.append("<pre>\n");
+        buffer.append("  &lt;script type='text/javascript' src='<a href='" + interfaceURL + "'>" + interfaceURL + "</a>'&gt;&lt;/script&gt;\n");
+        buffer.append("  &lt;script type='text/javascript' src='<a href='" + engineURL + "'>" + engineURL + "</a>'&gt;&lt;/script&gt;\n");
+        buffer.append("</pre>\n");
 
-        buffer.append("<p>In addition there is an optional utility script:</p>\n"); //$NON-NLS-1$
-        buffer.append("<pre>\n"); //$NON-NLS-1$
-        buffer.append("  &lt;script type='text/javascript' src='<a href='" + utilURL + "'>" + utilURL + "</a>'&gt;&lt;/script&gt;\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        buffer.append("</pre>\n"); //$NON-NLS-1$
+        buffer.append("<p>In addition there is an optional utility script:</p>\n");
+        buffer.append("<pre>\n");
+        buffer.append("  &lt;script type='text/javascript' src='<a href='" + utilURL + "'>" + utilURL + "</a>'&gt;&lt;/script&gt;\n");
+        buffer.append("</pre>\n");
 
-        buffer.append("<p>Replies from DWR are shown with a yellow background if they are simple or in an alert box otherwise.<br/>\n"); //$NON-NLS-1$
-        buffer.append("The inputs are evaluated as Javascript so strings must be quoted before execution.</p>\n"); //$NON-NLS-1$
+        buffer.append("<p>Replies from DWR are shown with a yellow background if they are simple or in an alert box otherwise.<br/>\n");
+        buffer.append("The inputs are evaluated as Javascript so strings must be quoted before execution.</p>\n");
 
-        buffer.append("<p>There are " + methods.length + " declared methods:</p><ul>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        buffer.append("<p>There are " + methods.length + " declared methods:</p><ul>\n");
 
         for (int i = 0; i < methods.length; i++)
         {
@@ -170,7 +170,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             if (reason != null)
             {
                 buffer.append(BLANK);
-                buffer.append("<li style='color: #A88;'>  " + methodName + "() is not available: " + reason + "</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                buffer.append("<li style='color: #A88;'>  " + methodName + "() is not available: " + reason + "</li>\n");
                 if (!allowImpossibleTests)
                 {
                     continue;
@@ -181,13 +181,13 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             if (JavascriptUtil.isReservedWord(methodName))
             {
                 buffer.append(BLANK);
-                buffer.append("<li style='color: #88A;'>" + methodName + "() is not available because it is a reserved word.</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                buffer.append("<li style='color: #88A;'>" + methodName + "() is not available because it is a reserved word.</li>\n");
                 continue;
             }
 
             buffer.append(BLANK);
-            buffer.append("<li>\n"); //$NON-NLS-1$
-            buffer.append("  " + methodName + '('); //$NON-NLS-1$
+            buffer.append("<li>\n");
+            buffer.append("  " + methodName + '(');
 
             Class[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
@@ -197,64 +197,64 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
                 // The special type that we handle transparently
                 if (LocalUtil.isServletClass(paramType))
                 {
-                    buffer.append("AUTO"); //$NON-NLS-1$
+                    buffer.append("AUTO");
                 }
                 else
                 {
                     String value = BLANK;
                     if (paramType == String.class)
                     {
-                        value = "\"\""; //$NON-NLS-1$
+                        value = "\"\"";
                     }
                     else if (paramType == Boolean.class || paramType == Boolean.TYPE)
                     {
-                        value = "true"; //$NON-NLS-1$
+                        value = "true";
                     }
                     else if (paramType == Integer.class || paramType == Integer.TYPE || paramType == Short.class || paramType == Short.TYPE
                         || paramType == Long.class || paramType == Long.TYPE || paramType == Byte.class || paramType == Byte.TYPE)
                     {
-                        value = "0"; //$NON-NLS-1$
+                        value = "0";
                     }
                     else if (paramType == Float.class || paramType == Float.TYPE || paramType == Double.class || paramType == Double.TYPE)
                     {
-                        value = "0.0"; //$NON-NLS-1$
+                        value = "0.0";
                     }
                     else if (paramType.isArray() || Collection.class.isAssignableFrom(paramType))
                     {
-                        value = "[]"; //$NON-NLS-1$
+                        value = "[]";
                     }
                     else if (Map.class.isAssignableFrom(paramType))
                     {
-                        value = "{}"; //$NON-NLS-1$
+                        value = "{}";
                     }
 
-                    buffer.append("    <input class='itext' type='text' size='10' value='" + value + "' id='p" + i + j + "' title='Will be converted to: " + paramType.getName() + "'/>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    buffer.append("    <input class='itext' type='text' size='10' value='" + value + "' id='p" + i + j + "' title='Will be converted to: " + paramType.getName() + "'/>");
                 }
 
-                buffer.append(j == paramTypes.length - 1 ? BLANK : ", \n"); //$NON-NLS-1$
+                buffer.append(j == paramTypes.length - 1 ? BLANK : ", \n");
             }
-            buffer.append("  );\n"); //$NON-NLS-1$
+            buffer.append("  );\n");
 
-            String onclick = scriptName + '.' + methodName + "("; //$NON-NLS-1$
+            String onclick = scriptName + '.' + methodName + "(";
             for (int j = 0; j < paramTypes.length; j++)
             {
                 if (!LocalUtil.isServletClass(paramTypes[j]))
                 {
-                    onclick += "objectEval($(\"p" + i + j + "\").value), "; //$NON-NLS-1$ //$NON-NLS-2$
+                    onclick += "objectEval($(\"p" + i + j + "\").value), ";
                 }
             }
-            onclick += "reply" + i + ");"; //$NON-NLS-1$ //$NON-NLS-2$
+            onclick += "reply" + i + ");";
 
-            buffer.append("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptName + '.' + methodName + "(). View source for details.'/>\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            buffer.append("  <input class='ibutton' type='button' onclick='" + onclick + "' value='Execute'  title='Calls " + scriptName + '.' + methodName + "(). View source for details.'/>\n");
 
-            buffer.append("  <script type='text/javascript'>\n"); //$NON-NLS-1$
-            buffer.append("    var reply" + i + " = function(data)\n"); //$NON-NLS-1$ //$NON-NLS-2$
-            buffer.append("    {\n"); //$NON-NLS-1$
-            buffer.append("      if (data != null && typeof data == 'object') alert(DWRUtil.toDescriptiveString(data, 2));\n"); //$NON-NLS-1$
-            buffer.append("      else DWRUtil.setValue('d" + i + "', DWRUtil.toDescriptiveString(data, 1));\n"); //$NON-NLS-1$ //$NON-NLS-2$
-            buffer.append("    }\n"); //$NON-NLS-1$
-            buffer.append("  </script>\n"); //$NON-NLS-1$
-            buffer.append("  <span id='d" + i + "' class='reply'></span>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+            buffer.append("  <script type='text/javascript'>\n");
+            buffer.append("    var reply" + i + " = function(data)\n");
+            buffer.append("    {\n");
+            buffer.append("      if (data != null && typeof data == 'object') alert(DWRUtil.toDescriptiveString(data, 2));\n");
+            buffer.append("      else DWRUtil.setValue('d" + i + "', DWRUtil.toDescriptiveString(data, 1));\n");
+            buffer.append("    }\n");
+            buffer.append("  </script>\n");
+            buffer.append("  <span id='d" + i + "' class='reply'></span>\n");
 
             // Print a warning if this method is overloaded
             boolean overloaded = false;
@@ -267,7 +267,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             }
             if (overloaded)
             {
-                buffer.append("<br/><span class='warning'>(Warning: overloaded methods are not recommended. See <a href='#overloadedMethod'>below</a>)</span>\n"); //$NON-NLS-1$
+                buffer.append("<br/><span class='warning'>(Warning: overloaded methods are not recommended. See <a href='#overloadedMethod'>below</a>)</span>\n");
             }
 
             // Print a warning if the method uses un-marshallable types
@@ -275,32 +275,32 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             {
                 if (!converterManager.isConvertable(paramTypes[j]))
                 {
-                    buffer.append("<br/><span class='warning'>(Warning: No Converter for " + paramTypes[j].getName() + ". See <a href='#missingConverter'>below</a>)</span>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                    buffer.append("<br/><span class='warning'>(Warning: No Converter for " + paramTypes[j].getName() + ". See <a href='#missingConverter'>below</a>)</span>\n");
                 }
             }
 
             if (!converterManager.isConvertable(method.getReturnType()))
             {
-                buffer.append("<br/><span class='warning'>(Warning: No Converter for " + method.getReturnType().getName() + ". See <a href='#missingConverter'>below</a>)</span>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                buffer.append("<br/><span class='warning'>(Warning: No Converter for " + method.getReturnType().getName() + ". See <a href='#missingConverter'>below</a>)</span>\n");
             }
 
             // See also the call to getReasonToNotDisplay() above
             String warning = accessControl.getReasonToNotExecute(creator, scriptName, method);
             if (warning != null)
             {
-                buffer.append("<br/><span class='warning'>(Warning: Role restructions in place: " + warning + ".)</span>\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                buffer.append("<br/><span class='warning'>(Warning: Role restructions in place: " + warning + ".)</span>\n");
             }
 
-            buffer.append("</li>\n"); //$NON-NLS-1$
+            buffer.append("</li>\n");
         }
 
         buffer.append(BLANK);
-        buffer.append("</ul>\n"); //$NON-NLS-1$
+        buffer.append("</ul>\n");
 
-        buffer.append("<h2>Other Links</h2>\n"); //$NON-NLS-1$
-        buffer.append("<ul>\n"); //$NON-NLS-1$
-        buffer.append("<li>Back to <a href='" + root + "/'>class index</a>.</li>\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        buffer.append("</ul>\n"); //$NON-NLS-1$
+        buffer.append("<h2>Other Links</h2>\n");
+        buffer.append("<ul>\n");
+        buffer.append("<li>Back to <a href='" + root + "/'>class index</a>.</li>\n");
+        buffer.append("</ul>\n");
 
         synchronized (scriptCache)
         {
@@ -310,8 +310,8 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
                 InputStream raw = getClass().getResourceAsStream(DwrConstants.PACKAGE + PathConstants.FILE_HELP);
                 if (raw == null)
                 {
-                    log.error(Messages.getString("DefaultProcessor.MissingHelp", PathConstants.FILE_HELP)); //$NON-NLS-1$
-                    output = "<p>Failed to read help text from resource file. Check dwr.jar is built to include html files.</p>"; //$NON-NLS-1$
+                    log.error(Messages.getString("DefaultProcessor.MissingHelp", PathConstants.FILE_HELP));
+                    output = "<p>Failed to read help text from resource file. Check dwr.jar is built to include html files.</p>";
                 }
                 else
                 {
@@ -348,7 +348,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             buffer.append(output);
         }
 
-        buffer.append("</body></html>\n"); //$NON-NLS-1$
+        buffer.append("</body></html>\n");
 
         return buffer.toString();
     }
@@ -424,12 +424,12 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /**
      * 2 dots
      */
-    private static final String PATH_UP = ".."; //$NON-NLS-1$
+    private static final String PATH_UP = "..";
 
     /**
      * Empty string
      */
-    public static final String BLANK = ""; //$NON-NLS-1$
+    public static final String BLANK = "";
 
     /**
      * How we convert parameters

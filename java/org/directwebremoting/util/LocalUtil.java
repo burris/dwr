@@ -228,16 +228,16 @@ public final class LocalUtil
     public static void addNoCacheHeaders(HttpServletResponse resp)
     {
         // Set standard HTTP/1.1 no-cache headers.
-        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate"); //$NON-NLS-1$ //$NON-NLS-2$
+        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
 
         // Set IE extended HTTP/1.1 no-cache headers (use addHeader).
-        resp.addHeader("Cache-Control", "post-check=0, pre-check=0"); //$NON-NLS-1$ //$NON-NLS-2$
+        resp.addHeader("Cache-Control", "post-check=0, pre-check=0");
 
         // Set standard HTTP/1.0 no-cache header.
-        resp.setHeader("Pragma", "no-cache"); //$NON-NLS-1$ //$NON-NLS-2$
+        resp.setHeader("Pragma", "no-cache");
 
         // Set to expire far in the past. Prevents caching at the proxy server
-        resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT"); //$NON-NLS-1$ //$NON-NLS-2$
+        resp.setHeader("Expires", "Sat, 6 May 1995 12:00:00 GMT");
     }
 
     /**
@@ -266,13 +266,13 @@ public final class LocalUtil
         {
             try
             {
-                decode14 = URLDecoder.class.getMethod("decode", new Class[] { String.class, String.class }); //$NON-NLS-1$
+                decode14 = URLDecoder.class.getMethod("decode", new Class[] { String.class, String.class });
             }
             catch (Exception ex)
             {
                 if (!warn13)
                 {
-                    log.warn("URLDecoder.decode(String, String) is not available. Falling back to 1.3 variant."); //$NON-NLS-1$
+                    log.warn("URLDecoder.decode(String, String) is not available. Falling back to 1.3 variant.");
                     warn13 = true;
                 }
             }
@@ -284,11 +284,11 @@ public final class LocalUtil
         {
             try
             {
-                return (String) decode14.invoke(null, new Object[] { value, "UTF-8" }); //$NON-NLS-1$
+                return (String) decode14.invoke(null, new Object[] { value, "UTF-8" });
             }
             catch (Exception ex)
             {
-                log.warn("Failed to use JDK 1.4 decoder", ex); //$NON-NLS-1$
+                log.warn("Failed to use JDK 1.4 decoder", ex);
             }
         }
 
@@ -319,16 +319,16 @@ public final class LocalUtil
             {
                 if (ignore != null && !ignore.contains(key))
                 {
-                    log.warn("No property '" + key + "' on " + object.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.warn("No property '" + key + "' on " + object.getClass().getName());
                 }
             }
             catch (InvocationTargetException ex)
             {
-                log.warn("Error setting " + key + "=" + value + " on " + object.getClass().getName(), ex.getTargetException()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.warn("Error setting " + key + "=" + value + " on " + object.getClass().getName(), ex.getTargetException());
             }
             catch (Exception ex)
             {
-                log.warn("Error setting " + key + "=" + value + " on " + object.getClass().getName(), ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.warn("Error setting " + key + "=" + value + " on " + object.getClass().getName(), ex);
             }
         }
     }
@@ -348,7 +348,7 @@ public final class LocalUtil
     {
         Class real = object.getClass();
 
-        String setterName = "set" + key.substring(0, 1).toUpperCase() + key.substring(1); //$NON-NLS-1$
+        String setterName = "set" + key.substring(0, 1).toUpperCase() + key.substring(1);
 
         try
         {
@@ -384,12 +384,12 @@ public final class LocalUtil
                 {
                     // The conversion failed - it was speculative anyway so we
                     // don't worry now
-                    log.warn("conversion error converting: '" + value + "' into a " + propertyType.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.warn("conversion error converting: '" + value + "' into a " + propertyType.getName());
                 }
             }
         }
 
-        throw new NoSuchMethodException("Failed to find a property called: " + key + " on " + object.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+        throw new NoSuchMethodException("Failed to find a property called: " + key + " on " + object.getClass().getName());
     }
 
     /**
@@ -415,7 +415,7 @@ public final class LocalUtil
             }
             else
             {
-                throw new IllegalArgumentException("Can't more than one character in string - can't convert to char: '" + value + "'"); //$NON-NLS-1$ //$NON-NLS-2$
+                throw new IllegalArgumentException("Can't more than one character in string - can't convert to char: '" + value + "'");
             }
         }
 
@@ -480,7 +480,7 @@ public final class LocalUtil
             return Double.valueOf(trimValue);
         }
 
-        throw new IllegalArgumentException("Unsupported conversion type: " + paramType.getName()); //$NON-NLS-1$
+        throw new IllegalArgumentException("Unsupported conversion type: " + paramType.getName());
     }
 
     /**
@@ -496,7 +496,7 @@ public final class LocalUtil
         int colon = data.indexOf(ConversionConstants.INBOUND_TYPE_SEPARATOR);
         if (colon == -1)
         {
-            log.error("Missing : in conversion data (" + data + ')'); //$NON-NLS-1$
+            log.error("Missing : in conversion data (" + data + ')');
             reply[LocalUtil.INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
             reply[LocalUtil.INBOUND_INDEX_VALUE] = data;
         }
@@ -603,11 +603,11 @@ public final class LocalUtil
             }
             catch (InvocationTargetException ex)
             {
-                throw new IllegalStateException("InvocationTargetException calling " + method.getName() + ": " + ex.getTargetException().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                throw new IllegalStateException("InvocationTargetException calling " + method.getName() + ": " + ex.getTargetException().toString());
             }
             catch (Exception ex)
             {
-                throw new IllegalStateException("Reflection error calling " + method.getName() + ": " + ex.toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                throw new IllegalStateException("Reflection error calling " + method.getName() + ": " + ex.toString());
             }
         }
 
@@ -634,27 +634,27 @@ public final class LocalUtil
         catch (ClassNotFoundException ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage());
             return null;
         }
         catch (NoClassDefFoundError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage());
             return null;
         }
         catch (TransformerFactoryConfigurationError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            log.debug("Maybe you need to add xalan.jar to your webserver?"); //$NON-NLS-1$
+            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage());
+            log.debug("Maybe you need to add xalan.jar to your webserver?");
             return null;
         }
 
         // Check it is of the right type
         if (!impl.isAssignableFrom(clazz))
         {
-            log.error("Class '" + clazz.getName() + "' does not implement '" + impl.getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Class '" + clazz.getName() + "' does not implement '" + impl.getName() + "'.");
             return null;
         }
 
@@ -665,25 +665,25 @@ public final class LocalUtil
         }
         catch (InstantiationException ex)
         {
-            log.error("InstantiationException for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("InstantiationException for '" + name + "' failed:", ex);
             return null;
         }
         catch (IllegalAccessException ex)
         {
-            log.error("IllegalAccessException for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("IllegalAccessException for '" + name + "' failed:", ex);
             return null;
         }
         catch (NoClassDefFoundError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage());
             return null;
         }
         catch (TransformerFactoryConfigurationError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            log.debug("Maybe you need to add xalan.jar to your webserver?"); //$NON-NLS-1$
+            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage());
+            log.debug("Maybe you need to add xalan.jar to your webserver?");
             return null;
         }
         catch (Exception ex)
@@ -692,12 +692,12 @@ public final class LocalUtil
             if (ex instanceof ClassNotFoundException)
             {
                 // We expect this sometimes, hence debug
-                log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage());
                 return null;
             }
             else
             {
-                log.error("Failed to load '" + name + "' (" + className + ")", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.error("Failed to load '" + name + "' (" + className + ")", ex);
                 return null;
             }
         }
@@ -725,26 +725,26 @@ public final class LocalUtil
         catch (ClassNotFoundException ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage());
             return null;
         }
         catch (NoClassDefFoundError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage());
             return null;
         }
         catch (TransformerFactoryConfigurationError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage());
             return null;
         }
 
         // Check it is of the right type
         if (!impl.isAssignableFrom(clazz))
         {
-            log.error("Class '" + clazz.getName() + "' does not implement '" + impl.getName() + "'."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Class '" + clazz.getName() + "' does not implement '" + impl.getName() + "'.");
             return null;
         }
 
@@ -755,22 +755,22 @@ public final class LocalUtil
         }
         catch (InstantiationException ex)
         {
-            log.error("InstantiationException for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("InstantiationException for '" + name + "' failed:", ex);
             return null;
         }
         catch (IllegalAccessException ex)
         {
-            log.error("IllegalAccessException for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("IllegalAccessException for '" + name + "' failed:", ex);
             return null;
         }
         catch (TransformerFactoryConfigurationError ex)
         {
-            log.error("TransformerFactoryConfigurationError for '" + name + "' failed:", ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("TransformerFactoryConfigurationError for '" + name + "' failed:", ex);
             return null;
         }
         catch (Exception ex)
         {
-            log.error("Failed to load creator '" + name + "', classname=" + className + ": ", ex); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.error("Failed to load creator '" + name + "', classname=" + className + ": ", ex);
             return null;
         }
     }

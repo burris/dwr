@@ -163,7 +163,7 @@ public abstract class ScriptConduit implements Comparable
             classname = LocalUtil.getShortClassName(getClass());
         }
 
-        return classname + "[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return classname + "[id=" + id + "]";
     }
 
     /**

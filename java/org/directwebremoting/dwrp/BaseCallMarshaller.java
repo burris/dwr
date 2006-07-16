@@ -96,13 +96,13 @@ public abstract class BaseCallMarshaller implements Marshaller
                 if (key.startsWith(ConversionConstants.INBOUND_CALLNUM_PREFIX) &&
                     key.indexOf(ConversionConstants.INBOUND_CALLNUM_SUFFIX + ConversionConstants.INBOUND_KEY_ENV) != -1)
                 {
-                    buffer.append(key + '=' + value.toString() + ", "); //$NON-NLS-1$
+                    buffer.append(key + '=' + value.toString() + ", ");
                 }
             }
 
             if (buffer.length() > 0)
             {
-                log.debug("Environment:  " + buffer.toString()); //$NON-NLS-1$
+                log.debug("Environment:  " + buffer.toString());
             }
         }
 
@@ -122,8 +122,8 @@ public abstract class BaseCallMarshaller implements Marshaller
             if (method == null)
             {
                 String name = call.getScriptName() + '.' + call.getMethodName();
-                String error = Messages.getString("DefaultRemoter.UnknownMethod", name); //$NON-NLS-1$
-                log.warn("Marshalling exception: " + error); //$NON-NLS-1$
+                String error = Messages.getString("DefaultRemoter.UnknownMethod", name);
+                log.warn("Marshalling exception: " + error);
 
                 call.setMethod(null);
                 call.setParameters(null);
@@ -138,7 +138,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             String reason = accessControl.getReasonToNotExecute(creator, call.getScriptName(), method);
             if (reason != null)
             {
-                throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied")); //$NON-NLS-1$
+                throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied"));
             }
 
             // Convert all the parameters to the correct types
@@ -154,7 +154,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                 }
                 catch (MarshallException ex)
                 {
-                    log.warn("Marshalling exception: " + ex.getMessage()); //$NON-NLS-1$
+                    log.warn("Marshalling exception: " + ex.getMessage());
 
                     call.setMethod(null);
                     call.setParameters(null);
@@ -191,7 +191,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                 String value = (String) entry.getValue();
 
                 request.setAttribute(key, value);
-                log.debug("Moved param to request: " + key + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
+                log.debug("Moved param to request: " + key + "=" + value);
             }
         }
     }
@@ -206,12 +206,12 @@ public abstract class BaseCallMarshaller implements Marshaller
     {
         if (call.getScriptName() == null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.MissingClassParam")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.MissingClassParam"));
         }
 
         if (call.getMethodName() == null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.MissingMethodParam")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.MissingMethodParam"));
         }
 
         Creator creator = creatorManager.getCreator(call.getScriptName());
@@ -250,7 +250,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         // Pick a method to call
         if (available.size() > 1)
         {
-            log.warn("Warning multiple matching methods. Using first match."); //$NON-NLS-1$
+            log.warn("Warning multiple matching methods. Using first match.");
         }
 
         if (available.isEmpty())
@@ -276,7 +276,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             // This might be considered evil - altering the program flow
             // depending on the log status, however DebuggingPrintWriter is
             // very thin and only about logging
-            out = new DebuggingPrintWriter("", response.getWriter()); //$NON-NLS-1$
+            out = new DebuggingPrintWriter("", response.getWriter());
         }
         else
         {
@@ -290,7 +290,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         if (out instanceof DebuggingPrintWriter)
         {
             DebuggingPrintWriter dpw = (DebuggingPrintWriter) out;
-            dpw.setPrefix("out(" + conduit.hashCode() + "): "); //$NON-NLS-1$ //$NON-NLS-2$
+            dpw.setPrefix("out(" + conduit.hashCode() + "): ");
         }
 
         // Send the script prefix (if any)
@@ -316,14 +316,14 @@ public abstract class BaseCallMarshaller implements Marshaller
                 Throwable ex = reply.getThrowable();
 
                 ScriptBuffer script = new ScriptBuffer(converterManager);
-                script.appendScript("DWREngine._handleServerError(") //$NON-NLS-1$
+                script.appendScript("DWREngine._handleServerError(")
                       .appendData(reply.getId())
                       .appendScript(',')
                       .appendData(ex)
-                      .appendScript(");"); //$NON-NLS-1$
+                      .appendScript(");");
                 conduit.addScript(script);
 
-                log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']');
             }
             else
             {
@@ -332,37 +332,37 @@ public abstract class BaseCallMarshaller implements Marshaller
                 try
                 {
                     ScriptBuffer script = new ScriptBuffer(converterManager);
-                    script.appendScript("DWREngine._handleResponse(") //$NON-NLS-1$
+                    script.appendScript("DWREngine._handleResponse(")
                           .appendData(reply.getId())
                           .appendScript(',')
                           .appendData(data)
-                          .appendScript(");"); //$NON-NLS-1$
+                          .appendScript(");");
 
                     conduit.addScript(script);
                 }
                 catch (MarshallException ex)
                 {
                     ScriptBuffer script = new ScriptBuffer(converterManager);
-                    script.appendScript("DWREngine._handleServerError(") //$NON-NLS-1$
+                    script.appendScript("DWREngine._handleServerError(")
                           .appendData(reply.getId())
                           .appendScript(',')
                           .appendData(ex)
-                          .appendScript(");"); //$NON-NLS-1$
+                          .appendScript(");");
                     conduit.addScript(script);
 
-                    log.warn("--MarshallException: id[" + reply.getId() + "] message[" + ex.toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.warn("--MarshallException: id[" + reply.getId() + "] message[" + ex.toString() + ']');
                 }
                 catch (Exception ex)
                 {
                     ScriptBuffer script = new ScriptBuffer(converterManager);
-                    script.appendScript("DWREngine._handleServerError(") //$NON-NLS-1$
+                    script.appendScript("DWREngine._handleServerError(")
                           .appendData(reply.getId())
                           .appendScript(',')
                           .appendData(ex)
-                          .appendScript(");"); //$NON-NLS-1$
+                          .appendScript(");");
                     conduit.addScript(script);
 
-                    log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']', ex); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']', ex);
                 }
             }
         }
@@ -408,7 +408,7 @@ public abstract class BaseCallMarshaller implements Marshaller
     {
         ParseResponse parseResponse = new ParseResponse();
 
-        if (req.getMethod().equals("GET")) //$NON-NLS-1$
+        if (req.getMethod().equals("GET"))
         {
             parseResponse.setAllParameters(ParseUtil.parseGet(req));
         }
@@ -441,7 +441,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         }
         catch (NumberFormatException ex)
         {
-            throw new MarshallException(Messages.getString("ExecuteQuery.BadCallCount", callStr)); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("ExecuteQuery.BadCallCount", callStr));
         }
 
         List inboundContexts = parseResponse.getInboundContexts();
@@ -546,7 +546,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             super(RANK_SLOW);
             if (out == null)
             {
-                throw new NullPointerException("out=null"); //$NON-NLS-1$
+                throw new NullPointerException("out=null");
             }
 
             this.out = out;
@@ -593,17 +593,17 @@ public abstract class BaseCallMarshaller implements Marshaller
     /**
      * How we stash away the request
      */
-    protected static final String ATTRIBUTE_REQUEST = "org.directwebremoting.dwrp.request"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_REQUEST = "org.directwebremoting.dwrp.request";
 
     /**
      * How we stash away the conduit
      */
-    protected static final String ATTRIBUTE_CONDUIT = "org.directwebremoting.dwrp.conduit"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_CONDUIT = "org.directwebremoting.dwrp.conduit";
 
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_PARSE_RESPONSE = "org.directwebremoting.dwrp.parseResponse"; //$NON-NLS-1$
+    protected static final String ATTRIBUTE_PARSE_RESPONSE = "org.directwebremoting.dwrp.parseResponse";
 
     /**
      * The log stream

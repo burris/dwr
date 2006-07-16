@@ -67,21 +67,21 @@ public interface Creator
      * Application scope: named reference remains available in the
      * ServletContext until it is reclaimed. 
      */
-    static final String APPLICATION = "application"; //$NON-NLS-1$
+    static final String APPLICATION = "application";
 
     /**
      * Session scope (only valid if this page participates in a session): the
      * named reference remains available from the HttpSession (if any)
      * associated with the Servlet until the HttpSession is invalidated. 
      */
-    static final String SESSION = "session"; //$NON-NLS-1$
+    static final String SESSION = "session";
 
     /**
      * Script scope (tied to a id recorded in Javascript): the named reference
      * remains available while the script variable remains stored in the
      * browser. 
      */
-    static final String SCRIPT = "script"; //$NON-NLS-1$
+    static final String SCRIPT = "script";
 
     /**
      * <b>This type of scope is not currently supported by DWR</b>
@@ -89,12 +89,12 @@ public interface Creator
      * ServletRequest associated with the Servlet until the current request is
      * completed.
      */
-    static final String REQUEST = "request"; //$NON-NLS-1$
+    static final String REQUEST = "request";
 
     /**
      * Page scope: (this is the default) the named reference remains available
      * in this PageContext until the return from the current Servlet.service()
      * invocation.
      */
-    static final String PAGE = "page"; //$NON-NLS-1$
+    static final String PAGE = "page";
 }

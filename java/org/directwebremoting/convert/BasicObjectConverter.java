@@ -41,19 +41,19 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements C
     {
         if (inclusions != null)
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.OnlyIncludeOrExclude")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.OnlyIncludeOrExclude"));
         }
 
         exclusions = new ArrayList();
 
-        String toSplit = LocalUtil.replace(excludes, ",", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        String toSplit = LocalUtil.replace(excludes, ",", " ");
         StringTokenizer st = new StringTokenizer(toSplit);
         while (st.hasMoreTokens())
         {
             String rule = st.nextToken();
-            if (rule.startsWith("get")) //$NON-NLS-1$
+            if (rule.startsWith("get"))
             {
-                log.warn("Exclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name."); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("Exclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name.");
             }
 
             exclusions.add(rule);
@@ -68,19 +68,19 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements C
     {
         if (exclusions != null)
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.OnlyIncludeOrExclude")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.OnlyIncludeOrExclude"));
         }
 
         inclusions = new ArrayList();
 
-        String toSplit = LocalUtil.replace(includes, ",", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        String toSplit = LocalUtil.replace(includes, ",", " ");
         StringTokenizer st = new StringTokenizer(toSplit);
         while (st.hasMoreTokens())
         {
             String rule = st.nextToken();
-            if (rule.startsWith("get")) //$NON-NLS-1$
+            if (rule.startsWith("get"))
             {
-                log.warn("Inclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name."); //$NON-NLS-1$ //$NON-NLS-2$
+                log.warn("Inclusions are based on property names and not method names. '" + rule + "' starts with 'get' so it looks like a method name and not a property name.");
             }
 
             inclusions.add(rule);

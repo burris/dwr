@@ -33,9 +33,9 @@ public class Logging2AjaxFilter implements AjaxFilter
      */
     public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
     {
-        log.debug("L2: About to execute: " + method.getName() + "() on " + obj); //$NON-NLS-1$ //$NON-NLS-2$
+        log.debug("L2: About to execute: " + method.getName() + "() on " + obj);
         Object reply = chain.doFilter(obj, method, params);
-        log.debug("L2: - Executed: " + method.getName() + "() giving " + reply); //$NON-NLS-1$ //$NON-NLS-2$
+        log.debug("L2: - Executed: " + method.getName() + "() giving " + reply);
         return reply;
     }
     

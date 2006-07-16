@@ -152,8 +152,8 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      */
     public void afterPropertiesSet() throws Exception
     {
-        Assert.notNull(getServletContext(), "The servlet context has not been set on the controller"); //$NON-NLS-1$
-        Assert.notNull(configurators, "The required 'configurators' property should be set"); //$NON-NLS-1$
+        Assert.notNull(getServletContext(), "The servlet context has not been set on the controller");
+        Assert.notNull(configurators, "The required 'configurators' property should be set");
 
         // use a fake servlet config as Spring 1.x does not provide ServletConfigAware functionality
         servletConfig = new FakeServletConfig(name, getServletContext());
@@ -175,11 +175,11 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         }
         catch (InstantiationException ex)
         {
-            throw new BeanCreationException("Failed to instansiate", ex); //$NON-NLS-1$
+            throw new BeanCreationException("Failed to instansiate", ex);
         }
         catch (IllegalAccessException ex)
         {
-            throw new BeanCreationException("Access error", ex); //$NON-NLS-1$
+            throw new BeanCreationException("Access error", ex);
         }
 
         try
@@ -200,7 +200,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         }
         catch (Exception ex)
         {
-            log.fatal("init failed", ex); //$NON-NLS-1$
+            log.fatal("init failed", ex);
             throw ex;
         }
         finally

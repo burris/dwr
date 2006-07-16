@@ -40,10 +40,10 @@ public class CoBrowse
         Collection sessions = wctx.getScriptSessionsByPage(currentPage);
 
         ScriptProxy all = new ScriptProxy(sessions);
-        all.addScript(new ScriptBuffer("$('cobrowseIframe').src = '" + url + "';")); //$NON-NLS-1$ //$NON-NLS-2$
+        all.addScript(new ScriptBuffer("$('cobrowseIframe').src = '" + url + "';"));
 
         sessions.remove(wctx.getScriptSession());
         DwrUtil utilAll = new DwrUtil(sessions);
-        utilAll.setValue("cobrowseUrl", url); //$NON-NLS-1$
+        utilAll.setValue("cobrowseUrl", url);
     }
 }

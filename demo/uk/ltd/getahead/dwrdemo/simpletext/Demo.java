@@ -35,7 +35,7 @@ public class Demo
      */
     public String sayHello(String name)
     {
-        return "Hello, " + name; //$NON-NLS-1$
+        return "Hello, " + name;
     }
 
     /**
@@ -47,6 +47,6 @@ public class Demo
     public String getInclude() throws ServletException, IOException
     {
         WebContext wctx = WebContextFactory.get();
-        return wctx.forwardToString("/simpletext/forward.html"); //$NON-NLS-1$
+        return wctx.forwardToString("/simpletext/forward.html");
     }
 }

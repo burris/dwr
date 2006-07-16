@@ -33,9 +33,9 @@ public class JavascriptChat
         String currentPage = wctx.getCurrentPage();
 
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("receiveMessages(") //$NON-NLS-1$
+        script.appendScript("receiveMessages(")
               .appendData(messages)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
 
         // Loop over all the users on the current page
         Collection pages = wctx.getScriptSessionsByPage(currentPage);
@@ -69,12 +69,12 @@ public class JavascriptChat
                     try
                     {
                         Thread.sleep(1000);
-                        log.debug("ping: " + count); //$NON-NLS-1$
-                        scriptSession.addScript(new ScriptBuffer("DWRUtil.setValue('ping', 'count=" + count + "');")); //$NON-NLS-1$ //$NON-NLS-2$
+                        log.debug("ping: " + count);
+                        scriptSession.addScript(new ScriptBuffer("DWRUtil.setValue('ping', 'count=" + count + "');"));
                     }
                     catch (Exception ex)
                     {
-                        log.warn("Waking:", ex); //$NON-NLS-1$
+                        log.warn("Waking:", ex);
                     }
                 }
             }

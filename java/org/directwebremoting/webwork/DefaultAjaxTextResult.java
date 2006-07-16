@@ -51,7 +51,7 @@ public class DefaultAjaxTextResult implements AjaxTextResult
      */
     public String toString()
     {
-        return "[AjaxTextResult: '" + m_text + "']"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "[AjaxTextResult: '" + m_text + "']";
     }
 
 }

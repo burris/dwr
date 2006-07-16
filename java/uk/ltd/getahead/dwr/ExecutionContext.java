@@ -119,7 +119,7 @@ public class ExecutionContext implements WebContext
      */
     public ScriptSession getScriptSession()
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().getPage()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getPage()");
     }
 
     /* (non-Javadoc)
@@ -127,7 +127,7 @@ public class ExecutionContext implements WebContext
      */
     public Collection getAllScriptSessions()
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().getAllScriptSessions()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getAllScriptSessions()");
     }
 
     /* (non-Javadoc)
@@ -135,7 +135,7 @@ public class ExecutionContext implements WebContext
      */
     public Collection getScriptSessionsByPage(String page)
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSessionsByPage()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSessionsByPage()");
     }
 
     /* (non-Javadoc)
@@ -143,7 +143,7 @@ public class ExecutionContext implements WebContext
      */
     public Container getContainer()
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().getContainer()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getContainer()");
     }
 
     /* (non-Javadoc)
@@ -151,7 +151,7 @@ public class ExecutionContext implements WebContext
      */
     public void setCurrentPageInformation(String page, String scriptSessionId)
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().setPageAndSessionIds()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().setPageAndSessionIds()");
     }
 
     /* (non-Javadoc)
@@ -159,7 +159,7 @@ public class ExecutionContext implements WebContext
      */
     public OutboundVariable toJavascript(Object data) throws MarshallException
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()");
     }
 
     /* (non-Javadoc)
@@ -167,7 +167,7 @@ public class ExecutionContext implements WebContext
      */
     public String getCurrentPage()
     {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()");
     }
 
     /**

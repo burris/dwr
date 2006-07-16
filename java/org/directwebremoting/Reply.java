@@ -47,7 +47,7 @@ public class Reply
     {
         if (reply != null)
         {
-            throw new NullPointerException("'reply' must be null when setting an Exception."); //$NON-NLS-1$
+            throw new NullPointerException("'reply' must be null when setting an Exception.");
         }
 
         this.id = id;

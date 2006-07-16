@@ -60,7 +60,7 @@ public class XOMConverter extends BaseV20Converter implements Converter
                 return doc.getRootElement();
             }
 
-            throw new MarshallException(Messages.getString("DOMConverter.UnusableClass", paramType.getName())); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("DOMConverter.UnusableClass", paramType.getName()));
         }
         catch (MarshallException ex)
         {
@@ -85,18 +85,18 @@ public class XOMConverter extends BaseV20Converter implements Converter
             // Using XSLT to convert to a stream. Setup the source
             if (!(data instanceof Node))
             {
-                throw new MarshallException("Data is not a DOM Node"); //$NON-NLS-1$
+                throw new MarshallException("Data is not a DOM Node");
             }
 
             Node node = (Node) data;
             String output = node.toXML();
 
             StringBuffer buffer = new StringBuffer();
-            buffer.append("var "); //$NON-NLS-1$
+            buffer.append("var ");
             buffer.append(varname);
-            buffer.append("=DWREngine._unserializeDocument(\""); //$NON-NLS-1$
+            buffer.append("=DWREngine._unserializeDocument(\"");
             buffer.append(JavascriptUtil.escapeJavaScript(output));
-            buffer.append("\");"); //$NON-NLS-1$
+            buffer.append("\");");
 
             ov.setInitCode(buffer.toString());
             return ov;

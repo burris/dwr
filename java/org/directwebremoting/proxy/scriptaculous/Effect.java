@@ -96,7 +96,7 @@ public class Effect extends ScriptProxy
      */
     public void fade(String elementId) throws MarshallException
     {
-        callEffect(elementId, "fade"); //$NON-NLS-1$
+        callEffect(elementId, "fade");
     }
 
     /**
@@ -106,7 +106,7 @@ public class Effect extends ScriptProxy
      */
     public void appear(String elementId) throws MarshallException
     {
-        callEffect(elementId, "appear"); //$NON-NLS-1$
+        callEffect(elementId, "appear");
     }
 
     /**
@@ -116,7 +116,7 @@ public class Effect extends ScriptProxy
      */
     public void puff(String elementId) throws MarshallException
     {
-        callEffect(elementId, "puff"); //$NON-NLS-1$
+        callEffect(elementId, "puff");
     }
 
     /**
@@ -126,7 +126,7 @@ public class Effect extends ScriptProxy
      */
     public void blindUp(String elementId) throws MarshallException
     {
-        callEffect(elementId, "blindUp"); //$NON-NLS-1$
+        callEffect(elementId, "blindUp");
     }
 
     /**
@@ -136,7 +136,7 @@ public class Effect extends ScriptProxy
      */
     public void blindDown(String elementId) throws MarshallException
     {
-        callEffect(elementId, "blindDown"); //$NON-NLS-1$
+        callEffect(elementId, "blindDown");
     }
 
     /**
@@ -146,7 +146,7 @@ public class Effect extends ScriptProxy
      */
     public void switchOff(String elementId) throws MarshallException
     {
-        callEffect(elementId, "switchOff"); //$NON-NLS-1$
+        callEffect(elementId, "switchOff");
     }
 
     /**
@@ -156,7 +156,7 @@ public class Effect extends ScriptProxy
      */
     public void dropOut(String elementId) throws MarshallException
     {
-        callEffect(elementId, "dropOut"); //$NON-NLS-1$
+        callEffect(elementId, "dropOut");
     }
 
     /**
@@ -166,7 +166,7 @@ public class Effect extends ScriptProxy
      */
     public void shake(String elementId) throws MarshallException
     {
-        callEffect(elementId, "shake"); //$NON-NLS-1$
+        callEffect(elementId, "shake");
     }
 
     /**
@@ -176,7 +176,7 @@ public class Effect extends ScriptProxy
      */
     public void slideDown(String elementId) throws MarshallException
     {
-        callEffect(elementId, "slideDown"); //$NON-NLS-1$
+        callEffect(elementId, "slideDown");
     }
 
     /**
@@ -186,7 +186,7 @@ public class Effect extends ScriptProxy
      */
     public void slideUp(String elementId) throws MarshallException
     {
-        callEffect(elementId, "slideUp"); //$NON-NLS-1$
+        callEffect(elementId, "slideUp");
     }
 
     /**
@@ -196,7 +196,7 @@ public class Effect extends ScriptProxy
      */
     public void squish(String elementId) throws MarshallException
     {
-        callEffect(elementId, "squish"); //$NON-NLS-1$
+        callEffect(elementId, "squish");
     }
 
     /**
@@ -206,7 +206,7 @@ public class Effect extends ScriptProxy
      */
     public void grow(String elementId) throws MarshallException
     {
-        callEffect(elementId, "grow"); //$NON-NLS-1$
+        callEffect(elementId, "grow");
     }
 
     /**
@@ -216,7 +216,7 @@ public class Effect extends ScriptProxy
      */
     public void shrink(String elementId) throws MarshallException
     {
-        callEffect(elementId, "shrink"); //$NON-NLS-1$
+        callEffect(elementId, "shrink");
     }
 
     /**
@@ -226,7 +226,7 @@ public class Effect extends ScriptProxy
      */
     public void pulsate(String elementId) throws MarshallException
     {
-        callEffect(elementId, "pulsate"); //$NON-NLS-1$
+        callEffect(elementId, "pulsate");
     }
 
     /**
@@ -236,7 +236,7 @@ public class Effect extends ScriptProxy
      */
     public void fold(String elementId) throws MarshallException
     {
-        callEffect(elementId, "fold"); //$NON-NLS-1$
+        callEffect(elementId, "fold");
     }
 
     /**
@@ -247,11 +247,11 @@ public class Effect extends ScriptProxy
     private void callEffect(String elementId, String function) throws MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("Effect.") //$NON-NLS-1$
+        script.appendScript("Effect.")
               .appendData(function)
-              .appendScript("(") //$NON-NLS-1$
+              .appendScript("(")
               .appendData(elementId)
-              .appendScript(");"); //$NON-NLS-1$
+              .appendScript(");");
         addScript(script);
     }
 }

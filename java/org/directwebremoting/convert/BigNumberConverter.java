@@ -50,11 +50,11 @@ public class BigNumberConverter extends BaseV20Converter implements Converter
                 return new BigInteger(value.trim());
             }
 
-            throw new MarshallException(Messages.getString("BigNumberConverter.NonPrimitive", paramType.getName())); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("BigNumberConverter.NonPrimitive", paramType.getName()));
         }
         catch (NumberFormatException ex)
         {
-            throw new MarshallException(Messages.getString("BigNumberConverter.FormatError", value, paramType.getName()), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("BigNumberConverter.FormatError", value, paramType.getName()), ex);
         }
     }
 
@@ -63,6 +63,6 @@ public class BigNumberConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object object, OutboundContext outctx)
     {
-        return new OutboundVariable("", object.toString()); //$NON-NLS-1$
+        return new OutboundVariable("", object.toString());
     }
 }

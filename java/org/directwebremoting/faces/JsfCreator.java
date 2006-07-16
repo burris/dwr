@@ -47,7 +47,7 @@ public class JsfCreator extends AbstractCreator implements Creator
             }
             catch (InstantiationException ex)
             {
-                log.error("Failed to instansiate object to detect type.", ex); //$NON-NLS-1$
+                log.error("Failed to instansiate object to detect type.", ex);
                 return Object.class;
             }
         }
@@ -63,7 +63,7 @@ public class JsfCreator extends AbstractCreator implements Creator
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext == null)
         {
-            log.error("Object " + getManagedBeanName() + " cannot be created since the faces context is null"); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Object " + getManagedBeanName() + " cannot be created since the faces context is null");
             return null;
         }
 
@@ -98,7 +98,7 @@ public class JsfCreator extends AbstractCreator implements Creator
             return false;
         }
 
-        int start = expression.indexOf("#{"); //$NON-NLS-1$
+        int start = expression.indexOf("#{");
 
         // Check to see if attribute has an expression
         return (start != -1) && (start < expression.indexOf('}'));
@@ -132,7 +132,7 @@ public class JsfCreator extends AbstractCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException("Creator.ClassNotFound"); //$NON-NLS-1$
+            throw new IllegalArgumentException("Creator.ClassNotFound");
         }
     }
 

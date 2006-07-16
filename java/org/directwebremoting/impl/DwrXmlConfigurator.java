@@ -71,7 +71,7 @@ public class DwrXmlConfigurator implements Configurator
         ServletContext servletContext = WebContextFactory.get().getServletContext();
         if (servletContext == null)
         {
-            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingServletContext")); //$NON-NLS-1$
+            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingServletContext"));
         }
 
         InputStream in = null;
@@ -80,7 +80,7 @@ public class DwrXmlConfigurator implements Configurator
             in = servletContext.getResourceAsStream(servletResourceName);
             if (in == null)
             {
-                throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", servletResourceName)); //$NON-NLS-1$
+                throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", servletResourceName));
             }
 
             setInputStream(in);
@@ -105,7 +105,7 @@ public class DwrXmlConfigurator implements Configurator
         InputStream in = getClass().getResourceAsStream(classResourceName);
         if (in == null)
         {
-            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", classResourceName)); //$NON-NLS-1$
+            throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", classResourceName));
         }
 
         setInputStream(in);
@@ -249,11 +249,11 @@ public class DwrXmlConfigurator implements Configurator
         }
         catch (NoClassDefFoundError ex)
         {
-            log.info("Convertor '" + type + "' not loaded due to NoClassDefFoundError. (match='" + match + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Convertor '" + type + "' not loaded due to NoClassDefFoundError. (match='" + match + "'). Cause: " + ex.getMessage());
         }
         catch (Exception ex)
         {
-            log.error("Failed to add convertor: match=" + match + ", type=" + type, ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Failed to add convertor: match=" + match + ", type=" + type, ex);
         }
     }
 
@@ -278,11 +278,11 @@ public class DwrXmlConfigurator implements Configurator
         }
         catch (NoClassDefFoundError ex)
         {
-            log.info("Creator '" + type + "' not loaded due to NoClassDefFoundError. (javascript='" + javascript + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            log.info("Creator '" + type + "' not loaded due to NoClassDefFoundError. (javascript='" + javascript + "'). Cause: " + ex.getMessage());
         }
         catch (Exception ex)
         {
-            log.error("Failed to add creator: type=" + type + ", javascript=" + javascript, ex); //$NON-NLS-1$ //$NON-NLS-2$
+            log.error("Failed to add creator: type=" + type + ", javascript=" + javascript, ex);
         }
     }
 
@@ -305,15 +305,15 @@ public class DwrXmlConfigurator implements Configurator
         }
         catch (ClassCastException ex)
         {
-            log.error(type + " does not implement " + AjaxFilter.class.getName(), ex); //$NON-NLS-1$
+            log.error(type + " does not implement " + AjaxFilter.class.getName(), ex);
         }
         catch (NoClassDefFoundError ex)
         {
-            log.info("Missing class for filter (class='" + type + "'). Cause: " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            log.info("Missing class for filter (class='" + type + "'). Cause: " + ex.getMessage());
         }
         catch (Exception ex)
         {
-            log.error("Failed to add filter: class=" + type, ex); //$NON-NLS-1$
+            log.error("Failed to add filter: class=" + type, ex);
         }
     }
 
@@ -461,7 +461,7 @@ public class DwrXmlConfigurator implements Configurator
             short type = node.getNodeType();
             if (type != Node.TEXT_NODE && type != Node.CDATA_SECTION_NODE)
             {
-                log.warn("Ignoring illegal node type: " + type); //$NON-NLS-1$
+                log.warn("Ignoring illegal node type: " + type);
                 continue;
             }
 
@@ -505,14 +505,14 @@ public class DwrXmlConfigurator implements Configurator
                     }
                     else
                     {
-                        log.warn("Setting extra type info to overloaded methods may fail with <parameter .../>"); //$NON-NLS-1$
+                        log.warn("Setting extra type info to overloaded methods may fail with <parameter .../>");
                     }
                 }
             }
 
             if (method == null)
             {
-                log.error("Unable to find method called: " + methodName + " on type: " + dest.getName() + " from creator: " + javascript); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                log.error("Unable to find method called: " + methodName + " on type: " + dest.getName() + " from creator: " + javascript);
                 continue;
             }
 
@@ -520,7 +520,7 @@ public class DwrXmlConfigurator implements Configurator
             int paramNo = Integer.parseInt(number);
 
             String types = include.getAttribute(ATTRIBUTE_TYPE);
-            StringTokenizer st = new StringTokenizer(types, ","); //$NON-NLS-1$
+            StringTokenizer st = new StringTokenizer(types, ",");
 
             int j = 0;
             while (st.hasMoreTokens())
@@ -540,11 +540,11 @@ public class DwrXmlConfigurator implements Configurator
     {
         if (servletResourceName != null)
         {
-            return "DwrXmlConfigurator[ServletResource:" + servletResourceName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "DwrXmlConfigurator[ServletResource:" + servletResourceName + "]";
         }
         else
         {
-            return "DwrXmlConfigurator[ClassResource:" + classResourceName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+            return "DwrXmlConfigurator[ClassResource:" + classResourceName + "]";
         }
     }
 
@@ -556,7 +556,7 @@ public class DwrXmlConfigurator implements Configurator
     /**
      * The properties that we don't warn about if they don't exist.
      */
-    private static List ignore = Arrays.asList(new String[] { "class", }); //$NON-NLS-1$
+    private static List ignore = Arrays.asList(new String[] { "class", });
 
     /**
      * The log stream
@@ -598,52 +598,52 @@ public class DwrXmlConfigurator implements Configurator
     /*
      * The element names
      */
-    private static final String ELEMENT_INIT = "init"; //$NON-NLS-1$
+    private static final String ELEMENT_INIT = "init";
 
-    private static final String ELEMENT_ALLOW = "allow"; //$NON-NLS-1$
+    private static final String ELEMENT_ALLOW = "allow";
 
-    private static final String ELEMENT_CREATE = "create"; //$NON-NLS-1$
+    private static final String ELEMENT_CREATE = "create";
 
-    private static final String ELEMENT_CONVERT = "convert"; //$NON-NLS-1$
+    private static final String ELEMENT_CONVERT = "convert";
 
-    private static final String ELEMENT_PARAM = "param"; //$NON-NLS-1$
+    private static final String ELEMENT_PARAM = "param";
 
-    private static final String ELEMENT_INCLUDE = "include"; //$NON-NLS-1$
+    private static final String ELEMENT_INCLUDE = "include";
 
-    private static final String ELEMENT_EXCLUDE = "exclude"; //$NON-NLS-1$
+    private static final String ELEMENT_EXCLUDE = "exclude";
 
-    private static final String ELEMENT_PARAMETER = "parameter"; //$NON-NLS-1$
+    private static final String ELEMENT_PARAMETER = "parameter";
 
-    private static final String ELEMENT_AUTH = "auth"; //$NON-NLS-1$
+    private static final String ELEMENT_AUTH = "auth";
 
-    private static final String ELEMENT_SIGNATURES = "signatures"; //$NON-NLS-1$
+    private static final String ELEMENT_SIGNATURES = "signatures";
 
-    private static final String ELEMENT_FILTER = "filter"; //$NON-NLS-1$
+    private static final String ELEMENT_FILTER = "filter";
 
     /*
      * The attribute names
      */
-    private static final String ATTRIBUTE_ID = "id"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_ID = "id";
 
-    private static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_CLASS = "class";
 
-    private static final String ATTRIBUTE_CONVERTER = "converter"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_CONVERTER = "converter";
 
-    private static final String ATTRIBUTE_MATCH = "match"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_MATCH = "match";
 
-    private static final String ATTRIBUTE_JAVASCRIPT = "javascript"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_JAVASCRIPT = "javascript";
 
-    private static final String ATTRIBUTE_CREATOR = "creator"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_CREATOR = "creator";
 
-    private static final String ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_NAME = "name";
 
-    private static final String ATTRIBUTE_VALUE = "value"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_VALUE = "value";
 
-    private static final String ATTRIBUTE_METHOD = "method"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_METHOD = "method";
 
-    private static final String ATTRIBUTE_ROLE = "role"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_ROLE = "role";
 
-    private static final String ATTRIBUTE_NUMBER = "number"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_NUMBER = "number";
 
-    private static final String ATTRIBUTE_TYPE = "type"; //$NON-NLS-1$
+    private static final String ATTRIBUTE_TYPE = "type";
 }

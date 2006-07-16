@@ -50,13 +50,13 @@ import org.springframework.util.Assert;
  */
 public class MockHttpServletResponse implements HttpServletResponse
 {
-    private static final String CHARSET_PREFIX = "charset="; //$NON-NLS-1$
+    private static final String CHARSET_PREFIX = "charset=";
 
     //---------------------------------------------------------------------
     // ServletResponse properties
     //---------------------------------------------------------------------
 
-    private String characterEncoding = "ISO-8859-1"; //$NON-NLS-1$
+    private String characterEncoding = "ISO-8859-1";
 
     private final ByteArrayOutputStream content = new ByteArrayOutputStream();
 

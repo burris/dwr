@@ -56,15 +56,15 @@ public final class LogErrorHandler implements ErrorHandler
     {
         if (ex.getSystemId() != null)
         {
-            return "SystemID=" + ex.getSystemId() + " Line=" + ex.getLineNumber() + ' ' + ex.getMessage(); //$NON-NLS-1$ //$NON-NLS-2$
+            return "SystemID=" + ex.getSystemId() + " Line=" + ex.getLineNumber() + ' ' + ex.getMessage();
         }
 
         if (ex.getPublicId() != null)
         {
-            return "PublicID=" + ex.getPublicId() + " Line=" + ex.getLineNumber() + ' ' + ex.getMessage(); //$NON-NLS-1$ //$NON-NLS-2$
+            return "PublicID=" + ex.getPublicId() + " Line=" + ex.getLineNumber() + ' ' + ex.getMessage();
         }
 
-        return "Line=" + ex.getLineNumber() + ' ' + ex.getMessage(); //$NON-NLS-1$
+        return "Line=" + ex.getLineNumber() + ' ' + ex.getMessage();
     }
 
     /**

@@ -52,8 +52,8 @@ public class FakeHttpSession implements HttpSession
      */
     public String getId()
     {
-        log.warn("Inventing data in FakeHttpSession.getId() to remain plausible."); //$NON-NLS-1$
-        return "fake"; //$NON-NLS-1$
+        log.warn("Inventing data in FakeHttpSession.getId() to remain plausible.");
+        return "fake";
     }
 
     /* (non-Javadoc)

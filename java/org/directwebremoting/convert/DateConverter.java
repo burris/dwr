@@ -82,7 +82,7 @@ public class DateConverter extends BaseV20Converter implements Converter
             }
             else
             {
-                throw new MarshallException(Messages.getString("DateConverter.WrongType") + paramType.getName()); //$NON-NLS-1$
+                throw new MarshallException(Messages.getString("DateConverter.WrongType") + paramType.getName());
             }
         }
         catch (MarshallException ex)
@@ -91,7 +91,7 @@ public class DateConverter extends BaseV20Converter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(Messages.getString("DateConverter.ErrorConverting", value, paramType.getName()), ex); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("DateConverter.ErrorConverting", value, paramType.getName()), ex);
         }
     }
 
@@ -102,7 +102,7 @@ public class DateConverter extends BaseV20Converter implements Converter
     {
         if (!(data instanceof Date))
         {
-            throw new MarshallException(Messages.getString("DateConverter.TypeError", data.getClass())); //$NON-NLS-1$
+            throw new MarshallException(Messages.getString("DateConverter.TypeError", data.getClass()));
         }
 
         long millis;
@@ -117,6 +117,6 @@ public class DateConverter extends BaseV20Converter implements Converter
             millis = date.getTime();
         }
 
-        return new OutboundVariable("", "new Date(" + millis + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return new OutboundVariable("", "new Date(" + millis + ")");
     }
 }

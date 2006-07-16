@@ -72,7 +72,7 @@ public class DefaultContainer implements Container
                 Class iface = LocalUtil.classForName((String) askFor);
                 if (!iface.isAssignableFrom(value.getClass()))
                 {
-                    log.error("Can't cast: " + value + " to " + askFor); //$NON-NLS-1$ //$NON-NLS-2$
+                    log.error("Can't cast: " + value + " to " + askFor);
                 }
             }
             catch (ClassNotFoundException ex)
@@ -83,11 +83,11 @@ public class DefaultContainer implements Container
 
         if (value instanceof String && log.isDebugEnabled())
         {
-            log.debug("Adding IoC setting: " + askFor + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
+            log.debug("Adding IoC setting: " + askFor + "=" + value);
         }
         else
         {
-            log.debug("Adding IoC implementation: " + askFor + "=" + value.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            log.debug("Adding IoC implementation: " + askFor + "=" + value.getClass().getName());
         }
 
         beans.put(askFor, value);
@@ -109,7 +109,7 @@ public class DefaultContainer implements Container
 
             if (!(ovalue instanceof String))
             {
-                log.debug("Trying to autowire: " + ovalue.getClass().getName()); //$NON-NLS-1$
+                log.debug("Trying to autowire: " + ovalue.getClass().getName());
 
                 Method[] methods = ovalue.getClass().getMethods();
                 methods:
@@ -117,7 +117,7 @@ public class DefaultContainer implements Container
                 {
                     Method setter = methods[i];
 
-                    if (setter.getName().startsWith("set") && //$NON-NLS-1$
+                    if (setter.getName().startsWith("set") &&
                         setter.getName().length() > 3 &&
                         setter.getParameterTypes().length == 1)
                     {
@@ -130,7 +130,7 @@ public class DefaultContainer implements Container
                         {
                             if (propertyType.isAssignableFrom(setting.getClass()))
                             {
-                                log.debug("- autowire-by-name: " + name + "=" + setting); //$NON-NLS-1$ //$NON-NLS-2$
+                                log.debug("- autowire-by-name: " + name + "=" + setting);
                                 invoke(setter, ovalue, setting);
 
                                 continue methods;
@@ -141,7 +141,7 @@ public class DefaultContainer implements Container
                                 {
                                     Object value = LocalUtil.simpleConvert((String) setting, propertyType);
 
-                                    log.debug("- autowire-by-name: " + name + "=" + value); //$NON-NLS-1$ //$NON-NLS-2$
+                                    log.debug("- autowire-by-name: " + name + "=" + value);
                                     invoke(setter, ovalue, value);
                                 }
                                 catch (IllegalArgumentException ex)
@@ -157,13 +157,13 @@ public class DefaultContainer implements Container
                         Object value = beans.get(propertyType.getName());
                         if (value != null)
                         {
-                            log.debug("- autowire-by-type: " + name + "=" + value.getClass().getName()); //$NON-NLS-1$ //$NON-NLS-2$
+                            log.debug("- autowire-by-type: " + name + "=" + value.getClass().getName());
                             invoke(setter, ovalue, value);
 
                             continue methods;
                         }
 
-                        log.debug("- skipped autowire: " + name); //$NON-NLS-1$
+                        log.debug("- skipped autowire: " + name);
                     }
                 }
             }
@@ -185,15 +185,15 @@ public class DefaultContainer implements Container
         }
         catch (IllegalArgumentException ex)
         {
-            log.error("- Internal error: " + ex.getMessage()); //$NON-NLS-1$
+            log.error("- Internal error: " + ex.getMessage());
         }
         catch (IllegalAccessException ex)
         {
-            log.error("- Permission error: " + ex.getMessage()); //$NON-NLS-1$
+            log.error("- Permission error: " + ex.getMessage());
         }
         catch (InvocationTargetException ex)
         {
-            log.error("- Exception during auto-wire: ", ex.getTargetException()); //$NON-NLS-1$
+            log.error("- Exception during auto-wire: ", ex.getTargetException());
         }
     }
 
@@ -209,11 +209,11 @@ public class DefaultContainer implements Container
             {
                 for (Iterator it = beans.keySet().iterator(); it.hasNext();)
                 {
-                    log.debug("- known bean: " + it.next()); //$NON-NLS-1$
+                    log.debug("- known bean: " + it.next());
                 }
             }
 
-            log.debug("DefaultContainer can't find bean with id=" + id); //$NON-NLS-1$
+            log.debug("DefaultContainer can't find bean with id=" + id);
         }
 
         return reply;

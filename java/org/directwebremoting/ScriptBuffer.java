@@ -350,7 +350,7 @@ public class ScriptBuffer
     {
         if (parts == null)
         {
-            throw new IllegalStateException("Can't append to ScriptBuffer. It has been transmitted already."); //$NON-NLS-1$
+            throw new IllegalStateException("Can't append to ScriptBuffer. It has been transmitted already.");
         }
     }
 

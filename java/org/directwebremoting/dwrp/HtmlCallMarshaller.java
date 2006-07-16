@@ -42,7 +42,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            out.println("<html><body><script type='text/javascript'>"); //$NON-NLS-1$
+            out.println("<html><body><script type='text/javascript'>");
         }
     }
 
@@ -53,7 +53,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            out.println("</script></body></html>"); //$NON-NLS-1$
+            out.println("</script></body></html>");
         }
     }
 
@@ -64,12 +64,12 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");"; //$NON-NLS-1$ //$NON-NLS-2$
+            String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
             out.println(modScript);
 
             if (out.checkError())
             {
-                throw new IOException("Error flushing buffered stream"); //$NON-NLS-1$
+                throw new IOException("Error flushing buffered stream");
             }
         }
     }

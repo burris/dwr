@@ -175,7 +175,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
                                              ParserContext parserContext) {
             BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
 
-            Element element = (Element) node;
+            Element element = node;
 
             String parentBeanName = definition.getBeanName();
             String javascript = element.getAttribute("javascript");
@@ -195,7 +195,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
         public BeanDefinitionHolder decorate(Element node,
                                              BeanDefinitionHolder definition,
                                              ParserContext parserContext) {
-            Element element = (Element) node;
+            Element element = node;
             String type = element.getAttribute("type");
 
             if ("array".equals(type)) {
@@ -225,7 +225,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
             BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
 
             String parentBeanName = definition.getBeanName();
-            Element element = (Element) node;
+            Element element = node;
             String javascript = element.getAttribute("javascript");
             String type = element.getAttribute("type");
 

@@ -43,11 +43,11 @@ public final class DTDEntityResolver implements EntityResolver
             {
                 if (i != MAPPINGS.length - 1)
                 {
-                    String doctype = "<!DOCTYPE dwr PUBLIC \"" + //$NON-NLS-1$
-                        MAPPINGS[MAPPINGS.length - 1][0] + "\" \"http://www.getahead.ltd.uk/dwr/" + //$NON-NLS-1$
-                        MAPPINGS[MAPPINGS.length - 1][1] + "\">"; //$NON-NLS-1$
+                    String doctype = "<!DOCTYPE dwr PUBLIC \"" +
+                        MAPPINGS[MAPPINGS.length - 1][0] + "\" \"http://www.getahead.ltd.uk/dwr/" +
+                        MAPPINGS[MAPPINGS.length - 1][1] + "\">";
 
-                    log.warn("Deprecated public id in dwr.xml. Use: " + doctype); //$NON-NLS-1$
+                    log.warn("Deprecated public id in dwr.xml. Use: " + doctype);
                 }
 
                 String dtdname = DwrConstants.PACKAGE + MAPPINGS[i][1];
@@ -56,7 +56,7 @@ public final class DTDEntityResolver implements EntityResolver
             }
         }
 
-        throw new SAXException(Messages.getString("DTDEntityResolver.ResolveFailed", arg0, arg1)); //$NON-NLS-1$
+        throw new SAXException(Messages.getString("DTDEntityResolver.ResolveFailed", arg0, arg1));
     }
 
     /**
@@ -66,9 +66,9 @@ public final class DTDEntityResolver implements EntityResolver
      */
     private static final String[][] MAPPINGS =
     {
-        { "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN", "/dwr10.dtd"}, //$NON-NLS-1$ //$NON-NLS-2$
-        { "-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN", "/dwr10.dtd"}, //$NON-NLS-1$ //$NON-NLS-2$
-        { "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN", "/dwr20.dtd"}, //$NON-NLS-1$ //$NON-NLS-2$
+        { "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN", "/dwr10.dtd"},
+        { "-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN", "/dwr10.dtd"},
+        { "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN", "/dwr20.dtd"},
     };
 
     /**
