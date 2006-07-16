@@ -17,6 +17,7 @@ package uk.ltd.getahead.dwrdemo.cobrowse;
 
 import java.util.Collection;
 
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.ScriptProxy;
@@ -39,11 +40,10 @@ public class CoBrowse
         Collection sessions = wctx.getScriptSessionsByPage(currentPage);
 
         ScriptProxy all = new ScriptProxy(sessions);
-        all.addScript("$('cobrowseIframe').src = '" + url + "';"); //$NON-NLS-1$ //$NON-NLS-2$
+        all.addScript(new ScriptBuffer("$('cobrowseIframe').src = '" + url + "';")); //$NON-NLS-1$ //$NON-NLS-2$
 
         sessions.remove(wctx.getScriptSession());
         DwrUtil utilAll = new DwrUtil(sessions);
         utilAll.setValue("cobrowseUrl", url); //$NON-NLS-1$
     }
 }
-

@@ -17,6 +17,8 @@ package org.directwebremoting;
 
 import java.io.IOException;
 
+import javax.servlet.ServletOutputStream;
+
 import org.directwebremoting.util.LocalUtil;
 
 /**
@@ -78,16 +80,20 @@ public abstract class ScriptConduit implements Comparable
     public abstract void flush() throws IOException;
 
     /**
-     * Add a script to the list waiting for remote execution.
-     * It is not an error to refuse to handle the script and return false, it
+     * Add a script to the list bound for remote execution.
+     * <p>It is not an error to refuse to handle the script and return false, it
      * just indicates that this ScriptConduit did not accept the script.
      * If the ScriptConduit can no longer function then it should throw an
      * exception and it will be asumed to be no longer useful.
+     * If you want to implement this method then you will probably be doing
+     * something like calling {@link ServletOutputStream#print(String)} and
+     * passing in {@link ScriptBuffer#export(OutboundContext)}. You can get an
+     * {@link OutboundContext} by calling {@link #getOutboundContext()}.
      * @param script The script to execute
      * @return true if this ScriptConduit handled the script.
-     * @throws IOException If the script can not go out via this conduit.
+     * @throws IOException If this conduit is broken and should not be used
      */
-    public abstract boolean addScript(String script) throws IOException;
+    public abstract boolean addScript(ScriptBuffer script) throws IOException;
 
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -103,6 +109,15 @@ public abstract class ScriptConduit implements Comparable
         }
 
         return (int) (this.id - that.id);
+    }
+
+    /**
+     * Accessor for the OutboundContext
+     * @return the OutboundContext
+     */
+    protected OutboundContext getOutboundContext()
+    {
+        return context;
     }
 
     /* (non-Javadoc)
@@ -150,6 +165,11 @@ public abstract class ScriptConduit implements Comparable
 
         return classname + "[id=" + id + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
+
+    /**
+     * This is how we co-ordinate the conversion to Javascript
+     */
+    private OutboundContext context = new OutboundContext();
 
     /**
      * Cached short classname for toString()

@@ -48,19 +48,11 @@ public class PlainCallMarshaller extends BaseCallMarshaller
     {
     }
 
-    /**
-     * Send a script to the browser
-     * @param out The stream to write to
-     * @param script The script to send
-     * @throws IOException If the write fails
+    /* (non-Javadoc)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendScript(java.io.PrintWriter, java.lang.String)
      */
     protected void sendScript(PrintWriter out, String script) throws IOException
     {
-        if (script.trim().length() == 0)
-        {
-            return;
-        }
-
         synchronized (out)
         {
             out.println(script);

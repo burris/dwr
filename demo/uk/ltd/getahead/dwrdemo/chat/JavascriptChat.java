@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
@@ -32,15 +32,17 @@ public class JavascriptChat
         WebContext wctx = WebContextFactory.get();
         String currentPage = wctx.getCurrentPage();
 
-        OutboundVariable ov = wctx.toJavascript(messages);
-        String eval = ov.getInitCode() + "receiveMessages(" + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("receiveMessages(") //$NON-NLS-1$
+              .appendData(messages)
+              .appendScript(");"); //$NON-NLS-1$
 
         // Loop over all the users on the current page
         Collection pages = wctx.getScriptSessionsByPage(currentPage);
         for (Iterator it = pages.iterator(); it.hasNext();)
         {
             ScriptSession otherSession = (ScriptSession) it.next();
-            otherSession.addScript(eval);
+            otherSession.addScript(script);
         }
     }
 
@@ -68,7 +70,7 @@ public class JavascriptChat
                     {
                         Thread.sleep(1000);
                         log.debug("ping: " + count); //$NON-NLS-1$
-                        scriptSession.addScript("DWRUtil.setValue('ping', 'count=" + count + "');"); //$NON-NLS-1$ //$NON-NLS-2$
+                        scriptSession.addScript(new ScriptBuffer("DWRUtil.setValue('ping', 'count=" + count + "');")); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                     catch (Exception ex)
                     {

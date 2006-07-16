@@ -26,9 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.MarshallException;
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ScriptSessionManager;
 import org.directwebremoting.WebContext;
@@ -137,14 +134,6 @@ public class DefaultWebContext extends DefaultServerContext implements WebContex
         getServletContext().getRequestDispatcher(url).forward(realRequest, fakeResponse);
 
         return buffer.toString();
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.WebContext#toJavascript(java.lang.Object)
-     */
-    public OutboundVariable toJavascript(Object data) throws MarshallException
-    {
-        return getConverterManager().convertOutbound(data, new OutboundContext());
     }
 
     /* (non-Javadoc)

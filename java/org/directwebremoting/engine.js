@@ -200,6 +200,7 @@ DWREngine.beginBatch = function() {
  * @see http://getahead.ltd.uk/dwr/browser/engine/batch
  */
 DWREngine.endBatch = function(options) {
+  if (options == null) options = {};
   var batch = DWREngine._batch;
   if (batch == null) {
     DWREngine._handleError("No batch in progress.");
@@ -654,7 +655,7 @@ DWREngine._sendData = function(batch) {
       }
       document.body.appendChild(batch.form);
       batch.form.submit();
-	}
+    }
   }
   else {
     batch.verb = "GET"; // There's no such thing as ScriptTag using POST
@@ -805,7 +806,7 @@ DWREngine._handleResponse = function(id, reply) {
     }
   }
 
-  // Finalize the call for IFrame transport 
+  // Finalize the call for IFrame transport
   var responseBatch = DWREngine._batches[DWREngine._batches.length - 1];
   if (responseBatch.method == DWREngine.IFrame) {
     // Only finalize after the last call has been handled
@@ -913,6 +914,24 @@ DWREngine._handleMetaDataError = function(handlers, reason, ex) {
 DWREngine._handleMetaDataWarning = function(handlers, reason, ex) {
   if (handlers && typeof handlers.warningHandler == "function") handlers.warningHandler(reason, ex);
   else DWREngine._handleWarning(reason, ex);
+};
+
+/** @private Error handling when something fails before anything has been sent */
+DWREngine._handleBatchMetaDataError = function(batch, reason, ex) {
+  var reported = false;
+  var message = (ex.message) ? ex.message : ex;
+  var exception = (ex.message) ? ex : null;
+  for (var i = 0; i < batch.ids.length; i++) {
+    var id = batch.ids[i];
+    var handlers = DWREngine.handlersMap[id];
+    // Clear this callback out of the list - we don't need it any more
+    DWREngine._handlersMap[id] = null;
+    if (handlers && typeof handlers.errorHandler == "function") {
+      handlers.errorHandler(reason, ex);
+      reported = true;
+    }
+  }
+  if (!reported) DWREngine._handleError(message, exception);
 };
 
 /**

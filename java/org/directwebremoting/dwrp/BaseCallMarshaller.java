@@ -36,17 +36,15 @@ import org.directwebremoting.InboundContext;
 import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.Marshaller;
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.Replies;
 import org.directwebremoting.Reply;
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.TypeHintContext;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.util.DebuggingPrintWriter;
-import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -308,7 +306,6 @@ public abstract class BaseCallMarshaller implements Marshaller
         scriptSession.removeScriptConduit(conduit);
         out.println(ConversionConstants.SCRIPT_CALL_REPLY);
 
-        OutboundContext converted = new OutboundContext();
         for (int i = 0; i < replies.getReplyCount(); i++)
         {
             Reply reply = replies.getReply(i);
@@ -317,10 +314,14 @@ public abstract class BaseCallMarshaller implements Marshaller
             if (reply.getThrowable() != null)
             {
                 Throwable ex = reply.getThrowable();
-                OutboundVariable ov = convertException(ex, converted);
 
-                String script = ov.getInitCode() + "DWREngine._handleServerError('" + reply.getId() + "', " + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                sendScript(out, script);
+                ScriptBuffer script = new ScriptBuffer(converterManager);
+                script.appendScript("DWREngine._handleServerError(") //$NON-NLS-1$
+                      .appendData(reply.getId())
+                      .appendScript(',')
+                      .appendData(ex)
+                      .appendScript(");"); //$NON-NLS-1$
+                conduit.addScript(script);
 
                 log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -330,26 +331,36 @@ public abstract class BaseCallMarshaller implements Marshaller
 
                 try
                 {
-                    OutboundVariable ov = converterManager.convertOutbound(data, converted);
+                    ScriptBuffer script = new ScriptBuffer(converterManager);
+                    script.appendScript("DWREngine._handleResponse(") //$NON-NLS-1$
+                          .appendData(reply.getId())
+                          .appendScript(',')
+                          .appendData(data)
+                          .appendScript(");"); //$NON-NLS-1$
 
-                    String script = ov.getInitCode() + "DWREngine._handleResponse('" + reply.getId() + "', " + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    sendScript(out, script);
+                    conduit.addScript(script);
                 }
                 catch (MarshallException ex)
                 {
-                    OutboundVariable ov = convertException(ex, converted);
-
-                    String script = ov.getInitCode() + "DWREngine._handleServerError('" + reply.getId() + "', " + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    sendScript(out, script);
+                    ScriptBuffer script = new ScriptBuffer(converterManager);
+                    script.appendScript("DWREngine._handleServerError(") //$NON-NLS-1$
+                          .appendData(reply.getId())
+                          .appendScript(',')
+                          .appendData(ex)
+                          .appendScript(");"); //$NON-NLS-1$
+                    conduit.addScript(script);
 
                     log.warn("--MarshallException: id[" + reply.getId() + "] message[" + ex.toString() + ']'); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 catch (Exception ex)
                 {
-                    OutboundVariable ov = convertException(ex, converted);
-
-                    String script = ov.getInitCode() + "DWREngine._handleServerError('" + reply.getId() + "', " + ov.getAssignCode() + ");"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                    sendScript(out, script);
+                    ScriptBuffer script = new ScriptBuffer(converterManager);
+                    script.appendScript("DWREngine._handleServerError(") //$NON-NLS-1$
+                          .appendData(reply.getId())
+                          .appendScript(',')
+                          .appendData(ex)
+                          .appendScript(");"); //$NON-NLS-1$
+                    conduit.addScript(script);
 
                     log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']', ex); //$NON-NLS-1$ //$NON-NLS-2$
                 }
@@ -386,35 +397,6 @@ public abstract class BaseCallMarshaller implements Marshaller
      * @throws IOException If the write fails
      */
     protected abstract void sendOutboundScriptSuffix(PrintWriter out) throws IOException;
-
-    /**
-     * Convert an exception into an outbound variable
-     * @param th The exception to be converted
-     * @param converted The conversion context
-     * @return A new outbound exception
-     */
-    private OutboundVariable convertException(Throwable th, OutboundContext converted)
-    {
-        try
-        {
-            if (converterManager.isConvertable(th.getClass()))
-            {
-                return converterManager.convertOutbound(th, converted);
-            }
-        }
-        catch (MarshallException ex)
-        {
-            log.warn("Exception while converting. Exception to be converted: " + th, ex); //$NON-NLS-1$
-        }
-
-        // So we will have to create one for ourselves
-        OutboundVariable ov = new OutboundVariable();
-        String varName = converted.getNextVariableName();
-        ov.setAssignCode(varName);
-        ov.setInitCode("var " + varName + " = \"" + JavascriptUtil.escapeJavaScript(th.getMessage()) + "\";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-        return ov;
-    }
 
     /**
      * Parse an inbound request into a Calls object
@@ -571,11 +553,11 @@ public abstract class BaseCallMarshaller implements Marshaller
         }
 
         /* (non-Javadoc)
-         * @see org.directwebremoting.ScriptConduit#addScript(java.lang.String)
+         * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
          */
-        public boolean addScript(String script) throws IOException
+        public boolean addScript(ScriptBuffer script) throws IOException
         {
-            sendScript(out, script);
+            sendScript(out, script.export(getOutboundContext()));
             return true;
         }
 

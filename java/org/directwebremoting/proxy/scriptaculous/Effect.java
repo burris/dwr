@@ -20,7 +20,7 @@ import java.util.Collection;
 import javax.servlet.ServletContext;
 
 import org.directwebremoting.MarshallException;
-import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.dwrutil.DwrUtil;
@@ -246,16 +246,12 @@ public class Effect extends ScriptProxy
      */
     private void callEffect(String elementId, String function) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
-
-        StringBuffer script = new StringBuffer();
-        script.append(elementIdOv.getInitCode())
-            .append("Effect.") //$NON-NLS-1$
-            .append(function)
-            .append("(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("Effect.") //$NON-NLS-1$
+              .appendData(function)
+              .appendScript("(") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 }

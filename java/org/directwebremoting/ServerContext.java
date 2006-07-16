@@ -66,15 +66,6 @@ public interface ServerContext
     Container getContainer();
 
     /**
-     * Attempt to convert from a Java object to a Javascript expression for
-     * passing to eval in a browser.
-     * @param data The object to convert
-     * @return An outbound variable (contains an init code and an assign code)
-     * @throws MarshallException
-     */
-    OutboundVariable toJavascript(Object data) throws MarshallException;
-
-    /**
      * Fish the version number out of the dwr.properties file.
      * @return The current version number.
      */

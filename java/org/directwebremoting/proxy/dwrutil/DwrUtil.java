@@ -21,7 +21,7 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 
 import org.directwebremoting.MarshallException;
-import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
 
@@ -126,21 +126,16 @@ public class DwrUtil extends ScriptProxy
      */
     public void setValue(String elementId, String value, boolean escapeHtml) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
-        OutboundVariable valueOv = getServerContext().toJavascript(value);
         String options = escapeHtml ? ", {escapeHtml:true}" : ""; //$NON-NLS-1$ //$NON-NLS-2$
 
-        StringBuffer script = new StringBuffer();
-        script.append(elementIdOv.getInitCode())
-            .append(valueOv.getInitCode())
-            .append("DWRUtil.setValue(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(',')
-            .append(valueOv.getAssignCode())
-            .append(options)
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.setValue(") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript(',')
+              .appendData(value)
+              .appendScript(options)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -154,18 +149,15 @@ public class DwrUtil extends ScriptProxy
      */
     public void setValues(Map values, boolean escapeHtml) throws MarshallException
     {
-        OutboundVariable valuesOv = getServerContext().toJavascript(values);
         String options = escapeHtml ? "{escapeHtml:true}" : "null"; //$NON-NLS-1$ //$NON-NLS-2$
 
-        StringBuffer script = new StringBuffer();
-        script.append(valuesOv.getInitCode())
-            .append("DWRUtil.setValues(") //$NON-NLS-1$
-            .append(valuesOv.getAssignCode())
-            .append(',')
-            .append(options)
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.setValues(") //$NON-NLS-1$
+              .appendData(values)
+              .appendScript(',')
+              .appendScript(options)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -178,19 +170,13 @@ public class DwrUtil extends ScriptProxy
      */
     public void addOptions(String elementId, String[] array) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
-        OutboundVariable arrayOv = getServerContext().toJavascript(array);
-
-        StringBuffer script = new StringBuffer();
-        script.append(elementIdOv.getInitCode())
-            .append(arrayOv.getInitCode())
-            .append("DWRUtil.addOptions(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(',')
-            .append(arrayOv.getAssignCode())
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.addOptions(") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript(',')
+              .appendData(array)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -204,22 +190,15 @@ public class DwrUtil extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String property) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
-        OutboundVariable arrayOv = getServerContext().toJavascript(array);
-        OutboundVariable propertyOv = getServerContext().toJavascript(property);
-
-        StringBuffer script = new StringBuffer();
-        script.append(elementIdOv.getInitCode())
-            .append(arrayOv.getInitCode())
-            .append("DWRUtil.addOptions(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(',')
-            .append(arrayOv.getAssignCode())
-            .append(',')
-            .append(propertyOv.getAssignCode())
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.addOptions(") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript(',')
+              .appendData(array)
+              .appendScript(',')
+              .appendData(property)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -234,25 +213,17 @@ public class DwrUtil extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String valueProperty, String textProperty) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
-        OutboundVariable arrayOv = getServerContext().toJavascript(array);
-        OutboundVariable valuePropertyOv = getServerContext().toJavascript(valueProperty);
-        OutboundVariable textPropertyOv = getServerContext().toJavascript(textProperty);
-
-        StringBuffer script = new StringBuffer();
-        script.append(elementIdOv.getInitCode())
-            .append(arrayOv.getInitCode())
-            .append("DWRUtil.addOptions(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(',')
-            .append(arrayOv.getAssignCode())
-            .append(',')
-            .append(valuePropertyOv.getAssignCode())
-            .append(',')
-            .append(textPropertyOv.getAssignCode())
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.addOptions(") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript(',')
+              .appendData(array)
+              .appendScript(',')
+              .appendData(valueProperty)
+              .appendScript(',')
+              .appendData(textProperty)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -264,15 +235,11 @@ public class DwrUtil extends ScriptProxy
      */
     public void removeAllOptions(String elementId) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
-
-        StringBuffer script = new StringBuffer();
-        script.append(elementIdOv.getInitCode())
-            .append("DWRUtil.removeAllOptions(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.removeAllOptions(") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -297,15 +264,11 @@ public class DwrUtil extends ScriptProxy
      */
     public void removeAllRows(String elementId) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
-
-        StringBuffer script = new StringBuffer();
-        script.append(elementIdOv.getInitCode())
-            .append("DWRUtil.removeAllRows(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.removeAllRows(") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -317,15 +280,11 @@ public class DwrUtil extends ScriptProxy
      */
     public void cloneNode(String elementId) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
-
-        StringBuffer script = new StringBuffer();
-        script.append(elementIdOv.getInitCode())
-            .append("DWRUtil.cloneNode(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(");"); //$NON-NLS-1$
-
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.cloneNode(") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -339,33 +298,37 @@ public class DwrUtil extends ScriptProxy
      */
     public void cloneNode(String elementId, String idPrefix, String idSuffix) throws MarshallException
     {
-        OutboundVariable elementIdOv = getServerContext().toJavascript(elementId);
+        ScriptBuffer options = new ScriptBuffer();
+        options.appendScript("{"); //$NON-NLS-1$
 
-        StringBuffer options = new StringBuffer();
-        options.append("{"); //$NON-NLS-1$
         if (idPrefix != null)
         {
-            options.append("idPrefix:'").append(idPrefix).append("'");  //$NON-NLS-1$//$NON-NLS-2$
+            options.appendScript("idPrefix:'") //$NON-NLS-1$
+                   .appendData(idPrefix)
+                   .appendScript("'");  //$NON-NLS-1$
         }
+
         if (idPrefix != null && idSuffix != null)
         {
-            options.append(","); //$NON-NLS-1$
+            options.appendScript(","); //$NON-NLS-1$
         }
+
         if (idSuffix != null)
         {
-            options.append("idSuffix:'").append(idSuffix).append("'");  //$NON-NLS-1$//$NON-NLS-2$
+            options.appendScript("idSuffix:'") //$NON-NLS-1$
+                   .appendData(idSuffix)
+                   .appendScript("'");  //$NON-NLS-1$
         }
-        options.append("}"); //$NON-NLS-1$
 
-        StringBuffer script = new StringBuffer();
-        script.append(elementIdOv.getInitCode())
-            .append("DWRUtil.cloneNode(") //$NON-NLS-1$
-            .append(elementIdOv.getAssignCode())
-            .append(", ") //$NON-NLS-1$
-            .append(options)
-            .append(");"); //$NON-NLS-1$
+        options.appendScript("}"); //$NON-NLS-1$
 
-        addScript(script.toString());
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.cloneNode(") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript(", ") //$NON-NLS-1$
+              .appendData(options)
+              .appendScript(");"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -375,7 +338,13 @@ public class DwrUtil extends ScriptProxy
      */
     public void setClassName(String elementId, String className)
     {
-        addScript("DWRUtil.setClassName('" + elementId + "', '" + className + "');"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.setClassName('") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript("', '") //$NON-NLS-1$
+              .appendData(className)
+              .appendScript("');"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -385,7 +354,13 @@ public class DwrUtil extends ScriptProxy
      */
     public void addClassName(String elementId, String className)
     {
-        addScript("DWRUtil.addClassName('" + elementId + "', '" + className + "');"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.addClassName('") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript("', '") //$NON-NLS-1$
+              .appendData(className)
+              .appendScript("');"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -395,7 +370,13 @@ public class DwrUtil extends ScriptProxy
      */
     public void removeClassName(String elementId, String className)
     {
-        addScript("DWRUtil.removeClassName('" + elementId + "', '" + className + "');"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.removeClassName('") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript("', '") //$NON-NLS-1$
+              .appendData(className)
+              .appendScript("');"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -405,7 +386,13 @@ public class DwrUtil extends ScriptProxy
      */
     public void toggleClassName(String elementId, String className)
     {
-        addScript("DWRUtil.toggleClassName('" + elementId + "', '" + className + "');"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("DWRUtil.toggleClassName('") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript("', '") //$NON-NLS-1$
+              .appendData(className)
+              .appendScript("');"); //$NON-NLS-1$
+        addScript(script);
     }
 
     /**
@@ -416,6 +403,14 @@ public class DwrUtil extends ScriptProxy
      */
     public void setStyle(String elementId, String selector, String value)
     {
-        addScript("$('" + elementId + "').style." + selector + " = '" + value + "';"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("$('") //$NON-NLS-1$
+              .appendData(elementId)
+              .appendScript("').style.") //$NON-NLS-1$
+              .appendData(selector)
+              .appendScript(" = '") //$NON-NLS-1$
+              .appendData(value)
+              .appendScript("';"); //$NON-NLS-1$
+        addScript(script);
     }
 }

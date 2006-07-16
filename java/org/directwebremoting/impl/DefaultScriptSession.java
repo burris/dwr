@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.util.Logger;
@@ -126,18 +127,13 @@ public class DefaultScriptSession implements ScriptSession
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSession#addScript(java.lang.String)
      */
-    public void addScript(String script)
+    public void addScript(ScriptBuffer script)
     {
         checkNotInvalidated();
 
         if (script == null)
         {
             throw new NullPointerException("null script"); //$NON-NLS-1$
-        }
-
-        if (script.length() == 0)
-        {
-            return;
         }
 
         // First we try to add the script to an existing conduit
@@ -254,7 +250,7 @@ public class DefaultScriptSession implements ScriptSession
             {
                 for (Iterator it = scripts.iterator(); it.hasNext();)
                 {
-                    String script = (String) it.next();
+                    ScriptBuffer script = (ScriptBuffer) it.next();
                     if (conduit.addScript(script))
                     {
                         it.remove();

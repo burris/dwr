@@ -62,11 +62,6 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
      */
     protected void sendScript(PrintWriter out, String script) throws IOException
     {
-        if (script.trim().length() == 0)
-        {
-            return;
-        }
-
         synchronized (out)
         {
             String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");"; //$NON-NLS-1$ //$NON-NLS-2$

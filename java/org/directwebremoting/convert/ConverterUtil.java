@@ -379,7 +379,7 @@ public class ConverterUtil
     /**
      * Strings longer than this are chopped up into smaller strings
      */
-    private static int stringWrapLength = 2048;
+    private static int stringWrapLength = 16384;
 
     /**
      * The log stream

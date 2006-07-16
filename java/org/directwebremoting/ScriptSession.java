@@ -90,7 +90,7 @@ public interface ScriptSession
      * The version automatically wraps the string in a ClientScript object.
      * @param script The script to execute
      */
-    void addScript(String script);
+    void addScript(ScriptBuffer script);
 
     /**
      * Returns a string containing the unique identifier assigned to this

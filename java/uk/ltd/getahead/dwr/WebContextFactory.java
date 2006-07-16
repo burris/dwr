@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.MarshallException;
-import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 
@@ -175,14 +173,6 @@ public class WebContextFactory
         public void setCurrentPageInformation(String page, String scriptSessionId)
         {
             proxy.setCurrentPageInformation(page, scriptSessionId);
-        }
-
-        /* (non-Javadoc)
-         * @see org.directwebremoting.WebContext#toJavascript(java.lang.Object)
-         */
-        public OutboundVariable toJavascript(Object data) throws MarshallException
-        {
-            return proxy.toJavascript(data);
         }
 
         /**

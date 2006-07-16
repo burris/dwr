@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
@@ -114,7 +115,7 @@ public class ScriptProxy
      * Utility to add the given script to all known browsers.
      * @param script The Javascript to send to the browsers
      */
-    public void addScript(String script)
+    public void addScript(ScriptBuffer script)
     {
         for (Iterator it = scriptSessions.iterator(); it.hasNext();)
         {
