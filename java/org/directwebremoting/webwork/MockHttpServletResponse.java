@@ -96,21 +96,34 @@ public class MockHttpServletResponse implements HttpServletResponse
     // ServletResponse interface
     //---------------------------------------------------------------------
 
+    /**
+     * Compliment to {@link javax.servlet.ServletResponse#getCharacterEncoding()}
+     * @param characterEncoding See link above
+     */
     public void setCharacterEncoding(String characterEncoding)
     {
         this.characterEncoding = characterEncoding;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getCharacterEncoding()
+     */
     public String getCharacterEncoding()
     {
         return characterEncoding;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getOutputStream()
+     */
     public ServletOutputStream getOutputStream()
     {
         return this.outputStream;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getWriter()
+     */
     public PrintWriter getWriter() throws UnsupportedEncodingException
     {
         if (this.writer == null)
@@ -121,28 +134,47 @@ public class MockHttpServletResponse implements HttpServletResponse
         return writer;
     }
 
+    /**
+     * Fetch the contents written to this stream
+     * @return contents written to this stream
+     */
     public byte[] getContentAsByteArray()
     {
         flushBuffer();
         return this.content.toByteArray();
     }
 
+    /**
+     * Fetch the contents written to this stream
+     * @return contents written to this stream
+     * @throws UnsupportedEncodingException If the encoding is not valid
+     */
     public String getContentAsString() throws UnsupportedEncodingException
     {
         flushBuffer();
         return (this.characterEncoding != null) ? this.content.toString(this.characterEncoding) : this.content.toString();
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setContentLength(int)
+     */
     public void setContentLength(int contentLength)
     {
         this.contentLength = contentLength;
     }
 
+    /**
+     * Compliment to {@link javax.servlet.ServletResponse#setContentLength(int)}
+     * @return See link above
+     */
     public int getContentLength()
     {
         return contentLength;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
+     */
     public void setContentType(String contentType)
     {
         this.contentType = contentType;
@@ -157,21 +189,34 @@ public class MockHttpServletResponse implements HttpServletResponse
         }
     }
 
+    /**
+     * Compliment to {@link javax.servlet.ServletResponse#setContentType(java.lang.String)}
+     * @return See link above
+     */
     public String getContentType()
     {
         return contentType;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setBufferSize(int)
+     */
     public void setBufferSize(int bufferSize)
     {
         this.bufferSize = bufferSize;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getBufferSize()
+     */
     public int getBufferSize()
     {
         return bufferSize;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#flushBuffer()
+     */
     public void flushBuffer()
     {
         if (this.writer != null)
@@ -192,6 +237,9 @@ public class MockHttpServletResponse implements HttpServletResponse
         this.committed = true;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#resetBuffer()
+     */
     public void resetBuffer()
     {
         if (this.committed)
@@ -201,16 +249,26 @@ public class MockHttpServletResponse implements HttpServletResponse
         this.content.reset();
     }
 
+    /**
+     * Compilment to {@link javax.servlet.ServletResponse#isCommitted()}
+     * @param committed See link above
+     */
     public void setCommitted(boolean committed)
     {
         this.committed = committed;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#isCommitted()
+     */
     public boolean isCommitted()
     {
         return committed;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#reset()
+     */
     public void reset()
     {
         resetBuffer();
@@ -224,11 +282,17 @@ public class MockHttpServletResponse implements HttpServletResponse
         this.errorMessage = null;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setLocale(java.util.Locale)
+     */
     public void setLocale(Locale locale)
     {
         this.locale = locale;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getLocale()
+     */
     public Locale getLocale()
     {
         return locale;
@@ -238,17 +302,29 @@ public class MockHttpServletResponse implements HttpServletResponse
     // HttpServletResponse interface
     //---------------------------------------------------------------------
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)
+     */
     public void addCookie(Cookie cookie)
     {
         Assert.notNull(cookie, "Cookie must not be null");
         this.cookies.add(cookie);
     }
 
+    /**
+     * Compliment to {@link javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)}
+     * @return See link above
+     */
     public Cookie[] getCookies()
     {
         return (Cookie[]) this.cookies.toArray(new Cookie[this.cookies.size()]);
     }
 
+    /**
+     * Compliment to {@link javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)}
+     * @param name See link above
+     * @return See link above
+     */
     public Cookie getCookie(String name)
     {
         Assert.notNull(name, "Cookie name must not be null");
@@ -263,23 +339,40 @@ public class MockHttpServletResponse implements HttpServletResponse
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
+     */
     public boolean containsHeader(String name)
     {
         Assert.notNull(name, "Header name must not be null");
         return this.headers.containsKey(name);
     }
 
+    /**
+     * Compliment to {@link javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)}
+     * @return See link above
+     */
     public Set getHeaderNames()
     {
         return this.headers.keySet();
     }
 
+    /**
+     * Compliment to {@link javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)}
+     * @param name See link above
+     * @return See link above
+     */
     public Object getHeader(String name)
     {
         Assert.notNull(name, "Header name must not be null");
         return this.headers.get(name);
     }
 
+    /**
+     * Compliment to {@link javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)}
+     * @param name See link above
+     * @return See link above
+     */
     public List getHeaders(String name)
     {
         Assert.notNull(name, "Header name must not be null");
@@ -298,47 +391,68 @@ public class MockHttpServletResponse implements HttpServletResponse
         }
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
+     */
     public String encodeURL(String url)
     {
         return url;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
+     */
     public String encodeRedirectURL(String url)
     {
         return url;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
+     */
     public String encodeUrl(String url)
     {
         return url;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectUrl(java.lang.String)
+     */
     public String encodeRedirectUrl(String url)
     {
         return url;
     }
 
-    public void sendError(int status, String errorMessage) throws IOException
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+     */
+    public void sendError(int myStatus, String message) throws IOException
     {
         if (this.committed)
         {
             throw new IllegalStateException("Cannot set error status - response is already committed");
         }
-        this.status = status;
-        this.errorMessage = errorMessage;
+        this.status = myStatus;
+        this.errorMessage = message;
         this.committed = true;
     }
 
-    public void sendError(int status) throws IOException
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#sendError(int)
+     */
+    public void sendError(int myStatus) throws IOException
     {
         if (this.committed)
         {
             throw new IllegalStateException("Cannot set error status - response is already committed");
         }
-        this.status = status;
+        this.status = myStatus;
         this.committed = true;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
+     */
     public void sendRedirect(String url) throws IOException
     {
         if (this.committed)
@@ -350,44 +464,70 @@ public class MockHttpServletResponse implements HttpServletResponse
         this.committed = true;
     }
 
+    /**
+     * Compliment to {@link javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)}
+     * @return See link above
+     */
     public String getRedirectedUrl()
     {
         return redirectedUrl;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     */
     public void setDateHeader(String name, long value)
     {
         Assert.notNull(name, "Header name must not be null");
         this.headers.put(name, new Long(value));
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     */
     public void addDateHeader(String name, long value)
     {
         doAddHeader(name, new Long(value));
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+     */
     public void setHeader(String name, String value)
     {
         Assert.notNull(name, "Header name must not be null");
         this.headers.put(name, value);
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     */
     public void addHeader(String name, String value)
     {
         doAddHeader(name, value);
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     */
     public void setIntHeader(String name, int value)
     {
         Assert.notNull(name, "Header name must not be null");
         this.headers.put(name, new Integer(value));
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     */
     public void addIntHeader(String name, int value)
     {
         doAddHeader(name, new Integer(value));
     }
 
+    /**
+     * @param name
+     * @param value
+     */
     private void doAddHeader(String name, Object value)
     {
         Assert.notNull(name, "Header name must not be null");
@@ -411,22 +551,37 @@ public class MockHttpServletResponse implements HttpServletResponse
         }
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setStatus(int)
+     */
     public void setStatus(int status)
     {
         this.status = status;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
+     */
     public void setStatus(int status, String errorMessage)
     {
         this.status = status;
         this.errorMessage = errorMessage;
     }
 
+    /**
+     * Compliment to {@link javax.servlet.http.HttpServletResponse#setStatus(int)}
+     * @return See link above
+     */
     public int getStatus()
     {
         return status;
     }
 
+    /**
+     * Compliment to {@link javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)}
+     * @deprecated
+     * @return See link above
+     */
     public String getErrorMessage()
     {
         return errorMessage;
@@ -436,21 +591,37 @@ public class MockHttpServletResponse implements HttpServletResponse
     // Methods for MockRequestDispatcher
     //---------------------------------------------------------------------
 
+    /**
+     * Accessor for the forwarded URL
+     * @param forwardedUrl the forwarded URL
+     */
     public void setForwardedUrl(String forwardedUrl)
     {
         this.forwardedUrl = forwardedUrl;
     }
 
+    /**
+     * Accessor for the forwarded URL
+     * @return the forwarded URL
+     */
     public String getForwardedUrl()
     {
         return forwardedUrl;
     }
 
+    /**
+     * Accessor for the included URL
+     * @param includedUrl the included URL
+     */
     public void setIncludedUrl(String includedUrl)
     {
         this.includedUrl = includedUrl;
     }
 
+    /**
+     * Accessor for the included URL
+     * @return the included URL
+     */
     public String getIncludedUrl()
     {
         return includedUrl;
