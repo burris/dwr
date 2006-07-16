@@ -14,9 +14,8 @@
         document.getElementById("file").style.display = "block";
         return;
       }
-      // DWR setup
-      DWREngine.setErrorHandler(function(message) { alert(message); });
-      DWREngine.setWarningHandler(function(message) { alert(message); });
+      // Turn warnings on
+      DWREngine.setWarningHandler(DWREngine.defaultMessageHandler);
       DWRUtil.useLoadingMessage();
       // Turn on the generic error div
       $("error").style.display = "block";
