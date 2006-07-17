@@ -127,12 +127,12 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
     /**
      * The max time we wait before opening a stream to reply.
      */
-    private int preStreamWaitTime = 2900000;//29000
+    private int preStreamWaitTime = 29000;
 
     /**
      * The max time we wait after opening a stream before we reply.
      */
-    private int postStreamWaitTime = 100000;//1000
+    private int postStreamWaitTime = 1000;
 
     /**
      * How long are we telling users to wait before they come back next
@@ -142,12 +142,12 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
     /**
      * What is the longest we wait for extra input after detecting output
      */
-    private static final int MAX_PRE_STREAM_WAIT_TIME = 2900000;//29000
+    private static final int MAX_PRE_STREAM_WAIT_TIME = 29000;
 
     /**
      * What is the longest we wait for extra input after detecting output
      */
-    private static final int MAX_POST_STREAM_WAIT_TIME = 100000;//1000
+    private static final int MAX_POST_STREAM_WAIT_TIME = 1000;
 
     /**
      * We are recording the number of hits in the last 5 seconds.
