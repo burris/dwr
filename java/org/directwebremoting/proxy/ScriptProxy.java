@@ -96,6 +96,15 @@ public class ScriptProxy
     }
 
     /**
+     * Create a new ScriptBuffer from whatever resources we have.
+     * @return a new ScriptBuffer
+     */
+    protected ScriptBuffer createScriptBuffer()
+    {
+        return new ScriptBuffer(serverContext);
+    }
+
+    /**
      * @param scriptSession
      */
     public void addScriptSession(ScriptSession scriptSession)

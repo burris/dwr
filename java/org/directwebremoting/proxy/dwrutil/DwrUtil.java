@@ -128,7 +128,7 @@ public class DwrUtil extends ScriptProxy
     {
         String options = escapeHtml ? ", {escapeHtml:true}" : "";
 
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.setValue(")
               .appendData(elementId)
               .appendScript(',')
@@ -151,7 +151,7 @@ public class DwrUtil extends ScriptProxy
     {
         String options = escapeHtml ? "{escapeHtml:true}" : "null";
 
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.setValues(")
               .appendData(values)
               .appendScript(',')
@@ -170,7 +170,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void addOptions(String elementId, String[] array) throws MarshallException
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addOptions(")
               .appendData(elementId)
               .appendScript(',')
@@ -190,7 +190,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String property) throws MarshallException
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addOptions(")
               .appendData(elementId)
               .appendScript(',')
@@ -213,7 +213,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String valueProperty, String textProperty) throws MarshallException
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addOptions(")
               .appendData(elementId)
               .appendScript(',')
@@ -235,7 +235,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void removeAllOptions(String elementId) throws MarshallException
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.removeAllOptions(")
               .appendData(elementId)
               .appendScript(");");
@@ -264,7 +264,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void removeAllRows(String elementId) throws MarshallException
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.removeAllRows(")
               .appendData(elementId)
               .appendScript(");");
@@ -280,7 +280,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void cloneNode(String elementId) throws MarshallException
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.cloneNode(")
               .appendData(elementId)
               .appendScript(");");
@@ -298,7 +298,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void cloneNode(String elementId, String idPrefix, String idSuffix) throws MarshallException
     {
-        ScriptBuffer options = new ScriptBuffer();
+        ScriptBuffer options = createScriptBuffer();
         options.appendScript("{");
 
         if (idPrefix != null)
@@ -322,7 +322,7 @@ public class DwrUtil extends ScriptProxy
 
         options.appendScript("}");
 
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.cloneNode(")
               .appendData(elementId)
               .appendScript(", ")
@@ -338,7 +338,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void setClassName(String elementId, String className)
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.setClassName('")
               .appendData(elementId)
               .appendScript("', '")
@@ -354,7 +354,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void addClassName(String elementId, String className)
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addClassName('")
               .appendData(elementId)
               .appendScript("', '")
@@ -370,7 +370,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void removeClassName(String elementId, String className)
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.removeClassName('")
               .appendData(elementId)
               .appendScript("', '")
@@ -386,7 +386,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void toggleClassName(String elementId, String className)
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.toggleClassName('")
               .appendData(elementId)
               .appendScript("', '")
@@ -403,7 +403,7 @@ public class DwrUtil extends ScriptProxy
      */
     public void setStyle(String elementId, String selector, String value)
     {
-        ScriptBuffer script = new ScriptBuffer();
+        ScriptBuffer script = createScriptBuffer();
         script.appendScript("$('")
               .appendData(elementId)
               .appendScript("').style.")

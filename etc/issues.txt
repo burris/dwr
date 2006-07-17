@@ -1,4 +1,35 @@
 
+We probably missed exception handling out
+    /**
+     * Convert an exception into an outbound variable
+     * @param th The exception to be converted
+     * @param converted The conversion context
+     * @return A new outbound exception
+     */
+    private OutboundVariable convertException(Throwable th, OutboundContext converted)
+    {
+        try
+        {
+            if (converterManager.isConvertable(th.getClass()))
+            {
+                return converterManager.convertOutbound(th, converted);
+            }
+        }
+        catch (MarshallException ex)
+        {
+            log.warn("Exception while converting. Exception to be converted: " + th, ex); //$NON-NLS-1$
+        }
+
+        // So we will have to create one for ourselves
+        OutboundVariable ov = new OutboundVariable();
+        String varName = converted.getNextVariableName();
+        ov.setAssignCode(varName);
+        ov.setInitCode("var " + varName + " = \"" + JavascriptUtil.escapeJavaScript(th.getMessage()) + "\";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        return ov;
+    }
+
+
 DWREngine._handleMetaDataError(null, ex); does not postHook or errorHandler for
 	call level handlers - it should.
 

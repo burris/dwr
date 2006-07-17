@@ -43,8 +43,7 @@ public class ScriptBuffer
      */
     public ScriptBuffer()
     {
-        Container container = WebContextFactory.get().getContainer();
-        converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+        init(WebContextFactory.get().getContainer());
     }
 
     /**
@@ -58,7 +57,7 @@ public class ScriptBuffer
      */
     public ScriptBuffer(String str)
     {
-        this();
+        init(WebContextFactory.get().getContainer());
         appendScript(str);
     }
 
@@ -70,8 +69,7 @@ public class ScriptBuffer
      */
     public ScriptBuffer(ServletContext context)
     {
-        Container container = ServerContextFactory.get(context).getContainer();
-        converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+        init(ServerContextFactory.get(context).getContainer());
     }
 
     /**
@@ -85,8 +83,33 @@ public class ScriptBuffer
      */
     public ScriptBuffer(ServletContext context, String str)
     {
-        Container container = ServerContextFactory.get(context).getContainer();
-        converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+        init(ServerContextFactory.get(context).getContainer());
+        appendScript(str);
+    }
+
+    /**
+     * Constructor for use from a non-WebContext enabled thread.
+     * The {@link ServerContext} allows us to look up a {@link Container}
+     * From which we get ourselves a {@link ConverterManager}.
+     * @param serverContext The way we convert objects to Javascript
+     */
+    public ScriptBuffer(ServerContext serverContext)
+    {
+        init(serverContext.getContainer());
+    }
+
+    /**
+     * Constructor for use from a non-WebContext enabled thread.
+     * The {@link ServerContext} allows us to look up a {@link Container}
+     * From which we get ourselves a {@link ConverterManager}.
+     * <p>This is a convenience constructor that takes a string which is passed
+     * to {@link #appendScript(String)}.
+     * @param serverContext The way we convert objects to Javascript
+     * @param str The initial string to place in the buffer
+     */
+    public ScriptBuffer(ServerContext serverContext, String str)
+    {
+        init(serverContext.getContainer());
         appendScript(str);
     }
 
@@ -114,6 +137,28 @@ public class ScriptBuffer
     {
         this.converterManager = converterManager;
         appendScript(str);
+    }
+
+    /**
+     * Check that we've got everything
+     * @param container From which we extract a {@link ConverterManager}
+     */
+    private void init(Container container)
+    {
+        init((ConverterManager) container.getBean(ConverterManager.class.getName()));
+    }
+
+    /**
+     * Check that we've got everything
+     * @param cMgr Used to convert objects to Javascript
+     */
+    private void init(ConverterManager cMgr)
+    {
+        this.converterManager = cMgr;
+        if (cMgr == null)
+        {
+            throw new IllegalStateException("");
+        }
     }
 
     /**
