@@ -40,6 +40,7 @@ import org.directwebremoting.proxy.ScriptProxy;
  * been left out as being read functions and <code>useLoadingMessage</code> etc
  * have been left out as not being DOM related.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @author Jorge Martin Cuervo [darthkorr at gmail dot com]
  */
 public class DwrUtil extends ScriptProxy
 {
@@ -104,8 +105,7 @@ public class DwrUtil extends ScriptProxy
 
     /**
      * Set the value an HTML element to the specified value.
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/util/setvalue">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/util/setvalue">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param value The text to insert into the HTML element
      * @throws MarshallException 
@@ -117,8 +117,7 @@ public class DwrUtil extends ScriptProxy
 
     /**
      * Set the value an HTML element to the specified value.
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/util/setvalue">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/util/setvalue">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param value The text to insert into the HTML element
      * @param escapeHtml Should we escape HTML characters?
@@ -141,8 +140,7 @@ public class DwrUtil extends ScriptProxy
     /**
      * Given a map, call setValue() for all the entries in the map using the
      * entry key as an element id.
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/util/setvalues">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/util/setvalues">More</a>.
      * @param values The map of elementIds to values to alter
      * @param escapeHtml Should we escape HTML characters?
      * @throws MarshallException If the data can not be marshalled
@@ -162,8 +160,7 @@ public class DwrUtil extends ScriptProxy
 
     /**
      * Add options to a list from an array or map.
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param array An array of strings to use as both value and text of options
      * @throws MarshallException If the data can not be marshalled
@@ -181,8 +178,7 @@ public class DwrUtil extends ScriptProxy
 
     /**
      * Add options to a list from an array or map.
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param array And array of objects from which to create options
      * @param property The object property to use for the option value and text
@@ -203,8 +199,7 @@ public class DwrUtil extends ScriptProxy
 
     /**
      * Add options to a list from an array or map.
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param array And array of objects from which to create options
      * @param valueProperty The object property to use for the option value
@@ -228,8 +223,7 @@ public class DwrUtil extends ScriptProxy
 
     /**
      * Remove all the options from a select list (specified by id)
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
      * @throws MarshallException If the data can not be marshalled
      */
@@ -244,21 +238,53 @@ public class DwrUtil extends ScriptProxy
 
     /**
      * Create rows inside a the table, tbody, thead or tfoot element (given by id).
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
      * @param elementId The HTML element to update (by id)
-     * @param row The cells to add to the table
+     * @param data The cells to add to the table
+     * @param options See link above for documentation on the options
      * @throws MarshallException If the data can not be marshalled
      */
-    public void addRow(String elementId, Row row) throws MarshallException
+    public void addRows(String elementId, String[][] data, String options) throws MarshallException
     {
-        
+        if (data.length > 0)
+        {
+            StringBuffer functions = new StringBuffer();
+            for (int i = 0; i < data[0].length; i++)
+            {
+                functions.append("function(data) { return data[" + i + "]},");
+            }
+            functions.deleteCharAt(functions.length() - 1);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendScript("DWRUtil.addRows(")
+                  .appendData(elementId)
+                  .appendScript(',')
+                  .appendData(data)
+                  .appendScript(',')
+                  .appendScript("[" + functions.toString() + "]")
+                  .appendScript(options == null ? "" : ", " + options)
+                  .appendScript(");");
+
+            addScript(script);
+        }
+
+    }
+
+    /**
+     * Create rows inside a the table, tbody, thead or tfoot element (given by id).
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
+     * @param elementId The HTML element to update (by id)
+     * @param data The cells to add to the table
+     * @throws MarshallException If the data can not be marshalled
+     */
+    public void addRows(String elementId, String[][] data) throws MarshallException
+    {
+        addRows(elementId, data, null);
     }
 
     /**
      * Remove all the children of a given node.
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
      * @param elementId The HTML element to update (by id)
      * @throws MarshallException If the data can not be marshalled
      */
@@ -273,8 +299,7 @@ public class DwrUtil extends ScriptProxy
 
     /**
      * Clone a given node.
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/TODO">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/TODO">More</a>.
      * @param elementId The HTML element to update (by id)
      * @throws MarshallException If the data can not be marshalled
      */
@@ -289,8 +314,7 @@ public class DwrUtil extends ScriptProxy
 
     /**
      * Clone a given node.
-     * <p>
-     * <a href="http://getahead.ltd.uk/dwr/browser/TODO">More</a>.
+     * <p><a href="http://getahead.ltd.uk/dwr/browser/TODO">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param idPrefix How do we prefix ids in the cloned version of the node tree
      * @param idSuffix How do we suffix ids in the cloned version of the node tree
