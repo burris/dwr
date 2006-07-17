@@ -214,7 +214,8 @@ DWREngine.endBatch = function(options) {
   // Other props. priority: batch, call, global - the order in which they were set
   var propnames = [ "method", "verb", "async", "timeout" ];
   var propname;
-  while (propname = propnames.shift()) {
+  for (var i = 0; i < propnames.length; i++) {
+    propname = propnames[i];
     if (options[propname] != null) batch[propname] = options[propname];
     if (batch[propname] == null) batch[propname] = DWREngine["_" + propname];
   }
@@ -457,7 +458,7 @@ DWREngine._poll = function(overridePath) {
   // Create a batch object that describes how we are to call the server
   var batch = {
     map:{
-      id:id,
+      id:id, callCount:1,
       httpSessionId:DWREngine._httpSessionId,
       scriptSessionId:DWREngine._scriptSessionId,
       page:window.location.pathname
@@ -563,7 +564,6 @@ DWREngine._processCometResponse = function(response) {
 
 /** @private Actually send the block of data in the batch object. */
 DWREngine._sendData = function(batch) {
-  // If the batch is empty, don't send anything
   if (batch.map.callCount == 0) return;
   // Call any pre-hooks
   for (var i = 0; i < batch.preHooks.length; i++) {
@@ -677,7 +677,7 @@ DWREngine._ModeHtmlPoll = "/htmlpoll/";
 DWREngine._constructRequest = function(batch) {
   // A quick string to help people that use web log analysers
   var request = { url:batch.path + batch.mode, body:null };
-  if (batch.map.callCount == 0) {
+  if (batch.method == DWREngine._pollMethod) {
     request.url += "ReverseAjax.dwr";
   }
   else if (batch.map.callCount == 1) {
@@ -810,7 +810,7 @@ DWREngine._handleResponse = function(id, reply) {
   var responseBatch = DWREngine._batches[DWREngine._batches.length - 1];
   if (responseBatch.method == DWREngine.IFrame) {
     // Only finalize after the last call has been handled
-    if (responseBatch.map["c"+(responseBatch.map.callCount-1)+"-id"] == id) {
+    if (responseBatch.map["c" + (responseBatch.map.callCount - 1) + "-id"] == id) {
       DWREngine._clearUp(responseBatch);
     }
   }
