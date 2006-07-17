@@ -156,7 +156,7 @@ public class PollHandler
                     log.warn("--Erroring: id[" + callId + "] message[" + ex.toString() + ']', ex);
                 }
 
-                conduit.addScript(script);
+                scriptSession.addScript(script);
             }
             finally
             {
@@ -249,7 +249,13 @@ public class PollHandler
 
                     try
                     {
+                        Thread thread = Thread.currentThread();
+                        String oldName = thread.getName();
+                        thread.setName("DWR:Poll:PreStreamWait:" + preStreamWaitTime);
+
                         lock.wait(preStreamWaitTime);
+
+                        thread.setName(oldName);
                     }
                     catch (InterruptedException ex)
                     {
@@ -298,7 +304,13 @@ public class PollHandler
                     postStreamWaitTime = 100;
                 }
 
+                Thread thread = Thread.currentThread();
+                String oldName = thread.getName();
+                thread.setName("DWR:Poll:PostStreamWait:" + postStreamWaitTime);
+
                 Thread.sleep(postStreamWaitTime);
+
+                thread.setName(oldName);
             }
             catch (InterruptedException ex)
             {
@@ -374,7 +386,7 @@ public class PollHandler
      * within that class, so this is a hacky simplification.
      * @author Joe Walker [joe at getahead dot ltd dot uk]
      */
-    protected class PollScriptConduit extends ScriptConduit
+    private class PollScriptConduit extends ScriptConduit
     {
         /**
          * Simple ctor
