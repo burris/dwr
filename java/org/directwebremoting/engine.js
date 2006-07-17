@@ -191,7 +191,7 @@ DWREngine.beginBatch = function() {
   }
   DWREngine._batch = {
     headers:{}, map:{ callCount:0 }, paramCount:0,
-    ids:[], preHooks:[], postHooks:[]
+    isPoll:false, ids:[], preHooks:[], postHooks:[]
   };
 };
 
@@ -677,7 +677,7 @@ DWREngine._ModeHtmlPoll = "/htmlpoll/";
 DWREngine._constructRequest = function(batch) {
   // A quick string to help people that use web log analysers
   var request = { url:batch.path + batch.mode, body:null };
-  if (batch.method == DWREngine._pollMethod) {
+  if (batch.isPoll == true) {
     request.url += "ReverseAjax.dwr";
   }
   else if (batch.map.callCount == 1) {
