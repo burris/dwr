@@ -255,7 +255,7 @@ public class DwrUtil extends ScriptProxy
             }
             functions.deleteCharAt(functions.length() - 1);
 
-            ScriptBuffer script = new ScriptBuffer();
+            ScriptBuffer script = createScriptBuffer();
             script.appendScript("DWRUtil.addRows(")
                   .appendData(elementId)
                   .appendScript(',')
@@ -267,7 +267,6 @@ public class DwrUtil extends ScriptProxy
 
             addScript(script);
         }
-
     }
 
     /**
