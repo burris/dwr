@@ -75,7 +75,6 @@ public class DwrServlet extends HttpServlet
             }
 
             ContainerUtil.logStartup(config);
-
             ContainerUtil.setupDefaults(container);
             ContainerUtil.setupFromServletConfig(container, config);
             container.configurationFinished();

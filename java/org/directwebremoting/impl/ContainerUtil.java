@@ -44,6 +44,7 @@ import org.directwebremoting.dwrp.DefaultConverterManager;
 import org.directwebremoting.dwrp.HtmlCallMarshaller;
 import org.directwebremoting.dwrp.PlainCallMarshaller;
 import org.directwebremoting.dwrp.PollHandler;
+import org.directwebremoting.servlet.DwrWebContextFilter;
 import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
@@ -106,11 +107,12 @@ public class ContainerUtil
     }
 
     /**
-     * 
-     * @param config
-     * @param container
-     * @param webContextBuilder
-     * @param servlet
+     * Make some changes to the ServletContext so {@link DwrWebContextFilter}
+     * can find the Container etc.
+     * @param config The current configuration
+     * @param container The container to save in the ServletContext 
+     * @param webContextBuilder The WebContextBuilder to save
+     * @param servlet The Servlet to save
      */
     public static void prepareForWebContextFilter(ServletConfig config, Container container, WebContextBuilder webContextBuilder, HttpServlet servlet)
     {
