@@ -190,7 +190,6 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendData(boolean b)
     {
-        checkOpen();
         Boolean data = new Boolean(b);
         parts.add(data);
         return this;
@@ -203,7 +202,6 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendData(char c)
     {
-        checkOpen();
         parts.add(new Character(c));
         return this;
     }
@@ -215,7 +213,6 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendData(double d)
     {
-        checkOpen();
         parts.add(new Double(d));
         return this;
     }
@@ -227,7 +224,6 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendData(float f)
     {
-        checkOpen();
         parts.add(new Float(f));
         return this;
     }
@@ -239,7 +235,6 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendData(int i)
     {
-        checkOpen();
         parts.add(new Integer(i));
         return this;
     }
@@ -251,7 +246,6 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendData(long l)
     {
-        checkOpen();
         parts.add(new Long(l));
         return this;
     }
@@ -263,7 +257,6 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendData(Object obj)
     {
-        checkOpen();
         parts.add(obj);
         return this;
     }
@@ -275,7 +268,6 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendData(String str)
     {
-        checkOpen();
         parts.add(str);
         return this;
     }
@@ -287,7 +279,6 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendScript(String str)
     {
-        checkOpen();
         parts.add(new StringCodeWrapper(str));
         return this;
     }
@@ -299,39 +290,20 @@ public class ScriptBuffer
      */
     public synchronized ScriptBuffer appendScript(char c)
     {
-        checkOpen();
         parts.add(new CharCodeWrapper(c));
         return this;
     }
 
     /**
-     * Close this ScriptBuffer and return a final string ready for output by
-     * the {@link ScriptConduit} that provided the {@link OutboundContext}.
-     * Once this method is called, this ScriptBuffer is closed and can not be
-     * used any longer.
+     * Return a string ready for output.
      * @return Some Javascript to be eval()ed by a browser.
      */
-    public synchronized String export()
-    {
-        checkOpen();
-
-        String exported = createOutput();
-        parts = null;
-        return exported;
-    }
-
-    /**
-     * Generate some output for the given internal state without closing the
-     * class for further calls to the various versions of
-     * {@link #appendData(String)}.
-     * @return Some Javascript to be eval()ed by a browser.
-     */
-    private String createOutput()
+    public synchronized String createOutput()
     {
         OutboundContext context = new OutboundContext();
-
+        
         StringBuffer output = new StringBuffer();
-    
+        
         // First we look for the initialization code
         for (Iterator it = parts.iterator(); it.hasNext();)
         {
@@ -342,7 +314,7 @@ public class ScriptBuffer
                 output.append(ov.getInitCode());
             }
         }
-    
+        
         // Then we output everything else
         for (Iterator it = parts.iterator(); it.hasNext();)
         {
@@ -363,9 +335,17 @@ public class ScriptBuffer
                 output.append(ov.getAssignCode());
             }
         }
-    
+        
         String exported = output.toString();
         return exported;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        return createOutput();
     }
 
     /**
@@ -401,25 +381,6 @@ public class ScriptBuffer
         }
 
         char data;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    public String toString()
-    {
-        return createOutput();
-    }
-
-    /**
-     * Check that export has not been called so far.
-     */
-    private final void checkOpen()
-    {
-        if (parts == null)
-        {
-            throw new IllegalStateException("Can't append to ScriptBuffer. It has been transmitted already.");
-        }
     }
 
     /**

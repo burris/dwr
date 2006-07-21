@@ -327,9 +327,7 @@ public class DwrUtil extends ScriptProxy
 
         if (idPrefix != null)
         {
-            options.appendScript("idPrefix:'")
-                   .appendData(idPrefix)
-                   .appendScript("'"); 
+            options.appendScript("idPrefix:").appendData(idPrefix);
         }
 
         if (idPrefix != null && idSuffix != null)
@@ -339,9 +337,7 @@ public class DwrUtil extends ScriptProxy
 
         if (idSuffix != null)
         {
-            options.appendScript("idSuffix:'")
-                   .appendData(idSuffix)
-                   .appendScript("'"); 
+            options.appendScript("idSuffix:").appendData(idSuffix);
         }
 
         options.appendScript("}");
@@ -349,7 +345,7 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.cloneNode(")
               .appendData(elementId)
-              .appendScript(", ")
+              .appendScript(',')
               .appendData(options)
               .appendScript(");");
         addScript(script);
@@ -363,11 +359,11 @@ public class DwrUtil extends ScriptProxy
     public void setClassName(String elementId, String className)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.setClassName('")
+        script.appendScript("DWRUtil.setClassName(")
               .appendData(elementId)
-              .appendScript("', '")
+              .appendScript(',')
               .appendData(className)
-              .appendScript("');");
+              .appendScript(");");
         addScript(script);
     }
 
@@ -379,11 +375,11 @@ public class DwrUtil extends ScriptProxy
     public void addClassName(String elementId, String className)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.addClassName('")
+        script.appendScript("DWRUtil.addClassName(")
               .appendData(elementId)
-              .appendScript("', '")
+              .appendScript(',')
               .appendData(className)
-              .appendScript("');");
+              .appendScript(");");
         addScript(script);
     }
 
@@ -395,11 +391,11 @@ public class DwrUtil extends ScriptProxy
     public void removeClassName(String elementId, String className)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.removeClassName('")
+        script.appendScript("DWRUtil.removeClassName(")
               .appendData(elementId)
-              .appendScript("', '")
+              .appendScript(',')
               .appendData(className)
-              .appendScript("');");
+              .appendScript(");");
         addScript(script);
     }
 
@@ -411,11 +407,11 @@ public class DwrUtil extends ScriptProxy
     public void toggleClassName(String elementId, String className)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.toggleClassName('")
+        script.appendScript("DWRUtil.toggleClassName(")
               .appendData(elementId)
-              .appendScript("', '")
+              .appendScript(',')
               .appendData(className)
-              .appendScript("');");
+              .appendScript(");");
         addScript(script);
     }
 
@@ -428,13 +424,13 @@ public class DwrUtil extends ScriptProxy
     public void setStyle(String elementId, String selector, String value)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("$('")
+        script.appendScript("$(")
               .appendData(elementId)
-              .appendScript("').style.")
+              .appendScript(").style.")
               .appendData(selector)
-              .appendScript(" = '")
+              .appendScript('=')
               .appendData(value)
-              .appendScript("';");
+              .appendScript(';');
         addScript(script);
     }
 }

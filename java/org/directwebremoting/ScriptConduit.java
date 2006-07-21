@@ -87,7 +87,7 @@ public abstract class ScriptConduit implements Comparable
      * exception and it will be asumed to be no longer useful.
      * If you want to implement this method then you will probably be doing
      * something like calling {@link ServletOutputStream#print(String)} and
-     * passing in the results of calling {@link ScriptBuffer#export()}.
+     * passing in the results of calling {@link ScriptBuffer#createOutput()}.
      * @param script The script to execute
      * @return true if this ScriptConduit handled the script.
      * @throws IOException If this conduit is broken and should not be used
@@ -108,39 +108,6 @@ public abstract class ScriptConduit implements Comparable
         }
 
         return (int) (this.id - that.id);
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode()
-    {
-        return (int) id + 7493;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj)
-    {
-        if (obj == null)
-        {
-            return false;
-        }
-
-        if (obj == this)
-        {
-            return true;
-        }
-
-        if (!this.getClass().equals(obj.getClass()))
-        {
-            return false;
-        }
-
-        ScriptConduit that = (ScriptConduit) obj;
-
-        return this.id == that.id;
     }
 
     /* (non-Javadoc)

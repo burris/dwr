@@ -154,6 +154,7 @@ public class DefaultScriptSession implements ScriptSession
                     try
                     {
                         written = conduit.addScript(script);
+
                         if (written)
                         {
                             conduit.flush();
@@ -264,7 +265,7 @@ public class DefaultScriptSession implements ScriptSession
             }
             catch (Exception ex)
             {
-                log.warn("Failed to catch-up write to a ScriptConduit");
+                log.warn("Failed to catch-up write to a ScriptConduit", ex);
             }
         }
     }
