@@ -1,7 +1,7 @@
 /*
- * $Header: /home/cvs/jakarta-struts/LICENSE,v 1.2 2001/02/02 00:38:31 craigmcc Exp $
- * $Revision: 1.2 $
- * $Date: 2001/02/02 00:38:31 $
+ * $Header$
+ * $Revision$
+ * $Date$
  *
  * ====================================================================
  * 

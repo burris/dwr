@@ -31,14 +31,14 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" sourcepath="/library/jarlib/bsf-2.3/bsf-src-2.3.0.zip" kind="lib" path="jar/bsf-2.3.jar"/>
-	<classpathentry exported="true" sourcepath="/eliza/jar/spring-2.0/spring-framework-2.0-m5-with-dependencies.zip" kind="lib" path="jar/spring.jar">
+	<classpathentry exported="true" sourcepath="/eliza/jar/spring-2.0/spring-framework-2.0-m5-with-dependencies.zip" kind="lib" path="jar/spring-2.0.jar">
 		<attributes>
 			<attribute value="http://www.springframework.org/docs/api/" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" sourcepath="/library/jarlib/struts-1.2.9/struts-1.2.9-src.zip" kind="lib" path="jar/struts-1.2.9.jar">
+	<classpathentry exported="true" sourcepath="/library/jarlib/struts-1.1/struts-1.1-src.zip" kind="lib" path="jar/struts-1.1.jar">
 		<attributes>
-			<attribute value="http://struts.apache.org/struts-doc-1.2.9/api/" name="javadoc_location"/>
+			<attribute value="http://struts.apache.org/struts-doc-1.1/api/" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="jar/myfaces-api.jar">
