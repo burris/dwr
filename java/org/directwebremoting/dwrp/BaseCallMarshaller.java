@@ -557,7 +557,7 @@ public abstract class BaseCallMarshaller implements Marshaller
          */
         public boolean addScript(ScriptBuffer script) throws IOException
         {
-            sendScript(out, script.export(getOutboundContext()));
+            sendScript(out, script.export());
             return true;
         }
 

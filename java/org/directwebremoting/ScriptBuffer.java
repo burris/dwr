@@ -140,6 +140,28 @@ public class ScriptBuffer
     }
 
     /**
+     * Constructor for use from a non-WebContext enabled thread.
+     * The {@link Container} allows us to look up a {@link ConverterManager}
+     * @param container From which we extract a {@link ConverterManager}
+     */
+    public ScriptBuffer(Container container)
+    {
+        init(container);
+    }
+
+    /**
+     * Constructor for use from a non-WebContext enabled thread.
+     * The {@link Container} allows us to look up a {@link ConverterManager}
+     * @param container From which we extract a {@link ConverterManager}
+     * @param str The initial string to place in the buffer
+     */
+    public ScriptBuffer(Container container, String str)
+    {
+        init(container);
+        appendScript(str);
+    }
+
+    /**
      * Check that we've got everything
      * @param container From which we extract a {@link ConverterManager}
      */
@@ -287,13 +309,13 @@ public class ScriptBuffer
      * the {@link ScriptConduit} that provided the {@link OutboundContext}.
      * Once this method is called, this ScriptBuffer is closed and can not be
      * used any longer.
-     * @param context To create unique variable names
      * @return Some Javascript to be eval()ed by a browser.
      */
-    public synchronized String export(OutboundContext context)
+    public synchronized String export()
     {
         checkOpen();
-        String exported = createOutput(context);
+
+        String exported = createOutput();
         parts = null;
         return exported;
     }
@@ -302,11 +324,12 @@ public class ScriptBuffer
      * Generate some output for the given internal state without closing the
      * class for further calls to the various versions of
      * {@link #appendData(String)}.
-     * @param context An outbound context to work with
      * @return Some Javascript to be eval()ed by a browser.
      */
-    private String createOutput(OutboundContext context)
+    private String createOutput()
     {
+        OutboundContext context = new OutboundContext();
+
         StringBuffer output = new StringBuffer();
     
         // First we look for the initialization code
@@ -385,7 +408,7 @@ public class ScriptBuffer
      */
     public String toString()
     {
-        return createOutput(new OutboundContext());
+        return createOutput();
     }
 
     /**

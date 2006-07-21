@@ -87,8 +87,7 @@ public abstract class ScriptConduit implements Comparable
      * exception and it will be asumed to be no longer useful.
      * If you want to implement this method then you will probably be doing
      * something like calling {@link ServletOutputStream#print(String)} and
-     * passing in {@link ScriptBuffer#export(OutboundContext)}. You can get an
-     * {@link OutboundContext} by calling {@link #getOutboundContext()}.
+     * passing in the results of calling {@link ScriptBuffer#export()}.
      * @param script The script to execute
      * @return true if this ScriptConduit handled the script.
      * @throws IOException If this conduit is broken and should not be used
@@ -109,15 +108,6 @@ public abstract class ScriptConduit implements Comparable
         }
 
         return (int) (this.id - that.id);
-    }
-
-    /**
-     * Accessor for the OutboundContext
-     * @return the OutboundContext
-     */
-    protected OutboundContext getOutboundContext()
-    {
-        return context;
     }
 
     /* (non-Javadoc)
@@ -165,11 +155,6 @@ public abstract class ScriptConduit implements Comparable
 
         return classname + "[id=" + id + "]";
     }
-
-    /**
-     * This is how we co-ordinate the conversion to Javascript
-     */
-    private OutboundContext context = new OutboundContext();
 
     /**
      * Cached short classname for toString()

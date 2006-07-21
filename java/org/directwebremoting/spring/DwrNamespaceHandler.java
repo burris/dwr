@@ -44,7 +44,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
     final static String DEFAULT_SPRING_CONFIGURATOR_ID = "__dwrConfiguration";
 
     private Map creators = new ManagedMap();
-    private Map converters = new ManagedMap();
+    protected Map converters = new ManagedMap();
 
     public void init() {
         registerBeanDefinitionParser("configuration", new ConfigurationBeanDefinitionParser());
@@ -55,7 +55,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
         registerBeanDefinitionDecorator("remote", new RemoteBeanDefinitionDecorator());
     }
 
-    private BeanDefinition registerSpringConfiguratorIfNecessary(BeanDefinitionRegistry registry) {
+    protected BeanDefinition registerSpringConfiguratorIfNecessary(BeanDefinitionRegistry registry) {
         if (!registry.containsBeanDefinition(DEFAULT_SPRING_CONFIGURATOR_ID)) {
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(SpringConfigurator.class);
             builder.addPropertyValue("creators", creators);
@@ -74,8 +74,9 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
      * @param registryBuilder
      * @param javascript The name of the bean in the registry.
      * @param beanCreator The {@link org.directwebremoting.Creator} to register.
+     * @param children The node list to check for nested elements
      */
-    private void registerCreator(BeanDefinitionRegistryBuilder registryBuilder,
+    protected void registerCreator(BeanDefinitionRegistryBuilder registryBuilder,
                                  String javascript,
                                  BeanDefinitionBuilder beanCreator,
                                  NodeList children) {
@@ -131,21 +132,21 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
         creators.put(javascript, new RuntimeBeanReference(creatorConfigName));
     }
 
-    private class ConfigurationBeanDefinitionParser implements BeanDefinitionParser {
+    protected class ConfigurationBeanDefinitionParser implements BeanDefinitionParser {
         public BeanDefinition parse(Element element, ParserContext parserContext) {
             BeanDefinitionRegistry registry = parserContext.getRegistry();
             BeanDefinition beanDefinition = registerSpringConfiguratorIfNecessary(registry);
 
-            List creators = DomUtils.getChildElementsByTagName(element, "create");
-            Iterator iter = creators.iterator();
+            List createElements = DomUtils.getChildElementsByTagName(element, "create");
+            Iterator iter = createElements.iterator();
             while (iter.hasNext()) {
                 Element createElement = (Element) iter.next();
                 findDecoratorForNode(createElement).decorate(
                         createElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
-            List converters = DomUtils.getChildElementsByTagName(element, "convert");
-            iter = converters.iterator();
+            List convertElements = DomUtils.getChildElementsByTagName(element, "convert");
+            iter = convertElements.iterator();
             while (iter.hasNext()) {
                 Element convertElement = (Element) iter.next();
                 findDecoratorForNode(convertElement).decorate(
@@ -156,7 +157,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
         }
     }
 
-    private class ControllerBeanDefinitionParser implements BeanDefinitionParser {
+    protected class ControllerBeanDefinitionParser implements BeanDefinitionParser {
         public BeanDefinition parse(Element element, ParserContext parserContext) {
             BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
             BeanDefinitionBuilder dwrController = BeanDefinitionBuilder.rootBeanDefinition(DwrController.class);
@@ -169,7 +170,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
         }
     }
 
-    private class RemoteBeanDefinitionDecorator implements BeanDefinitionDecorator {
+    protected class RemoteBeanDefinitionDecorator implements BeanDefinitionDecorator {
         public BeanDefinitionHolder decorate(Node node,
                                              BeanDefinitionHolder definition,
                                              ParserContext parserContext) {
@@ -190,7 +191,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
         }
     }
 
-    private class ConverterBeanDefinitionDecorator implements BeanDefinitionDecorator {
+    protected class ConverterBeanDefinitionDecorator implements BeanDefinitionDecorator {
 
         public BeanDefinitionHolder decorate(Node node,
                                              BeanDefinitionHolder definition,
@@ -218,7 +219,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport {
     /**
      * Uses the BeanDefinitionDecorator since we need access to the name of the parent definition??
      */
-    private class CreatorBeanDefinitionDecorator implements BeanDefinitionDecorator {
+    protected class CreatorBeanDefinitionDecorator implements BeanDefinitionDecorator {
         public BeanDefinitionHolder decorate(Node node,
                                              BeanDefinitionHolder definition,
                                              ParserContext parserContext) {

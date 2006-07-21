@@ -88,8 +88,9 @@ public class FakeHttpSession implements HttpSession
         return maxInactiveInterval;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see javax.servlet.http.HttpSession#getSessionContext()
+     * @deprecated
      */
     public javax.servlet.http.HttpSessionContext getSessionContext()
     {

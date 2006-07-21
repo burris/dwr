@@ -407,7 +407,7 @@ public class PollHandler
          */
         public boolean addScript(ScriptBuffer script) throws IOException
         {
-            sendScript(out, script.export(getOutboundContext()), plain);
+            sendScript(out, script.export(), plain);
             return true;
         }
 

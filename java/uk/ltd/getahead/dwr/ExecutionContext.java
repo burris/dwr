@@ -26,12 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.MarshallException;
-import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-
 
 /**
  * Class to enable us to access servlet parameters.
@@ -152,14 +149,6 @@ public class ExecutionContext implements WebContext
     public void setCurrentPageInformation(String page, String scriptSessionId)
     {
         throw new UnsupportedOperationException("Use WebContextFactory.get().setPageAndSessionIds()");
-    }
-
-    /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.WebContext#toJavascript(java.lang.Object)
-     */
-    public OutboundVariable toJavascript(Object data) throws MarshallException
-    {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()");
     }
 
     /* (non-Javadoc)
