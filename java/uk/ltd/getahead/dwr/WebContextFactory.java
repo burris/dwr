@@ -27,7 +27,6 @@ import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.ScriptSession;
-import org.directwebremoting.WebContext;
 
 /**
  * Accessor for the current WebContext.
@@ -58,7 +57,7 @@ public class WebContextFactory
         /**
          * @param proxy
          */
-        public ProxyWebContext(WebContext proxy)
+        public ProxyWebContext(org.directwebremoting.WebContext proxy)
         {
             this.proxy = proxy;
         }
