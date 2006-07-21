@@ -136,6 +136,12 @@ Asynchronous batches
 DWR fails to send async:false method when called from onload.
 	Fails for FF on setRequestHeader().
 
+Memory problems
+	I’m using dwr 1.1 and I’m having a pretty bad leak. This only seems to
+	happen in Ie and not firefox.  The problem seems to be happening with
+	DWRUtil.addRows.  Can anybody provide me with help on resolving this?
+	I believe this leak is only happening on page reloads.
+
 -- Below the line for DWR 2.0 --------------------------------------------------
 
 Beans extending hashmap - Kristján Bjarni Guðmundsson <kristjg@hugvit.is>
