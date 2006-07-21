@@ -548,11 +548,34 @@ DWRUtil.getText = function(ele) {
  * Given a map, call setValue() for all the entries in the map using the entry key as an element id
  * @see http://getahead.ltd.uk/dwr/browser/util/setvalues
  */
-DWRUtil.setValues = function(map) {
+DWRUtil.setValues = function(map, options) {
+  var prefixes = [];
+  if (options && options.prefix) prefixes.push(options.prefix);
+  DWRUtil._getDataProperties(map, prefixes);
+};
+
+/**
+ * @private retrieve values for the map and set the corresponding form fields. For object properties, recursively
+ * read sub properties in order to matching nested form fields.
+ */
+DWRUtil._getDataProperties = function(map, prefixes) {
   for (var property in map) {
-    // Are there any elements with that id or name
-    if ($(property) != null || document.getElementsByName(property).length >= 1) {
-      DWRUtil.setValue(property, map[property]);
+    if (map[property] != null && typeof map[property] == "object") {
+      var prefixClone = new Array();
+      for (var i = 0; i < prefixes.length; i++) {
+        prefixClone.push(prefixes[i]);
+      }
+      prefixClone.push(property);
+      DWRUtil._getDataProperties(map[property], prefixClone);
+    } else {
+      var nestedProperty = property;
+      if (prefixes.length > 0) {
+        nestedProperty = (prefixes.join(".")) + "." + property;
+      }
+      // Are there any elements with that id or name
+      if ($(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
+        DWRUtil.setValue(nestedProperty, map[property]);
+      }
     }
   }
 };
@@ -562,7 +585,7 @@ DWRUtil.setValues = function(map) {
  * Given a string or element that refers to a form, create an object from the elements of the form.
  * @see http://getahead.ltd.uk/dwr/browser/util/getvalues
  */
-DWRUtil.getValues = function(data) {
+DWRUtil.getValues = function(data, options) {
   var ele;
   if (typeof data == "string") ele = $(data);
   if (DWRUtil._isHTMLElement(data)) ele = data;
@@ -582,13 +605,37 @@ DWRUtil.getValues = function(data) {
     return reply;
   }
   else {
-    for (var property in data) {
-      // Are there any elements with that id or name
-      if ($(property) != null || document.getElementsByName(property).length >= 1) {
-        data[property] = DWRUtil.getValue(property);
+    var prefixes = [];
+    if (options != null && options.prefix) prefixes.push(options.prefix);
+    DWRUtil._setDataProperties(data, prefixes);
+    return data;
+  }
+};
+
+/**
+ * @private for each object property, set html field value if present. Recurse for object properties.
+ */
+DWRUtil._setDataProperties = function(data, prefixes) {
+  for (var property in data) {
+    // Are there any elements with that id or name
+    if (data[property] != null && typeof data[property] == "object") {
+      var prefixClone = new Array();
+      for (var i = 0; i < prefixes.length; i++) {
+        prefixClone.push(prefixes[i]);
+      }
+      prefixClone.push(property);
+      DWRUtil._setDataProperties(data[property], prefixClone);
+    }
+    else
+    {
+      var nestedProperty = property;
+      if (prefixes.length > 0) {
+        nestedProperty = (prefixes.join(".")) + "." + property;
+      }
+      if ($(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
+        data[property] = DWRUtil.getValue(nestedProperty);
       }
     }
-    return data;
   }
 };
 
