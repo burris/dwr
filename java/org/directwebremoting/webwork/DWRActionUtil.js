@@ -122,7 +122,7 @@ var DWRActionUtil = {
       mustCall= true;
     }
     if(mustCall) {
-      DWRRewriteAction.execute(actionObj, params, callbackObj);
+      DWRAction.execute(actionObj, params, callbackObj);
     }
   },
   
