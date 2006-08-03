@@ -421,62 +421,138 @@ public final class LocalUtil
 
         String trimValue = value.trim();
 
-        if (paramType == Boolean.class || paramType == Boolean.TYPE)
+        if (paramType == Boolean.class)
+        {
+            if (trimValue.length() == 0)
+            {
+                return null;
+            }
+
+            return Boolean.valueOf(trimValue);
+        }
+
+        if (paramType == Boolean.TYPE)
         {
             return Boolean.valueOf(trimValue);
         }
 
-        if (paramType == Integer.class || paramType == Integer.TYPE)
+        if (paramType == Integer.class)
+        {
+            if (trimValue.length() == 0)
+            {
+                return null;
+            }
+
+            return Integer.valueOf(trimValue);
+        }
+
+        if (paramType == Integer.TYPE)
         {
             if (trimValue.length() == 0)
             {
                 return new Integer(0);
             }
+
             return Integer.valueOf(trimValue);
         }
 
-        if (paramType == Short.class || paramType == Short.TYPE)
+        if (paramType == Short.class)
+        {
+            if (trimValue.length() == 0)
+            {
+                return null;
+            }
+
+            return Short.valueOf(trimValue);
+        }
+
+        if (paramType == Short.TYPE)
         {
             if (trimValue.length() == 0)
             {
                 return new Short((short) 0);
             }
+
             return Short.valueOf(trimValue);
         }
 
-        if (paramType == Byte.class || paramType == Byte.TYPE)
+        if (paramType == Byte.class)
+        {
+            if (trimValue.length() == 0)
+            {
+                return null;
+            }
+
+            return Byte.valueOf(trimValue);
+        }
+
+        if (paramType == Byte.TYPE)
         {
             if (trimValue.length() == 0)
             {
                 return new Byte((byte) 0);
             }
+
             return Byte.valueOf(trimValue);
         }
 
-        if (paramType == Long.class || paramType == Long.TYPE)
+        if (paramType == Long.class)
+        {
+            if (trimValue.length() == 0)
+            {
+                return null;
+            }
+
+            return Long.valueOf(trimValue);
+        }
+
+        if (paramType == Long.TYPE)
         {
             if (trimValue.length() == 0)
             {
                 return new Long(0);
             }
+
             return Long.valueOf(trimValue);
         }
 
-        if (paramType == Float.class || paramType == Float.TYPE)
+        if (paramType == Float.class)
+        {
+            if (trimValue.length() == 0)
+            {
+                return null;
+            }
+
+            return Float.valueOf(trimValue);
+        }
+
+        if (paramType == Float.TYPE)
         {
             if (trimValue.length() == 0)
             {
                 return new Float(0);
             }
+
             return Float.valueOf(trimValue);
         }
 
-        if (paramType == Double.class || paramType == Double.TYPE)
+        if (paramType == Double.class)
+        {
+            if (trimValue.length() == 0)
+            {
+                return null;
+            }
+
+            return Double.valueOf(trimValue);
+        }
+
+        if (paramType == Double.TYPE)
         {
             if (trimValue.length() == 0)
             {
                 return new Double(0);
             }
+
             return Double.valueOf(trimValue);
         }
 
