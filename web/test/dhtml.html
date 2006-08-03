@@ -2,48 +2,73 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+  <title>DWR - DHTML Tests</title>
+  <link type="text/css" href="../generic.css" rel="stylesheet" />
   <script type='text/javascript' src='../dwr/util.js'> </script>
   <script type='text/javascript' src='../generic.js'> </script>
   <script type='text/javascript' src='dhtml.js'> </script>
-  <link type="text/css" href="../generic.css" rel="stylesheet" />
-  <title>DWR - DHTML Tests</title>
+  <script type="text/javascript">
+  var arrayFive = [ 'One', 'Two', 'Three', 'Four', 'Five' ];
+  var arrayObject = [
+    { name:'One', value:'1' },
+    { name:'Two', value:'2' },
+    { name:'Three', value:'3' },
+    { name:'Four', value:'4' },
+    { name:'Five', value:'5' }
+  ];
+  var map = { one:1, two:2, three:3, four:4, five:5 };
+  
+  function executeAll() {
+    var prop;
+    for (prop in window) {
+      if (prop.match(/test/) && typeof window[prop] == "function" && prop != "testEquals") {
+        eval(prop + "();");
+      }
+    }
+  }
+  
+  function success() {
+  }
+  
+  function failure(message) {
+    alert(message);
+  }
+
+  function init() {
+    changeHandler();
+  }
+
+  function changeHandler() {
+    var option = DWRUtil.getValue("changeSelect");
+    if (option == "none") {
+      DWRUtil.setHighlightHandler(null);
+    }
+    else if (option == "yellow") {
+      DWRUtil.setHighlightHandler(DWRUtil.yellowFadeHighlightHandler);
+    }
+    else {
+      DWRUtil.setHighlightHandler(DWRUtil.focusHighlightHandler);
+    }
+  }
+  </script>
 </head>
 
-<body>
+<body onload="init()">
 <div id="page-title">[
   <a href="http://getahead.ltd.uk/dwr/">DWR Website</a> |
   <a href="..">Web Application Index</a>
 ]</div>
 
-<script type="text/javascript">
-var arrayFive = [ 'One', 'Two', 'Three', 'Four', 'Five' ];
-var arrayObject = [
-  { name:'One', value:'1' },
-  { name:'Two', value:'2' },
-  { name:'Three', value:'3' },
-  { name:'Four', value:'4' },
-  { name:'Five', value:'5' }
-];
-var map = { one:1, two:2, three:3, four:4, five:5 };
-
-function executeAll() {
-  var prop;
-  for (prop in window) {
-    if (prop.match(/test/) && typeof window[prop] == "function" && prop != "testEquals") {
-      eval(prop + "();");
-    }
-  }
-}
-
-function success() {
-}
-
-function failure(message) {
-  alert(message);
-}
-</script>
-
 <h1>Tests</h1>
+
+<p>Highlight Handler:
+<select onchange="changeHandler();" id="changeSelect">
+  <option value="none">None</option>
+  <option value="yellow">Yellow Fade</option>
+  <option value="focus">Focus</option>
+</select>
+<br /><br />
+</p>
 
 <div>
   <button onclick="executeAll()">ExecuteAll</button>
