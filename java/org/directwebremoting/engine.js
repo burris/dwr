@@ -225,22 +225,15 @@ DWREngine.endBatch = function(options) {
   // We are about to send so this batch should not be globally visible
   DWREngine._batch = null;
 
-  // If we are in ordered mode, then we don't send unless the list of sent
-  // items is empty
-  if (!DWREngine._ordered) {
-    DWREngine._batches[DWREngine._batches.length] = batch;
-    DWREngine._sendData(batch);
+  if (batch.map.callCount == 0) return;
+
+  // In ordered mode, we don't send unless the list of sent items is empty
+  if (DWREngine._ordered && DWREngine._batches.length != 0) {
+    DWREngine._batchQueue[DWREngine._batchQueue.length] = batch;
   }
   else {
-    if (DWREngine._batches.length == 0) {
-      // We aren't waiting for anything, go now.
-      DWREngine._batches[DWREngine._batches.length] = batch;
-      DWREngine._sendData(batch);
-    }
-    else {
-      // Push the batch onto the waiting queue
-      DWREngine._batchQueue[DWREngine._batchQueue.length] = batch;
-    }
+    DWREngine._batches[DWREngine._batches.length] = batch;
+    DWREngine._sendData(batch);
   }
 };
 
@@ -564,8 +557,6 @@ DWREngine._processCometResponse = function(response) {
 
 /** @private Actually send the block of data in the batch object. */
 DWREngine._sendData = function(batch) {
-  if (batch.map.callCount == 0) return;
-  // Call any pre-hooks
   for (var i = 0; i < batch.preHooks.length; i++) {
     batch.preHooks[i]();
   }
@@ -574,7 +565,6 @@ DWREngine._sendData = function(batch) {
   if (batch.timeout && batch.timeout != 0) {
     batch.interval = setInterval(function() { DWREngine._abortRequest(batch); }, batch.timeout);
   }
-
   // Get setup for XMLHttpRequest if possible
   if (batch.method == DWREngine.XMLHttpRequest) {
     if (window.XMLHttpRequest) {
