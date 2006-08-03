@@ -1,9 +1,9 @@
 
-onbackbutton, onforwardbutton
-
 Make ScriptSession invalidation not happen due to polling
 
 -- Below the line for DWR 2.0 --------------------------------------------------
+
+onbackbutton, onforwardbutton
 
 DWRUtil.getValues should handle multiple select list
 
@@ -45,3 +45,8 @@ Add checks for Javascript reserved names
 	generated code put in a value for default and javascript didn't like it.
 	Maybe as a warning, look at bean properties and see if there are a conflicts
 	with reserved keywords.
+
+Server status
+	enhancement request to be able to check whether DWR has working requests.
+	I still think it would be good, and I am doing it by relying on non-public api,
+	which will probably give me a kick sooner or later.

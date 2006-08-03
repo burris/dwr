@@ -1,35 +1,4 @@
 
-We probably missed exception handling out
-    /**
-     * Convert an exception into an outbound variable
-     * @param th The exception to be converted
-     * @param converted The conversion context
-     * @return A new outbound exception
-     */
-    private OutboundVariable convertException(Throwable th, OutboundContext converted)
-    {
-        try
-        {
-            if (converterManager.isConvertable(th.getClass()))
-            {
-                return converterManager.convertOutbound(th, converted);
-            }
-        }
-        catch (MarshallException ex)
-        {
-            log.warn("Exception while converting. Exception to be converted: " + th, ex); //$NON-NLS-1$
-        }
-
-        // So we will have to create one for ourselves
-        OutboundVariable ov = new OutboundVariable();
-        String varName = converted.getNextVariableName();
-        ov.setAssignCode(varName);
-        ov.setInitCode("var " + varName + " = \"" + JavascriptUtil.escapeJavaScript(th.getMessage()) + "\";"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
-        return ov;
-    }
-
-
 DWREngine._handleMetaDataError(null, ex); does not postHook or errorHandler for
 	call level handlers - it should.
 
@@ -38,8 +7,6 @@ Opera doesn't do reverse Ajax
 Fix headers and parameters
 
 DWRUtil.setOptions gets the wrong order in Opera
-
-ActiveX off support is broken
 
 Audit all MarshallExceptions - they could go to the client
 
@@ -55,52 +22,6 @@ Turning RA off
 	is the open connection, but I didn’t see an obvious ‘cancelReverseAjax’
 	method.  Looking at engine.js, it appears that setting reverseAjax to false
 	will only set the variable, but won’t turn off the _poll() method.
-
-DwrUtil serious bug
-	I believe I found a bug in DWR 2.0 milestone 2:
-	It all starts in file DWRUtil.java, method setValue(String elementId, String 
-	value, boolean escapeHtml)
-	In the original code the following lines exist (exhibit 1):	
-		OutboundVariable elementIdOv = getWebContext().toJavascript(elementId);
-		OutboundVariable valueOv = getWebContext().toJavascript(value);
-	These methods lead to this code in class DefaultWebContext (exhibit 2):	
-		public OutboundVariable toJavascript(Object data) throws MarshallException
-		{
-		  return getConverterManager().convertOutbound(data, new OutboundContext());
-		}
-	Subsequently the program reaches ConverterUtil.addStringInit(String output, 
-	OutboundContext outctx) which created the error in the line (exhibit 3):	
-		// For medium length strings do it in a separate variable
-		if (escaped.length() < WRAP_LENGTH)
-		{
-		  OutboundVariable ov = outctx.createOutboundVariable(output);
-		  String varname = ov.getAssignCode();
-		  ov.setInitCode("var " + varname + "=\"" + escaped + "\";\r\n");
-		  return ov;
-		}
-	Each of the multiple calls in exhibit 1 create a new outbound context in 
-	exhibit 2. When the program reached eventually the position of exhibit 3 it 
-	created twice the Javascript variable s0 leading to the following Javascript:	
-		var s0="imageSrc";
-		var s0="image_fill_up_to_more_than_20_characters.png";
-		DWRUtil.setValue(s0,s0);
-	Although I am not certain that my solution actually solves all issues, it 
-	seems to work for me.
-	I added to interface WebContext the method:
-	OutboundVariable toJavascript(Object data, OutboundContext aContext) throws 
-	MarshallException;
-	and implemented it in all derived classes, especially in DefaultWebContext as:
-		public OutboundVariable toJavascript(Object data, OutboundContext aContext) 
-		throws MarshallException
-		{
-		  return getConverterManager().convertOutbound(data, aContext);
-		}
-	Then I changed DWRUtil.java, method setValue(String elementId, String value, 
-	boolean escapeHtml) as such:	
-		OutboundContext outputContext = new OutboundContext();
-		OutboundVariable elementIdOv = getWebContext().toJavascript(elementId, 
-		outputContext);
-		OutboundVariable valueOv = getWebContext().toJavascript(value, outputContext);
 
 Multiple call issue
 	When calling the same function 4 times consecutively passing a different
@@ -132,9 +53,6 @@ Asynchronous batches
 	     var responseBatch = DWREngine._batches[DWREngine._batches.length-1];
 	Because chain of calls stops at this moment DWREngine._clearUp(batch)
 	never gets called for synchronous call.
-
-DWR fails to send async:false method when called from onload.
-	Fails for FF on setRequestHeader().
 
 Memory problems
 	I’m using dwr 1.1 and I’m having a pretty bad leak. This only seems to
