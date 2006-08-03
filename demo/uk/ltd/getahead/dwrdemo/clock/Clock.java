@@ -24,6 +24,7 @@ import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.dwrutil.DwrUtil;
+import org.directwebremoting.util.Logger;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -35,13 +36,14 @@ public class Clock implements Runnable
      */
     public Clock()
     {
-        servletContext = WebContextFactory.get().getServletContext();
+        ServletContext servletContext = WebContextFactory.get().getServletContext();
+        sctx = ServerContextFactory.get(servletContext);
     }
 
     /**
      * 
      */
-    public void toggle()
+    public synchronized void toggle()
     {
         active = !active;
 
@@ -58,16 +60,23 @@ public class Clock implements Runnable
     {
         try
         {
+            log.debug("CLOCK: Starting server-side thread");
+
             while (active)
             {
-                ServerContext sctx = ServerContextFactory.get(servletContext);
                 Collection sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html");
-
-                DwrUtil pages = new DwrUtil(sessions, servletContext);
+                DwrUtil pages = new DwrUtil(sessions, sctx.getServletContext());
                 pages.setValue("clockDisplay", new Date().toString());
 
+                log.debug("Sent message");
                 Thread.sleep(1000);
             }
+
+            Collection sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html");
+            DwrUtil pages = new DwrUtil(sessions, sctx.getServletContext());
+            pages.setValue("clockDisplay", "");
+
+            log.debug("CLOCK: Stopping server-side thread");
         }
         catch (InterruptedException ex)
         {
@@ -78,10 +87,15 @@ public class Clock implements Runnable
     /**
      * Our key to get hold of ServerContexts
      */
-    private ServletContext servletContext;
+    private ServerContext sctx;
 
     /**
      * Are we updating the clocks on all the pages?
      */
     private boolean active = false;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(Clock.class);
 }
