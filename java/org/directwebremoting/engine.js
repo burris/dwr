@@ -795,15 +795,7 @@ DWREngine._handleResponse = function(id, reply) {
       DWREngine._handleMetaDataError(handlers, ex);
     }
   }
-
-  // Finalize the call for IFrame transport
-  var responseBatch = DWREngine._batches[DWREngine._batches.length - 1];
-  if (responseBatch.method == DWREngine.IFrame) {
-    // Only finalize after the last call has been handled
-    if (responseBatch.map["c" + (responseBatch.map.callCount - 1) + "-id"] == id) {
-      DWREngine._clearUp(responseBatch);
-    }
-  }
+  DWREngine._maybeClearUpIFrame();
 };
 
 /** @private This method is called by Javascript that is emitted by server */
@@ -812,8 +804,21 @@ DWREngine._handleServerError = function(id, error) {
   var handlers = DWREngine._handlersMap[id];
   DWREngine._handlersMap[id] = null;
 
-  if (error.message) DWREngine._handleMetaDataError(handlers, error.message, error);
-  else DWREngine._handleMetaDataError(handlers, error);
+  if (!error.message) error.message = "Error without message";
+  DWREngine._handleMetaDataError(handlers, error.message, error);
+
+  DWREngine._maybeClearUpIFrame();
+};
+
+/** @private Finalize the call for IFrame transport */
+DWREngine._maybeClearUpIFrame = function() {
+  var responseBatch = DWREngine._batches[DWREngine._batches.length - 1];
+  if (responseBatch.method == DWREngine.IFrame) {
+    // Only finalize after the last call has been handled
+    if (responseBatch.map["c" + (responseBatch.map.callCount - 1) + "-id"] == id) {
+      DWREngine._clearUp(responseBatch);
+    }
+  }
 };
 
 /** @private This is a hack to make the context be this window */
