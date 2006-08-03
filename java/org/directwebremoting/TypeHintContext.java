@@ -344,6 +344,11 @@ public class TypeHintContext
             log.debug("Error finding Method.getGenericParameterTypes(): JDK1.5 reflection not available.");
             failures++;
         }
+        catch (Error er)
+        {
+            // TODO: remove this error trapping - it's just here to debug a WL issue
+            log.error("If you see this stack trace please report it to the DWR users mailing list", er);
+        }
 
         Method tempGetActualTypeArgumentsMethod = null;
         try
