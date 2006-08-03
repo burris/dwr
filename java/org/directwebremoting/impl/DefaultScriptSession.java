@@ -249,18 +249,26 @@ public class DefaultScriptSession implements ScriptSession
             // If there are any outstanding scripts, dump them to the new conduit
             try
             {
+                boolean output = false;
+
                 for (Iterator it = scripts.iterator(); it.hasNext();)
                 {
                     ScriptBuffer script = (ScriptBuffer) it.next();
                     if (conduit.addScript(script))
                     {
+                        output = true;
                         it.remove();
                     }
                     else
                     {
-                        // Dont try any more
+                        // If we didn't write this one, don't bother with any more
                         break;
                     }
+                }
+
+                if (output)
+                {
+                    conduit.flush();
                 }
             }
             catch (Exception ex)
@@ -282,9 +290,8 @@ public class DefaultScriptSession implements ScriptSession
             boolean removed = conduits.remove(conduit);
             if (!removed)
             {
-                log.error("Attempt to remove unattached ScriptConduit: " + conduit);
+                log.error("Attempt to remove unattached ScriptConduit: " + conduit, new Exception());
                 debug();
-                new Exception().printStackTrace();
             }
         }
     }

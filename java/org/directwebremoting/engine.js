@@ -611,7 +611,7 @@ DWREngine._sendData = function(batch) {
         if (!batch.headers["Content-Type"]) batch.req.setRequestHeader("Content-Type", "text/plain");
       }
       catch (ex) {
-        DWREngine._handleMetaDataError(null, ex);
+        DWREngine._handleMetaDataWarning(null, ex);
       }
       batch.req.send(request.body);
       if (!batch.async) DWREngine._stateChange(batch);

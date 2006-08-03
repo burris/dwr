@@ -188,7 +188,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(boolean)
      */
-    public synchronized ScriptBuffer appendData(boolean b)
+    public ScriptBuffer appendData(boolean b)
     {
         Boolean data = new Boolean(b);
         parts.add(data);
@@ -200,7 +200,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(char)
      */
-    public synchronized ScriptBuffer appendData(char c)
+    public ScriptBuffer appendData(char c)
     {
         parts.add(new Character(c));
         return this;
@@ -211,7 +211,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(double)
      */
-    public synchronized ScriptBuffer appendData(double d)
+    public ScriptBuffer appendData(double d)
     {
         parts.add(new Double(d));
         return this;
@@ -222,7 +222,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(float)
      */
-    public synchronized ScriptBuffer appendData(float f)
+    public ScriptBuffer appendData(float f)
     {
         parts.add(new Float(f));
         return this;
@@ -233,7 +233,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(int)
      */
-    public synchronized ScriptBuffer appendData(int i)
+    public ScriptBuffer appendData(int i)
     {
         parts.add(new Integer(i));
         return this;
@@ -244,7 +244,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(long)
      */
-    public synchronized ScriptBuffer appendData(long l)
+    public ScriptBuffer appendData(long l)
     {
         parts.add(new Long(l));
         return this;
@@ -255,7 +255,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(java.lang.Object)
      */
-    public synchronized ScriptBuffer appendData(Object obj)
+    public ScriptBuffer appendData(Object obj)
     {
         parts.add(obj);
         return this;
@@ -266,7 +266,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(java.lang.String)
      */
-    public synchronized ScriptBuffer appendData(String str)
+    public ScriptBuffer appendData(String str)
     {
         parts.add(str);
         return this;
@@ -277,7 +277,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(java.lang.String)
      */
-    public synchronized ScriptBuffer appendScript(String str)
+    public ScriptBuffer appendScript(String str)
     {
         parts.add(new StringCodeWrapper(str));
         return this;
@@ -288,7 +288,7 @@ public class ScriptBuffer
      * @return this. To allow sv.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(char)
      */
-    public synchronized ScriptBuffer appendScript(char c)
+    public ScriptBuffer appendScript(char c)
     {
         parts.add(new CharCodeWrapper(c));
         return this;
@@ -298,7 +298,7 @@ public class ScriptBuffer
      * Return a string ready for output.
      * @return Some Javascript to be eval()ed by a browser.
      */
-    public synchronized String createOutput()
+    public String createOutput()
     {
         OutboundContext context = new OutboundContext();
         

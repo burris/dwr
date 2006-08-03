@@ -52,11 +52,6 @@ public class PathConstants
     public static final String PATH_TEST = "/test/";
 
     /**
-     * Path to the generated status pages
-     */
-    public static final String PATH_STATUS = "/status/";
-
-    /**
      * Path to the root of the web app
      */
     public static final String PATH_ROOT = "/";
@@ -85,4 +80,9 @@ public class PathConstants
      * Extension for javascript files
      */
     public static final String EXTENSION_JS = ".js";
+
+    /**
+     * The position of web.xml
+     */
+    public static final String RESOURCE_WEB_XML = "WEB-INF/web.xml";
 }

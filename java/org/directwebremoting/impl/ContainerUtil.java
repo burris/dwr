@@ -24,6 +24,7 @@ import java.util.StringTokenizer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -35,6 +36,7 @@ import org.directwebremoting.ConverterManager;
 import org.directwebremoting.Creator;
 import org.directwebremoting.CreatorManager;
 import org.directwebremoting.DebugPageGenerator;
+import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.Remoter;
 import org.directwebremoting.ScriptSessionManager;
 import org.directwebremoting.ServerContextBuilder;
@@ -61,6 +63,38 @@ import org.xml.sax.SAXException;
 public class ContainerUtil
 {
     /**
+     * Create a {@link DefaultContainer}, allowing users to upgrade to a child
+     * of DefaultContainer using an {@link ServletConfig} init parameter of
+     * <code>org.directwebremoting.Container</code>. Note that while the
+     * parameter name is the classname of {@link Container}, currently the only
+     * this can only be used to create children that inherit from
+     * {@link DefaultContainer}. This restriction may be relaxed in the future.
+     * @param servletConfig The source of init parameters
+     * @return An implementaion of DefaultContainer
+     * @throws ServletException If the specified class could not be found
+     * @see ServletConfig#getInitParameter(String) 
+     */
+    public static DefaultContainer createDefaultContainer(ServletConfig servletConfig) throws ServletException
+    {
+        try
+        {
+            String typeName = servletConfig.getInitParameter(Container.class.getName());
+            if (typeName == null)
+            {
+                return new DefaultContainer();
+            }
+
+            log.debug("Using alternate Container implementation: " + typeName);
+            Class type = Class.forName(typeName);
+            return (DefaultContainer) type.newInstance();
+        }
+        catch (Exception ex)
+        {
+            throw new ServletException(ex);
+        }
+    }
+
+    /**
      * Take a DefaultContainer and setup the default beans
      * @param defaultContainer The container to configure
      * @throws InstantiationException If we can't instantiate a bean
@@ -82,10 +116,7 @@ public class ContainerUtil
         defaultContainer.addParameter(PollHandler.class.getName(), PollHandler.class.getName());
         defaultContainer.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
         defaultContainer.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
-
-        defaultContainer.addParameter("debug", "false");
-        defaultContainer.addParameter("allowImpossibleTests", "false");
-        defaultContainer.addParameter("scriptCompressed", "false");
+        defaultContainer.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
     }
 
     /**

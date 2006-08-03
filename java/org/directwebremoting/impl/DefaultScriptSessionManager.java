@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ScriptSessionManager;
 import org.directwebremoting.util.Logger;
@@ -63,13 +64,14 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      */
     public void setPageForScriptSession(ScriptSession scriptSession, String page)
     {
+        String normalizedPage = pageNormalizer.normalizaPage(page);
         synchronized (sessionLock)
         {
-            Set pageSessions = (Set) pageSessionMap.get(page);
+            Set pageSessions = (Set) pageSessionMap.get(normalizedPage);
             if (pageSessions == null)
             {
                 pageSessions = new HashSet();
-                pageSessionMap.put(page, pageSessions);
+                pageSessionMap.put(normalizedPage, pageSessions);
             }
 
             pageSessions.add(scriptSession);
@@ -81,9 +83,10 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      */
     public Collection getScriptSessionsByPage(String page)
     {
+        String normalizedPage = pageNormalizer.normalizaPage(page);
         synchronized (sessionLock)
         {
-            Set pageSessions = (Set) pageSessionMap.get(page);
+            Set pageSessions = (Set) pageSessionMap.get(normalizedPage);
             if (pageSessions == null)
             {
                 pageSessions = new HashSet();
@@ -191,110 +194,39 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     }
 
     /**
-     * Debug the current status
+     * Accessfor for the PageNormalizer.
+     * @param pageNormalizer The new PageNormalizer
      */
-    public void debug()
+    public void setPageNormalizer(PageNormalizer pageNormalizer)
     {
-        if (log.isDebugEnabled())
-        {
-            synchronized (sessionLock)
-            {
-                log.debug("DefaultScriptSessionManager containing the following sessions:");
-                for (Iterator sit = sessionMap.entrySet().iterator(); sit.hasNext();)
-                {
-                    Map.Entry idEntry = (Map.Entry) sit.next();
-                    String id = (String) idEntry.getKey();
-                    ScriptSession session = (ScriptSession) idEntry.getValue();
-    
-                    log.debug("- " + id + "=" + session);
-    
-                    for (Iterator pit = pageSessionMap.entrySet().iterator(); pit.hasNext();)
-                    {
-                        Map.Entry pageEntry = (Map.Entry) pit.next();
-                        String page = (String) pageEntry.getKey();
-                        Set pageSessions = (Set) pageEntry.getValue();
-    
-                        if (pageSessions.contains(session))
-                        {
-                            log.debug("  - on page=" + page);
-                        }
-                    }
-    
-                    if (session instanceof DefaultScriptSession)
-                    {
-                        DefaultScriptSession dss = (DefaultScriptSession) session;
-    
-                        log.debug("  - creationTime=" + dss.creationTime);
-                        log.debug("  - lastAccessedTime=" + dss.lastAccessedTime);
-    
-                        // Debug the attributes
-                        if (dss.attributes.size() == 0)
-                        {
-                            log.debug("  - no attributes");
-                        }
-                        else
-                        {
-                            log.debug("  - with attributes:");
-                            for (Iterator it = dss.attributes.entrySet().iterator(); it.hasNext();)
-                            {
-                                Map.Entry entry = (Map.Entry) it.next();
-                                log.debug("    - " + entry.getKey() + "=" + entry.getValue());
-                            }
-                        }
-    
-                        // Debug the Conduits
-                        if (dss.conduits.size() == 0)
-                        {
-                            log.debug("  - no conduits");
-                        }
-                        else
-                        {
-                            log.debug("  - with conduits:");
-                            for (Iterator it = dss.conduits.iterator(); it.hasNext();)
-                            {
-                                log.debug("    - " + it.next());
-                            }
-                        }
-    
-                        // Debug the Scripts
-                        if (dss.scripts.size() == 0)
-                        {
-                            log.debug("  - no waiting scripts");
-                        }
-                        else
-                        {
-                            log.debug("  - with waiting scripts:");
-                            for (Iterator it = dss.scripts.iterator(); it.hasNext();)
-                            {
-                                log.debug("    - " + it.next());
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        this.pageNormalizer = pageNormalizer;
     }
+
+    /**
+     * How we turn pages into the canonical form.
+     */
+    protected PageNormalizer pageNormalizer;
 
     /**
      * How long do we wait before we timeout script sessions?
      */
-    private long scriptSessionTimeout = DEFAULT_TIMEOUT_MILLIS;
+    protected long scriptSessionTimeout = DEFAULT_TIMEOUT_MILLIS;
 
     /**
      * What we synchronize against when we want to access either sessionMap or
      * pageSessionMap
      */
-    private final Object sessionLock = new Object();
+    protected final Object sessionLock = new Object();
 
     /**
      * The map of all the known sessions
      */
-    private Map sessionMap = new HashMap();
+    protected Map sessionMap = new HashMap();
 
     /**
      * The map of pages that have sessions
      */
-    private Map pageSessionMap = new HashMap();
+    protected Map pageSessionMap = new HashMap();
 
     /**
      * The log stream

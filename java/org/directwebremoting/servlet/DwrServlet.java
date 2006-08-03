@@ -63,7 +63,7 @@ public class DwrServlet extends HttpServlet
     {
         super.init(config);
 
-        container = new DefaultContainer();
+        container = ContainerUtil.createDefaultContainer(config);
         try
         {
             // Setup logging

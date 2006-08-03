@@ -27,17 +27,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.Calls;
-import org.directwebremoting.Container;
 import org.directwebremoting.DebugPageGenerator;
 import org.directwebremoting.DwrConstants;
 import org.directwebremoting.Remoter;
 import org.directwebremoting.Replies;
-import org.directwebremoting.ScriptSessionManager;
-import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.dwrp.HtmlCallMarshaller;
 import org.directwebremoting.dwrp.PlainCallMarshaller;
 import org.directwebremoting.dwrp.PollHandler;
-import org.directwebremoting.impl.DefaultScriptSessionManager;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.JavascriptUtil;
@@ -153,20 +149,9 @@ public class UrlProcessor
             {
                 doFile(request, response, PathConstants.FILE_UTIL, MimeConstants.MIME_JS, false);
             }
-            else if (pathInfo.startsWith(PathConstants.PATH_STATUS))
-            {
-                Container container = WebContextFactory.get().getContainer();
-                ScriptSessionManager manager = (ScriptSessionManager) container.getBean(ScriptSessionManager.class.getName());
-                if (manager instanceof DefaultScriptSessionManager)
-                {
-                    DefaultScriptSessionManager dssm = (DefaultScriptSessionManager) manager;
-                    dssm.debug();
-                }
-            }
             else
             {
-                log.warn("Page not found (" + pathInfo + "). In debug/test mode try viewing /[WEB-APP]/dwr/");
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                doNotFound(request, response, pathInfo);
             }
         }
         catch (Exception ex)
@@ -196,6 +181,21 @@ public class UrlProcessor
 
             log.warn("Sent 501", ex);
         }
+    }
+
+    /**
+     * Display a 404 "not found" message
+     * @param request The request from the browser
+     * @param response The response channel
+     * @param pathInfo The requested URL
+     * @throws IOException If writing to the output fails
+     */
+    protected void doNotFound(HttpServletRequest request, HttpServletResponse response, String pathInfo) throws IOException
+    {
+        log.warn("Page not found. pathInfo='" + pathInfo + "' requestUrl='" + request.getRequestURI() + "'");
+        log.warn("In debug/test mode try viewing /[WEB-APP]/dwr/");
+
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
 
     /**

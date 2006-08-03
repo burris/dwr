@@ -115,19 +115,22 @@ public class DefaultAccessControl implements AccessControl
             return Messages.getString("ExecuteQuery.DeniedObjectMethod");
         }
 
-        if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY))
+        if (!exposeInternals)
         {
-            return Messages.getString("ExecuteQuery.DeniedCoreDWR");
-        }
-
-        // Check the parameters are not DWR internal either
-        for (int j = 0; j < method.getParameterTypes().length; j++)
-        {
-            Class paramType = method.getParameterTypes()[j];
-
-            if (paramType.getName().startsWith(PACKAGE_DWR_DENY))
+            if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY))
             {
-                return Messages.getString("ExecuteQuery.DeniedParamDWR");
+                return Messages.getString("ExecuteQuery.DeniedCoreDWR");
+            }
+    
+            // Check the parameters are not DWR internal either
+            for (int j = 0; j < method.getParameterTypes().length; j++)
+            {
+                Class paramType = method.getParameterTypes()[j];
+    
+                if (paramType.getName().startsWith(PACKAGE_DWR_DENY))
+                {
+                    return Messages.getString("ExecuteQuery.DeniedParamDWR");
+                }
             }
         }
 
@@ -275,6 +278,20 @@ public class DefaultAccessControl implements AccessControl
 
         return policy;
     }
+
+    /**
+     * @param exposeInternals the exposeInternals to set
+     */
+    public void setExposeInternals(boolean exposeInternals)
+    {
+        this.exposeInternals = exposeInternals;
+    }
+
+    /**
+     * Do we allow DWR classes to be remoted?
+     * @see #PACKAGE_DWR_DENY
+     */
+    private boolean exposeInternals = false;
 
     /**
      * A map of Creators to policies

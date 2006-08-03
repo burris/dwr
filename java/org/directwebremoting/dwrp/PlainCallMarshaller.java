@@ -56,11 +56,6 @@ public class PlainCallMarshaller extends BaseCallMarshaller
         synchronized (out)
         {
             out.println(script);
-
-            if (out.checkError())
-            {
-                throw new IOException("Error flushing buffered stream");
-            }
         }
     }
 }

@@ -36,6 +36,7 @@ import org.directwebremoting.InboundContext;
 import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.Marshaller;
+import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.Replies;
 import org.directwebremoting.Reply;
 import org.directwebremoting.ScriptBuffer;
@@ -178,7 +179,8 @@ public abstract class BaseCallMarshaller implements Marshaller
      */
     private void storeParseResponse(HttpServletRequest request, WebContext webContext, ParseResponse parseResponse)
     {
-        webContext.setCurrentPageInformation(parseResponse.getPage(), parseResponse.getScriptSessionId());
+        String normalizedPage = pageNormalizer.normalizaPage(parseResponse.getPage());
+        webContext.setCurrentPageInformation(normalizedPage, parseResponse.getScriptSessionId());
 
         // Remaining parameters get put into the request for later consumption
         Map paramMap = parseResponse.getSpareParameters();
@@ -529,6 +531,15 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
+     * Accessfor for the PageNormalizer.
+     * @param pageNormalizer The new PageNormalizer
+     */
+    public void setPageNormalizer(PageNormalizer pageNormalizer)
+    {
+        this.pageNormalizer = pageNormalizer;
+    }
+
+    /**
      * A ScriptConduit that works with the parent Marshaller.
      * In some ways this is nasty because it has access to essentially private parts
      * of BaseCallMarshaller, however there is nowhere sensible to store them
@@ -574,6 +585,11 @@ public abstract class BaseCallMarshaller implements Marshaller
          */
         private final PrintWriter out;
     }
+
+    /**
+     * How we turn pages into the canonical form.
+     */
+    private PageNormalizer pageNormalizer;
 
     /**
      * How we convert parameters

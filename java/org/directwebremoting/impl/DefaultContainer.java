@@ -205,15 +205,7 @@ public class DefaultContainer implements Container
         Object reply = beans.get(id);
         if (reply == null)
         {
-            if (log.isDebugEnabled())
-            {
-                for (Iterator it = beans.keySet().iterator(); it.hasNext();)
-                {
-                    log.debug("- known bean: " + it.next());
-                }
-            }
-
-            log.debug("DefaultContainer can't find bean with id=" + id);
+            log.debug("DefaultContainer: No bean with id=" + id);
         }
 
         return reply;

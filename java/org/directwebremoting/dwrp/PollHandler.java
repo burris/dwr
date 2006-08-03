@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.directwebremoting.Container;
 import org.directwebremoting.ConverterManager;
 import org.directwebremoting.MarshallException;
+import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
@@ -83,109 +84,60 @@ public class PollHandler
         boolean partialResponse = Boolean.valueOf(prString).booleanValue();
 
         // Various bits of parseResponse need to be stashed away places
-        webContext.setCurrentPageInformation(page, scriptId);
+        String normalizedPage = pageNormalizer.normalizaPage(page);
+
+        webContext.setCurrentPageInformation(normalizedPage, scriptId);
         ScriptSession scriptSession = webContext.getScriptSession();
         ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
+
+        long postStreamWaitTime = monitor.getPostStreamWaitTime();
+        long preStreamWaitTime = monitor.getPreStreamWaitTime();
+
+        // If the browser can't handle partial responses then we'll need to do
+        // all our waiting in the pre-stream phase where we plan to be
+        // interupted, and then reply quickly.
+        // 100ms should be enough work being done on other threads to complete.
+        // If not it can wait.
+        if (!partialResponse)
+        {
+            postStreamWaitTime = 100;
+            preStreamWaitTime += postStreamWaitTime;
+        }
 
         try
         {
             serverLoadMonitor.threadWaitStarting();
 
-            try
+            // Don't wait if we would wait for 0s or if there are queued scripts
+            if (preStreamWaitTime > 0 && !scriptSession.hasWaitingScripts())
             {
-                // The first wait - before we do any output
-                long preStreamWaitTime = monitor.getPreStreamWaitTime();
-
-                // If the browser can't handle partial responses then we'll need to do
-                // all our waiting in the pre-stream phase where we plan to be interupted
-                if (!partialResponse)
+                try
                 {
-                    long postStreamWaitTime = monitor.getPostStreamWaitTime();
-                    preStreamWaitTime += postStreamWaitTime;
-                }
-
-                Object lock = scriptSession.getScriptLock();
-                synchronized (lock)
-                {
-                    // Don't wait if there are queued scripts
-                    if (scriptSession.hasWaitingScripts())
+                    // The first wait - before we do any output
+                    Object lock = scriptSession.getScriptLock();
+                    synchronized (lock)
                     {
-                        return;
-                    }
-
-                    // If this is Jetty then we can use Continuations
-                    boolean useSleep = true;
-                    Continuation continuation = new Continuation(request);
-                    if (continuation.isAvailable())
-                    {
-                        useSleep = false;
-                        ScriptConduit listener = null;
-
-                        try
+                        // If this is Jetty then we can use Continuations
+                        Continuation continuation = new Continuation(request);
+                        if (continuation.isAvailable())
                         {
-                            // create a listener
-                            listener = (ScriptConduit) continuation.getObject();
-                            if (listener == null)
+                            if (!sleepWithContinuation(scriptSession, continuation, preStreamWaitTime))
                             {
-                                listener = new ResumeContinuationScriptConduit(continuation);
-                                continuation.setObject(listener);
-                            }
-                            scriptSession.addScriptConduit(listener);
-
-                            // JETTY: throws a RuntimeException that must propogate to the container!
-                            continuation.suspend(preStreamWaitTime);
-                        }
-                        catch (Exception ex)
-                        {
-                            Continuation.rethrowIfContinuation(ex);
-                            log.warn("Exception", ex);
-                            useSleep = true;
-                        }
-                        finally
-                        {
-                            if (listener != null)
-                            {
-                                scriptSession.removeScriptConduit(listener);
+                                sleepWithNotify(scriptSession, lock, preStreamWaitTime);
                             }
                         }
-                    }
-
-                    if (useSleep)
-                    {
-                        ScriptConduit listener = new NotifyOnlyScriptConduit(lock);
-
-                        // The comet part of a poll request
-                        try
+                        else
                         {
-                            scriptSession.addScriptConduit(listener);
-
-                            try
-                            {
-                                Thread thread = Thread.currentThread();
-                                String oldName = thread.getName();
-                                thread.setName("DWR:Poll:PreStreamWait:" + preStreamWaitTime);
-
-                                lock.wait(preStreamWaitTime);
-
-                                thread.setName(oldName);
-                            }
-                            catch (InterruptedException ex)
-                            {
-                                log.warn("Interupted", ex);
-                            }
-                        }
-                        finally
-                        {
-                            scriptSession.removeScriptConduit(listener);
+                            sleepWithNotify(scriptSession, lock, preStreamWaitTime);
                         }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                // Allow Jetty RequestRetry exception to propogate to container
-                Continuation.rethrowIfContinuation(ex);
-                log.warn("Error calling pollWait()", ex);
+                catch (Exception ex)
+                {
+                    // Allow Jetty RequestRetry exception to propogate to container
+                    Continuation.rethrowIfContinuation(ex);
+                    log.warn("Error calling pollWait()", ex);
+                }
             }
 
             // Get the output stream and setup the mimetype
@@ -221,7 +173,6 @@ public class PollHandler
                 scriptSession.addScriptConduit(conduit);
 
                 // The second wait - after we've started to do the output
-                long postStreamWaitTime = monitor.getPostStreamWaitTime();
                 if (postStreamWaitTime > 0)
                 {
                     // Flush any scripts already written.
@@ -231,18 +182,8 @@ public class PollHandler
                     //ScriptSession scriptSession = context.getScriptSession();
                     //scriptSession.flushConduits();
 
-                    // This is the same as Thread.sleep() except that this allows us to
-                    // keep track of how many people are waiting to control server load
                     try
                     {
-                        // If the browser can't handle partialResponses then we need to
-                        // reply quickly. 100ms should be enough for any work being done
-                        // on other threads to complete. If not it can wait.
-                        if (!partialResponse)
-                        {
-                            postStreamWaitTime = 100;
-                        }
-
                         Thread thread = Thread.currentThread();
                         String oldName = thread.getName();
                         thread.setName("DWR:Poll:PostStreamWait:" + postStreamWaitTime);
@@ -301,7 +242,7 @@ public class PollHandler
      * @param paramName The name of the parameter sent
      * @return The found value
      */
-    private String extractParameter(HttpServletRequest request, Map parameters, String attrName, String paramName)
+    protected String extractParameter(HttpServletRequest request, Map parameters, String attrName, String paramName)
     {
         String id = (String) request.getAttribute(attrName);
 
@@ -349,6 +290,84 @@ public class PollHandler
                 throw new IOException("Error flushing buffered stream");
             }
         }
+    }
+
+    /**
+     * Use a {@link NotifyOnlyScriptConduit} to wait on a lock
+     * @param scriptSession The session that we add the conduit to
+     * @param lock The object that we wait on
+     * @param preStreamWaitTime The length of time to wait
+     */
+    protected void sleepWithNotify(ScriptSession scriptSession, Object lock, long preStreamWaitTime)
+    {
+        ScriptConduit listener = new NotifyOnlyScriptConduit(lock);
+
+        // The comet part of a poll request
+        try
+        {
+            scriptSession.addScriptConduit(listener);
+
+            try
+            {
+                Thread thread = Thread.currentThread();
+                String oldName = thread.getName();
+                thread.setName("DWR:Poll:PreStreamWait:" + preStreamWaitTime);
+
+                lock.wait(preStreamWaitTime);
+
+                thread.setName(oldName);
+            }
+            catch (InterruptedException ex)
+            {
+                log.warn("Interupted", ex);
+            }
+        }
+        finally
+        {
+            scriptSession.removeScriptConduit(listener);
+        }
+    }
+
+    /**
+     * Use a {@link ResumeContinuationScriptConduit} to wait
+     * @param scriptSession The session that we add the conduit to
+     * @param continuation The Jetty continuation object
+     * @param preStreamWaitTime The length of time to wait
+     * @return True if the continuation wait worked
+     */
+    private boolean sleepWithContinuation(ScriptSession scriptSession, Continuation continuation, long preStreamWaitTime)
+    {
+        ScriptConduit listener = null;
+
+        try
+        {
+            // create a listener
+            listener = (ScriptConduit) continuation.getObject();
+            if (listener == null)
+            {
+                listener = new ResumeContinuationScriptConduit(continuation);
+                continuation.setObject(listener);
+            }
+            scriptSession.addScriptConduit(listener);
+
+            // JETTY: throws a RuntimeException that must propogate to the container!
+            continuation.suspend(preStreamWaitTime);
+        }
+        catch (Exception ex)
+        {
+            Continuation.rethrowIfContinuation(ex);
+            log.warn("Exception", ex);
+            return false;
+        }
+        finally
+        {
+            if (listener != null)
+            {
+                scriptSession.removeScriptConduit(listener);
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -523,6 +542,20 @@ public class PollHandler
     {
         this.serverLoadMonitor = serverLoadMonitor;
     }
+
+    /**
+     * Accessfor for the PageNormalizer.
+     * @param pageNormalizer The new PageNormalizer
+     */
+    public void setPageNormalizer(PageNormalizer pageNormalizer)
+    {
+        this.pageNormalizer = pageNormalizer;
+    }
+
+    /**
+     * How we turn pages into the canonical form.
+     */
+    private PageNormalizer pageNormalizer;
 
     /**
      * We need to tell the system that we are waiting so it can load adjust

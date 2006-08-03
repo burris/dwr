@@ -66,11 +66,6 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
         {
             String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
             out.println(modScript);
-
-            if (out.checkError())
-            {
-                throw new IOException("Error flushing buffered stream");
-            }
         }
     }
 }
