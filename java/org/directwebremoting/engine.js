@@ -69,38 +69,38 @@ DWREngine.setPostHook = function(handler) {
   DWREngine._postHook = handler;
 };
 
-/** XHR remoting method constant. See DWREngine.setMethod() */
+/** XHR remoting type constant. See DWREngine.set[Rpc|Poll]Type() */
 DWREngine.XMLHttpRequest = 1;
 
-/** XHR remoting method constant. See DWREngine.setMethod() */
+/** XHR remoting type constant. See DWREngine.set[Rpc|Poll]Type() */
 DWREngine.IFrame = 2;
 
-/** XHR remoting method constant. See DWREngine.setMethod() */
+/** XHR remoting type constant. See DWREngine.setRpcType() */
 DWREngine.ScriptTag = 3;
 
 /**
- * Set the preferred remoting method.
- * @param newMethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame or DWREngine.ScriptTag
+ * Set the preferred remoting type.
+ * @param newType One of DWREngine.XMLHttpRequest or DWREngine.IFrame or DWREngine.ScriptTag
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
-DWREngine.setMethod = function(newMethod) {
-  if (newMethod != DWREngine.XMLHttpRequest && newMethod != DWREngine.IFrame && newMethod != DWREngine.ScriptTag) {
-    DWREngine._handleError("Remoting method must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame or DWREngine.ScriptTag");
+DWREngine.setRpcType = function(newType) {
+  if (newType != DWREngine.XMLHttpRequest && newType != DWREngine.IFrame && newType != DWREngine.ScriptTag) {
+    DWREngine._handleError("RpcType must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame or DWREngine.ScriptTag");
     return;
   }
-  DWREngine._method = newMethod;
+  DWREngine._rpcType = newType;
 };
 
 /**
- * Which HTTP verb do we use to send results? Must be one of "GET" or "POST".
+ * Which HTTP method do we use to send results? Must be one of "GET" or "POST".
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
-DWREngine.setVerb = function(verb) {
-  if (verb != "GET" && verb != "POST") {
-    DWREngine._handleError("Remoting verb must be one of GET or POST");
+DWREngine.setHttpMethod = function(httpMethod) {
+  if (httpMethod != "GET" && httpMethod != "POST") {
+    DWREngine._handleError("Remoting method must be one of GET or POST");
     return;
   }
-  DWREngine._verb = verb;
+  DWREngine._httpMethod = httpMethod;
 };
 
 /**
@@ -146,17 +146,21 @@ DWREngine.setPollUsingComet = function(pollComet) {
 };
 
 /**
- * Set the preferred polling method.
- * @param newPollMethod One of DWREngine.XMLHttpRequest or DWREngine.IFrame
+ * Set the preferred polling type.
+ * @param newPollType One of DWREngine.XMLHttpRequest or DWREngine.IFrame
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
-DWREngine.setPollMethod = function(newPollMethod) {
-  if (newPollMethod != DWREngine.XMLHttpRequest && newPollMethod != DWREngine.IFrame) {
-    DWREngine._handleError("Polling method must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame");
+DWREngine.setPollType = function(newPollType) {
+  if (newPollType != DWREngine.XMLHttpRequest && newPollType != DWREngine.IFrame) {
+    DWREngine._handleError("PollType must be one of DWREngine.XMLHttpRequest or DWREngine.IFrame");
     return;
   }
-  DWREngine._pollMethod = newPollMethod;
+  DWREngine._pollType = newPollType;
 };
+
+/** @deprecated */
+DWREngine.setPollMethod = function(type) { DWREngine.setPollType(type); };
+DWREngine.setMethod = function(type) { DWREngine.setRpcType(type); };
 
 /**
  * Setter for the text/html handler - what happens if a DWR request gets an HTML
@@ -212,7 +216,7 @@ DWREngine.endBatch = function(options) {
   if (DWREngine._preHook) batch.preHooks.unshift(DWREngine._preHook);
   if (DWREngine._postHook) batch.postHooks.push(DWREngine._postHook);
   // Other props. priority: batch, call, global - the order in which they were set
-  var propnames = [ "method", "verb", "async", "timeout" ];
+  var propnames = [ "rpcType", "httpMethod", "async", "timeout" ];
   var propname;
   for (var i = 0; i < propnames.length; i++) {
     propname = propnames[i];
@@ -262,11 +266,11 @@ DWREngine._batchQueue = [];
 /** A map of known ids to their handler objects */
 DWREngine._handlersMap = {};
 
-/** What is the default remoting method */
-DWREngine._method = DWREngine.XMLHttpRequest;
+/** What is the default rpc type */
+DWREngine._rpcType = DWREngine.XMLHttpRequest;
 
-/** What is the default remoting verb (ie GET or POST) */
-DWREngine._verb = "POST";
+/** What is the default remoting method (ie GET or POST) */
+DWREngine._httpMethod = "POST";
 
 /** Do we attempt to ensure that calls happen in the order in which they were sent? */
 DWREngine._ordered = false;
@@ -292,9 +296,9 @@ DWREngine._reverseAjax = false;
 /** Is there a long term poll (comet) interraction in place? */
 DWREngine._pollComet = true;
 
-/** What is the default polling method */
-DWREngine._pollMethod = DWREngine.XMLHttpRequest;
-//DWREngine._pollMethod = DWREngine.IFrame;
+/** What is the default polling type */
+DWREngine._pollType = DWREngine.XMLHttpRequest;
+//DWREngine._pollType = DWREngine.IFrame;
 
 /** The iframe that we are using to poll */
 DWREngine._pollFrame = null;
@@ -392,8 +396,8 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   var prefix = "c" + DWREngine._batch.map.callCount + "-";
   DWREngine._batch.ids.push(id);
 
-  if (callData.method != null) DWREngine._batch.method = callData.method;
-  if (callData.verb != null) DWREngine._batch.verb = callData.verb;
+  if (callData.rpcType != null) DWREngine._batch.rpcType = callData.rpcType;
+  if (callData.httpMethod != null) DWREngine._batch.httpMethod = callData.httpMethod;
   if (callData.async != null) DWREngine._batch.async = callData.async;
   if (callData.timeout != null) DWREngine._batch.timeout = callData.timeout;
   if (callData.preHook != null) DWREngine._batch.preHooks.unshift(callData.preHook);
@@ -456,7 +460,7 @@ DWREngine._poll = function(overridePath) {
       scriptSessionId:DWREngine._scriptSessionId,
       page:window.location.pathname
     },
-    method:DWREngine._pollMethod, completed:false, isPoll:true, verb:"POST",
+    rpcType:DWREngine._pollType, completed:false, isPoll:true, httpMethod:"POST",
     async:true, headers:{}, ids:[ id ], paramCount:0,
     path:(overridePath) ? overridePath : DWREngine._defaultPath,
     preHooks:[], postHooks:[], timeout:0
@@ -566,7 +570,7 @@ DWREngine._sendData = function(batch) {
     batch.interval = setInterval(function() { DWREngine._abortRequest(batch); }, batch.timeout);
   }
   // Get setup for XMLHttpRequest if possible
-  if (batch.method == DWREngine.XMLHttpRequest) {
+  if (batch.rpcType == DWREngine.XMLHttpRequest) {
     if (window.XMLHttpRequest) {
       batch.req = new XMLHttpRequest();
     }
@@ -588,12 +592,12 @@ DWREngine._sendData = function(batch) {
     var indexSafari = navigator.userAgent.indexOf("Safari/");
     if (indexSafari >= 0) {
       var version = navigator.userAgent.substring(indexSafari + 7);
-      if (parseInt(version, 10) < 400) batch.verb == "GET";
+      if (parseInt(version, 10) < 400) batch.httpMethod == "GET";
     }
     batch.mode = batch.isPoll ? DWREngine._ModePlainPoll : DWREngine._ModePlainCall;
     request = DWREngine._constructRequest(batch);
     try {
-      batch.req.open(batch.verb, request.url, batch.async);
+      batch.req.open(batch.httpMethod, request.url, batch.async);
       try {
         for (prop in batch.headers) {
           batch.req.setRequestHeader(prop, batch.headers[prop]);
@@ -610,7 +614,7 @@ DWREngine._sendData = function(batch) {
       DWREngine._handleMetaDataError(null, ex);
     }
   }
-  else if (batch.method != DWREngine.ScriptTag) {
+  else if (batch.rpcType != DWREngine.ScriptTag) {
     var idname = "dwr-if-" + batch.map["c0-id"];
     // Proceed using iframe
     batch.div = document.createElement("div");
@@ -625,7 +629,7 @@ DWREngine._sendData = function(batch) {
       DWREngine._pollCometSize = 0;
     }
     request = DWREngine._constructRequest(batch);
-    if (batch.verb == "GET") {
+    if (batch.httpMethod == "GET") {
       batch.iframe.setAttribute("src", request.url);
       document.body.appendChild(batch.iframe);
     }
@@ -635,7 +639,7 @@ DWREngine._sendData = function(batch) {
       batch.form.setAttribute("action", request.url);
       batch.form.setAttribute("target", idname);
       batch.form.target = idname;
-      batch.form.setAttribute("method", batch.verb);
+      batch.form.setAttribute("method", batch.httpMethod);
       for (prop in batch.map) {
         var formInput = document.createElement("input");
         formInput.setAttribute("type", "hidden");
@@ -648,7 +652,7 @@ DWREngine._sendData = function(batch) {
     }
   }
   else {
-    batch.verb = "GET"; // There's no such thing as ScriptTag using POST
+    batch.httpMethod = "GET"; // There's no such thing as ScriptTag using POST
     batch.mode = batch.isPoll ? DWREngine._ModePlainPoll : DWREngine._ModePlainCall;
     request = DWREngine._constructRequest(batch);
     batch.script = document.createElement("script");
@@ -682,7 +686,7 @@ DWREngine._constructRequest = function(batch) {
   }
 
   var prop;
-  if (batch.verb == "GET") {
+  if (batch.httpMethod == "GET") {
     // Some browsers (Opera/Safari2) seem to fail to convert the callCount value
     // to a string in the loop below so we do it manually here.
     batch.map.callCount = "" + batch.map.callCount;
@@ -813,7 +817,7 @@ DWREngine._handleServerError = function(id, error) {
 /** @private Finalize the call for IFrame transport */
 DWREngine._maybeClearUpIFrame = function() {
   var responseBatch = DWREngine._batches[DWREngine._batches.length - 1];
-  if (responseBatch.method == DWREngine.IFrame) {
+  if (responseBatch.rpcType == DWREngine.IFrame) {
     // Only finalize after the last call has been handled
     if (responseBatch.map["c" + (responseBatch.map.callCount - 1) + "-id"] == id) {
       DWREngine._clearUp(responseBatch);
