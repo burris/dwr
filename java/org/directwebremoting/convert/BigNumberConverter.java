@@ -38,6 +38,12 @@ public class BigNumberConverter extends BaseV20Converter implements Converter
     public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
     {
         String value = iv.getValue();
+
+        if (value == null || value.length() == 0)
+        {
+            return null;
+        }
+
         try
         {
             if (paramType == BigDecimal.class)
@@ -63,6 +69,11 @@ public class BigNumberConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object object, OutboundContext outctx)
     {
+        if (object == null)
+        {
+            return new OutboundVariable("", "null");
+        }
+
         return new OutboundVariable("", object.toString());
     }
 }
