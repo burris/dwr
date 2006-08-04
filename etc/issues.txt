@@ -1,4 +1,6 @@
 
+Make sure hooks are always called properly
+
 DWREngine._handleMetaDataError(null, ex); does not postHook or errorHandler for
 	call level handlers - it should.
 
@@ -22,6 +24,20 @@ Turning RA off
 	is the open connection, but I didn’t see an obvious ‘cancelReverseAjax’
 	method.  Looking at engine.js, it appears that setting reverseAjax to false
 	will only set the variable, but won’t turn off the _poll() method.
+	...
+	What’s the proper way to disconnect a client with a reverse ajax connection
+	(either from javascript or from java) in an immediate fashion. I’m currently
+	grabbing a ref to the script session, then writing a script to it via the
+	DwrUtil.addScript. If the script is for a data refresh, I do the following
+	to force a reverse ajax disconnect (from my java thread):
+		scriptSession.flushConduits();
+		Object lock = scriptSession.getScriptLock();
+		synchronized(lock) {
+		    lock.notify();
+		}
+		scriptSession.invalidate();
+		scriptSession = null;
+	Is there a better way?
 
 Multiple call issue
 	When calling the same function 4 times consecutively passing a different
