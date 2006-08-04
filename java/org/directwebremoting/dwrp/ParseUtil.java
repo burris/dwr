@@ -50,44 +50,44 @@ public class ParseUtil
 
         try
         {
-        // I've had reports of data loss in Tomcat 5.0 that relate to this bug
-        //   http://issues.apache.org/bugzilla/show_bug.cgi?id=27447
-        // See mails to users@dwr.dev.java.net:
-        //   Subject: "Tomcat 5.x read-ahead problem"
-        //   From: CAKALIC, JAMES P [AG-Contractor/1000]
-        // It would be more normal to do the following:
-        // BufferedReader in = req.getReader();
-        BufferedReader in = new BufferedReader(new InputStreamReader(req.getInputStream()));
-
-        while (true)
-        {
-            String line = in.readLine();
-
-            if (line == null)
+            // I've had reports of data loss in Tomcat 5.0 that relate to this bug
+            //   http://issues.apache.org/bugzilla/show_bug.cgi?id=27447
+            // See mails to users@dwr.dev.java.net:
+            //   Subject: "Tomcat 5.x read-ahead problem"
+            //   From: CAKALIC, JAMES P [AG-Contractor/1000]
+            // It would be more normal to do the following:
+            // BufferedReader in = req.getReader();
+            BufferedReader in = new BufferedReader(new InputStreamReader(req.getInputStream()));
+    
+            while (true)
             {
-                break;
-            }
-
-            if (line.indexOf('&') != -1)
-            {
-                // If there are any &s then this must be iframe post and all the
-                // parameters have got dumped on one line, split with &
-                log.debug("Using iframe POST mode");
-                StringTokenizer st = new StringTokenizer(line, "&");
-                while (st.hasMoreTokens())
+                String line = in.readLine();
+    
+                if (line == null)
                 {
-                    String part = st.nextToken();
-                    part = LocalUtil.decode(part);
-
-                    parsePostLine(part, paramMap);
+                    break;
+                }
+    
+                if (line.indexOf('&') != -1)
+                {
+                    // If there are any &s then this must be iframe post and all the
+                    // parameters have got dumped on one line, split with &
+                    log.debug("Using iframe POST mode");
+                    StringTokenizer st = new StringTokenizer(line, "&");
+                    while (st.hasMoreTokens())
+                    {
+                        String part = st.nextToken();
+                        part = LocalUtil.decode(part);
+    
+                        parsePostLine(part, paramMap);
+                    }
+                }
+                else
+                {
+                    // Horay, this is a normal one!
+                    parsePostLine(line, paramMap);
                 }
             }
-            else
-            {
-                // Horay, this is a normal one!
-                parsePostLine(line, paramMap);
-            }
-        }
         }
         catch (Exception ex)
         {
