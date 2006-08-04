@@ -158,10 +158,6 @@ DWREngine.setPollType = function(newPollType) {
   DWREngine._pollType = newPollType;
 };
 
-/** @deprecated */
-DWREngine.setPollMethod = function(type) { DWREngine.setPollType(type); };
-DWREngine.setMethod = function(type) { DWREngine.setRpcType(type); };
-
 /**
  * Setter for the text/html handler - what happens if a DWR request gets an HTML
  * reply rather than the expected Javascript. Often due to login timeout
@@ -240,6 +236,11 @@ DWREngine.endBatch = function(options) {
     DWREngine._sendData(batch);
   }
 };
+
+/** @deprecated */
+DWREngine.setPollMethod = function(type) { DWREngine.setPollType(type); };
+DWREngine.setMethod = function(type) { DWREngine.setRpcType(type); };
+DWREngine.setVerb = function(verb) { DWREngine.setHttpMethod(verb); };
 
 //==============================================================================
 // Only private stuff below here
