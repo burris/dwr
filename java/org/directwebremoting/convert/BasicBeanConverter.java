@@ -21,6 +21,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
@@ -81,15 +82,27 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
 
         try
         {
-            Object bean;
+            Map tokens = extractInboundTokens(value);
+
+            Class type = paramType;
             if (instanceType != null)
             {
-                bean = instanceType.newInstance();
+                type = instanceType;
             }
-            else
+
+            /*
+            String overrideTypeName = (String) tokens.get(ConverterUtil.CLASS_NAME);
+            if (overrideTypeName != null)
             {
-                bean = paramType.newInstance();
+                Class overrideType = Class.forName(overrideTypeName);
+                if (converterManager.allowOverride(type, overrideType))
+                {
+                    type = overrideType;
+                }
             }
+            */
+
+            Object bean = type.newInstance();
 
             // We know what we are converting to, so we create a map of property
             // names against PropertyDescriptors to speed lookup later
@@ -114,24 +127,11 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
             }
 
             // Loop through the property declarations
-            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);
-            int size = st.countTokens();
-            for (int i = 0; i < size; i++)
+            for (Iterator it = tokens.entrySet().iterator(); it.hasNext();)
             {
-                String token = st.nextToken();
-                if (token.trim().length() == 0)
-                {
-                    continue;
-                }
-
-                int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
-                if (colonpos == -1)
-                {
-                    throw new MarshallException(Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
-                }
-
-                String key = token.substring(0, colonpos).trim();
-                String val = token.substring(colonpos + 1).trim();
+                Map.Entry entry = (Map.Entry) it.next();
+                String key = (String) entry.getKey();
+                String val = (String) entry.getValue();
 
                 Method setter = null;
                 PropertyDescriptor descriptor = (PropertyDescriptor) props.get(key);
@@ -176,6 +176,39 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
         }
     }
 
+    /**
+     * Loop over all the inputs and extract a Map of key:value pairs
+     * @param value The input string
+     * @return A Map of the tokens in the string
+     */
+    protected Map extractInboundTokens(String value)
+    {
+        Map tokens = new HashMap();
+        StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);
+        int size = st.countTokens();
+
+        for (int i = 0; i < size; i++)
+        {
+            String token = st.nextToken();
+            if (token.trim().length() == 0)
+            {
+                continue;
+            }
+
+            int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
+            if (colonpos == -1)
+            {
+                throw new MarshallException(Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
+            }
+
+            String key = token.substring(0, colonpos).trim();
+            String val = token.substring(colonpos + 1).trim();
+            tokens.put(key, val);
+        }
+
+        return tokens;
+    }
+
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
      */
@@ -189,6 +222,11 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
 
         try
         {
+            if (ConverterUtil.getExposeClassNames())
+            {
+                ovs.put(ConverterUtil.CLASS_NAME, new OutboundVariable("", '\"' + data.getClass().getName() + '\"'));
+            }
+
             BeanInfo info = getBeanInfo(data);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             for (int i = 0; i < descriptors.length; i++)

@@ -197,6 +197,11 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
 
         try
         {
+            if (ConverterUtil.getExposeClassNames())
+            {
+                ovs.put(ConverterUtil.CLASS_NAME, new OutboundVariable("", '\"' + data.getClass().getName() + '\"'));
+            }
+
             Field[] fields = getAllFields(data);
             for (int i = 0; i < fields.length; i++)
             {

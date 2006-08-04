@@ -42,6 +42,32 @@ public class ConverterUtil
     }
 
     /**
+     * DWR can communicate type information with Javascript ...
+     */
+    public static final String CLASS_NAME = "_class";
+
+    /**
+     * Should beans and object have a _class member that declares the original
+     * type?.
+     * This is controlled by the '<code>exposeClassNames</code>' init param.
+     * @return true if we expose _class members. Defaults to false
+     * @see ConverterUtil#EXPOSE_CLASS_NAMES
+     */
+    public static boolean getExposeClassNames()
+    {
+        if (exposeClassNames == null)
+        {
+            Container container = WebContextFactory.get().getContainer();
+            String exposeClassNamesStr = (String) container.getBean(EXPOSE_CLASS_NAMES);
+            exposeClassNames = (Boolean) LocalUtil.simpleConvert(exposeClassNamesStr, Boolean.class);
+        }
+
+        return exposeClassNames.booleanValue();
+    }
+    
+    private static Boolean exposeClassNames;
+
+    /**
      * Generate an array declaration for a list of Outbound variables
      * @param ov The OutboundVariable to declare
      * @param ovs The list of contents of this array
@@ -380,6 +406,11 @@ public class ConverterUtil
      * Strings longer than this are chopped up into smaller strings
      */
     private static int stringWrapLength = 16384;
+
+    /**
+     * Do we output _class constants with exported Beans and Objects?
+     */
+    private static String EXPOSE_CLASS_NAMES = "exposeClassNames";
 
     /**
      * The log stream
