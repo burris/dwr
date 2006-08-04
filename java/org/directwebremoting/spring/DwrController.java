@@ -27,6 +27,7 @@ import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.DwrXmlConfigurator;
 import org.directwebremoting.servlet.UrlProcessor;
+import org.directwebremoting.util.ContainerMap;
 import org.directwebremoting.util.FakeServletConfig;
 import org.directwebremoting.util.Logger;
 import org.springframework.beans.BeansException;
@@ -156,13 +157,15 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         Assert.notNull(configurators, "The required 'configurators' property should be set");
 
         // use a fake servlet config as Spring 1.x does not provide ServletConfigAware functionality
-        servletConfig = new FakeServletConfig(name, getServletContext());
+        servletConfig = new FakeServletConfig(name, getServletContext(), new ContainerMap(container, true));
 
         try
         {
             ContainerUtil.setupDefaults(container);
             ContainerUtil.setupFromServletConfig(container, servletConfig);
-            // TODO: fix this, the default container does not handle this correct in case this is a boolean
+
+            // TODO: fix this, the default container does not handle this
+            // properly if this is a boolean
             container.addParameter("debug", "" + debug);
             container.configurationFinished();
 
