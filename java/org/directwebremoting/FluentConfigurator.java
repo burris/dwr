@@ -3,12 +3,11 @@ package org.directwebremoting;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.SignatureParser;
 import org.directwebremoting.util.Logger;
 
 /**
- * A {@link Configurator} that used the FluentInterface style
+ * A {@link Configurator} that used the FluentInterface style as
  * <a href="http://www.martinfowler.com/bliki/FluentInterface.html">described by
  * Martin Fowler</a>.
  * 
@@ -18,9 +17,8 @@ import org.directwebremoting.util.Logger;
  * <ul>
  * <li>Create a concrete implementation of {@link FluentConfigurator} which
  * implements the {@link #configure()} method.</li>
- * <li>Add an init param '<code>customConfigurator</code>' to point at your new
- * class.
- * (See {@link ContainerUtil#INIT_CUSTOM_CONFIGURATOR} for more)</li>
+ * <li>Add an init param '<code>customConfigurator</code>' to the DWR servlet in
+ * <code>web.xml</code> to point at your new class.</li>
  * </ul>
  * 
  * <p>The implementation of {@link #configure()} will look something like
@@ -28,24 +26,23 @@ import org.directwebremoting.util.Logger;
  * 
  * <pre>
  * public void configure() {
- *    .withConverterType("dog", "com.yourcompany.beans.Dog")
- *    .withCreatorType("ejb", "com.yourcompany.dwr.creator.EJBCreator")
- *    .withCreator("new", "ApartmentDAO")
+ *    withConverterType("dog", "com.yourcompany.beans.Dog");
+ *    withCreatorType("ejb", "com.yourcompany.dwr.creator.EJBCreator");
+ *    withCreator("new", "ApartmentDAO")
  *        .addParam("scope", "session")
  *        .addParam("class", "com.yourcompany.dao.ApartmentDAO")
  *        .exclude("saveApartment")
- *        .withAuth("method", "role")
- *    .withCreator("struts", "DogDAO")
+ *        .withAuth("method", "role");
+ *    withCreator("struts", "DogDAO")
  *        .addParam("clas", "com.yourcompany.dao.DogDAO")
  *        .include("getDog")
- *        .include("getColor")
- *    .withConverter("dog", "*.Dog")
- *        .addParam("name", "value")
- *    .withSignature()
+ *        .include("getColor");
+ *    withConverter("dog", "*.Dog")
+ *        .addParam("name", "value");
+ *    withSignature()
  *        .addLine("import java.util.List;")
  *        .addLine("import com.example.Check;")
- *        .addLine("Check.setLotteryResults(List<Integer> nos);")
- *    .finished();
+ *        .addLine("Check.setLotteryResults(List<Integer> nos);");
  * }
  * </pre>
  * @author Aaron Johnson [ajohnson at cephas dot net / <a href="http://cephas.net/blog">http://cephas.net/blog</a>]
@@ -200,14 +197,6 @@ public abstract class FluentConfigurator implements Configurator
     }
 
     /**
-     * Marks the configuration as finished, flushes anything left in the queue.
-     */
-    public void finished()
-    {
-        setState(STATE_COMPLETE);
-    }
-
-    /**
      * Because some parts of the configuration require multiple steps, the instance
      * needs to maintain a state across invocations. Whenever the state is changed
      * by calling this method, the instance will 'flush' anything in the queue 
@@ -286,6 +275,10 @@ public abstract class FluentConfigurator implements Configurator
         converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
         accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
         creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
+
+        configure();
+
+        setState(STATE_COMPLETE);
     }
 
     /**
@@ -364,7 +357,7 @@ public abstract class FluentConfigurator implements Configurator
     private static final int STATE_SIGNATURE = 4;
 
     /**
-     * {@link #state} to say we are working in {@link #finished()} has been called
+     * {@link #state} to say {@link #configure()} has completed
      */
     private static final int STATE_COMPLETE = 5;
 
