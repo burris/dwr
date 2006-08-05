@@ -1,4 +1,22 @@
 
+Ensure that all error handlers are called properly
+	I discovered that DWR sometimes use the global DWREngine errorHandler even if
+	I have specified an errorHandler in my call object.
+	The reason seems to be in engine.js:609:
+		  catch (ex) {
+		    DWREngine._handleMetaDataError(null, ex);
+		  }
+		  batch.req.send(request.body);
+		  if (!batch.async) DWREngine._stateChange(batch);
+		}
+		catch (ex) {
+		  DWREngine._handleMetaDataError(null, ex);
+		}
+	The null parameter to _handleMetaDataError calls should instead get the
+	handler object that was setup at start of the call. In other places this
+	have been done with:
+		var handlers = DWREngine._handlersMap[id];
+
 Make sure hooks are always called properly
 
 DWREngine._handleMetaDataError(null, ex); does not postHook or errorHandler for
@@ -6,7 +24,7 @@ DWREngine._handleMetaDataError(null, ex); does not postHook or errorHandler for
 
 Opera doesn't do reverse Ajax
 
-Fix headers and parameters
+Create methods to set global headers and parameters and test if they work
 
 DWRUtil.setOptions gets the wrong order in Opera
 
