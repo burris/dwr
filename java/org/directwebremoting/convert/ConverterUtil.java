@@ -53,19 +53,22 @@ public class ConverterUtil
      * @return true if we expose _class members. Defaults to false
      * @see ConverterUtil#EXPOSE_CLASS_NAMES
      */
-    public static boolean getExposeClassNames()
+    public static boolean isExposingClassNames()
     {
-        if (exposeClassNames == null)
+        if (exposingClassNames == null)
         {
             Container container = WebContextFactory.get().getContainer();
             String exposeClassNamesStr = (String) container.getBean(EXPOSE_CLASS_NAMES);
-            exposeClassNames = (Boolean) LocalUtil.simpleConvert(exposeClassNamesStr, Boolean.class);
+            if (exposeClassNamesStr != null)
+            {
+                exposingClassNames = (Boolean) LocalUtil.simpleConvert(exposeClassNamesStr, Boolean.class);
+            }
         }
 
-        return exposeClassNames.booleanValue();
+        return exposingClassNames.booleanValue();
     }
-    
-    private static Boolean exposeClassNames;
+
+    private static Boolean exposingClassNames = Boolean.FALSE;
 
     /**
      * Generate an array declaration for a list of Outbound variables

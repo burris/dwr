@@ -222,7 +222,7 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
 
         try
         {
-            if (ConverterUtil.getExposeClassNames())
+            if (ConverterUtil.isExposingClassNames())
             {
                 ovs.put(ConverterUtil.CLASS_NAME, new OutboundVariable("", '\"' + data.getClass().getName() + '\"'));
             }
