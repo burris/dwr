@@ -377,7 +377,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
     // null then we can't tell which is the function unless there are only
     // 2 args, in which case we don't care!
     if (lastArg == null && args.length > 2) {
-        DWREngine._handleError("Ambiguous nulls at start and end of parameter list. Which is the callback function?");
+      DWREngine._handleError("Ambiguous nulls at start and end of parameter list. Which is the callback function?");
     }
     callData = { callback:args.shift() };
     params = args;
@@ -601,7 +601,8 @@ DWREngine._sendData = function(batch) {
       batch.req.open(batch.httpMethod, request.url, batch.async);
       try {
         for (prop in batch.headers) {
-          batch.req.setRequestHeader(prop, batch.headers[prop]);
+          var value = batch.headers[prop];
+          if (typeof value == "string") batch.req.setRequestHeader(prop, value);
         }
         if (!batch.headers["Content-Type"]) batch.req.setRequestHeader("Content-Type", "text/plain");
       }
@@ -642,11 +643,14 @@ DWREngine._sendData = function(batch) {
       batch.form.target = idname;
       batch.form.setAttribute("method", batch.httpMethod);
       for (prop in batch.map) {
-        var formInput = document.createElement("input");
-        formInput.setAttribute("type", "hidden");
-        formInput.setAttribute("name", prop);
-        formInput.setAttribute("value", batch.map[prop]);
-        batch.form.appendChild(formInput);
+        var value = batch.map[prop];
+        if (typeof value != "function") {
+          var formInput = document.createElement("input");
+          formInput.setAttribute("type", "hidden");
+          formInput.setAttribute("name", prop);
+          formInput.setAttribute("value", value);
+          batch.form.appendChild(formInput);
+        }
       }
       document.body.appendChild(batch.form);
       batch.form.submit();
