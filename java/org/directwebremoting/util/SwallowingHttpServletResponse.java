@@ -173,6 +173,14 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
         this.locale = locale;
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#setCharacterEncoding(java.lang.String)
+     */
+    public void setCharacterEncoding(String encoding)
+    {
+        this.encoding = encoding;
+    }
+
     /* (non-Javadoc)
      * @see javax.servlet.ServletResponse#getCharacterEncoding()
      */
@@ -181,12 +189,23 @@ public final class SwallowingHttpServletResponse implements HttpServletResponse
         return encoding;
     }
 
+    /**
+     * @see javax.servlet.ServletResponse#getContentType()
+     */
+    public String getContentType()
+    {
+        return contentType;
+    }
+
     /* (non-Javadoc)
      * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
      */
-    public void setContentType(String type)
+    public void setContentType(String contentType)
     {
+        this.contentType = contentType;
     }
+
+    private String contentType;
 
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)
