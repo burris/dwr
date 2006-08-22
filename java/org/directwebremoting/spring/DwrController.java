@@ -21,15 +21,13 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.DwrConstants;
-import org.directwebremoting.WebContextBuilder;
-import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.*;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.DwrXmlConfigurator;
 import org.directwebremoting.servlet.UrlProcessor;
+import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.ContainerMap;
 import org.directwebremoting.util.FakeServletConfig;
-import org.directwebremoting.util.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactory;
@@ -39,6 +37,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.context.ServletContextAware;
 
 /**
  * A Spring Controller that handles DWR requests. <br/>
@@ -98,7 +97,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @author Bram Smeets
  */
-public class DwrController extends AbstractController implements BeanNameAware, InitializingBean, BeanFactoryAware
+public class DwrController extends AbstractController implements BeanNameAware, InitializingBean, BeanFactoryAware, ServletContextAware
 {
     /**
      * Is called by the Spring container to set the bean factory. <br/>
@@ -175,6 +174,11 @@ public class DwrController extends AbstractController implements BeanNameAware, 
 
             // Now we have set the implementations we can set the WebContext up
             WebContextFactory.setWebContextBuilder(webContextBuilder);
+
+            // We can also setup the ServerContext
+            ServerContextBuilder serverContextBuilder = (ServerContextBuilder) container.getBean(ServerContextBuilder.class.getName());
+            ServerContextFactory.setServerContextBuilder(serverContextBuilder);
+            serverContextBuilder.set(servletConfig, getServletContext(), container);
         }
         catch (InstantiationException ex)
         {
