@@ -48,10 +48,6 @@ public class ContainerMap extends AbstractMap implements Map
     {
         if (proxy == null)
         {
-            return;
-        }
-        else
-        {
             proxy = new HashMap();
             for (Iterator it = container.getBeanNames().iterator(); it.hasNext();)
             {
