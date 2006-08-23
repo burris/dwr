@@ -83,25 +83,26 @@ public class JsfCreator extends AbstractCreator implements Creator
             VariableResolver resolver = application.getVariableResolver();
             resolvedObject = resolver.resolveVariable(facesContext, getManagedBeanName());
         }
+
         return resolvedObject;
     }
 
     /**
      * Determine whether String is a value binding expression or not.
      * @param expression The expression to test for value bindingness
-     * @return true iff the expression contains a VB expression
+     * @return true if the expression contains a VB expression
      */
     public static boolean isVBExpression(String expression)
     {
-        if (null == expression)
+        if (expression == null)
         {
             return false;
         }
 
         int start = expression.indexOf("#{");
+        int end = expression.indexOf('}');
 
-        // Check to see if attribute has an expression
-        return (start != -1) && (start < expression.indexOf('}'));
+        return start != -1 && start < end;
     }
 
     /**
