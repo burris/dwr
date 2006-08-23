@@ -18,10 +18,12 @@ import uk.ltd.getahead.dwr.util.*;
  * convertable Java class.  If found, this type will be
  * used instead.
  *
+ * <p>
  * Note that this converter manager does not change the
  * actual value of the inbound variable.  So, depending on
  * the converter implementation, you may see erroneous
  * errors reported for the '$javaClass' property.
+ * </p>
  *
  * @author  Tim Dwelle [tim at dwelle dot net]
  *
@@ -133,8 +135,10 @@ public class SmartConverterManager implements ConverterManager
 	 * convertable class that is specified using the
 	 * '$javaClass' syntax.
 	 *
+	 * <p>
 	 * For now, this method will simply return true, and
 	 * count on things to fail later, if the type is bad.
+	 * </p>
 	 *
 	 */
 	public boolean isConvertable(Class c)
