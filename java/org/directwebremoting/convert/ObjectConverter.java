@@ -223,7 +223,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                         continue;
                     }
 
-                    if (!field.isAccessible())
+                    if (!Modifier.isPublic(field.getModifiers()))
                     {
                         if (force)
                         {
