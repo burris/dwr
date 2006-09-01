@@ -8,7 +8,7 @@ var DWRActionUtil = {
       if (elementName == 'form') {
           for (var i = 0; i < element.elements.length; i=i+1) {
               var e = element.elements[i];
-              if (e.name != null && e.name != '') params[e.name] = e.value;
+              if(e.name != null && e.name != '') params[e.name] = DWRUtil.getValue(e);
           }
       }
       else {
