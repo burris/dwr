@@ -3,16 +3,16 @@ var DWRActionUtil = {
   execute : function(action, values, callbackObjOrName, displayMessage) {
     var params= new Object();
     if (this.isElement(values)) {
-      var element = this.getElement(values);
+      var element = $(values);
       var elementName= element.nodeName.toLowerCase();
-      if (elementName == "input") {
-        if(element.name != null && element.name != '') params[element.name] = element.value;
-      }
-      else if (elementName == 'form') {
+      if (elementName == 'form') {
           for (var i = 0; i < element.elements.length; i=i+1) {
               var e = element.elements[i];
               if (e.name != null && e.name != '') params[e.name] = e.value;
           }
+      }
+      else {
+        params[element.name] = DWRUtil.getValue(element);
       }
     }
     else {
@@ -138,17 +138,5 @@ var DWRActionUtil = {
     }
     
     return false;
-  },
-  
-  getElement : function(elementOrId) {
-    var elem;
-    if (typeof elementOrId == "string") {
-      elem = document.getElementById(elementOrId);
-    }
-    else {
-      elem = elementOrId;
-    }
-    
-    return elem;
   }
 };
