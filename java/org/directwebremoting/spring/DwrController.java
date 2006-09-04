@@ -18,16 +18,17 @@ package org.directwebremoting.spring;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.*;
+import org.directwebremoting.WebContextBuilder;
 import org.directwebremoting.impl.ContainerUtil;
-import org.directwebremoting.impl.DwrXmlConfigurator;
+import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.servlet.UrlProcessor;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.ContainerMap;
 import org.directwebremoting.util.FakeServletConfig;
+import org.directwebremoting.util.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactory;
@@ -35,9 +36,9 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.context.ServletContextAware;
 
 /**
  * A Spring Controller that handles DWR requests. <br/>
@@ -152,33 +153,32 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      */
     public void afterPropertiesSet() throws Exception
     {
-        Assert.notNull(getServletContext(), "The servlet context has not been set on the controller");
+        ServletContext servletContext = getServletContext();
+
+        Assert.notNull(servletContext, "The servlet context has not been set on the controller");
         Assert.notNull(configurators, "The required 'configurators' property should be set");
 
-        // use a fake servlet config as Spring 1.x does not provide ServletConfigAware functionality
-        servletConfig = new FakeServletConfig(name, getServletContext(), new ContainerMap(container, true));
+        // Use a fake servlet config as Spring 1.x does not provide ServletConfigAware functionality
+        servletConfig = new FakeServletConfig(name, servletContext, new ContainerMap(container, true));
 
         try
         {
             ContainerUtil.setupDefaults(container);
             ContainerUtil.setupFromServletConfig(container, servletConfig);
-
-            // TODO: fix this, the default container does not handle this
-            // properly if this is a boolean
             container.addParameter("debug", "" + debug);
-            container.configurationFinished();
+            container.setupFinished();
 
-            // Cached to save looking them up
-            webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
-            processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+            webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, null, container);
+            StartupUtil.initServerContext(servletConfig, servletContext, container);
 
-            // Now we have set the implementations we can set the WebContext up
-            WebContextFactory.setWebContextBuilder(webContextBuilder);
+            // The dwr.xml from within the JAR file.
+            if (includeDefaultConfig)
+            {
+                ContainerUtil.configureFromSystemDwrXml(container);
+            }
 
-            // We can also setup the ServerContext
-            ServerContextBuilder serverContextBuilder = (ServerContextBuilder) container.getBean(ServerContextBuilder.class.getName());
-            ServerContextFactory.setServerContextBuilder(serverContextBuilder);
-            serverContextBuilder.set(servletConfig, getServletContext(), container);
+            ContainerUtil.configure(container, configurators);
+            ContainerUtil.publishContainer(container, servletConfig);
         }
         catch (InstantiationException ex)
         {
@@ -187,23 +187,6 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         catch (IllegalAccessException ex)
         {
             throw new BeanCreationException("Access error", ex);
-        }
-
-        try
-        {
-            ContainerUtil.prepareForWebContextFilter(servletConfig, container, webContextBuilder, null);
-            webContextBuilder.set(null, null, servletConfig, getServletContext(), container);
-
-            // The dwr.xml from within the JAR file.
-            if (includeDefaultConfig)
-            {
-                DwrXmlConfigurator system = new DwrXmlConfigurator();
-                system.setClassResourceName(DwrConstants.FILE_DWR_XML);
-                system.configure(container);
-            }
-
-            ContainerUtil.configure(container, configurators);
-            ContainerUtil.publishContainer(container, servletConfig);
         }
         catch (Exception ex)
         {
@@ -231,6 +214,8 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         {
             // set up the web context and delegate to the processor
             webContextBuilder.set(request, response, servletConfig, getServletContext(), container);
+
+            UrlProcessor processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
             processor.handle(request, response);
         }
         finally
@@ -261,11 +246,6 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      * Whether to allow access to the debug pages
      */
     private boolean debug = false;
-
-    /**
-     * The processor that will actually handle the http requests
-     */
-    protected UrlProcessor processor;
 
     /**
      * The builder for the <code>WebContext</code> that keeps http objects local to a thread
