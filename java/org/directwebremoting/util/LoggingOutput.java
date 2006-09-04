@@ -24,6 +24,34 @@ package org.directwebremoting.util;
 public interface LoggingOutput
 {
     /**
+     * Something has gone very badly wrong.
+     * Processing is likely to stop.
+     */
+    public static final int LEVEL_FATAL = 5;
+
+    /**
+     * Something has gone wrong with the current request.
+     * The user will notice that we've broken something.
+     */
+    public static final int LEVEL_ERROR = 4;
+
+    /**
+     * Something has gone wrong, but it could well be the users fault.
+     * No need to panic yet.
+     */
+    public static final int LEVEL_WARN = 3;
+
+    /**
+     * An event happened that we might need to keep track of.
+     */
+    public static final int LEVEL_INFO = 2;
+
+    /**
+     * Testing information.
+     */
+    public static final int LEVEL_DEBUG = 1;
+
+    /**
      * Logger a debug message
      * @param message The text to log
      */
