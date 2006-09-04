@@ -141,11 +141,11 @@ public class UrlProcessor
                 Replies replies = remoter.execute(calls);
                 htmlCallMarshaller.marshallOutbound(replies, request, response);
             }
-            else if (pathInfo.equalsIgnoreCase(PathConstants.FILE_ENGINE))
+            else if (pathInfo.equals(PathConstants.FILE_ENGINE))
             {
                 doFile(request, response, PathConstants.FILE_ENGINE, MimeConstants.MIME_JS, true);
             }
-            else if (pathInfo.equalsIgnoreCase(PathConstants.FILE_UTIL))
+            else if (pathInfo.equals(PathConstants.FILE_UTIL))
             {
                 doFile(request, response, PathConstants.FILE_UTIL, MimeConstants.MIME_JS, false);
             }
