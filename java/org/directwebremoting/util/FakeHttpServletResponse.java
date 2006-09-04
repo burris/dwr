@@ -36,123 +36,97 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.util.Assert;
-import org.springframework.web.util.WebUtils;
-
 /**
  * Mock implementation of the HttpServletResponse interface.
- *
- * <p>Used for testing the web framework; also useful
- * for testing application controllers.
- *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @since 1.0.2
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class FakeHttpServletResponse implements HttpServletResponse
 {
-
-    public static final int DEFAULT_SERVER_PORT = 80;
-
-    private static final String CHARSET_PREFIX = "charset=";
-
-    //---------------------------------------------------------------------
-    // ServletResponse properties
-    //---------------------------------------------------------------------
-
-    private String characterEncoding = WebUtils.DEFAULT_CHARACTER_ENCODING;
-
-    private final ByteArrayOutputStream content = new ByteArrayOutputStream();
-
-    private final DelegatingServletOutputStream outputStream = new DelegatingServletOutputStream(this.content);
-
-    private PrintWriter writer;
-
-    private int contentLength = 0;
-
-    private String contentType;
-
-    private int bufferSize = 4096;
-
-    private boolean committed;
-
-    private Locale locale = Locale.getDefault();
-
-    //---------------------------------------------------------------------
-    // HttpServletResponse properties
-    //---------------------------------------------------------------------
-
-    private final List cookies = new ArrayList();
-
-    private final Map headers = new HashMap();
-
-    private int status = HttpServletResponse.SC_OK;
-
-    private String errorMessage;
-
-    private String redirectedUrl;
-
-    private String forwardedUrl;
-
-    private String includedUrl;
-
-    //---------------------------------------------------------------------
-    // ServletResponse interface
-    //---------------------------------------------------------------------
-
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setCharacterEncoding(java.lang.String)
+     */
     public void setCharacterEncoding(String characterEncoding)
     {
         this.characterEncoding = characterEncoding;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getCharacterEncoding()
+     */
     public String getCharacterEncoding()
     {
         return characterEncoding;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getOutputStream()
+     */
     public ServletOutputStream getOutputStream()
     {
-        return this.outputStream;
+        return outputStream;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getWriter()
+     */
     public PrintWriter getWriter() throws UnsupportedEncodingException
     {
-        if (this.writer == null)
+        if (writer == null)
         {
-            Writer targetWriter = (this.characterEncoding != null ? new OutputStreamWriter(this.content, this.characterEncoding) : new OutputStreamWriter(this.content));
-            this.writer = new PrintWriter(targetWriter);
+            Writer targetWriter = (characterEncoding != null ? new OutputStreamWriter(content, characterEncoding) : new OutputStreamWriter(content));
+            writer = new PrintWriter(targetWriter);
         }
+
         return writer;
     }
 
+    /**
+     * @return
+     */
     public byte[] getContentAsByteArray()
     {
         flushBuffer();
-        return this.content.toByteArray();
+        return content.toByteArray();
     }
 
+    /**
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     public String getContentAsString() throws UnsupportedEncodingException
     {
         flushBuffer();
-        return (this.characterEncoding != null) ? this.content.toString(this.characterEncoding) : this.content.toString();
+        return (characterEncoding != null) ? content.toString(characterEncoding) : content.toString();
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setContentLength(int)
+     */
     public void setContentLength(int contentLength)
     {
         this.contentLength = contentLength;
     }
 
+    /**
+     * @return
+     */
     public int getContentLength()
     {
         return contentLength;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
+     */
     public void setContentType(String contentType)
     {
         this.contentType = contentType;
         if (contentType != null)
         {
             int charsetIndex = contentType.toLowerCase().indexOf(CHARSET_PREFIX);
+
             if (charsetIndex != -1)
             {
                 String encoding = contentType.substring(charsetIndex + CHARSET_PREFIX.length());
@@ -161,102 +135,136 @@ public class FakeHttpServletResponse implements HttpServletResponse
         }
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getContentType()
+     */
     public String getContentType()
     {
         return contentType;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setBufferSize(int)
+     */
     public void setBufferSize(int bufferSize)
     {
         this.bufferSize = bufferSize;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getBufferSize()
+     */
     public int getBufferSize()
     {
         return bufferSize;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#flushBuffer()
+     */
     public void flushBuffer()
     {
-        if (this.writer != null)
+        if (writer != null)
         {
-            this.writer.flush();
+            writer.flush();
         }
-        if (this.outputStream != null)
+
+        if (outputStream != null)
         {
             try
             {
-                this.outputStream.flush();
+                outputStream.flush();
             }
             catch (IOException ex)
             {
                 throw new IllegalStateException("Could not flush OutputStream: " + ex.getMessage());
             }
         }
-        this.committed = true;
+
+        committed = true;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#resetBuffer()
+     */
     public void resetBuffer()
     {
-        if (this.committed)
+        if (committed)
         {
             throw new IllegalStateException("Cannot reset buffer - response is already committed");
         }
-        this.content.reset();
+
+        content.reset();
     }
 
+    /**
+     * @param committed
+     */
     public void setCommitted(boolean committed)
     {
         this.committed = committed;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#isCommitted()
+     */
     public boolean isCommitted()
     {
         return committed;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#reset()
+     */
     public void reset()
     {
         resetBuffer();
-        this.characterEncoding = null;
-        this.contentLength = 0;
-        this.contentType = null;
-        this.locale = null;
-        this.cookies.clear();
-        this.headers.clear();
-        this.status = HttpServletResponse.SC_OK;
-        this.errorMessage = null;
+
+        characterEncoding = null;
+        contentLength = 0;
+        contentType = null;
+        locale = null;
+        cookies.clear();
+        headers.clear();
+        status = HttpServletResponse.SC_OK;
+        errorMessage = null;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#setLocale(java.util.Locale)
+     */
     public void setLocale(Locale locale)
     {
         this.locale = locale;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#getLocale()
+     */
     public Locale getLocale()
     {
         return locale;
     }
 
-    //---------------------------------------------------------------------
-    // HttpServletResponse interface
-    //---------------------------------------------------------------------
-
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)
+     */
     public void addCookie(Cookie cookie)
     {
-        Assert.notNull(cookie, "Cookie must not be null");
-        this.cookies.add(cookie);
+        cookies.add(cookie);
     }
 
+    /**
+     * @return
+     */
     public Cookie[] getCookies()
     {
-        return (Cookie[]) this.cookies.toArray(new Cookie[this.cookies.size()]);
+        return (Cookie[]) cookies.toArray(new Cookie[cookies.size()]);
     }
 
     public Cookie getCookie(String name)
     {
-        Assert.notNull(name, "Cookie name must not be null");
-        for (Iterator it = this.cookies.iterator(); it.hasNext();)
+        for (Iterator it = cookies.iterator(); it.hasNext();)
         {
             Cookie cookie = (Cookie) it.next();
             if (name.equals(cookie.getName()))
@@ -267,27 +275,30 @@ public class FakeHttpServletResponse implements HttpServletResponse
         return null;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
+     */
     public boolean containsHeader(String name)
     {
-        Assert.notNull(name, "Header name must not be null");
-        return this.headers.containsKey(name);
+        return headers.containsKey(name);
     }
 
+    /**
+     * @return
+     */
     public Set getHeaderNames()
     {
-        return this.headers.keySet();
+        return headers.keySet();
     }
 
     public Object getHeader(String name)
     {
-        Assert.notNull(name, "Header name must not be null");
-        return this.headers.get(name);
+        return headers.get(name);
     }
 
     public List getHeaders(String name)
     {
-        Assert.notNull(name, "Header name must not be null");
-        Object value = this.headers.get(name);
+        Object value = headers.get(name);
         if (value instanceof List)
         {
             return (List) value;
@@ -302,56 +313,77 @@ public class FakeHttpServletResponse implements HttpServletResponse
         }
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
+     */
     public String encodeURL(String url)
     {
         return url;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
+     */
     public String encodeRedirectURL(String url)
     {
         return url;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
+     */
     public String encodeUrl(String url)
     {
         return url;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectUrl(java.lang.String)
+     */
     public String encodeRedirectUrl(String url)
     {
         return url;
     }
 
-    public void sendError(int status, String errorMessage) throws IOException
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+     */
+    public void sendError(int newStatus, String newErrorMessage) throws IOException
     {
-        if (this.committed)
+        if (committed)
         {
             throw new IllegalStateException("Cannot set error status - response is already committed");
         }
-        this.status = status;
-        this.errorMessage = errorMessage;
-        this.committed = true;
+        this.status = newStatus;
+        this.errorMessage = newErrorMessage;
+        committed = true;
     }
 
-    public void sendError(int status) throws IOException
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#sendError(int)
+     */
+    public void sendError(int newStatus) throws IOException
     {
-        if (this.committed)
+        if (committed)
         {
             throw new IllegalStateException("Cannot set error status - response is already committed");
         }
-        this.status = status;
-        this.committed = true;
+        this.status = newStatus;
+        committed = true;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
+     */
     public void sendRedirect(String url) throws IOException
     {
-        if (this.committed)
+        if (committed)
         {
             throw new IllegalStateException("Cannot send redirect - response is already committed");
         }
-        Assert.notNull(url, "Redirect URL must not be null");
-        this.redirectedUrl = url;
-        this.committed = true;
+
+        redirectedUrl = url;
+        committed = true;
     }
 
     public String getRedirectedUrl()
@@ -359,44 +391,61 @@ public class FakeHttpServletResponse implements HttpServletResponse
         return redirectedUrl;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     */
     public void setDateHeader(String name, long value)
     {
-        Assert.notNull(name, "Header name must not be null");
-        this.headers.put(name, new Long(value));
+        headers.put(name, new Long(value));
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     */
     public void addDateHeader(String name, long value)
     {
         doAddHeader(name, new Long(value));
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
+     */
     public void setHeader(String name, String value)
     {
-        Assert.notNull(name, "Header name must not be null");
-        this.headers.put(name, value);
+        headers.put(name, value);
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
+     */
     public void addHeader(String name, String value)
     {
         doAddHeader(name, value);
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     */
     public void setIntHeader(String name, int value)
     {
-        Assert.notNull(name, "Header name must not be null");
-        this.headers.put(name, new Integer(value));
+        headers.put(name, new Integer(value));
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
+     */
     public void addIntHeader(String name, int value)
     {
         doAddHeader(name, new Integer(value));
     }
 
+    /**
+     * @param name
+     * @param value
+     */
     private void doAddHeader(String name, Object value)
     {
-        Assert.notNull(name, "Header name must not be null");
-        Assert.notNull(value, "Header value must not be null");
-        Object oldValue = this.headers.get(name);
+        Object oldValue = headers.get(name);
         if (oldValue instanceof List)
         {
             List list = (List) oldValue;
@@ -407,19 +456,25 @@ public class FakeHttpServletResponse implements HttpServletResponse
             List list = new LinkedList();
             list.add(oldValue);
             list.add(value);
-            this.headers.put(name, list);
+            headers.put(name, list);
         }
         else
         {
-            this.headers.put(name, value);
+            headers.put(name, value);
         }
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setStatus(int)
+     */
     public void setStatus(int status)
     {
         this.status = status;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
+     */
     public void setStatus(int status, String errorMessage)
     {
         this.status = status;
@@ -460,4 +515,39 @@ public class FakeHttpServletResponse implements HttpServletResponse
         return includedUrl;
     }
 
+    public static final int DEFAULT_SERVER_PORT = 80;
+
+    private static final String CHARSET_PREFIX = "charset=";
+
+    private String characterEncoding = "ISO-8859-1";
+
+    private final ByteArrayOutputStream content = new ByteArrayOutputStream();
+
+    private final DelegatingServletOutputStream outputStream = new DelegatingServletOutputStream(this.content);
+
+    private PrintWriter writer;
+
+    private int contentLength = 0;
+
+    private String contentType;
+
+    private int bufferSize = 4096;
+
+    private boolean committed;
+
+    private Locale locale = Locale.getDefault();
+
+    private final List cookies = new ArrayList();
+
+    private final Map headers = new HashMap();
+
+    private int status = HttpServletResponse.SC_OK;
+
+    private String errorMessage;
+
+    private String redirectedUrl;
+
+    private String forwardedUrl;
+
+    private String includedUrl;
 }
