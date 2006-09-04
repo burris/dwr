@@ -85,21 +85,6 @@ public abstract class AbstractCreator implements Creator
     }
 
     /**
-     * Do the methods on the Creator change over time?
-     */
-    private boolean cacheable = false;
-
-    /**
-     * The javascript name for the class
-     */
-    private String javascript = null;
-
-    /**
-     * The scope of the objects created by this creator
-     */
-    private String scope = PAGE;
-
-    /**
      * Is the given scope valid?
      * @param cscope The scope string to match
      */
@@ -118,4 +103,19 @@ public abstract class AbstractCreator implements Creator
     {
         return LocalUtil.getShortClassName(getClass()) + "[" + getJavascript() + "]";
     }
+
+    /**
+     * Do the methods on the Creator change over time?
+     */
+    private boolean cacheable = false;
+
+    /**
+     * The javascript name for the class
+     */
+    private String javascript = null;
+
+    /**
+     * The scope of the objects created by this creator
+     */
+    private String scope = PAGE;
 }
