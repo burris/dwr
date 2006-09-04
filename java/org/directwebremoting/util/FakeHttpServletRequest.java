@@ -40,7 +40,6 @@ import javax.servlet.http.HttpSession;
 /**
  * For the benefit of anyone that wants to create a fake HttpServletRequest
  * that doesn't do anything other than not be null.
- * This may turn out to be a really bad idea.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class FakeHttpServletRequest implements HttpServletRequest
