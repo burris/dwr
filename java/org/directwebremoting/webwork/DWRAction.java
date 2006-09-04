@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.directwebremoting.util.FakeHttpServletResponse;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
@@ -76,7 +77,7 @@ public class DWRAction
     protected AjaxResult doExecute(ActionDefinition actionDefinition, Map params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
     {
         
-        MockHttpServletResponse actionResponse = new MockHttpServletResponse();
+        FakeHttpServletResponse actionResponse = new FakeHttpServletResponse();
 
         if (null != m_actionProcessor) 
         {
@@ -179,7 +180,7 @@ public class DWRAction
         return actionMapping;
     }
 
-    protected AjaxTextResult getTextResult(MockHttpServletResponse response)
+    protected AjaxTextResult getTextResult(FakeHttpServletResponse response)
     {
         DefaultAjaxTextResult result = new DefaultAjaxTextResult();
 
