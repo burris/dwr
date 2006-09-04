@@ -36,6 +36,7 @@ import org.directwebremoting.ConverterManager;
 import org.directwebremoting.Creator;
 import org.directwebremoting.CreatorManager;
 import org.directwebremoting.DebugPageGenerator;
+import org.directwebremoting.DwrConstants;
 import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.Remoter;
 import org.directwebremoting.ScriptSessionManager;
@@ -50,7 +51,6 @@ import org.directwebremoting.servlet.DwrWebContextFilter;
 import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
-import org.directwebremoting.util.VersionUtil;
 import org.xml.sax.SAXException;
 
 /**
@@ -69,8 +69,10 @@ public class ContainerUtil
      * parameter name is the classname of {@link Container}, currently the only
      * this can only be used to create children that inherit from
      * {@link DefaultContainer}. This restriction may be relaxed in the future.
+     * Unlike {@link #setupDefaultContainer(DefaultContainer, ServletConfig)},
+     * this method does not call any setup methods.
      * @param servletConfig The source of init parameters
-     * @return An implementaion of DefaultContainer
+     * @return An unsetup implementaion of DefaultContainer
      * @throws ServletException If the specified class could not be found
      * @see ServletConfig#getInitParameter(String) 
      */
@@ -95,64 +97,108 @@ public class ContainerUtil
     }
 
     /**
-     * Take a DefaultContainer and setup the default beans
-     * @param defaultContainer The container to configure
+     * Setup a {@link DefaultContainer}.
+     * Using {@link #createDefaultContainer(ServletConfig)} followed by
+     * {@link #setupFromServletConfig(DefaultContainer, ServletConfig)} before
+     * calling {@link DefaultContainer#setupFinished()}.
+     * @param container The container to configure
+     * @param servletConfig The source of init parameters
      * @throws InstantiationException If we can't instantiate a bean
      * @throws IllegalAccessException If we have access problems creating a bean
      */
-    public static void setupDefaults(DefaultContainer defaultContainer) throws InstantiationException, IllegalAccessException
+    public static void setupDefaultContainer(DefaultContainer container, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
     {
-        defaultContainer.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
-        defaultContainer.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
-        defaultContainer.addParameter(CreatorManager.class.getName(), DefaultCreatorManager.class.getName());
-        defaultContainer.addParameter(UrlProcessor.class.getName(), UrlProcessor.class.getName());
-        defaultContainer.addParameter(WebContextBuilder.class.getName(), DefaultWebContextBuilder.class.getName());
-        defaultContainer.addParameter(ServerContextBuilder.class.getName(), DefaultServerContextBuilder.class.getName());
-        defaultContainer.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
-        defaultContainer.addParameter(Remoter.class.getName(), DefaultRemoter.class.getName());
-        defaultContainer.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
-        defaultContainer.addParameter(HtmlCallMarshaller.class.getName(), HtmlCallMarshaller.class.getName());
-        defaultContainer.addParameter(PlainCallMarshaller.class.getName(), PlainCallMarshaller.class.getName());
-        defaultContainer.addParameter(PollHandler.class.getName(), PollHandler.class.getName());
-        defaultContainer.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
-        defaultContainer.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
-        defaultContainer.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
+        setupDefaults(container);
+        setupFromServletConfig(container, servletConfig);
+        container.setupFinished();
     }
 
     /**
      * Take a DefaultContainer and setup the default beans
-     * @param defaultContainer The container to configure
+     * @param container The container to configure
+     * @throws InstantiationException If we can't instantiate a bean
+     * @throws IllegalAccessException If we have access problems creating a bean
+     */
+    public static void setupDefaults(DefaultContainer container) throws InstantiationException, IllegalAccessException
+    {
+        container.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
+        container.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
+        container.addParameter(CreatorManager.class.getName(), DefaultCreatorManager.class.getName());
+        container.addParameter(UrlProcessor.class.getName(), UrlProcessor.class.getName());
+        container.addParameter(WebContextBuilder.class.getName(), DefaultWebContextBuilder.class.getName());
+        container.addParameter(ServerContextBuilder.class.getName(), DefaultServerContextBuilder.class.getName());
+        container.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
+        container.addParameter(Remoter.class.getName(), DefaultRemoter.class.getName());
+        container.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
+        container.addParameter(HtmlCallMarshaller.class.getName(), HtmlCallMarshaller.class.getName());
+        container.addParameter(PlainCallMarshaller.class.getName(), PlainCallMarshaller.class.getName());
+        container.addParameter(PollHandler.class.getName(), PollHandler.class.getName());
+        container.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
+        container.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
+        container.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
+    }
+
+    /**
+     * Take a DefaultContainer and setup the default beans
+     * @param container The container to configure
      * @param servletConfig The servlet configuration (null to ignore)
      * @throws InstantiationException If we can't instantiate a bean
      * @throws IllegalAccessException If we have access problems creating a bean
      */
-    public static void setupFromServletConfig(DefaultContainer defaultContainer, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
+    public static void setupFromServletConfig(DefaultContainer container, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
     {
         Enumeration en = servletConfig.getInitParameterNames();
         while (en.hasMoreElements())
         {
             String name = (String) en.nextElement();
             String value = servletConfig.getInitParameter(name);
-            defaultContainer.addParameter(name, value);
+            container.addParameter(name, value);
         }
     }
 
     /**
      * Make some changes to the ServletContext so {@link DwrWebContextFilter}
      * can find the Container etc.
-     * @param config The current configuration
+     * @param context The servlet context
+     * @param config The servlet configuration
      * @param container The container to save in the ServletContext 
      * @param webContextBuilder The WebContextBuilder to save
      * @param servlet The Servlet to save
      */
-    public static void prepareForWebContextFilter(ServletConfig config, Container container, WebContextBuilder webContextBuilder, HttpServlet servlet)
+    public static void prepareForWebContextFilter(ServletContext context, ServletConfig config, Container container, WebContextBuilder webContextBuilder, HttpServlet servlet)
     {
-        ServletContext context = config.getServletContext();
-
         context.setAttribute(Container.class.getName(), container);
         context.setAttribute(WebContextBuilder.class.getName(), webContextBuilder);
         context.setAttribute(ServletConfig.class.getName(), config);
         context.setAttribute(HttpServlet.class.getName(), servlet);
+    }
+
+    /**
+     * Configure using the system dwr.xml from within the JAR file.
+     * @param container The container to configure
+     * @throws ParserConfigurationException If the config file parse fails
+     * @throws IOException If the config file read fails
+     * @throws SAXException If the config file parse fails
+     */
+    public static void configureFromSystemDwrXml(Container container) throws IOException, ParserConfigurationException, SAXException
+    {
+        DwrXmlConfigurator system = new DwrXmlConfigurator();
+        system.setClassResourceName(DwrConstants.FILE_DWR_XML);
+        system.configure(container);
+    }
+
+    /**
+     * Configure using the users dwr.xml that sits next in WEB-INF 
+     * @param container The container to configure
+     * @throws ParserConfigurationException If the config file parse fails
+     * @throws IOException If the config file read fails
+     * @throws SAXException If the config file parse fails
+     */
+    public static void configureFromDefaultDwrXml(Container container) throws IOException, ParserConfigurationException, SAXException
+    {
+        DwrXmlConfigurator local = new DwrXmlConfigurator();
+        local.setServletResourceName(DwrConstants.DEFAULT_DWR_XML);
+        local.configure(container);
     }
 
     /**
@@ -165,7 +211,7 @@ public class ContainerUtil
      * @throws ParserConfigurationException If the config file parse fails
      * @throws IOException If the config file read fails
      */
-    public static boolean configureUsingInitParams(Container container, ServletConfig servletConfig) throws IOException, ParserConfigurationException, SAXException
+    public static boolean configureFromInitParams(Container container, ServletConfig servletConfig) throws IOException, ParserConfigurationException, SAXException
     {
         Enumeration en = servletConfig.getInitParameterNames();
         boolean foundConfig = false;
@@ -209,6 +255,69 @@ public class ContainerUtil
     }
 
     /**
+     * Annotations must not break 1.3, so we use reflection to create an
+     * <code>org.directwebremoting.annotations.AnnotationsConfigurator</code>
+     * and the catch all sorts of random exceptions for the benefit of
+     * Websphere.
+     * @param container The container to configure
+     * @return true if the configuration worked.
+     */
+    public static boolean configureFromAnnotations(Container container)
+    {
+        try
+        {
+            Class annotationCfgClass = LocalUtil.classForName("org.directwebremoting.annotations.AnnotationsConfigurator");
+    
+            Configurator configurator = (Configurator) annotationCfgClass.newInstance();
+            configurator.configure(container);
+
+            log.debug("Java5 AnnotationsConfigurator enabled");
+            return true;
+        }
+        catch (UnsupportedClassVersionError ex)
+        {
+            // This will happen in JDK 1.4 and below
+            return false;
+        }
+        catch (ClassNotFoundException ex)
+        {
+            // This will happen when run in an IDE without the java5 tree
+            log.warn("AnnotationsConfigurator is missing. Are you running from within an IDE?");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            // This happens if there is a bug in AnnotationsConfigurator
+            log.warn("Failed to start annotations", ex);
+            return false;
+        }
+        catch (Throwable ex)
+        {
+            if (ex.getClass().getName().equals(UnsupportedClassVersionError.class.getName()))
+            {
+                log.error("Caught impossible Throwable", ex);
+                return false;
+            }
+            else if (ex.getClass().getName().equals(LinkageError.class.getName()))
+            {
+                log.error("Caught impossible Throwable", ex);
+                return false;
+            }
+            else if (ex instanceof Error)
+            {
+                throw (Error) ex;
+            }
+            else
+            {
+                // This can't happen: We've handled all Exceptions, and
+                // Errors, so we can't get to execute this code.
+                log.error("Ilogical catch state", ex);
+                return false;
+            }
+        }
+    }
+
+    /**
      * Allow all the configurators to have a go at the container in turn
      * @param container The container to configure
      * @param configurators A list of configurators to run against the container
@@ -226,6 +335,46 @@ public class ContainerUtil
     }
 
     /**
+     * Run all the default configuration options on a Container
+     * @param container The container to configure
+     * @param servletConfig The source of init parameters
+     * @throws SAXException If the config file parse fails
+     * @throws ParserConfigurationException If the config file parse fails
+     * @throws IOException If the config file read fails
+     */
+    public static void configureContainerFully(Container container, ServletConfig servletConfig) throws IOException, ParserConfigurationException, SAXException
+    {
+        configureFromSystemDwrXml(container);
+        boolean foundConfig = configureFromInitParams(container, servletConfig);
+
+        // The default dwr.xml file that sits by web.xml
+        boolean skip = Boolean.valueOf(servletConfig.getInitParameter(INIT_SKIP_DEFAULT)).booleanValue();
+        IOException delayedIOException = null;
+        if (!foundConfig && !skip)
+        {
+            try
+            {
+                configureFromDefaultDwrXml(container);
+            }
+            catch (IOException ex)
+            {
+                // This is fatal unless we are on JDK5+ AND using annotations
+                delayedIOException = ex;
+            }
+        }
+
+        if (!configureFromAnnotations(container))
+        {
+            log.debug("Java5 AnnotationsConfigurator disabled");
+
+            if (delayedIOException != null)
+            {
+                throw delayedIOException;
+            }
+        }
+    }
+
+    /**
      * If helps some situations if people can get at the container by looking
      * in the servlet context, under some name.
      * The name is specified in an initParameter. 
@@ -239,18 +388,6 @@ public class ContainerUtil
         {
             config.getServletContext().setAttribute(publishName, container);
         }
-    }
-
-    /**
-     * Some logging so we have a good clue what we are working with.
-     * @param config The servlet config
-     */
-    public static void logStartup(ServletConfig config)
-    {
-        log.info("DWR Version " + VersionUtil.getVersion() + " starting.");
-        log.info("- Servlet Engine: " + config.getServletContext().getServerInfo());
-        log.info("- Java Version:   " + System.getProperty("java.version")); //$NON-NLS-2$
-        log.info("- Java Vendor:    " + System.getProperty("java.vendor")); //$NON-NLS-2$
     }
 
     /**

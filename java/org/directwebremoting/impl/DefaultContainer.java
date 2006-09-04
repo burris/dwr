@@ -98,7 +98,7 @@ public class DefaultContainer implements Container
      * @see DefaultContainer#addParameter(Object, Object)
      * @noinspection UnnecessaryLabelOnContinueStatement
      */
-    public void configurationFinished()
+    public void setupFinished()
     {
         // We try to autowire each bean in turn
         for (Iterator it = beans.entrySet().iterator(); it.hasNext();)

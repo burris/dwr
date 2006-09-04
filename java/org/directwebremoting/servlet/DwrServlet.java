@@ -18,21 +18,17 @@ package org.directwebremoting.servlet;
 import java.io.IOException;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.Configurator;
-import org.directwebremoting.DwrConstants;
-import org.directwebremoting.ServerContextBuilder;
-import org.directwebremoting.ServerContextFactory;
+import org.directwebremoting.Container;
 import org.directwebremoting.WebContextBuilder;
-import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.DefaultContainer;
-import org.directwebremoting.impl.DwrXmlConfigurator;
-import org.directwebremoting.util.LocalUtil;
+import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.ServletLoggingOutput;
 
@@ -59,118 +55,27 @@ public class DwrServlet extends HttpServlet
     /* (non-Javadoc)
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
      */
-    public void init(ServletConfig config) throws ServletException
+    public void init(ServletConfig servletConfig) throws ServletException
     {
-        super.init(config);
+        super.init(servletConfig);
+        ServletContext servletContext = servletConfig.getServletContext();
 
-        container = ContainerUtil.createDefaultContainer(config);
         try
         {
-            // Setup logging
-            ServletLoggingOutput.setExecutionContext(this);
-            String logLevel = config.getInitParameter(ContainerUtil.INIT_LOGLEVEL);
-            if (logLevel != null)
-            {
-                ServletLoggingOutput.setLevel(logLevel);
-            }
+            // setupLogging() only needed for servlet logging if commons-logging is unavailable
+            // logStartup() just outputs some version numbers
+            StartupUtil.setupLogging(servletConfig, this);
+            StartupUtil.logStartup(servletConfig);
 
-            ContainerUtil.logStartup(config);
-            ContainerUtil.setupDefaults(container);
-            ContainerUtil.setupFromServletConfig(container, config);
-            container.configurationFinished();
+            // create and setup a DefaultContainer
+            container = ContainerUtil.createDefaultContainer(servletConfig);
+            ContainerUtil.setupDefaultContainer(container, servletConfig);
 
-            // Cached to save looking them up
-            webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
-            processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+            webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, this, container);
+            StartupUtil.initServerContext(servletConfig, servletContext, container);
 
-            // Now we have set the implementations we can set the WebContext up
-            WebContextFactory.setWebContextBuilder(webContextBuilder);
-
-            // We can also setup the ServerContext
-            ServerContextBuilder serverContextBuilder = (ServerContextBuilder) container.getBean(ServerContextBuilder.class.getName());
-            ServerContextFactory.setServerContextBuilder(serverContextBuilder);
-            serverContextBuilder.set(getServletConfig(), getServletContext(), container);
-
-            ContainerUtil.prepareForWebContextFilter(config, container, webContextBuilder, this);
-            webContextBuilder.set(null, null, getServletConfig(), getServletContext(), container);
-
-            // The dwr.xml from within the JAR file.
-            DwrXmlConfigurator system = new DwrXmlConfigurator();
-            system.setClassResourceName(DwrConstants.FILE_DWR_XML);
-            system.configure(container);
-
-            // dwr.xml files specified in the web.xml
-            boolean foundConfig = ContainerUtil.configureUsingInitParams(container, config);
-
-            // The default dwr.xml file that sits by web.xml
-            boolean skip = Boolean.valueOf(config.getInitParameter(ContainerUtil.INIT_SKIP_DEFAULT)).booleanValue();
-            IOException delayedIOException = null;
-            if (!foundConfig && !skip)
-            {
-                try
-                {
-                    DwrXmlConfigurator local = new DwrXmlConfigurator();
-                    local.setServletResourceName(DwrConstants.DEFAULT_DWR_XML);
-                    local.configure(container);
-                }
-                catch (IOException ex)
-                {
-                    // This is fatal unless we are on JDK5+ AND using annotations
-                    delayedIOException = ex;
-                }
-            }
-
-            try
-            {
-                Class annotationCfgClass = LocalUtil.classForName("org.directwebremoting.annotations.AnnotationsConfigurator");
-
-                Configurator configurator = (Configurator) annotationCfgClass.newInstance();
-                configurator.configure(container);
-                log.debug("Java5 AnnotationsConfigurator enabled");
-            }
-            catch (UnsupportedClassVersionError ex)
-            {
-                // This will happen in JDK 1.4 and below
-                handleAnnotationFailure(delayedIOException);
-            }
-            catch (ClassNotFoundException ex)
-            {
-                // This will happen when run in an IDE without the java5 tree
-                handleAnnotationFailure(delayedIOException);
-                log.warn("AnnotationsConfigurator is missing. Are you running from within an IDE?");
-            }
-            catch (Exception ex)
-            {
-                // This happens if there is a bug in AnnotationsConfigurator
-                log.warn("Failed to start annotations", ex);
-                handleAnnotationFailure(delayedIOException);
-            }
-            catch (Throwable ex)
-            {
-                if (ex.getClass().getName().equals(UnsupportedClassVersionError.class.getName()))
-                {
-                    log.error("Caught impossible Throwable", ex);
-                    handleAnnotationFailure(delayedIOException);
-                }
-                else if (ex.getClass().getName().equals(LinkageError.class.getName()))
-                {
-                    log.error("Caught impossible Throwable", ex);
-                    handleAnnotationFailure(delayedIOException);
-                }
-                else if (ex instanceof Error)
-                {
-                    throw (Error) ex;
-                }
-                else
-                {
-                    // This can't happen: We've handled all Exceptions, and
-                    // Errors, so we can't get to execute this code.
-                    log.error("Ilogical catch state", ex);
-                    handleAnnotationFailure(delayedIOException);
-                }
-            }
-
-            ContainerUtil.publishContainer(container, config);
+            ContainerUtil.configureContainerFully(container, servletConfig);
+            ContainerUtil.publishContainer(container, servletConfig);
         }
         catch (ExceptionInInitializerError ex)
         {
@@ -184,25 +89,12 @@ public class DwrServlet extends HttpServlet
         }
         finally
         {
-            webContextBuilder.unset();
+            if (webContextBuilder != null)
+            {
+                webContextBuilder.unset();
+            }
+
             ServletLoggingOutput.unsetExecutionContext();
-        }
-    }
-
-    /**
-     * AnnotationsConfigurator failure (i.e. we're on 1.4 or before)
-     * @param delayedIOException The IO exception if dwr.xml based config failed
-     * @throws IOException If everything has failed
-     */
-    private void handleAnnotationFailure(IOException delayedIOException) throws IOException
-    {
-        log.debug("Java5 AnnotationsConfigurator disabled");
-
-        // So we can't to annotation config.
-        // If dwr.xml based config failed then we are in trouble
-        if (delayedIOException != null)
-        {
-            throw delayedIOException;
         }
     }
 
@@ -224,6 +116,7 @@ public class DwrServlet extends HttpServlet
             webContextBuilder.set(request, response, getServletConfig(), getServletContext(), container);
             ServletLoggingOutput.setExecutionContext(this);
 
+            UrlProcessor processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
             processor.handle(request, response);
         }
         finally
@@ -237,7 +130,7 @@ public class DwrServlet extends HttpServlet
      * Accessor for the DWR IoC container.
      * @return DWR's IoC container
      */
-    public DefaultContainer getContainer()
+    public Container getContainer()
     {
         return container;
     }
@@ -248,11 +141,6 @@ public class DwrServlet extends HttpServlet
     private DefaultContainer container;
 
     /**
-     * The processor will actually handle the http requests
-     */
-    private UrlProcessor processor;
-
-    /**
      * The WebContext that keeps http objects local to a thread
      */
     private WebContextBuilder webContextBuilder;
@@ -260,5 +148,5 @@ public class DwrServlet extends HttpServlet
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrServlet.class);
+    public static final Logger log = Logger.getLogger(DwrServlet.class);
 }
