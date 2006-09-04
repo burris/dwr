@@ -34,7 +34,7 @@ public class NewCreator extends AbstractCreator implements Creator
     {
         try
         {
-            this.clazz = LocalUtil.classForName(classname);
+            clazz = LocalUtil.classForName(classname);
         }
         catch (ExceptionInInitializerError ex)
         {
