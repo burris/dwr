@@ -84,14 +84,16 @@ public class DwrSpringServlet extends HttpServlet
 
         try
         {
+            WebApplicationContext webappContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+
             container = new SpringContainer();
+            container.setBeanFactory(webappContext);
             ContainerUtil.setupDefaultContainer(container, servletConfig);
 
             webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, this, container);
             StartupUtil.initServerContext(servletConfig, servletContext, container);
 
             // retrieve the configurators from Spring (loaded by the ContextLoaderListener)
-            WebApplicationContext webappContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
             configurators.add(webappContext.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID));
 
             if (includeDefaultConfig)
