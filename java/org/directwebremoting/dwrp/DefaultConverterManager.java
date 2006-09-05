@@ -16,7 +16,10 @@
 package org.directwebremoting.dwrp;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +31,7 @@ import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.TypeHintContext;
+import org.directwebremoting.convert.BasicObjectConverter;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -92,6 +96,21 @@ public class DefaultConverterManager implements ConverterManager
         converters.put(match, converter);
     }
 
+    //
+    // MIKE
+    //
+    public Collection getConverterMatchStrings()
+    {
+        return Collections.unmodifiableSet(converters.keySet());
+    }
+    public Converter getConverterByMatchString(String match)
+    {
+        return (Converter) converters.get(match);
+    }
+    //
+    // MIKE
+    //
+    
     /* (non-Javadoc)
      * @see org.directwebremoting.ConverterManager#isConvertable(java.lang.Class)
      */
@@ -108,7 +127,76 @@ public class DefaultConverterManager implements ConverterManager
         Object converted = inctx.getConverted(iv, paramType);
         if (converted == null)
         {
-            Converter converter = getConverter(paramType);
+            //
+            // MIKE
+            //
+
+            // [This is maybe the worst hack of all my updates, as I had a hard
+            // time finding a good place for this code]
+            
+            Converter converter = null;
+            
+            // Was the inbound variable marshalled as an Object in the client 
+            // (could mean that this is an instance of one of our generated
+            // JavaScript classes)
+            if (iv.getType().startsWith("Object_"))
+            {
+                // Extract the JavaScript classname from the inbound type
+                String javascriptClassName = iv.getType().substring("Object_".length());
+                
+                // Locate a converter for this JavaScript classname
+                Iterator it = converters.entrySet().iterator();
+                while (it.hasNext())
+                {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    String match = (String) entry.getKey();
+                    Converter conv = (Converter) entry.getValue();
+                    
+                    // JavaScript mapping is only applicable for compound converters
+                    if ( conv instanceof BasicObjectConverter )
+                    {
+                        BasicObjectConverter boConv = (BasicObjectConverter) conv;
+                        if (boConv.getJavascript()!=null && boConv.getJavascript().equals(javascriptClassName))
+                        {
+                            // We found a potential converter! But is the 
+                            // converter's Java class compatible with the
+                            // parameter type?
+                            try
+                            {
+                                Class inboundClass = LocalUtil.classForName(match);
+                                if (paramType.isAssignableFrom(inboundClass))
+                                {
+                                    // And the winner is:
+                                    converter = boConv;
+                                    
+                                    // Hack: We also want to make sure that the
+                                    // converter creates its object based on the 
+                                    // inbound class instead of the parameter 
+                                    // type, and we have to use the other ref
+                                    // for this:
+                                    boConv.setInstanceType(inboundClass);
+                                    
+                                    break;
+                                }
+                            }
+                            catch(ClassNotFoundException ex)
+                            {
+                                throw new MarshallException(ex);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Fall back to the standard way of locating a converter if we 
+            // didn't find anything above
+            if ( converter == null )
+                converter = getConverter(paramType);
+            
+            //
+            // MIKE
+            //
+
             if (converter == null)
             {
                 throw new MarshallException(Messages.getString("DefaultConverterManager.MissingConverter", paramType.getName()));

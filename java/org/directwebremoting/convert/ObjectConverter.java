@@ -252,8 +252,59 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
             throw new MarshallException(ex);
         }
 
-        ConverterUtil.addMapInit(ov, ovs);
+        ConverterUtil.addMapInit(ov, ovs, getJavascript());
         return ov;
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.convert.BasicObjectConverter#getAllPropertyNames(java.lang.Class)
+     */
+    public String[] getAllPropertyNames(Class mappedType)
+    {
+        Set allFieldNames = new HashSet();
+        while (mappedType != Object.class)
+        {
+            Field[] fields = mappedType.getDeclaredFields();
+            for (int i = 0; i < fields.length; i++)
+            {
+                allFieldNames.add(fields[i].getName());
+            }
+
+            mappedType = mappedType.getSuperclass();
+        }
+
+        return (String[]) allFieldNames.toArray(new String[allFieldNames.size()]);
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.convert.BasicObjectConverter#getPropertyType(java.lang.Class, java.lang.String)
+     */
+    public Class getPropertyType(Class mappedType, String propertyName)
+    {
+        Class clazz = mappedType;
+
+        Field field = null;
+        while (clazz != Object.class)
+        {
+            try
+            {
+                field = clazz.getDeclaredField(propertyName);
+                break;
+            }
+            catch (NoSuchFieldException ignore)
+            {
+                // ignore
+            }
+
+            clazz = clazz.getSuperclass();
+        }
+
+        if (field == null)
+        {
+            throw new IllegalArgumentException("No property '" + propertyName + "' in class " + mappedType.getName() + ".");
+        }
+
+        return field.getType();
     }
 
     /**

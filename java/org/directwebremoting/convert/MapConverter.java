@@ -200,7 +200,7 @@ public class MapConverter implements Converter
             ovs.put(outkey, nested);
         }
 
-        ConverterUtil.addMapInit(ov, ovs);
+        ConverterUtil.addMapInit(ov, ovs, null);
         return ov;
     }
 

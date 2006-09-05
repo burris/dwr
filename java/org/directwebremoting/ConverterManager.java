@@ -15,6 +15,7 @@
  */
 package org.directwebremoting;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -49,6 +50,23 @@ public interface ConverterManager
      */
     void addConverter(String match, Converter converter) throws IllegalArgumentException;
 
+    /**
+     * In order to be able to create stub remote objects we need to know what
+     * they are so you can get a collection of all match strings.
+     * @return A Collection of all the converter match strings
+     * @see #getConverterByMatchString(String)
+     */
+    Collection getConverterMatchStrings();
+
+    /**
+     * In order to be able to create stub remote objects we need to know what
+     * they are so you can lookup match strings and retrieve the converter.
+     * @param match The match string to lookup
+     * @return The matching converter
+     * @see #getConverterMatchStrings()
+     */
+    Converter getConverterByMatchString(String match);
+    
     /**
      * Check if we can coerce the given type
      * @param paramType The type to check

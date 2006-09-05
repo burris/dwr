@@ -21,8 +21,10 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
@@ -278,8 +280,68 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
             throw new MarshallException(ex);
         }
 
-        ConverterUtil.addMapInit(ov, ovs);
+        ConverterUtil.addMapInit(ov, ovs, getJavascript());
+
         return ov;
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.convert.BasicObjectConverter#getAllPropertyNames(java.lang.Class)
+     */
+    public String[] getAllPropertyNames(Class mappedType)
+    {
+        try
+        {
+            BeanInfo info = Introspector.getBeanInfo(mappedType);
+
+            Set allFieldNames = new HashSet();
+            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+            for (int i = 0; i < descriptors.length; i++)
+            {
+                PropertyDescriptor descriptor = descriptors[i];
+                allFieldNames.add(descriptor.getName());
+            }
+
+            return (String[]) allFieldNames.toArray(new String[allFieldNames.size()]);
+        }
+        catch (IntrospectionException ex)
+        {
+            throw new IllegalArgumentException(ex.getMessage());
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.convert.BasicObjectConverter#getPropertyType(java.lang.Class, java.lang.String)
+     */
+    public Class getPropertyType(Class mappedType, String propertyName)
+    {
+        try
+        {
+            BeanInfo info = Introspector.getBeanInfo(mappedType);
+            Class propType = null;
+
+            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+            for (int i = 0; i < descriptors.length; i++)
+            {
+                PropertyDescriptor descriptor = descriptors[i];
+                String name = descriptor.getName();
+                if (name.equals(propertyName))
+                {
+                    propType = descriptor.getClass();
+                }
+            }
+
+            if (propType == null)
+            {
+                throw new IllegalArgumentException("No property '" + propertyName + "' in class " + mappedType.getName() + ".");
+            }
+
+            return propType;
+        }
+        catch (IntrospectionException ex)
+        {
+            throw new IllegalArgumentException(ex.getMessage());
+        }
     }
 
     /**

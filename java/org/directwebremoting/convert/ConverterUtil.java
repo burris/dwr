@@ -180,8 +180,9 @@ public class ConverterUtil
      * Generate an map declaration for a map of Outbound variables
      * @param ov The OutboundVariable to declare
      * @param ovs The map of the converted contents
+     * @param scriptClassName The object name or null for pure(ish) json
      */
-    public static void addMapInit(OutboundVariable ov, Map ovs)
+    public static void addMapInit(OutboundVariable ov, Map ovs, String scriptClassName)
     {
         String varname = ov.getAssignCode();
         StringBuffer buffer = new StringBuffer();
@@ -190,7 +191,7 @@ public class ConverterUtil
 
         // If there is no init code, there is no recursion so we can go into
         // compact JSON mode
-        if (init.length() == 0)
+        if (init.length() == 0 && (scriptClassName == null || scriptClassName.equals("")))
         {
             // First loop through is for the stuff we can embed
             buffer.append("var ");
@@ -232,7 +233,15 @@ public class ConverterUtil
             // Declare ourselves so recursion works
             buffer.append("var ");
             buffer.append(varname);
-            buffer.append("={};");
+
+            if (scriptClassName == null || scriptClassName.equals(""))
+            {
+                buffer.append("={};");
+            }
+            else
+            {
+                buffer.append("=new " + scriptClassName + "();");
+            }
 
             buffer.append(init);
 

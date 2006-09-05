@@ -18,6 +18,7 @@ package org.directwebremoting.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +29,8 @@ import org.directwebremoting.AjaxFilterChain;
 import org.directwebremoting.AjaxFilterManager;
 import org.directwebremoting.Call;
 import org.directwebremoting.Calls;
+import org.directwebremoting.Converter;
+import org.directwebremoting.ConverterManager;
 import org.directwebremoting.Creator;
 import org.directwebremoting.CreatorManager;
 import org.directwebremoting.Remoter;
@@ -35,6 +38,7 @@ import org.directwebremoting.Replies;
 import org.directwebremoting.Reply;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.convert.BasicObjectConverter;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
@@ -43,6 +47,7 @@ import org.directwebremoting.util.Logger;
 /**
  * In implementation of Remoter that delegates requests to a set of Modules
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @author Mike Wilson
  */
 public class DefaultRemoter implements Remoter
 {
@@ -57,8 +62,80 @@ public class DefaultRemoter implements Remoter
             actualPath = overridePath;
         }
 
-        Creator creator = creatorManager.getCreator(scriptName);
         StringBuffer buffer = new StringBuffer();
+
+        // Output the class definitions for the converted objects
+        Collection converterMatches = converterManager.getConverterMatchStrings();
+        Iterator it = converterMatches.iterator();
+        while (it.hasNext())
+        {
+            String match = (String) it.next();
+            Converter conv = converterManager.getConverterByMatchString(match);
+            // We will only generate JavaScript classes for compound objects/beans
+            if (conv instanceof BasicObjectConverter)
+            {
+                BasicObjectConverter boConv = (BasicObjectConverter) conv;
+
+                // We need a configured JavaScript class name
+                if (boConv.getJavascript() != null && !boConv.getJavascript().equals(""))
+                {
+                    // Wildcard match strings are currently not supported
+                    if (match.indexOf("*") != -1)
+                    {
+                        buffer.append('\n');
+
+                        // output: if ( typeof <class> != "function" ) function <class>() {
+                        String jsClassName = boConv.getJavascript();
+                        buffer.append("if (typeof " + jsClassName + " != \"function\") function " + jsClassName + "() {\n");
+
+                        // output: this.<property> = <init-value>;
+                        Class mappedType;
+                        try
+                        {
+                            mappedType = LocalUtil.classForName(match);
+                        }
+                        catch (ClassNotFoundException ex)
+                        {
+                            throw new IllegalArgumentException(ex.getMessage());
+                        }
+
+                        String[] propNames = boConv.getAllowedPropertyNames(mappedType);
+                        for (int i = 0; i < propNames.length; i++)
+                        {
+                            String propName = propNames[i];
+                            Class propType = boConv.getPropertyType(mappedType, propName);
+
+                            // property name
+                            buffer.append("  this." + propName + " = ");
+
+                            // property value
+                            if (propType.isArray())
+                            {
+                                buffer.append("[]");
+                            }
+                            else if (propType == boolean.class)
+                            {
+                                buffer.append("false");
+                            }
+                            else if (propType.isPrimitive())
+                            {
+                                buffer.append("0");
+                            }
+                            else
+                            {
+                                buffer.append("null");
+                            }
+
+                            buffer.append(";\n");
+                        }
+
+                        buffer.append("}\n");
+                    }
+                }
+            }
+        }
+
+        Creator creator = creatorManager.getCreator(scriptName);
 
         buffer.append('\n');
         buffer.append("// Provide a default path to DWREngine\n");
@@ -341,6 +418,15 @@ public class DefaultRemoter implements Remoter
     }
 
     /**
+     * Accessor for the ConverterManager that we configure
+     * @param converterManager The new ConverterManager
+     */
+    public void setConverterManager(ConverterManager converterManager)
+    {
+        this.converterManager = converterManager;
+    }
+
+    /**
      * Accessor for the security manager
      * @param accessControl The accessControl to set.
      */
@@ -385,6 +471,11 @@ public class DefaultRemoter implements Remoter
      * How we create new beans
      */
     protected CreatorManager creatorManager = null;
+
+    /**
+     * How we convert beans - or in this case create client side classes
+     */
+    protected ConverterManager converterManager = null;
 
     /**
      * The security manager

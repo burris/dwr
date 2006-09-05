@@ -1006,7 +1006,7 @@ DWREngine._serializeObject = function(batch, referto, data, name) {
   }
 
   // treat objects as an associative arrays
-  var reply = "Object:{";
+  var reply = "Object_" + DWREngine._getObjectClassName(data) + ":{";
   var element;
   for (element in data) {
     batch.paramCount++;
@@ -1022,6 +1022,43 @@ DWREngine._serializeObject = function(batch, referto, data, name) {
   reply += "}";
 
   return reply;
+};
+
+/** @private Returns the classname of supplied argument obj */
+DWREngine._errorClasses = { "Error":Error, "EvalError":EvalError, "RangeError":RangeError, "ReferenceError":ReferenceError, "SyntaxError":SyntaxError, "TypeError":TypeError, "URIError":URIError };
+DWREngine._getObjectClassName = function(obj) {
+  // Try to find the classname by stringifying the object's constructor
+  // and extract <class> from "function <class>".
+  if (obj && obj.constructor && obj.constructor.toString)
+  {
+    var str = obj.constructor.toString();
+    var regexpmatch = str.match(/function\s+(\w+)/);
+    if (regexpmatch && regexpmatch.length == 2) {
+      return regexpmatch[1];
+    }
+  }
+
+  // Now manually test against the core Error classes, as these in some 
+  // browsers successfully match to the wrong class in the 
+  // Object.toString() test we will do later
+  if (obj && obj.constructor) {
+	for (var errorname in DWREngine._errorClasses) {
+      if (obj.constructor == DWREngine._errorClasses[errorname]) return errorname;
+    }
+  }
+
+  // Try to find the classname by calling Object.toString() on the object
+  // and extracting <class> from "[object <class>]"
+  if (obj) {
+    var str = Object.prototype.toString.call(obj);
+    var regexpmatch = str.match(/\[object\s+(\w+)/);
+    if (regexpmatch && regexpmatch.length==2) {
+      return regexpmatch[1];
+    }
+  }
+
+  // Supplied argument was probably not an object
+  return "Object";
 };
 
 /** @private Marshall an object */

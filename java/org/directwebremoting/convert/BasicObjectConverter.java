@@ -175,6 +175,68 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements C
         return true;
     }
 
+    /**
+     * Fetch an array of all the allowed property names.
+     * This is formed by calling {@link #getAllPropertyNames(Class)} and then
+     * filtering using {@link #isAllowed(String)}.
+     * @param mappedType The class in the inheritance hierachy to use as a base
+     * @return A list of allowed propery names
+     */
+    public String[] getAllowedPropertyNames(Class mappedType)
+    {
+        String[] allPropNames = getAllPropertyNames(mappedType);
+        List allowedList = new ArrayList();
+
+        for (int i = 0; i < allPropNames.length; i++)
+        {
+            String propName = allPropNames[i];
+            if (isAllowed(propName))
+            {
+                allowedList.add(propName);
+            }
+        }
+
+        return (String[]) allowedList.toArray(new String[allowedList.size()]);
+    }
+
+    /**
+     * Find all (allowed or otherwise) the property names available via this
+     * converter. 
+     * @param mappedType The class in the inheritance hierachy to use as a base
+     * @return An array of all the property names
+     */
+    public abstract String[] getAllPropertyNames(Class mappedType);
+
+    /**
+     * Find the type for a given property name
+     * @param mappedType The class in the inheritance hierachy to use as a base
+     * @param propertyName The property name to lookup
+     * @return The class for the property type
+     */
+    public abstract Class getPropertyType(Class mappedType, String propertyName);
+
+    /**
+     * Accessor for the javascript class name for the converted objects.
+     * @return The Javascript name
+     */
+    public String getJavascript()
+    {
+        return javascript;
+    }
+
+    /**
+     * Accessor for the javascript class name for the converted objects.
+     * @param javascript The Javascript name
+     */
+    public void setJavascript(String javascript)
+    {
+        this.javascript = javascript;
+    }
+
+    /**
+     * The javascript class name for the converted objects
+     */
+    protected String javascript;
 
     /**
      * The list of excluded properties
