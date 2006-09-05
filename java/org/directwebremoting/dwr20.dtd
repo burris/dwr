@@ -37,7 +37,7 @@ custom conversion
 -->
 <!ELEMENT converter EMPTY>
 <!--
-@attr id The unique name by which create elements refer to us.
+@attr id The unique name by which convert elements refer to us.
 @attr class The fully qualified name of a class that implements Converter.
 -->
 <!ATTLIST converter
@@ -166,6 +166,6 @@ files and we might refer to one in another file.
 <!--
 If we are marshalling to collections, we need to be able to specify extra
 type information to converters that are unable to tell from reflection what to
-do. This element contains some Java mthod definitions
+do. This element contains some Java method definitions
 -->
 <!ELEMENT signatures (#PCDATA)>
