@@ -75,17 +75,17 @@ public class DefaultRemoter implements Remoter
             if (conv instanceof BasicObjectConverter)
             {
                 BasicObjectConverter boConv = (BasicObjectConverter) conv;
+                String jsClassName = boConv.getJavascript();
 
                 // We need a configured JavaScript class name
-                if (boConv.getJavascript() != null && !boConv.getJavascript().equals(""))
+                if (jsClassName != null && !jsClassName.equals(""))
                 {
                     // Wildcard match strings are currently not supported
-                    if (match.indexOf("*") != -1)
+                    if (match.indexOf("*") == -1)
                     {
                         buffer.append('\n');
 
                         // output: if ( typeof <class> != "function" ) function <class>() {
-                        String jsClassName = boConv.getJavascript();
                         buffer.append("if (typeof " + jsClassName + " != \"function\") function " + jsClassName + "() {\n");
 
                         // output: this.<property> = <init-value>;
