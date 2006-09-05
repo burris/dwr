@@ -305,6 +305,7 @@ public class ContainerUtil
             }
             else if (ex instanceof Error)
             {
+                log.fatal("Rethrowing Error:" + ex);
                 throw (Error) ex;
             }
             else
