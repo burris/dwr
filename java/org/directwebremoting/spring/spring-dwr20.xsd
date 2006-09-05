@@ -16,15 +16,15 @@
   ~ limitations under the License.
   -->
 
-<xsd:schema xmlns="http://www.directwebremoting.org/schema/spring"
+<xsd:schema xmlns="http://directwebremoting.org/schema/spring-dwr20"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://www.directwebremoting.org/schema/spring"
+            targetNamespace="http://directwebremoting.org/schema/spring-dwr20"
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 
-    <xsd:element name="configuration" type="configuration" />
-    <xsd:element name="remote" type="remote" />
-    <xsd:element name="controller" type="controller" />
+    <xsd:element name="configuration" type="configuration"/>
+    <xsd:element name="remote" type="remote"/>
+    <xsd:element name="controller" type="controller"/>
 
     <xsd:complexType name="configuration">
         <xsd:sequence>
