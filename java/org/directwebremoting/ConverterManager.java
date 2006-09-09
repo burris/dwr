@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * A class to manage the converter types and the instansiated class name matches.
+ * A class to manage the converter types and the instantiated class name matches.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface ConverterManager
