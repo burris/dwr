@@ -156,33 +156,45 @@ public class UrlProcessor
         }
         catch (Exception ex)
         {
-            // Allow Jetty RequestRetry exception to propogate to container
-            Continuation.rethrowIfContinuation(ex);
-
-            log.warn("Error: " + ex);
-            if (ex instanceof SecurityException && log.isDebugEnabled())
-            {
-                log.debug("- User Agent: " + request.getHeader(HttpConstants.HEADER_USER_AGENT));
-                log.debug("- Remote IP:  " + request.getRemoteAddr());
-                log.debug("- Request URL:" + request.getRequestURL());
-                log.debug("- Query:      " + request.getQueryString());
-                log.debug("- Method:     " + request.getMethod());
-            }
-
-            // We are going to act on this in engine.js so we are hoping that
-            // that SC_NOT_IMPLEMENTED (501) is not something that the servers
-            // use that much. I would have used something unassigned like 506+
-            // But that could cause future problems and might not get through
-            // proxies and the like
-            response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
-            response.setContentType(MimeConstants.MIME_HTML);
-            PrintWriter out = response.getWriter();
-            out.println(ex.getMessage());
-
-            log.warn("Sent 501", ex);
+            handleException(request, response, ex);
         }
     }
 
+    /**
+     * Handles an exception occuring during the request disptaching.
+     * @param request The request from the browser
+     * @param response The response channel
+     * @param cause The occurred exception
+     * @throws IOException If writing to the output fails
+     */
+    protected void handleException(HttpServletRequest request, HttpServletResponse response, Exception cause) throws IOException
+    {
+        // Allow Jetty RequestRetry exception to propogate to container
+        Continuation.rethrowIfContinuation(cause);
+
+        log.warn("Error: " + cause);
+        if (cause instanceof SecurityException && log.isDebugEnabled())
+        {
+            log.debug("- User Agent: " + request.getHeader(HttpConstants.HEADER_USER_AGENT));
+            log.debug("- Remote IP:  " + request.getRemoteAddr());
+            log.debug("- Request URL:" + request.getRequestURL());
+            log.debug("- Query:      " + request.getQueryString());
+            log.debug("- Method:     " + request.getMethod());
+        }
+
+        // We are going to act on this in engine.js so we are hoping that
+        // that SC_NOT_IMPLEMENTED (501) is not something that the servers
+        // use that much. I would have used something unassigned like 506+
+        // But that could cause future problems and might not get through
+        // proxies and the like
+        response.setStatus(HttpServletResponse.SC_NOT_IMPLEMENTED);
+        response.setContentType(MimeConstants.MIME_HTML);
+        PrintWriter out = response.getWriter();
+        out.println(cause.getMessage());
+
+        log.warn("Sent 501", cause);
+    }
+    
     /**
      * Display a 404 "not found" message
      * @param request The request from the browser
