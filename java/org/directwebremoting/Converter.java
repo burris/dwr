@@ -51,7 +51,7 @@ public interface Converter
      * good. In other words if you need to loop in outbound conversion then it
      * might be a good idea to catch issues inside the loop, log, and carry on.
      * @param data The data to convert
-     * @param outctx Objects already converted and the results
+     * @param outctx A collection of objects already converted and the results
      * @return The OutboundVariable that represents the data to convert
      * @throws MarshallException If the conversion failed for some reason
      */
