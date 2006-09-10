@@ -15,6 +15,8 @@
  */
 package org.directwebremoting;
 
+import org.directwebremoting.util.Logger;
+
 /**
  * A simple data container for 2 strings that comprise information about how a
  * Java object has been converted into Javascript.
@@ -38,6 +40,22 @@ public final class OutboundVariable
     {
         this.initCode = initCode;
         this.assignCode = assignCode;
+        this.isRecursive = false;
+        this.readMode = true;
+    }
+
+    /**
+     * Default ctor that leaves blank (not null) members
+     * @param initCode the init script
+     * @param assignCode the access for the inited code
+     * @param isRecursive could this variable be recursive?
+     */
+    public OutboundVariable(String initCode, String assignCode, boolean isRecursive)
+    {
+        this.initCode = initCode;
+        this.assignCode = assignCode;
+        this.isRecursive = isRecursive;
+        this.readMode = true;
     }
 
     /**
@@ -45,15 +63,12 @@ public final class OutboundVariable
      */
     public void setInitCode(String initCode)
     {
-        this.initCode = initCode;
-    }
+        if (readMode)
+        {
+            log.warn("Warning: write in read mode");
+        }
 
-    /**
-     * @return Returns the initCode.
-     */
-    public String getInitCode()
-    {
-        return initCode;
+        this.initCode = initCode;
     }
 
     /**
@@ -61,7 +76,34 @@ public final class OutboundVariable
      */
     public void setAssignCode(String assignCode)
     {
+        if (readMode)
+        {
+            log.warn("Warning: write in read mode");
+        }
+
         this.assignCode = assignCode;
+    }
+
+    /**
+     * @param isRecursive the isRecursive to set
+     */
+    public void setRecursive(boolean isRecursive)
+    {
+        if (readMode)
+        {
+            log.warn("Warning: write in read mode");
+        }
+
+        this.isRecursive = isRecursive;
+    }
+
+    /**
+     * @return Returns the initCode.
+     */
+    public String getInitCode()
+    {
+        readMode = true;
+        return initCode;
     }
 
     /**
@@ -69,8 +111,24 @@ public final class OutboundVariable
      */
     public String getAssignCode()
     {
+        readMode = true;
         return assignCode;
     }
+
+    /**
+     * @return the isRecursive
+     */
+    public boolean isRecursive()
+    {
+        readMode = true;
+        return isRecursive;
+    }
+
+    /**
+     * Is this variable potentially recursive? In other words do we need to
+     * break out of JSON syntax?
+     */
+    private boolean isRecursive = true;
 
     /**
      * The code to be executed to initialize any variables
@@ -81,4 +139,17 @@ public final class OutboundVariable
      * The code to be executed to get the value of the initialized data
      */
     private String assignCode = "";
+
+    /**
+     * If we change recursivity then people should treat us differently so we
+     * would like to be immutable, however we can't do that because we don't
+     * know all settings at create time. So we implement a write/read toggle and
+     * deny writes after any read.
+     */
+    private boolean readMode = false;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(OutboundVariable.class);
 }

@@ -230,6 +230,10 @@ tests[tests.length] = { code:"stringParam", data:"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 var nested = { integer:0, string:'0123456789' };
 nested.testBean = nested;
 
+var obja = new ObjA();
+var objb = new ObjB(); objb.objA = obja; obja.objB = objb;
+tests[tests.length] = { code:"testLooped", data:obja };
+
 tests[tests.length] = { code:"byteArrayParam", data:[ ] };
 tests[tests.length] = { code:"byteArrayParam", data:[ -128, -128, -128, -128, -127 ] };
 

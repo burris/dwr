@@ -116,18 +116,12 @@ public class ArrayConverter extends BaseV20Converter implements Converter
             throw new MarshallException(Messages.getString("ArrayConverter.ClassIsNotAnArray", data.getClass().getName()));
         }
 
-        int size = Array.getLength(data);
-        if (size == 0)
-        {
-            return new OutboundVariable("", "[]");
-        }
-
+        // Stash this bit of data to cope with recursion
         OutboundVariable ov = new OutboundVariable();
-        String varname = outctx.getNextVariableName();
-        ov.setAssignCode(varname);
         outctx.put(data, ov);
 
         // Convert all the data members
+        int size = Array.getLength(data);
         List ovs = new ArrayList();
         for (int i = 0; i < size; i++)
         {
@@ -144,7 +138,9 @@ public class ArrayConverter extends BaseV20Converter implements Converter
             ovs.add(nested);
         }
 
-        ConverterUtil.addListInit(ov, ovs);
+        // Group the list of converted objects into this OutboundVariable
+        ConverterUtil.addListInit(ov, ovs, outctx);
+
         return ov;
     }
 

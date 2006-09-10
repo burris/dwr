@@ -79,9 +79,6 @@ public class DOM4JConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
-        OutboundVariable ov = outctx.createOutboundVariable(data);
-        String varname = ov.getAssignCode();
-
         try
         {
             // Using XSLT to convert to a stream. Setup the source
@@ -102,15 +99,16 @@ public class DOM4JConverter extends BaseV20Converter implements Converter
             writer.write(node);
             writer.flush();
             xml.flush();
+            String xmlout = JavascriptUtil.escapeJavaScript(xml.toString());
 
-            StringBuffer buffer = new StringBuffer();
-            buffer.append("var ");
-            buffer.append(varname);
-            buffer.append("=DWREngine._unserializeDocument(\"");
-            buffer.append(JavascriptUtil.escapeJavaScript(xml.toString()));
-            buffer.append("\");");
+            OutboundVariable ov = new OutboundVariable();
+            outctx.put(data, ov);
+            String assignCode = outctx.getNextVariableName();
 
-            ov.setInitCode(buffer.toString());
+            ov.setInitCode("var " + assignCode + "=DWREngine._unserializeDocument(\"" + xmlout + "\");");
+            ov.setAssignCode(assignCode);
+            ov.setRecursive(false);
+
             return ov;
         }
         catch (MarshallException ex)

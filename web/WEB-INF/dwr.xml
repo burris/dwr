@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://www.getahead.ltd.uk/dwr/dwr20.dtd">
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.ltd.uk/dwr/dwr20.dtd">
 
 <dwr>
 
@@ -22,7 +22,7 @@
     <create creator="new" javascript="People" scope="script">
       <param name="class" value="uk.ltd.getahead.dwrdemo.people.People"/>
     </create>
-    <convert match="uk.ltd.getahead.dwrdemo.people.Person" converter="bean"/>
+    <convert match="uk.ltd.getahead.dwrdemo.people.Person" javascript="Person" converter="bean"/>
 
     <create creator="new" javascript="Clock" scope="application">
       <param name="class" value="uk.ltd.getahead.dwrdemo.clock.Clock"/>
@@ -53,8 +53,8 @@
     <convert converter="bean" match="$Proxy*"/>
     <convert converter="testbean" match="uk.ltd.getahead.dwrdemo.test.TestBean"/>
 
-    <convert converter="bean" match="uk.ltd.getahead.dwrdemo.test.ObjB"/>
-    <convert converter="object" match="uk.ltd.getahead.dwrdemo.test.ObjA">
+    <convert converter="bean" javascript="ObjB" match="uk.ltd.getahead.dwrdemo.test.ObjB"/>
+    <convert converter="object" javascript="ObjA" match="uk.ltd.getahead.dwrdemo.test.ObjA">
       <param name="force" value="true"/>
     </convert>
 

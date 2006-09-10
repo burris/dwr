@@ -242,8 +242,7 @@ public class DefaultConverterManager implements ConverterManager
         if (converter == null)
         {
             log.error(Messages.getString("DefaultConverterManager.MissingConverter", object.getClass().getName()));
-            String varName = converted.getNextVariableName();
-            return new OutboundVariable("var " + varName + "=null;", varName);
+            return new OutboundVariable("", "null");
         }
 
         return converter.convertOutbound(object, converted);

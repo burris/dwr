@@ -220,15 +220,11 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
         Map ovs = new TreeMap();
 
         // We need to do this before collecing the children to save recurrsion
-        OutboundVariable ov = outctx.createOutboundVariable(data);
+        OutboundVariable ov = new OutboundVariable();
+        outctx.put(data, ov);
 
         try
         {
-            if (ConverterUtil.isExposingClassNames())
-            {
-                ovs.put(ConverterUtil.CLASS_NAME, new OutboundVariable("", '\"' + data.getClass().getName() + '\"'));
-            }
-
             BeanInfo info = getBeanInfo(data);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
             for (int i = 0; i < descriptors.length; i++)
@@ -280,7 +276,7 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
             throw new MarshallException(ex);
         }
 
-        ConverterUtil.addMapInit(ov, ovs, getJavascript());
+        ConverterUtil.addMapInit(ov, ovs, getJavascript(), outctx);
 
         return ov;
     }

@@ -173,12 +173,10 @@ public class CollectionConverter extends BaseV20Converter implements Converter
     {
         // First we need to get ourselves the collection data
         Iterator it;
-        int size = -1;
         if (data instanceof Collection)
         {
             Collection col = (Collection) data;
             it = col.iterator();
-            size = col.size();
         }
         else if (data instanceof Iterator)
         {
@@ -189,23 +187,17 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             throw new MarshallException(Messages.getString("CollectionConverter.ConvertFailed", data.getClass().getName()));
         }
 
-        if (size == 0)
-        {
-            return new OutboundVariable("", "[]");
-        }
-
+        // Stash this bit of data to cope with recursion
         OutboundVariable ov = new OutboundVariable();
-        String varname = outctx.getNextVariableName();
-        ov.setAssignCode(varname);
         outctx.put(data, ov);
 
         // Convert all the data members
         List ovs = new ArrayList();
-        int i = 0;
         while (it.hasNext())
         {
             Object member = it.next();
             OutboundVariable nested;
+
             try
             {
                 nested = config.convertOutbound(member, outctx);
@@ -213,13 +205,15 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             catch (Exception ex)
             {
                 nested = new OutboundVariable("", "'Conversion Error. See console log.'");
-                log.warn("Failed to convert array member " + i + ". Conversion error for type: " + data.getClass().getName(), ex);
+                log.warn("Failed to convert array member " + ovs.size() + ". Conversion error for type: " + data.getClass().getName(), ex);
             }
+
             ovs.add(nested);
-            i++;
         }
 
-        ConverterUtil.addListInit(ov, ovs);
+        // Group the list of converted objects into this OutboundVariable
+        ConverterUtil.addListInit(ov, ovs, outctx);
+
         return ov;
     }
 

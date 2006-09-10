@@ -42,121 +42,138 @@ public class ConverterUtil
     }
 
     /**
-     * DWR can communicate type information with Javascript ...
-     */
-    public static final String CLASS_NAME = "_class";
-
-    /**
-     * Should beans and object have a _class member that declares the original
-     * type?.
-     * This is controlled by the '<code>exposeClassNames</code>' init param.
-     * @return true if we expose _class members. Defaults to false
-     * @see ConverterUtil#EXPOSE_CLASS_NAMES
-     */
-    public static boolean isExposingClassNames()
-    {
-        if (exposingClassNames == null)
-        {
-            Container container = WebContextFactory.get().getContainer();
-            String exposeClassNamesStr = (String) container.getBean(EXPOSE_CLASS_NAMES);
-            if (exposeClassNamesStr != null)
-            {
-                exposingClassNames = (Boolean) LocalUtil.simpleConvert(exposeClassNamesStr, Boolean.class);
-            }
-        }
-
-        return exposingClassNames.booleanValue();
-    }
-
-    private static Boolean exposingClassNames = Boolean.FALSE;
-
-    /**
      * Generate an array declaration for a list of Outbound variables
      * @param ov The OutboundVariable to declare
      * @param ovs The list of contents of this array
+     * @param outctx A collection of objects already converted and the results
      */
-    public static void addListInit(OutboundVariable ov, List ovs)
+    public static void addListInit(OutboundVariable ov, List ovs, OutboundContext outctx)
     {
-        String varname = ov.getAssignCode();
-        StringBuffer buffer = new StringBuffer();
+        if (ovs.size() == 0)
+        {
+            ov.setInitCode("");
+            ov.setAssignCode("[]");
+            ov.setRecursive(false);
+            return;
+        }
 
+        StringBuffer buffer = new StringBuffer();
         String init = getInitCodes(ovs);
 
-        if (init.length() == 0)
+        String nonRecursiveListAssignCodes = extractNonRecursiveListAssignCodes(ovs);
+
+        if (entriesRemain(ovs))
         {
-            // Declare ourselves so recurrsion works
-            buffer.append("var ");
-            buffer.append(varname);
-            buffer.append("=[");
-
-            // Declare the non-recursive parts to the list
-            boolean first = true;
-            for (int i = 0; i < ovs.size(); i++)
-            {
-                OutboundVariable nested = (OutboundVariable) ovs.get(i);
-
-                if (!first)
-                {
-                    buffer.append(',');
-                }
-
-                if (nested.getAssignCode().equals(varname))
-                {
-                    // We'll fill it in later
-                    buffer.append("null");
-                }
-                else
-                {
-                    ovs.set(i, null);
-                    buffer.append(nested.getAssignCode());
-                }
-
-                first = false;
-            }
-            buffer.append("];");
+            ov.setInitCode("");
+            ov.setAssignCode("[" + nonRecursiveListAssignCodes + "]");
+            ov.setRecursive(false);
+            return;
         }
         else
         {
-            // Declare ourselves so recurrsion works
-            buffer.append("var ");
-            buffer.append(varname);
-            buffer.append("=[];");
+            String assignCode = outctx.getNextVariableName();
 
-            // First we output all the init code
-            buffer.append(init);
-
-            // Declare the non-recursive parts to the list
-            buffer.append(varname);
-            buffer.append('=');
-            buffer.append(varname);
-            buffer.append(".concat([");
-            boolean first = true;
-            for (int i = 0; i < ovs.size(); i++)
+            if (init.length() == 0)
             {
-                OutboundVariable nested = (OutboundVariable) ovs.get(i);
-
-                if (!first)
-                {
-                    buffer.append(',');
-                }
-
-                if (nested.getAssignCode().equals(varname))
-                {
-                    // We'll fill it in later
-                    buffer.append("null");
-                }
-                else
-                {
-                    ovs.set(i, null);
-                    buffer.append(nested.getAssignCode());
-                }
-
-                first = false;
+                // Declare ourselves so recurrsion works
+                buffer.append("var ");
+                buffer.append(assignCode);
+                buffer.append("=[");
+                buffer.append(nonRecursiveListAssignCodes);
+                buffer.append("];");
             }
-            buffer.append("]);");
+            else
+            {
+                // Declare ourselves so recurrsion works
+                buffer.append("var ");
+                buffer.append(assignCode);
+                buffer.append("=[];");
+
+                // First we output all the init code
+                buffer.append(init);
+
+                buffer.append(assignCode);
+                buffer.append('=');
+                buffer.append(assignCode);
+                buffer.append(".concat([");
+                buffer.append(nonRecursiveListAssignCodes);
+                buffer.append("]);");
+            }
+
+            // And now the recursive parts
+            exportRemainingListAssignCodes(buffer, ov, ovs);
+
+            ov.setInitCode(buffer.toString());
+            ov.setAssignCode(assignCode);
+            ov.setRecursive(true);
+        }
+    }
+
+    /**
+     * Have we removed all of the entries from the list?
+     * @param ovs The list to check for remaining entries
+     * @return true if entries remain
+     */
+    private static boolean entriesRemain(List ovs)
+    {
+        for (Iterator iter = ovs.iterator(); iter.hasNext();)
+        {
+            Object ov = iter.next();
+            if (ov != null)
+            {
+                return true;
+            }
         }
 
-        // And now the recursive parts
+        return false;
+    }
+
+    /**
+     * Declare the non-recursive parts to the list
+     * @param ovs The list of contents of this array
+     * @return The amalgamated init code we are creating
+     */
+    private static String extractNonRecursiveListAssignCodes(List ovs)
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        boolean first = true;
+        for (int i = 0; i < ovs.size(); i++)
+        {
+            OutboundVariable ov = (OutboundVariable) ovs.get(i);
+
+            if (!first)
+            {
+                buffer.append(',');
+            }
+
+            if (ov.isRecursive())
+            {
+                // We'll fill it in later
+                buffer.append("null");
+            }
+            else
+            {
+                ovs.set(i, null);
+                buffer.append(ov.getAssignCode());
+            }
+
+            first = false;
+        }
+
+        return buffer.toString();
+    }
+
+    /**
+     * Define the remaining variables
+     * @param buffer The output buffer that we add to.
+     * @param ov The OutboundVariable to declare
+     * @param ovs The list of contents of this array
+     */
+    private static void exportRemainingListAssignCodes(StringBuffer buffer, OutboundVariable ov, List ovs)
+    {
+        String varname = ov.getAssignCode();
+
         for (int i = 0; i < ovs.size(); i++)
         {
             OutboundVariable nested = (OutboundVariable) ovs.get(i);
@@ -172,8 +189,6 @@ public class ConverterUtil
             }
         }
         buffer.append("\r\n");
-
-        ov.setInitCode(buffer.toString());
     }
 
     /**
@@ -181,93 +196,121 @@ public class ConverterUtil
      * @param ov The OutboundVariable to declare
      * @param ovs The map of the converted contents
      * @param scriptClassName The object name or null for pure(ish) json
+     * @param outctx A collection of objects already converted and the results
      */
-    public static void addMapInit(OutboundVariable ov, Map ovs, String scriptClassName)
+    public static void addMapInit(OutboundVariable ov, Map ovs, String scriptClassName, OutboundContext outctx)
     {
-        String varname = ov.getAssignCode();
-        StringBuffer buffer = new StringBuffer();
-
-        String init = getInitCodes(ovs.values());
+        if (ovs.size() == 0)
+        {
+            ov.setInitCode("");
+            ov.setAssignCode("{}");
+            ov.setRecursive(false);
+            return;
+        }
 
         // If there is no init code, there is no recursion so we can go into
         // compact JSON mode
+        String init = getInitCodes(ovs.values());
         if (init.length() == 0 && (scriptClassName == null || scriptClassName.equals("")))
         {
-            // First loop through is for the stuff we can embed
-            buffer.append("var ");
-            buffer.append(varname);
-            buffer.append("={");
+            String nonRecursiveMapAssignCodes = extractNonRecursiveMapAssignCodes(ovs);
 
-            // And now declare our stuff
-            boolean first = true;
-            for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
+            if (ovs.size() == 0)
             {
-                Map.Entry entry = (Map.Entry) it.next();
-                String name = (String) entry.getKey();
-                OutboundVariable nested = (OutboundVariable) entry.getValue();
-
-                String assignCode = nested.getAssignCode();
-
-                // The compact JSON style syntax is only any good for simple names
-                // and when we are not recursive
-                if (LocalUtil.isSimpleName(name) && !assignCode.equals(varname))
-                {
-                    if (!first)
-                    {
-                        buffer.append(',');
-                    }
-
-                    buffer.append(name);
-                    buffer.append(':');
-                    buffer.append(assignCode);
-
-                    // we don't need to do this one the hard way
-                    it.remove();
-                    first = false;
-                }
-            }
-            buffer.append("};");
-        }
-        else
-        {
-            // Declare ourselves so recursion works
-            buffer.append("var ");
-            buffer.append(varname);
-
-            if (scriptClassName == null || scriptClassName.equals(""))
-            {
-                buffer.append("={};");
+                ov.setInitCode("");
+                ov.setAssignCode("{" + nonRecursiveMapAssignCodes + "}");
+                ov.setRecursive(false);
             }
             else
             {
-                buffer.append("=new " + scriptClassName + "();");
-            }
+                String assignCode = outctx.getNextVariableName();
 
-            buffer.append(init);
-
-            // And now declare our stuff
-            for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
-            {
-                Map.Entry entry = (Map.Entry) it.next();
-                String name = (String) entry.getKey();
-                OutboundVariable nested = (OutboundVariable) entry.getValue();
-
-                String assignCode = nested.getAssignCode();
-
-                // The semi-compact syntax is only any good for simple names
-                if (LocalUtil.isSimpleName(name) && !assignCode.equals(varname))
-                {
-                    buffer.append(varname);
-                    buffer.append('.');
-                    buffer.append(name);
-                    buffer.append('=');
-                    buffer.append(nested.getAssignCode());
-                    buffer.append(';');
-
-                    it.remove();
-                }
+                ov.setInitCode("var " + assignCode + "={" + nonRecursiveMapAssignCodes + "};" + exportRemainingMapAssignCodes(ov, ovs));
+                ov.setAssignCode(assignCode);
+                ov.setRecursive(true);
             }
         }
+        else
+        {
+            if (scriptClassName == null || scriptClassName.equals(""))
+            {
+                String assignCode = outctx.getNextVariableName();
+
+                ov.setInitCode("var " + assignCode + "={};" + init  + exportRemainingMapAssignCodes(ov, ovs));
+                ov.setAssignCode(assignCode);
+                ov.setRecursive(true);
+            }
+            else
+            {
+                String assignCode = outctx.getNextVariableName();
+
+                ov.setInitCode("var " + assignCode + "=new " + scriptClassName + "();" + init + exportRemainingMapAssignCodes(ov, ovs));
+                ov.setAssignCode(assignCode);
+                ov.setRecursive(true);
+            }
+        }
+    }
+
+    /**
+     * Declare the non-recursive parts to the map
+     * @param ovs The list of contents of this array
+     * @return The amalgamated init code we are creating
+     */
+    private static String extractNonRecursiveMapAssignCodes(Map ovs)
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        boolean first = true;
+        for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            String name = (String) entry.getKey();
+            OutboundVariable nested = (OutboundVariable) entry.getValue();
+
+            String innerAssignCode = nested.getAssignCode();
+
+            if (!nested.isRecursive())
+            {
+                if (!first)
+                {
+                    buffer.append(',');
+                }
+
+                // The compact JSON style syntax is only any good for simple names
+                // and when we are not recursive
+                if (LocalUtil.isSimpleName(name))
+                {
+                    buffer.append(name);
+                    buffer.append(':');
+                    buffer.append(innerAssignCode);
+                }
+                else
+                {
+                    buffer.append('\'');
+                    buffer.append(name);
+                    buffer.append("\':");
+                    buffer.append(innerAssignCode);
+                }
+
+                // we don't need to do this one the hard way
+                it.remove();
+                first = false;
+            }
+        }
+
+        return buffer.toString();
+    }
+
+    /**
+     * Define the remaining variables
+     * @param ov The OutboundVariable to declare
+     * @param ovs The list of contents of this array
+     * @return The created assign code string
+     */
+    private static String exportRemainingMapAssignCodes(OutboundVariable ov, Map ovs)
+    {
+        StringBuffer buffer = new StringBuffer();
+        String varname = ov.getAssignCode();
 
         // The next loop through is for everything that will not embed
         for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
@@ -276,17 +319,32 @@ public class ConverterUtil
             String name = (String) entry.getKey();
             OutboundVariable nested = (OutboundVariable) entry.getValue();
 
-            buffer.append(varname);
-            buffer.append("['");
-            buffer.append(name);
-            buffer.append("']=");
-            buffer.append(nested.getAssignCode());
-            buffer.append(';');
-        }
+            String assignCode = nested.getAssignCode();
 
+            // The semi-compact syntax is only any good for simple names
+            // I dont thing we need this check:  && !ov.isRecursive()
+            if (LocalUtil.isSimpleName(name))
+            {
+                buffer.append(varname);
+                buffer.append('.');
+                buffer.append(name);
+                buffer.append('=');
+                buffer.append(assignCode);
+                buffer.append(';');
+            }
+            else
+            {
+                buffer.append(varname);
+                buffer.append("['");
+                buffer.append(name);
+                buffer.append("']=");
+                buffer.append(assignCode);
+                buffer.append(';');
+            }
+        }
         buffer.append("\r\n");
 
-        ov.setInitCode(buffer.toString());
+        return buffer.toString();
     }
 
     /**
@@ -329,21 +387,23 @@ public class ConverterUtil
         // For medium length strings do it in a separate variable
         if (escaped.length() < stringWrapLength)
         {
-            OutboundVariable ov = outctx.createOutboundVariable(output);
-            String varname = ov.getAssignCode();
-            ov.setInitCode("var " + varname + "=\"" + escaped + "\";\r\n");
+            String assignCode = outctx.getNextVariableName();
+            OutboundVariable ov = new OutboundVariable("var " + assignCode + "=\"" + escaped + "\";\r\n", assignCode);
+            outctx.put(output, ov);
             return ov;
         }
 
-        // For very long strings chop up the init into several parts
-        OutboundVariable ov = outctx.createOutboundVariable(output);
-        String varname = ov.getAssignCode();
+        String assignCode = outctx.getNextVariableName();
+        OutboundVariable ov = new OutboundVariable();
+        ov.setAssignCode(assignCode);
+        outctx.put(output, ov);
 
+        // For very long strings chop up the init into several parts
         StringBuffer initBody = new StringBuffer();
         StringBuffer initEnd = new StringBuffer();
 
         initEnd.append("var ");
-        initEnd.append(varname);
+        initEnd.append(assignCode);
         initEnd.append('=');
 
         int start = 0;
@@ -418,11 +478,6 @@ public class ConverterUtil
      * Strings longer than this are chopped up into smaller strings
      */
     private static int stringWrapLength = 16384;
-
-    /**
-     * Do we output _class constants with exported Beans and Objects?
-     */
-    private static String EXPOSE_CLASS_NAMES = "exposeClassNames";
 
     /**
      * The log stream

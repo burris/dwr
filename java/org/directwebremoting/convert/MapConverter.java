@@ -171,7 +171,8 @@ public class MapConverter implements Converter
             ovs = new HashMap();
         }
 
-        OutboundVariable ov = outctx.createOutboundVariable(data);
+        OutboundVariable ov = new OutboundVariable();
+        outctx.put(data, ov);
 
         // Loop through the map outputting any init code and collecting
         // converted outbound variables into the ovs map
@@ -200,7 +201,8 @@ public class MapConverter implements Converter
             ovs.put(outkey, nested);
         }
 
-        ConverterUtil.addMapInit(ov, ovs, null);
+        ConverterUtil.addMapInit(ov, ovs, null, outctx);
+
         return ov;
     }
 

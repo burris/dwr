@@ -111,6 +111,14 @@ public class Test
     }
 
     /**
+     * @return objA
+     */
+    public ObjA testLooped(ObjA objA)
+    {
+        return objA;
+    }
+
+    /**
      * 
      */
     public void voidParam()

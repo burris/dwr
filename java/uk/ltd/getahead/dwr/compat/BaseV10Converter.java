@@ -34,8 +34,15 @@ public abstract class BaseV10Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
-        OutboundVariable ov = outctx.createOutboundVariable(data);
+        OutboundVariable ov = new OutboundVariable();
+        outctx.put(data, ov);
+
+        String assignCode = outctx.getNextVariableName();
+
+        ov.setAssignCode(assignCode);
         ov.setInitCode(convertOutbound(data, ov.getAssignCode(), outctx));
+        ov.setRecursive(true);
+
         return ov;
     }
 
