@@ -85,4 +85,9 @@ public class PathConstants
      * The position of web.xml
      */
     public static final String RESOURCE_WEB_XML = "WEB-INF/web.xml";
+
+    /**
+     * WebWork invocation helper name.
+     */
+    public static final String WW_FILE_UTIL = "/webwork/DWRActionUtil.js";
 }

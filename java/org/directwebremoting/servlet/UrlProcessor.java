@@ -149,6 +149,10 @@ public class UrlProcessor
             {
                 doFile(request, response, PathConstants.FILE_UTIL, MimeConstants.MIME_JS, false);
             }
+            else if (pathInfo.equals(PathConstants.WW_FILE_UTIL))
+            {
+                doFile(request, response, PathConstants.WW_FILE_UTIL, MimeConstants.MIME_JS, false);
+            }
             else
             {
                 doNotFound(request, response, pathInfo);
