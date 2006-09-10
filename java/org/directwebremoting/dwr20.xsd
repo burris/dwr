@@ -207,7 +207,16 @@
     </attribute>
     <attribute name="match" type="string">
       <annotation>
-        <documentation>A class name to match for conversion</documentation>
+        <documentation>
+          A class name to match for conversion
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="javascript" type="string">
+      <annotation>
+        <documentation>
+          The optional classname for the parameter
+        </documentation>
       </annotation>
     </attribute>
   </complexType>

@@ -157,10 +157,12 @@ files and we might refer to one in another file.
 <!--
 @attr converter The id of the converter to use
 @attr match A class name to match for conversion
+@attr javascript The optional classname for the parameter
 -->
 <!ATTLIST convert
     converter CDATA #REQUIRED
     match CDATA #REQUIRED
+    javascript CDATA #IMPLIED
 >
 
 <!--

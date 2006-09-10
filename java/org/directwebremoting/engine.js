@@ -1057,7 +1057,7 @@ DWREngine._getObjectClassName = function(obj) {
     }
   }
 
-  // Supplied argument was probably not an object
+  // Supplied argument was probably not an object, but what is better?
   return "Object";
 };
 
