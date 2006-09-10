@@ -1,1 +1,1 @@
-http\://www.directwebremoting.org/schema/spring=org.directwebremoting.spring.DwrNamespaceHandler
+http\://directwebremoting.org/schema/spring-dwr20=org.directwebremoting.spring.DwrNamespaceHandler

@@ -16,19 +16,30 @@
 
 package org.directwebremoting.spring;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import org.directwebremoting.create.NewCreator;
+import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.*;
-import org.springframework.beans.factory.xml.*;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanDefinitionRegistryBuilder;
+import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.beans.factory.support.ManagedMap;
+import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
+import org.springframework.beans.factory.xml.BeanDefinitionParser;
+import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
-import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
-import org.directwebremoting.create.NewCreator;
-
-import java.util.*;
+import org.w3c.dom.NodeList;
 
 /**
  * The Spring namespace handler which handles all elements that are defined as
@@ -62,8 +73,8 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         if (!registry.containsBeanDefinition(DEFAULT_SPRING_CONFIGURATOR_ID))
         {
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(SpringConfigurator.class);
-            builder.addPropertyValue("creators", creators);
-            builder.addPropertyValue("converters", converters);
+            builder.addPropertyValue("creators", new ManagedMap());
+            builder.addPropertyValue("converters", new ManagedMap());
             registry.registerBeanDefinition(DEFAULT_SPRING_CONFIGURATOR_ID, builder.getBeanDefinition());
             return builder.getBeanDefinition();
         }
@@ -138,8 +149,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
         String creatorConfigName = "__" + javascript;
         registryBuilder.register(creatorConfigName, creatorConfig);
-
-        creators.put(javascript, new RuntimeBeanReference(creatorConfigName));
+        lookupCreators(registryBuilder.getRegistry()).put(javascript, new RuntimeBeanReference(creatorConfigName));
     }
 
     protected class ConfigurationBeanDefinitionParser implements BeanDefinitionParser
@@ -212,6 +222,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         {
             Element element = (Element) node;
             String type = element.getAttribute("type");
+            BeanDefinitionRegistry registry = parserContext.getRegistry();
 
             if ("array".equals(type))
             {
@@ -219,7 +230,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             }
             else if ("bean".equals(type))
             {
-                converters.put(element.getAttribute("class"), "bean");
+                lookupConverters(registry).put(element.getAttribute("class"), "bean");
             }
             else if ("collection".equals(type))
             {
@@ -281,9 +292,18 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         }
     }
 
+    protected Map lookupCreators(BeanDefinitionRegistry registry)
+    {
+        BeanDefinition config = registerSpringConfiguratorIfNecessary(registry);
+        return (Map) config.getPropertyValues().getPropertyValue("creators").getValue();
+    }
+
+    protected Map lookupConverters(BeanDefinitionRegistry registry)
+    {
+        BeanDefinition config = registerSpringConfiguratorIfNecessary(registry);
+        return (Map) config.getPropertyValues().getPropertyValue("converters").getValue();
+    }
+
     protected final static String DEFAULT_SPRING_CONFIGURATOR_ID = "__dwrConfiguration";
 
-    private Map creators = new ManagedMap();
-
-    protected Map converters = new ManagedMap();
 }
