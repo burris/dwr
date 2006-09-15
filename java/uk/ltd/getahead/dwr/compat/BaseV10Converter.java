@@ -20,8 +20,8 @@ import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 
-
 /**
+ * WARNING: This is not properly implemented yet.
  * A way to migrate from the DWRv1.x Converter style to something in the future.
  * Inheriting from this is advised to help with forwards compatibility.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -34,16 +34,21 @@ public abstract class BaseV10Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
-        OutboundVariable ov = new OutboundVariable();
+        // We'll implement this properly if someone needs it
+        /*
+        OutboundVariable ov = new SimpleOutboundVariable();
         outctx.put(data, ov);
 
         String assignCode = outctx.getNextVariableName();
 
         ov.setAssignCode(assignCode);
-        ov.setInitCode(convertOutbound(data, ov.getAssignCode(), outctx));
+        ov.setBuildCode(convertOutbound(data, ov.getAssignCode(), outctx));
         ov.setRecursive(true);
 
         return ov;
+        */
+
+        return null;
     }
 
     /**

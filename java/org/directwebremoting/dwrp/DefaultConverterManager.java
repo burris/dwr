@@ -96,20 +96,21 @@ public class DefaultConverterManager implements ConverterManager
         converters.put(match, converter);
     }
 
-    //
-    // MIKE
-    //
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ConverterManager#getConverterMatchStrings()
+     */
     public Collection getConverterMatchStrings()
     {
         return Collections.unmodifiableSet(converters.keySet());
     }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ConverterManager#getConverterByMatchString(java.lang.String)
+     */
     public Converter getConverterByMatchString(String match)
     {
         return (Converter) converters.get(match);
     }
-    //
-    // MIKE
-    //
     
     /* (non-Javadoc)
      * @see org.directwebremoting.ConverterManager#isConvertable(java.lang.Class)
@@ -127,15 +128,8 @@ public class DefaultConverterManager implements ConverterManager
         Object converted = inctx.getConverted(iv, paramType);
         if (converted == null)
         {
-            //
-            // MIKE
-            //
-
-            // [This is maybe the worst hack of all my updates, as I had a hard
-            // time finding a good place for this code]
-            
             Converter converter = null;
-            
+
             // Was the inbound variable marshalled as an Object in the client 
             // (could mean that this is an instance of one of our generated
             // JavaScript classes)
@@ -143,7 +137,7 @@ public class DefaultConverterManager implements ConverterManager
             {
                 // Extract the JavaScript classname from the inbound type
                 String javascriptClassName = iv.getType().substring("Object_".length());
-                
+
                 // Locate a converter for this JavaScript classname
                 Iterator it = converters.entrySet().iterator();
                 while (it.hasNext())
@@ -151,12 +145,12 @@ public class DefaultConverterManager implements ConverterManager
                     Map.Entry entry = (Map.Entry) it.next();
                     String match = (String) entry.getKey();
                     Converter conv = (Converter) entry.getValue();
-                    
+
                     // JavaScript mapping is only applicable for compound converters
-                    if ( conv instanceof BasicObjectConverter )
+                    if (conv instanceof BasicObjectConverter)
                     {
                         BasicObjectConverter boConv = (BasicObjectConverter) conv;
-                        if (boConv.getJavascript()!=null && boConv.getJavascript().equals(javascriptClassName))
+                        if (boConv.getJavascript() != null && boConv.getJavascript().equals(javascriptClassName))
                         {
                             // We found a potential converter! But is the 
                             // converter's Java class compatible with the
@@ -168,18 +162,18 @@ public class DefaultConverterManager implements ConverterManager
                                 {
                                     // And the winner is:
                                     converter = boConv;
-                                    
+
                                     // Hack: We also want to make sure that the
                                     // converter creates its object based on the 
                                     // inbound class instead of the parameter 
                                     // type, and we have to use the other ref
                                     // for this:
                                     boConv.setInstanceType(inboundClass);
-                                    
+
                                     break;
                                 }
                             }
-                            catch(ClassNotFoundException ex)
+                            catch (ClassNotFoundException ex)
                             {
                                 throw new MarshallException(ex);
                             }
@@ -187,15 +181,13 @@ public class DefaultConverterManager implements ConverterManager
                     }
                 }
             }
-            
+
             // Fall back to the standard way of locating a converter if we 
             // didn't find anything above
-            if ( converter == null )
+            if (converter == null)
+            {
                 converter = getConverter(paramType);
-            
-            //
-            // MIKE
-            //
+            }
 
             if (converter == null)
             {
@@ -222,19 +214,19 @@ public class DefaultConverterManager implements ConverterManager
     /* (non-Javadoc)
      * @see org.directwebremoting.ConverterManager#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object object, OutboundContext converted) throws MarshallException
+    public OutboundVariable convertOutbound(Object object, OutboundContext outctx) throws MarshallException
     {
         if (object == null)
         {
-            return new OutboundVariable("", "null");
+            return new SimpleOutboundVariable("null", outctx, true);
         }
 
         // Check to see if we have done this one already
-        OutboundVariable ov = converted.get(object);
+        OutboundVariable ov = outctx.get(object);
         if (ov != null)
         {
             // So the object as been converted already, we just need to refer to it.
-            return new OutboundVariable("", ov.getAssignCode());
+            return ov.getReferenceVariable();
         }
 
         // So we will have to do the conversion
@@ -242,10 +234,10 @@ public class DefaultConverterManager implements ConverterManager
         if (converter == null)
         {
             log.error(Messages.getString("DefaultConverterManager.MissingConverter", object.getClass().getName()));
-            return new OutboundVariable("", "null");
+            return new SimpleOutboundVariable("null", outctx, true);
         }
 
-        return converter.convertOutbound(object, converted);
+        return converter.convertOutbound(object, outctx);
     }
 
     /* (non-Javadoc)

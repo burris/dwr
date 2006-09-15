@@ -301,22 +301,49 @@ public class ScriptBuffer
     public String createOutput()
     {
         OutboundContext context = new OutboundContext();
-        
-        StringBuffer output = new StringBuffer();
-        
-        // First we look for the initialization code
+        List ovs = new ArrayList();
+
+        // First convert everything
         for (Iterator it = parts.iterator(); it.hasNext();)
         {
             Object element = it.next();
             if (!(element instanceof CodeWrapper))
             {
                 OutboundVariable ov = converterManager.convertOutbound(element, context);
-                output.append(ov.getInitCode());
+                ovs.add(ov);
+            }
+            else
+            {
+                ovs.add(element);
             }
         }
-        
+
+        StringBuffer output = new StringBuffer();
+
+        // First we look for the declaration code
+        for (Iterator it = ovs.iterator(); it.hasNext();)
+        {
+            Object element = it.next();
+            if (element instanceof OutboundVariable)
+            {
+                OutboundVariable ov = (OutboundVariable) element;
+                output.append(ov.getDeclareCode());
+            }
+        }
+
+        // Then we look for the construction code
+        for (Iterator it = ovs.iterator(); it.hasNext();)
+        {
+            Object element = it.next();
+            if (element instanceof OutboundVariable)
+            {
+                OutboundVariable ov = (OutboundVariable) element;
+                output.append(ov.getBuildCode());
+            }
+        }
+
         // Then we output everything else
-        for (Iterator it = parts.iterator(); it.hasNext();)
+        for (Iterator it = ovs.iterator(); it.hasNext();)
         {
             Object element = it.next();
             if (element instanceof StringCodeWrapper)
@@ -331,7 +358,7 @@ public class ScriptBuffer
             }
             else
             {
-                OutboundVariable ov = converterManager.convertOutbound(element, context);
+                OutboundVariable ov = (OutboundVariable) element;
                 output.append(ov.getAssignCode());
             }
         }
@@ -367,6 +394,14 @@ public class ScriptBuffer
         }
 
         String data;
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        public String toString()
+        {
+            return data;
+        }
     }
 
     /**
@@ -381,6 +416,14 @@ public class ScriptBuffer
         }
 
         char data;
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        public String toString()
+        {
+            return "" + data;
+        }
     }
 
     /**
