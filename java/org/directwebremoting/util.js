@@ -847,7 +847,7 @@ DWRUtil.removeAllRows = function(ele, options) {
 };
 
 /**
- * $(ele).className = "X", that we can call from Java easily
+ * $(ele).className = "X", that we can call from Java easily.
  */
 DWRUtil.setClassName = function(ele, className) {
   ele = DWRUtil._getElementById(ele, "setClassName()");
