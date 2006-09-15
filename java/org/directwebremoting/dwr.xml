@@ -29,7 +29,7 @@
     <converter id="servlet" class="org.directwebremoting.convert.ServletConverter"/>
     <converter id="bean" class="org.directwebremoting.convert.BeanConverter"/>
     <converter id="object" class="org.directwebremoting.convert.ObjectConverter"/>
-    <converter id="hibernate" class="org.directwebremoting.convert.HibernateBeanConverter"/>
+    <converter id="hibernate" class="org.directwebremoting.hibernate.HibernateBeanConverter"/>
     <converter id="url" class="org.directwebremoting.convert.URLConverter"/>
   </init>
 
