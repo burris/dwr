@@ -426,7 +426,7 @@ public class DwrUtil extends ScriptProxy
         script.appendScript("$(")
               .appendData(elementId)
               .appendScript(").style.")
-              .appendData(selector)
+              .appendScript(selector)
               .appendScript('=')
               .appendData(value)
               .appendScript(';');
