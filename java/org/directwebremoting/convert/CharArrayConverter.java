@@ -21,10 +21,12 @@ import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
+import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 
 /**
- * An implementation of Converter for Strings.
+ * An implementation of Converter for char arrays.
  * @author Joe Walker [joe at eireneh dot com]
  * @version $Id: StringConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
  */
@@ -44,6 +46,7 @@ public class CharArrayConverter extends BaseV20Converter implements Converter
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         String output = new String((char[]) data);
-        return ConverterUtil.addStringInit(output, outctx);
+        String escaped = JavascriptUtil.escapeJavaScript(output);
+        return new SimpleOutboundVariable('\"' + escaped + '\"', outctx, true);
     }
 }

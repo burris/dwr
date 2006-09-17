@@ -27,6 +27,7 @@ import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -117,6 +118,6 @@ public class DateConverter extends BaseV20Converter implements Converter
             millis = date.getTime();
         }
 
-        return new OutboundVariable("", "new Date(" + millis + ")");
+        return new SimpleOutboundVariable("new Date(" + millis + ")", outctx, false);
     }
 }

@@ -30,6 +30,7 @@ import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.TypeHintContext;
 import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ObjectOutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
@@ -171,7 +172,7 @@ public class MapConverter implements Converter
             ovs = new HashMap();
         }
 
-        OutboundVariable ov = new OutboundVariable();
+        ObjectOutboundVariable ov = new ObjectOutboundVariable(outctx);
         outctx.put(data, ov);
 
         // Loop through the map outputting any init code and collecting
@@ -201,7 +202,7 @@ public class MapConverter implements Converter
             ovs.put(outkey, nested);
         }
 
-        ConverterUtil.addMapInit(ov, ovs, null, outctx);
+        ov.init(ovs, null);
 
         return ov;
     }

@@ -23,6 +23,7 @@ import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
 
@@ -73,6 +74,6 @@ public class EnumConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object object, OutboundContext outctx)
     {
-        return new OutboundVariable("", '\'' + object.toString() + '\'');
+        return new SimpleOutboundVariable('\'' + object.toString() + '\'', outctx, true);
     }
 }

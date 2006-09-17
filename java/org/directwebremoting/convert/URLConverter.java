@@ -24,6 +24,8 @@ import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
+import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
@@ -57,7 +59,8 @@ public class URLConverter extends BaseV20Converter implements Converter
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         URL url = (URL) data;
-        return ConverterUtil.addStringInit(url.toExternalForm(), outctx);
+        String escaped = JavascriptUtil.escapeJavaScript(url.toExternalForm());
+        return new SimpleOutboundVariable('\"' + escaped + '\"', outctx, true);
     }
 
     /**

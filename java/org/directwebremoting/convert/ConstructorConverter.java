@@ -22,6 +22,7 @@ import org.directwebremoting.InboundContext;
 import org.directwebremoting.InboundVariable;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
 
 /**
@@ -52,6 +53,6 @@ public class ConstructorConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return new OutboundVariable("", '\'' + JavascriptUtil.escapeJavaScript(data.toString()) + '\'');
+        return new SimpleOutboundVariable('\'' + JavascriptUtil.escapeJavaScript(data.toString()) + '\'', outctx, true);
     }
 }

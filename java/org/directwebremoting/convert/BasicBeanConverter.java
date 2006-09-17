@@ -35,6 +35,7 @@ import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.TypeHintContext;
 import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ObjectOutboundVariable;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -93,7 +94,7 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
             }
 
             /*
-            String overrideTypeName = (String) tokens.get(ConverterUtil.CLASS_NAME);
+            String overrideTypeName = (String) tokens.get("_class");
             if (overrideTypeName != null)
             {
                 Class overrideType = Class.forName(overrideTypeName);
@@ -220,7 +221,7 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
         Map ovs = new TreeMap();
 
         // We need to do this before collecing the children to save recurrsion
-        OutboundVariable ov = new OutboundVariable();
+        ObjectOutboundVariable ov = new ObjectOutboundVariable(outctx);
         outctx.put(data, ov);
 
         try
@@ -234,36 +235,15 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
 
                 try
                 {
-                    // We don't marshall things we can't read
                     Method getter = descriptor.getReadMethod();
-                    if (getter == null)
+
+                    if (shouldMarshall(getter, data, name))
                     {
-                        continue;
+                        Object value = getter.invoke(data, new Object[0]);
+                        OutboundVariable nested = getConverterManager().convertOutbound(value, outctx);
+
+                        ovs.put(name, nested);
                     }
-
-                    // We don't marshall getClass()
-                    if (name.equals("class"))
-                    {
-                        continue;
-                    }
-
-                    // Access rules mean we might not want to do this one
-                    if (!isAllowed(name))
-                    {
-                        log.debug("Skipping marshalling " + name + " due to include/exclude rules");
-                        continue;
-                    }
-
-                    if (!isAvailable(data, name))
-                    {
-                        log.debug("Skipping marshalling " + name + " due to availability rules");
-                        continue;
-                    }
-
-                    Object value = getter.invoke(data, new Object[0]);
-                    OutboundVariable nested = getConverterManager().convertOutbound(value, outctx);
-
-                    ovs.put(name, nested);
                 }
                 catch (Exception ex)
                 {
@@ -276,9 +256,46 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
             throw new MarshallException(ex);
         }
 
-        ConverterUtil.addMapInit(ov, ovs, getJavascript(), outctx);
+        ov.init(ovs, getJavascript());
 
         return ov;
+    }
+
+    /**
+     * Is this a member that we should consider marshalling?
+     * @param getter The read method
+     * @param data The object on which the read method is to be called
+     * @param name The name of the property that we will be reading
+     * @return true if we should marshall the property
+     */
+    private boolean shouldMarshall(Method getter, Object data, String name)
+    {
+        // We don't marshall things we can't read
+        if (getter == null)
+        {
+            return false;
+        }
+
+        // We don't marshall getClass()
+        if (name.equals("class"))
+        {
+            return false;
+        }
+
+        // Access rules mean we might not want to do this one
+        if (!isAllowed(name))
+        {
+            log.debug("Skipping marshalling " + name + " due to include/exclude rules");
+            return false;
+        }
+
+        if (!isAvailable(data, name))
+        {
+            log.debug("Skipping marshalling " + name + " due to availability rules");
+            return false;
+        }
+
+        return true;
     }
 
     /* (non-Javadoc)

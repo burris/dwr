@@ -34,7 +34,9 @@ import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.TypeHintContext;
+import org.directwebremoting.dwrp.ArrayOutboundVariable;
 import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -188,7 +190,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         }
 
         // Stash this bit of data to cope with recursion
-        OutboundVariable ov = new OutboundVariable();
+        ArrayOutboundVariable ov = new ArrayOutboundVariable(outctx);
         outctx.put(data, ov);
 
         // Convert all the data members
@@ -204,7 +206,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             }
             catch (Exception ex)
             {
-                nested = new OutboundVariable("", "'Conversion Error. See console log.'");
+                nested = new SimpleOutboundVariable("'Conversion Error. See console log.'", outctx, true);
                 log.warn("Failed to convert array member " + ovs.size() + ". Conversion error for type: " + data.getClass().getName(), ex);
             }
 
@@ -212,7 +214,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         }
 
         // Group the list of converted objects into this OutboundVariable
-        ConverterUtil.addListInit(ov, ovs, outctx);
+        ov.init(ovs);
 
         return ov;
     }

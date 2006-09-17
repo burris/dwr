@@ -21,6 +21,8 @@ import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
+import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 
 /**
@@ -43,7 +45,7 @@ public class StringConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
-        String output = data.toString();
-        return ConverterUtil.addStringInit(output, outctx);
+        String escaped = JavascriptUtil.escapeJavaScript(data.toString());
+        return new SimpleOutboundVariable('\"' + escaped + '\"', outctx, true);
     }
 }

@@ -28,6 +28,7 @@ import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
 
 /**
  * A converter that magics up HTTP objects
@@ -76,6 +77,6 @@ public class ServletConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return new OutboundVariable("", "null");
+        return new SimpleOutboundVariable("null", outctx, true);
     }
 }

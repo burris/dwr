@@ -23,6 +23,7 @@ import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
@@ -86,15 +87,10 @@ public class XOMConverter extends BaseV20Converter implements Converter
             }
 
             Node node = (Node) data;
-            String xmlout = node.toXML();
+            String xmlout = JavascriptUtil.escapeJavaScript(node.toXML());
 
-            OutboundVariable ov = new OutboundVariable();
+            OutboundVariable ov = new SimpleOutboundVariable("DWREngine._unserializeDocument(\"" + xmlout + "\")", outctx, false);
             outctx.put(data, ov);
-            String assignCode = outctx.getNextVariableName();
-
-            ov.setInitCode("var " + assignCode + "=DWREngine._unserializeDocument(\"" + xmlout + "\");");
-            ov.setAssignCode(assignCode);
-            ov.setRecursive(false);
 
             return ov;
         }

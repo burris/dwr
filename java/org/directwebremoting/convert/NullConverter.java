@@ -21,6 +21,7 @@ import org.directwebremoting.InboundContext;
 import org.directwebremoting.InboundVariable;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
 
 /**
  * An implementation of Converter for null and undefined.
@@ -49,6 +50,6 @@ public class NullConverter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return new OutboundVariable("", "null");
+        return new SimpleOutboundVariable("null", outctx, true);
     }
 }

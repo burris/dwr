@@ -24,6 +24,7 @@ import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -71,9 +72,9 @@ public class BigNumberConverter extends BaseV20Converter implements Converter
     {
         if (object == null)
         {
-            return new OutboundVariable("", "null");
+            return new SimpleOutboundVariable("null", outctx, true);
         }
 
-        return new OutboundVariable("", object.toString());
+        return new SimpleOutboundVariable(object.toString(), outctx, true);
     }
 }

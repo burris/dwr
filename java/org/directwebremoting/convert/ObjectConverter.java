@@ -32,6 +32,7 @@ import org.directwebremoting.MarshallException;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ObjectOutboundVariable;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -193,7 +194,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
         Map ovs = new TreeMap();
 
         // We need to do this before collecing the children to save recurrsion
-        OutboundVariable ov = new OutboundVariable();
+        ObjectOutboundVariable ov = new ObjectOutboundVariable(outctx);
         outctx.put(data, ov);
 
         try
@@ -248,7 +249,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
             throw new MarshallException(ex);
         }
 
-        ConverterUtil.addMapInit(ov, ovs, getJavascript(), outctx);
+        ov.init(ovs, getJavascript());
 
         return ov;
     }
