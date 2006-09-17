@@ -318,9 +318,9 @@ public abstract class BaseCallMarshaller implements Marshaller
                 Throwable ex = reply.getThrowable();
 
                 ScriptBuffer script = new ScriptBuffer(converterManager);
-                script.appendScript("DWREngine._handleServerError(")
-                      .appendData(reply.getId())
-                      .appendScript(',')
+                script.appendScript("DWREngine._handleServerError(\'")
+                      .appendScript(reply.getId())
+                      .appendScript("\',")
                       .appendData(ex)
                       .appendScript(");");
                 conduit.addScript(script);
@@ -334,9 +334,9 @@ public abstract class BaseCallMarshaller implements Marshaller
                 try
                 {
                     ScriptBuffer script = new ScriptBuffer(converterManager);
-                    script.appendScript("DWREngine._handleResponse(")
-                          .appendData(reply.getId())
-                          .appendScript(',')
+                    script.appendScript("DWREngine._handleResponse(\'")
+                          .appendScript(reply.getId())
+                          .appendScript("\',")
                           .appendData(data)
                           .appendScript(");");
 
@@ -345,9 +345,9 @@ public abstract class BaseCallMarshaller implements Marshaller
                 catch (MarshallException ex)
                 {
                     ScriptBuffer script = new ScriptBuffer(converterManager);
-                    script.appendScript("DWREngine._handleServerError(")
-                          .appendData(reply.getId())
-                          .appendScript(',')
+                    script.appendScript("DWREngine._handleServerError(\'")
+                          .appendScript(reply.getId())
+                          .appendScript("\',")
                           .appendData(ex)
                           .appendScript(");");
                     conduit.addScript(script);
@@ -357,9 +357,9 @@ public abstract class BaseCallMarshaller implements Marshaller
                 catch (Exception ex)
                 {
                     ScriptBuffer script = new ScriptBuffer(converterManager);
-                    script.appendScript("DWREngine._handleServerError(")
-                          .appendData(reply.getId())
-                          .appendScript(',')
+                    script.appendScript("DWREngine._handleServerError(\'")
+                          .appendScript(reply.getId())
+                          .appendScript("\',")
                           .appendData(ex)
                           .appendScript(");");
                     conduit.addScript(script);

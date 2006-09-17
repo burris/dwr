@@ -71,9 +71,40 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
             declareCode = "var " + getVariableName() + "=new " + scriptClassName + "();";
         }
 
-        String buildCode = getRecursiveBuildCode();
+        StringBuffer buildCode = new StringBuffer();
+        for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            String name = (String) entry.getKey();
+            OutboundVariable nested = (OutboundVariable) entry.getValue();
 
-        return new NotInlineDefinition(declareCode, buildCode);
+            String nestedAssignCode = nested.getAssignCode();
+            String varName = getVariableName();
+
+            // The semi-compact syntax is only any good for simple names
+            // I dont think we need this check:  && !isRecursive()
+            if (LocalUtil.isSimpleName(name))
+            {
+                buildCode.append(varName);
+                buildCode.append('.');
+                buildCode.append(name);
+                buildCode.append('=');
+                buildCode.append(nestedAssignCode);
+                buildCode.append(';');
+            }
+            else
+            {
+                buildCode.append(varName);
+                buildCode.append("['");
+                buildCode.append(name);
+                buildCode.append("']=");
+                buildCode.append(nestedAssignCode);
+                buildCode.append(';');
+            }
+        }
+        buildCode.append("\r\n");
+
+        return new NotInlineDefinition(declareCode, buildCode.toString());
     }
 
     /* (non-Javadoc)
@@ -122,56 +153,12 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
         return buffer.toString();
     }
 
-    /**
-     * Define the remaining variables
-     * @return The created assign code string
-     */
-    private String getRecursiveBuildCode()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        // The next loop through is for everything that will not embed
-        for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
-        {
-            Map.Entry entry = (Map.Entry) it.next();
-            String name = (String) entry.getKey();
-            OutboundVariable nested = (OutboundVariable) entry.getValue();
-
-            String nestedAssignCode = nested.getAssignCode();
-            String varName = getVariableName();
-
-            // The semi-compact syntax is only any good for simple names
-            // I dont think we need this check:  && !isRecursive()
-            if (LocalUtil.isSimpleName(name))
-            {
-                buffer.append(varName);
-                buffer.append('.');
-                buffer.append(name);
-                buffer.append('=');
-                buffer.append(nestedAssignCode);
-                buffer.append(';');
-            }
-            else
-            {
-                buffer.append(varName);
-                buffer.append("['");
-                buffer.append(name);
-                buffer.append("']=");
-                buffer.append(nestedAssignCode);
-                buffer.append(';');
-            }
-        }
-        buffer.append("\r\n");
-
-        return buffer.toString();
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     public String toString()
     {
-        return "Object:" + toStringDefinitionHint() + ovs;
+        return "Object:" + toStringDefinitionHint() + ":" + ovs;
     }
 
     /**

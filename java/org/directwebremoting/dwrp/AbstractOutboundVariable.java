@@ -20,7 +20,6 @@ import java.util.Iterator;
 
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
-import org.directwebremoting.util.Logger;
 
 /**
  * A helper class for people that want to implement {@link OutboundVariable}.
@@ -38,11 +37,11 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
 
     /**
      * We might want to force us into predefined mode.
-     * @param inInlineStatus The inline status to force
+     * @param inlineStatus The inline status to force
      */
-    protected void forceInline(boolean inInlineStatus)
+    protected void forceInline(boolean inlineStatus)
     {
-        this.isInline = inInlineStatus;
+        setInline(inlineStatus);
         forcedInlineStatus = true;
     }
 
@@ -54,37 +53,17 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
         this.children = children;
     }
 
-    /**
-     * Called at the last moment as the outputs are being read when we are
-     * sure if we are a reference or not.
-     * <p><b>WARNING: {@link #calculate()} should not be called directly.</b>
-     * This is because {@link AbstractOutboundVariable} does some internal
-     * accounting on when it is called.
-     */
-    protected void calculate()
-    {
-        if (isInline)
-        {
-            assignCode = getInlineDefinition();
-        }
-        else
-        {
-            notInlineDefinition = getNotInlineDefinition();
-        }
-    }
-
     /* (non-Javadoc)
      * @see org.directwebremoting.OutboundVariable#getDeclareCode()
      */
     public String getDeclareCode()
     {
-        if (!isCalculated)
+        if (!calculated)
         {
             calculate();
-            isCalculated = true;
         }
 
-        if (isInline)
+        if (inline)
         {
             return getChildDeclareCodes();
         }
@@ -99,13 +78,12 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
      */
     public String getBuildCode()
     {
-        if (!isCalculated)
+        if (!calculated)
         {
             calculate();
-            isCalculated = true;
         }
 
-        if (isInline)
+        if (inline)
         {
             return getChildBuildCodes();
         }
@@ -120,9 +98,16 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
      */
     public String getAssignCode()
     {
-        if (isCalculated)
+        if (calculated)
         {
-            return assignCode;
+            if (inline)
+            {
+                return assignCode;
+            }
+            else
+            {
+                return varName;
+            }
         }
         else
         {
@@ -132,7 +117,7 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
             // so we name ourselves, and return that.
             if (forcedInlineStatus)
             {
-                if (isInline)
+                if (inline)
                 {
                     return getInlineDefinition();
                 }
@@ -144,7 +129,7 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
             else
             {
                 // log.debug("Moving outline. Do we need to? " + this);
-                isInline = false;
+                setInline(false);
                 return getVariableName();
             }
         }
@@ -164,11 +149,29 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
             }
             else
             {
-                isInline = false;
+                setInline(false);
             }
         }
 
         return reference;
+    }
+
+    /**
+     * Called at the last moment as the outputs are being read when we are
+     * sure if we are a reference or not.
+     */
+    private void calculate()
+    {
+        if (inline)
+        {
+            assignCode = getInlineDefinition();
+        }
+        else
+        {
+            notInlineDefinition = getNotInlineDefinition();
+        }
+
+        calculated = true;
     }
 
     /**
@@ -270,7 +273,7 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
      */
     protected String toStringDefinitionHint()
     {
-        if (isInline)
+        if (inline)
         {
             return "inline";
         }
@@ -288,6 +291,19 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
     }
 
     /**
+     * @param isInline The new inline status
+     */
+    private void setInline(boolean isInline)
+    {
+        if (calculated)
+        {
+            throw new IllegalStateException("Attempt to change inline status after calculation");
+        }
+
+        this.inline = isInline;
+    }
+
+    /**
      * Does anything refer to us?
      */
     private OutboundVariable reference;
@@ -295,7 +311,7 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
     /**
      * Are we known to be recursive
      */
-    private boolean isInline = true;
+    private boolean inline = true;
 
     /**
      * Have we forced an inline/outline status?
@@ -305,7 +321,7 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
     /**
      * Has calculate been run?
      */
-    private boolean isCalculated = false;
+    private boolean calculated = false;
 
     /**
      * The init code for the non-inline case 
@@ -331,9 +347,4 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
      * The OutboundVariables that we depend on
      */
     private Collection children;
-
-    /**
-     * The log stream
-     */
-    private static final Logger log = Logger.getLogger(AbstractOutboundVariable.class);
 }

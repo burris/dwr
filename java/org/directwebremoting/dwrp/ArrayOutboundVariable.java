@@ -50,7 +50,26 @@ public class ArrayOutboundVariable extends AbstractOutboundVariable implements O
      */
     protected NotInlineDefinition getNotInlineDefinition()
     {
-        return new NotInlineDefinition("var " + getVariableName() + "=[];", getRecursiveBuildCode());
+        StringBuffer buffer = new StringBuffer();
+
+        for (int i = 0; i < ovs.size(); i++)
+        {
+            OutboundVariable nested = (OutboundVariable) ovs.get(i);
+            String varName = getVariableName();
+
+            if (nested != null)
+            {
+                buffer.append(varName);
+                buffer.append('[');
+                buffer.append(i);
+                buffer.append("]=");
+                buffer.append(nested.getAssignCode());
+                buffer.append(';');
+            }
+        }
+        buffer.append("\r\n");
+
+        return new NotInlineDefinition("var " + getVariableName() + "=[];", buffer.toString());
     }
 
     /* (non-Javadoc)
@@ -81,40 +100,12 @@ public class ArrayOutboundVariable extends AbstractOutboundVariable implements O
         return buffer.toString();
     }
 
-    /**
-     * Define the remaining variables
-     * @return The build code
-     */
-    private String getRecursiveBuildCode()
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        for (int i = 0; i < ovs.size(); i++)
-        {
-            OutboundVariable nested = (OutboundVariable) ovs.get(i);
-            String varName = getVariableName();
-
-            if (nested != null)
-            {
-                buffer.append(varName);
-                buffer.append('[');
-                buffer.append(i);
-                buffer.append("]=");
-                buffer.append(nested.getAssignCode());
-                buffer.append(';');
-            }
-        }
-        buffer.append("\r\n");
-
-        return buffer.toString();
-    }
-
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     public String toString()
     {
-        return "Array:" + toStringDefinitionHint() + ovs;
+        return "Array:" + toStringDefinitionHint() + ":" + ovs;
     }
 
     /**

@@ -95,6 +95,14 @@ public final class OutboundContext
         return varName;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        return map.toString();
+    }
+
     /**
      * The prefix for outbound variable names the we generate
      */
