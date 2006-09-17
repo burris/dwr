@@ -35,11 +35,11 @@ public final class DTDEntityResolver implements EntityResolver
     /* (non-Javadoc)
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
      */
-    public InputSource resolveEntity(String arg0, String arg1) throws SAXException
+    public InputSource resolveEntity(String publicId, String systemId) throws SAXException
     {
         for (int i = 0; i < MAPPINGS.length; i++)
         {
-            if (arg0.equals(MAPPINGS[i][0]))
+            if (publicId.equals(MAPPINGS[i][0]))
             {
                 if (i != MAPPINGS.length - 1)
                 {
@@ -56,7 +56,7 @@ public final class DTDEntityResolver implements EntityResolver
             }
         }
 
-        throw new SAXException(Messages.getString("DTDEntityResolver.ResolveFailed", arg0, arg1));
+        throw new SAXException(Messages.getString("DTDEntityResolver.ResolveFailed", publicId, systemId));
     }
 
     /**

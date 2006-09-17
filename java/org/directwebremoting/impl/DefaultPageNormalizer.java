@@ -29,6 +29,8 @@ import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.servlet.PathConstants;
 import org.directwebremoting.util.DomUtil;
+import org.directwebremoting.util.EmptyEntityResolver;
+import org.directwebremoting.util.LogErrorHandler;
 import org.directwebremoting.util.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -95,9 +97,13 @@ public class DefaultPageNormalizer implements PageNormalizer
             if (buildFactory == null)
             {
                 buildFactory = DocumentBuilderFactory.newInstance();
+                buildFactory.setValidating(false);
             }
 
             DocumentBuilder builder = buildFactory.newDocumentBuilder();
+            builder.setEntityResolver(new EmptyEntityResolver());
+            builder.setErrorHandler(new LogErrorHandler());
+
             InputSource is = new InputSource(in);
             Document doc = builder.parse(is);
 
