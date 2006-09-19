@@ -78,6 +78,18 @@ public abstract class BaseCallMarshaller implements Marshaller
             request.setAttribute(ATTRIBUTE_PARSE_RESPONSE, parseResponse);
         }
 
+        if (request.isRequestedSessionIdValid() && request.isRequestedSessionIdFromCookie())
+        {
+            String requestedSessionId = request.getRequestedSessionId();
+            if (requestedSessionId.length() > 0)
+            {
+                if (!requestedSessionId.equals(parseResponse.getHttpSessionId()))
+                {
+                    throw new SecurityException("Session Error");
+                }
+            }
+        }
+
         // Various bits of parseResponse need to be stashed away places
         storeParseResponse(request, webContext, parseResponse);
 
@@ -482,6 +494,9 @@ public abstract class BaseCallMarshaller implements Marshaller
                 }
             }
         }
+
+        String httpSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_HTTP_SESSIONID);
+        parseResponse.setHttpSessionId(httpSessionId);
 
         String scriptSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         parseResponse.setScriptSessionId(scriptSessionId);

@@ -439,7 +439,20 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
     }
   }
 
+  // Are we in a session?
+  var cookies = document.cookie.split(';');
+  var jSessionId = "";
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    while (cookie.charAt(0) == ' ') cookie = cookie.substring(1, cookie.length);
+    if (cookie.indexOf("JSESSIONID=") == 0) {
+      jSessionId = cookie.substring(11, cookie.length);
+      break;
+    }
+  }
+  
   // Add in the page and session ids
+  DWREngine._batch.map.httpSessionId = jSessionId;
   DWREngine._batch.map.scriptSessionId = DWREngine._getScriptSessionId();
   DWREngine._batch.map.page = window.location.pathname;
   DWREngine._batch.map[prefix + "scriptName"] = scriptName;
@@ -466,6 +479,7 @@ DWREngine._poll = function(overridePath) {
   var batch = {
     map:{
       id:id, callCount:1,
+      httpSessionId:jSessionId,
       scriptSessionId:DWREngine._getScriptSessionId(),
       page:window.location.pathname
     },
@@ -601,7 +615,7 @@ DWREngine._sendData = function(batch) {
     var indexSafari = navigator.userAgent.indexOf("Safari/");
     if (indexSafari >= 0) {
       var version = navigator.userAgent.substring(indexSafari + 7);
-      if (parseInt(version, 10) < 400) batch.httpMethod == "GET";
+      if (parseInt(version, 10) < 400) batch.httpMethod = "GET";
     }
     batch.mode = batch.isPoll ? DWREngine._ModePlainPoll : DWREngine._ModePlainCall;
     request = DWREngine._constructRequest(batch);

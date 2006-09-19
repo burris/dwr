@@ -40,7 +40,7 @@
       <param name="class" value="uk.ltd.getahead.dwrdemo.asmg.Generator"/>
     </create>
 
-    <create creator="new" javascript="JDate">
+    <create creator="new" javascript="JDate" scope="session">
       <param name="class" value="java.util.Date"/>
       <exclude method="getHours"/>
       <auth method="getMinutes" role="admin"/>

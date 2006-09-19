@@ -109,6 +109,22 @@ class ParseResponse
     }
 
     /**
+     * @return the httpSessionId
+     */
+    public String getHttpSessionId()
+    {
+        return httpSessionId;
+    }
+
+    /**
+     * @param httpSessionId the httpSessionId to set
+     */
+    public void setHttpSessionId(String httpSessionId)
+    {
+        this.httpSessionId = httpSessionId;
+    }
+
+    /**
      * @return the calls
      */
     public Calls getCalls()
@@ -127,6 +143,8 @@ class ParseResponse
     private List inboundContexts = new ArrayList();
 
     private String scriptSessionId;
+
+    private String httpSessionId;
 
     private String page;
 
