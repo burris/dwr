@@ -105,6 +105,11 @@ public class DefaultRemoter implements Remoter
                             String propName = propNames[i];
                             Class propType = boConv.getPropertyType(mappedType, propName);
 
+                            if ("class".equals(propName))
+                            {
+                                continue;
+                            }
+
                             // property name
                             buffer.append("  this." + propName + " = ");
 
