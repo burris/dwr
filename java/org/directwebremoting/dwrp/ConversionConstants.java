@@ -53,11 +53,6 @@ public interface ConversionConstants
     public static final String INBOUND_KEY_ID = "id";
 
     /**
-     * The parameter that specifies the http session identifier
-     */
-    public static final String INBOUND_KEY_HTTP_SESSIONID = "httpSessionId";
-
-    /**
      * The parameter that specifies the script session identifier
      */
     public static final String INBOUND_KEY_SCRIPT_SESSIONID = "scriptSessionId";

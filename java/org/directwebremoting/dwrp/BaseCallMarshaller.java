@@ -483,9 +483,6 @@ public abstract class BaseCallMarshaller implements Marshaller
             }
         }
 
-        paramMap.remove(ConversionConstants.INBOUND_KEY_HTTP_SESSIONID);
-        // Maybe we should check the value of this against the cookie value
-
         String scriptSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         parseResponse.setScriptSessionId(scriptSessionId);
 

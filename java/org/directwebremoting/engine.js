@@ -20,14 +20,24 @@
 if (DWREngine == null) var DWREngine = {};
 
 /**
- * The real session id should be filled in by the server
+ * The original page id sent from the server
  */
-DWREngine._httpSessionId = "${httpSessionId}";
+DWREngine._origScriptSessionId = "${scriptSessionId}";
 
 /**
- * The real page id should be filled in by the server
+ * The read page id that we calculate
  */
-DWREngine._scriptSessionId = "${scriptSessionId}";
+DWREngine._scriptSessionId = null;
+
+/**
+ * The function that we use to fetch/calculate a session id
+ */
+DWREngine._getScriptSessionId = function() {
+  if (DWREngine._scriptSessionId == null) {
+    DWREngine._scriptSessionId = DWREngine._origScriptSessionId + Math.floor(Math.random() * 1000);
+  }
+  return DWREngine._scriptSessionId;
+};
 
 /**
  * Set an alternative error handler from the default alert box.
@@ -430,8 +440,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   }
 
   // Add in the page and session ids
-  DWREngine._batch.map.httpSessionId = DWREngine._httpSessionId;
-  DWREngine._batch.map.scriptSessionId = DWREngine._scriptSessionId;
+  DWREngine._batch.map.scriptSessionId = DWREngine._getScriptSessionId();
   DWREngine._batch.map.page = window.location.pathname;
   DWREngine._batch.map[prefix + "scriptName"] = scriptName;
   DWREngine._batch.map[prefix + "methodName"] = methodName;
@@ -457,8 +466,7 @@ DWREngine._poll = function(overridePath) {
   var batch = {
     map:{
       id:id, callCount:1,
-      httpSessionId:DWREngine._httpSessionId,
-      scriptSessionId:DWREngine._scriptSessionId,
+      scriptSessionId:DWREngine._getScriptSessionId(),
       page:window.location.pathname
     },
     rpcType:DWREngine._pollType, completed:false, isPoll:true, httpMethod:"POST",
@@ -686,8 +694,9 @@ DWREngine._constructRequest = function(batch) {
     request.url += "Multiple." + batch.map.callCount + ".dwr";
   }
   // Play nice with url re-writing
-  if (location.href.match(/jsessionid/)) {
-    request.url += ";jsessionid=" + DWREngine._httpSessionId;
+  var sessionMatch = location.href.match(/jsessionid=(\w+)/);
+  if (sessionMatch != null) {
+    request.url += ";jsessionid=" + sessionMatch[1];
   }
 
   var prop;

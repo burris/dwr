@@ -266,11 +266,6 @@ public class UrlProcessor
 
                     if (dynamic)
                     {
-                        if (line.indexOf(PARAM_HTTP_SESSIONID) != -1)
-                        {
-                            line = LocalUtil.replace(line, PARAM_HTTP_SESSIONID, request.getSession(true).getId());
-                        }
-
                         if (line.indexOf(PARAM_SCRIPT_SESSIONID) != -1)
                         {
                             line = LocalUtil.replace(line, PARAM_SCRIPT_SESSIONID, generator.generateId(pageIdLength));
@@ -542,11 +537,6 @@ public class UrlProcessor
      * The bean to execute remote requests and generate interfaces
      */
     protected Remoter remoter = null;
-
-    /**
-     * The session id parameter that goes in engine.js
-     */
-    protected static final String PARAM_HTTP_SESSIONID = "${httpSessionId}";
 
     /**
      * The page id parameter that goes in engine.js
