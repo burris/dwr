@@ -78,7 +78,10 @@ public abstract class BaseCallMarshaller implements Marshaller
             request.setAttribute(ATTRIBUTE_PARSE_RESPONSE, parseResponse);
         }
 
-        if (request.isRequestedSessionIdValid() && request.isRequestedSessionIdFromCookie())
+        // A check to see that this isn't a csrf attack
+        // http://en.wikipedia.org/wiki/Cross-site_request_forgery
+        // http://www.tux.org/~peterw/csrf.txt
+        if (request.isRequestedSessionIdValid() && request.isRequestedSessionIdFromCookie() && crossDomainSessionSecurity)
         {
             String requestedSessionId = request.getRequestedSessionId();
             if (requestedSessionId.length() > 0)
@@ -543,12 +546,21 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
-     * Accessfor for the PageNormalizer.
+     * Accessor for the PageNormalizer.
      * @param pageNormalizer The new PageNormalizer
      */
     public void setPageNormalizer(PageNormalizer pageNormalizer)
     {
         this.pageNormalizer = pageNormalizer;
+    }
+
+    /**
+     * To we perform cross-domain session security checks?
+     * @param crossDomainSessionSecurity the cross domain session security setting
+     */
+    public void setCrossDomainSessionSecurity(boolean crossDomainSessionSecurity)
+    {
+        this.crossDomainSessionSecurity = crossDomainSessionSecurity;
     }
 
     /**
@@ -599,9 +611,14 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
+     * To we perform cross-domain session security checks?
+     */
+    protected boolean crossDomainSessionSecurity = true; 
+
+    /**
      * How we turn pages into the canonical form.
      */
-    private PageNormalizer pageNormalizer;
+    protected PageNormalizer pageNormalizer;
 
     /**
      * How we convert parameters
