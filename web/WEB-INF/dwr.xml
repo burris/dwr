@@ -19,6 +19,10 @@
       <param name="class" value="uk.ltd.getahead.dwrdemo.simpletext.Demo"/>
     </create>
 
+    <create creator="new" javascript="AddressLookup">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.address.AddressLookup"/>
+    </create>
+
     <create creator="new" javascript="People" scope="script">
       <param name="class" value="uk.ltd.getahead.dwrdemo.people.People"/>
     </create>
