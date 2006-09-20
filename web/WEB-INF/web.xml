@@ -15,6 +15,87 @@
       <param-name>debug</param-name>
       <param-value>true</param-value>
     </init-param>
+
+    <!-- Do not check this into CVS -->
+    <init-param>
+      <param-name>configDefault</param-name>
+      <param-value>/WEB-INF/dwr.xml</param-value>
+    </init-param>
+    <init-param>
+      <param-name>configMonitor</param-name>
+      <param-value>/WEB-INF/classes/dwr-monitor.xml</param-value>
+    </init-param>
+    <init-param>
+      <param-name>exposeClassNames</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.servlet.UrlProcessor</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedUrlProcessor</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.Container</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedContainer</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.ScriptSessionManager</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedScriptSessionManager</param-value>
+    </init-param>
+    <!--
+    <init-param>
+      <param-name>org.directwebremoting.AccessControl</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedAccessControl</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.ConverterManager</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedConverterManager</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.CreatorManager</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedCreatorManager</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.WebContextBuilder</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedWebContextBuilder</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.ServerContextBuilder</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedServerContextBuilder</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.AjaxFilterManager</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedAjaxFilterManager</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.Remoter</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedRemoter</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.DebugPageGenerator</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedDebugPageGenerator</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.HtmlCallMarshaller</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedHtmlCallMarshaller</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.PlainCallMarshaller</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedPlainCallMarshaller</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.PollHandler</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedPollHandler</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.ServerLoadMonitor</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedServerLoadMonitor</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.PageNormalizer</param-name>
+      <param-value>org.directwebremoting.monitor.AdvancedPageNormalizer</param-value>
+    </init-param>
+    -->
+
     <load-on-startup>1</load-on-startup>
   </servlet>
 
@@ -24,3 +105,4 @@
   </servlet-mapping>
 
 </web-app>
+

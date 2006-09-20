@@ -20,26 +20,6 @@
 if (DWREngine == null) var DWREngine = {};
 
 /**
- * The original page id sent from the server
- */
-DWREngine._origScriptSessionId = "${scriptSessionId}";
-
-/**
- * The read page id that we calculate
- */
-DWREngine._scriptSessionId = null;
-
-/**
- * The function that we use to fetch/calculate a session id
- */
-DWREngine._getScriptSessionId = function() {
-  if (DWREngine._scriptSessionId == null) {
-    DWREngine._scriptSessionId = DWREngine._origScriptSessionId + Math.floor(Math.random() * 1000);
-  }
-  return DWREngine._scriptSessionId;
-};
-
-/**
  * Set an alternative error handler from the default alert box.
  * @see http://getahead.ltd.uk/dwr/browser/engine/errors
  */
@@ -256,6 +236,23 @@ DWREngine.setVerb = function(verb) { DWREngine.setHttpMethod(verb); };
 // Only private stuff below here
 //==============================================================================
 
+/** The original page id sent from the server */
+DWREngine._origScriptSessionId = "${scriptSessionId}";
+
+/** The session cookie name */
+DWREngine._sessionCookieName = "${sessionCookieName}"; // JSESSIONID
+
+/** The read page id that we calculate */
+DWREngine._scriptSessionId = null;
+
+/** The function that we use to fetch/calculate a session id */
+DWREngine._getScriptSessionId = function() {
+  if (DWREngine._scriptSessionId == null) {
+    DWREngine._scriptSessionId = DWREngine._origScriptSessionId + Math.floor(Math.random() * 1000);
+  }
+  return DWREngine._scriptSessionId;
+};
+
 /** A function to call if something fails. */
 DWREngine._errorHandler = DWREngine.defaultMessageHandler;
 
@@ -445,7 +442,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   for (var i = 0; i < cookies.length; i++) {
     var cookie = cookies[i];
     while (cookie.charAt(0) == ' ') cookie = cookie.substring(1, cookie.length);
-    if (cookie.indexOf("JSESSIONID=") == 0) {
+    if (cookie.indexOf(DWREngine._sessionCookieName + "=") == 0) {
       jSessionId = cookie.substring(11, cookie.length);
       break;
     }

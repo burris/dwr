@@ -266,6 +266,11 @@ public class UrlProcessor
 
                     if (dynamic)
                     {
+                        if (line.indexOf(PARAM_SCRIPT_COOKIENAME) != -1)
+                        {
+                            line = LocalUtil.replace(line, PARAM_SCRIPT_COOKIENAME, sessionCookieName);
+                        }
+
                         if (line.indexOf(PARAM_SCRIPT_SESSIONID) != -1)
                         {
                             line = LocalUtil.replace(line, PARAM_SCRIPT_SESSIONID, generator.generateId(pageIdLength));
@@ -456,6 +461,15 @@ public class UrlProcessor
     }
 
     /**
+     * Alter the session cookie name from the default JSESSIONID.
+     * @param sessionCookieName the sessionCookieName to set
+     */
+    public void setSessionCookieName(String sessionCookieName)
+    {
+        this.sessionCookieName = sessionCookieName;
+    }
+
+    /**
      * The time on the script files
      */
     private static final long servletContainerStartTime;
@@ -539,9 +553,19 @@ public class UrlProcessor
     protected Remoter remoter = null;
 
     /**
+     * The session cookie name
+     */
+    protected String sessionCookieName = "JSESSIONID";
+
+    /**
      * The page id parameter that goes in engine.js
      */
     protected static final String PARAM_SCRIPT_SESSIONID = "${scriptSessionId}";
+
+    /**
+     * Under what cookie name is the session id stored?
+     */
+    protected static final String PARAM_SCRIPT_COOKIENAME = "${sessionCookieName}";
 
     /**
      * The log stream
