@@ -23,20 +23,27 @@ import java.util.Locale;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 /**
- * Used by ExecutionContext to forward results back via javascript
+ * Used by ExecutionContext to forward results back via javascript.
+ * <p>We could like to implement {@link HttpServletResponse}, but there is a bug
+ * in WebLogic where it casts to a {@link HttpServletResponseWrapper} so we
+ * need to extend that.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public final class SwallowingHttpServletResponse implements HttpServletResponse
+public final class SwallowingHttpServletResponse extends HttpServletResponseWrapper
 {
     /**
      * Create a new HttpServletResponse that allows you to catch the body
+     * @param response The original HttpServletResponse
      * @param sout The place we copy responses to
      * @param encoding The output encoding
      */
-    public SwallowingHttpServletResponse(Writer sout, String encoding)
+    public SwallowingHttpServletResponse(HttpServletResponse response, Writer sout, String encoding)
     {
+        super(response);
+
         pout = new PrintWriter(sout);
         oout = new WriterOutputStream(sout, encoding);
 
