@@ -69,13 +69,13 @@ public abstract class BaseCallMarshaller implements Marshaller
         // only after doing this that we know the scriptSessionId
 
         WebContext webContext = WebContextFactory.get();
-        ParseResponse parseResponse = (ParseResponse) request.getAttribute(ATTRIBUTE_PARSE_RESPONSE);
-        if (parseResponse == null)
+        ParsedRequest parsedRequest = (ParsedRequest) request.getAttribute(ATTRIBUTE_PARSED_REQUEST);
+        if (parsedRequest == null)
         {
-            parseResponse = parseRequest(request);
+            parsedRequest = parseRequest(request);
 
             // Save calls for retry exception
-            request.setAttribute(ATTRIBUTE_PARSE_RESPONSE, parseResponse);
+            request.setAttribute(ATTRIBUTE_PARSED_REQUEST, parsedRequest);
         }
 
         // A check to see that this isn't a csrf attack
@@ -86,23 +86,23 @@ public abstract class BaseCallMarshaller implements Marshaller
             String requestedSessionId = request.getRequestedSessionId();
             if (requestedSessionId.length() > 0)
             {
-                if (!requestedSessionId.equals(parseResponse.getHttpSessionId()))
+                if (!requestedSessionId.equals(parsedRequest.getHttpSessionId()))
                 {
                     throw new SecurityException("Session Error");
                 }
             }
         }
 
-        // Various bits of parseResponse need to be stashed away places
-        storeParseResponse(request, webContext, parseResponse);
+        // Various bits of the ParsedRequest need to be stashed away places
+        storeParsedRequest(request, webContext, parsedRequest);
 
-        Calls calls = parseResponse.getCalls();
+        Calls calls = parsedRequest.getCalls();
 
         // Debug the environment
         if (log.isDebugEnabled() && calls.getCallCount() > 0)
         {
             // We can just use 0 because they are all shared
-            InboundContext inctx = (InboundContext) parseResponse.getInboundContexts().get(0);
+            InboundContext inctx = (InboundContext) parsedRequest.getInboundContexts().get(0);
             StringBuffer buffer = new StringBuffer();
 
             for (Iterator it = inctx.getInboundVariableNames(); it.hasNext();)
@@ -126,7 +126,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
         {
             Call call = calls.getCall(callNum);
-            InboundContext inctx = (InboundContext) parseResponse.getInboundContexts().get(callNum);
+            InboundContext inctx = (InboundContext) parsedRequest.getInboundContexts().get(callNum);
 
             // Get a list of the available matching methods with the coerced
             // parameters that we will use to call it if we choose to use
@@ -187,18 +187,18 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
-     * Build a ParseResponse and put it in the request
+     * Build a ParsedRequest and put it in the request
      * @param request Where we store the parsed data
      * @param webContext We need to notify others of some of the data we find
-     * @param parseResponse The parsed data to store
+     * @param parsedRequest The parsed data to store
      */
-    private void storeParseResponse(HttpServletRequest request, WebContext webContext, ParseResponse parseResponse)
+    private void storeParsedRequest(HttpServletRequest request, WebContext webContext, ParsedRequest parsedRequest)
     {
-        String normalizedPage = pageNormalizer.normalizaPage(parseResponse.getPage());
-        webContext.setCurrentPageInformation(normalizedPage, parseResponse.getScriptSessionId());
+        String normalizedPage = pageNormalizer.normalizaPage(parsedRequest.getPage());
+        webContext.setCurrentPageInformation(normalizedPage, parsedRequest.getScriptSessionId());
 
         // Remaining parameters get put into the request for later consumption
-        Map paramMap = parseResponse.getSpareParameters();
+        Map paramMap = parsedRequest.getSpareParameters();
         if (paramMap.size() != 0)
         {
             for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
@@ -421,33 +421,33 @@ public abstract class BaseCallMarshaller implements Marshaller
      * @return A parsed set of calls
      * @throws MarshallException If reading from the request body stream fails
      */
-    private ParseResponse parseRequest(HttpServletRequest req) throws MarshallException
+    private ParsedRequest parseRequest(HttpServletRequest req) throws MarshallException
     {
-        ParseResponse parseResponse = new ParseResponse();
+        ParsedRequest parsedRequest = new ParsedRequest();
 
         if (req.getMethod().equals("GET"))
         {
-            parseResponse.setAllParameters(ParseUtil.parseGet(req));
+            parsedRequest.setAllParameters(ParseUtil.parseGet(req));
         }
         else
         {
-            parseResponse.setAllParameters(ParseUtil.parsePost(req));
+            parsedRequest.setAllParameters(ParseUtil.parsePost(req));
         }
 
-        parseParameters(parseResponse);
-        return parseResponse;
+        parseParameters(parsedRequest);
+        return parsedRequest;
     }
 
     /**
      * Fish out the important parameters
-     * @param parseResponse The call details the methods we are calling
+     * @param parsedRequest The call details the methods we are calling
      * @throws MarshallException If the parsing of input parameter fails
      */
-    private void parseParameters(ParseResponse parseResponse) throws MarshallException
+    private void parseParameters(ParsedRequest parsedRequest) throws MarshallException
     {
-        Map paramMap = parseResponse.getAllParameters();
+        Map paramMap = parsedRequest.getAllParameters();
         Calls calls = new Calls();
-        parseResponse.setCalls(calls);
+        parsedRequest.setCalls(calls);
 
         // Work out how many calls are in this packet
         String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
@@ -461,7 +461,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             throw new MarshallException(Messages.getString("ExecuteQuery.BadCallCount", callStr));
         }
 
-        List inboundContexts = parseResponse.getInboundContexts();
+        List inboundContexts = parsedRequest.getInboundContexts();
 
         // Extract the ids, scriptnames and methodnames
         for (int callNum = 0; callNum < callCount; callNum++)
@@ -499,15 +499,15 @@ public abstract class BaseCallMarshaller implements Marshaller
         }
 
         String httpSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_HTTP_SESSIONID);
-        parseResponse.setHttpSessionId(httpSessionId);
+        parsedRequest.setHttpSessionId(httpSessionId);
 
         String scriptSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
-        parseResponse.setScriptSessionId(scriptSessionId);
+        parsedRequest.setScriptSessionId(scriptSessionId);
 
         String page = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_PAGE);
-        parseResponse.setPage(page);
+        parsedRequest.setPage(page);
 
-        parseResponse.setSpareParameters(paramMap);
+        parsedRequest.setSpareParameters(paramMap);
     }
 
     /* (non-Javadoc)
@@ -648,7 +648,7 @@ public abstract class BaseCallMarshaller implements Marshaller
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_PARSE_RESPONSE = "org.directwebremoting.dwrp.parseResponse";
+    protected static final String ATTRIBUTE_PARSED_REQUEST = "org.directwebremoting.dwrp.parsedRequest";
 
     /**
      * The log stream

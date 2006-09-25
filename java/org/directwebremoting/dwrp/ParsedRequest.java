@@ -26,7 +26,7 @@ import org.directwebremoting.Calls;
  * A container for all the by-products of an HttpRequest parse
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-class ParseResponse
+class ParsedRequest
 {
     /**
      * @return the allParameters
