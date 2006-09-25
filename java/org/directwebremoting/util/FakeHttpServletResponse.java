@@ -82,8 +82,122 @@ public class FakeHttpServletResponse implements HttpServletResponse
         return writer;
     }
 
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#flushBuffer()
+     */
+    public void flushBuffer()
+    {
+        if (writer != null)
+        {
+            writer.flush();
+        }
+
+        if (outputStream != null)
+        {
+            try
+            {
+                outputStream.flush();
+            }
+            catch (IOException ex)
+            {
+                throw new IllegalStateException("Could not flush OutputStream: " + ex.getMessage());
+            }
+        }
+
+        committed = true;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+     */
+    public void sendError(int newStatus, String newErrorMessage) throws IOException
+    {
+        if (committed)
+        {
+            throw new IllegalStateException("Cannot set error status - response is already committed");
+        }
+
+        status = newStatus;
+        errorMessage = newErrorMessage;
+        committed = true;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#sendError(int)
+     */
+    public void sendError(int newStatus) throws IOException
+    {
+        if (committed)
+        {
+            throw new IllegalStateException("Cannot set error status - response is already committed");
+        }
+
+        status = newStatus;
+        committed = true;
+    }
+
     /**
-     * @return
+     * Accessor for any error messages set using {@link #sendError(int)} or
+     * {@link #sendError(int, String)}
+     * @return The current error message
+     */
+    public String getErrorMessage()
+    {
+        return errorMessage;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
+     */
+    public void sendRedirect(String url) throws IOException
+    {
+        if (committed)
+        {
+            throw new IllegalStateException("Cannot send redirect - response is already committed");
+        }
+
+        redirectedUrl = url;
+        committed = true;
+    }
+
+    /**
+     * Accessor for the redirect URL set using {@link #sendRedirect(String)}
+     * @return The redirect URL
+     */
+    public String getRedirectedUrl()
+    {
+        return redirectedUrl;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setStatus(int)
+     */
+    public void setStatus(int status)
+    {
+        this.status = status;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
+     */
+    public void setStatus(int status, String errorMessage)
+    {
+        this.status = status;
+        this.errorMessage = errorMessage;
+    }
+
+    /**
+     * What HTTP status code should be returned?
+     * @return The current http status code
+     */
+    public int getStatus()
+    {
+        return status;
+    }
+
+    /**
+     * Accessor for the content of output body
+     * @return A byte array of the output body
      */
     public byte[] getContentAsByteArray()
     {
@@ -92,7 +206,8 @@ public class FakeHttpServletResponse implements HttpServletResponse
     }
 
     /**
-     * @return
+     * Accessor for the content of output body
+     * @return A string of the output body
      * @throws UnsupportedEncodingException
      */
     public String getContentAsString() throws UnsupportedEncodingException
@@ -110,7 +225,8 @@ public class FakeHttpServletResponse implements HttpServletResponse
     }
 
     /**
-     * @return
+     * Accessor for the content length of the output
+     * @return The content length of the output
      */
     public int getContentLength()
     {
@@ -159,44 +275,6 @@ public class FakeHttpServletResponse implements HttpServletResponse
         return bufferSize;
     }
 
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#flushBuffer()
-     */
-    public void flushBuffer()
-    {
-        if (writer != null)
-        {
-            writer.flush();
-        }
-
-        if (outputStream != null)
-        {
-            try
-            {
-                outputStream.flush();
-            }
-            catch (IOException ex)
-            {
-                throw new IllegalStateException("Could not flush OutputStream: " + ex.getMessage());
-            }
-        }
-
-        committed = true;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#resetBuffer()
-     */
-    public void resetBuffer()
-    {
-        if (committed)
-        {
-            throw new IllegalStateException("Cannot reset buffer - response is already committed");
-        }
-
-        content.reset();
-    }
-
     /**
      * @param committed
      */
@@ -211,6 +289,19 @@ public class FakeHttpServletResponse implements HttpServletResponse
     public boolean isCommitted()
     {
         return committed;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponse#resetBuffer()
+     */
+    public void resetBuffer()
+    {
+        if (committed)
+        {
+            throw new IllegalStateException("Cannot reset buffer - response is already committed");
+        }
+
+        content.reset();
     }
 
     /* (non-Javadoc)
@@ -255,13 +346,19 @@ public class FakeHttpServletResponse implements HttpServletResponse
     }
 
     /**
-     * @return
+     * Accessor for the array of current cookies
+     * @return The current set of output cookies
      */
     public Cookie[] getCookies()
     {
         return (Cookie[]) cookies.toArray(new Cookie[cookies.size()]);
     }
 
+    /**
+     * Get a cookie by a given name
+     * @param name The name of the cookie to fetch
+     * @return A matching cookie or null if there was no match
+     */
     public Cookie getCookie(String name)
     {
         for (Iterator it = cookies.iterator(); it.hasNext();)
@@ -276,63 +373,17 @@ public class FakeHttpServletResponse implements HttpServletResponse
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
+     * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
      */
-    public boolean containsHeader(String name)
+    public String encodeUrl(String url)
     {
-        return headers.containsKey(name);
-    }
-
-    /**
-     * @return
-     */
-    public Set getHeaderNames()
-    {
-        return headers.keySet();
-    }
-
-    public Object getHeader(String name)
-    {
-        return headers.get(name);
-    }
-
-    public List getHeaders(String name)
-    {
-        Object value = headers.get(name);
-        if (value instanceof List)
-        {
-            return (List) value;
-        }
-        else if (value != null)
-        {
-            return Collections.singletonList(value);
-        }
-        else
-        {
-            return Collections.EMPTY_LIST;
-        }
+        return url;
     }
 
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
      */
     public String encodeURL(String url)
-    {
-        return url;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
-     */
-    public String encodeRedirectURL(String url)
-    {
-        return url;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
-     */
-    public String encodeUrl(String url)
     {
         return url;
     }
@@ -346,73 +397,11 @@ public class FakeHttpServletResponse implements HttpServletResponse
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+     * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
      */
-    public void sendError(int newStatus, String newErrorMessage) throws IOException
+    public String encodeRedirectURL(String url)
     {
-        if (committed)
-        {
-            throw new IllegalStateException("Cannot set error status - response is already committed");
-        }
-        this.status = newStatus;
-        this.errorMessage = newErrorMessage;
-        committed = true;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#sendError(int)
-     */
-    public void sendError(int newStatus) throws IOException
-    {
-        if (committed)
-        {
-            throw new IllegalStateException("Cannot set error status - response is already committed");
-        }
-        this.status = newStatus;
-        committed = true;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
-     */
-    public void sendRedirect(String url) throws IOException
-    {
-        if (committed)
-        {
-            throw new IllegalStateException("Cannot send redirect - response is already committed");
-        }
-
-        redirectedUrl = url;
-        committed = true;
-    }
-
-    public String getRedirectedUrl()
-    {
-        return redirectedUrl;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
-     */
-    public void setDateHeader(String name, long value)
-    {
-        headers.put(name, new Long(value));
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
-     */
-    public void addDateHeader(String name, long value)
-    {
-        doAddHeader(name, new Long(value));
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
-     */
-    public void setHeader(String name, String value)
-    {
-        headers.put(name, value);
+        return url;
     }
 
     /* (non-Javadoc)
@@ -424,11 +413,27 @@ public class FakeHttpServletResponse implements HttpServletResponse
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
      */
-    public void setIntHeader(String name, int value)
+    public void setHeader(String name, String value)
     {
-        headers.put(name, new Integer(value));
+        headers.put(name, value);
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
+     */
+    public void addDateHeader(String name, long value)
+    {
+        doAddHeader(name, new Long(value));
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
+     */
+    public void setDateHeader(String name, long value)
+    {
+        headers.put(name, new Long(value));
     }
 
     /* (non-Javadoc)
@@ -437,6 +442,14 @@ public class FakeHttpServletResponse implements HttpServletResponse
     public void addIntHeader(String name, int value)
     {
         doAddHeader(name, new Integer(value));
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
+     */
+    public void setIntHeader(String name, int value)
+    {
+        headers.put(name, new Integer(value));
     }
 
     /**
@@ -465,57 +478,93 @@ public class FakeHttpServletResponse implements HttpServletResponse
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#setStatus(int)
+     * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
      */
-    public void setStatus(int status)
+    public boolean containsHeader(String name)
     {
-        this.status = status;
+        return headers.containsKey(name);
     }
 
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
+    /**
+     * Accessor for the current set of headers
+     * @return The current set of headers
      */
-    public void setStatus(int status, String errorMessage)
+    public Set getHeaderNames()
     {
-        this.status = status;
-        this.errorMessage = errorMessage;
+        return headers.keySet();
     }
 
-    public int getStatus()
+    /**
+     * Accessor for a header by a given name
+     * @param name The header name to lookup
+     * @return The data behind this header
+     */
+    public Object getHeader(String name)
     {
-        return status;
+        return headers.get(name);
     }
 
-    public String getErrorMessage()
+    /**
+     * If there are multiple values for a given header, get them as a list
+     * @param name The header name to lookup
+     * @return The data behind this header
+     */
+    public List getHeaders(String name)
     {
-        return errorMessage;
+        Object value = headers.get(name);
+        if (value instanceof List)
+        {
+            return (List) value;
+        }
+        else if (value != null)
+        {
+            return Collections.singletonList(value);
+        }
+        else
+        {
+            return Collections.EMPTY_LIST;
+        }
     }
 
     //---------------------------------------------------------------------
     // Methods for FakeRequestDispatcher
     //---------------------------------------------------------------------
 
+    /**
+     * What URL are we forwarding to?
+     * @param forwardedUrl What URL are we forwarding to?
+     */
     public void setForwardedUrl(String forwardedUrl)
     {
         this.forwardedUrl = forwardedUrl;
     }
 
+    /**
+     * What URL are we forwarding to?
+     * @return What URL are we forwarding to?
+     */
     public String getForwardedUrl()
     {
         return forwardedUrl;
     }
 
+    /**
+     * What URL are we including?
+     * @param includedUrl What URL are we including?
+     */
     public void setIncludedUrl(String includedUrl)
     {
         this.includedUrl = includedUrl;
     }
 
+    /**
+     * What URL are we including?
+     * @return What URL are we including?
+     */
     public String getIncludedUrl()
     {
         return includedUrl;
     }
-
-    public static final int DEFAULT_SERVER_PORT = 80;
 
     private static final String CHARSET_PREFIX = "charset=";
 
