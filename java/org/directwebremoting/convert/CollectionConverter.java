@@ -71,12 +71,12 @@ public class CollectionConverter extends BaseV20Converter implements Converter
 
         if (!value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
         {
-            throw new IllegalArgumentException(Messages.getString("CollectionConverter.MissingOpener", ConversionConstants.INBOUND_ARRAY_START));
+            throw new IllegalArgumentException(Messages.getString("CollectionConverter.FormatError", ConversionConstants.INBOUND_ARRAY_START));
         }
 
         if (!value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
         {
-            throw new IllegalArgumentException(Messages.getString("CollectionConverter.MissingCloser", ConversionConstants.INBOUND_ARRAY_END));
+            throw new IllegalArgumentException(Messages.getString("CollectionConverter.FormatError", ConversionConstants.INBOUND_ARRAY_END));
         }
 
         value = value.substring(1, value.length() - 1);

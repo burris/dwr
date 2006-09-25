@@ -67,12 +67,12 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
 
         if (!value.startsWith(ConversionConstants.INBOUND_MAP_START))
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.MissingOpener", ConversionConstants.INBOUND_MAP_START));
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
         }
 
         if (!value.endsWith(ConversionConstants.INBOUND_MAP_END))
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.MissingCloser", ConversionConstants.INBOUND_MAP_START));
+            throw new IllegalArgumentException(Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
         }
 
         value = value.substring(1, value.length() - 1);

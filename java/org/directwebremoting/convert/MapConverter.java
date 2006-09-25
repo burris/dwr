@@ -66,12 +66,12 @@ public class MapConverter implements Converter
 
         if (!value.startsWith(ConversionConstants.INBOUND_MAP_START))
         {
-            throw new IllegalArgumentException(Messages.getString("MapConverter.MissingOpener", ConversionConstants.INBOUND_MAP_START));
+            throw new IllegalArgumentException(Messages.getString("MapConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
         }
 
         if (!value.endsWith(ConversionConstants.INBOUND_MAP_END))
         {
-            throw new IllegalArgumentException(Messages.getString("MapConverter.MissingCloser", ConversionConstants.INBOUND_MAP_END));
+            throw new IllegalArgumentException(Messages.getString("MapConverter.FormatError", ConversionConstants.INBOUND_MAP_END));
         }
 
         value = value.substring(1, value.length() - 1);
