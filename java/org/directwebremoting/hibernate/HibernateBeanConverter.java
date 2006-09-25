@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.directwebremoting.convert.BasicBeanConverter;
-import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
@@ -40,51 +39,9 @@ public class HibernateBeanConverter extends BasicBeanConverter
      */
     public HibernateBeanConverter() throws ClassNotFoundException
     {
-        Class hibernate;
-
-        try
+        if (!HibernateUtil.isHibernateAvailable())
         {
-            hibernate = LocalUtil.classForName(CLASS_HIBERNATE3);
-            log.info("Found Hibernate3 class: " + hibernate.getName());
-        }
-        catch (Exception ex)
-        {
-            try
-            {
-                hibernate = LocalUtil.classForName(CLASS_HIBERNATE2);
-                log.info("Found Hibernate2 class: " + hibernate.getName());
-            }
-            catch (Exception ex2)
-            {
-                throw new ClassNotFoundException(Messages.getString("HibernateBeanConverter.MissingClass"));
-            }
-        }
-
-        try
-        {
-            getClass = hibernate.getMethod("getClass", new Class[] { Object.class });
-        }
-        catch (Exception ex)
-        {
-            throw new ClassNotFoundException(Messages.getString("HibernateBeanConverter.MissingGetClass"));
-        }
-
-        try
-        {
-            isPropertyInitialized = hibernate.getMethod("isPropertyInitialized", new Class[] { Object.class, String.class });
-        }
-        catch (Exception ex)
-        {
-            log.info("Hibernate.isPropertyInitialized() is not available in Hibernate2 so initialization checks will not take place");
-        }
-
-        try
-        {
-            isInitialized = hibernate.getMethod("isInitialized", new Class[] { Object.class });
-        }
-        catch (Exception ex)
-        {
-            log.info("Hibernate.isInitialized() is not available - verify you have the Hibernate jar on your classpath");
+            throw new ClassNotFoundException(Messages.getString("HibernateBeanConverter.MissingClass"));
         }
     }
 
@@ -97,20 +54,8 @@ public class HibernateBeanConverter extends BasicBeanConverter
      */
     protected BeanInfo getBeanInfo(Object bean) throws IntrospectionException
     {
-        try
-        {
-            Class clazz = (Class) getClass.invoke(null, new Object[] { bean });
-            return Introspector.getBeanInfo(clazz);
-        }
-        catch (IntrospectionException ex)
-        {
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            log.error("Logic Error", ex);
-            throw new IntrospectionException(ex.getMessage());
-        }
+        Class clazz = HibernateUtil.getClass(bean);
+        return Introspector.getBeanInfo(clazz);
     }
 
     /* (non-Javadoc)
@@ -121,26 +66,9 @@ public class HibernateBeanConverter extends BasicBeanConverter
         try
         {
             // We don't marshall un-initialized properties for Hibernate3
-            if (isPropertyInitialized != null)
+            if (HibernateUtil.getHibernateMajorVersion() >= 3)
             {
-                PropertyDescriptor[] props = Introspector.getBeanInfo(data.getClass()).getPropertyDescriptors();
-
-                // Cache the method if possible, using the classname and
-                // property name to allow for similar named methods (getName())
-                String key = data.getClass().getName() + property;
-
-                Method method = (Method) methods.get(key);
-                if (method == null)
-                {
-                    for (int i = 0; i < props.length; i++)
-                    {
-                        if (props[i].getName().equalsIgnoreCase(property))
-                        {
-                            method = props[i].getReadMethod();
-                        }
-                    }
-                    methods.put(key, method);
-                }
+                Method method = findGetter(data, property);
 
                 if (method == null)
                 {
@@ -148,14 +76,16 @@ public class HibernateBeanConverter extends BasicBeanConverter
                     return false;
                 }
 
-                Boolean reply = (Boolean) isPropertyInitialized.invoke(null, new Object[] { data, property });
-                if (!reply.booleanValue())
+                boolean reply = HibernateUtil.isPropertyInitialized(data, property);
+                if (!reply)
                 {
                     return false;
                 }
 
-                reply = (Boolean) isInitialized.invoke(null, new Object[] { method.invoke(data, new Object[] {}) });
-                if (!reply.booleanValue())
+                Object retval = method.invoke(data, new Object[] {});
+
+                reply = HibernateUtil.isInitialized(retval);
+                if (!reply)
                 {
                     return false;
                 }
@@ -171,34 +101,39 @@ public class HibernateBeanConverter extends BasicBeanConverter
     }
 
     /**
+     * Cache the method if possible, using the classname and property name to
+     * allow for similar named methods.
+     * @param data The bean to introspect
+     * @param property The property to get the accessor for
+     * @return The getter method
+     * @throws IntrospectionException
+     */
+    private Method findGetter(Object data, String property) throws IntrospectionException
+    {
+        String key = data.getClass().getName() + ":" + property;
+
+        Method method = (Method) methods.get(key);
+        if (method == null)
+        {
+            PropertyDescriptor[] props = Introspector.getBeanInfo(data.getClass()).getPropertyDescriptors();
+            for (int i = 0; i < props.length; i++)
+            {
+                if (props[i].getName().equalsIgnoreCase(property))
+                {
+                    method = props[i].getReadMethod();
+                }
+            }
+
+            methods.put(key, method);
+        }
+
+        return method;
+    }
+
+    /**
      * The cache of method lookups that we've already done
      */
     private static Map methods = new HashMap();
-
-    /**
-     * The Hibernate utility class under Hibernate2
-     */
-    private static final String CLASS_HIBERNATE2 = "net.sf.hibernate.Hibernate";
-
-    /**
-     * The Hibernate utility class under Hibernate3
-     */
-    private static final String CLASS_HIBERNATE3 = "org.hibernate.Hibernate";
-
-    /**
-     * The cached getClass method from Hibernate
-     */
-    private Method getClass;
-
-    /**
-     * The cached isPropertyInitialized from Hibernate
-     */
-    private Method isPropertyInitialized;
-
-    /**
-     * The cached isInitialized from Hibernate
-     */
-    private Method isInitialized;
 
     /**
      * The log stream
