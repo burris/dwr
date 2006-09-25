@@ -46,7 +46,6 @@
 	<classpathentry path="jar/webwork-2.2.2.jar" kind="lib"/>
 	<classpathentry path="jar/xwork-1.1.1.jar" kind="lib"/>
 	<classpathentry path="java" kind="src"/>
-	<classpathentry path="monitor" kind="src"/>
 	<classpathentry path="demo" kind="src"/>
 	<classpathentry path="etc/classpath" kind="src"/>
 	<classpathentry path="web/WEB-INF/classes" kind="output"/>
