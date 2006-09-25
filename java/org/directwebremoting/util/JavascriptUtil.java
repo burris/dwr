@@ -815,7 +815,7 @@ public class JavascriptUtil
     /**
      * Sometimes we need to retain the comment because it has special meaning
      */
-    private static final String COMMENT_RETAIN = "@DWR";
+    private static final String COMMENT_RETAIN = "#DWR";
 
     /**
      * The log stream

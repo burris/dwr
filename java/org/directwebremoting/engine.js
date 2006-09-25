@@ -554,28 +554,21 @@ DWREngine._getTextFromCometIFrame = function() {
 
 /** @private Some more text might have come in, test and execute the new stuff */
 DWREngine._processCometResponse = function(response) {
+  // See CVS history for extra debug lines to help sort problems with this code
   if (DWREngine._pollCometSize != response.length) {
     var firstStartTag = response.indexOf("//#DWR-START#", DWREngine._pollCometSize);
     if (firstStartTag == -1) {
       // There is no start tag so we ignore the rest
-      // DWRUtil.debug("Missing //#DWR-START# Skipping: " + response.substring(DWREngine._pollCometSize));
       DWREngine._pollCometSize = response.length;
     }
     else {
-      // if (firstStartTag != DWREngine._pollCometSize) {
-      //   DWRUtil.debug("//#DWR-START# not at start skipping: " + response.substring(DWREngine._pollCometSize, firstStartTag));
-      // }
       var lastEndTag = response.lastIndexOf("//#DWR-END#");
       if (lastEndTag != -1) {
         var executeString = response.substring(firstStartTag + 13, lastEndTag);
-        // DWRUtil.debug(executeString);
         eval(executeString);
         // Skip the end tag too for next time
         DWREngine._pollCometSize = lastEndTag + 11;
       }
-      // else {
-      //   DWRUtil.debug("Missing //#DWR-END# Postponing: " + executeString);
-      // }
     }
   }
 };
