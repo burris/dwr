@@ -288,7 +288,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             String warning = accessControl.getReasonToNotExecute(creator, scriptName, method);
             if (warning != null)
             {
-                buffer.append("<br/><span class='warning'>(Warning: Role restructions in place: " + warning + ".)</span>\n");
+                buffer.append("<br/><span class='warning'>(Security restructions in place: " + warning + ".)</span>\n");
             }
 
             buffer.append("</li>\n");

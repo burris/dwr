@@ -138,7 +138,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             if (method == null)
             {
                 String name = call.getScriptName() + '.' + call.getMethodName();
-                String error = Messages.getString("DefaultRemoter.UnknownMethod", name);
+                String error = Messages.getString("BaseCallMarshaller.UnknownMethod", name);
                 log.warn("Marshalling exception: " + error);
 
                 call.setMethod(null);
@@ -154,7 +154,8 @@ public abstract class BaseCallMarshaller implements Marshaller
             String reason = accessControl.getReasonToNotExecute(creator, call.getScriptName(), method);
             if (reason != null)
             {
-                throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied"));
+                log.error("Access denied: " + reason + ". creator=" + creator + ", call=" + call.getScriptName() + "." + method);
+                throw new SecurityException(Messages.getString("BaseCallMarshaller.AccessDenied"));
             }
 
             // Convert all the parameters to the correct types
@@ -223,12 +224,12 @@ public abstract class BaseCallMarshaller implements Marshaller
     {
         if (call.getScriptName() == null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.MissingClassParam"));
+            throw new IllegalArgumentException(Messages.getString("BaseCallMarshaller.MissingClassParam"));
         }
 
         if (call.getMethodName() == null)
         {
-            throw new IllegalArgumentException(Messages.getString("DefaultRemoter.MissingMethodParam"));
+            throw new IllegalArgumentException(Messages.getString("BaseCallMarshaller.MissingMethodParam"));
         }
 
         Creator creator = creatorManager.getCreator(call.getScriptName());
