@@ -796,7 +796,7 @@ DWREngine._handleServerError = function(id, error) {
   var handlers = DWREngine._handlersMap[id];
   DWREngine._handlersMap[id] = null;
 
-  if (!error.message) error.message = "Error without message";
+  if (error.message == undefined) error.message = "";
   DWREngine._handleMetaDataError(handlers, error.message, error);
 
   DWREngine._maybeClearUpIFrame();
