@@ -32,6 +32,8 @@ Audit all MarshallExceptions - they could go to the client
 
 make sure that the exec calls never pass back an exception. catch and emit some good javascript
 
+DOM4JConverter seems to be broken
+
 Turning RA off
 	Say I’ve got a page with reverse ajax turned on. I want to refresh the page
 	using a js call from the reverse ajax script conduit.  What seems to happen
