@@ -362,41 +362,10 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   }
   // From the other params, work out which is the function (or object with
   // call meta-data) and which is the call parameters
-  var params;
   var callData;
-  var firstArg = args[0];
   var lastArg = args[args.length - 1];
-
-  if (typeof firstArg == "function") {
-    callData = { callback:args.shift() };
-    params = args;
-  }
-  else if (typeof lastArg == "function") {
-    callData = { callback:args.pop() };
-    params = args;
-  }
-  else if (lastArg != null && typeof lastArg == "object" && lastArg.callback != null && typeof lastArg.callback == "function") {
-    callData = args.pop();
-    params = args;
-  }
-  else if (firstArg == null) {
-    // This could be a null callback function, but if the last arg is also
-    // null then we can't tell which is the function unless there are only
-    // 2 args, in which case we don't care!
-    if (lastArg == null && args.length > 2) {
-      DWREngine._handleError("Ambiguous nulls at start and end of parameter list. Which is the callback function?");
-    }
-    callData = { callback:args.shift() };
-    params = args;
-  }
-  else if (lastArg == null) {
-    callData = { callback:args.pop() };
-    params = args;
-  }
-  else {
-    DWREngine._handleError("Missing callback function or metadata object.");
-    return;
-  }
+  if (typeof lastArg == "function" || lastArg == null) callData = { callback:args.pop() };
+  else callData = args.pop();
 
   // Get a unique ID for this call
   var random = Math.floor(Math.random() * 10001);
@@ -445,8 +414,8 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   DWREngine._batch.map[prefix + "id"] = id;
 
   // Serialize the parameters into batch.map
-  for (i = 0; i < params.length; i++) {
-    DWREngine._serializeAll(DWREngine._batch, [], params[i], prefix + "param" + i);
+  for (i = 0; i < args.length; i++) {
+    DWREngine._serializeAll(DWREngine._batch, [], args[i], prefix + "param" + i);
   }
 
   // Now we have finished remembering the call, we incr the call count
