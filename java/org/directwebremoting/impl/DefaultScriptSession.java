@@ -99,6 +99,14 @@ public class DefaultScriptSession implements ScriptSession
     }
 
     /* (non-Javadoc)
+     * @see org.directwebremoting.ScriptSession#isInvalidated()
+     */
+    public boolean isInvalidated()
+    {
+        return invalidated;
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSession#getId()
      */
     public String getId()
