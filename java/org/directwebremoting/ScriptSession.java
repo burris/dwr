@@ -17,6 +17,8 @@ package org.directwebremoting;
 
 import java.util.Iterator;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * Script scope is like session scope except that it is managed using a
  * Javascript variable.
@@ -84,6 +86,18 @@ public interface ScriptSession
      * @throws IllegalStateException if the page has been invalidated
      */
     void invalidate();
+
+    /**
+     * Checks to see if this ScriptSession has been invalidated.
+     * <p>There is no similar method on {@link HttpSession} because it is
+     * assumed that you do not store HttpSessions from one request to another,
+     * so all sessions that you have access to will always be either valid, or
+     * you have just invalidated it yourself so you wont need to ask. This
+     * method makes up for the change that now ScriptSessions are accessible
+     * from outside the normal scope.
+     * @return true if the ScriptSession has been invalidated
+     */
+    boolean isInvalidated();
 
     /**
      * Add a script to the list waiting for remote execution.
