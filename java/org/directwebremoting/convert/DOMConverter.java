@@ -35,7 +35,6 @@ import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Messages;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -76,7 +75,7 @@ public class DOMConverter extends BaseV20Converter implements Converter
                 return doc.getDocumentElement();
             }
 
-            throw new MarshallException(Messages.getString("DOMConverter.UnusableClass", paramType.getName()));
+            throw new MarshallException(paramType);
         }
         catch (MarshallException ex)
         {
@@ -84,7 +83,7 @@ public class DOMConverter extends BaseV20Converter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(paramType, ex);
         }
     }
 
@@ -106,7 +105,7 @@ public class DOMConverter extends BaseV20Converter implements Converter
             }
             else
             {
-                throw new MarshallException("Data is not a DOM Node");
+                throw new MarshallException(data.getClass());
             }
 
             // Setup the destination
@@ -129,7 +128,7 @@ public class DOMConverter extends BaseV20Converter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(data.getClass(), ex);
         }
     }
 

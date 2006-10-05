@@ -124,7 +124,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                 int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
                 if (colonpos == -1)
                 {
-                    throw new MarshallException(Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
+                    throw new MarshallException(paramType, Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
                 }
 
                 String key = token.substring(0, colonpos).trim();
@@ -181,7 +181,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(paramType, ex);
         }
     }
 
@@ -246,7 +246,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(data.getClass(), ex);
         }
 
         ov.init(ovs, getJavascript());

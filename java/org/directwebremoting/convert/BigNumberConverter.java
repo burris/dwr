@@ -57,11 +57,11 @@ public class BigNumberConverter extends BaseV20Converter implements Converter
                 return new BigInteger(value.trim());
             }
 
-            throw new MarshallException(Messages.getString("BigNumberConverter.NonPrimitive", paramType.getName()));
+            throw new MarshallException(paramType);
         }
         catch (NumberFormatException ex)
         {
-            throw new MarshallException(Messages.getString("BigNumberConverter.FormatError", value, paramType.getName()), ex);
+            throw new MarshallException(paramType, Messages.getString("BigNumberConverter.FormatError", value));
         }
     }
 

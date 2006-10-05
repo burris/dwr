@@ -19,38 +19,43 @@ package org.directwebremoting;
  * Something has gone wrong when we were doing some conversion.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class MarshallException extends RuntimeException
+public class ServerException extends RuntimeException
 {
     /**
      * Default ctor
-     * @param paramType The type we were trying to marshall
      */
-    public MarshallException(Class paramType)
+    public ServerException()
     {
-        this.paramType = paramType;
-    }
-
-    /**
-     * Construct a MarshallException with an exception and a destination type
-     * @param paramType The type we were trying to marshall
-     * @param ex error stack trace
-     */
-    public MarshallException(Class paramType, Throwable ex)
-    {
-        this.paramType = paramType;
-        this.ex = ex;
     }
 
     /**
      * Construct a MarshallException with a description message and exception
-     * @param paramType The type we were trying to marshall
      * @param message error description
      */
-    public MarshallException(Class paramType, String message)
+    public ServerException(String message)
     {
         super(message);
+    }
 
-        this.paramType = paramType;
+    /**
+     * Construct a MarshallException with a description message and exception
+     * @param message error description
+     * @param ex error stack trace
+     */
+    public ServerException(String message, Throwable ex)
+    {
+        super(message);
+        this.ex = ex;
+    }
+
+    /**
+     * Construct a MarshallException with an exception
+     * @param ex error stack trace
+     */
+    public ServerException(Throwable ex)
+    {
+        super(ex.getMessage());
+        this.ex = ex;
     }
 
     /**
@@ -60,20 +65,6 @@ public class MarshallException extends RuntimeException
     {
         return ex;
     }
-
-    /**
-     * Accessor for the type we are converting to/from
-     * @return The type we are converting to/from
-     */
-    public Class getConversionType()
-    {
-        return paramType;
-    }
-
-    /**
-     * The type we are converting to/from
-     */
-    private Class paramType;
 
     /**
      * Stored exception cause

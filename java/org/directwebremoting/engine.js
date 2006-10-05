@@ -36,6 +36,14 @@ DWREngine.setWarningHandler = function(handler) {
 };
 
 /**
+ * Setter for the text/html handler - what happens if a DWR request gets an HTML
+ * reply rather than the expected Javascript. Often due to login timeout
+ */
+DWREngine.setTextHtmlHandler = function(handler) {
+  DWREngine._textHtmlHandler = handler;
+}
+
+/**
  * Set a default timeout value for all calls. 0 (the default) turns timeouts off.
  * @see http://getahead.ltd.uk/dwr/browser/engine/errors
  */
@@ -149,14 +157,6 @@ DWREngine.setPollType = function(newPollType) {
 };
 
 /**
- * Setter for the text/html handler - what happens if a DWR request gets an HTML
- * reply rather than the expected Javascript. Often due to login timeout
- */
-DWREngine.setTextHtmlHandler = function(handler) {
-  DWREngine._textHtmlHandler = handler;
-}
-
-/**
  * The default message handler.
  * @see http://getahead.ltd.uk/dwr/browser/engine/errors
  */
@@ -255,6 +255,11 @@ DWREngine._getScriptSessionId = function() {
 
 /** A function to call if something fails. */
 DWREngine._errorHandler = DWREngine.defaultMessageHandler;
+
+/** By default exceptions are handled by the errorHandler */
+DWREngine._exceptionHandler = function(message) {
+  DWREngine._errorHandler(message);
+};
 
 /** For debugging when something unexplained happens. */
 DWREngine._warningHandler = null;
@@ -382,11 +387,13 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
 
   if (callData.errorHandler == null) callData.errorHandler = DWREngine._errorHandler;
   if (callData.warningHandler == null) callData.warningHandler = DWREngine._warningHandler;
+  if (callData.exceptionHandler == null) callData.exceptionHandler = DWREngine._exceptionHandler;
 
   // Save the handlers for later
   DWREngine._handlersMap[id] = {
     errorHandler:callData.errorHandler,
     warningHandler:callData.warningHandler,
+    exceptionHandler:callData.exceptionHandler,
     callback:callData.callback
   };
 
@@ -772,7 +779,7 @@ DWREngine._stateChange = function(batch) {
  * @param id The identifier of the call that we are handling a response for
  * @param reply The data to pass to the callback function
  */
-DWREngine._handleResponse = function(id, reply) {
+DWREngine._remoteHandleResponse = function(id, reply) {
   // Clear this callback out of the list - we don't need it any more
   var handlers = DWREngine._handlersMap[id];
   DWREngine._handlersMap[id] = null;
@@ -791,13 +798,25 @@ DWREngine._handleResponse = function(id, reply) {
 };
 
 /** @private This method is called by Javascript that is emitted by server */
-DWREngine._handleServerError = function(id, error) {
+DWREngine._remoteHandleError = function(id, error) {
   // Clear this callback out of the list - we don't need it any more
   var handlers = DWREngine._handlersMap[id];
   DWREngine._handlersMap[id] = null;
 
   if (error.message == undefined) error.message = "";
   DWREngine._handleMetaDataError(handlers, error.message, error);
+
+  DWREngine._maybeClearUpIFrame();
+};
+
+/** @private This method is called by Javascript that is emitted by server */
+DWREngine._remoteHandleException = function(id, error) {
+  // Clear this callback out of the list - we don't need it any more
+  var handlers = DWREngine._handlersMap[id];
+  DWREngine._handlersMap[id] = null;
+
+  if (error.message == undefined) error.message = "";
+  DWREngine._handleMetaDataException(handlers, error.message, error);
 
   DWREngine._maybeClearUpIFrame();
 };
@@ -891,10 +910,21 @@ DWREngine._handleWarning = function(reason, ex) {
   if (DWREngine._warningHandler) DWREngine._warningHandler(reason, ex);
 };
 
+/** @private Generic warning handling routing to save having null checks everywhere */
+DWREngine._handleException = function(reason, ex) {
+  if (DWREngine._exceptionHandler) DWREngine._exceptionHandler(reason, ex);
+};
+
 /** @private Generic error handling routing to save having null checks everywhere */
 DWREngine._handleMetaDataError = function(handlers, reason, ex) {
   if (handlers && typeof handlers.errorHandler == "function") handlers.errorHandler(reason, ex);
   else DWREngine._handleError(reason, ex);
+};
+
+/** @private Generic error handling routing to save having null checks everywhere */
+DWREngine._handleMetaDataException = function(handlers, reason, ex) {
+  if (handlers && typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(reason, ex);
+  else DWREngine._handleException(reason, ex);
 };
 
 /** @private Generic error handling routing to save having null checks everywhere */

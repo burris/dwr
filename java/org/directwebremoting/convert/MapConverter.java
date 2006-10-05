@@ -124,7 +124,7 @@ public class MapConverter implements Converter
                 int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
                 if (colonpos == -1)
                 {
-                    throw new MarshallException(Messages.getString("MapConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
+                    throw new MarshallException(paramType, Messages.getString("MapConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
                 }
 
                 // Convert the value part of the token by splitting it into the
@@ -156,7 +156,7 @@ public class MapConverter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(paramType, ex);
         }
     }
 

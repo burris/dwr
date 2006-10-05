@@ -15,6 +15,9 @@
  */
 package org.directwebremoting.servlet;
 
+import org.directwebremoting.Container;
+import org.directwebremoting.Handler;
+
 /**
  * Various constants from generating output.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -22,54 +25,70 @@ package org.directwebremoting.servlet;
 public class PathConstants
 {
     /**
-     * Path to plain Javascript Marshalled execution
+     * When we prime the {@link Container} with URLs for {@link Handler}s we use
+     * a prefix so the {@link UrlProcessor} knows that this is a URL and not
+     * some other property
      */
-    public static final String PATH_PLAIN_CALL = "/plaincall";
+    public static final String URL_PREFIX = "url:";
 
     /**
-     * Path to HTML wrapped Javascript Marshalled execution
+     * The id that we use for the URL of the {@link IndexHandler}
      */
-    public static final String PATH_HTML_CALL = "/htmlcall";
+    public static final String URL_INDEX = "indexHandlerUrl";
 
     /**
-     * Path to plain Javascript Marshalled execution
+     * The id that we use for the URL of the {@link EngineHandler}
      */
-    public static final String PATH_PLAIN_POLL = "/plainpoll";
+    public static final String URL_ENGINE = "engineHandlerUrl";
 
     /**
-     * Path to HTML wrapper Marshalled execution
+     * The id that we use for the URL of the {@link UtilHandler}
      */
-    public static final String PATH_HTML_POLL = "/htmlpoll";
+    public static final String URL_UTIL = "utilHandlerUrl";
 
     /**
-     * Path to the interface creator
+     * The id that we use for the URL of the {@link WebworkUtilHandler}
      */
-    public static final String PATH_INTERFACE = "/interface/";
+    public static final String URL_WEBWORKUTIL = "webworkUtilHandlerUrl";
 
     /**
-     * Path to the generated test pages
+     * The id that we use for the URL of the {@link AboutHandler}
      */
-    public static final String PATH_TEST = "/test/";
+    public static final String URL_ABOUT = "aboutHandlerUrl";
 
     /**
-     * Path to the root of the web app
+     * The id that we use for the URL of the {@link TestHandler}
      */
-    public static final String PATH_ROOT = "/";
+    public static final String URL_TEST = "testHandlerUrl";
 
     /**
-     * Index page name
+     * The id that we use for the URL of the {@link InterfaceHandler}
      */
-    public static final String FILE_INDEX = "/index.html";
+    public static final String URL_INTERFACE = "interfaceHandlerUrl";
 
     /**
-     * Util script name
+     * The id that we use for the URL of the {@link PlainCallHandler}
+     * (for plain Javascript Marshalled execution)
      */
-    public static final String FILE_UTIL = "/util.js";
+    public static final String URL_PLAIN_CALL = "plainCallHandlerUrl";
 
     /**
-     * Engine helper name
+     * The id that we use for the URL of the {@link HtmlCallHandler}
+     * (HTML wrapped Javascript Marshalled execution)
      */
-    public static final String FILE_ENGINE = "/engine.js";
+    public static final String URL_HTML_CALL = "plainHtmlHandlerUrl";
+
+    /**
+     * The id that we use for the URL of the {@link PlainPollHandler}
+     * (for plain Javascript polling)
+     */
+    public static final String URL_PLAIN_POLL = "plainPollHandlerUrl";
+
+    /**
+     * The id that we use for the URL of the {@link HtmlPollHandler}
+     * (HTML wrapped Javascript polling)
+     */
+    public static final String URL_HTML_POLL = "htmlPollHandlerUrl";
 
     /**
      * Help page name
@@ -85,9 +104,4 @@ public class PathConstants
      * The position of web.xml
      */
     public static final String RESOURCE_WEB_XML = "WEB-INF/web.xml";
-
-    /**
-     * WebWork invocation helper name.
-     */
-    public static final String WW_FILE_UTIL = "/webwork/DWRActionUtil.js";
 }

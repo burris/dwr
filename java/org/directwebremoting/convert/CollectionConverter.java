@@ -71,12 +71,12 @@ public class CollectionConverter extends BaseV20Converter implements Converter
 
         if (!value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
         {
-            throw new IllegalArgumentException(Messages.getString("CollectionConverter.FormatError", ConversionConstants.INBOUND_ARRAY_START));
+            throw new MarshallException(paramType, Messages.getString("CollectionConverter.FormatError", ConversionConstants.INBOUND_ARRAY_START));
         }
 
         if (!value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
         {
-            throw new IllegalArgumentException(Messages.getString("CollectionConverter.FormatError", ConversionConstants.INBOUND_ARRAY_END));
+            throw new MarshallException(paramType, Messages.getString("CollectionConverter.FormatError", ConversionConstants.INBOUND_ARRAY_END));
         }
 
         value = value.substring(1, value.length() - 1);
@@ -128,7 +128,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             }
             else
             {
-                throw new MarshallException(Messages.getString("CollectionConverter.ConvertError") + paramType.getName());
+                throw new MarshallException(paramType);
             }
 
             // We should put the new object into the working map in case it
@@ -164,7 +164,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(paramType, ex);
         }
     }
 
@@ -186,7 +186,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         }
         else
         {
-            throw new MarshallException(Messages.getString("CollectionConverter.ConvertFailed", data.getClass().getName()));
+            throw new MarshallException(data.getClass());
         }
 
         // Stash this bit of data to cope with recursion

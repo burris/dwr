@@ -46,11 +46,11 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
         }
         catch (NumberFormatException ex)
         {
-            throw new MarshallException(Messages.getString("PrimitiveConverter.FormatError", value, paramType.getName()), ex);
+            throw new MarshallException(paramType, Messages.getString("PrimitiveConverter.FormatError", value));
         }
         catch (IllegalArgumentException ex)
         {
-            throw new MarshallException(Messages.getString("PrimitiveConverter.TypeNotPrimitive", paramType.getName()), ex);
+            throw new MarshallException(paramType);
         }
     }
 

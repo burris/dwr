@@ -47,6 +47,7 @@ public interface DebugPageGenerator
      * @param root The prefix common to all DWR URLs. Usually contextPath+servletPath
      * @param scriptName The script to generate for
      * @return A URL that points at the given scriptName
+     * @deprecated Please tell the DWR users mailing list users@dwr.dev.java.net if you use this
      */
     String generateInterfaceUrl(String root, String scriptName);
 
@@ -54,6 +55,7 @@ public interface DebugPageGenerator
      * Create a url that links to the engine.js file
      * @param root The prefix common to all DWR URLs. Usually contextPath+servletPath
      * @return A URL that points at the central engine Javascript file
+     * @deprecated Please tell the DWR users mailing list users@dwr.dev.java.net if you use this
      */
     String generateEngineUrl(String root);
 
@@ -62,11 +64,13 @@ public interface DebugPageGenerator
      * @param root The prefix common to all DWR URLs. Usually contextPath+servletPath
      * @param library The name of a library as returned by {@link DebugPageGenerator#getAvailableLibraries()}
      * @return A URL that points at the given library
+     * @deprecated Please tell the DWR users mailing list users@dwr.dev.java.net if you use this
      */
     String generateLibraryUrl(String root, String library);
 
     /**
      * @return A list of the available libraries.
+     * @deprecated Please tell the DWR users mailing list users@dwr.dev.java.net if you use this
      */
     Collection getAvailableLibraries();
 }

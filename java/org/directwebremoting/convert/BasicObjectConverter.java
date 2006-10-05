@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.directwebremoting.Converter;
 import org.directwebremoting.ConverterManager;
+import org.directwebremoting.NamedConverter;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -31,7 +31,7 @@ import org.directwebremoting.util.Messages;
  * support for include and exclude lists, and instanceTypes.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public abstract class BasicObjectConverter extends BaseV20Converter implements Converter
+public abstract class BasicObjectConverter extends BaseV20Converter implements NamedConverter
 {
     /**
      * Set a list of properties excluded from conversion
@@ -96,16 +96,16 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements C
         setInstanceType(LocalUtil.classForName(name));
     }
 
-    /**
-     * @return Returns the instanceType.
+    /* (non-Javadoc)
+     * @see org.directwebremoting.convert.NamedConverter#getInstanceType()
      */
     public Class getInstanceType()
     {
         return instanceType;
     }
 
-    /**
-     * @param instanceType The instanceType to set.
+    /* (non-Javadoc)
+     * @see org.directwebremoting.convert.NamedConverter#setInstanceType(java.lang.Class)
      */
     public void setInstanceType(Class instanceType)
     {
@@ -175,12 +175,8 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements C
         return true;
     }
 
-    /**
-     * Fetch an array of all the allowed property names.
-     * This is formed by calling {@link #getAllPropertyNames(Class)} and then
-     * filtering using {@link #isAllowed(String)}.
-     * @param mappedType The class in the inheritance hierachy to use as a base
-     * @return A list of allowed propery names
+    /* (non-Javadoc)
+     * @see org.directwebremoting.NamedConverter#getAllowedPropertyNames(java.lang.Class)
      */
     public String[] getAllowedPropertyNames(Class mappedType)
     {
@@ -207,26 +203,16 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements C
      */
     public abstract String[] getAllPropertyNames(Class mappedType);
 
-    /**
-     * Find the type for a given property name
-     * @param mappedType The class in the inheritance hierachy to use as a base
-     * @param propertyName The property name to lookup
-     * @return The class for the property type
-     */
-    public abstract Class getPropertyType(Class mappedType, String propertyName);
-
-    /**
-     * Accessor for the javascript class name for the converted objects.
-     * @return The Javascript name
+    /* (non-Javadoc)
+     * @see org.directwebremoting.convert.NamedConverter#getJavascript()
      */
     public String getJavascript()
     {
         return javascript;
     }
 
-    /**
-     * Accessor for the javascript class name for the converted objects.
-     * @param javascript The Javascript name
+    /* (non-Javadoc)
+     * @see org.directwebremoting.convert.NamedConverter#setJavascript(java.lang.String)
      */
     public void setJavascript(String javascript)
     {

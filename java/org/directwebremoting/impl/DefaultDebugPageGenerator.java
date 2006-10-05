@@ -33,7 +33,9 @@ import org.directwebremoting.Creator;
 import org.directwebremoting.CreatorManager;
 import org.directwebremoting.DebugPageGenerator;
 import org.directwebremoting.DwrConstants;
+import org.directwebremoting.servlet.EngineHandler;
 import org.directwebremoting.servlet.PathConstants;
+import org.directwebremoting.servlet.UtilHandler;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
@@ -71,7 +73,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
             buffer.append("<li><a href='");
             buffer.append(root);
-            buffer.append(PathConstants.PATH_TEST);
+            buffer.append(testHandlerUrl);
             buffer.append(name);
             buffer.append("'>");
             buffer.append(name);
@@ -97,13 +99,13 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied"));
         }
 
-        String interfaceURL = root + PathConstants.PATH_INTERFACE + scriptName + PathConstants.EXTENSION_JS;
-        String engineURL = root + PathConstants.FILE_ENGINE;
-        String utilURL = root + PathConstants.FILE_UTIL;
+        String interfaceURL = root + interfaceHandlerUrl + scriptName + PathConstants.EXTENSION_JS;
+        String engineURL = root + engineHandlerUrl;
+        String utilURL = root + utilHandlerUrl;
 
-        String proxyInterfaceURL = PATH_UP + PathConstants.PATH_INTERFACE + scriptName + PathConstants.EXTENSION_JS;
-        String proxyEngineURL = PATH_UP + PathConstants.FILE_ENGINE;
-        String proxyUtilURL = PATH_UP + PathConstants.FILE_UTIL;
+        String proxyInterfaceURL = PATH_UP + interfaceHandlerUrl + scriptName + PathConstants.EXTENSION_JS;
+        String proxyEngineURL = PATH_UP + engineHandlerUrl;
+        String proxyUtilURL = PATH_UP + utilHandlerUrl;
 
         Creator creator = creatorManager.getCreator(scriptName);
         Method[] methods = creator.getType().getMethods();
@@ -358,7 +360,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      */
     public String generateInterfaceUrl(String root, String scriptName)
     {
-        return root + PathConstants.PATH_INTERFACE + scriptName + PathConstants.EXTENSION_JS;
+        return root + interfaceHandlerUrl + scriptName + PathConstants.EXTENSION_JS;
     }
 
     /* (non-Javadoc)
@@ -366,7 +368,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      */
     public String generateEngineUrl(String root)
     {
-        return root + PathConstants.FILE_ENGINE;
+        return root + engineHandlerUrl;
     }
 
     /* (non-Javadoc)
@@ -382,6 +384,11 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      */
     public Collection getAvailableLibraries()
     {
+        if (availableLibraries == null)
+        {
+            availableLibraries = Collections.unmodifiableCollection(Arrays.asList(new String[] { utilHandlerUrl }));
+        }
+
         return availableLibraries;
     }
 
@@ -422,14 +429,57 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     }
 
     /**
-     * 2 dots
+     * @param engineHandlerUrl the engineHandlerUrl to set
      */
-    private static final String PATH_UP = "..";
+    public void setEngineHandlerUrl(String engineHandlerUrl)
+    {
+        this.engineHandlerUrl = engineHandlerUrl;
+    }
 
     /**
-     * Empty string
+     * @param utilHandlerUrl the utilHandlerUrl to set
      */
-    public static final String BLANK = "";
+    public void setUtilHandlerUrl(String utilHandlerUrl)
+    {
+        this.utilHandlerUrl = utilHandlerUrl;
+    }
+
+    /**
+     * @param testHandlerUrl the testHandlerUrl to set
+     */
+    public void setTestHandlerUrl(String testHandlerUrl)
+    {
+        this.testHandlerUrl = testHandlerUrl;
+    }
+
+    /**
+     * Setter for the URL that this handler available on
+     * @param interfaceHandlerUrl the interfaceHandlerUrl to set
+     */
+    public void setInterfaceHandlerUrl(String interfaceHandlerUrl)
+    {
+        this.interfaceHandlerUrl = interfaceHandlerUrl;
+    }
+
+    /**
+     * The URL for the {@link EngineHandler}
+     */
+    protected String engineHandlerUrl;
+
+    /**
+     * The URL for the {@link UtilHandler}
+     */
+    protected String utilHandlerUrl;
+
+    /**
+     * The URL for the {@link UtilHandler}
+     */
+    protected String testHandlerUrl;
+
+    /**
+     * What URL is this handler available on?
+     */
+    protected String interfaceHandlerUrl;
 
     /**
      * How we convert parameters
@@ -460,7 +510,17 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      * For getAvailableLibraries() - just a RO Collection that currently returns
      * only util.js, but may be expanded in the future.
      */
-    private Collection availableLibraries = Collections.unmodifiableCollection(Arrays.asList(new String[] { PathConstants.FILE_UTIL }));
+    private Collection availableLibraries = null;
+
+    /**
+     * 2 dots
+     */
+    private static final String PATH_UP = "..";
+
+    /**
+     * Empty string
+     */
+    public static final String BLANK = "";
 
     /**
      * The log stream

@@ -17,6 +17,11 @@ package org.directwebremoting.convert;
 
 import java.io.StringReader;
 
+import nu.xom.Builder;
+import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Node;
+
 import org.directwebremoting.Converter;
 import org.directwebremoting.InboundContext;
 import org.directwebremoting.InboundVariable;
@@ -26,12 +31,6 @@ import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Messages;
-
-import nu.xom.Builder;
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Node;
 
 /**
  * An implementation of Converter for DOM objects.
@@ -61,7 +60,7 @@ public class XOMConverter extends BaseV20Converter implements Converter
                 return doc.getRootElement();
             }
 
-            throw new MarshallException(Messages.getString("DOMConverter.UnusableClass", paramType.getName()));
+            throw new MarshallException(paramType);
         }
         catch (MarshallException ex)
         {
@@ -69,7 +68,7 @@ public class XOMConverter extends BaseV20Converter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(paramType, ex);
         }
     }
 
@@ -83,7 +82,7 @@ public class XOMConverter extends BaseV20Converter implements Converter
             // Using XSLT to convert to a stream. Setup the source
             if (!(data instanceof Node))
             {
-                throw new MarshallException("Data is not a DOM Node");
+                throw new MarshallException(data.getClass());
             }
 
             Node node = (Node) data;
@@ -100,7 +99,7 @@ public class XOMConverter extends BaseV20Converter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(data.getClass(), ex);
         }
     }
 }

@@ -42,6 +42,7 @@ import org.directwebremoting.Reply;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
+import org.directwebremoting.ServerException;
 import org.directwebremoting.TypeHintContext;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
@@ -334,7 +335,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                 Throwable ex = reply.getThrowable();
 
                 ScriptBuffer script = new ScriptBuffer(converterManager);
-                script.appendScript("DWREngine._handleServerError(\'")
+                script.appendScript("DWREngine._remoteHandleException(\'")
                       .appendScript(reply.getId())
                       .appendScript("\',")
                       .appendData(ex)
@@ -350,7 +351,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                 try
                 {
                     ScriptBuffer script = new ScriptBuffer(converterManager);
-                    script.appendScript("DWREngine._handleResponse(\'")
+                    script.appendScript("DWREngine._remoteHandleResponse(\'")
                           .appendScript(reply.getId())
                           .appendScript("\',")
                           .appendData(data)
@@ -361,7 +362,19 @@ public abstract class BaseCallMarshaller implements Marshaller
                 catch (MarshallException ex)
                 {
                     ScriptBuffer script = new ScriptBuffer(converterManager);
-                    script.appendScript("DWREngine._handleServerError(\'")
+                    script.appendScript("DWREngine._remoteHandleError(\'")
+                          .appendScript(reply.getId())
+                          .appendScript("\',")
+                          .appendData(ex)
+                          .appendScript(");");
+                    conduit.addScript(script);
+
+                    log.warn("--MarshallException: id[" + reply.getId() + "] message[" + ex.toString() + ']');
+                }
+                catch (ServerException ex)
+                {
+                    ScriptBuffer script = new ScriptBuffer(converterManager);
+                    script.appendScript("DWREngine._remoteHandleError(\'")
                           .appendScript(reply.getId())
                           .appendScript("\',")
                           .appendData(ex)
@@ -372,15 +385,10 @@ public abstract class BaseCallMarshaller implements Marshaller
                 }
                 catch (Exception ex)
                 {
-                    ScriptBuffer script = new ScriptBuffer(converterManager);
-                    script.appendScript("DWREngine._handleServerError(\'")
-                          .appendScript(reply.getId())
-                          .appendScript("\',")
-                          .appendData(ex)
-                          .appendScript(");");
-                    conduit.addScript(script);
-
-                    log.warn("--Erroring: id[" + reply.getId() + "] message[" + ex.toString() + ']', ex);
+                    // We're a bit stuck we died half way through writing so
+                    // we can't be sure the browser can react to the failure.
+                    // Since we can no longer do output we just log and end
+                    log.error("--Output Error: id[" + reply.getId() + "] message[" + ex.toString() + ']', ex);
                 }
             }
         }
@@ -459,7 +467,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         }
         catch (NumberFormatException ex)
         {
-            throw new MarshallException(Messages.getString("ExecuteQuery.BadCallCount", callStr));
+            throw new ServerException(Messages.getString("ExecuteQuery.BadCallCount", callStr));
         }
 
         List inboundContexts = parsedRequest.getInboundContexts();

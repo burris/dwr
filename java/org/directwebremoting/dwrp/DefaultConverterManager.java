@@ -28,10 +28,10 @@ import org.directwebremoting.ConverterManager;
 import org.directwebremoting.InboundContext;
 import org.directwebremoting.InboundVariable;
 import org.directwebremoting.MarshallException;
+import org.directwebremoting.NamedConverter;
 import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.TypeHintContext;
-import org.directwebremoting.convert.BasicObjectConverter;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -147,9 +147,9 @@ public class DefaultConverterManager implements ConverterManager
                     Converter conv = (Converter) entry.getValue();
 
                     // JavaScript mapping is only applicable for compound converters
-                    if (conv instanceof BasicObjectConverter)
+                    if (conv instanceof NamedConverter)
                     {
-                        BasicObjectConverter boConv = (BasicObjectConverter) conv;
+                        NamedConverter boConv = (NamedConverter) conv;
                         if (boConv.getJavascript() != null && boConv.getJavascript().equals(javascriptClassName))
                         {
                             // We found a potential converter! But is the 
@@ -175,7 +175,7 @@ public class DefaultConverterManager implements ConverterManager
                             }
                             catch (ClassNotFoundException ex)
                             {
-                                throw new MarshallException(ex);
+                                throw new MarshallException(paramType, ex);
                             }
                         }
                     }
@@ -191,7 +191,7 @@ public class DefaultConverterManager implements ConverterManager
 
             if (converter == null)
             {
-                throw new MarshallException(Messages.getString("DefaultConverterManager.MissingConverter", paramType.getName()));
+                throw new MarshallException(paramType, Messages.getString("DefaultConverterManager.MissingConverter"));
             }
 
             // We only think about doing a null conversion ourselves once we are

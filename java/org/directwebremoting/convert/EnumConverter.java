@@ -25,7 +25,6 @@ import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Messages;
 
 /**
  * Converter for all primitive types
@@ -50,11 +49,11 @@ public class EnumConverter extends BaseV20Converter implements Converter
         {
             // We would like to have done: if (!paramType.isEnum())
             // But this catch block has the same effect
-            throw new MarshallException(Messages.getString("EnumConverter.TypeNotEnum", paramType));
+            throw new MarshallException(paramType);
         }
         catch (Exception ex)
         {
-            throw new MarshallException(Messages.getString("EnumConverter.ReflectionError", paramType), ex);
+            throw new MarshallException(paramType, ex);
         }
 
         for (int i = 0; i < values.length; i++)
@@ -66,7 +65,7 @@ public class EnumConverter extends BaseV20Converter implements Converter
             }
         }
 
-        throw new MarshallException(Messages.getString("EnumConverter.NoMatch", value, paramType));
+        throw new MarshallException(paramType);
     }
 
     /* (non-Javadoc)

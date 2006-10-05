@@ -32,7 +32,6 @@ import org.directwebremoting.dwrp.ConversionConstants;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
-import org.directwebremoting.util.Messages;
 
 /**
  * An implementation of Converter for Arrays.
@@ -57,7 +56,7 @@ public class ArrayConverter extends BaseV20Converter implements Converter
     {
         if (!paramType.isArray())
         {
-            throw new MarshallException(Messages.getString("ArrayConverter.ClassIsNotAnArray", paramType.getName()));
+            throw new MarshallException(paramType);
         }
 
         String value = iv.getValue();
@@ -70,42 +69,31 @@ public class ArrayConverter extends BaseV20Converter implements Converter
             value = value.substring(0, value.length() - 1);
         }
 
-        try
+        StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
+        int size = st.countTokens();
+
+        Class componentType = paramType.getComponentType();
+        //componentType = LocalUtil.getNonPrimitiveType(componentType);
+        Object array = Array.newInstance(componentType, size);
+
+        // We should put the new object into the working map in case it
+        // is referenced later nested down in the conversion process.
+        inctx.addConverted(iv, paramType, array);
+        InboundContext incx = iv.getLookup();
+
+        for (int i = 0; i < size; i++)
         {
-            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
-            int size = st.countTokens();
+            String token = st.nextToken();
+            String[] split = LocalUtil.splitInbound(token);
+            String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
+            String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
 
-            Class componentType = paramType.getComponentType();
-            //componentType = LocalUtil.getNonPrimitiveType(componentType);
-            Object array = Array.newInstance(componentType, size);
-
-            // We should put the new object into the working map in case it
-            // is referenced later nested down in the conversion process.
-            inctx.addConverted(iv, paramType, array);
-            InboundContext incx = iv.getLookup();
-
-            for (int i = 0; i < size; i++)
-            {
-                String token = st.nextToken();
-                String[] split = LocalUtil.splitInbound(token);
-                String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
-                String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
-
-                InboundVariable nested = new InboundVariable(incx, null, splitType, splitValue);
-                Object output = converterManager.convertInbound(componentType, nested, inctx, inctx.getCurrentTypeHintContext());
-                Array.set(array, i, output);
-            }
-
-            return array;
+            InboundVariable nested = new InboundVariable(incx, null, splitType, splitValue);
+            Object output = converterManager.convertInbound(componentType, nested, inctx, inctx.getCurrentTypeHintContext());
+            Array.set(array, i, output);
         }
-        catch (MarshallException ex)
-        {
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            throw new MarshallException(ex);
-        }
+
+        return array;
     }
 
     /* (non-Javadoc)
@@ -115,7 +103,7 @@ public class ArrayConverter extends BaseV20Converter implements Converter
     {
         if (!data.getClass().isArray())
         {
-            throw new MarshallException(Messages.getString("ArrayConverter.ClassIsNotAnArray", data.getClass().getName()));
+            throw new MarshallException(data.getClass());
         }
 
         // Stash this bit of data to cope with recursion

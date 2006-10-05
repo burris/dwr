@@ -1,8 +1,15 @@
-package org.directwebremoting;
+package org.directwebremoting.fluent;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.directwebremoting.AccessControl;
+import org.directwebremoting.Configurator;
+import org.directwebremoting.Container;
+import org.directwebremoting.Converter;
+import org.directwebremoting.ConverterManager;
+import org.directwebremoting.Creator;
+import org.directwebremoting.CreatorManager;
 import org.directwebremoting.impl.SignatureParser;
 import org.directwebremoting.util.Logger;
 

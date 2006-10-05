@@ -36,7 +36,7 @@ import org.directwebremoting.util.Logger;
  * become a full blown IoC container.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultContainer implements Container
+public class DefaultContainer extends AbstractContainer implements Container
 {
     /**
      * Set the class that should be used to implement the given interface
@@ -168,6 +168,8 @@ public class DefaultContainer implements Container
                 }
             }
         }
+
+        callInitializingBeans();
     }
 
     /**

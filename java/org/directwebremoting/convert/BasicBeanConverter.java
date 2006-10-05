@@ -19,6 +19,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,19 +74,19 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
 
         if (!value.startsWith(ConversionConstants.INBOUND_MAP_START))
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
+            throw new MarshallException(paramType, Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
         }
 
         if (!value.endsWith(ConversionConstants.INBOUND_MAP_END))
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
+            throw new MarshallException(paramType, Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
         }
 
         value = value.substring(1, value.length() - 1);
 
         try
         {
-            Map tokens = extractInboundTokens(value);
+            Map tokens = extractInboundTokens(paramType, value);
 
             Class type = paramType;
             if (instanceType != null)
@@ -173,18 +174,23 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
         {
             throw ex;
         }
+        catch (InvocationTargetException ex)
+        {
+            throw new MarshallException(paramType, ex.getTargetException());
+        }
         catch (Exception ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(paramType, ex);
         }
     }
 
     /**
      * Loop over all the inputs and extract a Map of key:value pairs
+     * @param paramType The type we are converting to
      * @param value The input string
      * @return A Map of the tokens in the string
      */
-    protected Map extractInboundTokens(String value)
+    protected Map extractInboundTokens(Class paramType, String value)
     {
         Map tokens = new HashMap();
         StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);
@@ -201,7 +207,7 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
             int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
             if (colonpos == -1)
             {
-                throw new MarshallException(Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
+                throw new MarshallException(paramType, Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
             }
 
             String key = token.substring(0, colonpos).trim();
@@ -253,7 +259,7 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
         }
         catch (IntrospectionException ex)
         {
-            throw new MarshallException(ex);
+            throw new MarshallException(data.getClass(), ex);
         }
 
         ov.init(ovs, getJavascript());

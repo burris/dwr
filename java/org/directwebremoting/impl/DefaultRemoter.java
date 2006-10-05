@@ -33,12 +33,12 @@ import org.directwebremoting.Converter;
 import org.directwebremoting.ConverterManager;
 import org.directwebremoting.Creator;
 import org.directwebremoting.CreatorManager;
+import org.directwebremoting.NamedConverter;
 import org.directwebremoting.Remoter;
 import org.directwebremoting.Replies;
 import org.directwebremoting.Reply;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.convert.BasicObjectConverter;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
@@ -72,9 +72,9 @@ public class DefaultRemoter implements Remoter
             String match = (String) it.next();
             Converter conv = converterManager.getConverterByMatchString(match);
             // We will only generate JavaScript classes for compound objects/beans
-            if (conv instanceof BasicObjectConverter)
+            if (conv instanceof NamedConverter)
             {
-                BasicObjectConverter boConv = (BasicObjectConverter) conv;
+                NamedConverter boConv = (NamedConverter) conv;
                 String jsClassName = boConv.getJavascript();
 
                 // We need a configured JavaScript class name

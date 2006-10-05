@@ -46,9 +46,20 @@ import org.directwebremoting.WebContextBuilder;
 import org.directwebremoting.dwrp.DefaultConverterManager;
 import org.directwebremoting.dwrp.HtmlCallMarshaller;
 import org.directwebremoting.dwrp.PlainCallMarshaller;
-import org.directwebremoting.dwrp.PollHandler;
+import org.directwebremoting.servlet.AboutHandler;
 import org.directwebremoting.servlet.DwrWebContextFilter;
+import org.directwebremoting.servlet.EngineHandler;
+import org.directwebremoting.servlet.HtmlCallHandler;
+import org.directwebremoting.servlet.HtmlPollHandler;
+import org.directwebremoting.servlet.IndexHandler;
+import org.directwebremoting.servlet.InterfaceHandler;
+import org.directwebremoting.servlet.PathConstants;
+import org.directwebremoting.servlet.PlainCallHandler;
+import org.directwebremoting.servlet.PlainPollHandler;
+import org.directwebremoting.servlet.TestHandler;
 import org.directwebremoting.servlet.UrlProcessor;
+import org.directwebremoting.servlet.UtilHandler;
+import org.directwebremoting.servlet.WebworkUtilHandler;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.xml.sax.SAXException;
@@ -130,12 +141,36 @@ public class ContainerUtil
         container.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
         container.addParameter(Remoter.class.getName(), DefaultRemoter.class.getName());
         container.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
-        container.addParameter(HtmlCallMarshaller.class.getName(), HtmlCallMarshaller.class.getName());
         container.addParameter(PlainCallMarshaller.class.getName(), PlainCallMarshaller.class.getName());
-        container.addParameter(PollHandler.class.getName(), PollHandler.class.getName());
+        container.addParameter(HtmlCallMarshaller.class.getName(), HtmlCallMarshaller.class.getName());
+        container.addParameter(PlainPollHandler.class.getName(), PlainPollHandler.class.getName());
+        container.addParameter(HtmlPollHandler.class.getName(), HtmlPollHandler.class.getName());
         container.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
         container.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
         container.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
+
+        // Mapping handlers to URLs
+        container.addParameter(PathConstants.URL_PREFIX + "/index.html", IndexHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/engine.js", EngineHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/util.js", UtilHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/webwork/DWRActionUtil.js", WebworkUtilHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/about", AboutHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/test/", TestHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/interface/", InterfaceHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/plaincall/", PlainCallHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/htmlcall/", HtmlCallHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/plainpoll/", PlainPollHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/htmlpoll/", HtmlPollHandler.class.getName());
+
+        container.addParameter(PathConstants.URL_INDEX, "/index.html");
+        container.addParameter(PathConstants.URL_ENGINE, "/engine.js");
+        container.addParameter(PathConstants.URL_UTIL, "/util.js");
+        container.addParameter(PathConstants.URL_WEBWORKUTIL, "/webwork/DWRActionUtil.js");
+        container.addParameter(PathConstants.URL_TEST, "/test/");
+        container.addParameter(PathConstants.URL_INTERFACE, "/interface/");
+        // The Poll and Call URLs can not be changed easily because they are
+        // referenced from engine.js. Maybe one day this would be a good
+        // extension
     }
 
     /**

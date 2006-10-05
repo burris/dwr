@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.ConverterManager;
-import org.directwebremoting.MarshallException;
+import org.directwebremoting.Handler;
 import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptConduit;
@@ -46,16 +46,20 @@ import org.directwebremoting.util.MimeConstants;
  * while editing the other.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class PollHandler
+public class PollHandler implements Handler
 {
     /**
-     * Handle a poll request
-     * @param request The http request
-     * @param response The http response
      * @param plain Are we using plain javascript or html wrapped javascript
-     * @throws IOException Thrown if we can't read or write
      */
-    public void doPoll(HttpServletRequest request, HttpServletResponse response, boolean plain) throws IOException
+    public PollHandler(boolean plain)
+    {
+        this.plain = plain;
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         // We must parse the parameters before we setup the conduit because it's
         // only after doing this that we know the scriptSessionId
@@ -156,7 +160,7 @@ public class PollHandler
             }
 
             // The conduit to pass on reverse ajax scripts
-            ScriptConduit conduit = new PollScriptConduit(out, response, plain);
+            ScriptConduit conduit = new PollScriptConduit(out, response);
     
             // Setup a debugging prefix
             if (out instanceof DebuggingPrintWriter)
@@ -254,7 +258,7 @@ public class PollHandler
 
         if (id == null)
         {
-            throw new MarshallException(Messages.getString("PollHandler.MissingParameter", paramName));
+            throw new IllegalArgumentException(Messages.getString("PollHandler.MissingParameter", paramName));
         }
 
         return id;
@@ -264,10 +268,9 @@ public class PollHandler
      * Write a script out in a synchronized manner to avoid thread clashes
      * @param out The servlet output stream
      * @param script The script to write
-     * @param plain Are we using plain javascript or html wrapped javascript
      * @throws IOException If a write error occurs
      */
-    protected void sendScript(PrintWriter out, String script, boolean plain) throws IOException
+    protected void sendScript(PrintWriter out, String script) throws IOException
     {
         synchronized (out)
         {
@@ -383,13 +386,11 @@ public class PollHandler
          * Simple ctor
          * @param out The stream to write to
          * @param response Used to flush output
-         * @param plain Are we using plain javascript or html wrapped javascript
          */
-        protected PollScriptConduit(PrintWriter out, HttpServletResponse response, boolean plain)
+        protected PollScriptConduit(PrintWriter out, HttpServletResponse response)
         {
             super(RANK_FAST);
             this.out = out;
-            this.plain = plain;
             this.response = response;
         }
 
@@ -398,7 +399,7 @@ public class PollHandler
          */
         public boolean addScript(ScriptBuffer script) throws IOException
         {
-            sendScript(out, script.createOutput(), plain);
+            sendScript(out, script.createOutput());
             return true;
         }
 
@@ -415,11 +416,6 @@ public class PollHandler
                 throw new IOException("Error flushing buffered stream");
             }
         }
-
-        /**
-         * Are we using plain javascript or html wrapped javascript
-         */
-        private boolean plain;
 
         /**
          * Used to flush data to the output stream
@@ -551,6 +547,11 @@ public class PollHandler
     {
         this.pageNormalizer = pageNormalizer;
     }
+
+    /**
+     * Are we using plain javascript or html wrapped javascript
+     */
+    private boolean plain;
 
     /**
      * How we turn pages into the canonical form.

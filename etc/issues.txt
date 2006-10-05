@@ -17,8 +17,6 @@ Ensure that all error handlers are called properly
 	have been done with:
 		var handlers = DWREngine._handlersMap[id];
 
-Make sure hooks are always called properly
-
 DWREngine._handleMetaDataError(null, ex); does not postHook or errorHandler for
 	call level handlers - it should.
 
@@ -27,10 +25,6 @@ Opera doesn't do reverse Ajax
 Create methods to set global headers and parameters and test if they work
 
 DWRUtil.setOptions gets the wrong order in Opera
-
-Audit all MarshallExceptions - they could go to the client
-
-make sure that the exec calls never pass back an exception. catch and emit some good javascript
 
 DOM4JConverter seems to be broken
 
@@ -89,12 +83,6 @@ Asynchronous batches
 	     var responseBatch = DWREngine._batches[DWREngine._batches.length-1];
 	Because chain of calls stops at this moment DWREngine._clearUp(batch)
 	never gets called for synchronous call.
-
-Memory problems
-	I’m using dwr 1.1 and I’m having a pretty bad leak. This only seems to
-	happen in Ie and not firefox.  The problem seems to be happening with
-	DWRUtil.addRows.  Can anybody provide me with help on resolving this?
-	I believe this leak is only happening on page reloads.
 
 -- Below the line for DWR 2.0 --------------------------------------------------
 

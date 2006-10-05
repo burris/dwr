@@ -28,7 +28,6 @@ import org.directwebremoting.OutboundContext;
 import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.dwrp.ConversionConstants;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
-import org.directwebremoting.util.Messages;
 
 /**
  * An implementation of Converter for Dates.
@@ -83,7 +82,7 @@ public class DateConverter extends BaseV20Converter implements Converter
             }
             else
             {
-                throw new MarshallException(Messages.getString("DateConverter.WrongType") + paramType.getName());
+                throw new MarshallException(paramType);
             }
         }
         catch (MarshallException ex)
@@ -92,7 +91,7 @@ public class DateConverter extends BaseV20Converter implements Converter
         }
         catch (Exception ex)
         {
-            throw new MarshallException(Messages.getString("DateConverter.ErrorConverting", value, paramType.getName()), ex);
+            throw new MarshallException(paramType, ex);
         }
     }
 
@@ -103,7 +102,7 @@ public class DateConverter extends BaseV20Converter implements Converter
     {
         if (!(data instanceof Date))
         {
-            throw new MarshallException(Messages.getString("DateConverter.TypeError", data.getClass()));
+            throw new MarshallException(data.getClass());
         }
 
         long millis;
