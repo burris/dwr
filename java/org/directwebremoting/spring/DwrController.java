@@ -23,10 +23,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.WebContextBuilder;
+import org.directwebremoting.impl.ContainerMap;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.servlet.UrlProcessor;
-import org.directwebremoting.util.ContainerMap;
 import org.directwebremoting.util.FakeServletConfig;
 import org.directwebremoting.util.Logger;
 import org.springframework.beans.BeansException;
