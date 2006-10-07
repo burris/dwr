@@ -19,15 +19,15 @@ import java.util.Collection;
 
 import javax.servlet.ServletContext;
 
-import org.directwebremoting.MarshallException;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.dwrutil.DwrUtil;
 
 /**
+ * A server side proxy the the Scriptaculous Effect class
  * @author Joe Walker [joe at getahead dot ltd dot uk]
- * @
+ * @author Mitch Gorman
  */
 public class Effect extends ScriptProxy
 {
@@ -93,9 +93,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.fade()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void fade(String elementId) throws MarshallException
+    public void fade(String elementId)
     {
         callEffect(elementId, "Fade");
     }
@@ -103,9 +102,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.appear()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void appear(String elementId) throws MarshallException
+    public void appear(String elementId)
     {
         callEffect(elementId, "Appear");
     }
@@ -113,9 +111,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.puff()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void puff(String elementId) throws MarshallException
+    public void puff(String elementId)
     {
         callEffect(elementId, "Puff");
     }
@@ -123,9 +120,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.blindUp()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void blindUp(String elementId) throws MarshallException
+    public void blindUp(String elementId)
     {
         callEffect(elementId, "BlindUp");
     }
@@ -133,9 +129,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.blindDown()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void blindDown(String elementId) throws MarshallException
+    public void blindDown(String elementId)
     {
         callEffect(elementId, "BlindDown");
     }
@@ -143,9 +138,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.switchOff()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void switchOff(String elementId) throws MarshallException
+    public void switchOff(String elementId)
     {
         callEffect(elementId, "SwitchOff");
     }
@@ -153,9 +147,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.dropOut()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void dropOut(String elementId) throws MarshallException
+    public void dropOut(String elementId)
     {
         callEffect(elementId, "DropOut");
     }
@@ -163,9 +156,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.shake()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void shake(String elementId) throws MarshallException
+    public void shake(String elementId)
     {
         callEffect(elementId, "Shake");
     }
@@ -173,9 +165,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.slideDown()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void slideDown(String elementId) throws MarshallException
+    public void slideDown(String elementId)
     {
         callEffect(elementId, "SlideDown");
     }
@@ -183,9 +174,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.slideUp()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void slideUp(String elementId) throws MarshallException
+    public void slideUp(String elementId)
     {
         callEffect(elementId, "SlideUp");
     }
@@ -193,9 +183,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.squish()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void squish(String elementId) throws MarshallException
+    public void squish(String elementId)
     {
         callEffect(elementId, "Squish");
     }
@@ -203,9 +192,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.grow()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void grow(String elementId) throws MarshallException
+    public void grow(String elementId)
     {
         callEffect(elementId, "Grow");
     }
@@ -213,9 +201,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.shrink()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void shrink(String elementId) throws MarshallException
+    public void shrink(String elementId)
     {
         callEffect(elementId, "Shrink");
     }
@@ -223,9 +210,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.pulsate()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void pulsate(String elementId) throws MarshallException
+    public void pulsate(String elementId)
     {
         callEffect(elementId, "Pulsate");
     }
@@ -233,9 +219,8 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.fold()</code> function.
      * @param elementId The element to effect
-     * @throws MarshallException
      */
-    public void fold(String elementId) throws MarshallException
+    public void fold(String elementId)
     {
         callEffect(elementId, "Fold");
     }
@@ -243,10 +228,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.Fade()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the fade effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the fade effect, as specified at http://script.aculo.us/
      */
-    public void fade(String elementId, String options) throws MarshallException
+    public void fade(String elementId, String options)
     {
         callEffect(elementId, "Fade", options);
     }
@@ -254,10 +238,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.Appear()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the appear effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the appear effect, as specified at http://script.aculo.us/
      */
-    public void appear(String elementId, String options) throws MarshallException
+    public void appear(String elementId, String options)
     {
         callEffect(elementId, "Appear", options);
     }
@@ -265,10 +248,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.Puff()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the puff effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the puff effect, as specified at http://script.aculo.us/
      */
-    public void puff(String elementId, String options) throws MarshallException
+    public void puff(String elementId, String options)
     {
         callEffect(elementId, "Puff", options);
     }
@@ -276,10 +258,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.BlindUp()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the blindup effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the blindup effect, as specified at http://script.aculo.us/
      */
-    public void blindUp(String elementId, String options) throws MarshallException
+    public void blindUp(String elementId, String options)
     {
         callEffect(elementId, "BlindUp", options);
     }
@@ -287,10 +268,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.BlindDown()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the blinddown effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the blinddown effect, as specified at http://script.aculo.us/
      */
-    public void blindDown(String elementId, String options) throws MarshallException
+    public void blindDown(String elementId, String options)
     {
         callEffect(elementId, "BlindDown", options);
     }
@@ -298,10 +278,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.SwitchOff()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the switchf effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the switchf effect, as specified at http://script.aculo.us/
      */
-    public void switchOff(String elementId, String options) throws MarshallException
+    public void switchOff(String elementId, String options)
     {
         callEffect(elementId, "SwitchOff", options);
     }
@@ -309,10 +288,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.DropOut()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the dropout effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the dropout effect, as specified at http://script.aculo.us/
      */
-    public void dropOut(String elementId, String options) throws MarshallException
+    public void dropOut(String elementId, String options)
     {
         callEffect(elementId, "DropOut", options);
     }
@@ -320,10 +298,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.Shake()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the shake effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the shake effect, as specified at http://script.aculo.us/
      */
-    public void shake(String elementId, String options) throws MarshallException
+    public void shake(String elementId, String options)
     {
         callEffect(elementId, "Shake", options);
     }
@@ -331,10 +308,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.SlideDown()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the slidedown effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the slidedown effect, as specified at http://script.aculo.us/
      */
-    public void slideDown(String elementId, String options) throws MarshallException
+    public void slideDown(String elementId, String options)
     {
         callEffect(elementId, "SlideDown", options);
     }
@@ -342,10 +318,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.SlideUp()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the slideup effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the slideup effect, as specified at http://script.aculo.us/
      */
-    public void slideUp(String elementId, String options) throws MarshallException
+    public void slideUp(String elementId, String options)
     {
         callEffect(elementId, "SlideUp", options);
     }
@@ -353,10 +328,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.Squish()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the squish effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the squish effect, as specified at http://script.aculo.us/
      */
-    public void squish(String elementId, String options) throws MarshallException
+    public void squish(String elementId, String options)
     {
         callEffect(elementId, "Squish", options);
     }
@@ -364,10 +338,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.Grow()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the grow effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the grow effect, as specified at http://script.aculo.us/
      */
-    public void grow(String elementId, String options) throws MarshallException
+    public void grow(String elementId, String options)
     {
         callEffect(elementId, "Grow", options);
     }
@@ -375,10 +348,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.Shrink()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the shrink effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the shrink effect, as specified at http://script.aculo.us/
      */
-    public void shrink(String elementId, String options) throws MarshallException
+    public void shrink(String elementId, String options)
     {
         callEffect(elementId, "Shrink", options);
     }
@@ -386,10 +358,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.Pulsate()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the pulsate effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the pulsate effect, as specified at http://script.aculo.us/
      */
-    public void pulsate(String elementId, String options) throws MarshallException
+    public void pulsate(String elementId, String options)
     {
         callEffect(elementId, "Pulsate", options);
     }
@@ -397,10 +368,9 @@ public class Effect extends ScriptProxy
     /**
      * Call the script.aculo.us <code>Effect.Fold()</code> function.
      * @param elementId The element to affect
-	 * @param options A string containing options to pass to the fold effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the fold effect, as specified at http://script.aculo.us/
      */
-    public void fold(String elementId, String options) throws MarshallException
+    public void fold(String elementId, String options)
     {
         callEffect(elementId, "Fold", options);
     }
@@ -408,30 +378,24 @@ public class Effect extends ScriptProxy
     /**
      * @param elementId The element to affect
      * @param function The script.aculo.us effect to employ
-     * @throws MarshallException
      */
-    private void callEffect(String elementId, String function) throws MarshallException
+    private void callEffect(String elementId, String function)
     {
         callEffect(elementId, function, null);
     }
 
-	/*    
+	/**
      * @param elementId The element to affect
      * @param function The script.aculo.us effect to employ
-	 * @param options A string containing options to pass to the script.aculo.us effect, as specified at http://script.aculo.us/
-     * @throws MarshallException
+     * @param options A string containing options to pass to the script.aculo.us effect, as specified at http://script.aculo.us/
      */
-    private void callEffect(String elementId, String function, String options) throws MarshallException
+    private void callEffect(String elementId, String function, String options)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("new Effect.")
-            .appendScript(function)
-            .appendScript("('")
-            .appendScript(elementId)
-            .appendScript("'");
-        if (options != null && options.length() > 0) {
-            script.appendScript(", ")
-                .appendScript(options);
+        script.appendScript("new Effect.").appendScript(function).appendScript("('").appendScript(elementId).appendScript("'");
+        if (options != null && options.length() > 0)
+        {
+            script.appendScript(", ").appendScript(options);
         }
         script.appendScript(");");
         addScript(script);

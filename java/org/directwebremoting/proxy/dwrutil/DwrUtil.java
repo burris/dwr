@@ -20,7 +20,6 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import org.directwebremoting.MarshallException;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
@@ -108,9 +107,8 @@ public class DwrUtil extends ScriptProxy
      * <p><a href="http://getahead.ltd.uk/dwr/browser/util/setvalue">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param value The text to insert into the HTML element
-     * @throws MarshallException 
      */
-    public void setValue(String elementId, String value) throws MarshallException
+    public void setValue(String elementId, String value)
     {
         setValue(elementId, value, false);
     }
@@ -121,9 +119,8 @@ public class DwrUtil extends ScriptProxy
      * @param elementId The HTML element to update (by id)
      * @param value The text to insert into the HTML element
      * @param escapeHtml Should we escape HTML characters?
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void setValue(String elementId, String value, boolean escapeHtml) throws MarshallException
+    public void setValue(String elementId, String value, boolean escapeHtml)
     {
         String options = escapeHtml ? ", {escapeHtml:true}" : "";
 
@@ -143,9 +140,8 @@ public class DwrUtil extends ScriptProxy
      * <p><a href="http://getahead.ltd.uk/dwr/browser/util/setvalues">More</a>.
      * @param values The map of elementIds to values to alter
      * @param escapeHtml Should we escape HTML characters?
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void setValues(Map values, boolean escapeHtml) throws MarshallException
+    public void setValues(Map values, boolean escapeHtml)
     {
         String options = escapeHtml ? "{escapeHtml:true}" : "null";
 
@@ -163,9 +159,8 @@ public class DwrUtil extends ScriptProxy
      * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param array An array of strings to use as both value and text of options
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void addOptions(String elementId, String[] array) throws MarshallException
+    public void addOptions(String elementId, String[] array)
     {
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addOptions(")
@@ -182,9 +177,8 @@ public class DwrUtil extends ScriptProxy
      * @param elementId The HTML element to update (by id)
      * @param array And array of objects from which to create options
      * @param property The object property to use for the option value and text
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void addOptions(String elementId, Collection array, String property) throws MarshallException
+    public void addOptions(String elementId, Collection array, String property)
     {
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addOptions(")
@@ -204,9 +198,8 @@ public class DwrUtil extends ScriptProxy
      * @param array And array of objects from which to create options
      * @param valueProperty The object property to use for the option value
      * @param textProperty The object property to use for the option text
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void addOptions(String elementId, Collection array, String valueProperty, String textProperty) throws MarshallException
+    public void addOptions(String elementId, Collection array, String valueProperty, String textProperty)
     {
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addOptions(")
@@ -225,9 +218,8 @@ public class DwrUtil extends ScriptProxy
      * Remove all the options from a select list (specified by id)
      * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void removeAllOptions(String elementId) throws MarshallException
+    public void removeAllOptions(String elementId)
     {
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.removeAllOptions(")
@@ -242,9 +234,8 @@ public class DwrUtil extends ScriptProxy
      * @param elementId The HTML element to update (by id)
      * @param data The cells to add to the table
      * @param options See link above for documentation on the options
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void addRows(String elementId, String[][] data, String options) throws MarshallException
+    public void addRows(String elementId, String[][] data, String options)
     {
         if (data.length > 0)
         {
@@ -274,9 +265,8 @@ public class DwrUtil extends ScriptProxy
      * <p><a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param data The cells to add to the table
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void addRows(String elementId, String[][] data) throws MarshallException
+    public void addRows(String elementId, String[][] data)
     {
         addRows(elementId, data, null);
     }
@@ -285,9 +275,8 @@ public class DwrUtil extends ScriptProxy
      * Remove all the children of a given node.
      * <p><a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
      * @param elementId The HTML element to update (by id)
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void removeAllRows(String elementId) throws MarshallException
+    public void removeAllRows(String elementId)
     {
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.removeAllRows(")
@@ -300,9 +289,8 @@ public class DwrUtil extends ScriptProxy
      * Clone a given node.
      * <p><a href="http://getahead.ltd.uk/dwr/browser/TODO">More</a>.
      * @param elementId The HTML element to update (by id)
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void cloneNode(String elementId) throws MarshallException
+    public void cloneNode(String elementId)
     {
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.cloneNode(")
@@ -317,9 +305,8 @@ public class DwrUtil extends ScriptProxy
      * @param elementId The HTML element to update (by id)
      * @param idPrefix How do we prefix ids in the cloned version of the node tree
      * @param idSuffix How do we suffix ids in the cloned version of the node tree
-     * @throws MarshallException If the data can not be marshalled
      */
-    public void cloneNode(String elementId, String idPrefix, String idSuffix) throws MarshallException
+    public void cloneNode(String elementId, String idPrefix, String idSuffix)
     {
         ScriptBuffer options = createScriptBuffer();
         options.appendScript("{");
