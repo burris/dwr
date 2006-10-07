@@ -22,7 +22,7 @@ import javax.servlet.ServletContext;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
-import org.directwebremoting.proxy.dwrutil.DwrUtil;
+import org.directwebremoting.proxy.dwr.DwrUtil;
 
 /**
  * A server side proxy the the Scriptaculous Effect class

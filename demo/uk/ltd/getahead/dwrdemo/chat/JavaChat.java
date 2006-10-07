@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.proxy.dwrutil.DwrUtil;
+import org.directwebremoting.proxy.dwr.DwrUtil;
 import org.directwebremoting.util.Logger;
 
 /**

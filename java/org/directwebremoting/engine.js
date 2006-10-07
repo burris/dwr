@@ -602,6 +602,8 @@ DWREngine._sendData = function(batch) {
       if (!batch.async) DWREngine._stateChange(batch);
     }
     catch (ex) {
+//      var handlers = DWREngine._handlersMap[id];
+//      DWREngine._handlersMap[id] = null;
       DWREngine._handleMetaDataError(null, ex);
     }
   }
@@ -767,11 +769,23 @@ DWREngine._stateChange = function(batch) {
   }
 
   // Outside of the try/catch so errors propogate normally:
-  if (toEval != null) {
-    eval(toEval);
-  }
+  DWREngine._receivedBatch = batch;
+  if (toEval != null) eval(toEval);
+  DWREngine._receivedBatch = null;
 
   DWREngine._clearUp(batch);
+};
+
+/** @private This method is called by Javascript that is emitted by server */
+DWREngine._remoteHandleServerException = function(ex) {
+  // Clear this callback out of the list - we don't need it any more
+  var handlers = DWREngine._handlersMap[id];
+  DWREngine._handlersMap[id] = null;
+
+  if (ex.message == undefined) ex.message = "";
+  DWREngine._handleMetaDataError(handlers, ex.message, ex);
+
+  DWREngine._maybeClearUpIFrame();
 };
 
 /**
@@ -779,7 +793,7 @@ DWREngine._stateChange = function(batch) {
  * @param id The identifier of the call that we are handling a response for
  * @param reply The data to pass to the callback function
  */
-DWREngine._remoteHandleResponse = function(id, reply) {
+DWREngine._remoteHandleCallback = function(id, reply) {
   // Clear this callback out of the list - we don't need it any more
   var handlers = DWREngine._handlersMap[id];
   DWREngine._handlersMap[id] = null;
@@ -798,25 +812,14 @@ DWREngine._remoteHandleResponse = function(id, reply) {
 };
 
 /** @private This method is called by Javascript that is emitted by server */
-DWREngine._remoteHandleError = function(id, error) {
+DWREngine._remoteHandleException = function(id, ex) {
   // Clear this callback out of the list - we don't need it any more
   var handlers = DWREngine._handlersMap[id];
   DWREngine._handlersMap[id] = null;
 
-  if (error.message == undefined) error.message = "";
-  DWREngine._handleMetaDataError(handlers, error.message, error);
-
-  DWREngine._maybeClearUpIFrame();
-};
-
-/** @private This method is called by Javascript that is emitted by server */
-DWREngine._remoteHandleException = function(id, error) {
-  // Clear this callback out of the list - we don't need it any more
-  var handlers = DWREngine._handlersMap[id];
-  DWREngine._handlersMap[id] = null;
-
-  if (error.message == undefined) error.message = "";
-  DWREngine._handleMetaDataException(handlers, error.message, error);
+  if (ex.message == undefined) ex.message = "";
+  if (handlers && typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(error.message, ex);
+  else if (DWREngine._exceptionHandler) DWREngine._exceptionHandler(error.message, ex);
 
   DWREngine._maybeClearUpIFrame();
 };
@@ -910,21 +913,10 @@ DWREngine._handleWarning = function(reason, ex) {
   if (DWREngine._warningHandler) DWREngine._warningHandler(reason, ex);
 };
 
-/** @private Generic warning handling routing to save having null checks everywhere */
-DWREngine._handleException = function(reason, ex) {
-  if (DWREngine._exceptionHandler) DWREngine._exceptionHandler(reason, ex);
-};
-
 /** @private Generic error handling routing to save having null checks everywhere */
 DWREngine._handleMetaDataError = function(handlers, reason, ex) {
   if (handlers && typeof handlers.errorHandler == "function") handlers.errorHandler(reason, ex);
   else DWREngine._handleError(reason, ex);
-};
-
-/** @private Generic error handling routing to save having null checks everywhere */
-DWREngine._handleMetaDataException = function(handlers, reason, ex) {
-  if (handlers && typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(reason, ex);
-  else DWREngine._handleException(reason, ex);
 };
 
 /** @private Generic error handling routing to save having null checks everywhere */

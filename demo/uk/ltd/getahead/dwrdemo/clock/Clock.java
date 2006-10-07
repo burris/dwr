@@ -23,7 +23,7 @@ import javax.servlet.ServletContext;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.proxy.dwrutil.DwrUtil;
+import org.directwebremoting.proxy.dwr.DwrUtil;
 import org.directwebremoting.util.Logger;
 
 /**

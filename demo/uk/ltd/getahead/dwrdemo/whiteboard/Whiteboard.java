@@ -25,7 +25,7 @@ import java.util.Map;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.proxy.dwrutil.DwrUtil;
+import org.directwebremoting.proxy.dwr.DwrUtil;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
