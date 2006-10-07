@@ -297,8 +297,9 @@ public class ScriptBuffer
     /**
      * Return a string ready for output.
      * @return Some Javascript to be eval()ed by a browser.
+     * @throws MarshallException If an error happens during parameter marshalling
      */
-    public String createOutput()
+    public String createOutput() throws MarshallException
     {
         OutboundContext context = new OutboundContext();
         List ovs = new ArrayList();
@@ -372,7 +373,14 @@ public class ScriptBuffer
      */
     public String toString()
     {
-        return createOutput();
+        try
+        {
+            return createOutput();
+        }
+        catch (MarshallException ex)
+        {
+            return "// MarshallException on " + ex.getConversionType().getName() + ": " + ex.getMessage();
+        }
     }
 
     /**

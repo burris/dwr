@@ -35,8 +35,9 @@ public interface Marshaller
      * @param response An Ajax response, XML, JSON, Javascript, etc.
      * @return Data specifying the methods to call
      * @throws IOException If the connection breaks
+     * @throws ServerException If an error occurs during parsing
      */
-    Calls marshallInbound(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    Calls marshallInbound(HttpServletRequest request, HttpServletResponse response) throws IOException, ServerException;
 
     /**
      * Marshall the return values from executing this batch of requests.

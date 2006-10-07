@@ -91,8 +91,9 @@ public abstract class ScriptConduit implements Comparable
      * @param script The script to execute
      * @return true if this ScriptConduit handled the script.
      * @throws IOException If this conduit is broken and should not be used
+     * @throws MarshallException If objects in the script can not be marshalled
      */
-    public abstract boolean addScript(ScriptBuffer script) throws IOException;
+    public abstract boolean addScript(ScriptBuffer script) throws IOException, MarshallException;
 
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)

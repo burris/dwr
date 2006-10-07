@@ -25,13 +25,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.directwebremoting.Container;
 import org.directwebremoting.ConverterManager;
 import org.directwebremoting.Handler;
+import org.directwebremoting.MarshallException;
 import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptConduit;
 import org.directwebremoting.ScriptSession;
+import org.directwebremoting.ServerException;
 import org.directwebremoting.ServerLoadMonitor;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.impl.RemoteDwrEngine;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.Logger;
@@ -68,17 +71,25 @@ public class PollHandler implements Handler
         Container container = webContext.getContainer();
 
         Map parameters = (Map) request.getAttribute(ATTRIBUTE_PARAMETERS);
-        if (parameters == null)
+        try
         {
-            if (request.getMethod().equals("GET"))
+            if (parameters == null)
             {
-                parameters = ParseUtil.parseGet(request);
+                if (request.getMethod().equals("GET"))
+                {
+                    parameters = ParseUtil.parseGet(request);
+                }
+                else
+                {
+                    parameters = ParseUtil.parsePost(request);
+                }
+                request.setAttribute(ATTRIBUTE_PARAMETERS, parameters);
             }
-            else
-            {
-                parameters = ParseUtil.parsePost(request);
-            }
-            request.setAttribute(ATTRIBUTE_PARAMETERS, parameters);
+        }
+        catch (ServerException ex)
+        {
+            RemoteDwrEngine.remoteHandleServerException(response, ex);
+            return;
         }
 
         String callId = extractParameter(request, parameters, ATTRIBUTE_CALL_ID, ConversionConstants.INBOUND_KEY_ID);
@@ -397,7 +408,7 @@ public class PollHandler implements Handler
         /* (non-Javadoc)
          * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
          */
-        public boolean addScript(ScriptBuffer script) throws IOException
+        public boolean addScript(ScriptBuffer script) throws IOException, MarshallException
         {
             sendScript(out, script.createOutput());
             return true;

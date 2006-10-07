@@ -189,8 +189,9 @@ public abstract class BasicBeanConverter extends BasicObjectConverter
      * @param paramType The type we are converting to
      * @param value The input string
      * @return A Map of the tokens in the string
+     * @throws MarshallException If the marshalling fails
      */
-    protected Map extractInboundTokens(Class paramType, String value)
+    protected Map extractInboundTokens(Class paramType, String value) throws MarshallException
     {
         Map tokens = new HashMap();
         StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);

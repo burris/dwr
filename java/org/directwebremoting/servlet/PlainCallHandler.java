@@ -24,7 +24,9 @@ import org.directwebremoting.Calls;
 import org.directwebremoting.Handler;
 import org.directwebremoting.Remoter;
 import org.directwebremoting.Replies;
+import org.directwebremoting.ServerException;
 import org.directwebremoting.dwrp.PlainCallMarshaller;
+import org.directwebremoting.impl.RemoteDwrEngine;
 
 /**
  * A Handler standard DWR calls whose replies are NOT HTML wrapped.
@@ -37,7 +39,17 @@ public class PlainCallHandler implements Handler
      */
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        Calls calls = plainCallMarshaller.marshallInbound(request, response);
+        Calls calls = null;
+
+        try
+        {
+            calls = plainCallMarshaller.marshallInbound(request, response);
+        }
+        catch (ServerException ex)
+        {
+            RemoteDwrEngine.remoteHandleServerException(response, ex);
+        }
+
         Replies replies = remoter.execute(calls);
         plainCallMarshaller.marshallOutbound(replies, request, response);
     }

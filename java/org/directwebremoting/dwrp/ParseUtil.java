@@ -24,7 +24,6 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.directwebremoting.MarshallException;
 import org.directwebremoting.ServerException;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
@@ -43,9 +42,9 @@ public class ParseUtil
      * be handled by the <code>checkParams()</code> method.
      * @param req The original browser's request
      * @return The equivalent of HttpServletRequest.getParameterMap() for now
-     * @throws MarshallException If reading from the request body stream fails
+     * @throws ServerException If reading from the request body stream fails
      */
-    public static Map parsePost(HttpServletRequest req) throws MarshallException
+    public static Map parsePost(HttpServletRequest req) throws ServerException
     {
         Map paramMap = new HashMap();
 
@@ -164,9 +163,9 @@ public class ParseUtil
      * be handled by the <code>checkParams()</code> method.
      * @param req The original browser's request
      * @return Simply HttpRequest.getParameterMap() for now
-     * @throws MarshallException If the parsing fails
+     * @throws ServerException If the parsing fails
      */
-    public static Map parseGet(HttpServletRequest req) throws MarshallException
+    public static Map parseGet(HttpServletRequest req) throws ServerException
     {
         Map convertedMap = new HashMap();
         Map paramMap = req.getParameterMap();

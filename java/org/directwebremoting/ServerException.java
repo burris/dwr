@@ -19,7 +19,7 @@ package org.directwebremoting;
  * Something has gone wrong when we were doing some conversion.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ServerException extends RuntimeException
+public class ServerException extends Exception
 {
     /**
      * Default ctor

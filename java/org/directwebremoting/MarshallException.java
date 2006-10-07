@@ -19,7 +19,7 @@ package org.directwebremoting;
  * Something has gone wrong when we were doing some conversion.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class MarshallException extends RuntimeException
+public class MarshallException extends Exception
 {
     /**
      * Default ctor
