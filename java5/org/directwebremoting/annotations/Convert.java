@@ -20,8 +20,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.directwebremoting.Converter;
 import org.directwebremoting.convert.BeanConverter;
+import org.directwebremoting.extend.Converter;
 
 /**
  * Convert a class to JavaScript and back.

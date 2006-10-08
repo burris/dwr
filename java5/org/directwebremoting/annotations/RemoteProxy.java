@@ -21,6 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.directwebremoting.create.NewCreator;
+import org.directwebremoting.extend.Creator;
 
 /**
  * Make a class available for remote access.
@@ -39,7 +40,7 @@ public @interface RemoteProxy
     /**
      * Creator that creates instances of the class (default: &quot;{@code new}&quot; creator).
      */
-    Class<? extends org.directwebremoting.Creator> creator() default NewCreator.class;
+    Class<? extends Creator> creator() default NewCreator.class;
 
     /**
      * Parameters for the creator.

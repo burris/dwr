@@ -21,17 +21,17 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.directwebremoting.AccessControl;
 import org.directwebremoting.AjaxFilter;
-import org.directwebremoting.AjaxFilterManager;
-import org.directwebremoting.Configurator;
 import org.directwebremoting.Container;
-import org.directwebremoting.Converter;
-import org.directwebremoting.ConverterManager;
-import org.directwebremoting.Creator;
-import org.directwebremoting.CreatorManager;
 import org.directwebremoting.convert.BeanConverter;
 import org.directwebremoting.create.NewCreator;
+import org.directwebremoting.extend.AccessControl;
+import org.directwebremoting.extend.AjaxFilterManager;
+import org.directwebremoting.extend.Configurator;
+import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.Creator;
+import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
