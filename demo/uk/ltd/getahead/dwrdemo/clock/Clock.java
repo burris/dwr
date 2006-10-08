@@ -65,7 +65,7 @@ public class Clock implements Runnable
             while (active)
             {
                 Collection sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html");
-                DwrUtil pages = new DwrUtil(sessions, sctx.getServletContext());
+                DwrUtil pages = new DwrUtil(sessions);
                 pages.setValue("clockDisplay", new Date().toString());
 
                 log.debug("Sent message");
@@ -73,7 +73,7 @@ public class Clock implements Runnable
             }
 
             Collection sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html");
-            DwrUtil pages = new DwrUtil(sessions, sctx.getServletContext());
+            DwrUtil pages = new DwrUtil(sessions);
             pages.setValue("clockDisplay", "");
 
             log.debug("CLOCK: Stopping server-side thread");

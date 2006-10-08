@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting;
+package org.directwebremoting.extend;
 
 import java.io.IOException;
 
 import javax.servlet.ServletOutputStream;
 
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.util.LocalUtil;
 
 /**
@@ -87,7 +88,7 @@ public abstract class ScriptConduit implements Comparable
      * exception and it will be asumed to be no longer useful.
      * If you want to implement this method then you will probably be doing
      * something like calling {@link ServletOutputStream#print(String)} and
-     * passing in the results of calling {@link ScriptBuffer#createOutput()}.
+     * passing in the results of calling ScriptBufferUtil.createOutput().
      * @param script The script to execute
      * @return true if this ScriptConduit handled the script.
      * @throws IOException If this conduit is broken and should not be used

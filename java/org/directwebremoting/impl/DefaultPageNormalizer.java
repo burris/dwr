@@ -25,8 +25,8 @@ import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.servlet.PathConstants;
 import org.directwebremoting.util.DomUtil;
 import org.directwebremoting.util.EmptyEntityResolver;
@@ -47,9 +47,9 @@ import org.xml.sax.InputSource;
 public class DefaultPageNormalizer implements PageNormalizer
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.PageNormalizer#normalizaPage(java.lang.String)
+     * @see org.directwebremoting.extend.PageNormalizer#normalizePage(java.lang.String)
      */
-    public String normalizaPage(String unnormalized)
+    public String normalizePage(String unnormalized)
     {
         if (welcomeFiles == null)
         {

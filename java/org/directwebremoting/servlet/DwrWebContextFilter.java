@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.WebContextBuilder;
+import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.ServletLoggingOutput;
 

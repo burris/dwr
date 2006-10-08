@@ -20,12 +20,12 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.Calls;
-import org.directwebremoting.Handler;
-import org.directwebremoting.Remoter;
-import org.directwebremoting.Replies;
-import org.directwebremoting.ServerException;
 import org.directwebremoting.dwrp.HtmlCallMarshaller;
+import org.directwebremoting.extend.Calls;
+import org.directwebremoting.extend.Handler;
+import org.directwebremoting.extend.Remoter;
+import org.directwebremoting.extend.Replies;
+import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.impl.RemoteDwrEngine;
 
 /**

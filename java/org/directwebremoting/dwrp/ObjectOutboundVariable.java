@@ -18,8 +18,8 @@ package org.directwebremoting.dwrp;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.extend.OutboundContext;
+import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.util.LocalUtil;
 
 /**

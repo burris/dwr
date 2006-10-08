@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.directwebremoting.ConverterManager;
-import org.directwebremoting.NamedConverter;
+import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.NamedConverter;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;

@@ -15,8 +15,8 @@
  */
 package org.directwebremoting.dwrp;
 
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.extend.OutboundContext;
+import org.directwebremoting.extend.OutboundVariable;
 
 /**
  * An OutboundVariable that can not be recursive.

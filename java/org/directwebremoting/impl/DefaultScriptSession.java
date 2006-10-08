@@ -25,15 +25,15 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptConduit;
-import org.directwebremoting.ScriptSession;
+import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.util.Logger;
 
 /**
- * An implementation of ScriptSession.
+ * An implementation of ScriptSession and RealScriptSession.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultScriptSession implements ScriptSession
+public class DefaultScriptSession implements RealScriptSession
 {
     /**
      * Simple constructor
@@ -183,67 +183,8 @@ public class DefaultScriptSession implements ScriptSession
         }
     }
 
-
     /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSession#flushConduits()
-     */
-    public void flushConduits()
-    {
-        checkNotInvalidated();
-
-        // First we try to add the script to an existing conduit
-        synchronized (scriptLock)
-        {
-            if (conduits.size() > 0)
-            {
-                for (Iterator it = conduits.iterator(); it.hasNext();)
-                {
-                    ScriptConduit conduit = (ScriptConduit) it.next();
-                    
-                    try
-                    {
-                        conduit.flush();
-                    }
-                    catch (Exception ex)
-                    {
-                        log.warn("Failed to flush to ScriptConduit, removing from list: " + conduit);
-                        it.remove();
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Called whenever a browser accesses this data using DWR
-     */
-    protected void updateLastAccessedTime()
-    {
-        lastAccessedTime = System.currentTimeMillis();
-    }
-
-    /**
-     * Check that we are still valid and throw an IllegalStateException if not.
-     * At the same time set the lastAccessedTime flag.
-     * @throws IllegalStateException If this object has become invalid
-     */
-    private void checkNotInvalidated()
-    {
-        long now = System.currentTimeMillis();
-        long age = now - lastAccessedTime;
-        if (age > manager.getScriptSessionTimeout())
-        {
-            invalidate();
-        }
-
-        if (invalidated)
-        {
-            log.warn("ScriptSession has been invalidated.");
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSession#addScriptConduit(org.directwebremoting.ScriptConduit)
+     * @see org.directwebremoting.extend.RealScriptSession#addScriptConduit(org.directwebremoting.extend.ScriptConduit)
      */
     public void addScriptConduit(ScriptConduit conduit)
     {
@@ -287,7 +228,7 @@ public class DefaultScriptSession implements ScriptSession
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSession#removeScriptConduit(org.directwebremoting.ScriptConduit)
+     * @see org.directwebremoting.extend.RealScriptSession#removeScriptConduit(org.directwebremoting.extend.ScriptConduit)
      */
     public void removeScriptConduit(ScriptConduit conduit)
     {
@@ -301,6 +242,83 @@ public class DefaultScriptSession implements ScriptSession
                 log.error("Attempt to remove unattached ScriptConduit: " + conduit, new Exception());
                 debug();
             }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#flushConduits()
+     */
+    public void flushConduits()
+    {
+        checkNotInvalidated();
+
+        // First we try to add the script to an existing conduit
+        synchronized (scriptLock)
+        {
+            if (conduits.size() > 0)
+            {
+                for (Iterator it = conduits.iterator(); it.hasNext();)
+                {
+                    ScriptConduit conduit = (ScriptConduit) it.next();
+                    
+                    try
+                    {
+                        conduit.flush();
+                    }
+                    catch (Exception ex)
+                    {
+                        log.warn("Failed to flush to ScriptConduit, removing from list: " + conduit);
+                        it.remove();
+                    }
+                }
+            }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#getScriptLock()
+     */
+    public Object getScriptLock()
+    {
+        return scriptLock;
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#hasWaitingScripts()
+     */
+    public boolean hasWaitingScripts()
+    {
+        synchronized (scriptLock)
+        {
+            return !scripts.isEmpty();
+        }
+    }
+
+    /**
+     * Called whenever a browser accesses this data using DWR
+     */
+    protected void updateLastAccessedTime()
+    {
+        lastAccessedTime = System.currentTimeMillis();
+    }
+
+    /**
+     * Check that we are still valid and throw an IllegalStateException if not.
+     * At the same time set the lastAccessedTime flag.
+     * @throws IllegalStateException If this object has become invalid
+     */
+    protected void checkNotInvalidated()
+    {
+        long now = System.currentTimeMillis();
+        long age = now - lastAccessedTime;
+        if (age > manager.getScriptSessionTimeout())
+        {
+            invalidate();
+        }
+
+        if (invalidated)
+        {
+            log.warn("ScriptSession has been invalidated.");
         }
     }
 
@@ -356,25 +374,6 @@ public class DefaultScriptSession implements ScriptSession
         }
 
         return true;
-    }
-
-    /**
-     * @return The Script lock to allow external synchronization
-     */
-    public Object getScriptLock()
-    {
-        return scriptLock;
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSession#hasWaitingScripts()
-     */
-    public boolean hasWaitingScripts()
-    {
-        synchronized (scriptLock)
-        {
-            return !scripts.isEmpty();
-        }
     }
 
     /* (non-Javadoc)

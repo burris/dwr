@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting;
+package org.directwebremoting.extend;
 
 /**
- * Provides a way to add bits of configuration to the system.
- * Predominantly created for Spring, however I can see that other systems and
- * particularly IoC containers may be glad of a system like this.
+ * Some constants to do with the heart of DWR.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * @noinspection InterfaceNeverImplemented
  */
-public interface Configurator
+public interface DwrConstants
 {
     /**
-     * Do the Configuration actions
-     * @param container The object that contains the system objects to configure
+     * The package name because people need to load resources in this package.
      */
-    void configure(Container container);
+    public static final String PACKAGE = "/org/directwebremoting";
+
+    /**
+     * The system dwr.xml resource name
+     */
+    public static final String FILE_DWR_XML = PACKAGE + "/dwr.xml";
+
+    /**
+     * The default dwr.xml file path
+     */
+    public static final String DEFAULT_DWR_XML = "/WEB-INF/dwr.xml";
 }

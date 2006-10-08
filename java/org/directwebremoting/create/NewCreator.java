@@ -15,7 +15,7 @@
  */
 package org.directwebremoting.create;
 
-import org.directwebremoting.Creator;
+import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;

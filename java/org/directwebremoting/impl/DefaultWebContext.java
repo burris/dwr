@@ -27,8 +27,9 @@ import javax.servlet.http.HttpSession;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.ScriptSession;
-import org.directwebremoting.ScriptSessionManager;
 import org.directwebremoting.WebContext;
+import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.SwallowingHttpServletResponse;
 import org.directwebremoting.util.VersionUtil;
 
@@ -45,7 +46,7 @@ public class DefaultWebContext extends DefaultServerContext implements WebContex
      * @param config The servlet configuration
      * @param context The servlet context
      * @param container The IoC container
-     * @see org.directwebremoting.WebContextBuilder#set(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext, Container)
+     * @see org.directwebremoting.WebContextFactory.WebContextBuilder#set(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext, Container)
      */
     public DefaultWebContext(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context, Container container)
     {
@@ -79,7 +80,7 @@ public class DefaultWebContext extends DefaultServerContext implements WebContex
     {
         ScriptSessionManager manager = getScriptSessionManager();
 
-        ScriptSession scriptSession = manager.getScriptSession(scriptSessionId);
+        RealScriptSession scriptSession = manager.getScriptSession(scriptSessionId);
         manager.setPageForScriptSession(scriptSession, page);
 
         return scriptSession;

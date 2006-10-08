@@ -21,14 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.directwebremoting.Converter;
-import org.directwebremoting.InboundContext;
-import org.directwebremoting.InboundVariable;
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
+import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.InboundContext;
+import org.directwebremoting.extend.InboundVariable;
+import org.directwebremoting.extend.OutboundContext;
+import org.directwebremoting.extend.OutboundVariable;
 
 /**
  * A converter that magics up HTTP objects

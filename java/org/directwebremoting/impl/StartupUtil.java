@@ -21,10 +21,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.ServerContextBuilder;
 import org.directwebremoting.ServerContextFactory;
-import org.directwebremoting.WebContextBuilder;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.ServerContextFactory.ServerContextBuilder;
+import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.util.FakeServletConfig;
 import org.directwebremoting.util.FakeServletContext;
 import org.directwebremoting.util.Logger;

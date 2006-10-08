@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.directwebremoting.ConverterManager;
-import org.directwebremoting.TypeHintContext;
+import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;

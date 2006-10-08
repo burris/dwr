@@ -39,22 +39,4 @@ public interface Container
      * @return A collection containing all the availble bean names.
      */
     Collection getBeanNames();
-
-    /*
-     * It might be good if we could allow components to re-configure DWR on the
-     * fly, however Spring makes it a bit hard by hiding this behind an
-     * ConfigurableBeanFactory interface which isn't the default. There is
-     * probably a good reason for this, so we'll hold off this for now.
-     * @param id The name to register a bean against
-     * @param bean The object to register
-     */
-    //void setBean(String id, Object bean);
-
-    /*
-     * If we have a setBean we might need an autoLink phase.
-     * After you've called {@link Container#setBean(String, Object)} you should
-     * call <code>autoLink()</code> to ensure that all the beans are wired
-     * together properly again. 
-     */
-    //void autoLink();
 }

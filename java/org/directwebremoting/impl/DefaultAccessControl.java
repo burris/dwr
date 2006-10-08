@@ -27,9 +27,9 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.directwebremoting.AccessControl;
-import org.directwebremoting.Creator;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.AccessControl;
+import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 

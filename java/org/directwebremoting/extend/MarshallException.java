@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting;
+package org.directwebremoting.extend;
 
 /**
  * Something has gone wrong when we were doing some conversion.

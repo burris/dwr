@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting;
+package org.directwebremoting.extend;
 
 import java.util.Iterator;
+
+import org.directwebremoting.AjaxFilter;
 
 /**
  * A class that manages the various <code>AjaxFilter</code>s and what classes

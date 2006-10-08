@@ -21,7 +21,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.Handler;
+import org.directwebremoting.extend.Handler;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.MimeConstants;
 

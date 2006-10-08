@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting;
+package org.directwebremoting.extend;
 
 /**
  * An interface to resolve the fact that many webservers treat blah/index.html
@@ -29,5 +29,5 @@ public interface PageNormalizer
      * @param unnormalized The raw string from the browser
      * @return A canonical form that renders the same page.
      */
-    public String normalizaPage(String unnormalized);
+    public String normalizePage(String unnormalized);
 }

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.directwebremoting.AjaxFilter;
-import org.directwebremoting.AjaxFilterManager;
+import org.directwebremoting.extend.AjaxFilterManager;
 
 /**
  * The default implementation of AjaxFilterManager

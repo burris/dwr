@@ -25,8 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.Handler;
-import org.directwebremoting.InitializingBean;
+import org.directwebremoting.extend.Handler;
+import org.directwebremoting.extend.InitializingBean;
 import org.directwebremoting.util.Logger;
 
 /**

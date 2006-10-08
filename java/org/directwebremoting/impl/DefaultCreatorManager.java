@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.directwebremoting.Creator;
-import org.directwebremoting.CreatorManager;
+import org.directwebremoting.extend.Creator;
+import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;

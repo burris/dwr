@@ -18,8 +18,8 @@ package org.directwebremoting.dwrp;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.extend.OutboundContext;
+import org.directwebremoting.extend.OutboundVariable;
 
 /**
  * A helper class for people that want to implement {@link OutboundVariable}.

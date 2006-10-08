@@ -15,8 +15,8 @@
  */
 package org.directwebremoting.convert;
 
-import org.directwebremoting.Converter;
-import org.directwebremoting.ConverterManager;
+import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.ConverterManager;
 
 /**
  * A way to migrate from the DWRv2.0 Converter style to something in the future.

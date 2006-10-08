@@ -22,6 +22,12 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.directwebremoting.*;
+import org.directwebremoting.extend.AccessControl;
+import org.directwebremoting.extend.AjaxFilterManager;
+import org.directwebremoting.extend.Configurator;
+import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.Creator;
+import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
 

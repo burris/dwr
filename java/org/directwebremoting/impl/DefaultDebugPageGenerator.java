@@ -27,12 +27,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.directwebremoting.AccessControl;
-import org.directwebremoting.ConverterManager;
-import org.directwebremoting.Creator;
-import org.directwebremoting.CreatorManager;
-import org.directwebremoting.DebugPageGenerator;
-import org.directwebremoting.DwrConstants;
+import org.directwebremoting.extend.AccessControl;
+import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.Creator;
+import org.directwebremoting.extend.CreatorManager;
+import org.directwebremoting.extend.DebugPageGenerator;
+import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.servlet.EngineHandler;
 import org.directwebremoting.servlet.PathConstants;
 import org.directwebremoting.servlet.UtilHandler;

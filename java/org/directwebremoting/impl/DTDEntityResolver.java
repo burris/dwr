@@ -17,7 +17,7 @@ package org.directwebremoting.impl;
 
 import java.io.InputStream;
 
-import org.directwebremoting.DwrConstants;
+import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 import org.xml.sax.EntityResolver;

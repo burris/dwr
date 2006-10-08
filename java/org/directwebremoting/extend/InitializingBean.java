@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting;
+package org.directwebremoting.extend;
+
+import org.directwebremoting.Container;
 
 /**
  * Interface to be implemented by beans that need to react once all their

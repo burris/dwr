@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.directwebremoting.AjaxFilter;
-import org.directwebremoting.Creator;
+import org.directwebremoting.extend.Creator;
 
 /**
  * The configuration for a creator. <br>
@@ -38,11 +38,11 @@ import org.directwebremoting.Creator;
  *  <li>filters - the list of filter objects</li>
  * </ul>
  *
- * @see org.directwebremoting.AccessControl#addIncludeRule(String, String)
- * @see org.directwebremoting.AccessControl#addExcludeRule(String, String)
- * @see org.directwebremoting.AccessControl#addRoleRestriction(String, String, String)
+ * @see org.directwebremoting.extend.AccessControl#addIncludeRule(String, String)
+ * @see org.directwebremoting.extend.AccessControl#addExcludeRule(String, String)
+ * @see org.directwebremoting.extend.AccessControl#addRoleRestriction(String, String, String)
  * @see org.directwebremoting.AjaxFilter
- * @see org.directwebremoting.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter, String)
+ * @see org.directwebremoting.extend.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter, String)
  *
  * @author Bram Smeets
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -88,7 +88,7 @@ public class CreatorConfig
     /**
      * Gets the list of method names to include for this creator.
      * @return the list of method names to include
-     * @see org.directwebremoting.AccessControl#addIncludeRule(String, String)
+     * @see org.directwebremoting.extend.AccessControl#addIncludeRule(String, String)
      */
     public List getIncludes()
     {
@@ -98,7 +98,7 @@ public class CreatorConfig
     /**
      * Sets the list of method names to include for this creator.
      * @param includes the list of method names to include
-     * @see org.directwebremoting.AccessControl#addIncludeRule(String, String)
+     * @see org.directwebremoting.extend.AccessControl#addIncludeRule(String, String)
      */
     public void setIncludes(List includes)
     {
@@ -108,7 +108,7 @@ public class CreatorConfig
     /**
      * Gets the list of method names to exclude for this creator.
      * @return the list of method names to exclude
-     * @see org.directwebremoting.AccessControl#addExcludeRule(String, String)
+     * @see org.directwebremoting.extend.AccessControl#addExcludeRule(String, String)
      */
     public List getExcludes()
     {
@@ -118,7 +118,7 @@ public class CreatorConfig
     /**
      * Sets the list of method names to exclude for this creator.
      * @param excludes the list of method names to exclude
-     * @see org.directwebremoting.AccessControl#addExcludeRule(String, String)
+     * @see org.directwebremoting.extend.AccessControl#addExcludeRule(String, String)
      */
     public void setExcludes(List excludes)
     {
@@ -128,7 +128,7 @@ public class CreatorConfig
     /**
      * Sets the authentication parameters for this creator.
      * @return the map containing the method name and the corrosponding required role
-     * @see org.directwebremoting.AccessControl#addRoleRestriction(String, String, String)
+     * @see org.directwebremoting.extend.AccessControl#addRoleRestriction(String, String, String)
      */
     public Properties getAuth()
     {
@@ -138,7 +138,7 @@ public class CreatorConfig
     /**
      * Sets the authentication parameters for this creator.
      * @param auth the map containing the method name and the corrosponding required role
-     * @see org.directwebremoting.AccessControl#addRoleRestriction(String, String, String)
+     * @see org.directwebremoting.extend.AccessControl#addRoleRestriction(String, String, String)
      */
     public void setAuth(Properties auth)
     {
@@ -149,7 +149,7 @@ public class CreatorConfig
      * Gets the list of all filters for this creator.
      * @return the list containing all filters
      * @see org.directwebremoting.AjaxFilter
-     * @see org.directwebremoting.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter, String)
+     * @see org.directwebremoting.extend.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter, String)
      */
     public List getFilters()
     {
@@ -160,7 +160,7 @@ public class CreatorConfig
      * Sets the list of all filters for this creator.
      * @param filters the list containing all filters
      * @see org.directwebremoting.AjaxFilter
-     * @see org.directwebremoting.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter, String)
+     * @see org.directwebremoting.extend.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter, String)
      */
     public void setFilters(List filters)
     {

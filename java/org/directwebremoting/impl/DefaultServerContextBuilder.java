@@ -20,7 +20,7 @@ import javax.servlet.ServletContext;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.ServerContext;
-import org.directwebremoting.ServerContextBuilder;
+import org.directwebremoting.ServerContextFactory.ServerContextBuilder;
 import org.directwebremoting.util.Logger;
 
 /**
@@ -30,7 +30,7 @@ import org.directwebremoting.util.Logger;
 public class DefaultServerContextBuilder implements ServerContextBuilder
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.ServerContextBuilder#set(javax.servlet.ServletConfig, javax.servlet.ServletContext, org.directwebremoting.Container)
+     * @see ServerContextBuilder#set(javax.servlet.ServletConfig, javax.servlet.ServletContext, org.directwebremoting.Container)
      */
     public void set(ServletConfig config, ServletContext context, Container container)
     {

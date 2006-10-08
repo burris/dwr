@@ -17,8 +17,6 @@ package org.directwebremoting.proxy.scriptaculous;
 
 import java.util.Collection;
 
-import javax.servlet.ServletContext;
-
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
@@ -42,17 +40,6 @@ public class Effect extends ScriptProxy
     }
 
     /**
-     * Non-http thread constructor, that affects no browsers.
-     * Calls to {@link Effect#addScriptSession(ScriptSession)} or to
-     * {@link Effect#addScriptSessions(Collection)} will be needed
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public Effect(ServletContext sctx)
-    {
-        super(sctx);
-    }
-
-    /**
      * Http thread constructor that alters a single browser
      * @param scriptSession The browser to alter
      */
@@ -62,32 +49,12 @@ public class Effect extends ScriptProxy
     }
 
     /**
-     * Non-http thread constructor that alters a single browser
-     * @param scriptSession The browser to alter
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public Effect(ScriptSession scriptSession, ServletContext sctx)
-    {
-        super(scriptSession, sctx);
-    }
-
-    /**
      * Http thread constructor that alters a number of browsers
      * @param scriptSessions A collection of ScriptSessions that we should act on.
      */
     public Effect(Collection scriptSessions)
     {
         super(scriptSessions);
-    }
-
-    /**
-     * Non-http thread constructor that alters a number of browsers
-     * @param scriptSessions The browsers to alter
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public Effect(Collection scriptSessions, ServletContext sctx)
-    {
-        super(scriptSessions, sctx);
     }
 
     /**

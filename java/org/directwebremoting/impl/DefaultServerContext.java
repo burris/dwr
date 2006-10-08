@@ -21,9 +21,9 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.ConverterManager;
-import org.directwebremoting.ScriptSessionManager;
 import org.directwebremoting.ServerContext;
+import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.VersionUtil;
 
 /**

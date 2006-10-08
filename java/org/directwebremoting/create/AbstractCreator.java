@@ -17,7 +17,7 @@ package org.directwebremoting.create;
 
 import java.util.Map;
 
-import org.directwebremoting.Creator;
+import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
 

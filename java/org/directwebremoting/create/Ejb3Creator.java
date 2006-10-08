@@ -5,7 +5,7 @@ import java.util.Properties;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import org.directwebremoting.Creator;
+import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.Messages;
 
 /**

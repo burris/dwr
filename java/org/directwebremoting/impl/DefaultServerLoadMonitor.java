@@ -15,7 +15,7 @@
  */
 package org.directwebremoting.impl;
 
-import org.directwebremoting.ServerLoadMonitor;
+import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.util.HitMonitor;
 import org.directwebremoting.util.Logger;
 

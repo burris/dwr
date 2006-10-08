@@ -20,8 +20,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 import javax.faces.el.VariableResolver;
 
-import org.directwebremoting.Creator;
 import org.directwebremoting.create.AbstractCreator;
+import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 

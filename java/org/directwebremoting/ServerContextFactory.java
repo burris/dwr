@@ -15,6 +15,7 @@
  */
 package org.directwebremoting;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
 /**
@@ -53,4 +54,26 @@ public class ServerContextFactory
      * The ServerContextBuilder from which we will get ServerContext objects
      */
     private static ServerContextBuilder builder;
+
+    /**
+     * Class to enable us to access servlet parameters.
+     */
+    public interface ServerContextBuilder
+    {
+        /**
+         * Make the current webapp know what the current config/context is.
+         * This method is only for use internally to DWR.
+         * @param config The servlet configuration
+         * @param context The servlet context
+         * @param container The IoC container
+         */
+        void set(ServletConfig config, ServletContext context, Container container);
+
+        /**
+         * Accessor for the current ServerContext
+         * @param context The web application environment 
+         * @return The ServerContext that is associated with this web application
+         */
+        ServerContext get(ServletContext context);
+    }
 }

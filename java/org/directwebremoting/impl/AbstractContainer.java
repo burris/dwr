@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.InitializingBean;
+import org.directwebremoting.extend.InitializingBean;
 
 /**
  * An implementation of some of the simpler methods from {@link Container}

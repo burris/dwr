@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting;
+package org.directwebremoting.extend;
 
 import java.util.Collection;
 
@@ -48,14 +48,14 @@ public interface ScriptSessionManager
      * @param id The id to get a ScriptSession object for
      * @return A ScriptSession.
      */
-    ScriptSession getScriptSession(String id);
+    RealScriptSession getScriptSession(String id);
 
     /**
      * Locate the given script session on a page
      * @param scriptSession The session to locate on a page
      * @param url The URL including 'http://', up to (but not including) '?' or '#' 
      */
-    void setPageForScriptSession(ScriptSession scriptSession, String url);
+    void setPageForScriptSession(RealScriptSession scriptSession, String url);
 
     /**
      * Accessor for the time (in milliseconds) when unused ScriptSessions will expire

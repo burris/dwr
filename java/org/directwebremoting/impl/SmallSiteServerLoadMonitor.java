@@ -15,7 +15,7 @@
  */
 package org.directwebremoting.impl;
 
-import org.directwebremoting.ServerLoadMonitor;
+import org.directwebremoting.extend.ServerLoadMonitor;
 
 /**
  * A default implementation of ServerLoadMonitor

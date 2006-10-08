@@ -26,8 +26,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.DwrConstants;
-import org.directwebremoting.Handler;
+import org.directwebremoting.extend.DwrConstants;
+import org.directwebremoting.extend.Handler;
 import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;

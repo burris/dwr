@@ -22,9 +22,9 @@ import javax.servlet.ServletContext;
 
 import org.apache.bsf.BSFException;
 import org.apache.bsf.BSFManager;
-import org.directwebremoting.Creator;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;

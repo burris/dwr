@@ -17,12 +17,12 @@ package org.directwebremoting.convert;
 
 import java.lang.reflect.Constructor;
 
-import org.directwebremoting.Converter;
-import org.directwebremoting.InboundContext;
-import org.directwebremoting.InboundVariable;
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
+import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.InboundContext;
+import org.directwebremoting.extend.InboundVariable;
+import org.directwebremoting.extend.OutboundContext;
+import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
 
 /**

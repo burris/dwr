@@ -15,10 +15,10 @@
  */
 package uk.ltd.getahead.dwr.compat;
 
-import org.directwebremoting.Converter;
-import org.directwebremoting.MarshallException;
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.OutboundContext;
+import org.directwebremoting.extend.OutboundVariable;
 
 /**
  * WARNING: This is not properly implemented yet.

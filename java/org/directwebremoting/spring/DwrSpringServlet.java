@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.WebContextBuilder;
+import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.servlet.UrlProcessor;

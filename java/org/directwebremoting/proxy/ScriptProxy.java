@@ -20,13 +20,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
-import org.directwebremoting.ServerContext;
-import org.directwebremoting.ServerContextFactory;
-import org.directwebremoting.WebContextFactory;
 
 /**
  * Class to help people send scripts to collections of browsers.
@@ -41,16 +36,6 @@ public class ScriptProxy
      */
     public ScriptProxy()
     {
-        serverContext = WebContextFactory.get();
-    }
-
-    /**
-     * Non-http thread constructor
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public ScriptProxy(ServletContext sctx)
-    {
-        serverContext = ServerContextFactory.get(sctx);
     }
 
     /**
@@ -59,39 +44,15 @@ public class ScriptProxy
      */
     public ScriptProxy(ScriptSession scriptSession)
     {
-        serverContext = WebContextFactory.get();
         scriptSessions.add(scriptSession);
-    }
-
-    /**
-     * Non-http thread constructor
-     * @param scriptSession The browser to alter
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public ScriptProxy(ScriptSession scriptSession, ServletContext sctx)
-    {
-        serverContext = ServerContextFactory.get(sctx);
-        scriptSessions.add(scriptSession);
-    }
-
-    /**
-     * Http thread constructor
-     * @param scriptSessions The browsers to alter
-     */
-    public ScriptProxy(Collection scriptSessions)
-    {
-        serverContext = WebContextFactory.get();
-        this.scriptSessions.addAll(scriptSessions);
     }
 
     /**
      * Non-http thread constructor
      * @param scriptSessions The browsers to alter
-     * @param sctx The servlet context to allow us to locate a webapp
      */
-    public ScriptProxy(Collection scriptSessions, ServletContext sctx)
+    public ScriptProxy(Collection scriptSessions)
     {
-        serverContext = ServerContextFactory.get(sctx);
         this.scriptSessions.addAll(scriptSessions);
     }
 
@@ -101,7 +62,7 @@ public class ScriptProxy
      */
     protected ScriptBuffer createScriptBuffer()
     {
-        return new ScriptBuffer(serverContext);
+        return new ScriptBuffer();
     }
 
     /**
@@ -132,19 +93,6 @@ public class ScriptProxy
             scriptSession.addScript(script);
         }
     }
-
-    /**
-     * @return the webContext
-     */
-    protected ServerContext getServerContext()
-    {
-        return serverContext;
-    }
-
-    /**
-     * We're going to need this for converting data
-     */
-    private final ServerContext serverContext;
 
     /**
      * The browsers that we affect.

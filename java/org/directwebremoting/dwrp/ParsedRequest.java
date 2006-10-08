@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.directwebremoting.Calls;
+import org.directwebremoting.extend.Calls;
 
 /**
  * A container for all the by-products of an HttpRequest parse

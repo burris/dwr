@@ -26,27 +26,28 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.AccessControl;
-import org.directwebremoting.Call;
-import org.directwebremoting.Calls;
-import org.directwebremoting.ConverterManager;
-import org.directwebremoting.Creator;
-import org.directwebremoting.CreatorManager;
-import org.directwebremoting.InboundContext;
-import org.directwebremoting.InboundVariable;
-import org.directwebremoting.MarshallException;
-import org.directwebremoting.Marshaller;
-import org.directwebremoting.PageNormalizer;
-import org.directwebremoting.Replies;
-import org.directwebremoting.Reply;
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptConduit;
-import org.directwebremoting.ScriptSession;
-import org.directwebremoting.ServerException;
-import org.directwebremoting.TypeHintContext;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.AccessControl;
+import org.directwebremoting.extend.Call;
+import org.directwebremoting.extend.Calls;
+import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.Creator;
+import org.directwebremoting.extend.CreatorManager;
+import org.directwebremoting.extend.InboundContext;
+import org.directwebremoting.extend.InboundVariable;
+import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.Marshaller;
+import org.directwebremoting.extend.PageNormalizer;
+import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.Replies;
+import org.directwebremoting.extend.Reply;
+import org.directwebremoting.extend.ScriptConduit;
+import org.directwebremoting.extend.ServerException;
+import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.impl.RemoteDwrEngine;
+import org.directwebremoting.impl.ScriptBufferUtil;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
@@ -202,7 +203,7 @@ public abstract class BaseCallMarshaller implements Marshaller
      */
     private void storeParsedRequest(HttpServletRequest request, WebContext webContext, ParsedRequest parsedRequest)
     {
-        String normalizedPage = pageNormalizer.normalizaPage(parsedRequest.getPage());
+        String normalizedPage = pageNormalizer.normalizePage(parsedRequest.getPage());
         webContext.setCurrentPageInformation(normalizedPage, parsedRequest.getScriptSessionId());
 
         // Remaining parameters get put into the request for later consumption
@@ -324,14 +325,12 @@ public abstract class BaseCallMarshaller implements Marshaller
         // From the call to addScriptConduit() there could be 2 threads writing
         // to 'out' so we synchronize on 'out' to make sure there are no
         // clashes
-        ScriptSession scriptSession = WebContextFactory.get().getScriptSession();
+        RealScriptSession scriptSession = (RealScriptSession) WebContextFactory.get().getScriptSession();
 
         out.println(ConversionConstants.SCRIPT_CALL_INSERT);
         scriptSession.addScriptConduit(conduit);
         scriptSession.removeScriptConduit(conduit);
         out.println(ConversionConstants.SCRIPT_CALL_REPLY);
-
-        RemoteDwrEngine engine = new RemoteDwrEngine(conduit, converterManager);
 
         for (int i = 0; i < replies.getReplyCount(); i++)
         {
@@ -344,28 +343,35 @@ public abstract class BaseCallMarshaller implements Marshaller
                 if (reply.getThrowable() != null)
                 {
                     Throwable ex = reply.getThrowable();
-                    engine.remoteHandleException(id, ex);
+                    RemoteDwrEngine.remoteHandleException(conduit, id, ex);
 
                     log.warn("--Erroring: id[" + id + "] message[" + ex.toString() + ']');
                 }
                 else
                 {
                     Object data = reply.getReply();
-                    engine.remoteHandleCallback(id, data);
+                    RemoteDwrEngine.remoteHandleCallback(conduit, id, data);
                 }
             }
-            catch (MarshallException ex)
-            {
-                engine.remoteHandleMarshallException(id, ex);
-
-                log.warn("--MarshallException: id=" + id + " class=" + ex.getConversionType().getName() + " message=" + ex.toString());
-            }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 // We're a bit stuck we died half way through writing so
                 // we can't be sure the browser can react to the failure.
                 // Since we can no longer do output we just log and end
                 log.error("--Output Error: id[" + id + "] message[" + ex.toString() + ']', ex);
+            }
+            catch (MarshallException ex)
+            {
+                RemoteDwrEngine.remoteHandleMarshallException(conduit, id, ex);
+                log.warn("--MarshallException: id=" + id + " class=" + ex.getConversionType().getName() + " message=" + ex.toString());
+            }
+            catch (Exception ex)
+            {
+                // This is a bit of a "this can't happen" case so I am a bit
+                // nervous about sending the exception to the client, but we
+                // want to avoid silently dying so we need to do something.
+                RemoteDwrEngine.remoteHandleException(conduit, id, ex);
+                log.error("--MarshallException: id=" + id + " message=" + ex.toString());
             }
         }
 
@@ -577,7 +583,7 @@ public abstract class BaseCallMarshaller implements Marshaller
          */
         public boolean addScript(ScriptBuffer script) throws IOException, MarshallException
         {
-            sendScript(out, script.createOutput());
+            sendScript(out, ScriptBufferUtil.createOutput(script, converterManager));
             return true;
         }
 

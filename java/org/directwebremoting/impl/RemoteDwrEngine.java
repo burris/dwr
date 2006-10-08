@@ -20,13 +20,12 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.ConverterManager;
-import org.directwebremoting.MarshallException;
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptConduit;
-import org.directwebremoting.ServerException;
 import org.directwebremoting.dwrp.BaseCallMarshaller;
 import org.directwebremoting.dwrp.PollHandler;
+import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.ScriptConduit;
+import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.Logger;
@@ -40,20 +39,6 @@ import org.directwebremoting.util.MimeConstants;
  */
 public class RemoteDwrEngine extends ScriptProxy
 {
-    /**
-     * There are a few occasions (probably only {@link RemoteDwrEngine}) where
-     * we need to write directly to a {@link ScriptConduit}. You should
-     * <b>not</b> use this method unless you really understand what you are
-     * doing. 
-     * @param conduit The direct connection to a browser
-     * @param converterManager The connection to various web objects
-     */
-    public RemoteDwrEngine(ScriptConduit conduit, ConverterManager converterManager)
-    {
-        this.converterManager = converterManager;
-        this.conduit = conduit;
-    }
-
     /**
      * Call the DWREngine._remoteHandleServerException() in the browser
      * @param response The HTTP response to write to
@@ -78,14 +63,15 @@ public class RemoteDwrEngine extends ScriptProxy
 
     /**
      * Call the DWREngine._remoteHandleResponse() in the browser
+     * @param conduit The browser pipe to write to
      * @param id The identifier of the call that we are handling a response for
      * @param data The data to pass to the callback function
      * @throws IOException If writing fails.
      * @throws MarshallException If objects in the script can not be marshalled
      */
-    public void remoteHandleCallback(String id, Object data) throws IOException, MarshallException
+    public static void remoteHandleCallback(ScriptConduit conduit, String id, Object data) throws IOException, MarshallException
     {
-        ScriptBuffer script = new ScriptBuffer(converterManager);
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("DWREngine._remoteHandleCallback(\'")
               .appendScript(id)
               .appendScript("\',")
@@ -97,15 +83,16 @@ public class RemoteDwrEngine extends ScriptProxy
 
     /**
      * Call the DWREngine._remoteHandleException() in the browser
+     * @param conduit The browser pipe to write to
      * @param id The id of the call we are replying to
      * @param ex The exception to throw on the remote end
      * @throws IOException If writing fails.
      */
-    public void remoteHandleException(String id, Throwable ex) throws IOException
+    public static void remoteHandleException(ScriptConduit conduit, String id, Throwable ex) throws IOException
     {
         try
         {
-            ScriptBuffer script = new ScriptBuffer(converterManager);
+            ScriptBuffer script = new ScriptBuffer();
             script.appendScript("DWREngine._remoteHandleException(\'")
                   .appendScript(id)
                   .appendScript("\',")
@@ -116,28 +103,29 @@ public class RemoteDwrEngine extends ScriptProxy
         }
         catch (MarshallException mex)
         {
-            ScriptBuffer script = new ScriptBuffer(converterManager);
+            ScriptBuffer script = new ScriptBuffer();
             script.appendScript("DWREngine._remoteHandleException(\'")
                   .appendScript(id)
                   .appendScript("\',")
                   .appendData(ex)
                   .appendScript(");");
 
-            addScriptWithoutException(script);
+            addScriptWithoutException(conduit, script);
         }
     }
 
     /**
      * Call the DWREngine._remoteHandleException() in the browser
+     * @param conduit The browser pipe to write to
      * @param id The id of the call we are replying to
      * @param ex The exception to throw on the remote end
      * @throws IOException If writing fails.
      */
-    public void remoteHandleMarshallException(String id, MarshallException ex) throws IOException
+    public static void remoteHandleMarshallException(ScriptConduit conduit, String id, MarshallException ex) throws IOException
     {
         try
         {
-            ScriptBuffer script = new ScriptBuffer(converterManager);
+            ScriptBuffer script = new ScriptBuffer();
             script.appendScript("DWREngine._remoteHandleException(\'")
                   .appendScript(id)
                   .appendScript("\',")
@@ -148,34 +136,26 @@ public class RemoteDwrEngine extends ScriptProxy
         }
         catch (MarshallException mex)
         {
-            ScriptBuffer script = new ScriptBuffer(converterManager);
+            ScriptBuffer script = new ScriptBuffer();
             script.appendScript("DWREngine._remoteHandleException(\'")
                   .appendScript(id)
                   .appendScript("\',")
                   .appendData(ex)
                   .appendScript(");");
 
-            addScriptWithoutException(script);
+            addScriptWithoutException(conduit, script);
         }
-    }
-
-    /**
-     * Create a new ScriptBuffer from whatever resources we have.
-     * @return a new ScriptBuffer
-     */
-    protected ScriptBuffer createScriptBuffer()
-    {
-        return new ScriptBuffer(converterManager);
     }
 
     /**
      * Calling {@link ScriptConduit#addScript(ScriptBuffer)} throws a
      * {@link MarshallException} which we want to ignore since it almost
      * certainly can't happen for real.
+     * @param conduit The browser pipe to write to
      * @param script The buffer to add to the current {@link ScriptConduit}
      * @throws IOException If the write process fails
      */
-    private void addScriptWithoutException(ScriptBuffer script) throws IOException
+    private static void addScriptWithoutException(ScriptConduit conduit, ScriptBuffer script) throws IOException
     {
         try
         {
@@ -186,17 +166,6 @@ public class RemoteDwrEngine extends ScriptProxy
             log.warn("This exception can't happen", ex);
         }
     }
-
-    /**
-     * We're going to need this for converting data
-     */
-    private final ConverterManager converterManager;
-
-    /**
-     * There are a few occasions (mostly {@link RemoteDwrEngine}) where we need to
-     * write directly to a {@link ScriptConduit}.
-     */
-    private ScriptConduit conduit;
 
     /**
      * The log stream

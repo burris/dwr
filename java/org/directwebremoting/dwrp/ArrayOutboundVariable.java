@@ -17,8 +17,8 @@ package org.directwebremoting.dwrp;
 
 import java.util.List;
 
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.extend.OutboundContext;
+import org.directwebremoting.extend.OutboundVariable;
 
 /**
  * An OutboundVariable that creates data from Collections.

@@ -23,18 +23,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.ConverterManager;
-import org.directwebremoting.Handler;
-import org.directwebremoting.MarshallException;
-import org.directwebremoting.PageNormalizer;
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptConduit;
-import org.directwebremoting.ScriptSession;
-import org.directwebremoting.ServerException;
-import org.directwebremoting.ServerLoadMonitor;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.Handler;
+import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.PageNormalizer;
+import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.ScriptConduit;
+import org.directwebremoting.extend.ServerException;
+import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.impl.RemoteDwrEngine;
+import org.directwebremoting.impl.ScriptBufferUtil;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.Logger;
@@ -99,10 +100,10 @@ public class PollHandler implements Handler
         boolean partialResponse = Boolean.valueOf(prString).booleanValue();
 
         // Various bits of parseResponse need to be stashed away places
-        String normalizedPage = pageNormalizer.normalizaPage(page);
+        String normalizedPage = pageNormalizer.normalizePage(page);
 
         webContext.setCurrentPageInformation(normalizedPage, scriptId);
-        ScriptSession scriptSession = webContext.getScriptSession();
+        RealScriptSession scriptSession = (RealScriptSession) webContext.getScriptSession();
         ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
 
         long postStreamWaitTime = monitor.getPostStreamWaitTime();
@@ -213,24 +214,17 @@ public class PollHandler implements Handler
                     }
                 }
 
-                ScriptBuffer script = new ScriptBuffer(converterManager);
+                ScriptBuffer script = new ScriptBuffer();
                 try
                 {
                     int wait = serverLoadMonitor.getTimeToNextPoll();
                     Integer data = new Integer(wait);
 
-                    script.appendScript("DWREngine._handleResponse(")
-                          .appendData(callId)
-                          .appendScript(',')
-                          .appendData(data)
-                          .appendScript(");");
+                    RemoteDwrEngine.remoteHandleCallback(conduit, callId, data);
                 }
                 catch (Exception ex)
                 {
-                    script.appendScript("DWREngine._handleServerWarning(")
-                          .appendData(callId)
-                          .appendScript(", 'Error handling reverse ajax');");
-
+                    RemoteDwrEngine.remoteHandleException(conduit, callId, ex);
                     log.warn("--Erroring: id[" + callId + "] message[" + ex.toString() + ']', ex);
                 }
 
@@ -312,7 +306,7 @@ public class PollHandler implements Handler
      * @param lock The object that we wait on
      * @param preStreamWaitTime The length of time to wait
      */
-    protected void sleepWithNotify(ScriptSession scriptSession, Object lock, long preStreamWaitTime)
+    protected void sleepWithNotify(RealScriptSession scriptSession, Object lock, long preStreamWaitTime)
     {
         ScriptConduit listener = new NotifyOnlyScriptConduit(lock);
 
@@ -349,7 +343,7 @@ public class PollHandler implements Handler
      * @param preStreamWaitTime The length of time to wait
      * @return True if the continuation wait worked
      */
-    private boolean sleepWithContinuation(ScriptSession scriptSession, Continuation continuation, long preStreamWaitTime)
+    private boolean sleepWithContinuation(RealScriptSession scriptSession, Continuation continuation, long preStreamWaitTime)
     {
         ScriptConduit listener = null;
 
@@ -410,7 +404,7 @@ public class PollHandler implements Handler
          */
         public boolean addScript(ScriptBuffer script) throws IOException, MarshallException
         {
-            sendScript(out, script.createOutput());
+            sendScript(out, ScriptBufferUtil.createOutput(script, converterManager));
             return true;
         }
 

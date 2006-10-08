@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting;
+package org.directwebremoting.extend;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * Some constants to do with the heart of DWR.
+ * A handler is a very simple servlet that does not differentiate between GET
+ * and POST, or need complex setup beyond what the container can provide
  * @author Joe Walker [joe at getahead dot ltd dot uk]
- * @noinspection InterfaceNeverImplemented
  */
-public interface DwrConstants
+public interface Handler
 {
     /**
-     * The package name because people need to load resources in this package.
+     * Handle a URL request that has been mapped to this Handler
+     * @param request The HTTP request data
+     * @param response Where we write the HTTP response data
+     * @throws IOException If the write process fails
      */
-    public static final String PACKAGE = "/org/directwebremoting";
-
-    /**
-     * The system dwr.xml resource name
-     */
-    public static final String FILE_DWR_XML = PACKAGE + "/dwr.xml";
-
-    /**
-     * The default dwr.xml file path
-     */
-    public static final String DEFAULT_DWR_XML = "/WEB-INF/dwr.xml";
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

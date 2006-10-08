@@ -133,41 +133,4 @@ public interface ScriptSession
      * @throws IllegalStateException if the page has been invalidated
      */
     long getLastAccessedTime();
-
-    /**
-     * While a Marshaller is processing a request it can register a
-     * ScriptConduit with the ScriptSession to say - "pass scripts to me"
-     * <p>
-     * Several Marshallers may be active on the same page as a time and it
-     * doesn't really matter which gets the script. So ScriptSession should
-     * record all of the active ScriptConduits, but just pick one
-     * @param conduit The new ScriptConduit
-     * @see ScriptSession#removeScriptConduit(ScriptConduit)
-     */
-    void addScriptConduit(ScriptConduit conduit);
-
-    /**
-     * Remove a ScriptConduit.
-     * @param conduit The ScriptConduit to remove
-     * @see ScriptSession#addScriptConduit(ScriptConduit)
-     */
-    void removeScriptConduit(ScriptConduit conduit);
-
-    /**
-     * For internal use only.
-     * Allows for checking to see if there is data waiting to be returned
-     * @return true if there are no waiting scripts
-     */
-    boolean hasWaitingScripts();
-
-    /**
-     * Accessor for the mutex used to synchronize access to
-     * @return The mutex object used by the script session
-     */
-    Object getScriptLock();
-
-    /**
-     * Flush the session conduits
-     */
-    void flushConduits();
 }

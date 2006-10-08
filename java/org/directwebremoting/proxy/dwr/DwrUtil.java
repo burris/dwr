@@ -18,8 +18,6 @@ package org.directwebremoting.proxy.dwr;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
@@ -54,17 +52,6 @@ public class DwrUtil extends ScriptProxy
     }
 
     /**
-     * Non-http thread constructor, that affects no browsers.
-     * Calls to {@link DwrUtil#addScriptSession(ScriptSession)} or to
-     * {@link DwrUtil#addScriptSessions(Collection)} will be needed
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public DwrUtil(ServletContext sctx)
-    {
-        super(sctx);
-    }
-
-    /**
      * Http thread constructor that alters a single browser
      * @param scriptSession The browser to alter
      */
@@ -74,32 +61,12 @@ public class DwrUtil extends ScriptProxy
     }
 
     /**
-     * Non-http thread constructor that alters a single browser
-     * @param scriptSession The browser to alter
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public DwrUtil(ScriptSession scriptSession, ServletContext sctx)
-    {
-        super(scriptSession, sctx);
-    }
-
-    /**
      * Http thread constructor that alters a number of browsers
      * @param scriptSessions A collection of ScriptSessions that we should act on.
      */
     public DwrUtil(Collection scriptSessions)
     {
         super(scriptSessions);
-    }
-
-    /**
-     * Non-http thread constructor that alters a number of browsers
-     * @param scriptSessions The browsers to alter
-     * @param sctx The servlet context to allow us to locate a webapp
-     */
-    public DwrUtil(Collection scriptSessions, ServletContext sctx)
-    {
-        super(scriptSessions, sctx);
     }
 
     /**
@@ -127,7 +94,7 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.setValue(")
               .appendData(elementId)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(value)
               .appendScript(options)
               .appendScript(");");
@@ -148,7 +115,7 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.setValues(")
               .appendData(values)
-              .appendScript(',')
+              .appendScript(",")
               .appendScript(options)
               .appendScript(");");
         addScript(script);
@@ -165,7 +132,7 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addOptions(")
               .appendData(elementId)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(array)
               .appendScript(");");
         addScript(script);
@@ -183,9 +150,9 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addOptions(")
               .appendData(elementId)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(array)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(property)
               .appendScript(");");
         addScript(script);
@@ -204,11 +171,11 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addOptions(")
               .appendData(elementId)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(array)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(valueProperty)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(textProperty)
               .appendScript(");");
         addScript(script);
@@ -249,9 +216,9 @@ public class DwrUtil extends ScriptProxy
             ScriptBuffer script = createScriptBuffer();
             script.appendScript("DWRUtil.addRows(")
                   .appendData(elementId)
-                  .appendScript(',')
+                  .appendScript(",")
                   .appendData(data)
-                  .appendScript(',')
+                  .appendScript(",")
                   .appendScript("[" + functions.toString() + "]")
                   .appendScript(options == null ? "" : ", " + options)
                   .appendScript(");");
@@ -331,7 +298,7 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.cloneNode(")
               .appendData(elementId)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(options)
               .appendScript(");");
         addScript(script);
@@ -347,7 +314,7 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.setClassName(")
               .appendData(elementId)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(className)
               .appendScript(");");
         addScript(script);
@@ -363,7 +330,7 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.addClassName(")
               .appendData(elementId)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(className)
               .appendScript(");");
         addScript(script);
@@ -379,7 +346,7 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.removeClassName(")
               .appendData(elementId)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(className)
               .appendScript(");");
         addScript(script);
@@ -395,7 +362,7 @@ public class DwrUtil extends ScriptProxy
         ScriptBuffer script = createScriptBuffer();
         script.appendScript("DWRUtil.toggleClassName(")
               .appendData(elementId)
-              .appendScript(',')
+              .appendScript(",")
               .appendData(className)
               .appendScript(");");
         addScript(script);
@@ -414,9 +381,9 @@ public class DwrUtil extends ScriptProxy
               .appendData(elementId)
               .appendScript(").style.")
               .appendScript(selector)
-              .appendScript('=')
+              .appendScript("=")
               .appendData(value)
-              .appendScript(';');
+              .appendScript(";");
         addScript(script);
     }
 }

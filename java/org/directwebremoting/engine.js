@@ -151,13 +151,28 @@ DWREngine.setPollType = function(newPollType) {
  * The default message handler.
  * @see http://getahead.ltd.uk/dwr/browser/engine/errors
  */
-DWREngine.defaultMessageHandler = function(message) {
-  if (typeof message == "object" && message.name == "Error" && message.description) {
-    alert("Error: " + message.description);
+DWREngine.defaultMessageHandler = function(ex) {
+  if (typeof ex == "object" && ex.message) {
+    alert(ex.message);
   }
   else {
     // Ignore NS_ERROR_NOT_AVAILABLE if Mozilla is being narky
-    if (message.toString().indexOf("0x80040111") == -1) alert(message);
+    var desc = ex.toString();
+    if (desc.indexOf("0x80040111") != -1) DWREngine._debug(desc);
+    else alert(desc);
+  }
+};
+
+/**
+ * The default message handler.
+ * @see http://getahead.ltd.uk/dwr/browser/engine/errors
+ */
+DWREngine.defaultWarningHandler = function(ex) {
+  if (typeof ex == "object" && ex.message) {
+    DWREngine._debug(ex.message);
+  }
+  else {
+    DWREngine._debug(ex);
   }
 };
 
@@ -172,7 +187,7 @@ DWREngine.beginBatch = function() {
   }
   DWREngine._batch = {
     headers:{}, map:{ callCount:0 }, paramCount:0,
-    isPoll:false, ids:[], preHooks:[], postHooks:[]
+    isPoll:false, batchIds:[], preHooks:[], postHooks:[]
   };
 };
 
@@ -323,6 +338,9 @@ DWREngine._urlRewriteHandler = DWREngine._defaultInterceptor;
 DWREngine._contentRewriteHandler = DWREngine._defaultInterceptor;
 DWREngine._replyRewriteHandler = DWREngine._defaultInterceptor;
 
+/** Batch ids allow us to know which question the server is answering */
+DWREngine._lastBatchId = 0;
+
 /**
  * @private Send a request. Called by the Javascript interface stub
  * @param path part of URL after the host and before the exec bit without leading or trailing /s
@@ -361,8 +379,8 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   else callData = args.pop();
 
   // Get a unique ID for this call
-  var random = Math.floor(Math.random() * 10001);
-  var id = (random + "_" + new Date().getTime()).toString();
+  DWREngine._lastBatchId++;
+  var batchId = DWREngine._lastBatchId;
 
   // Merge from the callData into the batch
   if (callData.rpcType != null) DWREngine._batch.rpcType = callData.rpcType;
@@ -371,7 +389,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   if (callData.timeout != null) DWREngine._batch.timeout = callData.timeout;
   if (callData.preHook != null) DWREngine._batch.preHooks.unshift(callData.preHook);
   if (callData.postHook != null) DWREngine._batch.postHooks.push(callData.postHook);
-  DWREngine._batch.ids[id] = {
+  DWREngine._batch.batchIds[batchId] = {
     exceptionHandler:callData.exceptionHandler,
     callback:callData.callback
   };
@@ -390,7 +408,7 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   var prefix = "c" + DWREngine._batch.map.callCount + "-";
   DWREngine._batch.map[prefix + "scriptName"] = scriptName;
   DWREngine._batch.map[prefix + "methodName"] = methodName;
-  DWREngine._batch.map[prefix + "id"] = id;
+  DWREngine._batch.map[prefix + "id"] = batchId;
   if (callData.parameters) {
     for (prop in callData.parameters) {
       data = callData[prop];
@@ -410,18 +428,18 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
 DWREngine._poll = function(overridePath) {
   if (!DWREngine._reverseAjax) return;
   // Get a unique ID for this call
-  var random = Math.floor(Math.random() * 10001);
-  var id = (random + "_" + new Date().getTime()).toString();
+  DWREngine._lastBatchId++;
+  var batchId = DWREngine._lastBatchId;
   // Create a batch object that describes how we are to call the server
   var batch = {
     map:{
-      id:id, callCount:1,
+      id:batchId, callCount:1,
       httpSessionId:DWREngine._getJSessionId(),
       scriptSessionId:DWREngine._getScriptSessionId(),
       page:window.location.pathname
     },
     rpcType:DWREngine._pollType, completed:false, isPoll:true, httpMethod:"POST",
-    async:true, headers:{}, ids:[ id ], paramCount:0,
+    async:true, headers:{}, batchIds:[ batchId ], paramCount:0,
     path:(overridePath) ? overridePath : DWREngine._defaultPath,
     preHooks:[], postHooks:[], timeout:0
   };
@@ -434,7 +452,7 @@ DWREngine._poll = function(overridePath) {
     batch.map.partialResponse = "false";
   }
   // Create an entry in the handlers map for what happens when the reply arrives
-  batch.ids[id] = {
+  batch.batchIds[batchId] = {
     callback:function(pause) { setTimeout("DWREngine._poll()", pause); }
   };
   // Send the data
@@ -722,7 +740,9 @@ DWREngine._stateChange = function(batch) {
 
         // Comet replies might have already partially executed
         if (batch.req == DWREngine._pollReq && batch.map.partialResponse == "true") {
+          DWREngine._receivedBatch = batch;
           DWREngine._processCometResponse(reply);
+          DWREngine._receivedBatch = null;
         }
         else {
           if (reply.search("//#DWR") == -1) {
@@ -747,23 +767,12 @@ DWREngine._stateChange = function(batch) {
   DWREngine._clearUp(batch);
 };
 
-/** @private This method is called by Javascript that is emitted by server */
-DWREngine._remoteHandleServerException = function(ex) {
-  if (ex.message == undefined) ex.message = "";
-  DWREngine._handleError(DWREngine._receivedBatch, ex);
-  DWREngine._maybeClearUpIFrame();
-};
-
-/**
- * @private Called by reply scripts generated as a result of remote requests
- * @param id The identifier of the call that we are handling a response for
- * @param reply The data to pass to the callback function
- */
-DWREngine._remoteHandleCallback = function(id, reply) {
+/** @private Called by reply scripts generated as a result of remote requests */
+DWREngine._remoteHandleCallback = function(batchId, reply) {
   // Error handlers inside here indicate an error that is nothing to do
   // with DWR so we handle them differently.
   try {
-    var handlers = DWREngine._receivedBatch.ids[id];
+    var handlers = DWREngine._receivedBatch.batchIds[batchId];
     if (handlers && typeof handlers.callback == "function") handlers.callback(reply);
   }
   catch (ex) {
@@ -773,19 +782,28 @@ DWREngine._remoteHandleCallback = function(id, reply) {
 };
 
 /** @private This method is called by Javascript that is emitted by server */
-DWREngine._remoteHandleException = function(id, ex) {
-  var handlers = DWREngine._receivedBatch.ids[id];
+DWREngine._remoteHandleException = function(batchId, ex) {
+  var handlers = DWREngine._receivedBatch.batchIds[batchId];
   if (ex.message == undefined) ex.message = "";
   if (handlers && typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(error.message, ex);
   else if (DWREngine._exceptionHandler) DWREngine._exceptionHandler(error.message, ex);
   DWREngine._maybeClearUpIFrame();
 };
 
+/** @private This method is called by Javascript that is emitted by server */
+DWREngine._remoteHandleServerException = function(ex) {
+  if (ex.message == undefined) ex.message = "";
+  DWREngine._handleError(DWREngine._receivedBatch, ex);
+  DWREngine._maybeClearUpIFrame();
+};
+
 /** @private Finalize the call for IFrame transport */
 DWREngine._maybeClearUpIFrame = function() {
+  // TODO: Is this a bug? What happens if the iframes arrive unordered?
   var responseBatch = DWREngine._batches[DWREngine._batches.length - 1];
   if (responseBatch.rpcType == DWREngine.IFrame) {
     // Only finalize after the last call has been handled
+    // TODO: This must be a bug id is undefined!
     if (responseBatch.map["c" + (responseBatch.map.callCount - 1) + "-id"] == id) {
       DWREngine._clearUp(responseBatch);
     }
@@ -870,7 +888,7 @@ DWREngine._handleWarning = function(batch, ex) {
   if (ex.message == null) ex.message = "";
   if (ex.name == null) ex.name = "unknown";
   if (batch && typeof batch.warningHandler == "function") handlers.warningHandler(ex.message, ex);
-  else DWREngine._handleWarning(ex.message, ex);
+  else if (DWREngine._warningHandler) DWREngine._warningHandler(ex.message, ex);
 };
 
 /**
@@ -1053,10 +1071,7 @@ DWREngine._unserializeDocument = function(xml) {
   }
 };
 
-/**
- * @private Helper to find an ActiveX object that works.
- * @param axarray An array of strings to attempt to create ActiveX objects from
- */
+/** @param axarray An array of strings to attempt to create ActiveX objects from */
 DWREngine._newActiveXObject = function(axarray) {
   var returnValue;  
   for (var i = 0; i < axarray.length; i++) {
@@ -1067,4 +1082,19 @@ DWREngine._newActiveXObject = function(axarray) {
     catch (ex) { /* ignore */ }
   }
   return returnValue;
+};
+
+/** See if there is anywhere we can write a debug message */
+DWREngine._debug = function(message) {
+  if (window.console) { window.console.trace(); window.console.log(message); }
+  else if (window.opera && window.opera.postError) window.opera.postError(message);
+  //else if (window.navigator.product == "Gecko") window.dump(message + "\n");
+  else {
+    var debug = document.getElementById("dwr-debug");
+    if (debug) {
+      var contents = message + "<br/>" + debug.innerHTML;
+      if (contents.length > 1024) contents = contents.substring(0, 1024);
+      debug.innerHtml = contents;
+    }
+  }
 };

@@ -20,14 +20,14 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.directwebremoting.Converter;
-import org.directwebremoting.InboundContext;
-import org.directwebremoting.InboundVariable;
-import org.directwebremoting.MarshallException;
-import org.directwebremoting.OutboundContext;
-import org.directwebremoting.OutboundVariable;
 import org.directwebremoting.dwrp.ConversionConstants;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
+import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.InboundContext;
+import org.directwebremoting.extend.InboundVariable;
+import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.OutboundContext;
+import org.directwebremoting.extend.OutboundVariable;
 
 /**
  * An implementation of Converter for Dates.

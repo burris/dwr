@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.directwebremoting.PageNormalizer;
-import org.directwebremoting.ScriptSession;
-import org.directwebremoting.ScriptSessionManager;
+import org.directwebremoting.extend.PageNormalizer;
+import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.Logger;
 
 /**
@@ -38,7 +38,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#getScriptSession(java.lang.String)
      */
-    public ScriptSession getScriptSession(String id)
+    public RealScriptSession getScriptSession(String id)
     {
         DefaultScriptSession session;
 
@@ -60,11 +60,11 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSessionManager#setPageForScriptSession(org.directwebremoting.ScriptSession, java.lang.String)
+     * @see org.directwebremoting.ScriptSessionManager#setPageForScriptSession(org.directwebremoting.extend.RealScriptSession, java.lang.String)
      */
-    public void setPageForScriptSession(ScriptSession scriptSession, String page)
+    public void setPageForScriptSession(RealScriptSession scriptSession, String page)
     {
-        String normalizedPage = pageNormalizer.normalizaPage(page);
+        String normalizedPage = pageNormalizer.normalizePage(page);
         synchronized (sessionLock)
         {
             Set pageSessions = (Set) pageSessionMap.get(normalizedPage);
@@ -83,7 +83,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      */
     public Collection getScriptSessionsByPage(String page)
     {
-        String normalizedPage = pageNormalizer.normalizaPage(page);
+        String normalizedPage = pageNormalizer.normalizePage(page);
         synchronized (sessionLock)
         {
             Set pageSessions = (Set) pageSessionMap.get(normalizedPage);
@@ -116,13 +116,13 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      * leave it for the GC vultures to pluck.
      * @param session The session to get rid of
      */
-    protected void invalidate(ScriptSession session)
+    protected void invalidate(RealScriptSession session)
     {
         // Can we think of a reason why we need to sync both together?
         // It feels like a deadlock risk to do so
         synchronized (sessionLock)
         {
-            ScriptSession removed = (ScriptSession) sessionMap.remove(session.getId());
+            RealScriptSession removed = (RealScriptSession) sessionMap.remove(session.getId());
             if (!session.equals(removed))
             {
                 log.error("ScriptSession already removed from manager. session=" + session + " removed=" + removed);

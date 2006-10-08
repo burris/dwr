@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextBuilder;
+import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.util.Logger;
 
 /**

@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting;
+package org.directwebremoting.extend;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.directwebremoting.Container;
 
 /**
- * A handler is a very simple servlet that does not differentiate between GET
- * and POST, or need complex setup beyond what the container can provide
+ * Provides a way to add bits of configuration to the system.
+ * Predominantly created for Spring, however I can see that other systems and
+ * particularly IoC containers may be glad of a system like this.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public interface Handler
+public interface Configurator
 {
     /**
-     * Handle a URL request that has been mapped to this Handler
-     * @param request The HTTP request data
-     * @param response Where we write the HTTP response data
-     * @throws IOException If the write process fails
+     * Do the Configuration actions
+     * @param container The object that contains the system objects to configure
      */
-    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    void configure(Container container);
 }

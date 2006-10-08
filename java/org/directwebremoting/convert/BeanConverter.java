@@ -15,7 +15,7 @@
  */
 package org.directwebremoting.convert;
 
-import org.directwebremoting.Converter;
+import org.directwebremoting.extend.Converter;
 
 /**
  * Convert a Javascript associative array into a JavaBean

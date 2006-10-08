@@ -45,8 +45,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.directwebremoting.InboundContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.util.Logger;
 
 

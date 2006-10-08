@@ -20,7 +20,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.Handler;
+import org.directwebremoting.extend.Handler;
 
 /**
  * Display a 404 "not found" message

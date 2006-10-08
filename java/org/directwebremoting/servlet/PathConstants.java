@@ -16,7 +16,7 @@
 package org.directwebremoting.servlet;
 
 import org.directwebremoting.Container;
-import org.directwebremoting.Handler;
+import org.directwebremoting.extend.Handler;
 
 /**
  * Various constants from generating output.

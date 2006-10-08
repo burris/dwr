@@ -15,7 +15,7 @@
  */
 package org.directwebremoting.dwrp;
 
-import org.directwebremoting.OutboundVariable;
+import org.directwebremoting.extend.OutboundVariable;
 
 /**
  * An OutboundVariable that simply refers to one defined elsewhere
