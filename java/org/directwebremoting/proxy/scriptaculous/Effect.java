@@ -193,6 +193,25 @@ public class Effect extends ScriptProxy
     }
 
     /**
+     * Call the script.aculo.us <code>Effect.Highlight()</code> function.
+     * @param elementId The element to effect
+     */
+    public void highlight(String elementId)
+    {
+        callEffect(elementId, "Highlight");
+    }
+
+    /**
+     * Call the script.aculo.us <code>Effect.Highlight()</code> function.
+     * @param elementId The element to affect
+     * @param options A string containing options to pass to the fade effect, as specified at http://script.aculo.us/
+     */
+    public void highlight(String elementId, String options)
+    {
+        callEffect(elementId, "Highlight", options);
+    }
+
+    /**
      * Call the script.aculo.us <code>Effect.Fade()</code> function.
      * @param elementId The element to affect
      * @param options A string containing options to pass to the fade effect, as specified at http://script.aculo.us/
