@@ -785,8 +785,8 @@ DWREngine._remoteHandleCallback = function(batchId, reply) {
 DWREngine._remoteHandleException = function(batchId, ex) {
   var handlers = DWREngine._receivedBatch.batchIds[batchId];
   if (ex.message == undefined) ex.message = "";
-  if (handlers && typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(error.message, ex);
-  else if (DWREngine._exceptionHandler) DWREngine._exceptionHandler(error.message, ex);
+  if (handlers && typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(ex.message, ex);
+  else if (DWREngine._exceptionHandler) DWREngine._exceptionHandler(ex.message, ex);
   DWREngine._maybeClearUpIFrame();
 };
 
