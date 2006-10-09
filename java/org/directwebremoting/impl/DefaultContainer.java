@@ -81,13 +81,16 @@ public class DefaultContainer extends AbstractContainer implements Container
             }
         }
 
-        if (value instanceof String && log.isDebugEnabled())
+        if (log.isDebugEnabled())
         {
-            log.debug("Adding IoC setting: " + askFor + "=" + value);
-        }
-        else
-        {
-            log.debug("Adding IoC implementation: " + askFor + "=" + value.getClass().getName());
+            if (value instanceof String)
+            {
+                log.debug("Adding IoC setting: " + askFor + "=" + value);
+            }
+            else
+            {
+                log.debug("Adding IoC implementation: " + askFor + "=" + value.getClass().getName());
+            }
         }
 
         beans.put(askFor, value);
