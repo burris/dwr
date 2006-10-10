@@ -382,11 +382,19 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   DWREngine._lastBatchId++;
   var batchId = DWREngine._lastBatchId;
 
+  // Copy globals into the batch if they are missing
+  if (callData.errorHandler == null) callData.errorHandler = DWREngine._errorHandler;
+  if (callData.warningHandler == null) callData.warningHandler = DWREngine._warningHandler;
+  if (callData.textHtmlHandler == null) callData.textHtmlHandler = DWREngine._textHtmlHandler;
+
   // Merge from the callData into the batch
   if (callData.rpcType != null) DWREngine._batch.rpcType = callData.rpcType;
   if (callData.httpMethod != null) DWREngine._batch.httpMethod = callData.httpMethod;
   if (callData.async != null) DWREngine._batch.async = callData.async;
   if (callData.timeout != null) DWREngine._batch.timeout = callData.timeout;
+  if (callData.errorHandler != null) DWREngine._batch.errorHandler = callData.errorHandler;
+  if (callData.warningHandler != null) DWREngine._batch.warningHandler = callData.warningHandler;
+  if (callData.textHtmlHandler != null) DWREngine._batch.textHtmlHandler = callData.textHtmlHandler;
   if (callData.preHook != null) DWREngine._batch.preHooks.unshift(callData.preHook);
   if (callData.postHook != null) DWREngine._batch.postHooks.push(callData.postHook);
   DWREngine._batch.batchIds[batchId] = {
@@ -791,7 +799,7 @@ DWREngine._remoteHandleException = function(batchId, ex) {
 };
 
 /** @private This method is called by Javascript that is emitted by server */
-DWREngine._remoteHandleServerException = function(ex) {
+DWREngine._remoteHandleExceptionWithoutBatchId = function(ex) {
   if (ex.message == undefined) ex.message = "";
   DWREngine._handleError(DWREngine._receivedBatch, ex);
   DWREngine._maybeClearUpIFrame();

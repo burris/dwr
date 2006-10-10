@@ -25,7 +25,6 @@ import org.directwebremoting.dwrp.BaseCallMarshaller;
 import org.directwebremoting.dwrp.PollHandler;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.ScriptConduit;
-import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.Logger;
@@ -39,28 +38,6 @@ import org.directwebremoting.util.MimeConstants;
  */
 public class RemoteDwrEngine extends ScriptProxy
 {
-    /**
-     * Call the DWREngine._remoteHandleServerException() in the browser
-     * @param response The HTTP response to write to
-     * @param ex The execption from which we make a reply
-     * @throws IOException If writing fails.
-     */
-    public static void remoteHandleServerException(HttpServletResponse response, ServerException ex) throws IOException
-    {
-        response.setContentType(MimeConstants.MIME_PLAIN);
-        PrintWriter out = response.getWriter();
-
-        String output = JavascriptUtil.escapeJavaScript(ex.getMessage());
-
-        // We know nothing about the browser state - this needs to work in an
-        // HTML context as well as a Javascript context
-        out.println("// <script>");
-        out.print("DWREngine._remoteHandleServerException(\'Server Error");
-        out.print(output);
-        out.println("\');");
-        out.println("// </script>");
-    }
-
     /**
      * Call the DWREngine._remoteHandleResponse() in the browser
      * @param conduit The browser pipe to write to
@@ -79,39 +56,6 @@ public class RemoteDwrEngine extends ScriptProxy
               .appendScript(");");
 
         conduit.addScript(script);
-    }
-
-    /**
-     * Call the DWREngine._remoteHandleException() in the browser
-     * @param conduit The browser pipe to write to
-     * @param id The id of the call we are replying to
-     * @param ex The exception to throw on the remote end
-     * @throws IOException If writing fails.
-     */
-    public static void remoteHandleException(ScriptConduit conduit, String id, Throwable ex) throws IOException
-    {
-        try
-        {
-            ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("DWREngine._remoteHandleException(\'")
-                  .appendScript(id)
-                  .appendScript("\',")
-                  .appendData(ex)
-                  .appendScript(");");
-    
-            conduit.addScript(script);
-        }
-        catch (MarshallException mex)
-        {
-            ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("DWREngine._remoteHandleException(\'")
-                  .appendScript(id)
-                  .appendScript("\',")
-                  .appendData(ex)
-                  .appendScript(");");
-
-            addScriptWithoutException(conduit, script);
-        }
     }
 
     /**
@@ -145,6 +89,60 @@ public class RemoteDwrEngine extends ScriptProxy
 
             addScriptWithoutException(conduit, script);
         }
+    }
+
+    /**
+     * Call the DWREngine._remoteHandleException() in the browser
+     * @param conduit The browser pipe to write to
+     * @param id The id of the call we are replying to
+     * @param ex The exception to throw on the remote end
+     * @throws IOException If writing fails.
+     */
+    public static void remoteHandleException(ScriptConduit conduit, String id, Throwable ex) throws IOException
+    {
+        try
+        {
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendScript("DWREngine._remoteHandleException(\'")
+                  .appendScript(id)
+                  .appendScript("\',")
+                  .appendData(ex)
+                  .appendScript(");");
+
+            conduit.addScript(script);
+        }
+        catch (MarshallException mex)
+        {
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendScript("DWREngine._remoteHandleException(\'")
+                  .appendScript(id)
+                  .appendScript("\',")
+                  .appendData(ex)
+                  .appendScript(");");
+
+            addScriptWithoutException(conduit, script);
+        }
+    }
+
+    /**
+     * Call the DWREngine._remoteHandleServerException() in the browser
+     * @param response The HTTP response to write to
+     * @param ex The execption from which we make a reply
+     * @throws IOException If writing fails.
+     */
+    public static void remoteHandleExceptionWithoutBatchId(HttpServletResponse response, Exception ex) throws IOException
+    {
+        response.setContentType(MimeConstants.MIME_PLAIN);
+        PrintWriter out = response.getWriter();
+
+        String output = JavascriptUtil.escapeJavaScript(ex.getMessage());
+        String error = "{ type:'" + ex.getClass().getName() + "', message:" + output + " }";
+
+        // We know nothing about the browser state - this needs to work in an
+        // HTML context as well as a Javascript context
+        out.println("// <script>");
+        out.println("DWREngine._remoteHandleExceptionWithoutBatchId(" + error + ");");
+        out.println("// </script>");
     }
 
     /**

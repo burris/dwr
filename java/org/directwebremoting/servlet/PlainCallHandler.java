@@ -25,7 +25,6 @@ import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
-import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.impl.RemoteDwrEngine;
 
 /**
@@ -45,9 +44,10 @@ public class PlainCallHandler implements Handler
         {
             calls = plainCallMarshaller.marshallInbound(request, response);
         }
-        catch (ServerException ex)
+        catch (Exception ex)
         {
-            RemoteDwrEngine.remoteHandleServerException(response, ex);
+            RemoteDwrEngine.remoteHandleExceptionWithoutBatchId(response, ex);
+            return;
         }
 
         Replies replies = remoter.execute(calls);

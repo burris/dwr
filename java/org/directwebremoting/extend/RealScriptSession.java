@@ -15,6 +15,8 @@
  */
 package org.directwebremoting.extend;
 
+import java.io.IOException;
+
 import org.directwebremoting.ScriptSession;
 
 /**
@@ -33,9 +35,10 @@ public interface RealScriptSession extends ScriptSession
      * doesn't really matter which gets the script. So ScriptSession should
      * record all of the active ScriptConduits, but just pick one
      * @param conduit The new ScriptConduit
+     * @throws IOException If the write to the output fails
      * @see RealScriptSession#removeScriptConduit(ScriptConduit)
      */
-    void addScriptConduit(ScriptConduit conduit);
+    void addScriptConduit(ScriptConduit conduit) throws IOException;
 
     /**
      * Remove a ScriptConduit.

@@ -158,12 +158,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             if (reason != null)
             {
                 log.error("Access denied: " + reason + ". creator=" + creator + ", call=" + call.getScriptName() + "." + method);
-
-                call.setMethod(null);
-                call.setParameters(null);
-                call.setException(new SecurityException(Messages.getString("BaseCallMarshaller.AccessDenied")));
-
-                continue callLoop;
+                throw new SecurityException(Messages.getString("BaseCallMarshaller.AccessDenied"));
             }
 
             // Convert all the parameters to the correct types

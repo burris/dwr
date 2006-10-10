@@ -15,6 +15,7 @@
  */
 package org.directwebremoting.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.util.Logger;
@@ -186,7 +188,7 @@ public class DefaultScriptSession implements RealScriptSession
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.RealScriptSession#addScriptConduit(org.directwebremoting.extend.ScriptConduit)
      */
-    public void addScriptConduit(ScriptConduit conduit)
+    public void addScriptConduit(ScriptConduit conduit) throws IOException
     {
         checkNotInvalidated();
 
@@ -196,13 +198,14 @@ public class DefaultScriptSession implements RealScriptSession
             conduits.add(conduit);
 
             // If there are any outstanding scripts, dump them to the new conduit
-            try
-            {
-                boolean output = false;
+            boolean output = false;
 
-                for (Iterator it = scripts.iterator(); it.hasNext();)
+            for (Iterator it = scripts.iterator(); it.hasNext();)
+            {
+                ScriptBuffer script = (ScriptBuffer) it.next();
+
+                try
                 {
-                    ScriptBuffer script = (ScriptBuffer) it.next();
                     if (conduit.addScript(script))
                     {
                         output = true;
@@ -214,15 +217,15 @@ public class DefaultScriptSession implements RealScriptSession
                         break;
                     }
                 }
-
-                if (output)
+                catch (MarshallException ex)
                 {
-                    conduit.flush();
+                    log.warn("Failed to convert data. Dropping Javascript: " + script, ex);
                 }
             }
-            catch (Exception ex)
+
+            if (output)
             {
-                log.warn("Failed to catch-up write to a ScriptConduit", ex);
+                conduit.flush();
             }
         }
     }
@@ -239,7 +242,7 @@ public class DefaultScriptSession implements RealScriptSession
             boolean removed = conduits.remove(conduit);
             if (!removed)
             {
-                log.error("Attempt to remove unattached ScriptConduit: " + conduit, new Exception());
+                log.warn("Removing unattached ScriptConduit: " + conduit);
                 debug();
             }
         }

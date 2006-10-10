@@ -89,7 +89,7 @@ public class PollHandler implements Handler
         }
         catch (ServerException ex)
         {
-            RemoteDwrEngine.remoteHandleServerException(response, ex);
+            RemoteDwrEngine.remoteHandleExceptionWithoutBatchId(response, ex);
             return;
         }
 
@@ -127,32 +127,23 @@ public class PollHandler implements Handler
             // Don't wait if we would wait for 0s or if there are queued scripts
             if (preStreamWaitTime > 0 && !scriptSession.hasWaitingScripts())
             {
-                try
+                // The first wait - before we do any output
+                Object lock = scriptSession.getScriptLock();
+                synchronized (lock)
                 {
-                    // The first wait - before we do any output
-                    Object lock = scriptSession.getScriptLock();
-                    synchronized (lock)
+                    // If this is Jetty then we can use Continuations
+                    Continuation continuation = new Continuation(request);
+                    if (continuation.isAvailable())
                     {
-                        // If this is Jetty then we can use Continuations
-                        Continuation continuation = new Continuation(request);
-                        if (continuation.isAvailable())
-                        {
-                            if (!sleepWithContinuation(scriptSession, continuation, preStreamWaitTime))
-                            {
-                                sleepWithNotify(scriptSession, lock, preStreamWaitTime);
-                            }
-                        }
-                        else
+                        if (!sleepWithContinuation(scriptSession, continuation, preStreamWaitTime))
                         {
                             sleepWithNotify(scriptSession, lock, preStreamWaitTime);
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    // Allow Jetty RequestRetry exception to propogate to container
-                    Continuation.rethrowIfContinuation(ex);
-                    log.warn("Error calling pollWait()", ex);
+                    else
+                    {
+                        sleepWithNotify(scriptSession, lock, preStreamWaitTime);
+                    }
                 }
             }
 
@@ -191,13 +182,6 @@ public class PollHandler implements Handler
                 // The second wait - after we've started to do the output
                 if (postStreamWaitTime > 0)
                 {
-                    // Flush any scripts already written.
-                    // This is a bit of a broad brush: We only really need to flush the
-                    // conduit that is part of this response, but is there any harm
-                    // in flushing too many?
-                    //ScriptSession scriptSession = context.getScriptSession();
-                    //scriptSession.flushConduits();
-
                     try
                     {
                         Thread thread = Thread.currentThread();
@@ -305,8 +289,9 @@ public class PollHandler implements Handler
      * @param scriptSession The session that we add the conduit to
      * @param lock The object that we wait on
      * @param preStreamWaitTime The length of time to wait
+     * @throws IOException If the write to the browser fails
      */
-    protected void sleepWithNotify(RealScriptSession scriptSession, Object lock, long preStreamWaitTime)
+    protected void sleepWithNotify(RealScriptSession scriptSession, Object lock, long preStreamWaitTime) throws IOException
     {
         ScriptConduit listener = new NotifyOnlyScriptConduit(lock);
 

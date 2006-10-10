@@ -69,6 +69,8 @@ public interface WebContext extends ServerContext
 
     /**
      * Accessor for the http response bean.
+     * <p>You can't use this request to directly reply to the response or to add
+     * headers or cookies.
      * @return Returns the response.
      */
     HttpServletResponse getHttpServletResponse();
