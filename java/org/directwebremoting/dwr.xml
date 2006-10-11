@@ -31,14 +31,15 @@
     <converter id="object" class="org.directwebremoting.convert.ObjectConverter"/>
     <converter id="hibernate" class="org.directwebremoting.hibernate.HibernateBeanConverter"/>
     <converter id="url" class="org.directwebremoting.convert.URLConverter"/>
+    <converter id="exception" class="org.directwebremoting.convert.ExceptionConverter"/>
   </init>
 
   <allow>
     <convert converter="null" match="void"/>
     <convert converter="null" match="java.lang.Void"/>
 
-    <convert converter="bean" match="java.lang.Throwable">
-      <param name="include" value="cause, message"/>
+    <convert converter="exception" match="java.lang.Throwable">
+      <param name="include" value="cause, message, type"/>
     </convert>
 
     <convert converter="primitive" match="boolean"/>
