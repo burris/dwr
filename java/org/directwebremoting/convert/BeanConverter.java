@@ -23,11 +23,4 @@ import org.directwebremoting.extend.Converter;
  */
 public class BeanConverter extends BasicBeanConverter implements Converter
 {
-    /* (non-Javadoc)
-     * @see org.directwebremoting.convert.BasicBeanConverter#isAvailable(java.lang.Object, java.lang.String)
-     */
-    public boolean isAvailable(Object data, String property)
-    {
-        return true;
-    }
 }

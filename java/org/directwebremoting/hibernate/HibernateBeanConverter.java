@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.directwebremoting.convert.BasicBeanConverter;
+import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
@@ -48,38 +49,47 @@ public class HibernateBeanConverter extends BasicBeanConverter
     /**
      * HibernateBeanConverter (and maybe others) may want to provide alternate
      * versions of bean.getClass()
-     * @param bean The class to find bean info from
+     * @param type The class to find bean info from
      * @return BeanInfo for the given class
-     * @throws IntrospectionException
+     * @throws MarshallException
      */
-    protected BeanInfo getBeanInfo(Object bean) throws IntrospectionException
+    protected BeanInfo getBeanInfo(Class type) throws MarshallException
     {
-        Class clazz = HibernateUtil.getClass(bean);
-        return Introspector.getBeanInfo(clazz);
+        try
+        {
+            // ERROR: HibernateUtil wants an object to do RTTI on
+            Class clazz = HibernateUtil.getClass(type);
+            return Introspector.getBeanInfo(clazz);
+        }
+        catch (IntrospectionException ex)
+        {
+            throw new MarshallException(type, ex);
+        }
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.convert.BasicBeanConverter#isAvailable(java.lang.Object, java.lang.String)
+     * @see org.directwebremoting.convert.BasicBeanConverter#getValueForProperty(java.lang.Object, java.beans.PropertyDescriptor)
      */
-    public boolean isAvailable(Object data, String property)
+    protected Object getValueForProperty(Object data, PropertyDescriptor descriptor) throws MarshallException
     {
         try
         {
             // We don't marshall un-initialized properties for Hibernate3
             if (HibernateUtil.getHibernateMajorVersion() >= 3)
             {
-                Method method = findGetter(data, property);
+                String propertyName = descriptor.getName();
+                Method method = findGetter(data, propertyName);
 
                 if (method == null)
                 {
-                    log.warn("Failed to find property: " + property);
-                    return false;
+                    log.warn("Failed to find property: " + propertyName);
+                    return null;
                 }
 
-                boolean reply = HibernateUtil.isPropertyInitialized(data, property);
+                boolean reply = HibernateUtil.isPropertyInitialized(data, propertyName);
                 if (!reply)
                 {
-                    return false;
+                    return null;
                 }
 
                 Object retval = method.invoke(data, new Object[] {});
@@ -87,16 +97,16 @@ public class HibernateBeanConverter extends BasicBeanConverter
                 reply = HibernateUtil.isInitialized(retval);
                 if (!reply)
                 {
-                    return false;
+                    return null;
                 }
             }
 
-            return true;
+            Method getter = descriptor.getReadMethod();
+            return getter.invoke(data, new Object[0]);
         }
         catch (Exception ex)
         {
-            log.error("Failed in checking Hibernate the availability of " + property, ex);
-            return false;
+            throw new MarshallException(data.getClass(), ex);
         }
     }
 

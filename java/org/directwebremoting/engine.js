@@ -656,10 +656,10 @@ DWREngine._sendData = function(batch) {
   }
 };
 
-DWREngine._ModePlainCall = "/plaincall/";
-DWREngine._ModeHtmlCall = "/htmlcall/";
-DWREngine._ModePlainPoll = "/plainpoll/";
-DWREngine._ModeHtmlPoll = "/htmlpoll/";
+DWREngine._ModePlainCall = "/call/plaincall/";
+DWREngine._ModeHtmlCall = "/call/htmlcall/";
+DWREngine._ModePlainPoll = "/call/plainpoll/";
+DWREngine._ModeHtmlPoll = "/call/htmlpoll/";
 
 /** @private Work out what the URL should look like */
 DWREngine._constructRequest = function(batch) {

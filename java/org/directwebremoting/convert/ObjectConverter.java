@@ -18,21 +18,17 @@ package org.directwebremoting.convert;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
 
 import org.directwebremoting.dwrp.ConversionConstants;
-import org.directwebremoting.dwrp.ObjectOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
-import org.directwebremoting.extend.OutboundContext;
-import org.directwebremoting.extend.OutboundVariable;
+import org.directwebremoting.extend.Property;
+import org.directwebremoting.extend.TypeHintContext;
+import org.directwebremoting.impl.FieldProperty;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -67,12 +63,12 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
 
         if (!value.startsWith(ConversionConstants.INBOUND_MAP_START))
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
+            throw new MarshallException(paramType, Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
         }
 
         if (!value.endsWith(ConversionConstants.INBOUND_MAP_END))
         {
-            throw new IllegalArgumentException(Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
+            throw new MarshallException(paramType, Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
         }
 
         value = value.substring(1, value.length() - 1);
@@ -89,16 +85,6 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                 bean = paramType.newInstance();
             }
 
-            // We know what we are converting to, so we create a map of property
-            // names against PropertyDescriptors to speed lookup later
-            Field[] fields = getAllFields(bean);
-            Map props = new HashMap();
-            for (int i = 0; i < fields.length; i++)
-            {
-                String key = fields[i].getName();
-                props.put(key, fields[i]);
-            }
-
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
             if (instanceType != null)
@@ -110,67 +96,50 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                 inctx.addConverted(iv, paramType, bean);
             }
 
-            // Loop through the property declarations
-            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);
-            int size = st.countTokens();
-            for (int i = 0; i < size; i++)
+            Map properties = getPropertyMap(bean.getClass(), false, true);
+
+            // Loop through the properties passed in
+            Map tokens = extractInboundTokens(paramType, value);
+            for (Iterator it = tokens.entrySet().iterator(); it.hasNext();)
             {
-                String token = st.nextToken();
-                if (token.trim().length() == 0)
-                {
-                    continue;
-                }
+                Map.Entry entry = (Map.Entry) it.next();
+                String key = (String) entry.getKey();
+                String val = (String) entry.getValue();
 
-                int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
-                if (colonpos == -1)
+                Property property = (Property) properties.get(key);
+                if (property == null)
                 {
-                    throw new MarshallException(paramType, Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
-                }
+                    log.warn("Missing java bean property to match javascript property: " + key + ". For causes see debug level logs:");
 
-                String key = token.substring(0, colonpos).trim();
-                String val = token.substring(colonpos + 1).trim();
+                    log.debug("- The javascript may be refer to a property that does not exist");
+                    log.debug("- You may be missing the correct setter: set" + Character.toTitleCase(key.charAt(0)) + key.substring(1) + "()");
+                    log.debug("- The property may be excluded using include or exclude rules.");
 
-                Field field = (Field) props.get(key);
-                if (field == null)
-                {
-                    log.warn("No field for " + key);
                     StringBuffer all = new StringBuffer();
-                    for (Iterator it = props.keySet().iterator(); it.hasNext();)
+                    for (Iterator pit = properties.keySet().iterator(); pit.hasNext();)
                     {
-                        all.append(it.next());
-                        if (it.hasNext())
+                        all.append(pit.next());
+                        if (pit.hasNext())
                         {
                             all.append(',');
                         }
                     }
-                    log.warn("Fields exist for (" + all + ").");
+                    log.debug("Fields exist for (" + all + ").");
+                    continue;
                 }
-                else
-                {
-                    Class propType = field.getType();
 
-                    String[] split = LocalUtil.splitInbound(val);
-                    String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
-                    String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
+                Class propType = property.getPropertyType();
 
-                    InboundVariable nested = new InboundVariable(iv.getLookup(), null, splitType, splitValue);
+                String[] split = LocalUtil.splitInbound(val);
+                String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
+                String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
 
-                    if (!Modifier.isPublic(field.getModifiers()))
-                    {
-                        if (force)
-                        {
-                            field.setAccessible(true);
-                        }
-                        else
-                        {
-                            log.debug("Field: " + field.getName() + " is not accessible. use <param name='force' value='true'/>");
-                            continue;
-                        }
-                    }
+                InboundVariable nested = new InboundVariable(iv.getLookup(), null, splitType, splitValue);
 
-                    Object output = converterManager.convertInbound(propType, nested, inctx, inctx.getCurrentTypeHintContext());
-                    field.set(bean, output);
-                }
+                TypeHintContext incc = inctx.getCurrentTypeHintContext();
+
+                Object output = converterManager.convertInbound(propType, nested, inctx, incc);
+                property.setValue(bean, output);
             }
 
             return bean;
@@ -186,151 +155,53 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.Converter#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
+     * @see org.directwebremoting.convert.BasicObjectConverter#getPropertyMap(java.lang.Class, boolean, boolean)
      */
-    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
+    public Map getPropertyMap(Class type, boolean readRequired, boolean writeRequired)
     {
-        // Where we collect out converted children
-        Map ovs = new TreeMap();
+        Map allFields = new HashMap();
 
-        // We need to do this before collecing the children to save recurrsion
-        ObjectOutboundVariable ov = new ObjectOutboundVariable(outctx);
-        outctx.put(data, ov);
-
-        try
+        while (type != Object.class)
         {
-            Field[] fields = getAllFields(data);
+            Field[] fields = type.getDeclaredFields();
+
+            fieldLoop:
             for (int i = 0; i < fields.length; i++)
             {
                 Field field = fields[i];
                 String name = field.getName();
 
-                try
+                // We don't marshall getClass()
+                if (name.equals("class"))
                 {
-                    // We don't marshall getClass()
-                    if (name.equals("class"))
+                    continue fieldLoop;
+                }
+
+                // Access rules mean we might not want to do this one
+                if (!isAllowedByIncludeExcludeRules(name))
+                {
+                    continue;
+                }
+
+                if (!Modifier.isPublic(field.getModifiers()))
+                {
+                    if (force)
+                    {
+                        field.setAccessible(true);
+                    }
+                    else
                     {
                         continue;
                     }
-
-                    // Access rules mean we might not want to do this one
-                    if (!isAllowed(name))
-                    {
-                        log.debug("Skipping marshalling " + name + " due to include/exclude rules");
-                        continue;
-                    }
-
-                    if (!Modifier.isPublic(field.getModifiers()))
-                    {
-                        if (force)
-                        {
-                            field.setAccessible(true);
-                        }
-                        else
-                        {
-                            log.debug("Field: " + field.getName() + " is not accessible. use <param name='force' value='true'/>");
-                            continue;
-                        }
-                    }
-
-                    Object value = field.get(data);
-                    OutboundVariable nested = getConverterManager().convertOutbound(value, outctx);
-
-                    ovs.put(name, nested);
                 }
-                catch (Exception ex)
-                {
-                    log.warn("Failed to convert " + name, ex);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new MarshallException(data.getClass(), ex);
-        }
 
-        ov.init(ovs, getJavascript());
-
-        return ov;
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.convert.BasicObjectConverter#getAllPropertyNames(java.lang.Class)
-     */
-    public String[] getAllPropertyNames(Class mappedType)
-    {
-        Set allFieldNames = new HashSet();
-        while (mappedType != Object.class)
-        {
-            Field[] fields = mappedType.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++)
-            {
-                allFieldNames.add(fields[i].getName());
+                allFields.put(name, new FieldProperty(field));
             }
 
-            mappedType = mappedType.getSuperclass();
+            type = type.getSuperclass();
         }
 
-        return (String[]) allFieldNames.toArray(new String[allFieldNames.size()]);
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.convert.BasicObjectConverter#getPropertyType(java.lang.Class, java.lang.String)
-     */
-    public Class getPropertyType(Class mappedType, String propertyName)
-    {
-        Class clazz = mappedType;
-
-        Field field = null;
-        while (clazz != Object.class)
-        {
-            try
-            {
-                field = clazz.getDeclaredField(propertyName);
-                break;
-            }
-            catch (NoSuchFieldException ignore)
-            {
-                // ignore
-            }
-
-            clazz = clazz.getSuperclass();
-        }
-
-        if (field == null)
-        {
-            throw new IllegalArgumentException("No property '" + propertyName + "' in class " + mappedType.getName() + ".");
-        }
-
-        return field.getType();
-    }
-
-    /**
-     * Get the fields from a bean. You can't use <code>class.getFields()</code>
-     * in place of this because it only gives you accessible fields, and
-     * although <code>class.getDeclaredFields()</code> does give in-accessible
-     * fields is doesn't walk up the tree.
-     * @param bean The class to find bean info from
-     * @return An array of all the fields for the given object
-     */
-    protected Field[] getAllFields(Object bean)
-    {
-        Set allFields = new HashSet();
-
-        Class clazz = bean.getClass();
-
-        while (clazz != Object.class)
-        {
-            Field[] fields = clazz.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++)
-            {
-                allFields.add(fields[i]);
-            }
-
-            clazz = clazz.getSuperclass();
-        }
-
-        return (Field[]) allFields.toArray(new Field[allFields.size()]);
+        return allFields;
     }
 
     /**

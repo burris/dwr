@@ -157,10 +157,10 @@ public class ContainerUtil
         container.addParameter(PathConstants.URL_PREFIX + "/about", AboutHandler.class.getName());
         container.addParameter(PathConstants.URL_PREFIX + "/test/", TestHandler.class.getName());
         container.addParameter(PathConstants.URL_PREFIX + "/interface/", InterfaceHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/plaincall/", PlainCallHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/htmlcall/", HtmlCallHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/plainpoll/", PlainPollHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/htmlpoll/", HtmlPollHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/call/plaincall/", PlainCallHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/call/htmlcall/", HtmlCallHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/call/plainpoll/", PlainPollHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/call/htmlpoll/", HtmlPollHandler.class.getName());
 
         container.addParameter(PathConstants.URL_INDEX, "/index.html");
         container.addParameter(PathConstants.URL_ENGINE, "/engine.js");

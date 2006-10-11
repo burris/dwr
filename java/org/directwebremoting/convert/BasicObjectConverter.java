@@ -16,12 +16,21 @@
 package org.directwebremoting.convert;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
+import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ObjectOutboundVariable;
 import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.NamedConverter;
+import org.directwebremoting.extend.OutboundContext;
+import org.directwebremoting.extend.OutboundVariable;
+import org.directwebremoting.extend.Property;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -33,6 +42,47 @@ import org.directwebremoting.util.Messages;
  */
 public abstract class BasicObjectConverter extends BaseV20Converter implements NamedConverter
 {
+    /* (non-Javadoc)
+     * @see org.directwebremoting.Converter#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
+     */
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
+    {
+        // Where we collect out converted children
+        Map ovs = new TreeMap();
+
+        // We need to do this before collecing the children to save recurrsion
+        ObjectOutboundVariable ov = new ObjectOutboundVariable(outctx);
+        outctx.put(data, ov);
+
+        try
+        {
+            Map properties = getPropertyMap(data.getClass(), true, false);
+            for (Iterator it = properties.entrySet().iterator(); it.hasNext();)
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+                String name = (String) entry.getKey();
+                Property property = (Property) entry.getValue();
+
+                Object value = property.getValue(data);
+                OutboundVariable nested = getConverterManager().convertOutbound(value, outctx);
+
+                ovs.put(name, nested);
+            }
+        }
+        catch (MarshallException ex)
+        {
+            throw ex;
+        }
+        catch (Exception ex)
+        {
+            throw new MarshallException(data.getClass(), ex);
+        }
+
+        ov.init(ovs, getJavascript());
+
+        return ov;
+    }
+
     /**
      * Set a list of properties excluded from conversion
      * @param excludes The space or comma separated list of properties to exclude
@@ -134,7 +184,7 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
      * @param property The property to test
      * @return true if the property may be marshalled
      */
-    protected boolean isAllowed(String property)
+    protected boolean isAllowedByIncludeExcludeRules(String property)
     {
         if (exclusions != null)
         {
@@ -175,33 +225,40 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.NamedConverter#getAllowedPropertyNames(java.lang.Class)
+    /**
+     * Loop over all the inputs and extract a Map of key:value pairs
+     * @param paramType The type we are converting to
+     * @param value The input string
+     * @return A Map of the tokens in the string
+     * @throws MarshallException If the marshalling fails
      */
-    public String[] getAllowedPropertyNames(Class mappedType)
+    protected Map extractInboundTokens(Class paramType, String value) throws MarshallException
     {
-        String[] allPropNames = getAllPropertyNames(mappedType);
-        List allowedList = new ArrayList();
+        Map tokens = new HashMap();
+        StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);
+        int size = st.countTokens();
 
-        for (int i = 0; i < allPropNames.length; i++)
+        for (int i = 0; i < size; i++)
         {
-            String propName = allPropNames[i];
-            if (isAllowed(propName))
+            String token = st.nextToken();
+            if (token.trim().length() == 0)
             {
-                allowedList.add(propName);
+                continue;
             }
+
+            int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
+            if (colonpos == -1)
+            {
+                throw new MarshallException(paramType, Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
+            }
+
+            String key = token.substring(0, colonpos).trim();
+            String val = token.substring(colonpos + 1).trim();
+            tokens.put(key, val);
         }
 
-        return (String[]) allowedList.toArray(new String[allowedList.size()]);
+        return tokens;
     }
-
-    /**
-     * Find all (allowed or otherwise) the property names available via this
-     * converter. 
-     * @param mappedType The class in the inheritance hierachy to use as a base
-     * @return An array of all the property names
-     */
-    public abstract String[] getAllPropertyNames(Class mappedType);
 
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.NamedConverter#getJavascript()

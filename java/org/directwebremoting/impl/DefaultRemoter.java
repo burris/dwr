@@ -36,6 +36,7 @@ import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.NamedConverter;
+import org.directwebremoting.extend.Property;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
@@ -70,73 +71,83 @@ public class DefaultRemoter implements Remoter
         while (it.hasNext())
         {
             String match = (String) it.next();
-            Converter conv = converterManager.getConverterByMatchString(match);
-            // We will only generate JavaScript classes for compound objects/beans
-            if (conv instanceof NamedConverter)
+
+            try
             {
-                NamedConverter boConv = (NamedConverter) conv;
-                String jsClassName = boConv.getJavascript();
+                StringBuffer paramBuffer = new StringBuffer();
 
-                // We need a configured JavaScript class name
-                if (jsClassName != null && !jsClassName.equals(""))
+                Converter conv = converterManager.getConverterByMatchString(match);
+                // We will only generate JavaScript classes for compound objects/beans
+                if (conv instanceof NamedConverter)
                 {
-                    // Wildcard match strings are currently not supported
-                    if (match.indexOf("*") == -1)
+                    NamedConverter boConv = (NamedConverter) conv;
+                    String jsClassName = boConv.getJavascript();
+    
+                    // We need a configured JavaScript class name
+                    if (jsClassName != null && !jsClassName.equals(""))
                     {
-                        buffer.append('\n');
-
-                        // output: if ( typeof <class> != "function" ) function <class>() {
-                        buffer.append("if (typeof " + jsClassName + " != \"function\") function " + jsClassName + "() {\n");
-
-                        // output: this.<property> = <init-value>;
-                        Class mappedType;
-                        try
+                        // Wildcard match strings are currently not supported
+                        if (match.indexOf("*") == -1)
                         {
-                            mappedType = LocalUtil.classForName(match);
+                            paramBuffer.append('\n');
+    
+                            // output: if ( typeof <class> != "function" ) function <class>() {
+                            paramBuffer.append("if (typeof " + jsClassName + " != \"function\") function " + jsClassName + "() {\n");
+    
+                            // output: this.<property> = <init-value>;
+                            Class mappedType;
+                            try
+                            {
+                                mappedType = LocalUtil.classForName(match);
+                            }
+                            catch (ClassNotFoundException ex)
+                            {
+                                throw new IllegalArgumentException(ex.getMessage());
+                            }
+    
+                            Map properties = boConv.getPropertyMap(mappedType, true, true);
+                            for (Iterator pit = properties.entrySet().iterator(); pit.hasNext();)
+                            {
+                                Map.Entry entry = (Map.Entry) pit.next();
+                                String name = (String) entry.getKey();
+                                Property property = (Property) entry.getValue();
+                                Class propType = property.getPropertyType();
+    
+                                // Property name
+                                paramBuffer.append("  this." + name + " = ");
+    
+                                // Default property values
+                                if (propType.isArray())
+                                {
+                                    paramBuffer.append("[]");
+                                }
+                                else if (propType == boolean.class)
+                                {
+                                    paramBuffer.append("false");
+                                }
+                                else if (propType.isPrimitive())
+                                {
+                                    paramBuffer.append("0");
+                                }
+                                else
+                                {
+                                    paramBuffer.append("null");
+                                }
+    
+                                paramBuffer.append(";\n");
+                            }
+    
+                            paramBuffer.append("}\n");
                         }
-                        catch (ClassNotFoundException ex)
-                        {
-                            throw new IllegalArgumentException(ex.getMessage());
-                        }
-
-                        String[] propNames = boConv.getAllowedPropertyNames(mappedType);
-                        for (int i = 0; i < propNames.length; i++)
-                        {
-                            String propName = propNames[i];
-                            Class propType = boConv.getPropertyType(mappedType, propName);
-
-                            if ("class".equals(propName))
-                            {
-                                continue;
-                            }
-
-                            // property name
-                            buffer.append("  this." + propName + " = ");
-
-                            // property value
-                            if (propType.isArray())
-                            {
-                                buffer.append("[]");
-                            }
-                            else if (propType == boolean.class)
-                            {
-                                buffer.append("false");
-                            }
-                            else if (propType.isPrimitive())
-                            {
-                                buffer.append("0");
-                            }
-                            else
-                            {
-                                buffer.append("null");
-                            }
-
-                            buffer.append(";\n");
-                        }
-
-                        buffer.append("}\n");
                     }
                 }
+
+                buffer.append(paramBuffer.toString());
+            }
+            catch (Exception ex)
+            {
+                log.warn("Failed to create parameter declaration for " + match, ex);
+                buffer.append("// Missing parameter declaration for " + match + ". See the server logs for details.");
             }
         }
 

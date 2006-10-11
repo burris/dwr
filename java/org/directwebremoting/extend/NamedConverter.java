@@ -15,12 +15,27 @@
  */
 package org.directwebremoting.extend;
 
+import java.util.Map;
+
 /**
  * Additions to Converter that allow objects to have names that
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface NamedConverter extends Converter
 {
+    /**
+     * Get a map of property names to implementations of {@link Property}.
+     * <p>HibernateBeanConverter (and maybe others) may want to provide
+     * alternate versions of bean.getClass(), and we may wish to fake or hide
+     * properties in some cases
+     * @param type The class to find bean info from
+     * @param readRequired The properties returned must be readable
+     * @param writeRequired The properties returned must be writeable
+     * @return An array of PropertyDescriptors describing the beans properties
+     * @throws MarshallException
+     */
+    Map getPropertyMap(Class type, boolean readRequired, boolean writeRequired) throws MarshallException;
+
     /**
      * @return Returns the instanceType.
      */
@@ -42,19 +57,4 @@ public interface NamedConverter extends Converter
      * @param javascript The Javascript name
      */
     void setJavascript(String javascript);
-
-    /**
-     * Fetch an array of all the allowed property names.
-     * @param mappedType The class in the inheritance hierachy to use as a base
-     * @return A list of allowed propery names
-     */
-    String[] getAllowedPropertyNames(Class mappedType);
-
-    /**
-     * Find the type for a given property name
-     * @param mappedType The class in the inheritance hierachy to use as a base
-     * @param propertyName The property name to lookup
-     * @return The class for the property type
-     */
-    Class getPropertyType(Class mappedType, String propertyName);
 }
