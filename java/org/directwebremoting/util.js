@@ -469,19 +469,35 @@ DWRUtil.getValue = function(ele, options) {
   }
 
   if (DWRUtil._isHTMLElement(ele, "select")) {
-    // This is a bit of a scam because it assumes single select
-    // but I'm not sure how we should treat multi-select.
-    var sel = ele.selectedIndex;
-    if (sel != -1) {
-      var reply = ele.options[sel].value;
-      if (reply == null || reply == "") {
-        reply = ele.options[sel].text;
+    // Using "type" property instead of "multiple" as "type" is an official 
+	// client-side property since JS 1.1
+    if (ele.type == "select-multiple") {
+      var reply = new Array();
+      for (i = 0; i < ele.options.length; i++) {
+        var item = ele.options[i];
+        if( item.selected ) {
+          if (item.value != null && item.value != "") {
+            reply.push(item.value);
+          }
+          else {
+            reply.push(item.text);
+          }
+        }
       }
-
       return reply;
     }
     else {
-      return "";
+      var sel = ele.selectedIndex;
+      if (sel != -1) {
+        var item = ele.options[sel];
+        if (item.value != null && item.value != "") {
+          return item.value;
+        }
+        return item.text;
+      }
+      else {
+        return "";
+      }
     }
   }
 
