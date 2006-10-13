@@ -117,12 +117,16 @@
   </target>
 
   <!--=======================================================================-->
+  <target name="unpack" depends="files" description="Extracts the war file">
+    <unwar src="${target.files}/dwr.war" dest="${target.war}"/>
+  </target>
+
+  <!--=======================================================================-->
   <path id="hostedqa.classpath">
     <fileset dir="${source.jar}">
       <include name="hostedqa.jar"/>
     </fileset>
   </path>
-
   <target name="hostedqa" depends="files" description="Sends the WAR to HostedQA and runs all tests">
     <taskdef resource="hostedqatasks" classpathref="hostedqa.classpath"/>
     <upload file="${target.files}/dwr.war" account="dwr" email="${hostedqa.email}" password="${hostedqa.password}" resourceId="20"/>
