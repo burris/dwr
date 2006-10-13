@@ -89,6 +89,7 @@ public class Battleships
     public void shoot(Position position)
     {
         Person me = getPerson();
+        addMessageToList(me + " shoots at " + position, me, true);
 
         WebContext wctx = WebContextFactory.get();
         String currentPage = wctx.getCurrentPage();

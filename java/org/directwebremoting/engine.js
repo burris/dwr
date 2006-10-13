@@ -459,12 +459,16 @@ DWREngine._poll = function(overridePath) {
   }
   // Create an entry in the handlers map for what happens when the reply arrives
   batch.callIds[callId] = {
-    callback:function(pause) { setTimeout("DWREngine._poll()", pause); }
+    callback:function(pause) {
+      DWREngine._cometBatch = null;
+      setTimeout("DWREngine._poll()", pause);
+    }
   };
   // Send the data
   DWREngine._sendData(batch);
   DWREngine._batches[DWREngine._batches.length] = batch;
   if (batch.map.partialResponse == "true") {
+    DWREngine._cometBatch = batch;
     DWREngine._checkCometPoll();
   }
 };
@@ -490,6 +494,7 @@ DWREngine._checkCometPoll = function() {
       setTimeout("DWREngine._checkCometPoll()", DWREngine._pollCometInterval);
     }
     try {
+      DWREngine._receivedBatch = DWREngine._cometBatch;
       if (DWREngine._pollFrame) {
         var text = DWREngine._getTextFromCometIFrame();
         DWREngine._processCometResponse(text);
@@ -498,6 +503,7 @@ DWREngine._checkCometPoll = function() {
         var xhrtext = DWREngine._pollReq.responseText;
         DWREngine._processCometResponse(xhrtext);
       }
+      DWREngine._receivedBatch = null;
     }
     catch (ex) {
       // IE complains for no good reason for both options above. Ignore.
@@ -777,6 +783,10 @@ DWREngine._stateChange = function(batch) {
 DWREngine._remoteHandleCallback = function(callId, reply) {
   // Error handlers inside here indicate an error that is nothing to do
   // with DWR so we handle them differently.
+  if (DWREngine._receivedBatch == null) {
+    DWREngine._debug("receivedBatch == null in DWREngine._remoteHandleCallback");
+    return;
+  }
   try {
     var handlers = DWREngine._receivedBatch.callIds[callId];
     if (handlers && typeof handlers.callback == "function") handlers.callback(reply);
@@ -789,6 +799,10 @@ DWREngine._remoteHandleCallback = function(callId, reply) {
 
 /** @private This method is called by Javascript that is emitted by server */
 DWREngine._remoteHandleException = function(callId, ex) {
+  if (DWREngine._receivedBatch == null) {
+    DWREngine._debug("receivedBatch == null in DWREngine._remoteHandleException");
+    return;
+  }
   var handlers = DWREngine._receivedBatch.callIds[callId];
   if (ex.message == undefined) ex.message = "";
   if (handlers && typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(ex.message, ex);

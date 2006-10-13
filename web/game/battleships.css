@@ -36,8 +36,8 @@ table { border-collapse:collapse; }
 
 #sidebar { position:absolute; top:0; right:0; width:350px; padding:10px; border-left:1px solid #666; }
 
-#shotouter { -moz-border-radius:5px; background-color:#222; float:right;
-  border:1px solid #999; width:200px; height:24px; margin-right:80px;
+#shotouter { background-color:#112; float:right; border:1px solid #334;
+  width:200px; height:24px; margin-right:80px;
 }
 
 #shotinner { width:0px; height:16px; margin:3px 6px; background-color:red;

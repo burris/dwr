@@ -52,9 +52,8 @@ DWRUtil.selectRange = function(ele, start, end) {
  * Find the element in the current HTML document with the given id or ids
  * @see http://getahead.ltd.uk/dwr/browser/util/$
  */
-var $;
-if (!$ && document.getElementById) {
-  $ = function() {
+if (document.getElementById) {
+  DWRUtil.ele = function() {
     var elements = new Array();
     for (var i = 0; i < arguments.length; i++) {
       var element = arguments[i];
@@ -69,8 +68,8 @@ if (!$ && document.getElementById) {
     return elements;
   };
 }
-else if (!$ && document.all) {
-  $ = function() {
+else if (document.all) {
+  DWRUtil.ele = function() {
     var elements = new Array();
     for (var i = 0; i < arguments.length; i++) {
       var element = arguments[i];
@@ -84,6 +83,15 @@ else if (!$ && document.all) {
     }
     return elements;
   };
+}
+
+/**
+ * Alias $ to DWRUtil.ele
+ * @see http://getahead.ltd.uk/dwr/browser/util/$
+ */
+var $;
+if (!$) {
+  $ = DWRUtil.ele;
 }
 
 /**
@@ -227,7 +235,7 @@ DWRUtil.useLoadingMessage = function(message) {
   if (message) loadingMessage = message;
   else loadingMessage = "Loading";
   DWREngine.setPreHook(function() {
-    var disabledZone = $('disabledZone');
+    var disabledZone = DWRUtil.ele('disabledZone');
     if (!disabledZone) {
       disabledZone = document.createElement('div');
       disabledZone.setAttribute('id', 'disabledZone');
@@ -252,12 +260,12 @@ DWRUtil.useLoadingMessage = function(message) {
       messageZone.appendChild(text);
     }
     else {
-      $('messageZone').innerHTML = loadingMessage;
+      DWRUtil.ele('messageZone').innerHTML = loadingMessage;
       disabledZone.style.visibility = 'visible';
     }
   });
   DWREngine.setPostHook(function() {
-    $('disabledZone').style.visibility = 'hidden';
+    DWRUtil.ele('disabledZone').style.visibility = 'hidden';
   });
 };
 
@@ -276,7 +284,7 @@ DWRUtil.yellowFadeHighlightHandler = function(ele) {
 };
 DWRUtil._yellowFadeSteps = [ "d0", "b0", "a0", "90", "98", "a0", "a8", "b0", "b8", "c0", "c8", "d0", "d8", "e0", "e8", "f0", "f8" ];
 DWRUtil._yellowFadeProcess = function(ele, colorIndex) {
-  ele = $(ele);
+  ele = DWRUtil.ele(ele);
   if (colorIndex < DWRUtil._yellowFadeSteps.length) {
     ele.style.backgroundColor = "#ffff" + DWRUtil._yellowFadeSteps[colorIndex];
     setTimeout("DWRUtil._yellowFadeProcess('" + ele.id + "'," + (colorIndex + 1) + ")", 200);
@@ -304,10 +312,10 @@ DWRUtil._highlightHandler = null;
  */
 DWRUtil.highlight = function(ele, options) {
   if (options && options.highlightHandler) {
-    options.highlightHandler($(ele));
+    options.highlightHandler(DWRUtil.ele(ele));
   }
   else if (DWRUtil._highlightHandler != null) {
-    DWRUtil._highlightHandler($(ele));
+    DWRUtil._highlightHandler(DWRUtil.ele(ele));
   }
 };
 
@@ -327,7 +335,7 @@ DWRUtil.setValue = function(ele, val, options) {
 
   var orig = ele;
   var nodes, node, i;
-  ele = $(ele);
+  ele = DWRUtil.ele(ele);
 
   // We can work with names and need to sometimes for radio buttons
   if (ele == null) {
@@ -456,7 +464,7 @@ DWRUtil._selectListItem = function(ele, val) {
 DWRUtil.getValue = function(ele, options) {
   if (options == null) options = {};
   var orig = ele;
-  ele = $(ele);
+  ele = DWRUtil.ele(ele);
   // We can work with names and need to sometimes for radio buttons, and IE has
   // an annoying bug where
   var nodes = document.getElementsByName(orig);
@@ -589,7 +597,7 @@ DWRUtil._getDataProperties = function(map, prefixes) {
         nestedProperty = (prefixes.join(".")) + "." + property;
       }
       // Are there any elements with that id or name
-      if ($(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
+      if (DWRUtil.ele(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
         DWRUtil.setValue(nestedProperty, map[property]);
       }
     }
@@ -603,7 +611,7 @@ DWRUtil._getDataProperties = function(map, prefixes) {
  */
 DWRUtil.getValues = function(data, options) {
   var ele;
-  if (typeof data == "string") ele = $(data);
+  if (typeof data == "string") ele = DWRUtil.ele(data);
   if (DWRUtil._isHTMLElement(data)) ele = data;
   if (ele != null) {
     if (ele.elements == null) {
@@ -648,7 +656,7 @@ DWRUtil._setDataProperties = function(data, prefixes) {
       if (prefixes.length > 0) {
         nestedProperty = (prefixes.join(".")) + "." + property;
       }
-      if ($(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
+      if (DWRUtil.ele(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
         data[property] = DWRUtil.getValue(nestedProperty);
       }
     }
@@ -863,7 +871,7 @@ DWRUtil.removeAllRows = function(ele, options) {
 };
 
 /**
- * $(ele).className = "X", that we can call from Java easily.
+ * DWRUtil.ele(ele).className = "X", that we can call from Java easily.
  */
 DWRUtil.setClassName = function(ele, className) {
   ele = DWRUtil._getElementById(ele, "setClassName()");
@@ -872,7 +880,7 @@ DWRUtil.setClassName = function(ele, className) {
 };
 
 /**
- * $(ele).className += "X", that we can call from Java easily.
+ * DWRUtil.ele(ele).className += "X", that we can call from Java easily.
  */
 DWRUtil.addClassName = function(ele, className) {
   ele = DWRUtil._getElementById(ele, "addClassName()");
@@ -881,7 +889,7 @@ DWRUtil.addClassName = function(ele, className) {
 };
 
 /**
- * $(ele).className -= "X", that we can call from Java easily
+ * DWRUtil.ele(ele).className -= "X", that we can call from Java easily
  * From code originally by Gavin Kistner
  */
 DWRUtil.removeClassName = function(ele, className) {
@@ -892,7 +900,7 @@ DWRUtil.removeClassName = function(ele, className) {
 };
 
 /**
- * $(ele).className |= "X", that we can call from Java easily.
+ * DWRUtil.ele(ele).className |= "X", that we can call from Java easily.
  */
 DWRUtil.toggleClassName = function(ele, className) {
   ele = DWRUtil._getElementById(ele, "toggleClassName()");
@@ -961,7 +969,7 @@ DWRUtil._removeIds = function(ele) {
  */
 DWRUtil._getElementById = function(ele, source) {
   var orig = ele;
-  ele = $(ele);
+  ele = DWRUtil.ele(ele);
   if (ele == null) {
     DWRUtil.debug(source + " can't find an element with id: " + orig + ".");
   }
@@ -1067,7 +1075,7 @@ DWRUtil._debugMaxLength = 50;
  * Used internally when some message needs to get to the programmer
  */
 DWRUtil.debug = function(message) {
-  var debug = $("dwr-debug");
+  var debug = DWRUtil.ele("dwr-debug");
   if (debug) {
     while (DWRUtil._debugDisplay.length >= DWRUtil._debugMaxLength) {
       DWRUtil._debugDisplay.shift();

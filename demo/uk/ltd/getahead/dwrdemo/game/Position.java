@@ -108,6 +108,14 @@ public class Position
         return getRow() * getCol();
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString()
+    {
+        return "(" + row + "," + col + ")";
+    }
+
     /**
      * The max number of rows in the grid
      */
