@@ -89,7 +89,7 @@ public class PollHandler implements Handler
         }
         catch (ServerException ex)
         {
-            RemoteDwrEngine.remoteHandleExceptionWithoutBatchId(response, ex);
+            RemoteDwrEngine.remoteHandleExceptionWithoutCallId(response, ex);
             return;
         }
 

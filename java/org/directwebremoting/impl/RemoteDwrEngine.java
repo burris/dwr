@@ -130,7 +130,7 @@ public class RemoteDwrEngine extends ScriptProxy
      * @param ex The execption from which we make a reply
      * @throws IOException If writing fails.
      */
-    public static void remoteHandleExceptionWithoutBatchId(HttpServletResponse response, Exception ex) throws IOException
+    public static void remoteHandleExceptionWithoutCallId(HttpServletResponse response, Exception ex) throws IOException
     {
         response.setContentType(MimeConstants.MIME_PLAIN);
         PrintWriter out = response.getWriter();
