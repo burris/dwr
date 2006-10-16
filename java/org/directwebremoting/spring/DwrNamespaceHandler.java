@@ -27,11 +27,7 @@ import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryBuilder;
-import org.springframework.beans.factory.support.ManagedList;
-import org.springframework.beans.factory.support.ManagedMap;
+import org.springframework.beans.factory.support.*;
 import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
@@ -84,19 +80,19 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     /**
      * Registers a new {@link org.directwebremoting.extend.Creator} in the registry using name <code>javascript</code>.
      * TODO: Specifically tailored to SpringCreator; ignores <code>type</code>
-     * @param registryBuilder
      * @param javascript The name of the bean in the registry.
      * @param beanCreator The {@link org.directwebremoting.extend.Creator} to register.
      * @param children The node list to check for nested elements
      */
-    protected void registerCreator(BeanDefinitionRegistryBuilder registryBuilder, String javascript, BeanDefinitionBuilder beanCreator, NodeList children)
+    protected void registerCreator(BeanDefinitionRegistry registry, String javascript, BeanDefinitionBuilder beanCreator, NodeList children)
     {
-        registerSpringConfiguratorIfNecessary(registryBuilder.getRegistry());
+        registerSpringConfiguratorIfNecessary(registry);
 
-        registryBuilder.register(beanCreator);
+        BeanDefinitionHolder holder = new BeanDefinitionHolder(beanCreator.getBeanDefinition(), "__" + javascript + "_creator");
+        BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
 
         BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);
-        creatorConfig.addPropertyReference("creator", beanCreator);
+        creatorConfig.addPropertyReference("creator", "__" + javascript + "_creator");
 
         List includes = new ArrayList();
         creatorConfig.addPropertyValue("includes", includes);
@@ -123,7 +119,8 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             {
                 BeanDefinitionBuilder beanFilter = BeanDefinitionBuilder.rootBeanDefinition(ExtraLatencyAjaxFilter.class);
                 beanFilter.addPropertyValue("delay", child.getAttribute("delay"));
-                registryBuilder.register("__latencyFilter_" + javascript, beanFilter);
+                BeanDefinitionHolder holder2 = new BeanDefinitionHolder(beanFilter.getBeanDefinition(), "__latencyFilter_" + javascript);
+                BeanDefinitionReaderUtils.registerBeanDefinition(holder2, registry);
 
                 ManagedList filterList = new ManagedList();
                 filterList.add(new RuntimeBeanReference("__latencyFilter_" + javascript));
@@ -148,8 +145,10 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         }
 
         String creatorConfigName = "__" + javascript;
-        registryBuilder.register(creatorConfigName, creatorConfig);
-        lookupCreators(registryBuilder.getRegistry()).put(javascript, new RuntimeBeanReference(creatorConfigName));
+        BeanDefinitionHolder holder3 = new BeanDefinitionHolder(creatorConfig.getBeanDefinition(), creatorConfigName);
+        BeanDefinitionReaderUtils.registerBeanDefinition(holder3, registry);
+        
+        lookupCreators(registry).put(javascript, new RuntimeBeanReference(creatorConfigName));
     }
 
     protected class ConfigurationBeanDefinitionParser implements BeanDefinitionParser
@@ -183,13 +182,15 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     {
         public BeanDefinition parse(Element element, ParserContext parserContext)
         {
-            BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
             BeanDefinitionBuilder dwrController = BeanDefinitionBuilder.rootBeanDefinition(DwrController.class);
             List configurators = new ManagedList();
             configurators.add(new RuntimeBeanReference(DEFAULT_SPRING_CONFIGURATOR_ID));
             dwrController.addPropertyValue("configurators", configurators);
             dwrController.addPropertyValue("debug", element.getAttribute("debug"));
-            registryBuilder.register(element.getAttribute("id"), dwrController);
+
+            BeanDefinitionHolder holder = new BeanDefinitionHolder(dwrController.getBeanDefinition(), element.getAttribute("id"));
+            BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
+
             return dwrController.getBeanDefinition();
         }
     }
@@ -198,8 +199,6 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     {
         public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext)
         {
-            BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
-
             Element element = (Element) node;
 
             String parentBeanName = definition.getBeanName();
@@ -209,7 +208,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             beanCreator.addPropertyValue("bean", new RuntimeBeanReference(parentBeanName));
             beanCreator.addPropertyValue("javascript", javascript);
 
-            registerCreator(registryBuilder, javascript, beanCreator, node.getChildNodes());
+            registerCreator(parserContext.getRegistry(), javascript, beanCreator, node.getChildNodes());
 
             return definition;
         }
@@ -259,8 +258,6 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     {
         public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext)
         {
-            BeanDefinitionRegistryBuilder registryBuilder = new BeanDefinitionRegistryBuilder(parserContext.getRegistry());
-
             String parentBeanName = definition.getBeanName();
             Element element = (Element) node;
             String javascript = element.getAttribute("javascript");
@@ -286,7 +283,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 throw new UnsupportedOperationException("Type " + type + " is not yet supported");
             }
 
-            registerCreator(registryBuilder, javascript, creator, node.getChildNodes());
+            registerCreator(parserContext.getRegistry(), javascript, creator, node.getChildNodes());
 
             return definition;
         }

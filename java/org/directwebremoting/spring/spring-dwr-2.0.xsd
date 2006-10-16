@@ -16,9 +16,9 @@
   ~ limitations under the License.
   -->
 
-<xsd:schema xmlns="http://directwebremoting.org/schema/spring-dwr20"
+<xsd:schema xmlns="http://www.directwebremoting.org/schema/spring-dwr"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://directwebremoting.org/schema/spring-dwr20"
+            targetNamespace="http://www.directwebremoting.org/schema/spring-dwr"
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 

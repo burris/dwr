@@ -77,7 +77,12 @@ public class FakeServletConfig implements ServletConfig
      */
     public String getInitParameter(String paramName)
     {
-        return (String) initParameters.get(paramName);
+        Object obj = initParameters.get(paramName);
+        if (obj instanceof String) {
+            return (String) obj;
+        } else {
+            return null;
+        }
     }
 
     /* (non-Javadoc)

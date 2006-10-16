@@ -52,18 +52,14 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
      */
     public Object getBean(String id)
     {
-        Object reply = super.getBean(id);
-        if (reply == null)
+        Object reply;
+        try {
+            reply = beanFactory.getBean(id);
+        }
+        catch (BeansException ex)
         {
-            try
-            {
-                reply = beanFactory.getBean(id);
-            }
-            catch (BeansException ex)
-            {
-                // Spring throws on not-found, we return null.
-                reply = null;
-            }
+            // Spring throws on not-found, we return null.
+            reply = super.getBean(id);
         }
 
         return reply;
