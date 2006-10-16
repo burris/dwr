@@ -48,6 +48,9 @@
         <exclude name="**/package.html"/>
         <exclude name="**/package-info.java"/>
       </fileset>
+      <fileset dir="${source.etc}/classpath">
+	    <exclude name="**/log4j.properties"/>
+      </fileset>
     </copy>
   </target>
 
