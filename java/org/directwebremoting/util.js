@@ -15,10 +15,9 @@
  */
 
 /**
- * Declare a constructor function to which we can add real functions.
- * @constructor
+ * Declare an object to which we can add real functions.
  */
-function DWRUtil() { }
+if (DWRUtil == null) var DWRUtil = {};
 
 /**
  * Enables you to react to return being pressed in an input
