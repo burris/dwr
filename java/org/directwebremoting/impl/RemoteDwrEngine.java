@@ -136,7 +136,7 @@ public class RemoteDwrEngine extends ScriptProxy
         PrintWriter out = response.getWriter();
 
         String output = JavascriptUtil.escapeJavaScript(ex.getMessage());
-        String error = "{ type:'" + ex.getClass().getName() + "', message:" + output + " }";
+        String error = "{ type:'" + ex.getClass().getName() + "', message:'" + output + "' }";
 
         // We know nothing about the browser state - this needs to work in an
         // HTML context as well as a Javascript context
