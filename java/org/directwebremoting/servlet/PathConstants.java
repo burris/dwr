@@ -47,6 +47,11 @@ public class PathConstants
     public static final String URL_UTIL = "utilHandlerUrl";
 
     /**
+     * The id that we use for the URL of the {@link UtilHandler}
+     */
+    public static final String URL_AUTH = "authHandlerUrl";
+
+    /**
      * The id that we use for the URL of the {@link WebworkUtilHandler}
      */
     public static final String URL_WEBWORKUTIL = "webworkUtilHandlerUrl";

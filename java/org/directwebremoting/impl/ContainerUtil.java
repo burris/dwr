@@ -47,6 +47,7 @@ import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.servlet.AboutHandler;
+import org.directwebremoting.servlet.AuthHandler;
 import org.directwebremoting.servlet.DwrWebContextFilter;
 import org.directwebremoting.servlet.EngineHandler;
 import org.directwebremoting.servlet.HtmlCallHandler;
@@ -153,6 +154,7 @@ public class ContainerUtil
         container.addParameter(PathConstants.URL_PREFIX + "/index.html", IndexHandler.class.getName());
         container.addParameter(PathConstants.URL_PREFIX + "/engine.js", EngineHandler.class.getName());
         container.addParameter(PathConstants.URL_PREFIX + "/util.js", UtilHandler.class.getName());
+        container.addParameter(PathConstants.URL_PREFIX + "/auth.js", AuthHandler.class.getName());
         container.addParameter(PathConstants.URL_PREFIX + "/webwork/DWRActionUtil.js", WebworkUtilHandler.class.getName());
         container.addParameter(PathConstants.URL_PREFIX + "/about", AboutHandler.class.getName());
         container.addParameter(PathConstants.URL_PREFIX + "/test/", TestHandler.class.getName());
@@ -165,6 +167,7 @@ public class ContainerUtil
         container.addParameter(PathConstants.URL_INDEX, "/index.html");
         container.addParameter(PathConstants.URL_ENGINE, "/engine.js");
         container.addParameter(PathConstants.URL_UTIL, "/util.js");
+        container.addParameter(PathConstants.URL_AUTH, "/auth.js");
         container.addParameter(PathConstants.URL_WEBWORKUTIL, "/webwork/DWRActionUtil.js");
         container.addParameter(PathConstants.URL_TEST, "/test/");
         container.addParameter(PathConstants.URL_INTERFACE, "/interface/");
