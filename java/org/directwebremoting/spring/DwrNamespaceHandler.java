@@ -80,6 +80,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     /**
      * Registers a new {@link org.directwebremoting.extend.Creator} in the registry using name <code>javascript</code>.
      * TODO: Specifically tailored to SpringCreator; ignores <code>type</code>
+     * @param registry The definition of all the Beans
      * @param javascript The name of the bean in the registry.
      * @param beanCreator The {@link org.directwebremoting.extend.Creator} to register.
      * @param children The node list to check for nested elements

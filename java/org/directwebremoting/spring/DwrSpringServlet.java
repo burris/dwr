@@ -33,7 +33,6 @@ import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.util.Logger;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.BeansException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -96,16 +95,20 @@ public class DwrSpringServlet extends HttpServlet
             StartupUtil.initServerContext(servletConfig, servletContext, container);
 
             // retrieve the configurators from Spring (loaded by the ContextLoaderListener)
-            try {
+            try
+            {
                 configurators.add(webappContext.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID));
-            } catch (NoSuchBeanDefinitionException e) {
-                throw new ServletException("No DWR configuration was found in your application context, make sure to define one", e);
+            }
+            catch (NoSuchBeanDefinitionException ex)
+            {
+                throw new ServletException("No DWR configuration was found in your application context, make sure to define one", ex);
             }
 
             if (includeDefaultConfig)
             {
                 ContainerUtil.configureFromSystemDwrXml(container);
             }
+
             ContainerUtil.configureFromInitParams(container, servletConfig);
             ContainerUtil.configure(container, configurators);
 
