@@ -34,10 +34,10 @@ public interface AccessControl
      * @param creator Where does the method come from?
      * @param className The Javascript name of the class
      * @param method What is the method to execute?
-     * @return null if nothing is wrong or an error message
-     * @see AccessControl#getReasonToNotDisplay(Creator, String, Method)
+     * @throws SecurityException If the given method is disallowed
+     * @see AccessControl#assertIsDisplayable(Creator, String, Method)
      */
-    String getReasonToNotExecute(Creator creator, String className, Method method);
+    void assertExecutionIsPossible(Creator creator, String className, Method method) throws SecurityException;
 
     /**
      * Check the method for accessibility at 'compile-time' (i.e. when the app
@@ -53,10 +53,10 @@ public interface AccessControl
      * @param creator Where does the method come from?
      * @param className The Javascript name of the class
      * @param method What is the method to execute?
-     * @return null if nothing is wrong or an error message
-     * @see AccessControl#getReasonToNotExecute(Creator, String, Method)
+     * @throws SecurityException If the given method is disallowed
+     * @see AccessControl#assertExecutionIsPossible(Creator, String, Method)
      */
-    String getReasonToNotDisplay(Creator creator, String className, Method method);
+    void assertIsDisplayable(Creator creator, String className, Method method) throws SecurityException;
 
     /**
      * J2EE role based security allows us to restrict methods to only being used

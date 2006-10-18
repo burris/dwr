@@ -170,10 +170,16 @@ public class DefaultRemoter implements Remoter
             // We don't need to check accessControl.getReasonToNotExecute()
             // because the checks are made by the doExec method, but we do check
             // if we can display it
-            String reason = accessControl.getReasonToNotDisplay(creator, scriptName, method);
-            if (reason != null && !allowImpossibleTests)
+            try
             {
-                continue;
+                accessControl.assertIsDisplayable(creator, scriptName, method);
+            }
+            catch (SecurityException ex)
+            {
+                if (!allowImpossibleTests)
+                {
+                    continue;
+                }
             }
 
             // Is it on the list of banned names
@@ -274,7 +280,7 @@ public class DefaultRemoter implements Remoter
      * @param call The call to execute
      * @return A Reply to the Call
      */
-    protected Reply execute(Call call)
+    public Reply execute(Call call)
     {
         try
         {

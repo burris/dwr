@@ -91,7 +91,7 @@ public class ParseUtil
         }
         catch (Exception ex)
         {
-            throw new ServerException(Messages.getString("ExecuteQuery.InputReadFailed"), ex);
+            throw new ServerException(Messages.getString("ParseUtil.InputReadFailed"), ex);
         }
 
         // If there is only 1 param then this must be a broken Safari. All
@@ -181,7 +181,7 @@ public class ParseUtil
             }
             else
             {
-                throw new ServerException(Messages.getString("ExecuteQuery.MultiValues", key));
+                throw new ServerException(Messages.getString("ParseUtil.MultiValues", key));
             }
         }
 

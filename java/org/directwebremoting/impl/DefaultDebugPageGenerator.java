@@ -55,7 +55,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         if (!creatorManager.isDebug())
         {
             log.warn("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable.");
-            throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied"));
+            throw new SecurityException(Messages.getString("DefaultDebugPageGenerator.AccessDenied"));
         }
 
         StringBuffer buffer = new StringBuffer();
@@ -96,7 +96,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         if (!creatorManager.isDebug())
         {
             log.warn("Failed attempt to access test pages outside of debug mode. Set the debug init-parameter to true to enable.");
-            throw new SecurityException(Messages.getString("ExecuteQuery.AccessDenied"));
+            throw new SecurityException(Messages.getString("DefaultAccessControl.AccessDenied"));
         }
 
         String interfaceURL = root + interfaceHandlerUrl + scriptName + PathConstants.EXTENSION_JS;
@@ -168,11 +168,14 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             String methodName = method.getName();
 
             // See also the call to getReasonToNotExecute() above
-            String reason = accessControl.getReasonToNotDisplay(creator, scriptName, method);
-            if (reason != null)
+            try
+            {
+                accessControl.assertIsDisplayable(creator, scriptName, method);
+            }
+            catch (SecurityException ex)
             {
                 buffer.append(BLANK);
-                buffer.append("<li style='color: #A88;'>  " + methodName + "() is not available: " + reason + "</li>\n");
+                buffer.append("<li style='color: #A88;'>  " + methodName + "() is not available: " + ex.getMessage() + "</li>\n");
                 if (!allowImpossibleTests)
                 {
                     continue;
@@ -287,12 +290,15 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             }
 
             // See also the call to getReasonToNotDisplay() above
-            String warning = accessControl.getReasonToNotExecute(creator, scriptName, method);
-            if (warning != null)
+            try
             {
-                buffer.append("<br/><span class='warning'>(Security restructions in place: " + warning + ".)</span>\n");
+                accessControl.assertExecutionIsPossible(creator, scriptName, method);
             }
-
+            catch (SecurityException ex)
+            {
+                buffer.append("<br/><span class='warning'>(Security restructions in place: " + ex.getMessage() + ".)</span>\n");
+            }
+            
             buffer.append("</li>\n");
         }
 

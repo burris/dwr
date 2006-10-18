@@ -43,6 +43,9 @@ public class ParallelDefaultRemoter extends DefaultRemoter
     {
         private Call call;
 
+        /**
+         * @param call
+         */
         public OneCall(Call call)
         {
             this.call = call;

@@ -140,8 +140,8 @@ public class MapConverter implements Converter
                 // Could we have recurrsive key? - I don't think so because keys
                 // must be strings in Javascript
                 String keyStr = token.substring(0, colonpos).trim();
-                //String[] keySplit = ExecuteQuery.splitInbound(keyStr);
-                //InboundVariable keyIv = new InboundVariable(incx, splitIv[ExecuteQuery.INBOUND_INDEX_TYPE], splitIv[ExecuteQuery.INBOUND_INDEX_VALUE]);
+                //String[] keySplit = LocalUtil.splitInbound(keyStr);
+                //InboundVariable keyIv = new InboundVariable(incx, splitIv[LocalUtil.INBOUND_INDEX_TYPE], splitIv[LocalUtil.INBOUND_INDEX_VALUE]);
                 InboundVariable keyIv = new InboundVariable(incx, null, ConversionConstants.TYPE_STRING, keyStr);
                 Object key = config.convertInbound(keyType, keyIv, inctx, keyThc);
 

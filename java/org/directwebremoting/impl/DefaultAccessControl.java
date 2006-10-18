@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.AccessControl;
 import org.directwebremoting.extend.Creator;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -40,101 +39,37 @@ import org.directwebremoting.util.Messages;
 public class DefaultAccessControl implements AccessControl
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.AccessControl#getReasonToNotExecute(org.directwebremoting.Creator, java.lang.String, java.lang.reflect.Method)
+     * @see org.directwebremoting.extend.AccessControl#assertExecutionIsPossible(org.directwebremoting.extend.Creator, java.lang.String, java.lang.reflect.Method)
      */
-    public String getReasonToNotExecute(Creator creator, String className, Method method)
+    public void assertExecutionIsPossible(Creator creator, String className, Method method) throws SecurityException
     {
         String methodName = method.getName();
 
         // What if there is some J2EE role based restriction?
         Set roles = getRoleRestrictions(className, methodName);
-        if (roles != null)
+        if (roles != null && !roles.isEmpty())
         {
-            boolean allowed = false;
-
             HttpServletRequest req = WebContextFactory.get().getHttpServletRequest();
-            if (req == null)
-            {
-                log.warn("Missing HttpServletRequest roles can not be checked");
-            }
-            else
-            {
-                for (Iterator it = roles.iterator(); it.hasNext() && !allowed;)
-                {
-                    String role = (String) it.next();
-                    if (req.isUserInRole(role))
-                    {
-                        allowed = true;
-                    }
-                }
-            }
 
-            if (!allowed)
-            {
-                // This just creates a list of allowed roles for better debugging
-                StringBuffer buffer = new StringBuffer();
-                for (Iterator it = roles.iterator(); it.hasNext();)
-                {
-                    String role = (String) it.next();
-                    buffer.append(role);
-                    if (it.hasNext())
-                    {
-                        buffer.append(", ");
-                    }
-                }
-
-                return Messages.getString("ExecuteQuery.DeniedByJ2EERoles", buffer.toString());
-            }
+            assertAuthenticationIsValid(req);
+            assertAllowedByRoles(req, roles);
         }
-
-        return null;
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.AccessControl#getReasonToNotDisplay(org.directwebremoting.Creator, java.lang.String, java.lang.reflect.Method)
      */
-    public String getReasonToNotDisplay(Creator creator, String className, Method method)
+    public void assertIsDisplayable(Creator creator, String className, Method method) throws SecurityException
     {
-        String methodName = method.getName();
-
-        // Is it public
-        if (!Modifier.isPublic(method.getModifiers()))
-        {
-            return Messages.getString("ExecuteQuery.DeniedNonPublic");
-        }
-
-        // Do access controls allow it?
-        if (!isExecutable(className, methodName))
-        {
-            return Messages.getString("ExecuteQuery.DeniedByAccessRules");
-        }
-
-        // We ban some methods from Object too
-        if (method.getDeclaringClass() == Object.class)
-        {
-            return Messages.getString("ExecuteQuery.DeniedObjectMethod");
-        }
+        assertIsMethodPublic(method);
+        assertIsExecutable(className, method.getName());
+        assertIsNotOnBaseObject(method);
 
         if (!exposeInternals)
         {
-            if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY))
-            {
-                return Messages.getString("ExecuteQuery.DeniedCoreDWR");
-            }
-    
-            // Check the parameters are not DWR internal either
-            for (int j = 0; j < method.getParameterTypes().length; j++)
-            {
-                Class paramType = method.getParameterTypes()[j];
-    
-                if (paramType.getName().startsWith(PACKAGE_DWR_DENY))
-                {
-                    return Messages.getString("ExecuteQuery.DeniedParamDWR");
-                }
-            }
+            assertIsClassDwrInternal(creator);
+            assertAreParametersDwrInternal(method);
         }
-
-        return null;
     }
 
     /* (non-Javadoc)
@@ -158,7 +93,7 @@ public class DefaultAccessControl implements AccessControl
      * @param methodName The name of the method (without brackets)
      * @return A Set of all the roles for the given script and method
      */
-    private Set getRoleRestrictions(String scriptName, String methodName)
+    protected Set getRoleRestrictions(String scriptName, String methodName)
     {
         String key = scriptName + '.' + methodName;
         return (Set) roleRestrictMap.get(key);
@@ -211,18 +146,90 @@ public class DefaultAccessControl implements AccessControl
     }
 
     /**
+     * Check the users session for validity
+     * @param req The users request
+     * @throws SecurityException if the users session is invalid 
+     */
+    protected void assertAuthenticationIsValid(HttpServletRequest req) throws SecurityException
+    {
+        // if request contained a valid session, everything's ok
+        if (!req.isRequestedSessionIdValid())
+        {
+            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByInvalidSession"));
+        }
+
+        // ensure that a session now exists
+        req.getSession();
+
+        // if there was an expired session, the request has to fail
+        if (req.getRequestedSessionId() != null)
+        {
+            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByInvalidSession"));
+        }
+
+        if (req.getRemoteUser() == null)
+        {
+            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByAuthenticationRequired"));
+        }
+    }
+
+    /**
+     * Is this current user in the given list of roles
+     * @param req The users request
+     * @param roles The list of roles to check
+     * @throws SecurityException if this user is not allowed by the list of roles
+     */
+    protected void assertAllowedByRoles(HttpServletRequest req, Set roles) throws SecurityException
+    {
+        for (Iterator it = roles.iterator(); it.hasNext();)
+        {
+            String role = (String) it.next();
+            if (req.isUserInRole(role))
+            {
+                return;
+            }
+        }
+
+        throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByJ2EERoles", roles.toString()));
+    }
+
+    /**
+     * Is the method public?
+     * @param method The method that we wish to execute
+     */
+    protected void assertIsMethodPublic(Method method)
+    {
+        if (!Modifier.isPublic(method.getModifiers()))
+        {
+            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedNonPublic"));
+        }
+    }
+
+    /**
+     * We ban some methods from {@link java.lang.Object}
+     * @param method The method that should not be owned by {@link java.lang.Object}
+     */
+    protected void assertIsNotOnBaseObject(Method method)
+    {
+        if (method.getDeclaringClass() == Object.class)
+        {
+            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedObjectMethod"));
+        }
+    }
+
+    /**
      * Test to see if a method is excluded or included.
      * @param scriptName The name of the creator to Javascript
      * @param methodName The name of the method (without brackets)
-     * @return true if the method is allowed by the rules in addIncludeRule()
+     * @throws SecurityException if the method is allowed by the rules in addIncludeRule()
      * @see AccessControl#addIncludeRule(String, String)
      */
-    private boolean isExecutable(String scriptName, String methodName)
+    protected void assertIsExecutable(String scriptName, String methodName) throws SecurityException
     {
         Policy policy = (Policy) policyMap.get(scriptName);
         if (policy == null)
         {
-            return true;
+            return;
         }
 
         // Find a match for this method in the policy rules
@@ -244,7 +251,7 @@ public class DefaultAccessControl implements AccessControl
             // We are in default allow mode so the rules are exclusions and we
             // have a match, so this method is excluded.
             //log.debug("method excluded for creator " + type + " due to defaultAllow=" + policy.defaultAllow + " and rule: " + match);
-            return false;
+            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByAccessRules"));
         }
 
         // There may be a more optimized if statement here, but I value code
@@ -256,10 +263,37 @@ public class DefaultAccessControl implements AccessControl
             // We are in default deny mode so the rules are inclusions and we
             // do not have a match, so this method is excluded.
             //log.debug("method excluded for creator " + type + " due to defaultAllow=" + policy.defaultAllow + " and rule: " + match);
-            return false;
+            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByAccessRules"));
         }
+    }
 
-        return true;
+    /**
+     * Check the parameters are not DWR internal either
+     * @param method The method that we want to execute
+     */
+    protected void assertAreParametersDwrInternal(Method method)
+    {
+        for (int j = 0; j < method.getParameterTypes().length; j++)
+        {
+            Class paramType = method.getParameterTypes()[j];
+
+            if (paramType.getName().startsWith(PACKAGE_DWR_DENY))
+            {
+                throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedParamDWR"));
+            }
+        }
+    }
+
+    /**
+     * Is the class that we are executing a method on part of DWR?
+     * @param creator The {@link Creator} that exposes the class
+     */
+    protected void assertIsClassDwrInternal(Creator creator)
+    {
+        if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY))
+        {
+            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedCoreDWR"));
+        }
     }
 
     /**
@@ -267,7 +301,7 @@ public class DefaultAccessControl implements AccessControl
      * @param type The name of the creator
      * @return The policy for the given Creator
      */
-    private Policy getPolicy(String type)
+    protected Policy getPolicy(String type)
     {
         Policy policy = (Policy) policyMap.get(type);
         if (policy == null)
@@ -291,17 +325,17 @@ public class DefaultAccessControl implements AccessControl
      * Do we allow DWR classes to be remoted?
      * @see #PACKAGE_DWR_DENY
      */
-    private boolean exposeInternals = false;
+    protected boolean exposeInternals = false;
 
     /**
      * A map of Creators to policies
      */
-    private Map policyMap = new HashMap();
+    protected Map policyMap = new HashMap();
 
     /**
      * What role based restrictions are there?
      */
-    private Map roleRestrictMap = new HashMap();
+    protected Map roleRestrictMap = new HashMap();
 
     /**
      * A struct that contains a method access policy for a Creator
@@ -315,10 +349,5 @@ public class DefaultAccessControl implements AccessControl
     /**
      * My package name, so we can ban DWR classes from being created or marshalled
      */
-    private static final String PACKAGE_DWR_DENY = "org.directwebremoting.";
-
-    /**
-     * The log stream
-     */
-    private static final Logger log = Logger.getLogger(DefaultAccessControl.class);
+    protected static final String PACKAGE_DWR_DENY = "org.directwebremoting.";
 }

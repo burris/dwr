@@ -154,12 +154,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             call.setMethod(method);
 
             // Check this method is accessible
-            String reason = accessControl.getReasonToNotExecute(creator, call.getScriptName(), method);
-            if (reason != null)
-            {
-                log.error("Access denied: " + reason + ". creator=" + creator + ", call=" + call.getScriptName() + "." + method);
-                throw new SecurityException(Messages.getString("BaseCallMarshaller.AccessDenied"));
-            }
+            accessControl.assertExecutionIsPossible(creator, call.getScriptName(), method);
 
             // Convert all the parameters to the correct types
             Object[] params = new Object[method.getParameterTypes().length];
@@ -444,7 +439,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         }
         catch (NumberFormatException ex)
         {
-            throw new ServerException(Messages.getString("ExecuteQuery.BadCallCount", callStr));
+            throw new ServerException(Messages.getString("BaseCallMarshaller.BadCallCount", callStr));
         }
 
         List inboundContexts = parsedRequest.getInboundContexts();
