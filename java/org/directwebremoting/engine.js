@@ -15,9 +15,10 @@
  */
 
 /**
- * Declare a constructor function to which we can add real functions.
+ * Declare an object to which we can add real functions.
  */
 if (DWREngine == null) var DWREngine = {};
+if (dwr == null) var dwr = DWREngine;
 
 /**
  * Set an alternative error handler from the default alert box.
@@ -208,10 +209,9 @@ DWREngine.endBatch = function(options) {
   if (DWREngine._preHook) batch.preHooks.unshift(DWREngine._preHook);
   if (DWREngine._postHook) batch.postHooks.push(DWREngine._postHook);
   // Other props. priority: batch, call, global - the order in which they were set
-  var propnames = [ "rpcType", "httpMethod", "async", "timeout" ];
   var propname;
-  for (var i = 0; i < propnames.length; i++) {
-    propname = propnames[i];
+  for (var i = 0; i < DWREngine._propnames.length; i++) {
+    propname = DWREngine._propnames[i];
     if (options[propname] != null) batch[propname] = options[propname];
     if (batch[propname] == null) batch[propname] = DWREngine["_" + propname];
   }
@@ -341,6 +341,9 @@ DWREngine._replyRewriteHandler = DWREngine._defaultInterceptor;
 /** Batch ids allow us to know which question the server is answering */
 DWREngine._lastCallId = 0;
 
+/** A list of the properties that need merging from calls to a batch */
+DWREngine._propnames = [ "rpcType", "httpMethod", "async", "timeout", "errorHandler", "warningHandler", "textHtmlHandler" ];
+
 /**
  * @private Send a request. Called by the Javascript interface stub
  * @param path part of URL after the host and before the exec bit without leading or trailing /s
@@ -387,24 +390,21 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   if (callData.textHtmlHandler == null) callData.textHtmlHandler = DWREngine._textHtmlHandler;
 
   // Merge from the callData into the batch
-  if (callData.rpcType != null) DWREngine._batch.rpcType = callData.rpcType;
-  if (callData.httpMethod != null) DWREngine._batch.httpMethod = callData.httpMethod;
-  if (callData.async != null) DWREngine._batch.async = callData.async;
-  if (callData.timeout != null) DWREngine._batch.timeout = callData.timeout;
-  if (callData.errorHandler != null) DWREngine._batch.errorHandler = callData.errorHandler;
-  if (callData.warningHandler != null) DWREngine._batch.warningHandler = callData.warningHandler;
-  if (callData.textHtmlHandler != null) DWREngine._batch.textHtmlHandler = callData.textHtmlHandler;
+  var propname, data;
+  for (var i = 0; i < DWREngine._propnames.length; i++) {
+    propname = DWREngine._propnames[i];
+    if (callData[propname] != null) DWREngine._batch[propname] = callData[propname];
+  }
   if (callData.preHook != null) DWREngine._batch.preHooks.unshift(callData.preHook);
   if (callData.postHook != null) DWREngine._batch.postHooks.push(callData.postHook);
   DWREngine._batch.callIds[callId] = {
     exceptionHandler:callData.exceptionHandler,
     callback:callData.callback
   };
-  var data, prop;
   if (callData.headers) {
-    for (prop in callData.headers) {
-      data = callData[prop];
-      if (typeof data != "function") DWREngine._batch.headers[prop] = "" + data;
+    for (propname in callData.headers) {
+      data = callData[propname];
+      if (typeof data != "function") DWREngine._batch.headers[propname] = "" + data;
     }
   }
 
@@ -417,9 +417,9 @@ DWREngine._execute = function(path, scriptName, methodName, vararg_params) {
   DWREngine._batch.map[prefix + "methodName"] = methodName;
   DWREngine._batch.map[prefix + "id"] = callId;
   if (callData.parameters) {
-    for (prop in callData.parameters) {
-      data = callData[prop];
-      if (typeof data != "function") DWREngine._batch.map[prop] = "" + data;
+    for (propname in callData.parameters) {
+      data = callData[propname];
+      if (typeof data != "function") DWREngine._batch.map[propname] = "" + data;
     }
   }
   for (i = 0; i < args.length; i++) {
