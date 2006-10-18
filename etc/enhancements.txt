@@ -1,4 +1,6 @@
 
+Make DWR ask for a scriptSessionID on first connect and do it in ordered mode.
+
 json support
 
 onbackbutton, onforwardbutton
