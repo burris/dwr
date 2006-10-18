@@ -7,10 +7,10 @@ public class Message
 {
     /**
      * @param newtext
-     * @param person Who wrote this?
+     * @param author Who wrote this?
      * @param trusted Is the string trusted
      */
-    public Message(String newtext, Person person, boolean trusted)
+    public Message(String newtext, Person author, boolean trusted)
     {
         text = newtext;
 
@@ -21,7 +21,7 @@ public class Message
 
         text = BattleshipUtil.autolink(text);
 
-        this.setPerson(person);
+        this.setAuthor(author);
     }
 
     /**
@@ -57,22 +57,22 @@ public class Message
     }
 
     /**
-     * @param person the person to set
+     * @param author the author to set
      */
-    public void setPerson(Person person)
+    public void setAuthor(Person author)
     {
-        this.person = person;
+        this.author = author;
     }
 
     /**
-     * @return the person
+     * @return the author
      */
-    public Person getPerson()
+    public Person getAuthor()
     {
-        return person;
+        return author;
     }
 
     private long id = System.currentTimeMillis();
     private String text;
-    private Person person;
+    private Person author;
 }
