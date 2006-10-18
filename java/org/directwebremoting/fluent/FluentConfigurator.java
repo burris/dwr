@@ -264,7 +264,7 @@ public abstract class FluentConfigurator implements Configurator
         case STATE_SIGNATURE:
             if (signature != null && signature.length() > 0)
             {
-                SignatureParser sigp = new SignatureParser(converterManager);
+                SignatureParser sigp = new SignatureParser(converterManager, creatorManager);
                 sigp.parse(signature.toString());
             }
             break;

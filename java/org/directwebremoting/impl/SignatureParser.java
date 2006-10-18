@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.Creator;
+import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
@@ -37,11 +39,14 @@ public class SignatureParser
 {
     /**
      * Simple ctor
-     * @param converterManager
+     * @param converterManager Having understood the extra type info we add it in here.
+     * @param creatorManager If we can't find a class by Java name we can lookup by Javascript name
      */
-    public SignatureParser(ConverterManager converterManager)
+    public SignatureParser(ConverterManager converterManager, CreatorManager creatorManager)
     {
         this.converterManager = converterManager;
+        this.creatorManager = creatorManager;
+
         packageImports.add("java.lang");
     }
 
@@ -241,6 +246,15 @@ public class SignatureParser
             }
         }
 
+        // So we've failed to find a Java class name. We can also lookup by
+        // Javascript name to help the situation where there is a dynamic proxy
+        // in the way.
+        Creator creator = creatorManager.getCreator(type);
+        if (creator != null)
+        {
+            return creator.getType();
+        }
+
         log.error("Failed to find class: '" + itype + "' from <signature> block.");
         log.info("- Looked in the following class imports:");
         for (Iterator it = classImports.entrySet().iterator(); it.hasNext();)
@@ -417,6 +431,11 @@ public class SignatureParser
      * Having understood the extra type info we add it in here.
      */
     private ConverterManager converterManager;
+
+    /**
+     * If we can't find a class by Java name we can lookup by Javascript name
+     */
+    private CreatorManager creatorManager;
 
     /**
      * The log stream

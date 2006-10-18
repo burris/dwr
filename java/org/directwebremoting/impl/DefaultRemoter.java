@@ -82,7 +82,7 @@ public class DefaultRemoter implements Remoter
                 {
                     NamedConverter boConv = (NamedConverter) conv;
                     String jsClassName = boConv.getJavascript();
-    
+
                     // We need a configured JavaScript class name
                     if (jsClassName != null && !jsClassName.equals(""))
                     {
@@ -90,10 +90,10 @@ public class DefaultRemoter implements Remoter
                         if (match.indexOf("*") == -1)
                         {
                             paramBuffer.append('\n');
-    
+
                             // output: if ( typeof <class> != "function" ) function <class>() {
                             paramBuffer.append("if (typeof " + jsClassName + " != \"function\") function " + jsClassName + "() {\n");
-    
+
                             // output: this.<property> = <init-value>;
                             Class mappedType;
                             try
@@ -104,7 +104,7 @@ public class DefaultRemoter implements Remoter
                             {
                                 throw new IllegalArgumentException(ex.getMessage());
                             }
-    
+
                             Map properties = boConv.getPropertyMap(mappedType, true, true);
                             for (Iterator pit = properties.entrySet().iterator(); pit.hasNext();)
                             {
@@ -112,10 +112,10 @@ public class DefaultRemoter implements Remoter
                                 String name = (String) entry.getKey();
                                 Property property = (Property) entry.getValue();
                                 Class propType = property.getPropertyType();
-    
+
                                 // Property name
                                 paramBuffer.append("  this." + name + " = ");
-    
+
                                 // Default property values
                                 if (propType.isArray())
                                 {
@@ -133,10 +133,10 @@ public class DefaultRemoter implements Remoter
                                 {
                                     paramBuffer.append("null");
                                 }
-    
+
                                 paramBuffer.append(";\n");
                             }
-    
+
                             paramBuffer.append("}\n");
                         }
                     }
@@ -158,7 +158,7 @@ public class DefaultRemoter implements Remoter
         buffer.append("if (DWREngine == null) { var DWREngine = {}; }\n");
         buffer.append("DWREngine._defaultPath = '" + actualPath + "';\n");
         buffer.append('\n');
-        buffer.append("function " + scriptName + "() { }\n");
+        buffer.append("if (" + scriptName + " == null) var " + scriptName + " = {};\n");
         buffer.append(scriptName + "._path = '" + actualPath + "';\n");
 
         Method[] methods = creator.getType().getMethods();
@@ -274,7 +274,7 @@ public class DefaultRemoter implements Remoter
      * @param call The call to execute
      * @return A Reply to the Call
      */
-    private Reply execute(Call call)
+    protected Reply execute(Call call)
     {
         try
         {

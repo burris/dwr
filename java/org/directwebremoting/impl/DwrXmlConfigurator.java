@@ -468,7 +468,7 @@ public class DwrXmlConfigurator implements Configurator
             sigtext.append(node.getNodeValue());
         }
 
-        SignatureParser sigp = new SignatureParser(converterManager);
+        SignatureParser sigp = new SignatureParser(converterManager, creatorManager);
         sigp.parse(sigtext.toString());
     }
 
