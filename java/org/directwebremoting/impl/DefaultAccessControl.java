@@ -29,7 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.AccessControl;
+import org.directwebremoting.extend.AccessDeniedException;
 import org.directwebremoting.extend.Creator;
+import org.directwebremoting.extend.LoginRequiredException;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -152,24 +154,18 @@ public class DefaultAccessControl implements AccessControl
      */
     protected void assertAuthenticationIsValid(HttpServletRequest req) throws SecurityException
     {
-        // if request contained a valid session, everything's ok
-        if (!req.isRequestedSessionIdValid())
-        {
-            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByInvalidSession"));
-        }
-
-        // ensure that a session now exists
+        // ensure that at least the next call has a valid session
         req.getSession();
 
         // if there was an expired session, the request has to fail
-        if (req.getRequestedSessionId() != null)
+        if (!req.isRequestedSessionIdValid())
         {
-            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByInvalidSession"));
+            throw new LoginRequiredException(Messages.getString("DefaultAccessControl.DeniedByInvalidSession"));
         }
 
         if (req.getRemoteUser() == null)
         {
-            throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByAuthenticationRequired"));
+            throw new LoginRequiredException(Messages.getString("DefaultAccessControl.DeniedByAuthenticationRequired"));
         }
     }
 
@@ -184,13 +180,13 @@ public class DefaultAccessControl implements AccessControl
         for (Iterator it = roles.iterator(); it.hasNext();)
         {
             String role = (String) it.next();
-            if (req.isUserInRole(role))
+            if ("*".equals(role) || req.isUserInRole(role))
             {
                 return;
             }
         }
 
-        throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedByJ2EERoles", roles.toString()));
+        throw new AccessDeniedException(Messages.getString("DefaultAccessControl.DeniedByJ2EERoles", roles.toString()));
     }
 
     /**

@@ -15,6 +15,8 @@
  */
 package org.directwebremoting.impl;
 
+import java.util.Random;
+
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.util.HitMonitor;
 import org.directwebremoting.util.Logger;
@@ -49,7 +51,7 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
         hitMonitor.recordHit();
         checkLoading();
 
-        return timeToNextPoll;
+        return random.nextInt(timeToNextPoll);
     }
 
     /* (non-Javadoc)
@@ -80,7 +82,12 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
         }
         else
         {
-            timeToNextPoll = timeToNextPoll * maxPollHitsPerSecond / hitsPerSecond;
+            timeToNextPoll = (timeToNextPoll * maxPollHitsPerSecond / hitsPerSecond);
+        }
+
+        if (timeToNextPoll < MIN_TIME_TO_NEXT_POLL)
+        {
+            timeToNextPoll = MIN_TIME_TO_NEXT_POLL;
         }
 
         int totalPollTime = preStreamWaitTime + postStreamWaitTime;
@@ -113,57 +120,68 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
     }
 
     /**
+     * We ask clients to wait a random number of millis before they come
+     * back to avoid killing the server
+     */
+    protected Random random = new Random();
+
+    /**
      * What is the maximium number of threads we keep waiting.
      * We reduce the timeWithinPoll*Stream variables to reduce the load
      */
-    private int maxWaitingThreads = 100;
+    protected int maxWaitingThreads = 100;
 
     /**
      * What is the maximum number of hits we should get per second.
      * We increase the poll time to compensate and reduce the load
      */
-    private int maxPollHitsPerSecond = 40;
+    protected int maxPollHitsPerSecond = 40;
 
     /**
      * The max time we wait before opening a stream to reply.
      */
-    private int preStreamWaitTime = 29000;
+    protected int preStreamWaitTime = 29000;
 
     /**
      * The max time we wait after opening a stream before we reply.
      */
-    private int postStreamWaitTime = 1000;
+    protected int postStreamWaitTime = 1000;
 
     /**
      * How long are we telling users to wait before they come back next
      */
-    private int timeToNextPoll = 1000;
+    protected int timeToNextPoll = 5000;
+
+    /**
+     * What is the shortest (random seed) time we wait before next request
+     */
+    protected static final int MIN_TIME_TO_NEXT_POLL = 5000;
 
     /**
      * What is the longest we wait for extra input after detecting output
      */
-    private static final int MAX_PRE_STREAM_WAIT_TIME = 29000;
+    protected static final int MAX_PRE_STREAM_WAIT_TIME = 29000;
 
     /**
      * What is the longest we wait for extra input after detecting output
      */
-    private static final int MAX_POST_STREAM_WAIT_TIME = 1000;
+    protected static final int MAX_POST_STREAM_WAIT_TIME = 1000;
 
     /**
      * We are recording the number of hits in the last 5 seconds.
      * Maybe we should think about making this configurable.
      */
-    private static final int SECONDS_MONITORED = 5;
+    protected static final int SECONDS_MONITORED = 5;
 
     /**
      * Our record of the server loading
      */
-    private HitMonitor hitMonitor = new HitMonitor(SECONDS_MONITORED * 1000);
+    protected HitMonitor hitMonitor = new HitMonitor(SECONDS_MONITORED * 1000);
 
     /**
      * How many sleepers are there?
      */
-    private int waitingThreads = 0;
+    protected int waitingThreads = 0;
 
     /**
      * The log stream

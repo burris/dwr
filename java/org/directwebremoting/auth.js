@@ -46,20 +46,10 @@ DWRAuthentication.setProtectedURL = function(url) {
 // dwr resends the resumed original request.
 // 
 
-// invalid session: dwr was called with a session_id that 
-// the server couldn't validate (possible expired).
-DWRAuthentication.defaultInvalidSessionHandler = function(batch) {
-	return true;
-}
-DWRAuthentication._invalidSessionHandler = DWRAuthentication.defaultInvalidSessionHandler;
-DWRAuthentication.setInvalidSessionHandler = function(handler) {
-	DWRAuthentication._invalidSessionHandler = handler;
-}
-
-// authentication required: a dwr request has dome authorizations-rules,
-// but there's no user allached to the current session
-DWRAuthentication.defaultAuthenticationRequiredHandler = function(batch) {
-	alert("You have to be logged in, to access this functionality");
+// authentication required: a dwr request has some authorizations-rules,
+// but there's no user attached to the current session
+DWRAuthentication.defaultAuthenticationRequiredHandler = function(batch,ex) {
+       alert(ex.message);
 	return false;
 }
 DWRAuthentication._authRequiredHandler = DWRAuthentication.defaultAuthenticationRequiredHandler;
@@ -79,8 +69,8 @@ DWRAuthentication.setAuthenticationFailedHandler = function(handler) {
 
 // access denied: the current session's user is not privileged to do
 // the remote call
-DWRAuthentication.defaultAccessDeniedHandler = function(batch) {
-	alert("You don't have enough privileges, to access this functionality");
+DWRAuthentication.defaultAccessDeniedHandler = function(batch,ex) {
+       alert(ex.message);
 	return false;
 }
 DWRAuthentication._accessDeniedHandler = DWRAuthentication.defaultAccessDeniedHandler;
@@ -139,38 +129,35 @@ DWRAuthentication._cloneBatch = function(batch) {
 	return clone;
 }
 
+DWRAuthentication._exceptionPackage = "org.directwebremoting.extend.";
 // replacement for dwr's MetaDataWarningHandler
 DWRAuthentication.authWarningHandler = function(batch, ex) {
 	if( batch == null 
 		|| typeof ex != "object" 
 		|| ex.type == null 
-		|| ex.type.indexOf("org.directwebremoting.auth.") != 0
+               || ex.type.indexOf(DWRAuthentication._exceptionPackage) != 0
 	) {
 		DWRAuthentication._dwrHandleBatchExeption(batch, ex);
 		return;
 	}
 	
-	DWRAuthentication._batch = DWRAuthentication._cloneBatch(batch);
-	var errorType = ex.type.substring(27);
+       var errorType = ex.type.substring(DWRAuthentication._exceptionPackage.length);
 	//alert("errorCode="+errorType);
 	switch( errorType ) {
-		case "InvalidSessionException":
-			if( DWRAuthentication._invalidSessionHandler(batch,ex) ) {
-				DWRAuthentication._replayBatch();
-			}
-			break;
-		case "AuthenticationRequiredException":
+               case "LoginRequiredException":
+                       DWRAuthentication._batch = DWRAuthentication._cloneBatch(batch);
 			if( DWRAuthentication._authRequiredHandler(batch,ex) ) {
 				DWRAuthentication._replayBatch();
 			}
 			break;
 		case "AccessDeniedException":
+                       DWRAuthentication._batch = DWRAuthentication._cloneBatch(batch);
 			if( DWRAuthentication._accessDeniedHandler(batch,ex) ) {
 				DWRAuthentication._replayBatch();
 			}
 			break;
 		default:
-			alert("Received unknown error code: '"+errorCode+"';"+errorCode.length);
+                       DWRAuthentication._dwrHandleBatchExeption(batch, ex);
 	}
 }
 
@@ -193,7 +180,8 @@ DWRAuthentication._replayBatch = function() {
 	setTimeout( caller, 200 );
 }
 
-
+// use some minimal protection with a private class
+// to prevent acess to credentials from other javascript code
 DWRAuthentication.ServletLoginProcessor = function() {
 
 	var login = null;
@@ -213,12 +201,12 @@ DWRAuthentication.ServletLoginProcessor = function() {
 		login_form.j_username.value = login;
 		login_form.j_password.value = password;
 		login_form.submit();
-		// just because im paranoid: clear password
+               // just because i'm paranoid: clear password
 		password = null;
 	}
 }
 
-DWRAuthentication._loginProcessor =  new DWRAuthentication.ServletLoginProcessor();
+DWRAuthentication._loginProcessor = new DWRAuthentication.ServletLoginProcessor();
 
 DWRAuthentication.authenticate = function(login, password) {
 	
