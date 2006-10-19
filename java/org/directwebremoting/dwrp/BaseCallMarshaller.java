@@ -41,15 +41,14 @@ import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.Marshaller;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.RemoteDwrEngine;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
+import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.extend.TypeHintContext;
-import org.directwebremoting.impl.RemoteDwrEngine;
-import org.directwebremoting.impl.ScriptBufferUtil;
 import org.directwebremoting.util.DebuggingPrintWriter;
-import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
@@ -72,40 +71,25 @@ public abstract class BaseCallMarshaller implements Marshaller
         // only after doing this that we know the scriptSessionId
 
         WebContext webContext = WebContextFactory.get();
-        ParsedRequest parsedRequest = (ParsedRequest) request.getAttribute(ATTRIBUTE_PARSED_REQUEST);
-        if (parsedRequest == null)
+        Batch batch = (Batch) request.getAttribute(ATTRIBUTE_BATCH);
+        if (batch == null)
         {
-            parsedRequest = parseRequest(request);
+            batch = new Batch(request, crossDomainSessionSecurity);
 
             // Save calls for retry exception
-            request.setAttribute(ATTRIBUTE_PARSED_REQUEST, parsedRequest);
+            request.setAttribute(ATTRIBUTE_BATCH, batch);
         }
 
-        // A check to see that this isn't a csrf attack
-        // http://en.wikipedia.org/wiki/Cross-site_request_forgery
-        // http://www.tux.org/~peterw/csrf.txt
-        if (request.isRequestedSessionIdValid() && request.isRequestedSessionIdFromCookie() && crossDomainSessionSecurity)
-        {
-            String requestedSessionId = request.getRequestedSessionId();
-            if (requestedSessionId.length() > 0)
-            {
-                if (!requestedSessionId.equals(parsedRequest.getHttpSessionId()))
-                {
-                    throw new SecurityException("Session Error");
-                }
-            }
-        }
+        // Various bits of the Batch need to be stashed away places
+        storeParsedRequest(request, webContext, batch);
 
-        // Various bits of the ParsedRequest need to be stashed away places
-        storeParsedRequest(request, webContext, parsedRequest);
-
-        Calls calls = parsedRequest.getCalls();
+        Calls calls = batch.getCalls();
 
         // Debug the environment
         if (log.isDebugEnabled() && calls.getCallCount() > 0)
         {
             // We can just use 0 because they are all shared
-            InboundContext inctx = (InboundContext) parsedRequest.getInboundContexts().get(0);
+            InboundContext inctx = (InboundContext) batch.getInboundContexts().get(0);
             StringBuffer buffer = new StringBuffer();
 
             for (Iterator it = inctx.getInboundVariableNames(); it.hasNext();)
@@ -129,7 +113,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
         {
             Call call = calls.getCall(callNum);
-            InboundContext inctx = (InboundContext) parsedRequest.getInboundContexts().get(callNum);
+            InboundContext inctx = (InboundContext) batch.getInboundContexts().get(callNum);
 
             // Get a list of the available matching methods with the coerced
             // parameters that we will use to call it if we choose to use
@@ -186,18 +170,18 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
-     * Build a ParsedRequest and put it in the request
+     * Build a Batch and put it in the request
      * @param request Where we store the parsed data
      * @param webContext We need to notify others of some of the data we find
-     * @param parsedRequest The parsed data to store
+     * @param batch The parsed data to store
      */
-    private void storeParsedRequest(HttpServletRequest request, WebContext webContext, ParsedRequest parsedRequest)
+    private void storeParsedRequest(HttpServletRequest request, WebContext webContext, Batch batch)
     {
-        String normalizedPage = pageNormalizer.normalizePage(parsedRequest.getPage());
-        webContext.setCurrentPageInformation(normalizedPage, parsedRequest.getScriptSessionId());
+        String normalizedPage = pageNormalizer.normalizePage(batch.getPage());
+        webContext.setCurrentPageInformation(normalizedPage, batch.getScriptSessionId());
 
         // Remaining parameters get put into the request for later consumption
-        Map paramMap = parsedRequest.getSpareParameters();
+        Map paramMap = batch.getSpareParameters();
         if (paramMap.size() != 0)
         {
             for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
@@ -310,7 +294,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         }
 
         // Send the script prefix (if any)
-        sendOutboundScriptPrefix(out);
+        sendOutboundScriptPrefix(out, replies.getBatchId());
 
         // From the call to addScriptConduit() there could be 2 threads writing
         // to 'out' so we synchronize on 'out' to make sure there are no
@@ -322,10 +306,11 @@ public abstract class BaseCallMarshaller implements Marshaller
         scriptSession.removeScriptConduit(conduit);
         out.println(ConversionConstants.SCRIPT_CALL_REPLY);
 
+        String batchId = replies.getBatchId();
         for (int i = 0; i < replies.getReplyCount(); i++)
         {
             Reply reply = replies.getReply(i);
-            String id = reply.getId();
+            String callId = reply.getCallId();
 
             try
             {
@@ -333,14 +318,14 @@ public abstract class BaseCallMarshaller implements Marshaller
                 if (reply.getThrowable() != null)
                 {
                     Throwable ex = reply.getThrowable();
-                    RemoteDwrEngine.remoteHandleException(conduit, id, ex);
+                    RemoteDwrEngine.remoteHandleException(conduit, batchId, callId, ex);
 
-                    log.warn("--Erroring: id[" + id + "] message[" + ex.toString() + ']');
+                    log.warn("--Erroring: id[" + callId + "] message[" + ex.toString() + ']');
                 }
                 else
                 {
                     Object data = reply.getReply();
-                    RemoteDwrEngine.remoteHandleCallback(conduit, id, data);
+                    RemoteDwrEngine.remoteHandleCallback(conduit, batchId, callId, data);
                 }
             }
             catch (IOException ex)
@@ -348,24 +333,24 @@ public abstract class BaseCallMarshaller implements Marshaller
                 // We're a bit stuck we died half way through writing so
                 // we can't be sure the browser can react to the failure.
                 // Since we can no longer do output we just log and end
-                log.error("--Output Error: id[" + id + "] message[" + ex.toString() + ']', ex);
+                log.error("--Output Error: id[" + callId + "] message[" + ex.toString() + ']', ex);
             }
             catch (MarshallException ex)
             {
-                RemoteDwrEngine.remoteHandleMarshallException(conduit, id, ex);
-                log.warn("--MarshallException: id=" + id + " class=" + ex.getConversionType().getName() + " message=" + ex.toString());
+                RemoteDwrEngine.remoteHandleMarshallException(conduit, batchId, callId, ex);
+                log.warn("--MarshallException: id=" + callId + " class=" + ex.getConversionType().getName() + " message=" + ex.toString());
             }
             catch (Exception ex)
             {
                 // This is a bit of a "this can't happen" case so I am a bit
                 // nervous about sending the exception to the client, but we
                 // want to avoid silently dying so we need to do something.
-                RemoteDwrEngine.remoteHandleException(conduit, id, ex);
-                log.error("--MarshallException: id=" + id + " message=" + ex.toString());
+                RemoteDwrEngine.remoteHandleException(conduit, batchId, callId, ex);
+                log.error("--MarshallException: id=" + callId + " message=" + ex.toString());
             }
         }
 
-        sendOutboundScriptSuffix(out);
+        sendOutboundScriptSuffix(out, replies.getBatchId());
     }
 
     /**
@@ -385,111 +370,18 @@ public abstract class BaseCallMarshaller implements Marshaller
     /**
      * iframe mode starts as HTML, so get into script mode
      * @param out The stream to write to
+     * @param batchId The batch identifier so we can prepare the environment
      * @throws IOException If the write fails
      */
-    protected abstract void sendOutboundScriptPrefix(PrintWriter out) throws IOException;
+    protected abstract void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException;
 
     /**
      * iframe mode needs to get out of script mode
      * @param out The stream to write to
+     * @param batchId The batch identifier so we can prepare the environment
      * @throws IOException If the write fails
      */
-    protected abstract void sendOutboundScriptSuffix(PrintWriter out) throws IOException;
-
-    /**
-     * Parse an inbound request into a Calls object
-     * @param req The original browser's request
-     * @return A parsed set of calls
-     * @throws ServerException If reading from the request body stream fails
-     */
-    private ParsedRequest parseRequest(HttpServletRequest req) throws ServerException
-    {
-        ParsedRequest parsedRequest = new ParsedRequest();
-
-        if (req.getMethod().equals("GET"))
-        {
-            parsedRequest.setAllParameters(ParseUtil.parseGet(req));
-        }
-        else
-        {
-            parsedRequest.setAllParameters(ParseUtil.parsePost(req));
-        }
-
-        parseParameters(parsedRequest);
-        return parsedRequest;
-    }
-
-    /**
-     * Fish out the important parameters
-     * @param parsedRequest The call details the methods we are calling
-     * @throws ServerException If the parsing of input parameter fails
-     */
-    private void parseParameters(ParsedRequest parsedRequest) throws ServerException
-    {
-        Map paramMap = parsedRequest.getAllParameters();
-        Calls calls = new Calls();
-        parsedRequest.setCalls(calls);
-
-        // Work out how many calls are in this packet
-        String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
-        int callCount;
-        try
-        {
-            callCount = Integer.parseInt(callStr);
-        }
-        catch (NumberFormatException ex)
-        {
-            throw new ServerException(Messages.getString("BaseCallMarshaller.BadCallCount", callStr));
-        }
-
-        List inboundContexts = parsedRequest.getInboundContexts();
-
-        // Extract the ids, scriptnames and methodnames
-        for (int callNum = 0; callNum < callCount; callNum++)
-        {
-            Call call = new Call();
-            calls.addCall(call);
-
-            InboundContext inctx = new InboundContext();
-            inboundContexts.add(inctx);
-
-            String prefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + ConversionConstants.INBOUND_CALLNUM_SUFFIX;
-
-            // The special values
-            call.setId((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_ID));
-            call.setScriptName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_SCRIPTNAME));
-            call.setMethodName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_METHODNAME));
-
-            // Look for parameters to this method
-            for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
-            {
-                Map.Entry entry = (Map.Entry) it.next();
-                String key = (String) entry.getKey();
-
-                if (key.startsWith(prefix))
-                {
-                    String data = (String) entry.getValue();
-                    String[] split = LocalUtil.splitInbound(data);
-
-                    String value = split[LocalUtil.INBOUND_INDEX_VALUE];
-                    String type = split[LocalUtil.INBOUND_INDEX_TYPE];
-                    inctx.createInboundVariable(callNum, key, type, value);
-                    it.remove();
-                }
-            }
-        }
-
-        String httpSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_HTTP_SESSIONID);
-        parsedRequest.setHttpSessionId(httpSessionId);
-
-        String scriptSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
-        parsedRequest.setScriptSessionId(scriptSessionId);
-
-        String page = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_PAGE);
-        parsedRequest.setPage(page);
-
-        parsedRequest.setSpareParameters(paramMap);
-    }
+    protected abstract void sendOutboundScriptSuffix(PrintWriter out, String batchId) throws IOException;
 
     /* (non-Javadoc)
      * @see org.directwebremoting.Marshaller#isConvertable(java.lang.Class)
@@ -629,7 +521,7 @@ public abstract class BaseCallMarshaller implements Marshaller
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_PARSED_REQUEST = "org.directwebremoting.dwrp.parsedRequest";
+    protected static final String ATTRIBUTE_BATCH = "org.directwebremoting.dwrp.batch";
 
     /**
      * The log stream

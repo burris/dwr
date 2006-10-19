@@ -35,16 +35,16 @@ public class PlainCallMarshaller extends BaseCallMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter, java.lang.String)
      */
-    protected void sendOutboundScriptPrefix(PrintWriter out) throws IOException
+    protected void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException
     {
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter, java.lang.String)
      */
-    protected void sendOutboundScriptSuffix(PrintWriter out) throws IOException
+    protected void sendOutboundScriptSuffix(PrintWriter out, String batchId) throws IOException
     {
     }
 

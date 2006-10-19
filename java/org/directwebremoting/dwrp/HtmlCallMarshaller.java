@@ -18,7 +18,7 @@ package org.directwebremoting.dwrp;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.directwebremoting.util.JavascriptUtil;
+import org.directwebremoting.extend.RemoteDwrEngine;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -36,23 +36,25 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter, java.lang.String)
      */
-    protected void sendOutboundScriptPrefix(PrintWriter out) throws IOException
+    protected void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException
     {
         synchronized (out)
         {
             out.println("<html><body><script type='text/javascript'>");
+            out.println(RemoteDwrEngine.remoteBeginIFrameResponse(batchId));
         }
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter)
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter, java.lang.String)
      */
-    protected void sendOutboundScriptSuffix(PrintWriter out) throws IOException
+    protected void sendOutboundScriptSuffix(PrintWriter out, String batchId) throws IOException
     {
         synchronized (out)
         {
+            out.println(RemoteDwrEngine.remoteEndIFrameResponse(batchId));
             out.println("</script></body></html>");
         }
     }
@@ -64,8 +66,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            String modScript = "window.parent.DWREngine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
-            out.println(modScript);
+            out.println(RemoteDwrEngine.remoteEval(script));
         }
     }
 }

@@ -17,7 +17,9 @@
 /**
  * Declare an object to which we can add real functions.
  */
-if (DWRUtil == null) var DWRUtil = {};
+if (dwr == null) var dwr = {};
+if (dwr.util == null) dwr.util = {};
+if (DWRUtil == null) var DWRUtil = dwr.util;
 
 /**
  * Enables you to react to return being pressed in an input

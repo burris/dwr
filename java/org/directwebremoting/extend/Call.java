@@ -76,19 +76,19 @@ public class Call
     }
 
     /**
-     * @param id The id to set.
+     * @param callId The callId to set.
      */
-    public void setId(String id)
+    public void setCallId(String callId)
     {
-        this.id = id;
+        this.callId = callId;
     }
 
     /**
-     * @return Returns the id.
+     * @return Returns the callId.
      */
-    public String getId()
+    public String getCallId()
     {
-        return id;
+        return callId;
     }
 
     /**
@@ -123,7 +123,7 @@ public class Call
         return methodName;
     }
 
-    private String id = null;
+    private String callId = null;
 
     private String scriptName = null;
 

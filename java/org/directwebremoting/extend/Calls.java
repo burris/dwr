@@ -54,6 +54,24 @@ public class Calls
     }
 
     /**
+     * @param batchId The batchId to set.
+     */
+    public void setBatchId(String batchId)
+    {
+        this.batchId = batchId;
+    }
+
+    /**
+     * @return Returns the batchId.
+     */
+    public String getBatchId()
+    {
+        return batchId;
+    }
+
+    private String batchId = null;
+
+    /**
      * The collection of Calls that we should execute
      */
     protected List calls = new ArrayList();

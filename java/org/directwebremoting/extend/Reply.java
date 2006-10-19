@@ -25,12 +25,12 @@ public class Reply
 {
     /**
      * Constructor for the success case.
-     * @param id The call id, copied from the Call object
+     * @param callId The call callId, copied from the Call object
      * @param reply The successful reply data
      */
-    public Reply(String id, Object reply)
+    public Reply(String callId, Object reply)
     {
-        this.id = id;
+        this.callId = callId;
         this.reply = reply;
     }
 
@@ -39,27 +39,27 @@ public class Reply
      * Reply <b>must</b> be set to null for this constructor to work. This
      * parameter exists to avoid overloading issues. See Java Puzzlers #46 for
      * an example.
-     * @param id The call id, copied from the Call object
+     * @param callId The call callId, copied from the Call object
      * @param reply Must be set to null
      * @param th The exception to record against this call.
      */
-    public Reply(String id, Object reply, Throwable th)
+    public Reply(String callId, Object reply, Throwable th)
     {
         if (reply != null)
         {
             throw new NullPointerException("'reply' must be null when setting an Exception.");
         }
 
-        this.id = id;
+        this.callId = callId;
         this.th = th;
     }
 
     /**
-     * @return Returns the call id.
+     * @return Returns the call callId.
      */
-    public String getId()
+    public String getCallId()
     {
-        return id;
+        return callId;
     }
 
     /**
@@ -78,7 +78,7 @@ public class Reply
         return th;
     }
 
-    private String id = null;
+    private String callId = null;
 
     private Object reply = null;
 

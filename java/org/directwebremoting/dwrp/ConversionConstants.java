@@ -58,6 +58,11 @@ public interface ConversionConstants
     public static final String INBOUND_KEY_HTTP_SESSIONID = "httpSessionId";
 
     /**
+     * The parameter that specifies the batch identifier
+     */
+    public static final String INBOUND_KEY_BATCHID = "batchId";
+
+    /**
      * The parameter that specifies the script session identifier
      */
     public static final String INBOUND_KEY_SCRIPT_SESSIONID = "scriptSessionId";

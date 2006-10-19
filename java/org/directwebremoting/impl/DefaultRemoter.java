@@ -37,6 +37,7 @@ import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.NamedConverter;
 import org.directwebremoting.extend.Property;
+import org.directwebremoting.extend.RemoteDwrEngine;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
@@ -154,10 +155,10 @@ public class DefaultRemoter implements Remoter
         Creator creator = creatorManager.getCreator(scriptName);
 
         buffer.append('\n');
-        buffer.append("// Provide a default path to DWREngine\n");
-        buffer.append("if (DWREngine == null) { var DWREngine = {}; }\n");
-        buffer.append("DWREngine._defaultPath = '" + actualPath + "';\n");
-        buffer.append('\n');
+
+        String init = RemoteDwrEngine.getEngineInitScript(actualPath);
+        buffer.append(init);
+
         buffer.append("if (" + scriptName + " == null) var " + scriptName + " = {};\n");
         buffer.append(scriptName + "._path = '" + actualPath + "';\n");
 
@@ -239,7 +240,8 @@ public class DefaultRemoter implements Remoter
 
         buffer.append("callback) {\n");
 
-        buffer.append("  DWREngine._execute(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', ");
+        String executeFunctionName = RemoteDwrEngine.getExecuteFunctionName();
+        buffer.append("  " + executeFunctionName + "(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', ");
         for (int j = 0; j < paramTypes.length; j++)
         {
             if (LocalUtil.isServletClass(paramTypes[j]))
@@ -263,7 +265,7 @@ public class DefaultRemoter implements Remoter
      */
     public Replies execute(Calls calls)
     {
-        Replies replies = new Replies();
+        Replies replies = new Replies(calls.getBatchId());
 
         for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
         {
@@ -287,7 +289,7 @@ public class DefaultRemoter implements Remoter
             Method method = call.getMethod();
             if (method == null || call.getException() != null)
             {
-                return new Reply(call.getId(), null, call.getException());
+                return new Reply(call.getCallId(), null, call.getException());
             }
 
             // Get a list of the available matching methods with the coerced
@@ -394,7 +396,7 @@ public class DefaultRemoter implements Remoter
                 //buffer.append(") ");
 
                 buffer.append("id=");
-                buffer.append(call.getId());
+                buffer.append(call.getCallId());
 
                 log.debug(buffer.toString());
             }
@@ -410,7 +412,7 @@ public class DefaultRemoter implements Remoter
                 }
             };
             Object reply = chain.doFilter(object, method, call.getParameters());
-            return new Reply(call.getId(), reply);
+            return new Reply(call.getCallId(), reply);
         }
         catch (InvocationTargetException ex)
         {
@@ -418,7 +420,7 @@ public class DefaultRemoter implements Remoter
             Continuation.rethrowIfContinuation(ex);
 
             log.warn("Method execution failed: ", ex.getTargetException());
-            return new Reply(call.getId(), null, ex.getTargetException());
+            return new Reply(call.getCallId(), null, ex.getTargetException());
         }
         catch (Exception ex)
         {
@@ -426,7 +428,7 @@ public class DefaultRemoter implements Remoter
             Continuation.rethrowIfContinuation(ex);
 
             log.warn("Method execution failed: ", ex);
-            return new Reply(call.getId(), null, ex);
+            return new Reply(call.getCallId(), null, ex);
         }
     }
 

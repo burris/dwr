@@ -31,11 +31,10 @@ import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.RemoteDwrEngine;
+import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.extend.ScriptConduit;
-import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.extend.ServerLoadMonitor;
-import org.directwebremoting.impl.RemoteDwrEngine;
-import org.directwebremoting.impl.ScriptBufferUtil;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.Logger;
@@ -87,12 +86,13 @@ public class PollHandler implements Handler
                 request.setAttribute(ATTRIBUTE_PARAMETERS, parameters);
             }
         }
-        catch (ServerException ex)
+        catch (Exception ex)
         {
             RemoteDwrEngine.remoteHandleExceptionWithoutCallId(response, ex);
             return;
         }
 
+        String batchId = extractParameter(request, parameters, ATTRIBUTE_CALL_ID, ConversionConstants.INBOUND_KEY_BATCHID);
         String callId = extractParameter(request, parameters, ATTRIBUTE_CALL_ID, ConversionConstants.INBOUND_KEY_ID);
         String scriptId = extractParameter(request, parameters, ATTRIBUTE_SESSION_ID, ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         String page = extractParameter(request, parameters, ATTRIBUTE_PAGE, ConversionConstants.INBOUND_KEY_PAGE);
@@ -204,11 +204,11 @@ public class PollHandler implements Handler
                     int wait = serverLoadMonitor.getTimeToNextPoll();
                     Integer data = new Integer(wait);
 
-                    RemoteDwrEngine.remoteHandleCallback(conduit, callId, data);
+                    RemoteDwrEngine.remoteHandleCallback(conduit, batchId, callId, data);
                 }
                 catch (Exception ex)
                 {
-                    RemoteDwrEngine.remoteHandleException(conduit, callId, ex);
+                    RemoteDwrEngine.remoteHandleException(conduit, batchId, callId, ex);
                     log.warn("--Erroring: id[" + callId + "] message[" + ex.toString() + ']', ex);
                 }
 

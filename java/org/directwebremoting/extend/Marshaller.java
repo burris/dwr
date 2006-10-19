@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * A Marshaller is responsible for all the on-the-wire communication between
- * DWR on the server and the HTTP channel. DWREngine does the corresponding
- * work on thhe Javascript side.
+ * DWR on the server and the HTTP channel. engine.js does the corresponding
+ * work on the Javascript side.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface Marshaller

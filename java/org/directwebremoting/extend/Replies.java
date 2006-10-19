@@ -27,6 +27,14 @@ import java.util.List;
 public class Replies
 {
     /**
+     * @param batchId The batchId to set.
+     */
+    public Replies(String batchId)
+    {
+        this.batchId = batchId;
+    }
+
+    /**
      * How many replies are there is this request
      * @return The total number of replies
      */
@@ -52,6 +60,24 @@ public class Replies
     {
         replies.add(reply);
     }
+
+    /**
+     * @param batchId The batchId to set.
+     */
+    public void setBatchId(String batchId)
+    {
+        this.batchId = batchId;
+    }
+
+    /**
+     * @return Returns the batchId.
+     */
+    public String getBatchId()
+    {
+        return batchId;
+    }
+
+    private String batchId = null;
 
     /**
      * The collection of Replies that we should execute

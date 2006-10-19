@@ -65,7 +65,7 @@ public class ParallelDefaultRemoter extends DefaultRemoter
      */
     public Replies execute(Calls calls)
     {
-        Replies replies = new Replies();
+        Replies replies = new Replies(calls.getBatchId());
         Future future[] = new Future[calls.getCallCount()];
         if (calls.getCallCount() == 1)
             return super.execute(calls);
@@ -86,17 +86,17 @@ public class ParallelDefaultRemoter extends DefaultRemoter
                 catch (InterruptedException ex)
                 {
                     log.warn("Method execution failed: ", ex);
-                    replies.addReply(new Reply(calls.getCall(callNum).getId(), null, ex));
+                    replies.addReply(new Reply(calls.getCall(callNum).getCallId(), null, ex));
                 }
                 catch (ExecutionException ex)
                 {
                     log.warn("Method execution failed: ", ex);
-                    replies.addReply(new Reply(calls.getCall(callNum).getId(), null, ex));
+                    replies.addReply(new Reply(calls.getCall(callNum).getCallId(), null, ex));
                 }
                 catch (TimeoutException ex)
                 {
                     log.warn("Method execution failed: ", ex);
-                    replies.addReply(new Reply(calls.getCall(callNum).getId(), null, ex));
+                    replies.addReply(new Reply(calls.getCall(callNum).getCallId(), null, ex));
                 }
             }
             return replies;

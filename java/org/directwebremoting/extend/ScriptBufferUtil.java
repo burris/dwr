@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.impl;
+package org.directwebremoting.extend;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,10 +21,6 @@ import java.util.List;
 
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptBuffer.StringWrapper;
-import org.directwebremoting.extend.ConverterManager;
-import org.directwebremoting.extend.MarshallException;
-import org.directwebremoting.extend.OutboundContext;
-import org.directwebremoting.extend.OutboundVariable;
 
 /**
  * A simple utility class to extract a {@link String} from a {@link ScriptBuffer}.

@@ -23,9 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.directwebremoting.dwrp.HtmlCallMarshaller;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.Handler;
+import org.directwebremoting.extend.RemoteDwrEngine;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
-import org.directwebremoting.impl.RemoteDwrEngine;
 
 /**
  * A Handler standard DWR calls whose replies are HTML wrapped.
