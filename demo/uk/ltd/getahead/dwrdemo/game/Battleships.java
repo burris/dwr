@@ -26,7 +26,6 @@ import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.ScriptProxy;
-import org.directwebremoting.proxy.dwr.DwrUtil;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -141,10 +140,6 @@ public class Battleships
         WebContext wctx = WebContextFactory.get();
         String currentPage = wctx.getCurrentPage();
 
-        // Clear the input box in the browser that kicked off this page only
-        DwrUtil utilThis = new DwrUtil(wctx.getScriptSession());
-        utilThis.setValue("text", "");
-
         // For all the browsers on the current page:
         Collection sessions = wctx.getScriptSessionsByPage(currentPage);
 
@@ -167,7 +162,7 @@ public class Battleships
               .appendData(messages)
               .appendScript(",")
               .appendData(players)
-              .appendScript(")");
+              .appendScript(");");
         all.addScript(buffer);
     }
 

@@ -1,6 +1,7 @@
 
 function sendMessage() {
   Battleships.addMessage(DWRUtil.getValue("text"));
+  DWRUtil.setValue("text", "");
 }
 
 function createCell() {
@@ -85,7 +86,7 @@ function shoot() {
 function showMessagesAndScores(messages, players) {
   DWRUtil.removeAllOptions("chatlog");
   DWRUtil.addOptions("chatlog", messages, function(message) {
-    return "<span class='chatname'>" + message.person.name + ": </span><span class='chattext' style='color:" + message.person.color + ";'>" + message.text + "</span>";
+    return "<span class='chatname'>" + message.author.name + ": </span><span class='chattext' style='color:" + message.author.color + ";'>" + message.text + "</span>";
   }, "id");
 
   DWRUtil.removeAllRows("scores");
