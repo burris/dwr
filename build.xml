@@ -49,7 +49,7 @@
         <exclude name="**/package-info.java"/>
       </fileset>
       <fileset dir="${source.etc}/classpath">
-	    <exclude name="**/log4j.properties"/>
+        <exclude name="**/log4j.properties"/>
       </fileset>
     </copy>
   </target>
@@ -87,7 +87,7 @@
   </target>
 
   <!--=======================================================================-->
-  <target name="files" depends="jar, javadoc" description="Create output WAR and JAR files">
+  <target name="war" depends="jar" description="Create output WAR file">
     <war destfile="${target.files}/dwr.war" webxml="${source.web}/WEB-INF/web.xml">
       <lib file="${target.files}/dwr.jar"/>
       <classes dir="${target.class}">
@@ -103,6 +103,10 @@
         <exclude name="WEB-INF/classes/**"/>
       </fileset>
     </war>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="files" depends="war, javadoc" description="Create output WAR and JAR files">
     <zip destfile="${target.files}/dwr-${version}-src.zip">
       <fileset dir="${source.root}">
         <exclude name="target/**"/>
@@ -120,7 +124,7 @@
   </target>
 
   <!--=======================================================================-->
-  <target name="unpack" depends="files" description="Extracts the war file">
+  <target name="unpack" depends="war" description="Extracts the war file">
     <unwar src="${target.files}/dwr.war" dest="${target.war}"/>
   </target>
 
