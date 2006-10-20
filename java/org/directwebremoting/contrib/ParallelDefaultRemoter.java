@@ -15,8 +15,6 @@
  */
 package org.directwebremoting.contrib;
 
-import java.util.ResourceBundle;
-
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.Replies;
@@ -26,7 +24,6 @@ import org.directwebremoting.util.Logger;
 
 import edu.emory.mathcs.backport.java.util.concurrent.Callable;
 import edu.emory.mathcs.backport.java.util.concurrent.ExecutionException;
-import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
 import edu.emory.mathcs.backport.java.util.concurrent.Executors;
 import edu.emory.mathcs.backport.java.util.concurrent.Future;
 import edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor;
@@ -58,8 +55,65 @@ public class ParallelDefaultRemoter extends DefaultRemoter
     }
 
     /**
-     * Execute a set of remote calls in parallel and generate set of reply data for later
-     * conversion to whatever wire protocol we are using today.
+     * Initialize thread pool with :
+     * Core pool size : 10;
+     * Maximum pool size = 100;
+     * Keep alive time = 5000(ms);
+     * Timeout = 10000(ms);
+     */
+    public ParallelDefaultRemoter()
+    {
+        executorService = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+        executorService.setCorePoolSize(corePoolsize);
+        executorService.setMaximumPoolSize(maximumPoolsize);
+        executorService.setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
+
+        log.info(executorService.getClass().getName().indexOf("edu.emory.mathcs.backport") > -1 ? "Backport of java.util.concurrent package used !" : "java.util.concurrent package used !");
+    }
+
+    /**
+     * Sets the maximum time to wait in (ms)
+     * @param timeout Time in (ms)
+     */
+    public void setParallelDefaultRemoterTimeout(long timeout)
+    {
+        this.timeout = timeout;
+    }
+
+    /**
+     * Sets the core number of threads.
+     * @param corePoolsize
+     */
+    public void setParallelDefaultRemoterCorePoolsize(int corePoolsize)
+    {
+        this.corePoolsize = corePoolsize;
+        executorService.setCorePoolSize(corePoolsize);
+    }
+
+    /**
+     * Sets the maximum allowed number of threads.
+     * @param maximumPoolsize Maximum of threads
+     */
+    public void setParallelDefaultRemoterMaximumPoolsize(int maximumPoolsize)
+    {
+        this.maximumPoolsize = maximumPoolsize;
+        executorService.setMaximumPoolSize(maximumPoolsize);
+    }
+
+    /**
+     * Sets the time limit in (ms) for which threads may remain idle before being
+     * terminated.
+     * @param keepAliveTime Time in (ms)
+     */
+    public void setParallelDefaultRemoterKeepAliveTime(long keepAliveTime)
+    {
+        this.keepAliveTime = keepAliveTime;
+        executorService.setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Execute a set of remote calls in parallel and generate set of reply data
+     * for later conversion to whatever wire protocol we are using today.
      * @param calls The set of calls to execute in parallel
      * @return A set of reply data objects
      */
@@ -67,8 +121,11 @@ public class ParallelDefaultRemoter extends DefaultRemoter
     {
         Replies replies = new Replies(calls.getBatchId());
         Future future[] = new Future[calls.getCallCount()];
+
         if (calls.getCallCount() == 1)
+        {
             return super.execute(calls);
+        }
         else
         {
             for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
@@ -80,7 +137,7 @@ public class ParallelDefaultRemoter extends DefaultRemoter
             {
                 try
                 {
-                    Reply reply = (Reply) future[callNum].get(Long.parseLong(getString(TIMEOUT, DEFAULT_TIMEOUT)), TimeUnit.MILLISECONDS);
+                    Reply reply = (Reply) future[callNum].get(this.timeout, TimeUnit.MILLISECONDS);
                     replies.addReply(reply);
                 }
                 catch (InterruptedException ex)
@@ -103,57 +160,15 @@ public class ParallelDefaultRemoter extends DefaultRemoter
         }
     }
 
-    private static String getString(String key, String defaultValue)
-    {
-
-        try
-        {
-            if (RESOURCE_BUNDLE == null)
-                return defaultValue;
-            String value = RESOURCE_BUNDLE.getString(key);
-            if (value == null)
-                return defaultValue;
-            else
-                return value;
-        }
-        catch (Exception e)
-        {
-
-        }
-        return defaultValue;
-    }
-
     private static final Logger log = Logger.getLogger(ParallelDefaultRemoter.class);
 
-    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("org.directwebremoting.impl.ParallelDefaultRemoter");
+    private int corePoolsize = 10;
 
-    private static final String DEFAULT_MIN_THREAD = "10";
+    private int maximumPoolsize = 100;
 
-    private static final String DEFAULT_MAX_THREAD = "100";
+    private long keepAliveTime = 5000;
 
-    private static final String DEFAULT_KEEP_ALIVE = "5000";
+    private long timeout = 10000;
 
-    private static final String DEFAULT_TIMEOUT = "10000";
-
-    private static final String MIN_POOL_SIZE = "ExecutorService.minimumPoolsize";
-
-    private static final String MAX_POOL_SIZE = "ExecutorService.maximumPoolsize";
-
-    private static final String KEEP_ALIVE = "ExecutorService.keepAlive";
-
-    private static final String TIMEOUT = "ExecutorService.timeout";
-
-    private static final ExecutorService executorService = Executors.newCachedThreadPool();
-
-    static
-    {
-        ((ThreadPoolExecutor) executorService).setCorePoolSize(Integer.parseInt(getString(MIN_POOL_SIZE, DEFAULT_MIN_THREAD)));
-        ((ThreadPoolExecutor) executorService).setMaximumPoolSize(Integer.parseInt(getString(MAX_POOL_SIZE, DEFAULT_MAX_THREAD)));
-        ((ThreadPoolExecutor) executorService).setKeepAliveTime(Integer.parseInt(getString(KEEP_ALIVE, DEFAULT_KEEP_ALIVE)), TimeUnit.MILLISECONDS);
-        log.info(executorService.getClass().getName().indexOf("edu.emory.mathcs.backport") > -1 ? "Backport of java.util.concurrent package used !" : "java.util.concurrent package used !");
-        log.info("CorePoolSize set at " + ((ThreadPoolExecutor) executorService).getCorePoolSize());
-        log.info("MaximumPoolSize set at " + ((ThreadPoolExecutor) executorService).getMaximumPoolSize());
-        log.info("KeepAliveTime(ms) set at " + ((ThreadPoolExecutor) executorService).getKeepAliveTime(TimeUnit.MILLISECONDS));
-        log.info("Timeout(ms) set at " + Long.parseLong(getString(TIMEOUT, DEFAULT_TIMEOUT)));
-    }
+    private ThreadPoolExecutor executorService;
 }
