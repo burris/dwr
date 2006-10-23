@@ -86,13 +86,6 @@
       </param>
     </create>
 
-    <create creator="new" javascript="Battleships" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.game.Battleships"/>
-    </create>
-    <convert converter="bean" match="uk.ltd.getahead.dwrdemo.game.Message"/>
-    <convert converter="bean" match="uk.ltd.getahead.dwrdemo.game.Person"/>
-    <convert converter="bean" match="uk.ltd.getahead.dwrdemo.game.Position"/>
-
   </allow>
 
   <signatures>
