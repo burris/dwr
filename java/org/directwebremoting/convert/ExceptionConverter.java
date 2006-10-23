@@ -32,7 +32,7 @@ public class ExceptionConverter extends BeanConverter
     {
         Map descriptors = super.getPropertyMap(data, readRequired, writeRequired);
         descriptors.remove("stackTrace");
-        descriptors.put("type", new PlainProperty("type", data.getClass().getName()));
+        descriptors.put("name", new PlainProperty("name", data.getName()));
         return descriptors;
     }
 }

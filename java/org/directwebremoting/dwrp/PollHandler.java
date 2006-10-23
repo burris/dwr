@@ -93,7 +93,6 @@ public class PollHandler implements Handler
         }
 
         String batchId = extractParameter(request, parameters, ATTRIBUTE_CALL_ID, ConversionConstants.INBOUND_KEY_BATCHID);
-        String callId = extractParameter(request, parameters, ATTRIBUTE_CALL_ID, ConversionConstants.INBOUND_KEY_ID);
         String scriptId = extractParameter(request, parameters, ATTRIBUTE_SESSION_ID, ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         String page = extractParameter(request, parameters, ATTRIBUTE_PAGE, ConversionConstants.INBOUND_KEY_PAGE);
         String prString = extractParameter(request, parameters, ATTRIBUTE_PARTIAL_RESPONSE, ConversionConstants.INBOUND_KEY_PARTIAL_RESPONSE);
@@ -204,12 +203,12 @@ public class PollHandler implements Handler
                     int wait = serverLoadMonitor.getTimeToNextPoll();
                     Integer data = new Integer(wait);
 
-                    RemoteDwrEngine.remoteHandleCallback(conduit, batchId, callId, data);
+                    RemoteDwrEngine.remoteHandleCallback(conduit, batchId, "0", data);
                 }
                 catch (Exception ex)
                 {
-                    RemoteDwrEngine.remoteHandleException(conduit, batchId, callId, ex);
-                    log.warn("--Erroring: id[" + callId + "] message[" + ex.toString() + ']', ex);
+                    RemoteDwrEngine.remoteHandleException(conduit, batchId, "0", ex);
+                    log.warn("--Erroring: batchId[" + batchId + "] message[" + ex.toString() + ']', ex);
                 }
 
                 scriptSession.addScript(script);

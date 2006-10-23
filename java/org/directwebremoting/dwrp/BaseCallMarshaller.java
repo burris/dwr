@@ -153,7 +153,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                 }
                 catch (MarshallException ex)
                 {
-                    log.warn("Marshalling exception: " + ex.getMessage());
+                    log.warn("Marshalling exception", ex);
 
                     call.setMethod(null);
                     call.setParameters(null);
@@ -320,7 +320,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                     Throwable ex = reply.getThrowable();
                     RemoteDwrEngine.remoteHandleException(conduit, batchId, callId, ex);
 
-                    log.warn("--Erroring: id[" + callId + "] message[" + ex.toString() + ']');
+                    log.warn("--Erroring: batchId[" + batchId + "] message[" + ex.toString() + ']');
                 }
                 else
                 {
@@ -333,12 +333,12 @@ public abstract class BaseCallMarshaller implements Marshaller
                 // We're a bit stuck we died half way through writing so
                 // we can't be sure the browser can react to the failure.
                 // Since we can no longer do output we just log and end
-                log.error("--Output Error: id[" + callId + "] message[" + ex.toString() + ']', ex);
+                log.error("--Output Error: batchId[" + batchId + "] message[" + ex.toString() + ']', ex);
             }
             catch (MarshallException ex)
             {
                 RemoteDwrEngine.remoteHandleMarshallException(conduit, batchId, callId, ex);
-                log.warn("--MarshallException: id=" + callId + " class=" + ex.getConversionType().getName() + " message=" + ex.toString());
+                log.warn("--MarshallException: batchId=" + batchId + " class=" + ex.getConversionType().getName() + " message=" + ex.toString());
             }
             catch (Exception ex)
             {
@@ -346,7 +346,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                 // nervous about sending the exception to the client, but we
                 // want to avoid silently dying so we need to do something.
                 RemoteDwrEngine.remoteHandleException(conduit, batchId, callId, ex);
-                log.error("--MarshallException: id=" + callId + " message=" + ex.toString());
+                log.error("--MarshallException: batchId=" + batchId + " message=" + ex.toString());
             }
         }
 

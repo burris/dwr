@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.directwebremoting.convert.BasicBeanConverter;
+import org.directwebremoting.convert.BeanConverter;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
@@ -32,7 +32,7 @@ import org.directwebremoting.util.Messages;
  * BeanConverter that works with Hibernate3 to get BeanInfo.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class HibernateBeanConverter extends BasicBeanConverter
+public class HibernateBeanConverter extends BeanConverter
 {
     /**
      * Simple ctor

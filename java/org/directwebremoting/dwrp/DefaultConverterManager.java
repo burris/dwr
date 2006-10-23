@@ -128,59 +128,10 @@ public class DefaultConverterManager implements ConverterManager
         Object converted = inctx.getConverted(iv, paramType);
         if (converted == null)
         {
-            Converter converter = null;
-
             // Was the inbound variable marshalled as an Object in the client 
             // (could mean that this is an instance of one of our generated
             // JavaScript classes)
-            if (iv.getType().startsWith("Object_"))
-            {
-                // Extract the JavaScript classname from the inbound type
-                String javascriptClassName = iv.getType().substring("Object_".length());
-
-                // Locate a converter for this JavaScript classname
-                Iterator it = converters.entrySet().iterator();
-                while (it.hasNext())
-                {
-                    Map.Entry entry = (Map.Entry) it.next();
-                    String match = (String) entry.getKey();
-                    Converter conv = (Converter) entry.getValue();
-
-                    // JavaScript mapping is only applicable for compound converters
-                    if (conv instanceof NamedConverter)
-                    {
-                        NamedConverter boConv = (NamedConverter) conv;
-                        if (boConv.getJavascript() != null && boConv.getJavascript().equals(javascriptClassName))
-                        {
-                            // We found a potential converter! But is the 
-                            // converter's Java class compatible with the
-                            // parameter type?
-                            try
-                            {
-                                Class inboundClass = LocalUtil.classForName(match);
-                                if (paramType.isAssignableFrom(inboundClass))
-                                {
-                                    // And the winner is:
-                                    converter = boConv;
-
-                                    // Hack: We also want to make sure that the
-                                    // converter creates its object based on the 
-                                    // inbound class instead of the parameter 
-                                    // type, and we have to use the other ref
-                                    // for this:
-                                    boConv.setInstanceType(inboundClass);
-
-                                    break;
-                                }
-                            }
-                            catch (ClassNotFoundException ex)
-                            {
-                                throw new MarshallException(paramType, ex);
-                            }
-                        }
-                    }
-                }
-            }
+            Converter converter = getNamedConverter(paramType, iv.getType());
 
             // Fall back to the standard way of locating a converter if we 
             // didn't find anything above
@@ -202,7 +153,6 @@ public class DefaultConverterManager implements ConverterManager
                 return null;
             }
 
-            // TODO: push the push/pop inside the converters?
             inctx.pushContext(incc);
             converted = converter.convertInbound(paramType, iv, inctx);
             inctx.popContext();
@@ -280,6 +230,64 @@ public class DefaultConverterManager implements ConverterManager
         }
 
         return getConverter(object.getClass());
+    }
+
+    /**
+     * When we are using typed Javascript names we sometimes want to get a
+     * specially named converter
+     * @param paramType The class that we are converting to
+     * @param type The type name as passed in from the client 
+     * @return The Converter that matches this request (if any)
+     * @throws MarshallException
+     */
+    protected Converter getNamedConverter(Class paramType, String type) throws MarshallException
+    {
+        if (type.startsWith("Object_"))
+        {
+            // Extract the JavaScript classname from the inbound type
+            String javascriptClassName = type.substring("Object_".length());
+
+            // Locate a converter for this JavaScript classname
+            Iterator it = converters.entrySet().iterator();
+            while (it.hasNext())
+            {
+                Map.Entry entry = (Map.Entry) it.next();
+                String match = (String) entry.getKey();
+                Converter conv = (Converter) entry.getValue();
+
+                // JavaScript mapping is only applicable for compound converters
+                if (conv instanceof NamedConverter)
+                {
+                    NamedConverter boConv = (NamedConverter) conv;
+                    if (boConv.getJavascript() != null && boConv.getJavascript().equals(javascriptClassName))
+                    {
+                        // We found a potential converter! But is the 
+                        // converter's Java class compatible with the
+                        // parameter type?
+                        try
+                        {
+                            Class inboundClass = LocalUtil.classForName(match);
+                            if (paramType.isAssignableFrom(inboundClass))
+                            {
+                                // Hack: We also want to make sure that the
+                                // converter creates its object based on the 
+                                // inbound class instead of the parameter 
+                                // type, and we have to use the other ref
+                                // for this:
+                                boConv.setInstanceType(inboundClass);
+                                return boConv;
+                            }
+                        }
+                        catch (ClassNotFoundException ex)
+                        {
+                            throw new MarshallException(paramType, ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

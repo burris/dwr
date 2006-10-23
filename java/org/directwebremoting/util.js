@@ -818,14 +818,14 @@ DWRUtil._addRowInner = function(cellFuncs, options) {
   if (tr == null) return null;
   for (var cellNum = 0; cellNum < cellFuncs.length; cellNum++) {
     var func = cellFuncs[cellNum];
-    var reply = func(options.rowData, options);
-    options.data = reply;
+    if (typeof func == 'function') options.data = func(options.rowData, options);
+    else options.data = func || "";
     options.cellNum = cellNum;
     var td = options.cellCreator(options);
     if (td != null) {
-      if (reply != null) {
-        if (DWRUtil._isHTMLElement(reply)) td.appendChild(reply);
-        else td.innerHTML = reply;
+      if (options.data != null) {
+        if (DWRUtil._isHTMLElement(options.data)) td.appendChild(options.data);
+        else td.innerHTML = options.data;
       }
       tr.appendChild(td);
     }

@@ -15,12 +15,92 @@
  */
 package org.directwebremoting.convert;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.InboundContext;
+import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.Property;
+import org.directwebremoting.extend.TypeHintContext;
+import org.directwebremoting.impl.PropertyDescriptorProperty;
 
 /**
  * Convert a Javascript associative array into a JavaBean
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class BeanConverter extends BasicBeanConverter implements Converter
+public class BeanConverter extends BasicObjectConverter implements Converter
 {
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.NamedConverter#getPropertyMap(java.lang.Class, boolean, boolean)
+     */
+    public Map getPropertyMap(Class type, boolean readRequired, boolean writeRequired) throws MarshallException
+    {
+        BeanInfo info = getBeanInfo(type);
+        PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+
+        Map properties = new HashMap();
+        for (int i = 0; i < descriptors.length; i++)
+        {
+            PropertyDescriptor descriptor = descriptors[i];
+            String name = descriptor.getName();
+
+            // We don't marshall getClass()
+            if (name.equals("class"))
+            {
+                continue;
+            }
+
+            // Access rules mean we might not want to do this one
+            if (!isAllowedByIncludeExcludeRules(name))
+            {
+                continue;
+            }
+
+            if (readRequired && descriptor.getReadMethod() == null)
+            {
+                continue;
+            }
+
+            if (writeRequired && descriptor.getWriteMethod() == null)
+            {
+                continue;
+            }
+
+            properties.put(name, new PropertyDescriptorProperty(descriptor));
+        }
+
+        return properties;
+    }
+
+    /**
+     * HibernateBeanConverter (and maybe others) may want to provide alternate
+     * versions of bean.getClass()
+     * @param type The class to find bean info from
+     * @return BeanInfo for the given class
+     * @throws MarshallException
+     */
+    protected BeanInfo getBeanInfo(Class type) throws MarshallException
+    {
+        try
+        {
+            return Introspector.getBeanInfo(type);
+        }
+        catch (IntrospectionException ex)
+        {
+            throw new MarshallException(type, ex);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.convert.BasicObjectConverter#createTypeHintContext(org.directwebremoting.extend.InboundContext, org.directwebremoting.extend.Property)
+     */
+    protected TypeHintContext createTypeHintContext(InboundContext inctx, Property property)
+    {
+        return new TypeHintContext(converterManager, property.getSetter(), 0);
+    }
 }

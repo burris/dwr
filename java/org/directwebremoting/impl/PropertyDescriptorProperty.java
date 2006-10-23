@@ -16,6 +16,7 @@
 package org.directwebremoting.impl;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.directwebremoting.extend.MarshallException;
@@ -60,6 +61,10 @@ public class PropertyDescriptorProperty implements Property
         {
             return descriptor.getReadMethod().invoke(bean, new Object[0]);
         }
+        catch (InvocationTargetException ex)
+        {
+            throw new MarshallException(bean.getClass(), ex.getTargetException());
+        }
         catch (Exception ex)
         {
             throw new MarshallException(bean.getClass(), ex);
@@ -74,6 +79,10 @@ public class PropertyDescriptorProperty implements Property
         try
         {
             descriptor.getWriteMethod().invoke(bean, new Object[] { value });
+        }
+        catch (InvocationTargetException ex)
+        {
+            throw new MarshallException(bean.getClass(), ex.getTargetException());
         }
         catch (Exception ex)
         {
