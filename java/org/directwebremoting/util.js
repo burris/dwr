@@ -25,7 +25,7 @@ if (DWRUtil == null) var DWRUtil = dwr.util;
  * Enables you to react to return being pressed in an input
  * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
  */
-DWRUtil.onReturn = function(event, action) {
+dwr.util.onReturn = function(event, action) {
   if (!event) event = window.event;
   if (event && event.keyCode && event.keyCode == 13) action();
 };
@@ -34,8 +34,8 @@ DWRUtil.onReturn = function(event, action) {
  * Select a specific range in a text box. Useful for 'google suggest' type functions.
  * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
  */
-DWRUtil.selectRange = function(ele, start, end) {
-  ele = DWRUtil._getElementById(ele, "selectRange()");
+dwr.util.selectRange = function(ele, start, end) {
+  ele = dwr.util._getElementById(ele, "selectRange()");
   if (ele == null) return;
   if (ele.setSelectionRange) {
     ele.setSelectionRange(start, end);
@@ -54,7 +54,7 @@ DWRUtil.selectRange = function(ele, start, end) {
  * @see http://getahead.ltd.uk/dwr/browser/util/$
  */
 if (document.getElementById) {
-  DWRUtil.byId = function() {
+  dwr.util.byId = function() {
     var elements = new Array();
     for (var i = 0; i < arguments.length; i++) {
       var element = arguments[i];
@@ -70,7 +70,7 @@ if (document.getElementById) {
   };
 }
 else if (document.all) {
-  DWRUtil.byId = function() {
+  dwr.util.byId = function() {
     var elements = new Array();
     for (var i = 0; i < arguments.length; i++) {
       var element = arguments[i];
@@ -87,19 +87,19 @@ else if (document.all) {
 }
 
 /**
- * Alias $ to DWRUtil.byId
+ * Alias $ to dwr.util.byId
  * @see http://getahead.ltd.uk/dwr/browser/util/$
  */
 var $;
 if (!$) {
-  $ = DWRUtil.byId;
+  $ = dwr.util.byId;
 }
 
 /**
  * Like toString but aimed at debugging
  * @see http://getahead.ltd.uk/dwr/browser/util/todescriptivestring
  */
-DWRUtil.toDescriptiveString = function(data, level, depth) {
+dwr.util.toDescriptiveString = function(data, level, depth) {
   var reply = "";
   var i = 0;
   var value;
@@ -107,7 +107,7 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
   if (level == null) level = 0;
   if (depth == null) depth = 0;
   if (data == null) return "null";
-  if (DWRUtil._isArray(data)) {
+  if (dwr.util._isArray(data)) {
     if (data.length == 0) reply += "[]";
     else {
       if (level != 0) reply += "[\n";
@@ -119,8 +119,8 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
             continue;
           }
           else if (typeof obj == "object") {
-            if (level > 0) value = DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
-            else value = DWRUtil._detailedTypeOf(obj);
+            if (level > 0) value = dwr.util.toDescriptiveString(obj, level - 1, depth + 1);
+            else value = dwr.util._detailedTypeOf(obj);
           }
           else {
             value = "" + obj;
@@ -132,7 +132,7 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
           value = "" + ex;
         }
        if (level != 0)  {
-          reply += DWRUtil._indent(level, depth + 2) + value + ", \n";
+          reply += dwr.util._indent(level, depth + 2) + value + ", \n";
        }
         else {
           if (value.length > 13) value = value.substring(0, 10) + "...";
@@ -143,20 +143,20 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
           }
         }
       }
-      if (level != 0) reply += DWRUtil._indent(level, depth) + "]";
+      if (level != 0) reply += dwr.util._indent(level, depth) + "]";
       else reply += "]";
     }
     return reply;
   }
-  if (typeof data == "string" || typeof data == "number" || DWRUtil._isDate(data)) {
+  if (typeof data == "string" || typeof data == "number" || dwr.util._isDate(data)) {
     return data.toString();
   }
   if (typeof data == "object") {
-    var typename = DWRUtil._detailedTypeOf(data);
+    var typename = dwr.util._detailedTypeOf(data);
     if (typename != "Object")  reply = typename + " ";
     if (level != 0) reply += "{\n";
     else reply = "{";
-    var isHtml = DWRUtil._isHTMLElement(data);
+    var isHtml = dwr.util._isHTMLElement(data);
     for (var prop in data) {
       if (isHtml) {
         // HTML nodes have far too much stuff. Chop out the constants
@@ -178,11 +178,11 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
         else if (typeof obj == "object") {
           if (level > 0) {
             value = "\n";
-            value += DWRUtil._indent(level, depth + 2);
-            value = DWRUtil.toDescriptiveString(obj, level - 1, depth + 1);
+            value += dwr.util._indent(level, depth + 2);
+            value = dwr.util.toDescriptiveString(obj, level - 1, depth + 1);
           }
           else {
-            value = DWRUtil._detailedTypeOf(obj);
+            value = dwr.util._detailedTypeOf(obj);
           }
         }
         else {
@@ -197,7 +197,7 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
       if (level == 0 && value.length > 13) value = value.substring(0, 10) + "...";
       var propStr = prop;
       if (propStr.length > 30) propStr = propStr.substring(0, 27) + "...";
-      if (level != 0) reply += DWRUtil._indent(level, depth + 1);
+      if (level != 0) reply += dwr.util._indent(level, depth + 1);
       reply += prop + ":" + value + ", ";
       if (level != 0) reply += "\n";
       i++;
@@ -206,7 +206,7 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
         break;
       }
     }
-    reply += DWRUtil._indent(level, depth);
+    reply += dwr.util._indent(level, depth);
     reply += "}";
     return reply;
   }
@@ -214,9 +214,9 @@ DWRUtil.toDescriptiveString = function(data, level, depth) {
 };
 
 /**
- * @private Indenting for DWRUtil.toDescriptiveString
+ * @private Indenting for dwr.util.toDescriptiveString
  */
-DWRUtil._indent = function(level, depth) {
+dwr.util._indent = function(level, depth) {
   var reply = "";
   if (level != 0) {
     for (var j = 0; j < depth; j++) {
@@ -231,12 +231,12 @@ DWRUtil._indent = function(level, depth) {
  * Setup a GMail style loading message.
  * @see http://getahead.ltd.uk/dwr/browser/util/useloadingmessage
  */
-DWRUtil.useLoadingMessage = function(message) {
+dwr.util.useLoadingMessage = function(message) {
   var loadingMessage;
   if (message) loadingMessage = message;
   else loadingMessage = "Loading";
   DWREngine.setPreHook(function() {
-    var disabledZone = DWRUtil.byId('disabledZone');
+    var disabledZone = dwr.util.byId('disabledZone');
     if (!disabledZone) {
       disabledZone = document.createElement('div');
       disabledZone.setAttribute('id', 'disabledZone');
@@ -261,34 +261,34 @@ DWRUtil.useLoadingMessage = function(message) {
       messageZone.appendChild(text);
     }
     else {
-      DWRUtil.byId('messageZone').innerHTML = loadingMessage;
+      dwr.util.byId('messageZone').innerHTML = loadingMessage;
       disabledZone.style.visibility = 'visible';
     }
   });
   DWREngine.setPostHook(function() {
-    DWRUtil.byId('disabledZone').style.visibility = 'hidden';
+    dwr.util.byId('disabledZone').style.visibility = 'hidden';
   });
 };
 
 /**
  * Set a global highlight handler
  */
-DWRUtil.setHighlightHandler = function(handler) {
-  DWRUtil._highlightHandler = handler;
+dwr.util.setHighlightHandler = function(handler) {
+  dwr.util._highlightHandler = handler;
 };
 
 /**
  * An example highlight handler
  */
-DWRUtil.yellowFadeHighlightHandler = function(ele) {
-  DWRUtil._yellowFadeProcess(ele, 0);
+dwr.util.yellowFadeHighlightHandler = function(ele) {
+  dwr.util._yellowFadeProcess(ele, 0);
 };
-DWRUtil._yellowFadeSteps = [ "d0", "b0", "a0", "90", "98", "a0", "a8", "b0", "b8", "c0", "c8", "d0", "d8", "e0", "e8", "f0", "f8" ];
-DWRUtil._yellowFadeProcess = function(ele, colorIndex) {
-  ele = DWRUtil.byId(ele);
-  if (colorIndex < DWRUtil._yellowFadeSteps.length) {
-    ele.style.backgroundColor = "#ffff" + DWRUtil._yellowFadeSteps[colorIndex];
-    setTimeout("DWRUtil._yellowFadeProcess('" + ele.id + "'," + (colorIndex + 1) + ")", 200);
+dwr.util._yellowFadeSteps = [ "d0", "b0", "a0", "90", "98", "a0", "a8", "b0", "b8", "c0", "c8", "d0", "d8", "e0", "e8", "f0", "f8" ];
+dwr.util._yellowFadeProcess = function(ele, colorIndex) {
+  ele = dwr.util.byId(ele);
+  if (colorIndex < dwr.util._yellowFadeSteps.length) {
+    ele.style.backgroundColor = "#ffff" + dwr.util._yellowFadeSteps[colorIndex];
+    setTimeout("dwr.util._yellowFadeProcess('" + ele.id + "'," + (colorIndex + 1) + ")", 200);
   }
   else {
     ele.style.backgroundColor = "transparent";
@@ -298,7 +298,7 @@ DWRUtil._yellowFadeProcess = function(ele, colorIndex) {
 /**
  * A focus highlight handler
  */
-DWRUtil.focusHighlightHandler = function(ele) {
+dwr.util.focusHighlightHandler = function(ele) {
   try {
     ele.focus();
   }
@@ -306,17 +306,17 @@ DWRUtil.focusHighlightHandler = function(ele) {
 };
 
 /** @private the current global highlight style */
-DWRUtil._highlightHandler = null;
+dwr.util._highlightHandler = null;
 
 /**
  * Highlight that an element has changed
  */
-DWRUtil.highlight = function(ele, options) {
+dwr.util.highlight = function(ele, options) {
   if (options && options.highlightHandler) {
-    options.highlightHandler(DWRUtil.byId(ele));
+    options.highlightHandler(dwr.util.byId(ele));
   }
-  else if (DWRUtil._highlightHandler != null) {
-    DWRUtil._highlightHandler(DWRUtil.byId(ele));
+  else if (dwr.util._highlightHandler != null) {
+    dwr.util._highlightHandler(dwr.util.byId(ele));
   }
 };
 
@@ -324,7 +324,7 @@ DWRUtil.highlight = function(ele, options) {
  * Set the value an HTML element to the specified value.
  * @see http://getahead.ltd.uk/dwr/browser/util/setvalue
  */
-DWRUtil.setValue = function(ele, val, options) {
+dwr.util.setValue = function(ele, val, options) {
   if (val == null) val = "";
   if (options == null) options = {};
   if (options.escapeHtml) {
@@ -336,7 +336,7 @@ DWRUtil.setValue = function(ele, val, options) {
 
   var orig = ele;
   var nodes, node, i;
-  ele = DWRUtil.byId(ele);
+  ele = dwr.util.byId(ele);
 
   // We can work with names and need to sometimes for radio buttons
   if (ele == null) {
@@ -345,20 +345,20 @@ DWRUtil.setValue = function(ele, val, options) {
   }
 
   if (ele == null) {
-    DWRUtil.debug("setValue() can't find an element with id/name: " + orig + ".");
+    dwr.util.debug("setValue() can't find an element with id/name: " + orig + ".");
     return;
   }
 
   // All paths now lead to some update so we highlight a change
-  DWRUtil.highlight(ele, options);
+  dwr.util.highlight(ele, options);
 
-  if (DWRUtil._isHTMLElement(ele, "select")) {
-    if (ele.type == "select-multiple" && DWRUtil._isArray(val)) DWRUtil._selectListItems(ele, val);
-    else DWRUtil._selectListItem(ele, val);
+  if (dwr.util._isHTMLElement(ele, "select")) {
+    if (ele.type == "select-multiple" && dwr.util._isArray(val)) dwr.util._selectListItems(ele, val);
+    else dwr.util._selectListItem(ele, val);
     return;
   }
 
-  if (DWRUtil._isHTMLElement(ele, "input")) {
+  if (dwr.util._isHTMLElement(ele, "input")) {
     if (ele.type == "radio") {
       // Some browsers match names when looking for ids, so check names anyway.
       if (nodes == null) nodes = document.getElementsByName(orig);
@@ -376,7 +376,7 @@ DWRUtil.setValue = function(ele, val, options) {
     return;
   }
 
-  if (DWRUtil._isHTMLElement(ele, "textarea")) {
+  if (dwr.util._isHTMLElement(ele, "textarea")) {
     ele.value = val;
     return;
   }
@@ -385,7 +385,7 @@ DWRUtil.setValue = function(ele, val, options) {
   // rather than serializing it out
   if (val.nodeType) {
     if (val.nodeType == 9 /*Node.DOCUMENT_NODE*/) val = val.documentElement;
-    val = DWRUtil._importNode(ele.ownerDocument, val, true);
+    val = dwr.util._importNode(ele.ownerDocument, val, true);
     ele.appendChild(val);
     return;
   }
@@ -399,7 +399,7 @@ DWRUtil.setValue = function(ele, val, options) {
  * @param ele The select list item
  * @param val The array of values to select
  */
-DWRUtil._selectListItems = function(ele, val) {
+dwr.util._selectListItems = function(ele, val) {
   // We deal with select list elements by selecting the matching option
   // Begin by searching through the values
   var found  = false;
@@ -430,7 +430,7 @@ DWRUtil._selectListItems = function(ele, val) {
  * @param ele The select list item
  * @param val The value to select
  */
-DWRUtil._selectListItem = function(ele, val) {
+dwr.util._selectListItem = function(ele, val) {
   // We deal with select list elements by selecting the matching option
   // Begin by searching through the values
   var found = false;
@@ -462,10 +462,10 @@ DWRUtil._selectListItem = function(ele, val) {
  * Read the current value for a given HTML element.
  * @see http://getahead.ltd.uk/dwr/browser/util/getvalue
  */
-DWRUtil.getValue = function(ele, options) {
+dwr.util.getValue = function(ele, options) {
   if (options == null) options = {};
   var orig = ele;
-  ele = DWRUtil.byId(ele);
+  ele = dwr.util.byId(ele);
   // We can work with names and need to sometimes for radio buttons, and IE has
   // an annoying bug where
   var nodes = document.getElementsByName(orig);
@@ -473,11 +473,11 @@ DWRUtil.getValue = function(ele, options) {
     ele = nodes.item(0);
   }
   if (ele == null) {
-    DWRUtil.debug("getValue() can't find an element with id/name: " + orig + ".");
+    dwr.util.debug("getValue() can't find an element with id/name: " + orig + ".");
     return "";
   }
 
-  if (DWRUtil._isHTMLElement(ele, "select")) {
+  if (dwr.util._isHTMLElement(ele, "select")) {
     // Using "type" property instead of "multiple" as "type" is an official 
 	// client-side property since JS 1.1
     if (ele.type == "select-multiple") {
@@ -510,7 +510,7 @@ DWRUtil.getValue = function(ele, options) {
     }
   }
 
-  if (DWRUtil._isHTMLElement(ele, "input")) {
+  if (dwr.util._isHTMLElement(ele, "input")) {
     if (ele.type == "radio") {
       var node;
       for (i = 0; i < nodes.length; i++) {
@@ -535,7 +535,7 @@ DWRUtil.getValue = function(ele, options) {
     }
   }
 
-  if (DWRUtil._isHTMLElement(ele, "textarea")) {
+  if (dwr.util._isHTMLElement(ele, "textarea")) {
     return ele.value;
   }
 
@@ -550,11 +550,11 @@ DWRUtil.getValue = function(ele, options) {
  * getText() is like getValue() except that it reads the text (and not the value) from select elements
  * @see http://getahead.ltd.uk/dwr/browser/util/gettext
  */
-DWRUtil.getText = function(ele) {
-  ele = DWRUtil._getElementById(ele, "getText()");
+dwr.util.getText = function(ele) {
+  ele = dwr.util._getElementById(ele, "getText()");
   if (ele == null) return null;
-  if (!DWRUtil._isHTMLElement(ele, "select")) {
-    DWRUtil.debug("getText() can only be used with select elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele) + " from  id: " + orig + ".");
+  if (!dwr.util._isHTMLElement(ele, "select")) {
+    dwr.util.debug("getText() can only be used with select elements. Attempt to use: " + dwr.util._detailedTypeOf(ele) + " from  id: " + orig + ".");
     return "";
   }
 
@@ -573,17 +573,17 @@ DWRUtil.getText = function(ele) {
  * Given a map, call setValue() for all the entries in the map using the entry key as an element id
  * @see http://getahead.ltd.uk/dwr/browser/util/setvalues
  */
-DWRUtil.setValues = function(map, options) {
+dwr.util.setValues = function(map, options) {
   var prefixes = [];
   if (options && options.prefix) prefixes.push(options.prefix);
-  DWRUtil._getDataProperties(map, prefixes);
+  dwr.util._getDataProperties(map, prefixes);
 };
 
 /**
  * @private retrieve values for the map and set the corresponding form fields. For object properties, recursively
  * read sub properties in order to matching nested form fields.
  */
-DWRUtil._getDataProperties = function(map, prefixes) {
+dwr.util._getDataProperties = function(map, prefixes) {
   for (var property in map) {
     if (map[property] != null && typeof map[property] == "object") {
       var prefixClone = new Array();
@@ -591,15 +591,15 @@ DWRUtil._getDataProperties = function(map, prefixes) {
         prefixClone.push(prefixes[i]);
       }
       prefixClone.push(property);
-      DWRUtil._getDataProperties(map[property], prefixClone);
+      dwr.util._getDataProperties(map[property], prefixClone);
     } else {
       var nestedProperty = property;
       if (prefixes.length > 0) {
         nestedProperty = (prefixes.join(".")) + "." + property;
       }
       // Are there any elements with that id or name
-      if (DWRUtil.byId(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
-        DWRUtil.setValue(nestedProperty, map[property]);
+      if (dwr.util.byId(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
+        dwr.util.setValue(nestedProperty, map[property]);
       }
     }
   }
@@ -610,10 +610,10 @@ DWRUtil._getDataProperties = function(map, prefixes) {
  * Given a string or element that refers to a form, create an object from the elements of the form.
  * @see http://getahead.ltd.uk/dwr/browser/util/getvalues
  */
-DWRUtil.getValues = function(data, options) {
+dwr.util.getValues = function(data, options) {
   var ele;
-  if (typeof data == "string") ele = DWRUtil.byId(data);
-  if (DWRUtil._isHTMLElement(data)) ele = data;
+  if (typeof data == "string") ele = dwr.util.byId(data);
+  if (dwr.util._isHTMLElement(data)) ele = data;
   if (ele != null) {
     if (ele.elements == null) {
       alert("getValues() requires an object or reference to a form element.");
@@ -625,14 +625,14 @@ DWRUtil.getValues = function(data, options) {
       if (ele[i].id != null) value = ele[i].id;
       else if (ele[i].value != null) value = ele[i].value;
       else value = "element" + i;
-      reply[value] = DWRUtil.getValue(ele[i]);
+      reply[value] = dwr.util.getValue(ele[i]);
     }
     return reply;
   }
   else {
     var prefixes = [];
     if (options != null && options.prefix) prefixes.push(options.prefix);
-    DWRUtil._setDataProperties(data, prefixes);
+    dwr.util._setDataProperties(data, prefixes);
     return data;
   }
 };
@@ -640,7 +640,7 @@ DWRUtil.getValues = function(data, options) {
 /**
  * @private for each object property, set html field value if present. Recurse for object properties.
  */
-DWRUtil._setDataProperties = function(data, prefixes) {
+dwr.util._setDataProperties = function(data, prefixes) {
   for (var property in data) {
     // Are there any elements with that id or name
     if (data[property] != null && typeof data[property] == "object") {
@@ -649,7 +649,7 @@ DWRUtil._setDataProperties = function(data, prefixes) {
         prefixClone.push(prefixes[i]);
       }
       prefixClone.push(property);
-      DWRUtil._setDataProperties(data[property], prefixClone);
+      dwr.util._setDataProperties(data[property], prefixClone);
     }
     else
     {
@@ -657,8 +657,8 @@ DWRUtil._setDataProperties = function(data, prefixes) {
       if (prefixes.length > 0) {
         nestedProperty = (prefixes.join(".")) + "." + property;
       }
-      if (DWRUtil.byId(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
-        data[property] = DWRUtil.getValue(nestedProperty);
+      if (dwr.util.byId(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
+        data[property] = dwr.util.getValue(nestedProperty);
       }
     }
   }
@@ -668,37 +668,37 @@ DWRUtil._setDataProperties = function(data, prefixes) {
  * Add options to a list from an array or map.
  * @see http://getahead.ltd.uk/dwr/browser/lists
  */
-DWRUtil.addOptions = function(ele, data, options) {
-  ele = DWRUtil._getElementById(ele, "addOptions()");
+dwr.util.addOptions = function(ele, data, options) {
+  ele = dwr.util._getElementById(ele, "addOptions()");
   if (ele == null) return;
   if (options == null) options = {};
-  var useOptions = DWRUtil._isHTMLElement(ele, "select");
-  var useLi = DWRUtil._isHTMLElement(ele, ["ul", "ol"]);
+  var useOptions = dwr.util._isHTMLElement(ele, "select");
+  var useLi = dwr.util._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {
-    DWRUtil.debug("addOptions() can only be used with select/ul/ol elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
+    dwr.util.debug("addOptions() can only be used with select/ul/ol elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
     return;
   }
   if (data == null) return;
 
   var text, value, li;
-  if (DWRUtil._isArray(data)) {
+  if (dwr.util._isArray(data)) {
     // Loop through the data that we do have
     for (var i = 0; i < data.length; i++) {
       if (useOptions) {
         if (arguments[2] != null) {
           if (arguments[3] != null) {
-            text = DWRUtil._getValueFrom(data[i], arguments[3]);
-            value = DWRUtil._getValueFrom(data[i], arguments[2]);
+            text = dwr.util._getValueFrom(data[i], arguments[3]);
+            value = dwr.util._getValueFrom(data[i], arguments[2]);
           }
-          else text = value = DWRUtil._getValueFrom(data[i], arguments[2]);
+          else text = value = dwr.util._getValueFrom(data[i], arguments[2]);
         }
-        else text = value = DWRUtil._getValueFrom(data[i], arguments[3]);
+        else text = value = dwr.util._getValueFrom(data[i], arguments[3]);
 
         if (text || value) ele.options[ele.options.length] = new Option(text, value);
       }
       else {
         li = document.createElement("li");
-        value = DWRUtil._getValueFrom(data[i], arguments[2]);
+        value = dwr.util._getValueFrom(data[i], arguments[2]);
         if (value != null) {
           li.innerHTML = value;
           ele.appendChild(li);
@@ -708,19 +708,19 @@ DWRUtil.addOptions = function(ele, data, options) {
   }
   else if (arguments[3] != null) {
     if (!useOptions) {
-      alert("DWRUtil.addOptions can only create select lists from objects.");
+      alert("dwr.util.addOptions can only create select lists from objects.");
       return;
     }
     for (var prop in data) {
-      value = DWRUtil._getValueFrom(data[prop], arguments[2]);
-      text = DWRUtil._getValueFrom(data[prop], arguments[3]);
+      value = dwr.util._getValueFrom(data[prop], arguments[2]);
+      text = dwr.util._getValueFrom(data[prop], arguments[3]);
 
       if (text || value) ele.options[ele.options.length] = new Option(text, value);
     }
   }
   else {
     if (!useOptions) {
-      DWRUtil.debug("DWRUtil.addOptions can only create select lists from objects.");
+      dwr.util.debug("dwr.util.addOptions can only create select lists from objects.");
       return;
     }
     for (var prop in data) {
@@ -732,13 +732,13 @@ DWRUtil.addOptions = function(ele, data, options) {
   }
 
   // All error routes through this function result in a return, so highlight now
-  DWRUtil.highlight(ele, options);
+  dwr.util.highlight(ele, options);
 };
 
 /**
- * @private Get the data from an array function for DWRUtil.addOptions
+ * @private Get the data from an array function for dwr.util.addOptions
  */
-DWRUtil._getValueFrom = function(data, method) {
+dwr.util._getValueFrom = function(data, method) {
   if (method == null) return data;
   else if (typeof method == 'function') return method(data);
   else return data[method];
@@ -748,13 +748,13 @@ DWRUtil._getValueFrom = function(data, method) {
  * Remove all the options from a select list (specified by id)
  * @see http://getahead.ltd.uk/dwr/browser/lists
  */
-DWRUtil.removeAllOptions = function(ele) {
-  ele = DWRUtil._getElementById(ele, "removeAllOptions()");
+dwr.util.removeAllOptions = function(ele) {
+  ele = dwr.util._getElementById(ele, "removeAllOptions()");
   if (ele == null) return;
-  var useOptions = DWRUtil._isHTMLElement(ele, "select");
-  var useLi = DWRUtil._isHTMLElement(ele, ["ul", "ol"]);
+  var useOptions = dwr.util._isHTMLElement(ele, "select");
+  var useLi = dwr.util._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {
-    DWRUtil.debug("removeAllOptions() can only be used with select, ol and ul elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
+    dwr.util.debug("removeAllOptions() can only be used with select, ol and ul elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
     return;
   }
   if (useOptions) {
@@ -771,25 +771,25 @@ DWRUtil.removeAllOptions = function(ele) {
  * Create rows inside a the table, tbody, thead or tfoot element (given by id).
  * @see http://getahead.ltd.uk/dwr/browser/tables
  */
-DWRUtil.addRows = function(ele, data, cellFuncs, options) {
-  ele = DWRUtil._getElementById(ele, "addRows()");
+dwr.util.addRows = function(ele, data, cellFuncs, options) {
+  ele = dwr.util._getElementById(ele, "addRows()");
   if (ele == null) return;
-  if (!DWRUtil._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"])) {
-    DWRUtil.debug("addRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
+  if (!dwr.util._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"])) {
+    dwr.util.debug("addRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
     return;
   }
   if (!options) options = {};
-  if (!options.rowCreator) options.rowCreator = DWRUtil._defaultRowCreator;
-  if (!options.cellCreator) options.cellCreator = DWRUtil._defaultCellCreator;
+  if (!options.rowCreator) options.rowCreator = dwr.util._defaultRowCreator;
+  if (!options.cellCreator) options.cellCreator = dwr.util._defaultCellCreator;
   var tr, rowNum;
-  if (DWRUtil._isArray(data)) {
+  if (dwr.util._isArray(data)) {
     for (rowNum = 0; rowNum < data.length; rowNum++) {
       options.rowData = data[rowNum];
       options.rowIndex = rowNum;
       options.rowNum = rowNum;
       options.data = null;
       options.cellNum = -1;
-      tr = DWRUtil._addRowInner(cellFuncs, options);
+      tr = dwr.util._addRowInner(cellFuncs, options);
       if (tr != null) ele.appendChild(tr);
     }
   }
@@ -801,19 +801,19 @@ DWRUtil.addRows = function(ele, data, cellFuncs, options) {
       options.rowNum = rowNum;
       options.data = null;
       options.cellNum = -1;
-      tr = DWRUtil._addRowInner(cellFuncs, options);
+      tr = dwr.util._addRowInner(cellFuncs, options);
       if (tr != null) ele.appendChild(tr);
       rowNum++;
     }
   }
 
-  DWRUtil.highlight(ele, options);
+  dwr.util.highlight(ele, options);
 };
 
 /**
  * @private Internal function to draw a single row of a table.
  */
-DWRUtil._addRowInner = function(cellFuncs, options) {
+dwr.util._addRowInner = function(cellFuncs, options) {
   var tr = options.rowCreator(options);
   if (tr == null) return null;
   for (var cellNum = 0; cellNum < cellFuncs.length; cellNum++) {
@@ -824,7 +824,7 @@ DWRUtil._addRowInner = function(cellFuncs, options) {
     var td = options.cellCreator(options);
     if (td != null) {
       if (options.data != null) {
-        if (DWRUtil._isHTMLElement(options.data)) td.appendChild(options.data);
+        if (dwr.util._isHTMLElement(options.data)) td.appendChild(options.data);
         else td.innerHTML = options.data;
       }
       tr.appendChild(td);
@@ -836,14 +836,14 @@ DWRUtil._addRowInner = function(cellFuncs, options) {
 /**
  * @private Default row creation function
  */
-DWRUtil._defaultRowCreator = function(options) {
+dwr.util._defaultRowCreator = function(options) {
   return document.createElement("tr");
 };
 
 /**
  * @private Default cell creation function
  */
-DWRUtil._defaultCellCreator = function(options) {
+dwr.util._defaultCellCreator = function(options) {
   return document.createElement("td");
 };
 
@@ -851,13 +851,13 @@ DWRUtil._defaultCellCreator = function(options) {
  * Remove all the children of a given node.
  * @see http://getahead.ltd.uk/dwr/browser/tables
  */
-DWRUtil.removeAllRows = function(ele, options) {
-  ele = DWRUtil._getElementById(ele, "removeAllRows()");
+dwr.util.removeAllRows = function(ele, options) {
+  ele = dwr.util._getElementById(ele, "removeAllRows()");
   if (ele == null) return;
   if (!options) options = {};
   if (!options.filter) options.filter = function() { return true; };
-  if (!DWRUtil._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"])) {
-    DWRUtil.debug("removeAllRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + DWRUtil._detailedTypeOf(ele));
+  if (!dwr.util._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"])) {
+    dwr.util.debug("removeAllRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
     return;
   }
   var child = ele.firstChild;
@@ -872,39 +872,39 @@ DWRUtil.removeAllRows = function(ele, options) {
 };
 
 /**
- * DWRUtil.byId(ele).className = "X", that we can call from Java easily.
+ * dwr.util.byId(ele).className = "X", that we can call from Java easily.
  */
-DWRUtil.setClassName = function(ele, className) {
-  ele = DWRUtil._getElementById(ele, "setClassName()");
+dwr.util.setClassName = function(ele, className) {
+  ele = dwr.util._getElementById(ele, "setClassName()");
   if (ele == null) return;
   ele.className = className;
 };
 
 /**
- * DWRUtil.byId(ele).className += "X", that we can call from Java easily.
+ * dwr.util.byId(ele).className += "X", that we can call from Java easily.
  */
-DWRUtil.addClassName = function(ele, className) {
-  ele = DWRUtil._getElementById(ele, "addClassName()");
+dwr.util.addClassName = function(ele, className) {
+  ele = dwr.util._getElementById(ele, "addClassName()");
   if (ele == null) return;
   ele.className += " " + className;
 };
 
 /**
- * DWRUtil.byId(ele).className -= "X", that we can call from Java easily
+ * dwr.util.byId(ele).className -= "X", that we can call from Java easily
  * From code originally by Gavin Kistner
  */
-DWRUtil.removeClassName = function(ele, className) {
-  ele = DWRUtil._getElementById(ele, "removeClassName()");
+dwr.util.removeClassName = function(ele, className) {
+  ele = dwr.util._getElementById(ele, "removeClassName()");
   if (ele == null) return;
   var regex = new RegExp("(^|\\s)" + className + "(\\s|$)", 'g');
   ele.className = ele.className.replace(regex, '');
 };
 
 /**
- * DWRUtil.byId(ele).className |= "X", that we can call from Java easily.
+ * dwr.util.byId(ele).className |= "X", that we can call from Java easily.
  */
-DWRUtil.toggleClassName = function(ele, className) {
-  ele = DWRUtil._getElementById(ele, "toggleClassName()");
+dwr.util.toggleClassName = function(ele, className) {
+  ele = dwr.util._getElementById(ele, "toggleClassName()");
   if (ele == null) return;
   var regex = new RegExp("(^|\\s)" + className + "(\\s|$)");
   if (regex.test(element.className)) {
@@ -919,16 +919,16 @@ DWRUtil.toggleClassName = function(ele, className) {
  * Clone a node and insert it into the document just above the 'template' node
  * @see http://getahead.ltd.uk/dwr/???
  */
-DWRUtil.cloneNode = function(ele, options) {
-  ele = DWRUtil._getElementById(ele, "cloneNode()");
+dwr.util.cloneNode = function(ele, options) {
+  ele = dwr.util._getElementById(ele, "cloneNode()");
   if (ele == null) return null;
   if (options == null) options = {};
   var clone = ele.cloneNode(true);
   if (options.idPrefix || options.idSuffix) {
-    DWRUtil._updateIds(clone, options);
+    dwr.util._updateIds(clone, options);
   }
   else {
-    DWRUtil._removeIds(clone);
+    dwr.util._removeIds(clone);
   }
   ele.parentNode.insertBefore(clone, ele);
   return clone;
@@ -937,7 +937,7 @@ DWRUtil.cloneNode = function(ele, options) {
 /**
  * @private Update all of the ids in an element tree
  */
-DWRUtil._updateIds = function(ele, options) {
+dwr.util._updateIds = function(ele, options) {
   if (options == null) options = {};
   if (ele.id) {
     ele.setAttribute("id", (options.idPrefix || "") + ele.id + (options.idSuffix || ""));
@@ -946,7 +946,7 @@ DWRUtil._updateIds = function(ele, options) {
   for (var i = 0; i < children.length; i++) {
     var child = children.item(i);
     if (child.nodeType == 1 /*Node.ELEMENT_NODE*/) {
-      DWRUtil._updateIds(child, options);
+      dwr.util._updateIds(child, options);
     }
   }
 };
@@ -954,13 +954,13 @@ DWRUtil._updateIds = function(ele, options) {
 /**
  * @private Remove all the Ids from an element
  */
-DWRUtil._removeIds = function(ele) {
+dwr.util._removeIds = function(ele) {
   if (ele.id) ele.removeAttribute("id");
   var children = ele.childNodes;
   for (var i = 0; i < children.length; i++) {
     var child = children.item(i);
     if (child.nodeType == 1 /*Node.ELEMENT_NODE*/) {
-      DWRUtil._removeIds(child);
+      dwr.util._removeIds(child);
     }
   }
 };
@@ -968,11 +968,11 @@ DWRUtil._removeIds = function(ele) {
 /**
  * @private Helper to turn a string into an element with an error message
  */
-DWRUtil._getElementById = function(ele, source) {
+dwr.util._getElementById = function(ele, source) {
   var orig = ele;
-  ele = DWRUtil.byId(ele);
+  ele = dwr.util.byId(ele);
   if (ele == null) {
-    DWRUtil.debug(source + " can't find an element with id: " + orig + ".");
+    dwr.util.debug(source + " can't find an element with id: " + orig + ".");
   }
   return ele;
 };
@@ -983,7 +983,7 @@ DWRUtil._getElementById = function(ele, source) {
  * @param nodeName eg "input", "textarea" - check for node name (optional)
  *         if nodeName is an array then check all for a match.
  */
-DWRUtil._isHTMLElement = function(ele, nodeName) {
+dwr.util._isHTMLElement = function(ele, nodeName) {
   if (ele == null || typeof ele != "object" || ele.nodeName == null) {
     return false;
   }
@@ -992,7 +992,7 @@ DWRUtil._isHTMLElement = function(ele, nodeName) {
     if (typeof nodeName == "string") {
       return test == nodeName.toLowerCase();
     }
-    if (DWRUtil._isArray(nodeName)) {
+    if (dwr.util._isArray(nodeName)) {
       var match = false;
       for (var i = 0; i < nodeName.length && !match; i++) {
         if (test == nodeName[i].toLowerCase()) {
@@ -1001,7 +1001,7 @@ DWRUtil._isHTMLElement = function(ele, nodeName) {
       }
       return match;
     }
-    DWRUtil.debug("DWRUtil._isHTMLElement was passed test node name that is neither a string or array of strings");
+    dwr.util.debug("dwr.util._isHTMLElement was passed test node name that is neither a string or array of strings");
     return false;
   }
   return true;
@@ -1010,7 +1010,7 @@ DWRUtil._isHTMLElement = function(ele, nodeName) {
 /**
  * @private Like typeOf except that more information for an object is returned other than "object"
  */
-DWRUtil._detailedTypeOf = function(x) {
+dwr.util._detailedTypeOf = function(x) {
   var reply = typeof x;
   if (reply == "object") {
     reply = Object.prototype.toString.apply(x); // Returns "[object class]"
@@ -1022,21 +1022,21 @@ DWRUtil._detailedTypeOf = function(x) {
 /**
  * @private Array detector. Work around the lack of instanceof in some browsers.
  */
-DWRUtil._isArray = function(data) {
+dwr.util._isArray = function(data) {
   return (data && data.join) ? true : false;
 };
 
 /**
  * @private Date detector. Work around the lack of instanceof in some browsers.
  */
-DWRUtil._isDate = function(data) {
+dwr.util._isDate = function(data) {
   return (data && data.toUTCString) ? true : false;
 };
 
 /**
  * @private Used by setValue. Gets around the missing functionallity in IE.
  */
-DWRUtil._importNode = function(doc, importedNode, deep) {
+dwr.util._importNode = function(doc, importedNode, deep) {
   var newNode;
 
   if (importedNode.nodeType == 1 /*Node.ELEMENT_NODE*/) {
@@ -1059,7 +1059,7 @@ DWRUtil._importNode = function(doc, importedNode, deep) {
 
   if (deep && importedNode.hasChildNodes()) {
     for (i = 0; i < importedNode.childNodes.length; i++) {
-      newNode.appendChild(DWRUtil._importNode(doc, importedNode.childNodes[i], true));
+      newNode.appendChild(dwr.util._importNode(doc, importedNode.childNodes[i], true));
     }
   }
 
@@ -1067,26 +1067,26 @@ DWRUtil._importNode = function(doc, importedNode, deep) {
 };
 
 /** The array of current debug items */
-DWRUtil._debugDisplay = [];
+dwr.util._debugDisplay = [];
 
 /** What is the maximum length of the debug items array */
-DWRUtil._debugMaxLength = 50;
+dwr.util._debugMaxLength = 50;
 
 /**
  * Used internally when some message needs to get to the programmer
  */
-DWRUtil.debug = function(message) {
-  var debug = DWRUtil.byId("dwr-debug");
+dwr.util.debug = function(message) {
+  var debug = dwr.util.byId("dwr-debug");
   if (debug) {
-    while (DWRUtil._debugDisplay.length >= DWRUtil._debugMaxLength) {
-      DWRUtil._debugDisplay.shift();
+    while (dwr.util._debugDisplay.length >= dwr.util._debugMaxLength) {
+      dwr.util._debugDisplay.shift();
     }
-    DWRUtil._debugDisplay.push(message);
+    dwr.util._debugDisplay.push(message);
     var contents = "";
-    for (var i = 0; i < DWRUtil._debugDisplay.length; i++) {
-      contents += DWRUtil._debugDisplay[i] + "<br/>";
+    for (var i = 0; i < dwr.util._debugDisplay.length; i++) {
+      contents += dwr.util._debugDisplay[i] + "<br/>";
     }
-    DWRUtil.setValue("dwr-debug", contents);
+    dwr.util.setValue("dwr-debug", contents);
   }
   else if (window.console) window.console.log(message);
   else if (window.opera && window.opera.postError) window.opera.postError(message);
