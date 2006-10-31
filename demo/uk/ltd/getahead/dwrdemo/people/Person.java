@@ -15,6 +15,8 @@
  */
 package uk.ltd.getahead.dwrdemo.people;
 
+import org.directwebremoting.Security;
+
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
@@ -33,7 +35,7 @@ public class Person
      */
     public void setAddress(String address)
     {
-        this.address = address;
+        this.address = Security.addEntities(address);
     }
 
     /**
@@ -65,7 +67,7 @@ public class Person
      */
     public void setName(String name)
     {
-        this.name = name;
+        this.name = Security.addEntities(name);
     }
 
     /**

@@ -25,7 +25,7 @@ import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
-import org.directwebremoting.extend.RemoteDwrEngine;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.util.LocalUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -100,7 +100,7 @@ public class DOM4JConverter extends BaseV20Converter implements Converter
             writer.flush();
             xml.flush();
 
-            String script = RemoteDwrEngine.xmlStringToJavascriptDom(xml.toString());
+            String script = EnginePrivate.xmlStringToJavascriptDom(xml.toString());
             OutboundVariable ov = new SimpleOutboundVariable(script, outctx, false);
 
             outctx.put(data, ov);

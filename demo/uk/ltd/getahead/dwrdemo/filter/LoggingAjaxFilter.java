@@ -26,21 +26,21 @@ import org.directwebremoting.util.Logger;
  * An example filter that does some logging of Ajax calls
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Logging2AjaxFilter implements AjaxFilter
+public class LoggingAjaxFilter implements AjaxFilter
 {
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.AjaxFilter#doFilter(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], uk.ltd.getahead.dwr.AjaxFilterChain)
      */
     public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
     {
-        log.debug("L2: About to execute: " + method.getName() + "() on " + obj);
+        log.debug("About to execute: " + method.getName() + "() on " + obj);
         Object reply = chain.doFilter(obj, method, params);
-        log.debug("L2: - Executed: " + method.getName() + "() giving " + reply);
+        log.debug("Executed: " + method.getName() + "() giving " + reply);
         return reply;
     }
     
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(Logging2AjaxFilter.class);
+    private static final Logger log = Logger.getLogger(LoggingAjaxFilter.class);
 }

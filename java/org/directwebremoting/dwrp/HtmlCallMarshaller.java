@@ -18,7 +18,7 @@ package org.directwebremoting.dwrp;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.directwebremoting.extend.RemoteDwrEngine;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -43,7 +43,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
         synchronized (out)
         {
             out.println("<html><body><script type='text/javascript'>");
-            out.println(RemoteDwrEngine.remoteBeginIFrameResponse(batchId));
+            out.println(EnginePrivate.remoteBeginIFrameResponse(batchId));
         }
     }
 
@@ -54,7 +54,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            out.println(RemoteDwrEngine.remoteEndIFrameResponse(batchId));
+            out.println(EnginePrivate.remoteEndIFrameResponse(batchId));
             out.println("</script></body></html>");
         }
     }
@@ -66,7 +66,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            out.println(RemoteDwrEngine.remoteEval(script));
+            out.println(EnginePrivate.remoteEval(script));
         }
     }
 }

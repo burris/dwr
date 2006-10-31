@@ -3,7 +3,10 @@ package uk.ltd.getahead.dwrdemo.chat;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.directwebremoting.Security;
+
 /**
+ * A POJO that represents a typed message
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Message
@@ -19,8 +22,7 @@ public class Message
         {
             text = text.substring(0, 256);
         }
-        text = text.replace('<', '[');
-        text = text.replace('&', '_');
+        text = Security.replaceXmlCharacters(text);
 
         try
         {
@@ -52,6 +54,13 @@ public class Message
         return text;
     }
 
+    /**
+     * When the message was created
+     */
     private long id = System.currentTimeMillis();
+
+    /**
+     * The text of the message
+     */
     private String text;
 }

@@ -23,7 +23,7 @@ import javax.servlet.ServletContext;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.proxy.dwr.DwrUtil;
+import org.directwebremoting.proxy.dwr.Util;
 import org.directwebremoting.util.Logger;
 
 /**
@@ -65,7 +65,7 @@ public class Clock implements Runnable
             while (active)
             {
                 Collection sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html");
-                DwrUtil pages = new DwrUtil(sessions);
+                Util pages = new Util(sessions);
                 pages.setValue("clockDisplay", new Date().toString());
 
                 log.debug("Sent message");
@@ -73,7 +73,7 @@ public class Clock implements Runnable
             }
 
             Collection sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html");
-            DwrUtil pages = new DwrUtil(sessions);
+            Util pages = new Util(sessions);
             pages.setValue("clockDisplay", "");
 
             log.debug("CLOCK: Stopping server-side thread");

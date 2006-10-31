@@ -22,19 +22,19 @@ import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
 
 /**
- * DwrEngine is a server-side proxy that allows Java programmers to call client
+ * Engine is a server-side proxy that allows Java programmers to call client
  * side Javascript from Java.
- * @see DwrUtil for more documenation on server-side proxies
+ * @see Util for more documenation on server-side proxies
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrEngine extends ScriptProxy
+public class Engine extends ScriptProxy
 {
     /**
      * Http thread constructor, that affects no browsers.
-     * Calls to {@link DwrEngine#addScriptSession(ScriptSession)} or to
-     * {@link DwrEngine#addScriptSessions(Collection)} will be needed  
+     * Calls to {@link Engine#addScriptSession(ScriptSession)} or to
+     * {@link Engine#addScriptSessions(Collection)} will be needed  
      */
-    public DwrEngine()
+    public Engine()
     {
         super();
     }
@@ -43,7 +43,7 @@ public class DwrEngine extends ScriptProxy
      * Http thread constructor that alters a single browser
      * @param scriptSession The browser to alter
      */
-    public DwrEngine(ScriptSession scriptSession)
+    public Engine(ScriptSession scriptSession)
     {
         super(scriptSession);
     }
@@ -52,23 +52,23 @@ public class DwrEngine extends ScriptProxy
      * Http thread constructor that alters a number of browsers
      * @param scriptSessions A collection of ScriptSessions that we should act on.
      */
-    public DwrEngine(Collection scriptSessions)
+    public Engine(Collection scriptSessions)
     {
         super(scriptSessions);
     }
 
     /**
-     * XHR remoting type constant. See DWREngine.set[Rpc|Poll]Type()
+     * XHR remoting type constant. See dwr.engine.set[Rpc|Poll]Type()
      */
     public static final int XMLHttpRequest = 1;
 
     /**
-     * XHR remoting type constant. See DWREngine.set[Rpc|Poll]Type()
+     * XHR remoting type constant. See dwr.engine.set[Rpc|Poll]Type()
      */
     public static final int IFrame = 2;
 
     /**
-     * XHR remoting type constant. See DWREngine.setRpcType()
+     * XHR remoting type constant. See dwr.engine.setRpcType()
      */
     public static final int ScriptTag = 3;
 
@@ -80,7 +80,7 @@ public class DwrEngine extends ScriptProxy
     public void setTimeout(int timeout)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWREngine.setTimeout(")
+        script.appendScript("dwr.engine.setTimeout(")
               .appendData(timeout)
               .appendScript(");");
         addScript(script);
@@ -88,13 +88,13 @@ public class DwrEngine extends ScriptProxy
 
     /**
      * Set the preferred remoting type.
-     * @param newType One of DWREngine.XMLHttpRequest or DWREngine.IFrame or DWREngine.ScriptTag
+     * @param newType One of dwr.engine.XMLHttpRequest or dwr.engine.IFrame or dwr.engine.ScriptTag
      * @see <a href="http://getahead.ltd.uk/dwr/browser/engine/options">Options documentation</a>
      */
     public void setRpcType(int newType)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWREngine.setRpcType(")
+        script.appendScript("dwr.engine.setRpcType(")
               .appendData(newType)
               .appendScript(");");
         addScript(script);
@@ -108,7 +108,7 @@ public class DwrEngine extends ScriptProxy
     public void setHttpMethod(String httpMethod)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWREngine.setHttpMethod(")
+        script.appendScript("dwr.engine.setHttpMethod(")
               .appendData(httpMethod)
               .appendScript(");");
         addScript(script);
@@ -122,7 +122,7 @@ public class DwrEngine extends ScriptProxy
     public void setOrdered(boolean ordered)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWREngine.setOrdered(")
+        script.appendScript("dwr.engine.setOrdered(")
               .appendData(ordered)
               .appendScript(");");
         addScript(script);
@@ -136,7 +136,7 @@ public class DwrEngine extends ScriptProxy
     public void setAsync(boolean async)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWREngine.setAsync(")
+        script.appendScript("dwr.engine.setAsync(")
               .appendData(async)
               .appendScript(");");
         addScript(script);
@@ -150,7 +150,7 @@ public class DwrEngine extends ScriptProxy
     public void setReverseAjax(boolean reverseAjax)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWREngine.setReverseAjax(")
+        script.appendScript("dwr.engine.setReverseAjax(")
               .appendData(reverseAjax)
               .appendScript(");");
         addScript(script);
@@ -164,7 +164,7 @@ public class DwrEngine extends ScriptProxy
     public void setPollUsingComet(boolean pollComet)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWREngine.setPollUsingComet(")
+        script.appendScript("dwr.engine.setPollUsingComet(")
               .appendData(pollComet)
               .appendScript(");");
         addScript(script);
@@ -178,7 +178,7 @@ public class DwrEngine extends ScriptProxy
     public void setPollType(int newPollType)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWREngine.setPollUsingComet(")
+        script.appendScript("dwr.engine.setPollUsingComet(")
               .appendData(newPollType)
               .appendScript(");");
         addScript(script);

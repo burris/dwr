@@ -24,7 +24,7 @@ function fillTable() {
       DWRUtil.setValue("tableName" + id, person.name);
       DWRUtil.setValue("tableSalary" + id, person.salary);
       DWRUtil.setValue("tableAddress" + id, person.address);
-      $("pattern" + id).style.display = "table-row";
+      $("pattern" + id).style.display = ""; // officially we should use table-row, but IE prefers "" for some reason
       peopleCache[id] = person;
     }
   });

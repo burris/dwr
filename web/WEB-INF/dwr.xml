@@ -3,65 +3,25 @@
 
 <dwr>
 
-  <init>
-    <converter id="testbean" class="uk.ltd.getahead.dwrdemo.test.TestBean2Converter"/>
-  </init>
-
   <allow>
 
     <!--
-    <filter class="uk.ltd.getahead.dwrdemo.filter.ExtraLatencyAjaxFilter">
+    <filter class="org.directwebremoting.filter.ExtraLatencyAjaxFilter">
       <param name="delay" value="200"/>
     </filter>
     -->
 
-    <create creator="new" javascript="Demo">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.simpletext.Demo"/>
-    </create>
-
+    <!-- address -->
     <create creator="new" javascript="AddressLookup">
       <param name="class" value="uk.ltd.getahead.dwrdemo.address.AddressLookup"/>
     </create>
 
-    <create creator="new" javascript="People" scope="script">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.people.People"/>
-    </create>
-    <convert match="uk.ltd.getahead.dwrdemo.people.Person" javascript="Person" converter="bean"/>
-
-    <create creator="new" javascript="Clock" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.clock.Clock"/>
-    </create>
-
-    <create creator="new" javascript="LiveHelp" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.livehelp.LiveHelp"/>
-    </create>
-
-    <create creator="new" javascript="Test" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.test.Test"/>
-    </create>
-
+    <!-- anti-spam mailto generator -->
     <create creator="new" javascript="Generator" scope="application">
       <param name="class" value="uk.ltd.getahead.dwrdemo.asmg.Generator"/>
     </create>
 
-    <create creator="new" javascript="JDate" scope="session">
-      <param name="class" value="java.util.Date"/>
-      <exclude method="getHours"/>
-      <auth method="getMinutes" role="admin"/>
-      <auth method="getMinutes" role="devel"/>
-      <filter class="uk.ltd.getahead.dwrdemo.filter.Logging1AjaxFilter"/>
-      <filter class="uk.ltd.getahead.dwrdemo.filter.Logging2AjaxFilter"/>
-      <filter class="uk.ltd.getahead.dwrdemo.filter.RandomSecurityAjaxFilter"/>
-    </create>
-
-    <convert converter="bean" match="$Proxy*"/>
-    <convert converter="testbean" match="uk.ltd.getahead.dwrdemo.test.TestBean"/>
-
-    <convert converter="bean" javascript="ObjB" match="uk.ltd.getahead.dwrdemo.test.ObjB"/>
-    <convert converter="object" javascript="ObjA" match="uk.ltd.getahead.dwrdemo.test.ObjA">
-      <param name="force" value="true"/>
-    </convert>
-
+    <!-- chat -->
     <create creator="new" javascript="JavascriptChat" scope="application">
       <param name="class" value="uk.ltd.getahead.dwrdemo.chat.JavascriptChat"/>
     </create>
@@ -70,14 +30,49 @@
     </create>
     <convert converter="bean" match="uk.ltd.getahead.dwrdemo.chat.Message"/>
 
-    <create creator="new" javascript="CoBrowse">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.cobrowse.CoBrowse"/>
+    <!-- clock -->
+    <create creator="new" javascript="Clock" scope="application">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.clock.Clock"/>
     </create>
 
-    <create creator="new" javascript="Whiteboard">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.whiteboard.Whiteboard"/>
+    <!-- livehelp -->
+    <create creator="new" javascript="LiveHelp" scope="application">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.livehelp.LiveHelp"/>
     </create>
 
+    <!-- people -->
+    <create creator="new" javascript="People" scope="script">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.people.People"/>
+    </create>
+    <convert match="uk.ltd.getahead.dwrdemo.people.Person" javascript="Person" converter="bean"/>
+
+    <!-- simpletext -->
+    <create creator="new" javascript="Demo">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.simpletext.Demo"/>
+    </create>
+
+    <!-- test -->
+    <create creator="new" javascript="Test" scope="application">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.test.Test"/>
+    </create>
+    <convert converter="bean" match="$Proxy*"/>
+    <convert converter="testbean" match="uk.ltd.getahead.dwrdemo.test.TestBean"/>
+    <convert converter="bean" javascript="ObjB" match="uk.ltd.getahead.dwrdemo.test.ObjB"/>
+    <convert converter="object" javascript="ObjA" match="uk.ltd.getahead.dwrdemo.test.ObjA">
+      <param name="force" value="true"/>
+    </convert>
+
+    <!-- resources not in this war file: java.util.Date -->
+    <create creator="new" javascript="JDate" scope="session">
+      <param name="class" value="java.util.Date"/>
+      <exclude method="getHours"/>
+      <auth method="getMinutes" role="admin"/>
+      <auth method="getMinutes" role="devel"/>
+      <filter class="uk.ltd.getahead.dwrdemo.filter.LoggingAjaxFilter"/>
+      <filter class="uk.ltd.getahead.dwrdemo.filter.RandomSecurityAjaxFilter"/>
+    </create>
+
+    <!-- resources not in this war file: Commons EmailValidator -->
     <create creator="script" javascript="EmailValidator" scope="application">
       <param name="language" value="beanshell"/>
       <param name="script">

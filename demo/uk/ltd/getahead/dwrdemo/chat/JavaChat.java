@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.proxy.dwr.DwrUtil;
+import org.directwebremoting.proxy.dwr.Util;
 import org.directwebremoting.util.Logger;
 
 /**
@@ -32,12 +32,12 @@ public class JavaChat
         String currentPage = wctx.getCurrentPage();
 
         // Clear the input box in the browser that kicked off this page only
-        DwrUtil utilThis = new DwrUtil(wctx.getScriptSession());
+        Util utilThis = new Util(wctx.getScriptSession());
         utilThis.setValue("text", "");
 
         // For all the browsers on the current page:
         Collection sessions = wctx.getScriptSessionsByPage(currentPage);
-        DwrUtil utilAll = new DwrUtil(sessions);
+        Util utilAll = new Util(sessions);
 
         // Clear the list and add in the new set of messages
         utilAll.removeAllOptions("chatlog");

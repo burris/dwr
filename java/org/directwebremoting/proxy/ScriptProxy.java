@@ -25,7 +25,7 @@ import org.directwebremoting.ScriptSession;
 
 /**
  * Class to help people send scripts to collections of browsers.
- * ScriptProxy also is the base class for the Java implementations of DwrUtil
+ * ScriptProxy also is the base class for the Java implementations of Util
  * and Scriptaculous.Effect.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */

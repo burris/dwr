@@ -17,6 +17,8 @@ package uk.ltd.getahead.dwrdemo.asmg;
 
 import java.util.StringTokenizer;
 
+import org.directwebremoting.Security;
+
 /**
  * Generate an anti-spam mailto link from an email address.
  * The output link looks something like this (where $1 is the username part of
@@ -42,7 +44,7 @@ public class Generator
     public String generateAntiSpamMailto(String name, String email)
     {
         StringTokenizer st = new StringTokenizer(email, "@");
-        if (st.countTokens() != 2)
+        if (Security.containsXssRiskyCharacters(email) || st.countTokens() != 2)
         {
             throw new IllegalArgumentException("Invalid email address: " + email);
         }
@@ -53,7 +55,7 @@ public class Generator
         StringBuffer buffer = new StringBuffer();
 
         buffer.append("Contact ");
-        buffer.append(name);
+        buffer.append(Security.replaceXmlCharacters(name));
         buffer.append(" using: <span id=\"asmgLink\"></span>\n");
         buffer.append("<script type='text/javascript'>\n");
 

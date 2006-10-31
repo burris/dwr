@@ -37,7 +37,7 @@ import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.NamedConverter;
 import org.directwebremoting.extend.Property;
-import org.directwebremoting.extend.RemoteDwrEngine;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
@@ -156,7 +156,7 @@ public class DefaultRemoter implements Remoter
 
         buffer.append('\n');
 
-        String init = RemoteDwrEngine.getEngineInitScript(actualPath);
+        String init = EnginePrivate.getEngineInitScript(actualPath);
         buffer.append(init);
 
         buffer.append("if (" + scriptName + " == null) var " + scriptName + " = {};\n");
@@ -240,7 +240,7 @@ public class DefaultRemoter implements Remoter
 
         buffer.append("callback) {\n");
 
-        String executeFunctionName = RemoteDwrEngine.getExecuteFunctionName();
+        String executeFunctionName = EnginePrivate.getExecuteFunctionName();
         buffer.append("  " + executeFunctionName + "(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', ");
         for (int j = 0; j < paramTypes.length; j++)
         {

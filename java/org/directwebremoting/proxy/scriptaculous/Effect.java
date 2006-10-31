@@ -20,7 +20,6 @@ import java.util.Collection;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
-import org.directwebremoting.proxy.dwr.DwrUtil;
 
 /**
  * A server side proxy the the Scriptaculous Effect class
@@ -31,8 +30,8 @@ public class Effect extends ScriptProxy
 {
     /**
      * Http thread constructor, that affects no browsers.
-     * Calls to {@link DwrUtil#addScriptSession(ScriptSession)} or to
-     * {@link DwrUtil#addScriptSessions(Collection)} will be needed  
+     * Calls to {@link Effect#addScriptSession(ScriptSession)} or to
+     * {@link Effect#addScriptSessions(Collection)} will be needed  
      */
     public Effect()
     {

@@ -29,7 +29,7 @@ import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
-import org.directwebremoting.extend.RemoteDwrEngine;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.util.LocalUtil;
 
 /**
@@ -87,7 +87,7 @@ public class XOMConverter extends BaseV20Converter implements Converter
 
             Node node = (Node) data;
 
-            String script = RemoteDwrEngine.xmlStringToJavascriptDom(node.toXML());
+            String script = EnginePrivate.xmlStringToJavascriptDom(node.toXML());
             OutboundVariable ov = new SimpleOutboundVariable(script, outctx, false);
 
             outctx.put(data, ov);

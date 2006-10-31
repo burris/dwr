@@ -23,14 +23,14 @@ import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
 
 /**
- * DwrUtil is a server-side proxy that allows Java programmers to call client
+ * Util is a server-side proxy that allows Java programmers to call client
  * side Javascript from Java.
  * <p>
- * Each DwrUtil object is associated with a list of ScriptSessions and the
+ * Each Util object is associated with a list of ScriptSessions and the
  * proxy code is creates will be dynamically forwarded to all those browsers.
  * <p>
  * Currently this class contains only the write-only DOM manipulation functions
- * from DwrUtil. It is possible that we could add the read methods, however
+ * from Util. It is possible that we could add the read methods, however
  * the complexity in the callback and the fact that you are probably not going
  * to need it means that we'll leave it for another day. Specifically,
  * <code>getValue</code>, <code>getValues</code> and <code>getText</code> have
@@ -39,14 +39,14 @@ import org.directwebremoting.proxy.ScriptProxy;
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @author Jorge Martin Cuervo [darthkorr at gmail dot com]
  */
-public class DwrUtil extends ScriptProxy
+public class Util extends ScriptProxy
 {
     /**
      * Http thread constructor, that affects no browsers.
-     * Calls to {@link DwrUtil#addScriptSession(ScriptSession)} or to
-     * {@link DwrUtil#addScriptSessions(Collection)} will be needed  
+     * Calls to {@link Util#addScriptSession(ScriptSession)} or to
+     * {@link Util#addScriptSessions(Collection)} will be needed  
      */
-    public DwrUtil()
+    public Util()
     {
         super();
     }
@@ -55,7 +55,7 @@ public class DwrUtil extends ScriptProxy
      * Http thread constructor that alters a single browser
      * @param scriptSession The browser to alter
      */
-    public DwrUtil(ScriptSession scriptSession)
+    public Util(ScriptSession scriptSession)
     {
         super(scriptSession);
     }
@@ -64,7 +64,7 @@ public class DwrUtil extends ScriptProxy
      * Http thread constructor that alters a number of browsers
      * @param scriptSessions A collection of ScriptSessions that we should act on.
      */
-    public DwrUtil(Collection scriptSessions)
+    public Util(Collection scriptSessions)
     {
         super(scriptSessions);
     }
@@ -92,7 +92,7 @@ public class DwrUtil extends ScriptProxy
         String options = escapeHtml ? ", {escapeHtml:true}" : "";
 
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.setValue(")
+        script.appendScript("dwr.util.setValue(")
               .appendData(elementId)
               .appendScript(",")
               .appendData(value)
@@ -113,7 +113,7 @@ public class DwrUtil extends ScriptProxy
         String options = escapeHtml ? "{escapeHtml:true}" : "null";
 
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.setValues(")
+        script.appendScript("dwr.util.setValues(")
               .appendData(values)
               .appendScript(",")
               .appendScript(options)
@@ -130,7 +130,7 @@ public class DwrUtil extends ScriptProxy
     public void addOptions(String elementId, String[] array)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.addOptions(")
+        script.appendScript("dwr.util.addOptions(")
               .appendData(elementId)
               .appendScript(",")
               .appendData(array)
@@ -148,7 +148,7 @@ public class DwrUtil extends ScriptProxy
     public void addOptions(String elementId, Collection array, String property)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.addOptions(")
+        script.appendScript("dwr.util.addOptions(")
               .appendData(elementId)
               .appendScript(",")
               .appendData(array)
@@ -169,7 +169,7 @@ public class DwrUtil extends ScriptProxy
     public void addOptions(String elementId, Collection array, String valueProperty, String textProperty)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.addOptions(")
+        script.appendScript("dwr.util.addOptions(")
               .appendData(elementId)
               .appendScript(",")
               .appendData(array)
@@ -189,7 +189,7 @@ public class DwrUtil extends ScriptProxy
     public void removeAllOptions(String elementId)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.removeAllOptions(")
+        script.appendScript("dwr.util.removeAllOptions(")
               .appendData(elementId)
               .appendScript(");");
         addScript(script);
@@ -214,7 +214,7 @@ public class DwrUtil extends ScriptProxy
             functions.deleteCharAt(functions.length() - 1);
 
             ScriptBuffer script = createScriptBuffer();
-            script.appendScript("DWRUtil.addRows(")
+            script.appendScript("dwr.util.addRows(")
                   .appendData(elementId)
                   .appendScript(",")
                   .appendData(data)
@@ -246,7 +246,7 @@ public class DwrUtil extends ScriptProxy
     public void removeAllRows(String elementId)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.removeAllRows(")
+        script.appendScript("dwr.util.removeAllRows(")
               .appendData(elementId)
               .appendScript(");");
         addScript(script);
@@ -260,7 +260,7 @@ public class DwrUtil extends ScriptProxy
     public void cloneNode(String elementId)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.cloneNode(")
+        script.appendScript("dwr.util.cloneNode(")
               .appendData(elementId)
               .appendScript(");");
         addScript(script);
@@ -296,7 +296,7 @@ public class DwrUtil extends ScriptProxy
         options.appendScript("}");
 
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.cloneNode(")
+        script.appendScript("dwr.util.cloneNode(")
               .appendData(elementId)
               .appendScript(",")
               .appendData(options)
@@ -312,7 +312,7 @@ public class DwrUtil extends ScriptProxy
     public void setClassName(String elementId, String className)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.setClassName(")
+        script.appendScript("dwr.util.setClassName(")
               .appendData(elementId)
               .appendScript(",")
               .appendData(className)
@@ -328,7 +328,7 @@ public class DwrUtil extends ScriptProxy
     public void addClassName(String elementId, String className)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.addClassName(")
+        script.appendScript("dwr.util.addClassName(")
               .appendData(elementId)
               .appendScript(",")
               .appendData(className)
@@ -344,7 +344,7 @@ public class DwrUtil extends ScriptProxy
     public void removeClassName(String elementId, String className)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.removeClassName(")
+        script.appendScript("dwr.util.removeClassName(")
               .appendData(elementId)
               .appendScript(",")
               .appendData(className)
@@ -360,7 +360,7 @@ public class DwrUtil extends ScriptProxy
     public void toggleClassName(String elementId, String className)
     {
         ScriptBuffer script = createScriptBuffer();
-        script.appendScript("DWRUtil.toggleClassName(")
+        script.appendScript("dwr.util.toggleClassName(")
               .appendData(elementId)
               .appendScript(",")
               .appendData(className)

@@ -3,10 +3,6 @@ Make DWR ask for a scriptSessionID on first connect and do it in ordered mode.
 
 json support
 
-onbackbutton, onforwardbutton
-
-DWRUtil.getValues should handle multiple select list
-
 Simple Date format
 	There are also notes here:
 	http://getahead.ltd.uk/dwr/server/dwrxml/converters

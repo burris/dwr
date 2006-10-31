@@ -17,12 +17,14 @@ package uk.ltd.getahead.dwrdemo.livehelp;
 
 import java.util.Collection;
 
+import org.directwebremoting.Security;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.proxy.dwr.DwrUtil;
+import org.directwebremoting.proxy.dwr.Util;
 import org.directwebremoting.util.Logger;
 
 /**
+ * A simple shared input form that several users can share
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class LiveHelp
@@ -34,9 +36,9 @@ public class LiveHelp
      */
     public void notifyTyping(String id, String value)
     {
-        DwrUtil utilAll = new DwrUtil(getUsersToAffect());
+        Util utilAll = new Util(getUsersToAffect());
 
-        utilAll.setValue(id, value);
+        utilAll.setValue(id, Security.replaceXmlCharacters(value));
     }
 
     /**
@@ -45,7 +47,7 @@ public class LiveHelp
      */
     public void notifyFocus(String id)
     {
-        DwrUtil utilAll = new DwrUtil(getUsersToAffect());
+        Util utilAll = new Util(getUsersToAffect());
 
         utilAll.addClassName(id, "disabled");
         String addr = WebContextFactory.get().getHttpServletRequest().getRemoteAddr();
@@ -60,7 +62,7 @@ public class LiveHelp
      */
     public void notifyBlur(String id)
     {
-        DwrUtil utilAll = new DwrUtil(getUsersToAffect());
+        Util utilAll = new Util(getUsersToAffect());
 
         utilAll.removeClassName(id, "disabled");
         utilAll.setValue(id + "Tip", "");

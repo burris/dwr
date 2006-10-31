@@ -35,7 +35,7 @@ import org.directwebremoting.util.MimeConstants;
  * to call internal functions in engine.js
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class RemoteDwrEngine extends ScriptProxy
+public class EnginePrivate extends ScriptProxy
 {
     /**
      * Call the DWREngine._remoteHandleResponse() in the browser
@@ -248,5 +248,5 @@ public class RemoteDwrEngine extends ScriptProxy
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(RemoteDwrEngine.class);
+    private static final Logger log = Logger.getLogger(EnginePrivate.class);
 }

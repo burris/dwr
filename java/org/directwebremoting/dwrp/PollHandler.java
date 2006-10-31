@@ -31,7 +31,7 @@ import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
-import org.directwebremoting.extend.RemoteDwrEngine;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.extend.ServerLoadMonitor;
@@ -88,7 +88,7 @@ public class PollHandler implements Handler
         }
         catch (Exception ex)
         {
-            RemoteDwrEngine.remoteHandleExceptionWithoutCallId(response, ex);
+            EnginePrivate.remoteHandleExceptionWithoutCallId(response, ex);
             return;
         }
 
@@ -203,11 +203,11 @@ public class PollHandler implements Handler
                     int wait = serverLoadMonitor.getTimeToNextPoll();
                     Integer data = new Integer(wait);
 
-                    RemoteDwrEngine.remoteHandleCallback(conduit, batchId, "0", data);
+                    EnginePrivate.remoteHandleCallback(conduit, batchId, "0", data);
                 }
                 catch (Exception ex)
                 {
-                    RemoteDwrEngine.remoteHandleException(conduit, batchId, "0", ex);
+                    EnginePrivate.remoteHandleException(conduit, batchId, "0", ex);
                     log.warn("--Erroring: batchId[" + batchId + "] message[" + ex.toString() + ']', ex);
                 }
 

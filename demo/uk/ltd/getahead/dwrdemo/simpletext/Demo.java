@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 
+import org.directwebremoting.Security;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 
@@ -35,7 +36,7 @@ public class Demo
      */
     public String sayHello(String name)
     {
-        return "Hello, " + name;
+        return "Hello, " + Security.addEntities(name);
     }
 
     /**

@@ -1,38 +1,9 @@
 
-tableedit/index.js:27
-	$("pattern" + id).style.display = "table-row";
-	doesn't work on IE6
-
 IE slow on opening new windows with RA turned on.
-
-Ensure that all error handlers are called properly
-	I discovered that DWR sometimes use the global DWREngine errorHandler even if
-	I have specified an errorHandler in my call object.
-	The reason seems to be in engine.js:609:
-		  catch (ex) {
-		    DWREngine._handleMetaDataError(null, ex);
-		  }
-		  batch.req.send(request.body);
-		  if (!batch.async) DWREngine._stateChange(batch);
-		}
-		catch (ex) {
-		  DWREngine._handleMetaDataError(null, ex);
-		}
-	The null parameter to _handleMetaDataError calls should instead get the
-	handler object that was setup at start of the call. In other places this
-	have been done with:
-		var handlers = DWREngine._handlersMap[id];
-
-DWREngine._handleMetaDataError(null, ex); does not postHook or errorHandler for
-	call level handlers - it should.
 
 Opera doesn't do reverse Ajax
 
-Create methods to set global headers and parameters and test if they work
-
 DWRUtil.setOptions gets the wrong order in Opera
-
-DOM4JConverter seems to be broken
 
 Turning RA off
 	Say I've got a page with reverse ajax turned on. I want to refresh the page
@@ -72,23 +43,6 @@ Multiple call issue
 	LabBean.getMaterials(displayMaterialReversedItems, 2);
 	LabBean.getMaterials(displayMaterialReversedJewels, 1);
 	LabBean.getMaterials(displayMaterialItems, 2);
-
-Asynchronous batches
-	I set my call to be synchronous:	
-		DWREngine.setAsync(false);
-		ClientRequest.request(ri, defaultCallBack);
-	The call is executed as it supposed to. But then I get a JavaScript error
-	from DWR saying "[object Error]". When I step through the engine.js code I
-	found the following lines in function DWREngine._endBatch
-		DWREngine._sendData(batch);
-		DWREngine._batches[DWREngine._batches.length] = batch;
-	Where second line never gets executed if synchronous is set.  That means that
-	DWREngine._batches collection is EMPTY.
-	As a result in DWREngine._handleResponse function the following line
-	returns 'undefined' and causes error:
-	     var responseBatch = DWREngine._batches[DWREngine._batches.length-1];
-	Because chain of calls stops at this moment DWREngine._clearUp(batch)
-	never gets called for synchronous call.
 
 -- Below the line for DWR 2.0 --------------------------------------------------
 
