@@ -302,13 +302,13 @@ public class FakeServletContext implements ServletContext
         return servletContextName;
     }
 
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletContext#getContextPath()
+    /**
+     * See Servlet API version 2.5
+     * @return The context path for this servlet
      */
     public String getContextPath()
     {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("getContextPath");
     }
 
     /**
