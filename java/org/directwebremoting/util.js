@@ -484,7 +484,7 @@ dwr.util.getValue = function(ele, options) {
       var reply = new Array();
       for (i = 0; i < ele.options.length; i++) {
         var item = ele.options[i];
-        if( item.selected ) {
+        if (item.selected) {
           if (item.value != null && item.value != "") {
             reply.push(item.value);
           }
