@@ -40,10 +40,9 @@ public class Batch
      * Parse an inbound request into a Calls object
      * @param request The original browser's request
      * @param crossDomainSessionSecurity Are we checking for CSRF attacks
-     * @param sessionIdMinLength The minimum valid session id length
      * @throws ServerException If reading from the request body stream fails
      */
-    public Batch(HttpServletRequest request, boolean crossDomainSessionSecurity, int sessionIdMinLength) throws ServerException
+    public Batch(HttpServletRequest request, boolean crossDomainSessionSecurity) throws ServerException
     {
         if (request.getMethod().equals("GET"))
         {
@@ -58,7 +57,7 @@ public class Batch
 
         if (crossDomainSessionSecurity)
         {
-            checkNotCsrfAttack(request, sessionIdMinLength);
+            checkNotCsrfAttack(request);
         }
     }
 
@@ -177,9 +176,8 @@ public class Batch
     /**
      * Check that this request is not subject to a CSRF attack
      * @param request The original browser's request
-     * @param sessionIdMinLength The minimum valid session id length
      */
-    private void checkNotCsrfAttack(HttpServletRequest request, int sessionIdMinLength)
+    private void checkNotCsrfAttack(HttpServletRequest request)
     {
         // A check to see that this isn't a csrf attack
         // http://en.wikipedia.org/wiki/Cross-site_request_forgery
@@ -193,7 +191,7 @@ public class Batch
 
                 // Weblogic sends JSESSIONIDs that are *longer* than the real
                 // session id. Why?!
-                if (bodySessionId.length() >= sessionIdMinLength && !headerSessionId.startsWith(bodySessionId))
+                if (!bodySessionId.startsWith(headerSessionId))
                 {
                     throw new SecurityException("Session Error");
                 }

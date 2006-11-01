@@ -74,7 +74,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         Batch batch = (Batch) request.getAttribute(ATTRIBUTE_BATCH);
         if (batch == null)
         {
-            batch = new Batch(request, crossDomainSessionSecurity, sessionIdMinLength);
+            batch = new Batch(request, crossDomainSessionSecurity);
 
             // Save calls for retry exception
             request.setAttribute(ATTRIBUTE_BATCH, batch);
@@ -437,15 +437,6 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
-     * The minimum valid session id length
-     * @param sessionIdMinLength the sessionIdMinLength to set
-     */
-    public void setSessionIdMinLength(int sessionIdMinLength)
-    {
-        this.sessionIdMinLength = sessionIdMinLength;
-    }
-
-    /**
      * A ScriptConduit that works with the parent Marshaller.
      * In some ways this is nasty because it has access to essentially private parts
      * of BaseCallMarshaller, however there is nowhere sensible to store them
@@ -496,12 +487,6 @@ public abstract class BaseCallMarshaller implements Marshaller
      * To we perform cross-domain session security checks?
      */
     protected boolean crossDomainSessionSecurity = true; 
-
-    /**
-     * What is the minimum session id length we will consider for a match.
-     * Jetty and Tomcat both seem to use 32 byte session ids. BEA is much longer
-     */
-    protected int sessionIdMinLength = 32;
 
     /**
      * How we turn pages into the canonical form.
