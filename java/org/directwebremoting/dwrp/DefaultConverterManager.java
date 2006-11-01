@@ -142,7 +142,7 @@ public class DefaultConverterManager implements ConverterManager
 
             if (converter == null)
             {
-                throw new MarshallException(paramType, Messages.getString("DefaultConverterManager.MissingConverter"));
+                throw new MarshallException(paramType, Messages.getString("DefaultConverterManager.MissingConverter", paramType));
             }
 
             // We only think about doing a null conversion ourselves once we are
