@@ -34,6 +34,7 @@ import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.extend.ScriptConduit;
+import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.DebuggingPrintWriter;
@@ -66,14 +67,13 @@ public class PollHandler implements Handler
     {
         // We must parse the parameters before we setup the conduit because it's
         // only after doing this that we know the scriptSessionId
-
         WebContext webContext = WebContextFactory.get();
         Container container = webContext.getContainer();
 
         Map parameters = (Map) request.getAttribute(ATTRIBUTE_PARAMETERS);
-        try
+        if (parameters == null)
         {
-            if (parameters == null)
+            try
             {
                 if (request.getMethod().equals("GET"))
                 {
@@ -85,11 +85,11 @@ public class PollHandler implements Handler
                 }
                 request.setAttribute(ATTRIBUTE_PARAMETERS, parameters);
             }
-        }
-        catch (Exception ex)
-        {
-            EnginePrivate.remoteHandleExceptionWithoutCallId(response, ex);
-            return;
+            catch (Exception ex)
+            {
+                EnginePrivate.remoteHandleExceptionWithoutCallId(response, ex);
+                return;
+            }
         }
 
         String batchId = extractParameter(request, parameters, ATTRIBUTE_CALL_ID, ConversionConstants.INBOUND_KEY_BATCHID);
@@ -117,6 +117,14 @@ public class PollHandler implements Handler
         {
             postStreamWaitTime = 100;
             preStreamWaitTime += postStreamWaitTime;
+        }
+
+        // If we are going to be doing any waiting then check for other threads
+        // from the same browser that are already waiting, and send them on
+        // their way
+        if (preStreamWaitTime > 0 || postStreamWaitTime > 0)
+        {
+            notifyThreadsFromSameBrowser(request, scriptId);
         }
 
         try
@@ -222,6 +230,30 @@ public class PollHandler implements Handler
         {
             serverLoadMonitor.threadWaitEnding();
         }
+    }
+
+    /**
+     * Make other threads from the same browser stop waiting and continue
+     * @param request The HTTP request
+     * @param scriptId The session id of the current page
+     */
+    protected void notifyThreadsFromSameBrowser(HttpServletRequest request, String scriptId)
+    {
+        // First we check to see if there is already a connection from the
+        // current browser to this servlet
+        String otherScriptSessionId = (String) request.getSession().getAttribute(ATTRIBUTE_LONGPOLL_SESSION_ID);
+        if (otherScriptSessionId != null)
+        {
+            RealScriptSession previousSession = scriptSessionManager.getScriptSession(otherScriptSessionId);
+            Object lock = previousSession.getScriptLock();
+
+            // Unlock previous script session (request will be automatically finished)
+            synchronized (lock)
+            {
+                lock.notifyAll();
+            }
+        }
+        request.getSession().setAttribute(ATTRIBUTE_LONGPOLL_SESSION_ID, scriptId);
     }
 
     /**
@@ -529,12 +561,20 @@ public class PollHandler implements Handler
     }
 
     /**
-     * Accessfor for the PageNormalizer.
+     * Accessor for the PageNormalizer.
      * @param pageNormalizer The new PageNormalizer
      */
     public void setPageNormalizer(PageNormalizer pageNormalizer)
     {
         this.pageNormalizer = pageNormalizer;
+    }
+
+    /**
+     * @param scriptSessionManager the scriptSessionManager to set
+     */
+    public void setScriptSessionManager(ScriptSessionManager scriptSessionManager)
+    {
+        this.scriptSessionManager = scriptSessionManager;
     }
 
     /**
@@ -558,29 +598,39 @@ public class PollHandler implements Handler
     protected ConverterManager converterManager = null;
 
     /**
-     * How we stash away the results of the request parse
+     * The owner of script sessions
      */
-    protected static final String ATTRIBUTE_PARAMETERS = "org.directwebremoting.dwrp.parameters";
+    protected ScriptSessionManager scriptSessionManager = null;
 
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_CALL_ID = "org.directwebremoting.dwrp.callId";
+    public static final String ATTRIBUTE_PARAMETERS = "org.directwebremoting.dwrp.parameters";
 
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_SESSION_ID = "org.directwebremoting.dwrp.sessionId";
+    public static final String ATTRIBUTE_CALL_ID = "org.directwebremoting.dwrp.callId";
 
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_PAGE = "org.directwebremoting.dwrp.page";
+    public static final String ATTRIBUTE_SESSION_ID = "org.directwebremoting.dwrp.sessionId";
 
     /**
      * How we stash away the results of the request parse
      */
-    protected static final String ATTRIBUTE_PARTIAL_RESPONSE = "org.directwebremoting.dwrp.partialResponse";
+    public static final String ATTRIBUTE_PAGE = "org.directwebremoting.dwrp.page";
+
+    /**
+     * How we stash away the results of the request parse
+     */
+    public static final String ATTRIBUTE_PARTIAL_RESPONSE = "org.directwebremoting.dwrp.partialResponse";
+
+    /**
+     * We remember people that are in a long poll so we can kick them out
+     */
+    public static final String ATTRIBUTE_LONGPOLL_SESSION_ID = "org.directwebremoting.dwrp.longPollSessionId";
 
     /**
      * The log stream
