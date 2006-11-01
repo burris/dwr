@@ -22,10 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.create.NewCreator;
 import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
+import org.directwebremoting.util.Logger;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -38,8 +37,8 @@ import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.util.xml.DomUtils;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -287,8 +286,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         }
     }
 
-
-    private void parseConverterSettings(ConverterConfig converterConfig, Element parent)
+    protected void parseConverterSettings(ConverterConfig converterConfig, Element parent)
     {
         NodeList children = parent.getChildNodes();
 
@@ -380,7 +378,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 Node child = children.item(i);
                 if (child.getNodeType() != Node.TEXT_NODE && child.getNodeType() != Node.CDATA_SECTION_NODE)
                 {
-                    logger.warn("Ignoring illegal node type: " + child.getNodeType());
+                    log.warn("Ignoring illegal node type: " + child.getNodeType());
                     continue;
                 }
                 sigtext.append(child.getNodeValue());
@@ -407,6 +405,8 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
     protected final static String DEFAULT_SPRING_CONFIGURATOR_ID = "__dwrConfiguration";
 
-    protected final Log logger = LogFactory.getLog(getClass());
-
+    /**
+     * The log stream
+     */
+    protected static final Logger log = Logger.getLogger(DwrNamespaceHandler.class);
 }

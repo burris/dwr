@@ -183,7 +183,7 @@ public class SpringConfigurator implements Configurator
             }
             catch (Exception ex)
             {
-                throw new IllegalArgumentException(Messages.getString("SpringConfigurator.ConfigureConverterError"), ex);
+                throw new IllegalArgumentException(Messages.getString("SpringConfigurator.ConfigureConverterError"));
             }
         }
         

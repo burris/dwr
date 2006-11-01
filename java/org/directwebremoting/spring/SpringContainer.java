@@ -15,7 +15,12 @@
  */
 package org.directwebremoting.spring;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.impl.DefaultContainer;
@@ -51,18 +56,19 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
             if (log.isDebugEnabled()) {
                 log.debug("trying to resolve the following class from the Spring bean container: " + clz.getName());
             }
-            Map beans = ((ListableBeanFactory)beanFactory).getBeansOfType(clz);
+
+            Map beansOfType = ((ListableBeanFactory)beanFactory).getBeansOfType(clz);
             if (log.isDebugEnabled()) {
-                log.debug("beans: " + beans + " - " + beans.size());
+                log.debug("beans: " + beansOfType + " - " + beansOfType.size());
             }
-            if (beans.size() == 0) {
+            if (beansOfType.size() == 0) {
                 log.debug("adding parameter the normal way");
                 super.addParameter(askFor, valueParam);
-            } else if (beans.size() > 1) {
+            } else if (beansOfType.size() > 1) {
                 // TODO: handle multiple declarations
                 throw new InstantiationException("multiple beans of type '" + clz.getName() + "' were found in the spring configuration");
             } else {
-                this.beans.put(askFor, beans.values().iterator().next());
+                this.beans.put(askFor, beansOfType.values().iterator().next());
             }
         } catch (ClassNotFoundException e) {
             super.addParameter(askFor, valueParam);
