@@ -43,11 +43,11 @@ public class Security
     public static String addEntities(String original)
     {
         String reply = original;
-        reply = LocalUtil.replace(original, "&", "&amp;");
-        reply = LocalUtil.replace(original, "<", "&lt;");
-        reply = LocalUtil.replace(original, ">", "&gt;");
-        reply = LocalUtil.replace(original, "\'", "&apos;");
-        reply = LocalUtil.replace(original, "\"", "&quot;");
+        reply = LocalUtil.replace(reply, "&", "&amp;");
+        reply = LocalUtil.replace(reply, "<", "&lt;");
+        reply = LocalUtil.replace(reply, ">", "&gt;");
+        reply = LocalUtil.replace(reply, "\'", "&apos;");
+        reply = LocalUtil.replace(reply, "\"", "&quot;");
         return reply;
     }
 
@@ -67,11 +67,11 @@ public class Security
     public static String removeEntities(String original)
     {
         String reply = original;
-        reply = LocalUtil.replace(original, "&amp;", "&");
-        reply = LocalUtil.replace(original, "&lt;", "<");
-        reply = LocalUtil.replace(original, "&gt;", ">");
-        reply = LocalUtil.replace(original, "&apos;", "\'");
-        reply = LocalUtil.replace(original, "&quot;", "\"");
+        reply = LocalUtil.replace(reply, "&amp;", "&");
+        reply = LocalUtil.replace(reply, "&lt;", "<");
+        reply = LocalUtil.replace(reply, "&gt;", ">");
+        reply = LocalUtil.replace(reply, "&apos;", "\'");
+        reply = LocalUtil.replace(reply, "&quot;", "\"");
         return reply;
     }
 
@@ -91,11 +91,11 @@ public class Security
     public static String replaceXmlCharacters(String original)
     {
         String reply = original;
-        reply = LocalUtil.replace(original, "&", "+");
-        reply = LocalUtil.replace(original, "<", "\u2039");
-        reply = LocalUtil.replace(original, ">", "\u203A");
-        reply = LocalUtil.replace(original, "\'", "\u2018");
-        reply = LocalUtil.replace(original, "\"", "\u201C");
+        reply = LocalUtil.replace(reply, "&", "+");
+        reply = LocalUtil.replace(reply, "<", "\u2039");
+        reply = LocalUtil.replace(reply, ">", "\u203A");
+        reply = LocalUtil.replace(reply, "\'", "\u2018");
+        reply = LocalUtil.replace(reply, "\"", "\u201C");
         return reply;
     }
 
