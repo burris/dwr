@@ -22,12 +22,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.create.NewCreator;
 import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.*;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
@@ -58,6 +64,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
         registerBeanDefinitionDecorator("create", new CreatorBeanDefinitionDecorator());
         registerBeanDefinitionDecorator("convert", new ConverterBeanDefinitionDecorator());
+        registerBeanDefinitionDecorator("signatures", new SignaturesBeanDefinitionDecorator());
         registerBeanDefinitionDecorator("remote", new RemoteBeanDefinitionDecorator());
     }
 
@@ -71,6 +78,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(SpringConfigurator.class);
             builder.addPropertyValue("creators", new ManagedMap());
             builder.addPropertyValue("converters", new ManagedMap());
+            // builder.addPropertyValue("signatures", new ManagedMap());
             registry.registerBeanDefinition(DEFAULT_SPRING_CONFIGURATOR_ID, builder.getBeanDefinition());
             return builder.getBeanDefinition();
         }
@@ -152,6 +160,11 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         lookupCreators(registry).put(javascript, new RuntimeBeanReference(creatorConfigName));
     }
 
+    protected void registerConverter(BeanDefinitionRegistry registry, String javascript, BeanDefinitionBuilder beanCreator, NodeList children)
+    {
+        registerSpringConfiguratorIfNecessary(registry);
+    }
+        
     protected class ConfigurationBeanDefinitionParser implements BeanDefinitionParser
     {
         public BeanDefinition parse(Element element, ParserContext parserContext)
@@ -173,6 +186,13 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             {
                 Element convertElement = (Element) iter.next();
                 findDecoratorForNode(convertElement).decorate(convertElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
+            }
+            
+            List signatureElements = DomUtils.getChildElementsByTagName(element, "signatures");
+            for (Iterator i = signatureElements.iterator(); i.hasNext(); )
+            {
+                Element signatureElement = (Element) i.next();
+                findDecoratorForNode(signatureElement).decorate(signatureElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
             return beanDefinition;
@@ -217,20 +237,26 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
     protected class ConverterBeanDefinitionDecorator implements BeanDefinitionDecorator
     {
-
+        
         public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext)
         {
             Element element = (Element) node;
             String type = element.getAttribute("type");
+            String className = element.getAttribute("class");
+            
             BeanDefinitionRegistry registry = parserContext.getRegistry();
 
+            ConverterConfig converterConfig = new ConverterConfig();
+            converterConfig.setType(type);
+            
             if ("array".equals(type))
             {
                 throw new UnsupportedOperationException("Type " + type + " is not yet supported");
             }
             else if ("bean".equals(type))
             {
-                lookupConverters(registry).put(element.getAttribute("class"), "bean");
+                parseConverterSettings(converterConfig, element);
+                lookupConverters(registry).put(className, converterConfig);
             }
             else if ("collection".equals(type))
             {
@@ -248,10 +274,51 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             {
                 throw new UnsupportedOperationException("Type " + type + " is not yet supported");
             }
+            
             return definition;
         }
     }
+    
+    
+    private void parseConverterSettings(ConverterConfig converterConfig, Element parent)
+    {
+        NodeList children = parent.getChildNodes();
+        
+        // check to see if there are any nested elements here
+        for (int i = 0; i < children.getLength(); i++)
+        {
+            Node node = children.item(i);
 
+            if (node.getNodeType() == Node.TEXT_NODE || node.getNodeType() == Node.COMMENT_NODE)
+            {
+                continue;
+            }
+
+            Element child = (Element) node;
+            if (child.getNodeName().equals("dwr:include"))
+            {
+                converterConfig.addInclude(child.getAttribute("method"));
+            }
+            else if (child.getNodeName().equals("dwr:exclude"))
+            {
+                converterConfig.addExclude(child.getAttribute("method"));
+            }
+            /* TODO Why is this only a property of ObjectConverter? 
+            else if (child.getNodeName().equals("dwr:force"))
+            {
+                converterConfig.setForce(Boolean.parseBoolean(child.getAttribute("value")));
+            }
+            */
+            else
+            {
+                throw new RuntimeException("an unknown dwr:remote sub node was fouund: " + node.getNodeName());
+            }
+        }
+
+    }
+    
+    
+    
     /**
      * Uses the BeanDefinitionDecorator since we need access to the name of the parent definition??
      */
@@ -285,11 +352,39 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             }
 
             registerCreator(parserContext.getRegistry(), javascript, creator, node.getChildNodes());
-
+            
             return definition;
         }
     }
 
+    protected class SignaturesBeanDefinitionDecorator implements BeanDefinitionDecorator 
+    {
+
+        public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext)
+        {
+            BeanDefinitionRegistry registry = parserContext.getRegistry();
+            BeanDefinition config = registerSpringConfiguratorIfNecessary(registry);
+            
+            StringBuffer sigtext = new StringBuffer();
+            NodeList children = node.getChildNodes();
+            for (int i = 0; i < children.getLength(); i++)
+            {
+                Node child = children.item(i);
+                if (child.getNodeType() != Node.TEXT_NODE && child.getNodeType() != Node.CDATA_SECTION_NODE)
+                {
+                    logger.warn("Ignoring illegal node type: " + child.getNodeType());
+                    continue;
+                }
+                sigtext.append(child.getNodeValue());
+            }
+            
+            config.getPropertyValues().addPropertyValue("signatures", sigtext.toString());
+            
+            return definition;
+        }
+        
+    }
+    
     protected Map lookupCreators(BeanDefinitionRegistry registry)
     {
         BeanDefinition config = registerSpringConfiguratorIfNecessary(registry);
@@ -301,7 +396,9 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         BeanDefinition config = registerSpringConfiguratorIfNecessary(registry);
         return (Map) config.getPropertyValues().getPropertyValue("converters").getValue();
     }
-
+    
     protected final static String DEFAULT_SPRING_CONFIGURATOR_ID = "__dwrConfiguration";
+
+    protected final Log logger = LogFactory.getLog(getClass());
 
 }

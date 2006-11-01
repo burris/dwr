@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 Joe Walker
+ * Copyright 2005-2006 Joe Walker
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.spring;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.directwebremoting.*;
+import org.directwebremoting.AjaxFilter;
+import org.directwebremoting.Container;
 import org.directwebremoting.extend.AccessControl;
 import org.directwebremoting.extend.AjaxFilterManager;
 import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
+import org.directwebremoting.impl.SignatureParser;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -160,9 +163,22 @@ public class SpringConfigurator implements Configurator
                 {
                     Map.Entry entry = (Map.Entry) it.next();
                     String match = (String) entry.getKey();
-                    String converterName = (String) entry.getValue();
-
-                    converterManager.addConverter(match, converterName, new HashMap());
+                    ConverterConfig converterConfig = (ConverterConfig)entry.getValue();
+                    Map params = converterConfig.getParams();
+                    if (converterConfig.getIncludes().size() > 0) 
+                    {
+                        params.put("include", StringUtils.collectionToCommaDelimitedString(
+                                converterConfig.getIncludes()));
+                    }
+                    
+                    if (converterConfig.getExcludes().size() > 0)
+                    {
+                        params.put("exclude", StringUtils.collectionToCommaDelimitedString(
+                                converterConfig.getExcludes()));
+                    }
+                    
+                    // params.put("force", Boolean.valueOf(converterConfig.isForce()));
+                    converterManager.addConverter(match, converterConfig.getType(), params);
                 }
             }
             catch (Exception ex)
@@ -170,8 +186,14 @@ public class SpringConfigurator implements Configurator
                 throw new IllegalArgumentException(ex.toString());
             }
         }
+        
+        // Configure the signatures 
+        if (StringUtils.hasText(signatures)) {
+            SignatureParser sigp = new SignatureParser(converterManager, creatorManager);
+            sigp.parse(signatures);
+        }
     }
-
+    
     /**
      * Setter for the map of Creator types 
      * @param creatorTypes The new creator types map
@@ -207,7 +229,23 @@ public class SpringConfigurator implements Configurator
     {
         this.converters = converters;
     }
+    
+    /**
+     * @param signatures the signatures to set
+     */
+    public void setSignatures(String signatures)
+    {
+        this.signatures = signatures;
+    }
 
+    /**
+     * @return the signatures
+     */
+    public String getSignatures()
+    {
+        return signatures;
+    }
+    
     /**
      * The map of Converter types
      */
@@ -227,4 +265,9 @@ public class SpringConfigurator implements Configurator
      * The map of real Converter
      */
     private Map converters;
+
+    /**
+     * The string of Signatures
+     */
+    private String signatures;
 }

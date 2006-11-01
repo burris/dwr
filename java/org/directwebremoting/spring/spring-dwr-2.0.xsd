@@ -30,6 +30,7 @@
         <xsd:sequence>
             <xsd:element name="create" type="create" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="convert" type="convert" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="signatures" type="xsd:string" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
     </xsd:complexType>
 
@@ -56,6 +57,10 @@
     </xsd:complexType>
 
     <xsd:complexType name="convert">
+        <xsd:sequence>
+            <xsd:element name="include" type="include" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="exclude" type="exclude" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
         <xsd:attribute name="class" type="xsd:string" use="required"/>
         <xsd:attribute name="type" use="required">
             <xsd:simpleType>
@@ -69,7 +74,16 @@
             </xsd:simpleType>
         </xsd:attribute>
     </xsd:complexType>
-
+    
+    <!-- 
+    <xsd:complexType name="signatures" mixed="true">
+        <xsd:sequence>
+            <xsd:element name="data" type="xsd:string" />
+        </xsd:sequence>
+        <xsd:attribute name="class" type="xsd:string" use="required" />
+    </xsd:complexType>
+    -->
+ 
     <xsd:complexType name="remote">
         <xsd:sequence>
             <xsd:element name="latencyfilter" type="latencyfilter" minOccurs="0" maxOccurs="1"/>
@@ -90,6 +104,10 @@
 
     <xsd:complexType name="exclude">
         <xsd:attribute name="method" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="force">
+        <xsd:attribute name="value" type="xsd:boolean" use="required"/>
     </xsd:complexType>
 
     <xsd:complexType name="auth">

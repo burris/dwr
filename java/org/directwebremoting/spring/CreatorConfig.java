@@ -17,9 +17,7 @@ package org.directwebremoting.spring;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.Map;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.extend.Creator;
@@ -47,7 +45,7 @@ import org.directwebremoting.extend.Creator;
  * @author Bram Smeets
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class CreatorConfig
+public class CreatorConfig extends AbstractConfig
 {
     /**
      * The creator type that will be used to create new objects for remoting
@@ -83,46 +81,6 @@ public class CreatorConfig
     public void setCreator(Creator creator)
     {
         this.creator = creator;
-    }
-
-    /**
-     * Gets the list of method names to include for this creator.
-     * @return the list of method names to include
-     * @see org.directwebremoting.extend.AccessControl#addIncludeRule(String, String)
-     */
-    public List getIncludes()
-    {
-        return includes;
-    }
-
-    /**
-     * Sets the list of method names to include for this creator.
-     * @param includes the list of method names to include
-     * @see org.directwebremoting.extend.AccessControl#addIncludeRule(String, String)
-     */
-    public void setIncludes(List includes)
-    {
-        this.includes = includes;
-    }
-
-    /**
-     * Gets the list of method names to exclude for this creator.
-     * @return the list of method names to exclude
-     * @see org.directwebremoting.extend.AccessControl#addExcludeRule(String, String)
-     */
-    public List getExcludes()
-    {
-        return excludes;
-    }
-
-    /**
-     * Sets the list of method names to exclude for this creator.
-     * @param excludes the list of method names to exclude
-     * @see org.directwebremoting.extend.AccessControl#addExcludeRule(String, String)
-     */
-    public void setExcludes(List excludes)
-    {
-        this.excludes = excludes;
     }
 
     /**
@@ -189,48 +147,6 @@ public class CreatorConfig
     }
 
     /**
-     * Convenience method for adding an include rule.
-     * @param method the method to add the include rule for
-     * @throws IllegalArgumentException in case the specified argument is null
-     */
-    public void addInclude(String method)
-    {
-        includes.add(method);
-    }
-
-    /**
-     * Convenience method for adding an exclude rule.
-     * @param method the method to add the exclude rule
-     * @throws IllegalArgumentException in case the specified argument is null
-     */
-    public void addExclude(String method)
-    {
-        excludes.add(method);
-    }
-
-    /**
-     * The set of key/value pairs to provide further configuration.<br>
-     * Note that these params are only used when setting the creator type and not when setting the
-     * creator directly.
-     * @return Returns the params.
-     */
-    public Map getParams()
-    {
-        return params;
-    }
-
-    /**
-     * The set of key/value pairs to provide further configuration.<br>
-     * Note that these params are only used when setting the creator type and not when setting the
-     * creator directly.
-     * @param params The params to set.
-     */
-    public void setParams(Map params)
-    {
-        this.params = params;
-    }
-
-    /**
      * The creator type to use
      */
     private String creatorType;
@@ -241,16 +157,6 @@ public class CreatorConfig
     private Creator creator;
 
     /**
-     * The list of method names to include for this creator.
-     */
-    private List includes = new ArrayList();
-
-    /**
-     * The list of method names to exclude for this creator.
-     */
-    private List excludes = new ArrayList();
-
-    /**
      * The properties containing the method name and the corrosponding required role.
      */
     private Properties auth = new Properties();
@@ -259,9 +165,4 @@ public class CreatorConfig
      * The list of filter objects for this creator.
      */
     private List filters = new ArrayList();
-
-    /**
-     * The set of key/value pairs to provide further configuration
-     */
-    private Map params = new HashMap();
 }
