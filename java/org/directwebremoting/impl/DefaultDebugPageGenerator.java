@@ -125,6 +125,8 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         buffer.append("    // syntax because it thinks that { and } surround a block and not an object\n");
         buffer.append("    // So we wrap it in an array and extract the first element to get around\n");
         buffer.append("    // this.\n");
+        buffer.append("    // This code is only needed for interpreting the parameter input fields,\n");
+        buffer.append("    // so you can ignore this for normal use.\n");
         buffer.append("    // The regex = [start of line][whitespace]{[stuff]}[whitespace][end of line]\n");
         buffer.append("    text = text.replace(/\\n/g, ' ');\n");
         buffer.append("    text = text.replace(/\\r/g, ' ');\n");
