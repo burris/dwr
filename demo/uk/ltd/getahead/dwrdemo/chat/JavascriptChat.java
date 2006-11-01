@@ -70,7 +70,7 @@ public class JavascriptChat
                     {
                         Thread.sleep(1000);
                         log.debug("ping: " + count);
-                        scriptSession.addScript(new ScriptBuffer("DWRUtil.setValue('ping', 'count=" + count + "');"));
+                        scriptSession.addScript(new ScriptBuffer("dwr.util.setValue('ping', 'count=" + count + "');"));
                     }
                     catch (Exception ex)
                     {

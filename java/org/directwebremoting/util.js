@@ -235,7 +235,7 @@ dwr.util.useLoadingMessage = function(message) {
   var loadingMessage;
   if (message) loadingMessage = message;
   else loadingMessage = "Loading";
-  DWREngine.setPreHook(function() {
+  dwr.engine.setPreHook(function() {
     var disabledZone = dwr.util.byId('disabledZone');
     if (!disabledZone) {
       disabledZone = document.createElement('div');
@@ -265,7 +265,7 @@ dwr.util.useLoadingMessage = function(message) {
       disabledZone.style.visibility = 'visible';
     }
   });
-  DWREngine.setPostHook(function() {
+  dwr.engine.setPostHook(function() {
     dwr.util.byId('disabledZone').style.visibility = 'hidden';
   });
 };

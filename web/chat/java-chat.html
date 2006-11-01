@@ -8,13 +8,13 @@
   <script type='text/javascript' src='../dwr/util.js'> </script>
   <script type="text/javascript">
     function sendMessage() {
-      JavaChat.addMessage(DWRUtil.getValue("text"));
+      JavaChat.addMessage(dwr.util.getValue("text"));
     }
   </script>
   <link rel="stylesheet" type="text/css" href="../generic.css" />
 </head>
 
-<body onload="DWREngine.setReverseAjax(true);">
+<body onload="dwr.engine.setReverseAjax(true);">
 <div id="page-title">[
   <a href="http://getahead.ltd.uk/dwr/">DWR Website</a> |
   <a href="..">Web Application Index</a>
@@ -27,7 +27,7 @@ and server-side browser manipulation to update the pages with the results.</p>
 
 <p>
   Your Message:
-  <input id="text" onkeypress="DWRUtil.onReturn(event, sendMessage)"/>
+  <input id="text" onkeypress="dwr.util.onReturn(event, sendMessage)"/>
   <input type="button" value="Send" onclick="sendMessage()"/>
 </p>
 <hr/>

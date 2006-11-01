@@ -1,6 +1,6 @@
 
 function init() {
-  callOnLoad(DWRUtil.useLoadingMessage);
+  callOnLoad(dwr.util.useLoadingMessage);
 }
 
 function failure(message) {
@@ -12,7 +12,7 @@ function success(message) {
 
 function testXML() {
   XOM.getDocument("textXOM", function(data) {
-    DWRUtil.setValue("replyXOM", data);
+    dwr.util.setValue("replyXOM", data);
     XOM.debugDocument($("replyXOM"), function(data) {
       if (data < 30 || data > 40) {
         failure("XOM reply fail: " + data);
@@ -24,7 +24,7 @@ function testXML() {
   });
 
   JDOM.getDocument("textJDOM", function(data) {
-    DWRUtil.setValue("replyJDOM", data);
+    dwr.util.setValue("replyJDOM", data);
     JDOM.debugDocument($("replyJDOM"), function(data) {
       if (data < 30 || data > 40) {
         failure("JDOM reply fail: " + data);
@@ -36,7 +36,7 @@ function testXML() {
   });
 
   DOM.getDocument("textDOM", function(data) {
-    DWRUtil.setValue("replyDOM", data);
+    dwr.util.setValue("replyDOM", data);
     DOM.debugDocument($("replyDOM"), function(data) {
       if (data < 30 || data > 40) {
         failure("DOM reply fail: " + data);
@@ -48,7 +48,7 @@ function testXML() {
   });
 
   DOM4J.getDocument("textDOM4J", function(data) {
-    DWRUtil.setValue("replyDOM4J", data);
+    dwr.util.setValue("replyDOM4J", data);
     DOM4J.debugDocument($("replyDOM4J"), function(data) {
       if (data < 30 || data > 40) {
         failure("DOM4J reply fail: " + data);

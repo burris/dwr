@@ -11,7 +11,7 @@
   <link rel="stylesheet" type="text/css" href="../tabs/tabs.css" />
   <link rel="stylesheet" type="text/css" href="../generic.css" />
 </head>
-<body onload="DWRUtil.useLoadingMessage();Tabs.init('tabList', 'tabContents');">
+<body onload="dwr.util.useLoadingMessage();Tabs.init('tabList', 'tabContents');">
 <div id="page-title">[
   <a href="http://getahead.ltd.uk/dwr/">DWR Website</a> |
   <a href="..">Web Application Index</a>
@@ -73,7 +73,7 @@ public String getInclude() {
 <pre>
 function forward() {
   Demo.getInclude(function(data) {
-    DWRUtil.setValue("forward", data);
+    dwr.util.setValue("forward", data);
   });
 }
 </pre>

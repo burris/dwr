@@ -3,9 +3,9 @@ function init() {
   var prop;
   for (prop in window) {
     if (prop.match(/test/) && typeof window[prop] == "function" && prop != "testEquals") {
-      DWRUtil.addOptions("buttons", [ prop ], function(data) {
-        return "<button onclick='DWRUtil.setValue(\"output\", \"\"); " + prop + "()'>" + prop.substring(4) + "</button>";
-        // return "<input name='submit' type='image' src='imagebutton.png' onclick='DWRUtil.setValue(\"output\", \"\"); " + prop + "()' />";
+      dwr.util.addOptions("buttons", [ prop ], function(data) {
+        return "<button onclick='dwr.util.setValue(\"output\", \"\"); " + prop + "()'>" + prop.substring(4) + "</button>";
+        // return "<input name='submit' type='image' src='imagebutton.png' onclick='dwr.util.setValue(\"output\", \"\"); " + prop + "()' />";
       });
     }
   }
@@ -13,7 +13,7 @@ function init() {
 
 function success(message) {
   var output = $('output').innerHTML + "<br/>\n" + message;
-  DWRUtil.setValue('output', output);
+  dwr.util.setValue('output', output);
 }
 
 function failure(message) {
@@ -32,7 +32,7 @@ function testAsyncNesting() {
 }
 
 function testSyncNesting() {
-  DWREngine.setAsync(false);
+  dwr.engine.setAsync(false);
   Test.slowStringParam("SyncNesting-1", 100, function(data1) {
     success(data1);
     Test.slowStringParam("SyncNesting-2", 100, function(data2) {
@@ -41,7 +41,7 @@ function testSyncNesting() {
     success("SyncNesting-3");
   });
   success("SyncNesting-End");
-  DWREngine.setAsync(true); 
+  dwr.engine.setAsync(true); 
 }
 
 function testSyncInCallMetaData() {

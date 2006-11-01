@@ -329,16 +329,16 @@ function startTest() {
   for (var i = 0; i < tests.length; i++) {
     var numele = $("t" + i + "-num");
     numele.style.backgroundColor = "white";
-    DWRUtil.setValue("t" + i + "-results", "");
+    dwr.util.setValue("t" + i + "-results", "");
   }
 
   setSettings();
 
   // What is the firing rate
-  var rate = DWRUtil.getValue("rate");
+  var rate = dwr.util.getValue("rate");
 
   // How many in a batch
-  var size = DWRUtil.getValue("size");
+  var size = dwr.util.getValue("size");
 
   sendBatch(0, size, rate);
 }
@@ -348,32 +348,32 @@ function setSettings() {
   failcount = 0;
 
   // Set the method
-  var method = DWRUtil.getValue("method");
+  var method = dwr.util.getValue("method");
   if (method == "iframe") {
-    DWREngine.setMethod(DWREngine.IFrame);
+    dwr.engine.setMethod(dwr.engine.IFrame);
   }
   else if (method == "xhr") {
-    DWREngine.setMethod(DWREngine.XMLHttpRequest);
+    dwr.engine.setMethod(dwr.engine.XMLHttpRequest);
   }
   else {
-    DWREngine.setMethod(DWREngine.ScriptTag);
+    dwr.engine.setMethod(dwr.engine.ScriptTag);
   }
 
   // Set the verb
-  var verb = DWRUtil.getValue("verb");
-  DWREngine.setVerb(verb);
+  var verb = dwr.util.getValue("verb");
+  dwr.engine.setVerb(verb);
 
   // Are we in ordered mode
-  var ordered = DWRUtil.getValue("ordered");
-  DWREngine.setOrdered(ordered == "Yes");
+  var ordered = dwr.util.getValue("ordered");
+  dwr.engine.setOrdered(ordered == "Yes");
 
   // Sync/Asynch?
-  var async = DWRUtil.getValue("async") == "async";
-  DWREngine.setAsync(async);
+  var async = dwr.util.getValue("async") == "async";
+  dwr.engine.setAsync(async);
 
   // Sync/Asynch?
-  var timeout = 0 + DWRUtil.getValue("timeout");
-  DWREngine.setTimeout(timeout);
+  var timeout = 0 + dwr.util.getValue("timeout");
+  dwr.engine.setTimeout(timeout);
 }
 
 function sendBatch(start, size, rate) {
@@ -395,7 +395,7 @@ function sendBatch(start, size, rate) {
     Test[test.code](param, { callback:callback });
   }
   else {
-    DWREngine.beginBatch();
+    dwr.engine.beginBatch();
 
     for (var i = start; i < start + size && i < tests.length; i++) {
       test = tests[i];
@@ -408,10 +408,10 @@ function sendBatch(start, size, rate) {
       Test[test.code](param, callback);
     }
 
-    DWREngine.endBatch();
+    dwr.engine.endBatch();
   }
 
-  DWRUtil.setValue("testsDispatched", start + 1);
+  dwr.util.setValue("testsDispatched", start + 1);
 
   if (start + incr < tests.length) {
     setTimeout("sendBatch(" + (start + incr) + ", " + size + ", " + rate + ")", rate);
@@ -424,7 +424,7 @@ function checkTidyUp(index) {
 
     var mslen = new Date().getTime() - window.starttime.getTime();
     var tps = Math.round((10000 * tests.length) / mslen) / 10;
-    DWRUtil.setValue("timePerTest", tps);
+    dwr.util.setValue("timePerTest", tps);
   }
 }
 
@@ -443,15 +443,15 @@ function testResults(data, index) {
 
   if (typeof passed == "boolean" && passed) {
     numele.style.backgroundColor = "lightgreen";
-    DWRUtil.setValue("t" + index + "-results", "Passed");
+    dwr.util.setValue("t" + index + "-results", "Passed");
   }
   else {
-    var report = test.code + "<br/>&nbsp;&nbsp;" + passed + "<br/>&nbsp;&nbsp;Expected: " + DWRUtil.toDescriptiveString(test.data) + " Actual: " + DWRUtil.toDescriptiveString(data);
+    var report = test.code + "<br/>&nbsp;&nbsp;" + passed + "<br/>&nbsp;&nbsp;Expected: " + dwr.util.toDescriptiveString(test.data) + " Actual: " + dwr.util.toDescriptiveString(data);
     failcount++;
     failreport.innerHTML = failcount;
 
     numele.style.backgroundColor = "lightpink";
-    DWRUtil.setValue("t" + index + "-results", report);
+    dwr.util.setValue("t" + index + "-results", report);
   }
 
   checkTidyUp(index + 1);
@@ -485,15 +485,15 @@ function init() {
   failreport = $("failreport");
   execreport = $("execreport");
 
-  DWREngine.setErrorHandler(catchFailure);
-  DWREngine.setWarningHandler(catchFailure);
-  DWREngine.setTextHtmlHandler(contentFailure);
+  dwr.engine.setErrorHandler(catchFailure);
+  dwr.engine.setWarningHandler(catchFailure);
+  dwr.engine.setTextHtmlHandler(contentFailure);
 
-  DWRUtil.addRows("chart", tests, [
+  dwr.util.addRows("chart", tests, [
     function(row, options) { return options.rowNum; },
     function(row, options) { return "" + row.code; },
     function(row, options) {
-      var display = DWRUtil.toDescriptiveString(row.data);
+      var display = dwr.util.toDescriptiveString(row.data);
       if (display.length > 30) display = display.substring(0, 27) + "...";
       return display;
     },

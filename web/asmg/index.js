@@ -1,26 +1,26 @@
 
 function verifyName() {
-  var name = DWRUtil.getValue("name");
+  var name = dwr.util.getValue("name");
   if (name == "") {
-    DWRUtil.setValue("nameError", "Please enter a name.");
+    dwr.util.setValue("nameError", "Please enter a name.");
   }
   else {
-    DWRUtil.setValue("nameError", "");
+    dwr.util.setValue("nameError", "");
   }
 }
 
 function verifyAddress() {
-  var address = DWRUtil.getValue("address");
+  var address = dwr.util.getValue("address");
   EmailValidator.isValid(address, function(valid) {
-    DWRUtil.setValue("addressError", valid ? "" : "Please enter a valid email address");
+    dwr.util.setValue("addressError", valid ? "" : "Please enter a valid email address");
   });
 }
 
 function process() {
-  var address = DWRUtil.getValue("address");
-  var name = DWRUtil.getValue("name");
+  var address = dwr.util.getValue("address");
+  var name = dwr.util.getValue("name");
   Generator.generateAntiSpamMailto(name, address, function(contents) {
-    DWRUtil.setValue("outputFull", contents);
+    dwr.util.setValue("outputFull", contents);
     $("output").style.display = "block";
   });
 }

@@ -11,7 +11,7 @@
   <link rel="stylesheet" type="text/css" href="../tabs/tabs.css" />
   <link rel="stylesheet" type="text/css" href="../generic.css" />
 </head>
-<body onload="DWRUtil.useLoadingMessage();Tabs.init('tabList', 'tabContents');">
+<body onload="dwr.util.useLoadingMessage();Tabs.init('tabList', 'tabContents');">
 <div id="page-title">[
   <a href="http://getahead.ltd.uk/dwr/">DWR Website</a> |
   <a href="..">Web Application Index</a>
@@ -48,12 +48,12 @@ text fetched from a web server.</p>
     
 <pre>
 function update() {
-  var name = DWRUtil.getValue("demoName");
+  var name = dwr.util.getValue("demoName");
   Demo.sayHello(name, loadinfo);
 }
 </pre>
 
-    <p><code>DWRUtil.getValue()</code> is a utility to get the value of any
+    <p><code>dwr.util.getValue()</code> is a utility to get the value of any
     element, in this case an input field, but it could be a div or a select
     box.</p>
 
@@ -75,11 +75,11 @@ public String sayHello(String name) {
     
 <pre>
 function loadinfo(data) {
-  DWRUtil.setValue("demoReply", data);
+  dwr.util.setValue("demoReply", data);
 }
 </pre>
     
-    <p><code>DWRUtil.setValue()</code> is a utility that takes the data you pass in
+    <p><code>dwr.util.setValue()</code> is a utility that takes the data you pass in
     the second parameter and works out how to fit it to go into the HTML element
     specified by id in the first parameter. This function is one of several neat
     Javascript utilities that make working with DWR much easier.</p>
@@ -89,9 +89,9 @@ function loadinfo(data) {
     
 <pre>
 function update() {
-  var name = DWRUtil.getValue("demoName");
+  var name = dwr.util.getValue("demoName");
   Demo.sayHello(name, function(data) {
-    DWRUtil.setValue("demoReply", data);
+    dwr.util.setValue("demoReply", data);
   });
 }
 </pre>
@@ -117,9 +117,9 @@ function update() {
 <h2>Javascript source:</h2>
 <pre>
 function update() {
-  var name = DWRUtil.getValue("demoName");
+  var name = dwr.util.getValue("demoName");
   Demo.sayHello(name, function(data) {
-    DWRUtil.setValue("demoReply", data);
+    dwr.util.setValue("demoReply", data);
   });
 }
 </pre>

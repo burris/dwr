@@ -1,7 +1,7 @@
 
 function update() {
-  var name = DWRUtil.getValue("demoName");
+  var name = dwr.util.getValue("demoName");
   Demo.sayHello(name, function(data) {
-    DWRUtil.setValue("demoReply", data);
+    dwr.util.setValue("demoReply", data);
   });
 }

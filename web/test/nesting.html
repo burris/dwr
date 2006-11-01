@@ -47,16 +47,16 @@
 
 function testNestedGetValues() {
   var user = { userName:null, address :{ city:null, state:null}, password:"", company : {name : null, symbol : {ticker:null} } };
-  DWRUtil.getValues(user, {prefix : "pfx"});
+  dwr.util.getValues(user, {prefix : "pfx"});
 
-  //fyi DWRUtil.toDescriptiveString does not display the String representation of the 2 level deep nested property although
+  //fyi dwr.util.toDescriptiveString does not display the String representation of the 2 level deep nested property although
   //it is being set correctly on the object
-  alert(DWRUtil.toDescriptiveString(user, 1));
+  alert(dwr.util.toDescriptiveString(user, 1));
 }
 
 function testNestedSetValues() {
   var user = { userName:"sjivan", address :{ city:"allston", state:"ma"}, password:"foobar", company : {name : "i2 Technologies", symbol : {ticker:"ITWO"} } };
-  DWRUtil.setValues(user, {prefix : "pfx"});
+  dwr.util.setValues(user, {prefix : "pfx"});
 }
 
 </pre>
@@ -65,16 +65,16 @@ function testNestedSetValues() {
 
   function testNestedGetValues() {
     var user = { userName:null, address :{ city:null, state:null}, password:"", company : {name : null, symbol : {ticker:null} } };
-    DWRUtil.getValues(user, {prefix : "pfx"});
+    dwr.util.getValues(user, {prefix : "pfx"});
 
-    //fyi DWRUtil.toDescriptiveString does not display the String representation of the 2 level deep nested property although
+    //fyi dwr.util.toDescriptiveString does not display the String representation of the 2 level deep nested property although
     //it is being set correctly on the object
-    alert(DWRUtil.toDescriptiveString(user, 1));
+    alert(dwr.util.toDescriptiveString(user, 1));
   }
 
   function testNestedSetValues() {
     var user = { userName:"sjivan", address :{ city:"allston", state:"ma"}, password:"foobar", company : {name : "i2 Technologies", symbol : {ticker:"ITWO"} } };
-    DWRUtil.setValues(user, {prefix : "pfx"});
+    dwr.util.setValues(user, {prefix : "pfx"});
   }
 
 </script>

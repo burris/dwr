@@ -38,7 +38,7 @@ import org.directwebremoting.util.MimeConstants;
 public class EnginePrivate extends ScriptProxy
 {
     /**
-     * Call the DWREngine._remoteHandleResponse() in the browser
+     * Call the dwr.engine._remoteHandleResponse() in the browser
      * @param conduit The browser pipe to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param callId The identifier of the call that we are handling a response for
@@ -49,7 +49,7 @@ public class EnginePrivate extends ScriptProxy
     public static void remoteHandleCallback(ScriptConduit conduit, String batchId, String callId, Object data) throws IOException, MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("DWREngine._remoteHandleCallback(\'")
+        script.appendScript("dwr.engine._remoteHandleCallback(\'")
               .appendScript(batchId)
               .appendScript("\',\'")
               .appendScript(callId)
@@ -61,7 +61,7 @@ public class EnginePrivate extends ScriptProxy
     }
 
     /**
-     * Call the DWREngine._remoteHandleException() in the browser
+     * Call the dwr.engine._remoteHandleException() in the browser
      * @param conduit The browser pipe to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param callId The id of the call we are replying to
@@ -73,7 +73,7 @@ public class EnginePrivate extends ScriptProxy
         try
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("DWREngine._remoteHandleException(\'")
+            script.appendScript("dwr.engine._remoteHandleException(\'")
                   .appendScript(batchId)
                   .appendScript("\',\'")
                   .appendScript(callId)
@@ -86,7 +86,7 @@ public class EnginePrivate extends ScriptProxy
         catch (MarshallException mex)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("DWREngine._remoteHandleException(\'")
+            script.appendScript("dwr.engine._remoteHandleException(\'")
                   .appendScript(batchId)
                   .appendScript("\',\'")
                   .appendScript(callId)
@@ -99,7 +99,7 @@ public class EnginePrivate extends ScriptProxy
     }
 
     /**
-     * Call the DWREngine._remoteHandleException() in the browser
+     * Call the dwr.engine._remoteHandleException() in the browser
      * @param conduit The browser pipe to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param callId The id of the call we are replying to
@@ -111,7 +111,7 @@ public class EnginePrivate extends ScriptProxy
         try
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("DWREngine._remoteHandleException(\'")
+            script.appendScript("dwr.engine._remoteHandleException(\'")
                   .appendScript(batchId)
                   .appendScript("\',\'")
                   .appendScript(callId)
@@ -124,7 +124,7 @@ public class EnginePrivate extends ScriptProxy
         catch (MarshallException mex)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("DWREngine._remoteHandleException(\'")
+            script.appendScript("dwr.engine._remoteHandleException(\'")
                   .appendScript(batchId)
                   .appendScript("\',\'")
                   .appendScript(callId)
@@ -137,7 +137,7 @@ public class EnginePrivate extends ScriptProxy
     }
 
     /**
-     * Call the DWREngine._remoteHandleServerException() in the browser
+     * Call the dwr.engine._remoteHandleServerException() in the browser
      * @param response The HTTP response to write to
      * @param ex The execption from which we make a reply
      * @throws IOException If writing fails.
@@ -154,7 +154,7 @@ public class EnginePrivate extends ScriptProxy
         // HTML context as well as a Javascript context
         out.println("// <script>");
         out.println(ConversionConstants.SCRIPT_CALL_REPLY);
-        out.println("DWREngine._remoteHandleExceptionWithoutCallId(" + error + ");");
+        out.println("dwr.engine._remoteHandleExceptionWithoutCallId(" + error + ");");
         out.println("// </script>");
     }
 
@@ -167,22 +167,22 @@ public class EnginePrivate extends ScriptProxy
     public static String xmlStringToJavascriptDom(String xml)
     {
         String xmlout = JavascriptUtil.escapeJavaScript(xml);
-        return "DWREngine._unserializeDocument(\"" + xmlout + "\")";
+        return "dwr.engine._unserializeDocument(\"" + xmlout + "\")";
     }
 
     /**
-     * Get a string which will initialize a DWREngine object 
+     * Get a string which will initialize a dwr.engine object 
      * @param path The setting for the _defaultPath property
-     * @return A DWREngine init script
+     * @return A dwr.engine init script
      */
     public static String getEngineInitScript(String path)
     {
-        return "// Provide a default path to DWREngine\n" +
+        return "// Provide a default path to dwr.engine\n" +
                "if (dwr == null) var dwr = {};\n" +
                "if (dwr.engine == null) dwr.engine = {};\n" +
                "if (DWREngine == null) var DWREngine = dwr.engine;\n" +
                "\n" +
-               "DWREngine._defaultPath = '" + path + "';\n" +
+               "dwr.engine._defaultPath = '" + path + "';\n" +
                '\n';
     }
 
@@ -192,7 +192,7 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String getExecuteFunctionName()
     {
-        return "DWREngine._execute";
+        return "dwr.engine._execute";
     }
 
     /**
@@ -202,7 +202,7 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteBeginIFrameResponse(String batchId)
     {
-        return "window.parent.DWREngine._remoteBeginIFrameResponse(this.frameElement, '" + batchId + "');";
+        return "window.parent.dwr.engine._remoteBeginIFrameResponse(this.frameElement, '" + batchId + "');";
     }
 
     /**
@@ -212,7 +212,7 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteEndIFrameResponse(String batchId)
     {
-        return "window.parent.DWREngine._remoteEndIFrameResponse('" + batchId + "');";
+        return "window.parent.dwr.engine._remoteEndIFrameResponse('" + batchId + "');";
     }
 
     /**
@@ -222,7 +222,7 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteEval(String script)
     {
-        return "window.parent.DWREngine._remoteEval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
+        return "window.parent.dwr.engine._remoteEval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
     }
 
     /**

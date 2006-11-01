@@ -1,15 +1,15 @@
 
 function startPoll() {
-  DWREngine.setReverseAjax(true);
+  dwr.engine.setReverseAjax(true);
 }
 
 function stopPoll() {
-  DWREngine.setReverseAjax(false);
+  dwr.engine.setReverseAjax(false);
 }
 
 function sendMessage() {
-  var text = DWRUtil.getValue("text");
-  DWRUtil.setValue("text", "");
+  var text = dwr.util.getValue("text");
+  dwr.util.setValue("text", "");
   JavascriptChat.addMessage(text);
 }
 
@@ -22,5 +22,5 @@ function receiveMessages(messages) {
   for (var data in messages) {
     chatlog = "<div>" + messages[data].text + "</div>" + chatlog;
   }
-  DWRUtil.setValue("chatlog", chatlog);
+  dwr.util.setValue("chatlog", chatlog);
 }

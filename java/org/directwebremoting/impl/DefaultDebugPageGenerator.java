@@ -144,7 +144,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         buffer.append("    span.warning { font-size: smaller; color: red; }\n");
         buffer.append("  </style>\n");
         buffer.append("</head>\n");
-        buffer.append("<body onload='DWRUtil.useLoadingMessage()'>\n");
+        buffer.append("<body onload='dwr.util.useLoadingMessage()'>\n");
         buffer.append(BLANK);
 
         buffer.append("<h2>Methods For: " + scriptName + " (" + creator.getType().getName() + ")</h2>\n");
@@ -257,8 +257,8 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             buffer.append("  <script type='text/javascript'>\n");
             buffer.append("    var reply" + i + " = function(data)\n");
             buffer.append("    {\n");
-            buffer.append("      if (data != null && typeof data == 'object') alert(DWRUtil.toDescriptiveString(data, 2));\n");
-            buffer.append("      else DWRUtil.setValue('d" + i + "', DWRUtil.toDescriptiveString(data, 1));\n");
+            buffer.append("      if (data != null && typeof data == 'object') alert(dwr.util.toDescriptiveString(data, 2));\n");
+            buffer.append("      else dwr.util.setValue('d" + i + "', dwr.util.toDescriptiveString(data, 1));\n");
             buffer.append("    }\n");
             buffer.append("  </script>\n");
             buffer.append("  <span id='d" + i + "' class='reply'></span>\n");

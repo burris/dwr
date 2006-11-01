@@ -11,7 +11,7 @@
   <link rel="stylesheet" type="text/css" href="../tabs/tabs.css" />
   <link rel="stylesheet" type="text/css" href="../generic.css" />
 </head>
-<body onload="DWRUtil.useLoadingMessage();Tabs.init('tabList', 'tabContents');">
+<body onload="dwr.util.useLoadingMessage();Tabs.init('tabList', 'tabContents');">
 <div id="page-title">[
   <a href="http://getahead.ltd.uk/dwr/">DWR Website</a> |
   <a href="..">Web Application Index</a>
@@ -79,9 +79,9 @@ simple this is with DWR.</p>
     
 <pre>
 function fillAddress() {
-  var postcode = DWRUtil.getValue("postcode");
+  var postcode = dwr.util.getValue("postcode");
   AddressLookup.fillAddress(postcode, function(address) {
-    DWRUtil.setValues(address);
+    dwr.util.setValues(address);
   });
 }
 </pre>
@@ -155,9 +155,9 @@ public Map fillAddress(String origpostcode)
 <h2>Javascript source:</h2>
 <pre>
 function fillAddress() {
-  var postcode = DWRUtil.getValue("postcode");
+  var postcode = dwr.util.getValue("postcode");
   AddressLookup.fillAddress(postcode, function(address) {
-    DWRUtil.setValues(address);
+    dwr.util.setValues(address);
   });
 }
 </pre>

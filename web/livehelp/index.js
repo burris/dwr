@@ -1,10 +1,10 @@
 
 function init() {
-  DWREngine.setReverseAjax(true);
+  dwr.engine.setReverseAjax(true);
 }
 
 function notifyTyping(ele) {
-  LiveHelp.notifyTyping(ele.id, DWRUtil.getValue(ele));
+  LiveHelp.notifyTyping(ele.id, dwr.util.getValue(ele));
 }
 
 function notifyFocus(ele) {

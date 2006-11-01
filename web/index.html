@@ -10,13 +10,13 @@
       // This turns off the no-javascript message
       document.getElementById("start").style.display = "none";
       // This checks for file: URLs and loading problems
-      if (window.DWREngine == null || window.DWRUtil == null) {
+      if (window.dwr.engine == null || window.dwr.util == null) {
         document.getElementById("file").style.display = "block";
         return;
       }
       // Turn warnings on
-      DWREngine.setWarningHandler(DWREngine.defaultMessageHandler);
-      DWRUtil.useLoadingMessage();
+      dwr.engine.setWarningHandler(dwr.engine.defaultMessageHandler);
+      dwr.util.useLoadingMessage();
       // Turn on the generic error div
       $("error").style.display = "block";
       // Load a message from the server
@@ -25,7 +25,7 @@
 
     function load(data) {
       $("error").style.display = "none";
-      DWRUtil.setValue("reply", data);
+      dwr.util.setValue("reply", data);
       $("reply").style.display = "block";
     }
   </script>
@@ -86,11 +86,11 @@
   </li>
   <li>
     <a href="chat/javascript-chat.html">Javascript Chat</a>:
-    A simple chat application using DWR with conventional Javascript/DWRUtil
+    A simple chat application using DWR with conventional Javascript
   </li>
   <li>
     <a href="chat/java-chat.html">Java Chat</a>:
-    As above except with much reduced Javascript, preferring Java/DwrUtil
+    As above except with much reduced Javascript, using server-side script proxies
   </li>
 </ul>
 
@@ -115,7 +115,7 @@
   </li>
   <li>
     <a href="test/dhtml.html">DHTML Test</a>
-    (Can DWRUtil manipulate the DOM properly)
+    (Can the DWR DHTML utility library manipulate the DOM properly)
   </li>
 </ul>
 

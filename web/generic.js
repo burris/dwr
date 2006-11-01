@@ -10,46 +10,6 @@ if (!String.prototype.localeCompare) {
   }
 }
 
-function setEnabled(ele, state) {
-  var orig = ele;
-  ele = $(ele);
-  if (ele == null) {
-    alert("setEnabled() can't find an element with id: " + orig + ".");
-    return;
-  }
-  // If we want to get funky and disable divs and spans by changing the font
-  // colour or something then we might want to check the element type before
-  // we make assumptions, but in the mean time ...
-  // if (DWRUtil.isHTMLElement(ele, "input")) { ... }
-  ele.disabled = !state;
-  ele.readonly = !state;
-  if (DWRUtil._isIE) {
-    if (state) {
-      ele.style.backgroundColor = "White";
-    }
-    else {
-      // This is WRONG but the hack will do for now.
-      ele.style.backgroundColor = "Scrollbar";
-    }
-  }
-}
-
-/**
- *
- */
-function getSelectedText() {
-  if (window.getSelection) {
-    return window.getSelection();
-  }
-  else if (document.getSelection) {
-    return document.getSelection();
-  }
-  else if (document.selection) {
-    return document.selection.createRange().text;
-  }
-  else return null;
-}
-
 /**
  *
  */
@@ -83,14 +43,14 @@ function testEquals(actual, expected, depth) {
 
   if (expected == null) {
     if (actual != null) {
-      return "expected: null, actual non-null: " + DWRUtil.toDescriptiveString(actual);
+      return "expected: null, actual non-null: " + dwr.util.toDescriptiveString(actual);
     }
     return true;
   }
 
   if (actual == null) {
     if (expected != null) {
-      return "actual: null, expected non-null: " + DWRUtil.toDescriptiveString(expected);
+      return "actual: null, expected non-null: " + dwr.util.toDescriptiveString(expected);
     }
     return true; // we wont get here of course ...
   }

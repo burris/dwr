@@ -4,13 +4,13 @@ var working = false;
 var startTime = null;
 
 function init() {
-  DWRUtil.useLoadingMessage("Ping");
+  dwr.util.useLoadingMessage("Ping");
 
-  DWREngine.setErrorHandler(function(message) {
+  dwr.engine.setErrorHandler(function(message) {
     report("Global Error Handler: " + message);
   });
 
-  DWREngine.setWarningHandler(function(message) {
+  dwr.engine.setWarningHandler(function(message) {
     report("Global Warning Handler: " + message);
   });
 
@@ -19,11 +19,11 @@ function init() {
 
 function toggleTest() {
   if (working) {
-    DWRUtil.setValue("toggle", "Start");
+    dwr.util.setValue("toggle", "Start");
     working = false;
   }
   else {
-    DWRUtil.setValue("toggle", "Stop");
+    dwr.util.setValue("toggle", "Stop");
     working = true;
   }
 }
@@ -34,7 +34,7 @@ function update() {
   if (working) {
 
     startTime = new Date().getTime();
-    DWREngine.beginBatch();
+    dwr.engine.beginBatch();
 
     Test.slowStringParam("ping", 500, {
       timeout:550,
@@ -54,7 +54,7 @@ function update() {
       }
     });
 
-    DWREngine.endBatch({
+    dwr.engine.endBatch({
       errorHandler:function(message) {
         report("Batch Error Handler: " + message);
       },
@@ -64,7 +64,7 @@ function update() {
     });
   }
 
-  DWRUtil.setValue("heartMonitor", count);
+  dwr.util.setValue("heartMonitor", count);
   setTimeout(update, 1000);
 }
 

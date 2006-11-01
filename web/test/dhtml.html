@@ -39,15 +39,15 @@
   }
 
   function changeHandler() {
-    var option = DWRUtil.getValue("changeSelect");
+    var option = dwr.util.getValue("changeSelect");
     if (option == "none") {
-      DWRUtil.setHighlightHandler(null);
+      dwr.util.setHighlightHandler(null);
     }
     else if (option == "yellow") {
-      DWRUtil.setHighlightHandler(DWRUtil.yellowFadeHighlightHandler);
+      dwr.util.setHighlightHandler(dwr.util.yellowFadeHighlightHandler);
     }
     else {
-      DWRUtil.setHighlightHandler(DWRUtil.focusHighlightHandler);
+      dwr.util.setHighlightHandler(dwr.util.focusHighlightHandler);
     }
   }
   </script>
@@ -84,7 +84,7 @@ function submitFunction() {
 </script>
 
 <p>
-  <input type="text" onkeydown="DWRUtil.onReturn(event, submitFunction)"/>
+  <input type="text" onkeydown="dwr.util.onReturn(event, submitFunction)"/>
   <input type="button" onclick="submitFunction()" value="GO"/>
   <span id="alert" style="display:none; background:#FFFFDD; font-weight:bold;">submitFunction called</span>
 </p>
@@ -93,7 +93,7 @@ function submitFunction() {
 
 <script type="text/javascript">
 function testRemoveOptions() {
-  DWRUtil.removeAllOptions('removeOptions');
+  dwr.util.removeAllOptions('removeOptions');
 }
 </script>
 
@@ -113,11 +113,11 @@ function testRemoveOptions() {
 
 <script type="text/javascript">
 function testAddOptionsBasic() {
-  DWRUtil.addOptions('addOptionsBasic', arrayFive);
-  if (DWRUtil.getValue('addOptionsBasic') == "One") success();
-  else failure("DWRUtil.getValue('addOptionsBasic') = " + DWRUtil.getValue('addOptionsBasic'));
-  if (DWRUtil.getText('addOptionsBasic') == "One") success();
-  else failure("DWRUtil.getText('addOptionsBasic') = " + DWRUtil.getText('addOptionsBasic'));
+  dwr.util.addOptions('addOptionsBasic', arrayFive);
+  if (dwr.util.getValue('addOptionsBasic') == "One") success();
+  else failure("dwr.util.getValue('addOptionsBasic') = " + dwr.util.getValue('addOptionsBasic'));
+  if (dwr.util.getText('addOptionsBasic') == "One") success();
+  else failure("dwr.util.getText('addOptionsBasic') = " + dwr.util.getText('addOptionsBasic'));
 }
 </script>
 
@@ -131,11 +131,11 @@ function testAddOptionsBasic() {
 
 <script type="text/javascript">
 function testAddOptionsObject1() {
-  DWRUtil.addOptions('addOptionsObject1', arrayObject, "name");
-  if (DWRUtil.getValue('addOptionsObject1') == "One") success();
-  else failure("DWRUtil.getValue('addOptionsObject1') = " + DWRUtil.getValue('addOptionsObject1'));
-  if (DWRUtil.getText('addOptionsObject1') == "One") success();
-  else failure("DWRUtil.getText('addOptionsObject1') = " + DWRUtil.getText('addOptionsObject1'));
+  dwr.util.addOptions('addOptionsObject1', arrayObject, "name");
+  if (dwr.util.getValue('addOptionsObject1') == "One") success();
+  else failure("dwr.util.getValue('addOptionsObject1') = " + dwr.util.getValue('addOptionsObject1'));
+  if (dwr.util.getText('addOptionsObject1') == "One") success();
+  else failure("dwr.util.getText('addOptionsObject1') = " + dwr.util.getText('addOptionsObject1'));
 }
 </script>
 
@@ -149,11 +149,11 @@ function testAddOptionsObject1() {
 
 <script type="text/javascript">
 function testAddOptionsObject2() {
-  DWRUtil.addOptions('addOptionsObject2', arrayObject, "name", "value");
-  if (DWRUtil.getValue('addOptionsObject2') == "One") success();
-  else failure("DWRUtil.getValue('addOptionsObject2') = " + DWRUtil.getValue('addOptionsObject2'));
-  if (DWRUtil.getText('addOptionsObject2') == "1") success();
-  else failure("DWRUtil.getText('addOptionsObject2') = " + DWRUtil.getText('addOptionsObject2'));
+  dwr.util.addOptions('addOptionsObject2', arrayObject, "name", "value");
+  if (dwr.util.getValue('addOptionsObject2') == "One") success();
+  else failure("dwr.util.getValue('addOptionsObject2') = " + dwr.util.getValue('addOptionsObject2'));
+  if (dwr.util.getText('addOptionsObject2') == "1") success();
+  else failure("dwr.util.getText('addOptionsObject2') = " + dwr.util.getText('addOptionsObject2'));
 }
 </script>
 
@@ -167,11 +167,11 @@ function testAddOptionsObject2() {
 
 <script type="text/javascript">
 function testAddOptionsObject3() {
-  DWRUtil.addOptions('addOptionsObject3', arrayObject, "value");
-  if (DWRUtil.getValue('addOptionsObject3') == "1") success();
-  else failure("DWRUtil.getValue('addOptionsObject3') = " + DWRUtil.getValue('addOptionsObject3'));
-  if (DWRUtil.getText('addOptionsObject3') == "1") success();
-  else failure("DWRUtil.getText('addOptionsObject3') = " + DWRUtil.getText('addOptionsObject3'));
+  dwr.util.addOptions('addOptionsObject3', arrayObject, "value");
+  if (dwr.util.getValue('addOptionsObject3') == "1") success();
+  else failure("dwr.util.getValue('addOptionsObject3') = " + dwr.util.getValue('addOptionsObject3'));
+  if (dwr.util.getText('addOptionsObject3') == "1") success();
+  else failure("dwr.util.getText('addOptionsObject3') = " + dwr.util.getText('addOptionsObject3'));
 }
 </script>
 
@@ -185,11 +185,11 @@ function testAddOptionsObject3() {
 
 <script type="text/javascript">
 function testAddOptionsObject4() {
-  DWRUtil.addOptions('addOptionsObject4', arrayObject, "value", "name");
-  if (DWRUtil.getValue('addOptionsObject4') == "1") success();
-  else failure("DWRUtil.getValue('addOptionsObject4') = " + DWRUtil.getValue('addOptionsObject4'));
-  if (DWRUtil.getText('addOptionsObject4') == "One") success();
-  else failure("DWRUtil.getText('addOptionsObject4') = " + DWRUtil.getText('addOptionsObject4'));
+  dwr.util.addOptions('addOptionsObject4', arrayObject, "value", "name");
+  if (dwr.util.getValue('addOptionsObject4') == "1") success();
+  else failure("dwr.util.getValue('addOptionsObject4') = " + dwr.util.getValue('addOptionsObject4'));
+  if (dwr.util.getText('addOptionsObject4') == "One") success();
+  else failure("dwr.util.getText('addOptionsObject4') = " + dwr.util.getText('addOptionsObject4'));
 }
 </script>
 
@@ -203,11 +203,11 @@ function testAddOptionsObject4() {
 
 <script type="text/javascript">
 function testAddOptionsMap1() {
-  DWRUtil.addOptions('addOptionsMap1', map);
-  if (DWRUtil.getValue('addOptionsMap1') == "one") success();
-  else failure("DWRUtil.getValue('addOptionsMap1') = " + DWRUtil.getValue('addOptionsMap1'));
-  if (DWRUtil.getText('addOptionsMap1') == "1") success();
-  else failure("DWRUtil.getText('addOptionsMap1') = " + DWRUtil.getText('addOptionsMap1'));
+  dwr.util.addOptions('addOptionsMap1', map);
+  if (dwr.util.getValue('addOptionsMap1') == "one") success();
+  else failure("dwr.util.getValue('addOptionsMap1') = " + dwr.util.getValue('addOptionsMap1'));
+  if (dwr.util.getText('addOptionsMap1') == "1") success();
+  else failure("dwr.util.getText('addOptionsMap1') = " + dwr.util.getText('addOptionsMap1'));
 }
 </script>
 
@@ -221,11 +221,11 @@ function testAddOptionsMap1() {
 
 <script type="text/javascript">
 function testAddOptionsMap2() {
-  DWRUtil.addOptions('addOptionsMap2', map, true);
-  if (DWRUtil.getValue('addOptionsMap2') == "1") success();
-  else failure("DWRUtil.getValue('addOptionsMap2') = " + DWRUtil.getValue('addOptionsMap2'));
-  if (DWRUtil.getText('addOptionsMap2') == "one") success();
-  else failure("DWRUtil.getText('addOptionsMap2') = " + DWRUtil.getText('addOptionsMap2'));
+  dwr.util.addOptions('addOptionsMap2', map, true);
+  if (dwr.util.getValue('addOptionsMap2') == "1") success();
+  else failure("dwr.util.getValue('addOptionsMap2') = " + dwr.util.getValue('addOptionsMap2'));
+  if (dwr.util.getText('addOptionsMap2') == "one") success();
+  else failure("dwr.util.getText('addOptionsMap2') = " + dwr.util.getText('addOptionsMap2'));
 }
 </script>
 
@@ -239,7 +239,7 @@ function testAddOptionsMap2() {
 
 <script type="text/javascript">
 function testRemoveItems() {
-  DWRUtil.removeAllOptions('removeItems');
+  dwr.util.removeAllOptions('removeItems');
 }
 </script>
 
@@ -255,7 +255,7 @@ function testRemoveItems() {
 
 <script type="text/javascript">
 function testAddItemsBasic() {
-  DWRUtil.addOptions('addItemsBasic', arrayFive);
+  dwr.util.addOptions('addItemsBasic', arrayFive);
 }
 </script>
 
@@ -269,7 +269,7 @@ function testAddItemsBasic() {
 
 <script type="text/javascript">
 function testAddItemsObject1() {
-  DWRUtil.addOptions('addItemsObject1', arrayObject, "name");
+  dwr.util.addOptions('addItemsObject1', arrayObject, "name");
 }
 </script>
 
@@ -283,7 +283,7 @@ function testAddItemsObject1() {
 
 <script type="text/javascript">
 function testAddItemsObject2() {
-  DWRUtil.addOptions('addItemsObject2', arrayObject, "name", "value");
+  dwr.util.addOptions('addItemsObject2', arrayObject, "name", "value");
 }
 </script>
 
@@ -297,7 +297,7 @@ function testAddItemsObject2() {
 
 <script type="text/javascript">
 function testAddItemsObject3() {
-  DWRUtil.addOptions('addItemsObject3', arrayObject, "value");
+  dwr.util.addOptions('addItemsObject3', arrayObject, "value");
 }
 </script>
 
@@ -311,7 +311,7 @@ function testAddItemsObject3() {
 
 <script type="text/javascript">
 function testAddItemsObject4() {
-  DWRUtil.addOptions('addItemsObject4', arrayObject, "value", "name");
+  dwr.util.addOptions('addItemsObject4', arrayObject, "value", "name");
 }
 </script>
 
@@ -325,11 +325,11 @@ function testAddItemsObject4() {
 
 <script type="text/javascript">
 function testCloneNode1() {
-  DWRUtil.cloneNode('cloneNode1', { idPrefix:'pre', idSuffix:'suf' });
+  dwr.util.cloneNode('cloneNode1', { idPrefix:'pre', idSuffix:'suf' });
   $("precloneNode1suf").style.backgroundColor = "#AFA";
-  DWRUtil.setValue("precloneNode1Inner2suf", "v2");
-  var clonetext = DWRUtil.getValue("precloneNode1Inner1suf", { textContent:true });
-  DWRUtil.setValue("cloneNode1Results", clonetext);
+  dwr.util.setValue("precloneNode1Inner2suf", "v2");
+  var clonetext = dwr.util.getValue("precloneNode1Inner1suf", { textContent:true });
+  dwr.util.setValue("cloneNode1Results", clonetext);
 }
 </script>
 
@@ -354,7 +354,7 @@ function testCloneNode1() {
 
 <script type="text/javascript">
 function testAddRowsBasic() {
-  DWRUtil.addRows('addRowsBasic', arrayFive, [
+  dwr.util.addRows('addRowsBasic', arrayFive, [
     function(data) { return data; },
     function(data) { return data.toUpperCase(); },
     function(data) {
@@ -397,7 +397,7 @@ function testSetValuesDiv() {
     setValuesCheckbox1:true,
     setValuesCheckbox2:false
   };
-  DWRUtil.setValues(settings);
+  dwr.util.setValues(settings);
 
   var empty = {
     setValuesDiv:null,
@@ -415,7 +415,7 @@ function testSetValuesDiv() {
     setValuesCheckbox1:null,
     setValuesCheckbox2:null
   };
-  DWRUtil.getValues(empty);
+  dwr.util.getValues(empty);
   var reply = testEquals(settings, empty, 0);
   if (reply != true) {
     alert(reply);

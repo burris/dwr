@@ -1,6 +1,6 @@
 
 function forward() {
   Demo.getInclude(function(data) {
-    DWRUtil.setValue("forward", data);
+    dwr.util.setValue("forward", data);
   });
 }

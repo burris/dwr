@@ -8,11 +8,11 @@ var DWRActionUtil = {
       if (elementName == 'form') {
         for (var i = 0; i < element.elements.length; i=i+1) {
           var e = element.elements[i];
-          if(e.name != null && e.name != '') params[e.name] = DWRUtil.getValue(e);
+          if(e.name != null && e.name != '') params[e.name] = dwr.util.getValue(e);
         }
       }
       else {
-        params[element.name] = DWRUtil.getValue(element);
+        params[element.name] = dwr.util.getValue(element);
       }
     }
     else {
@@ -20,7 +20,7 @@ var DWRActionUtil = {
         params[prop]= values[prop];
       }
     }
-    
+
     // prepare action invocation object
     var actionObj = {};
     if(typeof action == 'string') {
@@ -78,7 +78,7 @@ var DWRActionUtil = {
         return true;
       }
     }
-    
+
     return false;
   }
 };
