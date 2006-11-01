@@ -386,8 +386,8 @@ dwr.engine._execute = function(path, scriptName, methodName, vararg_params) {
   // Merge from the callData into the batch
   dwr.engine.mergeBatch(batch, callData);
   batch.handlers[batch.map.callCount] = {
-    exceptionHandler:overrides.exceptionHandler,
-    callback:overrides.callback
+    exceptionHandler:callData.exceptionHandler,
+    callback:callData.callback
   };
 
   // Copy to the map the things that need serializing
