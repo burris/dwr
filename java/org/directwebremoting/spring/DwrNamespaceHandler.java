@@ -72,7 +72,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     }
 
     /*
-     * 
+     *
      */
     protected BeanDefinition registerSpringConfiguratorIfNecessary(BeanDefinitionRegistry registry)
     {
@@ -189,11 +189,6 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         BeanDefinitionReaderUtils.registerBeanDefinition(holder3, registry);
 
         lookupCreators(registry).put(javascript, new RuntimeBeanReference(creatorConfigName));
-    }
-
-    protected void registerConverter(BeanDefinitionRegistry registry, String javascript, BeanDefinitionBuilder beanCreator, NodeList children)
-    {
-        registerSpringConfiguratorIfNecessary(registry);
     }
 
     protected class ConfigurationBeanDefinitionParser implements BeanDefinitionParser
