@@ -454,7 +454,7 @@ dwr.engine._createBatch = function() {
     warningHandler:dwr.engine._warningHandler,
     textHtmlHandler:dwr.engine._textHtmlHandler
   };
-  if (dwr.engine._preHook) batch.preHooks.puch(dwr.engine._preHook);
+  if (dwr.engine._preHook) batch.preHooks.push(dwr.engine._preHook);
   if (dwr.engine._postHook) batch.postHooks.push(dwr.engine._postHook);
   var propname, data;
   if (dwr.engine._headers) {
