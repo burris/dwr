@@ -5,16 +5,15 @@
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
   <title>Debugger Test</title>
   <script src="util.js"> </script>
+  <style type="text/css">
+  a.clickme { color:blue; font-weight:bold; }
+  table.debug { border-collapse:collapse;// border:1px solid black;
+    background-color:white;
+  }
+  table.debug td { vertical-align:top; }
+  </style>
 </head>
 <body onload="init()">
-
-<style type="text/css">
-a.clickme { color:blue; font-weight:bold; }
-table.debug { border-collapse:collapse;// border:1px solid black;
-  background-color:white;
-}
-table.debug td { vertical-align:top; }
-</style>
 
 <script type="text/javascript">
 function init() {
@@ -25,8 +24,8 @@ var counter = 0;
 var options
 
 function dig(id, object) {
-  DWRUtil.removeAllRows(id);
-  DWRUtil.addRows(id, object, [
+  dwr.util.removeAllRows(id);
+  dwr.util.addRows(id, object, [
     function(member) { return document.createElement("span"); },
     function(member) { return "&nbsp;=&nbsp;"; },
     function(member) {

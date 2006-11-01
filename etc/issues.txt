@@ -1,9 +1,11 @@
 
+Test Hibernate
+
 IE slow on opening new windows with RA turned on.
 
 Opera doesn't do reverse Ajax
 
-DWRUtil.setOptions gets the wrong order in Opera
+dwr.util.setOptions gets the wrong order in Opera
 
 Turning RA off
 	Say I've got a page with reverse ajax turned on. I want to refresh the page

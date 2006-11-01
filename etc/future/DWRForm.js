@@ -2,10 +2,10 @@
 /**
  * From Justin Ashworth
  */
-DWRUtil.getValues = function(data) {
+dwr.util.getValues = function(data) {
   var ele;
   if (typeof data == "string") ele = $(data);
-  if (DWRUtil._isHTMLElement(data)) ele = data;
+  if (dwr.util._isHTMLElement(data)) ele = data;
   if (ele != null) {
     if (ele.elements == null) {
       alert("getValues() requires an object or reference to a form element.");
@@ -23,7 +23,7 @@ DWRUtil.getValues = function(data) {
      else value = "element" + i;
 
      // Retrieve the value of this form element
-     var tmpVal = DWRUtil.getValue(ele[i]);
+     var tmpVal = dwrl.util.getValue(ele[i]);
 
      // If there is an existing value for this slot in the reply array, convert the entry to an array, adding all
      // previous values and the new value.
@@ -61,7 +61,7 @@ DWRUtil.getValues = function(data) {
       // Are there any elements with that id or name
       if ($(property) != null || document.getElementsByName(property).length >= 1) {
         // TODO: Probably want to check for an existing value here, as we do above
-        data[property] = DWRUtil.getValue(property);
+        data[property] = dwr.util.getValue(property);
       }
     }
     return data;
