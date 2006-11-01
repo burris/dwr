@@ -163,7 +163,7 @@ public class SpringConfigurator implements Configurator
                 {
                     Map.Entry entry = (Map.Entry) it.next();
                     String match = (String) entry.getKey();
-                    ConverterConfig converterConfig = (ConverterConfig)entry.getValue();
+                    ConverterConfig converterConfig = (ConverterConfig) entry.getValue();
                     Map params = converterConfig.getParams();
                     if (converterConfig.getIncludes().size() > 0) 
                     {
@@ -183,7 +183,7 @@ public class SpringConfigurator implements Configurator
             }
             catch (Exception ex)
             {
-                throw new IllegalArgumentException(ex.toString());
+                throw new IllegalArgumentException(Messages.getString("SpringConfigurator.ConfigureConverterError"), ex);
             }
         }
         

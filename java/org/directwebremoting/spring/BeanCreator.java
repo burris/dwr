@@ -42,7 +42,7 @@ public class BeanCreator extends AbstractCreator
             return beanClass;
         }
 
-        if (bean.getClass().equals(ProxyFactoryBean.class)) {
+        if (bean instanceof ProxyFactoryBean) {
             ProxyFactoryBean proxy = (ProxyFactoryBean) getInstance();
             return proxy.getObjectType();
         }

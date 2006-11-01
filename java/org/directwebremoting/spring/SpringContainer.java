@@ -15,11 +15,7 @@
  */
 package org.directwebremoting.spring;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.impl.DefaultContainer;
@@ -29,6 +25,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.util.ClassUtils;
 
 /**
  * A <code>Container</code> implementation that looks up all beans from the
@@ -45,6 +42,31 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException
     {
         this.beanFactory = beanFactory;
+    }
+
+    public void addParameter(Object askFor, Object valueParam)
+    throws InstantiationException, IllegalAccessException {
+        try {
+            Class clz = ClassUtils.forName((String)askFor);
+            if (log.isDebugEnabled()) {
+                log.debug("trying to resolve the following class from the Spring bean container: " + clz.getName());
+            }
+            Map beans = ((ListableBeanFactory)beanFactory).getBeansOfType(clz);
+            if (log.isDebugEnabled()) {
+                log.debug("beans: " + beans + " - " + beans.size());
+            }
+            if (beans.size() == 0) {
+                log.debug("adding parameter the normal way");
+                super.addParameter(askFor, valueParam);
+            } else if (beans.size() > 1) {
+                // TODO: handle multiple declarations
+                throw new InstantiationException("multiple beans of type '" + clz.getName() + "' were found in the spring configuration");
+            } else {
+                this.beans.put(askFor, beans.values().iterator().next());
+            }
+        } catch (ClassNotFoundException e) {
+            super.addParameter(askFor, valueParam);
+        }
     }
 
     /* (non-Javadoc)

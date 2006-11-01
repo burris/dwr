@@ -89,7 +89,10 @@ public class DwrSpringServlet extends HttpServlet
 
             container = new SpringContainer();
             container.setBeanFactory(webappContext);
-            ContainerUtil.setupDefaultContainer(container, servletConfig);
+            ContainerUtil.setupDefaults(container);
+            ContainerUtil.setupFromServletConfig(container, servletConfig);
+            
+            container.setupFinished();
 
             webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, this, container);
             StartupUtil.initServerContext(servletConfig, servletContext, container);
