@@ -61,7 +61,7 @@ public class Test
      */
     public void throwNPE()
     {
-        throw new NullPointerException();
+        throw new NullPointerException("NullPointerException");
     }
 
     /**
