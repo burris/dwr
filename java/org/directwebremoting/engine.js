@@ -214,7 +214,7 @@ dwr.engine.endBatch = function(options) {
   if (batch.map.callCount == 0) return;
 
   // The hooks need to be merged carefully to preserve ordering
-  if (options) dwr.engine.mergeBatch(batch, options);
+  if (options) dwr.engine._mergeBatch(batch, options);
 
   // In ordered mode, we don't send unless the list of sent items is empty
   if (dwr.engine._ordered && dwr.engine._batchesLength != 0) {
@@ -384,7 +384,7 @@ dwr.engine._execute = function(path, scriptName, methodName, vararg_params) {
   else callData = args.pop();
 
   // Merge from the callData into the batch
-  dwr.engine.mergeBatch(batch, callData);
+  dwr.engine._mergeBatch(batch, callData);
   batch.handlers[batch.map.callCount] = {
     exceptionHandler:callData.exceptionHandler,
     callback:callData.callback
@@ -473,7 +473,7 @@ dwr.engine._createBatch = function() {
 }
 
 /** @private Take further options and merge them into */
-dwr.engine.mergeBatch = function(batch, overrides) {
+dwr.engine._mergeBatch = function(batch, overrides) {
   var propname, data;
   for (var i = 0; i < dwr.engine._propnames.length; i++) {
     propname = dwr.engine._propnames[i];
