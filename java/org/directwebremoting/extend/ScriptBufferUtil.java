@@ -29,6 +29,13 @@ import org.directwebremoting.ScriptBuffer.StringWrapper;
 public class ScriptBufferUtil
 {
     /**
+     * Ensure we can't be created
+     */
+    private ScriptBufferUtil()
+    {
+    }
+
+    /**
      * Return a string ready for output.
      * @param buffer The source of the script data
      * @param converterManager How we convert script variable to Javascript
