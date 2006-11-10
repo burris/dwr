@@ -117,6 +117,6 @@ public class DateConverter extends BaseV20Converter implements Converter
             millis = date.getTime();
         }
 
-        return new SimpleOutboundVariable("new Date(" + millis + ")", outctx, false);
+        return new SimpleOutboundVariable("new Date(" + millis + ")", outctx, true);
     }
 }
