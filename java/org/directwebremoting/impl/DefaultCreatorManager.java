@@ -66,6 +66,7 @@ public class DefaultCreatorManager implements CreatorManager
         Class clazz = LocalUtil.classForName(typeName, className, Creator.class);
         if (clazz != null)
         {
+            log.debug("- adding creator type: " + typeName + " = " + clazz);
             creatorTypes.put(typeName, clazz);
         }
     }
@@ -119,6 +120,7 @@ public class DefaultCreatorManager implements CreatorManager
             }
             else
             {
+                log.debug("- adding creator: " + LocalUtil.getShortClassName(creator.getClass()) + " for " + scriptName);
                 creators.put(scriptName, creator);
             }
         }

@@ -56,6 +56,7 @@ public class DefaultConverterManager implements ConverterManager
         Class clazz = LocalUtil.classForName(id, className, Converter.class);
         if (clazz != null)
         {
+            log.debug("- adding converter type: " + id + " = " + clazz.getName());
             converterTypes.put(id, clazz);
         }
     }
@@ -93,6 +94,7 @@ public class DefaultConverterManager implements ConverterManager
             log.warn("Clash of converters for " + match + ". Using " + converter.getClass().getName() + " in place of " + other.getClass().getName());
         }
 
+        log.debug("- adding converter: " + LocalUtil.getShortClassName(converter.getClass()) + " for " + match);
         converters.put(match, converter);
     }
 

@@ -83,6 +83,7 @@ public class DwrXmlConfigurator implements Configurator
                 throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", servletResourceName));
             }
 
+            log.debug("Configuring from servlet resource: " + servletResourceName);
             setInputStream(in);
         }
         finally
@@ -108,6 +109,7 @@ public class DwrXmlConfigurator implements Configurator
             throw new IOException(Messages.getString("DwrXmlConfigurator.MissingConfigFile", classResourceName));
         }
 
+        log.debug("Configuring from class resource: " + classResourceName);
         setInputStream(in);
     }
 
