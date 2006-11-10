@@ -1144,7 +1144,7 @@ dwr.engine._newActiveXObject = function(axarray) {
 /** See if there is anywhere we can write a debug message */
 dwr.engine._debug = function(message, stacktrace) {
   if (window.console) {
-    if (stacktrace) window.console.trace();
+    if (stacktrace && window.console.trace) window.console.trace();
     window.console.log(message);
   }
   else if (window.opera && window.opera.postError) window.opera.postError(message);
