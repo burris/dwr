@@ -91,7 +91,7 @@ public class Util extends ScriptProxy
     {
         String options = escapeHtml ? ", {escapeHtml:true}" : "";
 
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.setValue(")
               .appendData(elementId)
               .appendScript(",")
@@ -112,7 +112,7 @@ public class Util extends ScriptProxy
     {
         String options = escapeHtml ? "{escapeHtml:true}" : "null";
 
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.setValues(")
               .appendData(values)
               .appendScript(",")
@@ -129,7 +129,7 @@ public class Util extends ScriptProxy
      */
     public void addOptions(String elementId, String[] array)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.addOptions(")
               .appendData(elementId)
               .appendScript(",")
@@ -147,7 +147,7 @@ public class Util extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String property)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.addOptions(")
               .appendData(elementId)
               .appendScript(",")
@@ -168,7 +168,7 @@ public class Util extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String valueProperty, String textProperty)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.addOptions(")
               .appendData(elementId)
               .appendScript(",")
@@ -188,7 +188,7 @@ public class Util extends ScriptProxy
      */
     public void removeAllOptions(String elementId)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.removeAllOptions(")
               .appendData(elementId)
               .appendScript(");");
@@ -213,7 +213,7 @@ public class Util extends ScriptProxy
             }
             functions.deleteCharAt(functions.length() - 1);
 
-            ScriptBuffer script = createScriptBuffer();
+            ScriptBuffer script = new ScriptBuffer();
             script.appendScript("dwr.util.addRows(")
                   .appendData(elementId)
                   .appendScript(",")
@@ -245,7 +245,7 @@ public class Util extends ScriptProxy
      */
     public void removeAllRows(String elementId)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.removeAllRows(")
               .appendData(elementId)
               .appendScript(");");
@@ -259,7 +259,7 @@ public class Util extends ScriptProxy
      */
     public void cloneNode(String elementId)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.cloneNode(")
               .appendData(elementId)
               .appendScript(");");
@@ -275,7 +275,7 @@ public class Util extends ScriptProxy
      */
     public void cloneNode(String elementId, String idPrefix, String idSuffix)
     {
-        ScriptBuffer options = createScriptBuffer();
+        ScriptBuffer options = new ScriptBuffer();
         options.appendScript("{");
 
         if (idPrefix != null)
@@ -295,7 +295,7 @@ public class Util extends ScriptProxy
 
         options.appendScript("}");
 
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.cloneNode(")
               .appendData(elementId)
               .appendScript(",")
@@ -311,7 +311,7 @@ public class Util extends ScriptProxy
      */
     public void setClassName(String elementId, String className)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.setClassName(")
               .appendData(elementId)
               .appendScript(",")
@@ -327,7 +327,7 @@ public class Util extends ScriptProxy
      */
     public void addClassName(String elementId, String className)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.addClassName(")
               .appendData(elementId)
               .appendScript(",")
@@ -343,7 +343,7 @@ public class Util extends ScriptProxy
      */
     public void removeClassName(String elementId, String className)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.removeClassName(")
               .appendData(elementId)
               .appendScript(",")
@@ -359,7 +359,7 @@ public class Util extends ScriptProxy
      */
     public void toggleClassName(String elementId, String className)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.toggleClassName(")
               .appendData(elementId)
               .appendScript(",")
@@ -376,7 +376,7 @@ public class Util extends ScriptProxy
      */
     public void setStyle(String elementId, String selector, String value)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("$(")
               .appendData(elementId)
               .appendScript(").style.")

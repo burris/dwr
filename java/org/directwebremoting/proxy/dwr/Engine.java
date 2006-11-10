@@ -79,7 +79,7 @@ public class Engine extends ScriptProxy
      */
     public void setTimeout(int timeout)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.engine.setTimeout(")
               .appendData(timeout)
               .appendScript(");");
@@ -93,7 +93,7 @@ public class Engine extends ScriptProxy
      */
     public void setRpcType(int newType)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.engine.setRpcType(")
               .appendData(newType)
               .appendScript(");");
@@ -107,7 +107,7 @@ public class Engine extends ScriptProxy
      */
     public void setHttpMethod(String httpMethod)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.engine.setHttpMethod(")
               .appendData(httpMethod)
               .appendScript(");");
@@ -121,7 +121,7 @@ public class Engine extends ScriptProxy
      */
     public void setOrdered(boolean ordered)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.engine.setOrdered(")
               .appendData(ordered)
               .appendScript(");");
@@ -135,7 +135,7 @@ public class Engine extends ScriptProxy
      */
     public void setAsync(boolean async)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.engine.setAsync(")
               .appendData(async)
               .appendScript(");");
@@ -149,7 +149,7 @@ public class Engine extends ScriptProxy
      */
     public void setReverseAjax(boolean reverseAjax)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.engine.setReverseAjax(")
               .appendData(reverseAjax)
               .appendScript(");");
@@ -163,7 +163,7 @@ public class Engine extends ScriptProxy
      */
     public void setPollUsingComet(boolean pollComet)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.engine.setPollUsingComet(")
               .appendData(pollComet)
               .appendScript(");");
@@ -177,7 +177,7 @@ public class Engine extends ScriptProxy
      */
     public void setPollType(int newPollType)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.engine.setPollUsingComet(")
               .appendData(newPollType)
               .appendScript(");");

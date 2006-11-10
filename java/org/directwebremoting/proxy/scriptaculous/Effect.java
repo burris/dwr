@@ -376,7 +376,7 @@ public class Effect extends ScriptProxy
      */
     private void callEffect(String elementId, String function, String options)
     {
-        ScriptBuffer script = createScriptBuffer();
+        ScriptBuffer script = new ScriptBuffer();
         script.appendScript("new Effect.").appendScript(function).appendScript("('").appendScript(elementId).appendScript("'");
         if (options != null && options.length() > 0)
         {
