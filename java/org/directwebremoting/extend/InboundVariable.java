@@ -188,7 +188,7 @@ public final class InboundVariable
      */
     public int hashCode()
     {
-        return value.hashCode() + type.hashCode();
+        return value.hashCode() + type.hashCode() + key.hashCode();
     }
 
     /**
