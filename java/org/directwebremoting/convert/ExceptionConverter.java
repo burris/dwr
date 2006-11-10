@@ -28,9 +28,9 @@ public class ExceptionConverter extends BeanConverter
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.BasicBeanConverter#getPropertyDescriptors(java.lang.Class, boolean, boolean)
      */
-    public Map getPropertyMap(Class data, boolean readRequired, boolean writeRequired) throws MarshallException
+    public Map getPropertyMapFromClass(Class data, boolean readRequired, boolean writeRequired) throws MarshallException
     {
-        Map descriptors = super.getPropertyMap(data, readRequired, writeRequired);
+        Map descriptors = super.getPropertyMapFromClass(data, readRequired, writeRequired);
         descriptors.remove("stackTrace");
         descriptors.put("name", new PlainProperty("name", data.getName()));
         return descriptors;

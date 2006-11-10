@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
+import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.Property;
 import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.impl.FieldProperty;
@@ -42,9 +43,18 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
     }
 
     /* (non-Javadoc)
+     * @see org.directwebremoting.extend.NamedConverter#getPropertyMapFromObject(java.lang.Object, boolean, boolean)
+     */
+    public Map getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException
+    {
+        Class clazz = example.getClass();
+        return getPropertyMapFromClass(clazz, readRequired, writeRequired);
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.extend.NamedConverter#getPropertyMap(java.lang.Class, boolean, boolean)
      */
-    public Map getPropertyMap(Class type, boolean readRequired, boolean writeRequired)
+    public Map getPropertyMapFromClass(Class type, boolean readRequired, boolean writeRequired)
     {
         Map allFields = new HashMap();
 

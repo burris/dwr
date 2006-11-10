@@ -50,5 +50,20 @@
 	<classpathentry kind="src" path="demo"/>
 	<classpathentry kind="src" path="etc/classpath"/>
 	<classpathentry kind="lib" path="jar/jsp-api-2.0.jar"/>
+	<classpathentry kind="lib" path="jar/hibernate-2.1.7c.jar" sourcepath="/library/jarlib/hibernate-2.1.7c/hibernate-2.1.7c.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/Share/joe/tameion/library/jarlib/hibernate-2.1.7c/hibernate-2.1.7c.zip!/hibernate-2.1/doc/api"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jar/hibernate-3.2.jar" sourcepath="/library/jarlib/hibernate-3.2/hibernate-3.2.0.ga.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/Share/joe/tameion/library/jarlib/hibernate-3.2/hibernate-3.2.0.ga.zip!/hibernate-3.2/doc/api"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="jar/hibernate-entitymanager-3.2.jar" sourcepath="/library/jarlib/hibernate-3.2/hibernate-entitymanager-3.2.0.GA.zip">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/Share/joe/tameion/library/jarlib/hibernate-3.2/hibernate-entitymanager-3.2.0.GA.zip!/hibernate-entitymanager-3.2.0.GA/doc/api"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="web/WEB-INF/classes"/>
 </classpath>

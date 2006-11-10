@@ -27,14 +27,35 @@ public interface NamedConverter extends Converter
      * Get a map of property names to implementations of {@link Property}.
      * <p>HibernateBeanConverter (and maybe others) may want to provide
      * alternate versions of bean.getClass(), and we may wish to fake or hide
-     * properties in some cases
+     * properties in some cases.
+     * <p>This implementation is preferred above the alternate:
+     * {@link #getPropertyMapFromClass(Class, boolean, boolean)} because it
+     * potentially retains important extra type information.
+     * @param example The object to find bean info from
+     * @param readRequired The properties returned must be readable
+     * @param writeRequired The properties returned must be writeable
+     * @return An array of PropertyDescriptors describing the beans properties
+     * @see #getPropertyMapFromClass(Class, boolean, boolean)
+     * @throws MarshallException If the introspection fails
+     */
+    Map getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException;
+
+    /**
+     * Get a map of property names to implementations of {@link Property}.
+     * <p>HibernateBeanConverter (and maybe others) may want to provide
+     * alternate versions of bean.getClass(), and we may wish to fake or hide
+     * properties in some cases.
+     * <p>If you have a real object to investigate then it is probably better
+     * to call {@link #getPropertyMapFromObject(Object, boolean, boolean)}
+     * because that version can take into accound extra runtime type info.
      * @param type The class to find bean info from
      * @param readRequired The properties returned must be readable
      * @param writeRequired The properties returned must be writeable
      * @return An array of PropertyDescriptors describing the beans properties
-     * @throws MarshallException
+     * @see #getPropertyMapFromObject(Object, boolean, boolean)
+     * @throws MarshallException If the introspection fails
      */
-    Map getPropertyMap(Class type, boolean readRequired, boolean writeRequired) throws MarshallException;
+    Map getPropertyMapFromClass(Class type, boolean readRequired, boolean writeRequired) throws MarshallException;
 
     /**
      * @return Returns the instanceType.

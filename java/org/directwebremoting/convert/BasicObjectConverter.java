@@ -94,7 +94,7 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
                 inctx.addConverted(iv, paramType, bean);
             }
 
-            Map properties = getPropertyMap(bean.getClass(), false, true);
+            Map properties = getPropertyMapFromObject(bean, false, true);
 
             // Loop through the properties passed in
             Map tokens = extractInboundTokens(paramType, value);
@@ -177,7 +177,7 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
 
         try
         {
-            Map properties = getPropertyMap(data.getClass(), true, false);
+            Map properties = getPropertyMapFromObject(data, true, false);
             for (Iterator it = properties.entrySet().iterator(); it.hasNext();)
             {
                 Map.Entry entry = (Map.Entry) it.next();

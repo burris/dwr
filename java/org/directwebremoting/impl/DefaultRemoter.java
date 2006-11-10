@@ -106,7 +106,7 @@ public class DefaultRemoter implements Remoter
                                 throw new IllegalArgumentException(ex.getMessage());
                             }
 
-                            Map properties = boConv.getPropertyMap(mappedType, true, true);
+                            Map properties = boConv.getPropertyMapFromClass(mappedType, true, true);
                             for (Iterator pit = properties.entrySet().iterator(); pit.hasNext();)
                             {
                                 Map.Entry entry = (Map.Entry) pit.next();
