@@ -22,6 +22,7 @@ import javax.servlet.ServletContext;
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.util.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
@@ -42,12 +43,23 @@ public class Session3AjaxFilter implements AjaxFilter
         ServletContext context = WebContextFactory.get().getServletContext();
         SessionFactory sessionFactory = (SessionFactory) context.getAttribute(ATTRIBUTE_SESSION);
 
-        Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
+        Transaction transaction = null;
+        if (sessionFactory != null)
+        {
+            Session session = sessionFactory.getCurrentSession();
+            transaction = session.beginTransaction();
+        }
+        else
+        {
+            log.error("SessionFactory not initialized for this web application. Use: Session3AjaxFilter.setSessionFactory(servletContext, sessionFactory);");
+        }
 
         Object reply = chain.doFilter(object, method, params);
 
-        session.getTransaction().commit();
+        if (transaction != null)
+        {
+            transaction.commit();
+        }
 
         return reply;
     }
@@ -62,6 +74,11 @@ public class Session3AjaxFilter implements AjaxFilter
     {
         context.setAttribute(ATTRIBUTE_SESSION, sessionFactory);
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(Session3AjaxFilter.class);
 
     /**
      * Under what name do we store the session factory?
