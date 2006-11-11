@@ -33,7 +33,7 @@ import org.directwebremoting.extend.MarshallException;
  * BeanConverter that works with Hibernate to get BeanInfo.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Hibernate2BeanConverter extends BeanConverter implements Converter
+public class H2BeanConverter extends BeanConverter implements Converter
 {
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.NamedConverter#getPropertyMapFromObject(java.lang.Object, boolean, boolean)
@@ -74,7 +74,7 @@ public class Hibernate2BeanConverter extends BeanConverter implements Converter
                     continue;
                 }
 
-                properties.put(name, new Hibernate2PropertyDescriptorProperty(descriptor));
+                properties.put(name, new H2PropertyDescriptorProperty(descriptor));
             }
 
             return properties;

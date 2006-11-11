@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://www.getahead.ltd.uk/dwr/dwr20.dtd">
+<!DOCTYPE dwr PUBLIC
+    "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN"
+    "http://getahead.ltd.uk/dwr/dwr20.dtd">
 
 <dwr>
 
@@ -29,8 +31,8 @@
     <converter id="servlet" class="org.directwebremoting.convert.ServletConverter"/>
     <converter id="bean" class="org.directwebremoting.convert.BeanConverter"/>
     <converter id="object" class="org.directwebremoting.convert.ObjectConverter"/>
-    <converter id="hibernate2" class="org.directwebremoting.hibernate.Hibernate2BeanConverter"/>
-    <converter id="hibernate3" class="org.directwebremoting.hibernate.Hibernate3BeanConverter"/>
+    <converter id="hibernate2" class="org.directwebremoting.hibernate.H2BeanConverter"/>
+    <converter id="hibernate3" class="org.directwebremoting.hibernate.H3BeanConverter"/>
     <converter id="url" class="org.directwebremoting.convert.URLConverter"/>
     <converter id="exception" class="org.directwebremoting.convert.ExceptionConverter"/>
   </init>

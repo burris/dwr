@@ -23,9 +23,9 @@ import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.util.Logger;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.classic.Session;
 
 /**
  * An {@link AjaxFilter} that uses DWR Hibernate support classes to do a
@@ -33,7 +33,7 @@ import org.hibernate.classic.Session;
  * and a {@link Transaction#commit()} after.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Session3AjaxFilter implements AjaxFilter
+public class H3SessionAjaxFilter implements AjaxFilter
 {
     /* (non-Javadoc)
      * @see org.directwebremoting.AjaxFilter#doFilter(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], org.directwebremoting.AjaxFilterChain)
@@ -51,7 +51,7 @@ public class Session3AjaxFilter implements AjaxFilter
         }
         else
         {
-            log.error("SessionFactory not initialized for this web application. Use: Session3AjaxFilter.setSessionFactory(servletContext, sessionFactory);");
+            log.error("SessionFactory not initialized for this web application. Use: H3SessionAjaxFilter.setSessionFactory(servletContext, sessionFactory);");
         }
 
         Object reply = chain.doFilter(object, method, params);
@@ -76,9 +76,28 @@ public class Session3AjaxFilter implements AjaxFilter
     }
 
     /**
+     * Get access to a Session, given the {@link SessionFactory} linked in
+     * {@link #setSessionFactory(ServletContext, SessionFactory)}
+     * @param context The webapp to link the calls together
+     * @return A Session from the {@link SessionFactory} or null if
+     * {@link #setSessionFactory(ServletContext, SessionFactory)} has not been
+     * called for this {@link ServletContext}
+     */
+    public static Session getCurrentSession(ServletContext context)
+    {
+        SessionFactory sessionFactory = (SessionFactory) context.getAttribute(ATTRIBUTE_SESSION);
+        if (sessionFactory == null)
+        {
+            return null;
+        }
+
+        return sessionFactory.getCurrentSession();
+    }
+
+    /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(Session3AjaxFilter.class);
+    private static final Logger log = Logger.getLogger(H3SessionAjaxFilter.class);
 
     /**
      * Under what name do we store the session factory?

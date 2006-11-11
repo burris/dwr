@@ -101,5 +101,5 @@ public class PropertyDescriptorProperty implements Property
     /**
      * The PropertyDescriptor that we are proxying to
      */
-    private PropertyDescriptor descriptor;
+    protected PropertyDescriptor descriptor;
 }

@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.hibernate3;
+package org.directwebremoting.hibernate;
 
 import java.beans.PropertyDescriptor;
+
+import net.sf.hibernate.LazyInitializationException;
 
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.Property;
 import org.directwebremoting.impl.PropertyDescriptorProperty;
-import org.hibernate.LazyInitializationException;
 
 /**
  * A {@link Property} that catches hiberntate exceptions.
@@ -28,13 +29,13 @@ import org.hibernate.LazyInitializationException;
  * and you are unable to detect and prevent this.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class HibernatePropertyDescriptorProperty extends PropertyDescriptorProperty
+public class H2PropertyDescriptorProperty extends PropertyDescriptorProperty
 {
     /**
      * Simple constructor
      * @param descriptor The PropertyDescriptor that we are proxying to
      */
-    public HibernatePropertyDescriptorProperty(PropertyDescriptor descriptor)
+    public H2PropertyDescriptorProperty(PropertyDescriptor descriptor)
     {
         super(descriptor);
     }
