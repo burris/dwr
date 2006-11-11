@@ -169,23 +169,21 @@ dwr.engine.setPollType = function(newPollType) {
  * The default message handler.
  * @see http://getahead.ltd.uk/dwr/browser/engine/errors
  */
-dwr.engine.defaultMessageHandler = function(message, ex) {
+dwr.engine.defaultErrorHandler = function(message, ex) {
+  dwr.engine._debug("Error: " + ex.name + ", " + ex.message);
+
+  if (message == null || message == "") alert("A server error has occured. More information may be available in the console.");
   // Ignore NS_ERROR_NOT_AVAILABLE if Mozilla is being narky
-  if (message.indexOf("0x80040111") != -1) dwr.engine._debug(desc);
+  else if (message.indexOf("0x80040111") != -1) dwr.engine._debug(message);
   else alert(message);
 };
 
 /**
- * The default message handler.
+ * The default warning handler.
  * @see http://getahead.ltd.uk/dwr/browser/engine/errors
  */
-dwr.engine.defaultWarningHandler = function(ex) {
-  if (typeof ex == "object" && ex.message) {
-    dwr.engine._debug(ex.message);
-  }
-  else {
-    dwr.engine._debug(ex);
-  }
+dwr.engine.defaultWarningHandler = function(message, ex) {
+  dwr.engine._debug(message);
 };
 
 /**
@@ -252,15 +250,13 @@ dwr.engine._getScriptSessionId = function() {
 };
 
 /** A function to call if something fails. */
-dwr.engine._errorHandler = dwr.engine.defaultMessageHandler;
+dwr.engine._errorHandler = dwr.engine.defaultErrorHandler;
 
 /** By default exceptions are handled by the errorHandler */
-dwr.engine._exceptionHandler = function(message, ex) {
-  dwr.engine._errorHandler(message, ex);
-};
+dwr.engine._exceptionHandler = dwr.engine.defaultErrorHandler;
 
 /** For debugging when something unexplained happens. */
-dwr.engine._warningHandler = null;
+dwr.engine._warningHandler = dwr.engine.defaultWarningHandler;
 
 /** A function to be called before requests are marshalled. Can be null. */
 dwr.engine._preHook = null;
@@ -411,7 +407,7 @@ dwr.engine._poll = function(overridePath) {
   var batch = dwr.engine._createBatch();
   batch.map.id = 0; // TODO: Do we need this??
   batch.map.callCount = 1;
-  batch.map.partialResponse = (window.XMLHttpRequest) ? "true" : "false";
+  batch.map.partialResponse = (document.all) ? "false" : "true"; // (window.XMLHttpRequest) ? "true" : "false";
   batch.isPoll = true;
   batch.rpcType = dwr.engine._pollType;
   batch.httpMethod = "POST";
@@ -566,9 +562,7 @@ dwr.engine._processCometResponse = function(response) {
     else {
       var lastEndTag = response.lastIndexOf("//#DWR-END#");
       if (lastEndTag != -1) {
-        var executeString = response.substring(firstStartTag + 13, lastEndTag);
-        //dwr.engine._debug("Got start and end '" + executeString + "'");
-        eval(executeString);
+        dwr.engine._remoteEval(response.substring(firstStartTag + 13, lastEndTag));
         // Skip the end tag too for next time
         dwr.engine._pollCometSize = lastEndTag + 11;
       }
@@ -748,8 +742,13 @@ dwr.engine._constructRequest = function(batch) {
 dwr.engine._stateChange = function(batch) {
   var toEval;
 
+  if (batch.completed) {
+    dwr.engine._debug("Error: _stateChange() with batch.completed");
+    return;
+  }
+
   try {
-    if (batch.completed || batch.req.readyState != 4) return;
+    if (batch.req.readyState != 4) return;
   }
   catch (ex) {
     dwr.engine._handleWarning(batch, ex);
@@ -780,9 +779,6 @@ dwr.engine._stateChange = function(batch) {
         }
       }
       else {
-        // Skip checking the xhr.status because the above will do for most errors
-        // and because it causes Mozilla to error
-
         // Comet replies might have already partially executed
         if (batch.req == dwr.engine._pollReq && batch.map.partialResponse == "true") {
           dwr.engine._receivedBatch = batch;
@@ -806,7 +802,8 @@ dwr.engine._stateChange = function(batch) {
 
   // Outside of the try/catch so errors propogate normally:
   dwr.engine._receivedBatch = batch;
-  if (toEval != null) eval(toEval);
+  if (toEval != null) dwr.engine._remoteEval(toEval);
+  else dwr.engine._debug("Nothing to eval");
   dwr.engine._receivedBatch = null;
 
   dwr.engine._clearUp(batch);
@@ -866,6 +863,8 @@ dwr.engine._remoteEndIFrameResponse = function(batchId) {
 
 /** @private This is a hack to make the context be this window */
 dwr.engine._remoteEval = function(script) {
+  if (script == null) return null;
+  dwr.engine._debug(script);
   return eval(script);
 };
 
@@ -881,10 +880,8 @@ dwr.engine._abortRequest = function(batch) {
 
 /** @private A call has finished by whatever means and we need to shut it all down. */
 dwr.engine._clearUp = function(batch) {
-  if (batch.completed) {
-    dwr.engine._handleError(null, { name:"dwr.engine.doubleComplete", message:"Double complete" });
-    return;
-  }
+  if (!batch) { dwr.engine._debug("null batch in dwr.engine._clearUp()", true); return; }
+  if (batch.completed == "true") { dwr.engine._debug("Double complete", true); return; }
 
   // IFrame tidyup
   if (batch.div) batch.div.parentNode.removeChild(batch.div);
@@ -907,16 +904,8 @@ dwr.engine._clearUp = function(batch) {
   }
   batch.postHooks = null;
 
-  // TODO: There must be a better way???
   delete dwr.engine._batches[batch.map.batchId];
   dwr.engine._batchesLength--;
-  //for (var i = 0; i < dwr.engine._batches.length; i++) {
-  //  if (dwr.engine._batches[i] == batch) {
-  //    dwr.engine._batches.splice(i, 1);
-  //    break;
-  //  }
-  //}
-
   batch.completed = true;
 
   // If there is anything on the queue waiting to go out, then send it.
@@ -935,7 +924,7 @@ dwr.engine._handleError = function(batch, ex) {
   if (ex.name == null) ex.name = "unknown";
   if (batch && typeof batch.errorHandler == "function") batch.errorHandler(ex.message, ex);
   else if (dwr.engine._errorHandler) dwr.engine._errorHandler(ex.message, ex);
-  dwr.engine._clearUp();
+  dwr.engine._clearUp(batch);
 };
 
 /** @private Generic error handling routing to save having null checks everywhere */
@@ -943,9 +932,9 @@ dwr.engine._handleWarning = function(batch, ex) {
   if (typeof ex == "string") ex = { name:"unknown", message:ex };
   if (ex.message == null) ex.message = "";
   if (ex.name == null) ex.name = "unknown";
-  if (batch && typeof batch.warningHandler == "function") handlers.warningHandler(ex.message, ex);
+  if (batch && typeof batch.warningHandler == "function") batch.warningHandler(ex.message, ex);
   else if (dwr.engine._warningHandler) dwr.engine._warningHandler(ex.message, ex);
-  dwr.engine._clearUp();
+  dwr.engine._clearUp(batch);
 };
 
 /**
@@ -1154,7 +1143,7 @@ dwr.engine._debug = function(message, stacktrace) {
     if (debug) {
       var contents = message + "<br/>" + debug.innerHTML;
       if (contents.length > 1024) contents = contents.substring(0, 1024);
-      debug.innerHtml = contents;
+      debug.innerHTML = contents;
     }
   }
 };
