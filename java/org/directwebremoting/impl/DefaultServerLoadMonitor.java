@@ -150,12 +150,12 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
     /**
      * How long are we telling users to wait before they come back next
      */
-    protected int timeToNextPoll = 5000;
+    protected int timeToNextPoll = 3000;
 
     /**
      * What is the shortest (random seed) time we wait before next request
      */
-    protected static final int MIN_TIME_TO_NEXT_POLL = 5000;
+    protected static final int MIN_TIME_TO_NEXT_POLL = 3000;
 
     /**
      * What is the longest we wait for extra input after detecting output
