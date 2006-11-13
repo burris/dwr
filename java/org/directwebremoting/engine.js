@@ -899,13 +899,18 @@ dwr.engine._clearUp = function(batch) {
     delete batch.req;
   }
 
-  for (var i = 0; i < batch.postHooks.length; i++) {
-    batch.postHooks[i]();
+  if (batch.postHooks) {
+    for (var i = 0; i < batch.postHooks.length; i++) {
+      batch.postHooks[i]();
+    }
+    batch.postHooks = null;
   }
-  batch.postHooks = null;
 
-  delete dwr.engine._batches[batch.map.batchId];
-  dwr.engine._batchesLength--;
+  if (batch.map && batch.map.batchId) {
+    delete dwr.engine._batches[batch.map.batchId];
+    dwr.engine._batchesLength--;
+  }
+
   batch.completed = true;
 
   // If there is anything on the queue waiting to go out, then send it.
