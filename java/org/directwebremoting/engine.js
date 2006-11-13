@@ -1130,20 +1130,21 @@ dwr.engine._newActiveXObject = function(axarray) {
   return returnValue;
 };
 
-/** See if there is anywhere we can write a debug message */
+
+/** Used internally when some message needs to get to the programmer */
 dwr.engine._debug = function(message, stacktrace) {
-  if (window.console) {
-    if (stacktrace && window.console.trace) window.console.trace();
-    window.console.log(message);
+  var debug = document.getElementById("dwr-debug");
+  if (debug) {
+    var contents = message + "<br/>" + debug.innerHTML;
+    if (contents.length > 1024) contents = contents.substring(0, 1024);
+    debug.innerHTML = contents;
   }
-  else if (window.opera && window.opera.postError) window.opera.postError(message);
-  //else if (window.navigator.product == "Gecko") window.dump(message + "\n");
   else {
-    var debug = document.getElementById("dwr-debug");
-    if (debug) {
-      var contents = message + "<br/>" + debug.innerHTML;
-      if (contents.length > 1024) contents = contents.substring(0, 1024);
-      debug.innerHTML = contents;
+    if (window.console) {
+      if (stacktrace && window.console.trace) window.console.trace();
+      window.console.log(message);
     }
+    else if (window.opera && window.opera.postError) window.opera.postError(message);
+    //else if (window.navigator.product == "Gecko") window.dump(message + "\n");
   }
 };
