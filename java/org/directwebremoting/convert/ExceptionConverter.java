@@ -31,8 +31,7 @@ public class ExceptionConverter extends BeanConverter
     public Map getPropertyMapFromClass(Class data, boolean readRequired, boolean writeRequired) throws MarshallException
     {
         Map descriptors = super.getPropertyMapFromClass(data, readRequired, writeRequired);
-        descriptors.remove("stackTrace");
-        descriptors.put("name", new PlainProperty("name", data.getName()));
+        descriptors.put("javaClassName", new PlainProperty("javaClassName", data.getName()));
         return descriptors;
     }
 }
