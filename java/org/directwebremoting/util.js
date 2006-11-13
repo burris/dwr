@@ -21,6 +21,58 @@ if (dwr == null) var dwr = {};
 if (dwr.util == null) dwr.util = {};
 if (DWRUtil == null) var DWRUtil = dwr.util;
 
+
+/**
+ * Replace &, <, >, ' and " with their entities
+ * @see TODO
+ */
+dwr.util.addEntities = function(original) {
+  original = original.replace("&", "&amp;");
+  original = original.replace("<", "&lt;");
+  original = original.replace(">", "&gt;");
+  original = original.replace("\'", "&apos;");
+  original = original.replace("\"", "&quot;");
+  return original;
+}
+
+/**
+ * Replace common XML entities with characters (see dwr.util.addEntities())
+ * @see TODO
+ */
+dwr.util.removeEntities = function(original) {
+  original = original.replace("&amp;", "&");
+  original = original.replace("&lt;", "<");
+  original = original.replace("&gt;", ">");
+  original = original.replace("&apos;", "\'");
+  original = original.replace("&quot;", "\"");
+  return original;
+}
+
+/**
+ * Replace characters dangerous for XSS reasons with visually similar characters
+ * @see TODO
+ */
+dwr.util.replaceXmlCharacters = function(original) {
+  original = original.replace("&", "+");
+  original = original.replace("<", "\u2039");
+  original = original.replace(">", "\u203A");
+  original = original.replace("\'", "\u2018");
+  original = original.replace("\"", "\u201C");
+  return original;
+}
+
+/**
+ * Return true iff the input string contains any XSS dangerous characters
+ * @see TODO
+ */
+dwr.util.containsXssRiskyCharacters = function(original) {
+  return (original.indexOf('&') != -1
+    && original.indexOf('<') != -1
+    && original.indexOf('>') != -1
+    && original.indexOf('\'') != -1
+    && original.indexOf('\"') != -1);
+}
+
 /**
  * Enables you to react to return being pressed in an input
  * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
