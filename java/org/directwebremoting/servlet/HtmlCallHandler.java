@@ -46,7 +46,7 @@ public class HtmlCallHandler implements Handler
         }
         catch (Exception ex)
         {
-            EnginePrivate.remoteHandleExceptionWithoutCallId(response, ex);
+            EnginePrivate.remoteHandleBatchException(response, ex);
             return;
         }
 

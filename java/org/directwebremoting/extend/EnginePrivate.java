@@ -142,7 +142,7 @@ public class EnginePrivate extends ScriptProxy
      * @param ex The execption from which we make a reply
      * @throws IOException If writing fails.
      */
-    public static void remoteHandleExceptionWithoutCallId(HttpServletResponse response, Exception ex) throws IOException
+    public static void remoteHandleBatchException(HttpServletResponse response, Exception ex) throws IOException
     {
         response.setContentType(MimeConstants.MIME_PLAIN);
         PrintWriter out = response.getWriter();
@@ -154,7 +154,8 @@ public class EnginePrivate extends ScriptProxy
         // HTML context as well as a Javascript context
         out.println("// <script>");
         out.println(ConversionConstants.SCRIPT_CALL_REPLY);
-        out.println("dwr.engine._remoteHandleExceptionWithoutCallId(" + error + ");");
+        out.println("if (window.dwr) dwr.engine._remoteHandleBatchException(" + error + ");");
+        out.println("else if (window.parent.dwr) window.parent.dwr.engine._remoteHandleBatchException(" + error + ");");
         out.println("// </script>");
     }
 

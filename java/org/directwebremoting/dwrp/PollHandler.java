@@ -87,7 +87,7 @@ public class PollHandler implements Handler
             }
             catch (Exception ex)
             {
-                EnginePrivate.remoteHandleExceptionWithoutCallId(response, ex);
+                EnginePrivate.remoteHandleBatchException(response, ex);
                 return;
             }
         }

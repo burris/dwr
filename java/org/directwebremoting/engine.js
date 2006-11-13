@@ -844,7 +844,7 @@ dwr.engine._remoteHandleException = function(batchId, callId, ex) {
 };
 
 /** @private This method is called by Javascript that is emitted by server */
-dwr.engine._remoteHandleExceptionWithoutCallId = function(ex) {
+dwr.engine._remoteHandleBatchException = function(ex) {
   if (ex.message == undefined) ex.message = "";
   dwr.engine._handleError(dwr.engine._receivedBatch, ex);
 };
