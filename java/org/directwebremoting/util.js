@@ -356,13 +356,15 @@ dwr.util._yellowFadeProcess = function(ele, colorIndex) {
  * An example highlight handler
  */
 dwr.util.borderFadeHighlightHandler = function(ele) {
+  ele.style.borderWidth = "2px";
+  ele.style.borderStyle = "solid";
   dwr.util._borderFadeProcess(ele, 0);
 };
 dwr.util._borderFadeSteps = [ "d0", "b0", "a0", "90", "98", "a0", "a8", "b0", "b8", "c0", "c8", "d0", "d8", "e0", "e8", "f0", "f8" ];
 dwr.util._borderFadeProcess = function(ele, colorIndex) {
   ele = dwr.util.byId(ele);
   if (colorIndex < dwr.util._borderFadeSteps.length) {
-    ele.style.borderColor = "#" + dwr.util._borderFadeSteps[colorIndex] + "ff";
+    ele.style.borderColor = "#ff" + dwr.util._borderFadeSteps[colorIndex] + dwr.util._borderFadeSteps[colorIndex];
     setTimeout("dwr.util._borderFadeProcess('" + ele.id + "'," + (colorIndex + 1) + ")", 200);
   }
   else {
