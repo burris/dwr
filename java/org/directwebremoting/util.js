@@ -353,6 +353,24 @@ dwr.util._yellowFadeProcess = function(ele, colorIndex) {
 };
 
 /**
+ * An example highlight handler
+ */
+dwr.util.borderFadeHighlightHandler = function(ele) {
+  dwr.util._borderFadeProcess(ele, 0);
+};
+dwr.util._borderFadeSteps = [ "d0", "b0", "a0", "90", "98", "a0", "a8", "b0", "b8", "c0", "c8", "d0", "d8", "e0", "e8", "f0", "f8" ];
+dwr.util._borderFadeProcess = function(ele, colorIndex) {
+  ele = dwr.util.byId(ele);
+  if (colorIndex < dwr.util._borderFadeSteps.length) {
+    ele.style.borderColor = "#" + dwr.util._borderFadeSteps[colorIndex] + "ff";
+    setTimeout("dwr.util._borderFadeProcess('" + ele.id + "'," + (colorIndex + 1) + ")", 200);
+  }
+  else {
+    ele.style.backgroundColor = "transparent";
+  }
+};
+
+/**
  * A focus highlight handler
  */
 dwr.util.focusHighlightHandler = function(ele) {
@@ -384,11 +402,10 @@ dwr.util.highlight = function(ele, options) {
 dwr.util.setValue = function(ele, val, options) {
   if (val == null) val = "";
   if (options == null) options = {};
+  if (options.useHtml )
+
   if (options.escapeHtml) {
-    val = val.replace(/&/, "&amp;");
-    val = val.replace(/'/, "&apos;");
-    val = val.replace(/</, "&lt;");
-    val = val.replace(/>/, "&gt;");
+    val = dwr.util.addEntities(val);
   }
 
   var orig = ele;
@@ -402,7 +419,7 @@ dwr.util.setValue = function(ele, val, options) {
   }
 
   if (ele == null) {
-    dwr.util.debug("setValue() can't find an element with id/name: " + orig + ".");
+    dwr.util._debug("setValue() can't find an element with id/name: " + orig + ".");
     return;
   }
 
@@ -530,7 +547,7 @@ dwr.util.getValue = function(ele, options) {
     ele = nodes.item(0);
   }
   if (ele == null) {
-    dwr.util.debug("getValue() can't find an element with id/name: " + orig + ".");
+    dwr.util._debug("getValue() can't find an element with id/name: " + orig + ".");
     return "";
   }
 
@@ -611,7 +628,7 @@ dwr.util.getText = function(ele) {
   ele = dwr.util._getElementById(ele, "getText()");
   if (ele == null) return null;
   if (!dwr.util._isHTMLElement(ele, "select")) {
-    dwr.util.debug("getText() can only be used with select elements. Attempt to use: " + dwr.util._detailedTypeOf(ele) + " from  id: " + orig + ".");
+    dwr.util._debug("getText() can only be used with select elements. Attempt to use: " + dwr.util._detailedTypeOf(ele) + " from  id: " + orig + ".");
     return "";
   }
 
@@ -732,7 +749,7 @@ dwr.util.addOptions = function(ele, data, options) {
   var useOptions = dwr.util._isHTMLElement(ele, "select");
   var useLi = dwr.util._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {
-    dwr.util.debug("addOptions() can only be used with select/ul/ol elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
+    dwr.util._debug("addOptions() can only be used with select/ul/ol elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
     return;
   }
   if (data == null) return;
@@ -777,7 +794,7 @@ dwr.util.addOptions = function(ele, data, options) {
   }
   else {
     if (!useOptions) {
-      dwr.util.debug("dwr.util.addOptions can only create select lists from objects.");
+      dwr.util._debug("dwr.util.addOptions can only create select lists from objects.");
       return;
     }
     for (var prop in data) {
@@ -811,7 +828,7 @@ dwr.util.removeAllOptions = function(ele) {
   var useOptions = dwr.util._isHTMLElement(ele, "select");
   var useLi = dwr.util._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {
-    dwr.util.debug("removeAllOptions() can only be used with select, ol and ul elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
+    dwr.util._debug("removeAllOptions() can only be used with select, ol and ul elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
     return;
   }
   if (useOptions) {
@@ -832,7 +849,7 @@ dwr.util.addRows = function(ele, data, cellFuncs, options) {
   ele = dwr.util._getElementById(ele, "addRows()");
   if (ele == null) return;
   if (!dwr.util._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"])) {
-    dwr.util.debug("addRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
+    dwr.util._debug("addRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
     return;
   }
   if (!options) options = {};
@@ -914,7 +931,7 @@ dwr.util.removeAllRows = function(ele, options) {
   if (!options) options = {};
   if (!options.filter) options.filter = function() { return true; };
   if (!dwr.util._isHTMLElement(ele, ["table", "tbody", "thead", "tfoot"])) {
-    dwr.util.debug("removeAllRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
+    dwr.util._debug("removeAllRows() can only be used with table, tbody, thead and tfoot elements. Attempt to use: " + dwr.util._detailedTypeOf(ele));
     return;
   }
   var child = ele.firstChild;
@@ -1029,7 +1046,7 @@ dwr.util._getElementById = function(ele, source) {
   var orig = ele;
   ele = dwr.util.byId(ele);
   if (ele == null) {
-    dwr.util.debug(source + " can't find an element with id: " + orig + ".");
+    dwr.util._debug(source + " can't find an element with id: " + orig + ".");
   }
   return ele;
 };
@@ -1058,7 +1075,7 @@ dwr.util._isHTMLElement = function(ele, nodeName) {
       }
       return match;
     }
-    dwr.util.debug("dwr.util._isHTMLElement was passed test node name that is neither a string or array of strings");
+    dwr.util._debug("dwr.util._isHTMLElement was passed test node name that is neither a string or array of strings");
     return false;
   }
   return true;
@@ -1123,30 +1140,20 @@ dwr.util._importNode = function(doc, importedNode, deep) {
   return newNode;
 };
 
-/** The array of current debug items */
-dwr.util._debugDisplay = [];
-
-/** What is the maximum length of the debug items array */
-dwr.util._debugMaxLength = 50;
-
-/**
- * Used internally when some message needs to get to the programmer
- */
-dwr.util.debug = function(message) {
-  var debug = dwr.util.byId("dwr-debug");
+/** Used internally when some message needs to get to the programmer */
+dwr.util._debug = function(message, stacktrace) {
+  var debug = document.getElementById("dwr-debug");
   if (debug) {
-    while (dwr.util._debugDisplay.length >= dwr.util._debugMaxLength) {
-      dwr.util._debugDisplay.shift();
-    }
-    dwr.util._debugDisplay.push(message);
-    var contents = "";
-    for (var i = 0; i < dwr.util._debugDisplay.length; i++) {
-      contents += dwr.util._debugDisplay[i] + "<br/>";
-    }
-    dwr.util.setValue("dwr-debug", contents);
+    var contents = message + "<br/>" + debug.innerHTML;
+    if (contents.length > 1024) contents = contents.substring(0, 1024);
+    debug.innerHTML = contents;
   }
-  else if (window.console) window.console.log(message);
-  else if (window.opera && window.opera.postError) window.opera.postError(message);
-  //else if (window.navigator.product == "Gecko") window.dump(message + "\n");
-  alert(message);
+  else {
+    if (window.console) {
+      if (stacktrace && window.console.trace) window.console.trace();
+      window.console.log(message);
+    }
+    else if (window.opera && window.opera.postError) window.opera.postError(message);
+    //else if (window.navigator.product == "Gecko") window.dump(message + "\n");
+  }
 };
