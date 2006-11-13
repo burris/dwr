@@ -311,14 +311,19 @@ dwr.util.useLoadingMessage = function(message) {
       disabledZone.appendChild(messageZone);
       var text = document.createTextNode(loadingMessage);
       messageZone.appendChild(text);
+      dwr.util._disabledZoneUseCount = 1;
     }
     else {
       dwr.util.byId('messageZone').innerHTML = loadingMessage;
       disabledZone.style.visibility = 'visible';
+      dwr.util._disabledZoneUseCount++;
     }
   });
   dwr.engine.setPostHook(function() {
-    dwr.util.byId('disabledZone').style.visibility = 'hidden';
+    dwr.util._disabledZoneUseCount--;
+    if (dwr.util._disabledZoneUseCount == 0) {
+      dwr.util.byId('disabledZone').style.visibility = 'hidden';
+    }
   });
 };
 
