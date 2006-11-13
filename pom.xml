@@ -367,7 +367,6 @@
                     <showSuccess>false</showSuccess>
                 </configuration>
             </plugin>
-
         </plugins>
 
     </reporting>
