@@ -314,7 +314,7 @@ dwr.engine._pollFrame = null;
 dwr.engine._pollReq = null;
 
 /** How much data has been received into a reverse ajax document */
-dwr.engine._pollCometSize = 0;
+dwr.engine._cometProcessed = 0;
 
 /** How many milliseconds between internal comet polls */
 dwr.engine._pollCometInterval = 200;
@@ -407,7 +407,7 @@ dwr.engine._poll = function(overridePath) {
   var batch = dwr.engine._createBatch();
   batch.map.id = 0; // TODO: Do we need this??
   batch.map.callCount = 1;
-  batch.map.partialResponse = (document.all) ? "false" : "true"; // (window.XMLHttpRequest) ? "true" : "false";
+  batch.map.partialResponse = (document.all) ? "false" : "true";
   batch.isPoll = true;
   batch.rpcType = dwr.engine._pollType;
   batch.httpMethod = "POST";
@@ -552,22 +552,35 @@ dwr.engine._getTextFromCometIFrame = function() {
 
 /** @private Some more text might have come in, test and execute the new stuff */
 dwr.engine._processCometResponse = function(response) {
-  // See CVS history for extra debug lines to help sort problems with this code
-  if (dwr.engine._pollCometSize != response.length) {
-    var firstStartTag = response.indexOf("//#DWR-START#", dwr.engine._pollCometSize);
-    if (firstStartTag == -1) {
-      //dwr.engine._debug("No start tag. '" + response + "'. Searching next time from: " + response.length);
-      dwr.engine._pollCometSize = response.length;
+  if (dwr.engine._cometProcessed != response.length) {
+    if (response.length == 0) {
+      dwr.engine._cometProcessed = 0;
     }
     else {
-      var lastEndTag = response.lastIndexOf("//#DWR-END#");
-      if (lastEndTag != -1) {
-        dwr.engine._remoteEval(response.substring(firstStartTag + 13, lastEndTag));
-        // Skip the end tag too for next time
-        dwr.engine._pollCometSize = lastEndTag + 11;
+      // dwr.engine._debug("response.length=" + response.length + ", cometProcessed=" + dwr.engine._cometProcessed + ", extra chars=" + (response.length - dwr.engine._cometProcessed));
+      var firstStartTag = response.indexOf("//#DWR-START#", dwr.engine._cometProcessed);
+      // dwr.engine._debug("firstStartTag='" + firstStartTag + "'");
+      if (firstStartTag == -1) {
+        // dwr.engine._debug("Failed to find start tag when starting at " + firstStartTag + ". Dropping: " + (response.length - dwr.engine._cometProcessed) + " characters");
+        dwr.engine._cometProcessed = response.length;
       }
       else {
-        //dwr.engine._debug("No end tag. (yet) '" + response + "'");
+        var lastEndTag = response.lastIndexOf("//#DWR-END#");
+        // dwr.engine._debug("lastEndTag='" + lastEndTag + "'");
+        if (lastEndTag != -1) {
+          dwr.engine._remoteEval(response.substring(firstStartTag + 13, lastEndTag));
+          // Skip the end tag too for next time, remembering CR and LF
+          if (response.charCodeAt(lastEndTag + 11) == 13 && response.charCodeAt(lastEndTag + 12) == 10) {
+            dwr.engine._cometProcessed = lastEndTag + 13;
+          }
+          else {
+            dwr.engine._cometProcessed = lastEndTag + 11;
+          }
+          // dwr.engine._debug("setting _cometProcessed='" + dwr.engine._cometProcessed + "'");
+        }
+        else {
+          // dwr.engine._debug("No end tag. (yet) '" + response + "'");
+        }
       }
     }
   }
@@ -579,7 +592,6 @@ dwr.engine._sendData = function(batch) {
   dwr.engine._batches[batch.map.batchId] = batch;
   dwr.engine._batchesLength++;
   batch.completed = false;
-  dwr.engine._debug("Sending batchId=" + batch.map.batchId + " handlers=" + dwr.util.toDescriptiveString(batch.handlers));
 
   for (var i = 0; i < batch.preHooks.length; i++) {
     batch.preHooks[i]();
@@ -648,7 +660,7 @@ dwr.engine._sendData = function(batch) {
     if (batch.isPoll) {
       // Settings that vary if we are polling
       dwr.engine._pollFrame = batch.iframe;
-      dwr.engine._pollCometSize = 0;
+      dwr.engine._cometProcessed = 0;
     }
     request = dwr.engine._constructRequest(batch);
     if (batch.httpMethod == "GET") {
@@ -802,8 +814,7 @@ dwr.engine._stateChange = function(batch) {
 
   // Outside of the try/catch so errors propogate normally:
   dwr.engine._receivedBatch = batch;
-  if (toEval != null) dwr.engine._remoteEval(toEval);
-  else dwr.engine._debug("Nothing to eval");
+  dwr.engine._remoteEval(toEval);
   dwr.engine._receivedBatch = null;
 
   dwr.engine._clearUp(batch);
@@ -813,7 +824,7 @@ dwr.engine._stateChange = function(batch) {
 dwr.engine._remoteHandleCallback = function(batchId, callId, reply) {
   var batch = dwr.engine._batches[batchId];
   if (batch == null) {
-    dwr.engine._debug("batch == null in dwr.engine._remoteHandleCallback for batchId=" + batchId);
+    dwr.engine._debug("Warning: batch == null in remoteHandleCallback for batchId=" + batchId, true);
     return;
   }
   // Error handlers inside here indicate an error that is nothing to do
@@ -821,7 +832,7 @@ dwr.engine._remoteHandleCallback = function(batchId, callId, reply) {
   try {
     var handlers = batch.handlers[callId];
     if (!handlers) {
-      dwr.engine._debug("Missing handlers. callId=" + callId + ", handlers=" + dwr.util.toDescriptiveString(batch.handlers));
+      dwr.engine._debug("Warning: Missing handlers. callId=" + callId + ", handlers=" + dwr.util.toDescriptiveString(batch.handlers), true);
     }
     else if (typeof handlers.callback == "function") handlers.callback(reply);
   }
@@ -834,7 +845,7 @@ dwr.engine._remoteHandleCallback = function(batchId, callId, reply) {
 dwr.engine._remoteHandleException = function(batchId, callId, ex) {
   var batch = dwr.engine._batches[batchId];
   if (batch == null) {
-    dwr.engine._debug("batch == null in dwr.engine._remoteHandleException for batchId=" + batchId);
+    dwr.engine._debug("Warning: batch == null in remoteHandleException for batchId=" + batchId, true);
     return;
   }
   var handlers = batch.handlers[callId];
@@ -863,8 +874,14 @@ dwr.engine._remoteEndIFrameResponse = function(batchId) {
 
 /** @private This is a hack to make the context be this window */
 dwr.engine._remoteEval = function(script) {
-  if (script == null) return null;
-  dwr.engine._debug(script);
+  if (script == null) { return null; }
+  if (script == "") { dwr.engine._debug("Warning: blank script", true); return null; }
+  var debug = script;
+  debug = debug.replace(/\/\/#DWR-START#\r\n/g, "");
+  debug = debug.replace(/\/\/#DWR-END#\r\n/g, "");
+  debug = debug.replace(/\r/g, "");
+  debug = debug.replace(/\n/g, " ");
+  dwr.engine._debug("Exec: [" + debug + "]");
   return eval(script);
 };
 
@@ -880,8 +897,8 @@ dwr.engine._abortRequest = function(batch) {
 
 /** @private A call has finished by whatever means and we need to shut it all down. */
 dwr.engine._clearUp = function(batch) {
-  if (!batch) { dwr.engine._debug("null batch in dwr.engine._clearUp()", true); return; }
-  if (batch.completed == "true") { dwr.engine._debug("Double complete", true); return; }
+  if (!batch) { dwr.engine._debug("Warning: null batch in dwr.engine._clearUp()", true); return; }
+  if (batch.completed == "true") { dwr.engine._debug("Warning: Double complete", true); return; }
 
   // IFrame tidyup
   if (batch.div) batch.div.parentNode.removeChild(batch.div);
@@ -1138,18 +1155,22 @@ dwr.engine._newActiveXObject = function(axarray) {
 
 /** Used internally when some message needs to get to the programmer */
 dwr.engine._debug = function(message, stacktrace) {
-  var debug = document.getElementById("dwr-debug");
-  if (debug) {
-    var contents = message + "<br/>" + debug.innerHTML;
-    if (contents.length > 1024) contents = contents.substring(0, 1024);
-    debug.innerHTML = contents;
+  if (window.console) {
+    if (stacktrace && window.console.trace) window.console.trace();
+    window.console.log(message);
   }
+  else if (window.opera && window.opera.postError) {
+    window.opera.postError(message);
+  }
+  // else if (window.navigator.product == "Gecko") {
+  //  window.dump(message + "\n");
+  // }
   else {
-    if (window.console) {
-      if (stacktrace && window.console.trace) window.console.trace();
-      window.console.log(message);
+    var debug = document.getElementById("dwr-debug");
+    if (debug) {
+      var contents = message + "<br/>" + debug.innerHTML;
+      if (contents.length > 2048) contents = contents.substring(0, 2048);
+      debug.innerHTML = contents;
     }
-    else if (window.opera && window.opera.postError) window.opera.postError(message);
-    //else if (window.navigator.product == "Gecko") window.dump(message + "\n");
   }
 };

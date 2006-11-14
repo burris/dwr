@@ -1144,18 +1144,22 @@ dwr.util._importNode = function(doc, importedNode, deep) {
 
 /** Used internally when some message needs to get to the programmer */
 dwr.util._debug = function(message, stacktrace) {
-  var debug = document.getElementById("dwr-debug");
-  if (debug) {
-    var contents = message + "<br/>" + debug.innerHTML;
-    if (contents.length > 1024) contents = contents.substring(0, 1024);
-    debug.innerHTML = contents;
+  if (window.console) {
+    if (stacktrace && window.console.trace) window.console.trace();
+    window.console.log(message);
   }
+  else if (window.opera && window.opera.postError) {
+    window.opera.postError(message);
+  }
+  // else if (window.navigator.product == "Gecko") {
+  //  window.dump(message + "\n");
+  // }
   else {
-    if (window.console) {
-      if (stacktrace && window.console.trace) window.console.trace();
-      window.console.log(message);
+    var debug = document.getElementById("dwr-debug");
+    if (debug) {
+      var contents = message + "<br/>" + debug.innerHTML;
+      if (contents.length > 2048) contents = contents.substring(0, 2048);
+      debug.innerHTML = contents;
     }
-    else if (window.opera && window.opera.postError) window.opera.postError(message);
-    //else if (window.navigator.product == "Gecko") window.dump(message + "\n");
   }
 };
