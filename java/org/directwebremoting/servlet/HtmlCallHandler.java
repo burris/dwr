@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.directwebremoting.dwrp.HtmlCallMarshaller;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.Handler;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
 
@@ -46,7 +45,7 @@ public class HtmlCallHandler implements Handler
         }
         catch (Exception ex)
         {
-            EnginePrivate.remoteHandleBatchException(response, ex);
+            htmlCallMarshaller.marshallException(request, response, ex);
             return;
         }
 

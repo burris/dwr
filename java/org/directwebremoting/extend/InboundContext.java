@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.util.Logger;
 
 /**
@@ -76,9 +76,9 @@ public final class InboundContext
             log.warn("Duplicate variable called: " + key);
         }
 
-        String paramPrefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum +
-                             ConversionConstants.INBOUND_CALLNUM_SUFFIX +
-                             ConversionConstants.INBOUND_KEY_PARAM;
+        String paramPrefix = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum +
+                             ProtocolConstants.INBOUND_CALLNUM_SUFFIX +
+                             ProtocolConstants.INBOUND_KEY_PARAM;
 
         if (key.startsWith(paramPrefix))
         {
@@ -157,7 +157,7 @@ public final class InboundContext
     public int getParameterCount(int callNum)
     {
         int count = 0;
-        String prefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + ConversionConstants.INBOUND_CALLNUM_SUFFIX + ConversionConstants.INBOUND_KEY_PARAM;
+        String prefix = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum + ProtocolConstants.INBOUND_CALLNUM_SUFFIX + ProtocolConstants.INBOUND_KEY_PARAM;
         for (Iterator it = variables.keySet().iterator(); it.hasNext();)
         {
             String key = (String) it.next();
@@ -177,9 +177,9 @@ public final class InboundContext
      */
     public InboundVariable getParameter(int callNum, int index)
     {
-        String key = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum +
-                     ConversionConstants.INBOUND_CALLNUM_SUFFIX +
-                     ConversionConstants.INBOUND_KEY_PARAM + index;
+        String key = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum +
+                     ProtocolConstants.INBOUND_CALLNUM_SUFFIX +
+                     ProtocolConstants.INBOUND_KEY_PARAM + index;
 
         return (InboundVariable) variables.get(key);
     }

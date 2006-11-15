@@ -63,7 +63,7 @@ import org.directwebremoting.util.Messages;
 public abstract class BaseCallMarshaller implements Marshaller
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.Marshaller#marshallInbound(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.directwebremoting.extend.Marshaller#marshallInbound(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public Calls marshallInbound(HttpServletRequest request, HttpServletResponse response) throws IOException, ServerException
     {
@@ -96,8 +96,8 @@ public abstract class BaseCallMarshaller implements Marshaller
             {
                 String key = (String) it.next();
                 InboundVariable value = inctx.getInboundVariable(key);
-                if (key.startsWith(ConversionConstants.INBOUND_CALLNUM_PREFIX) &&
-                    key.indexOf(ConversionConstants.INBOUND_CALLNUM_SUFFIX + ConversionConstants.INBOUND_KEY_ENV) != -1)
+                if (key.startsWith(ProtocolConstants.INBOUND_CALLNUM_PREFIX) &&
+                    key.indexOf(ProtocolConstants.INBOUND_CALLNUM_SUFFIX + ProtocolConstants.INBOUND_KEY_ENV) != -1)
                 {
                     buffer.append(key + '=' + value.toString() + ", ");
                 }
@@ -301,10 +301,10 @@ public abstract class BaseCallMarshaller implements Marshaller
         // clashes
         RealScriptSession scriptSession = (RealScriptSession) WebContextFactory.get().getScriptSession();
 
-        out.println(ConversionConstants.SCRIPT_CALL_INSERT);
+        out.println(ProtocolConstants.SCRIPT_CALL_INSERT);
         scriptSession.addScriptConduit(conduit);
         scriptSession.removeScriptConduit(conduit);
-        out.println(ConversionConstants.SCRIPT_CALL_REPLY);
+        out.println(ProtocolConstants.SCRIPT_CALL_REPLY);
 
         String batchId = replies.getBatchId();
         for (int i = 0; i < replies.getReplyCount(); i++)
@@ -351,6 +351,34 @@ public abstract class BaseCallMarshaller implements Marshaller
         }
 
         sendOutboundScriptSuffix(out, replies.getBatchId());
+    }
+
+    /**
+     * Try to find a batchId to send to the client so it knows what broke 
+     * @param request The incoming Http request
+     * @param response An Ajax response, XML, JSON, Javascript, etc.
+     * @param ex The exception that we wish to propogate to the client
+     * @throws IOException If writing to the output stream fails
+     */
+    public void marshallException(HttpServletRequest request, HttpServletResponse response, Exception ex) throws IOException
+    {
+        response.setContentType(getOutboundMimeType());
+        PrintWriter out = response.getWriter();
+        Batch batch = (Batch) request.getAttribute(ATTRIBUTE_BATCH);
+
+        String batchId;
+        if (batch != null && batch.getCalls() != null)
+        {
+            batchId = batch.getCalls().getBatchId();
+        }
+        else
+        {
+            batchId = null;
+        }
+
+        sendOutboundScriptPrefix(out, batchId);
+        EnginePrivate.remoteHandleBatchException(response, batchId, ex);
+        sendOutboundScriptSuffix(out, batchId);
     }
 
     /**

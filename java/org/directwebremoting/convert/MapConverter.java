@@ -21,7 +21,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ParseUtil;
+import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.dwrp.ObjectOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.ConverterManager;
@@ -59,19 +60,19 @@ public class MapConverter implements Converter
         String value = iv.getValue();
 
         // If the text is null then the whole bean is null
-        if (value.trim().equals(ConversionConstants.INBOUND_NULL))
+        if (value.trim().equals(ProtocolConstants.INBOUND_NULL))
         {
             return null;
         }
 
-        if (!value.startsWith(ConversionConstants.INBOUND_MAP_START))
+        if (!value.startsWith(ProtocolConstants.INBOUND_MAP_START))
         {
-            throw new IllegalArgumentException(Messages.getString("MapConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
+            throw new IllegalArgumentException(Messages.getString("MapConverter.FormatError", ProtocolConstants.INBOUND_MAP_START));
         }
 
-        if (!value.endsWith(ConversionConstants.INBOUND_MAP_END))
+        if (!value.endsWith(ProtocolConstants.INBOUND_MAP_END))
         {
-            throw new IllegalArgumentException(Messages.getString("MapConverter.FormatError", ConversionConstants.INBOUND_MAP_END));
+            throw new IllegalArgumentException(Messages.getString("MapConverter.FormatError", ProtocolConstants.INBOUND_MAP_END));
         }
 
         value = value.substring(1, value.length() - 1);
@@ -121,16 +122,16 @@ public class MapConverter implements Converter
                     continue;
                 }
 
-                int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
+                int colonpos = token.indexOf(ProtocolConstants.INBOUND_MAP_ENTRY);
                 if (colonpos == -1)
                 {
-                    throw new MarshallException(paramType, Messages.getString("MapConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
+                    throw new MarshallException(paramType, Messages.getString("MapConverter.MissingSeparator", ProtocolConstants.INBOUND_MAP_ENTRY, token));
                 }
 
                 // Convert the value part of the token by splitting it into the
                 // type and value (as passed in by Javascript)
                 String valStr = token.substring(colonpos + 1).trim();
-                String[] splitIv = LocalUtil.splitInbound(valStr);
+                String[] splitIv = ParseUtil.splitInbound(valStr);
                 String splitIvValue = splitIv[LocalUtil.INBOUND_INDEX_VALUE];
                 String splitIvType = splitIv[LocalUtil.INBOUND_INDEX_TYPE];
                 InboundVariable valIv = new InboundVariable(incx, null, splitIvType, splitIvValue);
@@ -142,7 +143,7 @@ public class MapConverter implements Converter
                 String keyStr = token.substring(0, colonpos).trim();
                 //String[] keySplit = LocalUtil.splitInbound(keyStr);
                 //InboundVariable keyIv = new InboundVariable(incx, splitIv[LocalUtil.INBOUND_INDEX_TYPE], splitIv[LocalUtil.INBOUND_INDEX_VALUE]);
-                InboundVariable keyIv = new InboundVariable(incx, null, ConversionConstants.TYPE_STRING, keyStr);
+                InboundVariable keyIv = new InboundVariable(incx, null, ProtocolConstants.TYPE_STRING, keyStr);
                 Object key = config.convertInbound(keyType, keyIv, inctx, keyThc);
 
                 map.put(key, val);

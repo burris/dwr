@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
-import org.directwebremoting.dwrp.ConversionConstants;
 
 /**
  * Various utilities, mostly to make up for JDK 1.4 functionallity that is not
@@ -557,32 +556,6 @@ public final class LocalUtil
         }
 
         throw new IllegalArgumentException("Unsupported conversion type: " + paramType.getName());
-    }
-
-    /**
-     * The javascript outbound marshaller prefixes the toString value with a
-     * colon and the original type information. This undoes that.
-     * @param data The string to be split up
-     * @return A string array containing the split data
-     */
-    public static String[] splitInbound(String data)
-    {
-        String[] reply = new String[2];
-
-        int colon = data.indexOf(ConversionConstants.INBOUND_TYPE_SEPARATOR);
-        if (colon == -1)
-        {
-            log.error("Missing : in conversion data (" + data + ')');
-            reply[LocalUtil.INBOUND_INDEX_TYPE] = ConversionConstants.TYPE_STRING;
-            reply[LocalUtil.INBOUND_INDEX_VALUE] = data;
-        }
-        else
-        {
-            reply[LocalUtil.INBOUND_INDEX_TYPE] = data.substring(0, colon);
-            reply[LocalUtil.INBOUND_INDEX_VALUE] = data.substring(colon + 1);
-        }
-
-        return reply;
     }
 
     /**

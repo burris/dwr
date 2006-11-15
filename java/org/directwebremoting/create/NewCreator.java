@@ -72,7 +72,6 @@ public class NewCreator extends AbstractCreator implements Creator
 
     /**
      * Sets the class name to create.
-     *
      * @param className The name of the class to create
      */
     public void setClassName(String className)
@@ -82,7 +81,6 @@ public class NewCreator extends AbstractCreator implements Creator
 
     /**
      * Gets the name of the class to create.
-     *
      * @return The name of the class to create
      */
     public String getClassName()

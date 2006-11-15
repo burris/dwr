@@ -20,7 +20,7 @@ package org.directwebremoting.dwrp;
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @noinspection InterfaceNeverImplemented
  */
-public interface ConversionConstants
+public interface ProtocolConstants
 {
     /**
      * The name for reference types from javascript

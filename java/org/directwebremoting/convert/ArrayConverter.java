@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.directwebremoting.dwrp.ArrayOutboundVariable;
-import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ParseUtil;
+import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.ConverterManager;
@@ -60,16 +61,16 @@ public class ArrayConverter extends BaseV20Converter implements Converter
         }
 
         String value = iv.getValue();
-        if (value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
+        if (value.startsWith(ProtocolConstants.INBOUND_ARRAY_START))
         {
             value = value.substring(1);
         }
-        if (value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
+        if (value.endsWith(ProtocolConstants.INBOUND_ARRAY_END))
         {
             value = value.substring(0, value.length() - 1);
         }
 
-        StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
+        StringTokenizer st = new StringTokenizer(value, ProtocolConstants.INBOUND_ARRAY_SEPARATOR);
         int size = st.countTokens();
 
         Class componentType = paramType.getComponentType();
@@ -84,7 +85,7 @@ public class ArrayConverter extends BaseV20Converter implements Converter
         for (int i = 0; i < size; i++)
         {
             String token = st.nextToken();
-            String[] split = LocalUtil.splitInbound(token);
+            String[] split = ParseUtil.splitInbound(token);
             String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
             String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
 

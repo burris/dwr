@@ -209,7 +209,7 @@ public class Batch
         calls = new Calls();
 
         // Work out how many calls are in this packet
-        String callStr = (String) paramMap.remove(ConversionConstants.INBOUND_CALL_COUNT);
+        String callStr = (String) paramMap.remove(ProtocolConstants.INBOUND_CALL_COUNT);
         int callCount;
         try
         {
@@ -229,12 +229,12 @@ public class Batch
             InboundContext inctx = new InboundContext();
             inboundContexts.add(inctx);
 
-            String prefix = ConversionConstants.INBOUND_CALLNUM_PREFIX + callNum + ConversionConstants.INBOUND_CALLNUM_SUFFIX;
+            String prefix = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum + ProtocolConstants.INBOUND_CALLNUM_SUFFIX;
 
             // The special values
-            call.setCallId((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_ID));
-            call.setScriptName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_SCRIPTNAME));
-            call.setMethodName((String) paramMap.remove(prefix + ConversionConstants.INBOUND_KEY_METHODNAME));
+            call.setCallId((String) paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_ID));
+            call.setScriptName((String) paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_SCRIPTNAME));
+            call.setMethodName((String) paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_METHODNAME));
 
             // Look for parameters to this method
             for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
@@ -245,7 +245,7 @@ public class Batch
                 if (key.startsWith(prefix))
                 {
                     String data = (String) entry.getValue();
-                    String[] split = LocalUtil.splitInbound(data);
+                    String[] split = ParseUtil.splitInbound(data);
 
                     String value = split[LocalUtil.INBOUND_INDEX_VALUE];
                     String type = split[LocalUtil.INBOUND_INDEX_TYPE];
@@ -255,10 +255,10 @@ public class Batch
             }
         }
 
-        calls.setBatchId((String) paramMap.remove(ConversionConstants.INBOUND_KEY_BATCHID));
-        httpSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_HTTP_SESSIONID);
-        scriptSessionId = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
-        page = (String) paramMap.remove(ConversionConstants.INBOUND_KEY_PAGE);
+        calls.setBatchId((String) paramMap.remove(ProtocolConstants.INBOUND_KEY_BATCHID));
+        httpSessionId = (String) paramMap.remove(ProtocolConstants.INBOUND_KEY_HTTP_SESSIONID);
+        scriptSessionId = (String) paramMap.remove(ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
+        page = (String) paramMap.remove(ProtocolConstants.INBOUND_KEY_PAGE);
 
         setSpareParameters(paramMap);
     }

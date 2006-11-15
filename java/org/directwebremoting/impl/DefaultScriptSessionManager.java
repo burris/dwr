@@ -40,6 +40,8 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      */
     public RealScriptSession getScriptSession(String id)
     {
+        maybeCheckTimeouts();
+
         DefaultScriptSession session;
 
         synchronized (sessionLock)
@@ -148,6 +150,20 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     }
 
     /**
+     * If we call {@link #checkTimeouts()} too often is could bog things down so
+     * we only check every one in a while (default 30 secs); this checks to see
+     * of we need to check, and checks if we do.
+     */
+    protected void maybeCheckTimeouts()
+    {
+        long now = System.currentTimeMillis();
+        if (now - scriptSessionCheckTime > lastSessionCheckAt)
+        {
+            checkTimeouts();
+        }
+    }
+
+    /**
      * Do a check on all the known sessions to see if and have timeout and need
      * removing.
      */
@@ -161,6 +177,11 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             for (Iterator it = sessionMap.values().iterator(); it.hasNext();)
             {
                 DefaultScriptSession session = (DefaultScriptSession) it.next();
+
+                if (session.isInvalidated())
+                {
+                    continue;
+                }
 
                 long age = now - session.getLastAccessedTime();
                 if (age > scriptSessionTimeout)
@@ -203,6 +224,19 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     }
 
     /**
+     * @param scriptSessionCheckTime the scriptSessionCheckTime to set
+     */
+    public void setScriptSessionCheckTime(long scriptSessionCheckTime)
+    {
+        this.scriptSessionCheckTime = scriptSessionCheckTime;
+    }
+
+    /**
+     * By default we check for sessions that need expiring every 30 seconds
+     */
+    protected static final long DEFAULT_SESSION_CHECK_TIME = 30000;
+
+    /**
      * How we turn pages into the canonical form.
      */
     protected PageNormalizer pageNormalizer;
@@ -211,6 +245,17 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      * How long do we wait before we timeout script sessions?
      */
     protected long scriptSessionTimeout = DEFAULT_TIMEOUT_MILLIS;
+
+    /**
+     * How long do we wait before we timeout script sessions?
+     */
+    protected long scriptSessionCheckTime = DEFAULT_SESSION_CHECK_TIME;
+
+    /**
+     * We check for sessions that need timing out every
+     * {@link #scriptSessionCheckTime}; this is when we last checked.
+     */
+    protected long lastSessionCheckAt = System.currentTimeMillis();
 
     /**
      * What we synchronize against when we want to access either sessionMap or

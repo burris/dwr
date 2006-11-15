@@ -21,12 +21,11 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.impl.DefaultRemoter;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.Logger;
-import org.directwebremoting.util.MimeConstants;
 
 /**
  * An abstraction of the DWREngine Javascript class for use by
@@ -139,24 +138,23 @@ public class EnginePrivate extends ScriptProxy
     /**
      * Call the dwr.engine._remoteHandleServerException() in the browser
      * @param response The HTTP response to write to
+     * @param batchId The identifier of the batch that we are handling a response for
      * @param ex The execption from which we make a reply
      * @throws IOException If writing fails.
      */
-    public static void remoteHandleBatchException(HttpServletResponse response, Exception ex) throws IOException
+    public static void remoteHandleBatchException(HttpServletResponse response, String batchId, Exception ex) throws IOException
     {
-        response.setContentType(MimeConstants.MIME_PLAIN);
         PrintWriter out = response.getWriter();
 
         String output = JavascriptUtil.escapeJavaScript(ex.getMessage());
         String error = "{ type:'" + ex.getClass().getName() + "', message:'" + output + "' }";
-
-        // We know nothing about the browser state - this needs to work in an
-        // HTML context as well as a Javascript context
-        out.println("// <script>");
-        out.println(ConversionConstants.SCRIPT_CALL_REPLY);
+        if (batchId != null)
+        {
+            error += ", '" + batchId + "'";
+        }
+        out.println(ProtocolConstants.SCRIPT_CALL_REPLY);
         out.println("if (window.dwr) dwr.engine._remoteHandleBatchException(" + error + ");");
         out.println("else if (window.parent.dwr) window.parent.dwr.engine._remoteHandleBatchException(" + error + ");");
-        out.println("// </script>");
     }
 
     /**
@@ -203,7 +201,7 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteBeginIFrameResponse(String batchId)
     {
-        return "window.parent.dwr.engine._remoteBeginIFrameResponse(this.frameElement, '" + batchId + "');";
+        return "window.parent.dwr.engine._remoteBeginIFrameResponse(this.frameElement"+(batchId == null?"":", '" + batchId+"'") + ");";
     }
 
     /**
@@ -213,7 +211,7 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteEndIFrameResponse(String batchId)
     {
-        return "window.parent.dwr.engine._remoteEndIFrameResponse('" + batchId + "');";
+        return "window.parent.dwr.engine._remoteEndIFrameResponse("+(batchId == null?"":"'" + batchId+"'")+");";
     }
 
     /**

@@ -115,7 +115,7 @@ public class ParseUtil
             // So get the first
             String key = (String) it.next();
             String value = (String) paramMap.get(key);
-            String line = key + ConversionConstants.INBOUND_DECL_SEPARATOR + value;
+            String line = key + ProtocolConstants.INBOUND_DECL_SEPARATOR + value;
 
             StringTokenizer st = new StringTokenizer(line, "\n");
             while (st.hasMoreTokens())
@@ -142,7 +142,7 @@ public class ParseUtil
             return;
         }
 
-        int sep = line.indexOf(ConversionConstants.INBOUND_DECL_SEPARATOR);
+        int sep = line.indexOf(ProtocolConstants.INBOUND_DECL_SEPARATOR);
         if (sep == -1)
         {
             log.warn("Missing separator in POST line: " + line);
@@ -150,7 +150,7 @@ public class ParseUtil
         else
         {
             String key = line.substring(0, sep);
-            String value = line.substring(sep  + ConversionConstants.INBOUND_DECL_SEPARATOR.length());
+            String value = line.substring(sep  + ProtocolConstants.INBOUND_DECL_SEPARATOR.length());
 
             paramMap.put(key, value);
         }
@@ -186,6 +186,32 @@ public class ParseUtil
         }
 
         return convertedMap;
+    }
+
+    /**
+     * The javascript outbound marshaller prefixes the toString value with a
+     * colon and the original type information. This undoes that.
+     * @param data The string to be split up
+     * @return A string array containing the split data
+     */
+    public static String[] splitInbound(String data)
+    {
+        String[] reply = new String[2];
+    
+        int colon = data.indexOf(ProtocolConstants.INBOUND_TYPE_SEPARATOR);
+        if (colon == -1)
+        {
+            log.error("Missing : in conversion data (" + data + ')');
+            reply[LocalUtil.INBOUND_INDEX_TYPE] = ProtocolConstants.TYPE_STRING;
+            reply[LocalUtil.INBOUND_INDEX_VALUE] = data;
+        }
+        else
+        {
+            reply[LocalUtil.INBOUND_INDEX_TYPE] = data.substring(0, colon);
+            reply[LocalUtil.INBOUND_INDEX_VALUE] = data.substring(colon + 1);
+        }
+    
+        return reply;
     }
 
     /**

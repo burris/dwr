@@ -832,7 +832,7 @@ dwr.engine._remoteHandleCallback = function(batchId, callId, reply) {
   try {
     var handlers = batch.handlers[callId];
     if (!handlers) {
-      dwr.engine._debug("Warning: Missing handlers. callId=" + callId + ", handlers=" + dwr.util.toDescriptiveString(batch.handlers), true);
+      dwr.engine._debug("Warning: Missing handlers. callId=" + callId, true);
     }
     else if (typeof handlers.callback == "function") handlers.callback(reply);
   }
@@ -855,9 +855,17 @@ dwr.engine._remoteHandleException = function(batchId, callId, ex) {
 };
 
 /** @private This method is called by Javascript that is emitted by server */
-dwr.engine._remoteHandleBatchException = function(ex) {
+dwr.engine._remoteHandleBatchException = function(ex, batchId) {
+  var searchBatch = (dwr.engine._receivedBatch == null && batchId != null);
+  if (searchBatch) {
+    dwr.engine._receivedBatch = dwr.engine._batches[batchId];
+  }
   if (ex.message == undefined) ex.message = "";
   dwr.engine._handleError(dwr.engine._receivedBatch, ex);
+  if (searchBatch) {
+    dwr.engine._receivedBatch = null;
+    dwr.engine._clearUp(dwr.engine._batches[batchId]);
+  }
 };
 
 /** @private An IFrame reply is about to start */

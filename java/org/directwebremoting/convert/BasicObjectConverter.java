@@ -23,7 +23,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ParseUtil;
+import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.dwrp.ObjectOutboundVariable;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.InboundContext;
@@ -54,19 +55,19 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
         String value = iv.getValue();
 
         // If the text is null then the whole bean is null
-        if (value.trim().equals(ConversionConstants.INBOUND_NULL))
+        if (value.trim().equals(ProtocolConstants.INBOUND_NULL))
         {
             return null;
         }
 
-        if (!value.startsWith(ConversionConstants.INBOUND_MAP_START))
+        if (!value.startsWith(ProtocolConstants.INBOUND_MAP_START))
         {
-            throw new MarshallException(paramType, Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
+            throw new MarshallException(paramType, Messages.getString("BeanConverter.FormatError", ProtocolConstants.INBOUND_MAP_START));
         }
 
-        if (!value.endsWith(ConversionConstants.INBOUND_MAP_END))
+        if (!value.endsWith(ProtocolConstants.INBOUND_MAP_END))
         {
-            throw new MarshallException(paramType, Messages.getString("BeanConverter.FormatError", ConversionConstants.INBOUND_MAP_START));
+            throw new MarshallException(paramType, Messages.getString("BeanConverter.FormatError", ProtocolConstants.INBOUND_MAP_START));
         }
 
         value = value.substring(1, value.length() - 1);
@@ -128,7 +129,7 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
 
                 Class propType = property.getPropertyType();
 
-                String[] split = LocalUtil.splitInbound(val);
+                String[] split = ParseUtil.splitInbound(val);
                 String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
                 String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
 
@@ -356,7 +357,7 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
     protected Map extractInboundTokens(Class paramType, String value) throws MarshallException
     {
         Map tokens = new HashMap();
-        StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_MAP_SEPARATOR);
+        StringTokenizer st = new StringTokenizer(value, ProtocolConstants.INBOUND_MAP_SEPARATOR);
         int size = st.countTokens();
 
         for (int i = 0; i < size; i++)
@@ -367,10 +368,10 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
                 continue;
             }
 
-            int colonpos = token.indexOf(ConversionConstants.INBOUND_MAP_ENTRY);
+            int colonpos = token.indexOf(ProtocolConstants.INBOUND_MAP_ENTRY);
             if (colonpos == -1)
             {
-                throw new MarshallException(paramType, Messages.getString("BeanConverter.MissingSeparator", ConversionConstants.INBOUND_MAP_ENTRY, token));
+                throw new MarshallException(paramType, Messages.getString("BeanConverter.MissingSeparator", ProtocolConstants.INBOUND_MAP_ENTRY, token));
             }
 
             String key = token.substring(0, colonpos).trim();

@@ -27,7 +27,8 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.directwebremoting.dwrp.ArrayOutboundVariable;
-import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ParseUtil;
+import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.ConverterManager;
@@ -64,19 +65,19 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         String value = iv.getValue();
 
         // If the text is null then the whole bean is null
-        if (value.trim().equals(ConversionConstants.INBOUND_NULL))
+        if (value.trim().equals(ProtocolConstants.INBOUND_NULL))
         {
             return null;
         }
 
-        if (!value.startsWith(ConversionConstants.INBOUND_ARRAY_START))
+        if (!value.startsWith(ProtocolConstants.INBOUND_ARRAY_START))
         {
-            throw new MarshallException(paramType, Messages.getString("CollectionConverter.FormatError", ConversionConstants.INBOUND_ARRAY_START));
+            throw new MarshallException(paramType, Messages.getString("CollectionConverter.FormatError", ProtocolConstants.INBOUND_ARRAY_START));
         }
 
-        if (!value.endsWith(ConversionConstants.INBOUND_ARRAY_END))
+        if (!value.endsWith(ProtocolConstants.INBOUND_ARRAY_END))
         {
-            throw new MarshallException(paramType, Messages.getString("CollectionConverter.FormatError", ConversionConstants.INBOUND_ARRAY_END));
+            throw new MarshallException(paramType, Messages.getString("CollectionConverter.FormatError", ProtocolConstants.INBOUND_ARRAY_END));
         }
 
         value = value.substring(1, value.length() - 1);
@@ -135,13 +136,13 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             // is referenced later nested down in the conversion process.
             inctx.addConverted(iv, paramType, col);
 
-            StringTokenizer st = new StringTokenizer(value, ConversionConstants.INBOUND_ARRAY_SEPARATOR);
+            StringTokenizer st = new StringTokenizer(value, ProtocolConstants.INBOUND_ARRAY_SEPARATOR);
             int size = st.countTokens();
             for (int i = 0; i < size; i++)
             {
                 String token = st.nextToken();
 
-                String[] split = LocalUtil.splitInbound(token);
+                String[] split = ParseUtil.splitInbound(token);
                 String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
                 String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
 

@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
@@ -44,7 +44,7 @@ public class DateConverter extends BaseV20Converter implements Converter
         String value = iv.getValue();
 
         // If the text is null then the whole bean is null
-        if (value.trim().equals(ConversionConstants.INBOUND_NULL))
+        if (value.trim().equals(ProtocolConstants.INBOUND_NULL))
         {
             return null;
         }

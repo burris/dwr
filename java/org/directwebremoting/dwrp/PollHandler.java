@@ -53,6 +53,16 @@ import org.directwebremoting.util.MimeConstants;
 public class PollHandler implements Handler
 {
     /**
+     * 
+     */
+    public static final String HTML_SCRIPT_PREFIX = "<html><body><script type='text/javascript'>";
+
+    /**
+     * 
+     */
+    public static final String HTML_SCRIPT_POSTFIX = "</script></body></html>";
+
+    /**
      * @param plain Are we using plain javascript or html wrapped javascript
      */
     public PollHandler(boolean plain)
@@ -87,15 +97,24 @@ public class PollHandler implements Handler
             }
             catch (Exception ex)
             {
-                EnginePrivate.remoteHandleBatchException(response, ex);
+                response.setContentType(plain ? MimeConstants.MIME_PLAIN : MimeConstants.MIME_HTML);
+                if (!plain)
+                {
+                    response.getWriter().println(HTML_SCRIPT_PREFIX);
+                }
+                EnginePrivate.remoteHandleBatchException(response, null, ex);
+                if (!plain)
+                {
+                    response.getWriter().println(HTML_SCRIPT_POSTFIX);
+                }
                 return;
             }
         }
 
-        String batchId = extractParameter(request, parameters, ATTRIBUTE_CALL_ID, ConversionConstants.INBOUND_KEY_BATCHID);
-        String scriptId = extractParameter(request, parameters, ATTRIBUTE_SESSION_ID, ConversionConstants.INBOUND_KEY_SCRIPT_SESSIONID);
-        String page = extractParameter(request, parameters, ATTRIBUTE_PAGE, ConversionConstants.INBOUND_KEY_PAGE);
-        String prString = extractParameter(request, parameters, ATTRIBUTE_PARTIAL_RESPONSE, ConversionConstants.INBOUND_KEY_PARTIAL_RESPONSE);
+        String batchId = extractParameter(request, parameters, ATTRIBUTE_CALL_ID, ProtocolConstants.INBOUND_KEY_BATCHID);
+        String scriptId = extractParameter(request, parameters, ATTRIBUTE_SESSION_ID, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
+        String page = extractParameter(request, parameters, ATTRIBUTE_PAGE, ProtocolConstants.INBOUND_KEY_PAGE);
+        String prString = extractParameter(request, parameters, ATTRIBUTE_PARTIAL_RESPONSE, ProtocolConstants.INBOUND_KEY_PARTIAL_RESPONSE);
         boolean partialResponse = Boolean.valueOf(prString).booleanValue();
 
         // Various bits of parseResponse need to be stashed away places
@@ -296,16 +315,16 @@ public class PollHandler implements Handler
         {
             if (!plain)
             {
-                out.println("<html><body><script type='text/javascript'>");
+                out.println(HTML_SCRIPT_PREFIX);
             }
 
-            out.println(ConversionConstants.SCRIPT_START_MARKER);
+            out.println(ProtocolConstants.SCRIPT_START_MARKER);
             out.println(script);
-            out.println(ConversionConstants.SCRIPT_END_MARKER);
+            out.println(ProtocolConstants.SCRIPT_END_MARKER);
 
             if (!plain)
             {
-                out.println("</script></body></html>");
+                out.println(HTML_SCRIPT_POSTFIX);
             }
 
             if (out.checkError())

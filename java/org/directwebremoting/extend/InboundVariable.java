@@ -15,7 +15,7 @@
  */
 package org.directwebremoting.extend;
 
-import org.directwebremoting.dwrp.ConversionConstants;
+import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
@@ -53,9 +53,9 @@ public final class InboundVariable
     {
         int maxDepth = 0;
 
-        if (ConversionConstants.TYPE_REFERENCE.equals(type))
+        if (ProtocolConstants.TYPE_REFERENCE.equals(type))
         {
-            while (ConversionConstants.TYPE_REFERENCE.equals(type))
+            while (ProtocolConstants.TYPE_REFERENCE.equals(type))
             {
                 InboundVariable cd = context.getInboundVariable(value);
                 if (cd == null)
@@ -125,7 +125,7 @@ public final class InboundVariable
     public boolean isNull()
     {
         forceDereference();
-        return type.equals(ConversionConstants.INBOUND_NULL);
+        return type.equals(ProtocolConstants.INBOUND_NULL);
     }
 
     /**
@@ -143,7 +143,7 @@ public final class InboundVariable
     public String toString()
     {
         forceDereference();
-        return type + ConversionConstants.INBOUND_TYPE_SEPARATOR + value;
+        return type + ProtocolConstants.INBOUND_TYPE_SEPARATOR + value;
     }
 
     /* (non-Javadoc)

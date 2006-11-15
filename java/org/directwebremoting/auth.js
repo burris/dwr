@@ -139,9 +139,22 @@ dwr.auth._deepCopy = function(source) {
 // make a copy of the batch that we can replay later
 dwr.auth._cloneBatch = function(batch) {
   var req = batch.req;
-  batch.req = null;
+  var div = batch.div;
+  var form = batch.form;
+  var iframe = batch.iframe;
+  var script = batch.script;
+  delete batch.req;
+  delete batch.div;
+  delete batch.form;
+  delete batch.iframe;
+  delete batch.script;
   var clone = dwr.auth._deepCopy(batch);
   batch.req = req;
+  batch.div = div;
+  batch.form = form;
+  batch.iframe = iframe;
+  batch.script = script;
+  
   clone.completed = false;
   clone.map.httpSessionId = dwr.engine._getJSessionId();
   clone.map.scriptSessionId = dwr.engine._getScriptSessionId();
