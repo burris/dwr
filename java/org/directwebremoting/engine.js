@@ -847,7 +847,6 @@ dwr.engine._remoteHandleException = function(batchId, callId, ex) {
   if (ex.message == undefined) ex.message = "";
   if (typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(ex.message, ex);
   else if (typeof batch.errorHandler == "function") batch.errorHandler(ex.message, ex);
-  else if (dwr.engine._errorHandler) dwr.engine._errorHandler(ex.message, ex);
 };
 
 /** @private This method is called by Javascript that is emitted by server */
