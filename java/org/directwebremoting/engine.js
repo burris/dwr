@@ -252,9 +252,6 @@ dwr.engine._getScriptSessionId = function() {
 /** A function to call if something fails. */
 dwr.engine._errorHandler = dwr.engine.defaultErrorHandler;
 
-/** By default exceptions are handled by the errorHandler */
-dwr.engine._exceptionHandler = dwr.engine.defaultErrorHandler;
-
 /** For debugging when something unexplained happens. */
 dwr.engine._warningHandler = dwr.engine.defaultWarningHandler;
 
@@ -844,14 +841,13 @@ dwr.engine._remoteHandleCallback = function(batchId, callId, reply) {
 /** @private This method is called by Javascript that is emitted by server */
 dwr.engine._remoteHandleException = function(batchId, callId, ex) {
   var batch = dwr.engine._batches[batchId];
-  if (batch == null) {
-    dwr.engine._debug("Warning: batch == null in remoteHandleException for batchId=" + batchId, true);
-    return;
-  }
+  if (batch == null) { dwr.engine._debug("Warning: null batch in remoteHandleException", true); return; }
   var handlers = batch.handlers[callId];
+  if (handlers == null) { dwr.engine._debug("Warning: null handlers in remoteHandleException", true); return; }
   if (ex.message == undefined) ex.message = "";
-  if (handlers && typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(ex.message, ex);
-  else if (dwr.engine._exceptionHandler) dwr.engine._exceptionHandler(ex.message, ex);
+  if (typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(ex.message, ex);
+  else if (typeof batch.errorHandler == "function") batch.errorHandler(ex.message, ex);
+  else if (dwr.engine._errorHandler) dwr.engine._errorHandler(ex.message, ex);
 };
 
 /** @private This method is called by Javascript that is emitted by server */
