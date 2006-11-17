@@ -27,7 +27,7 @@ function testError1() {
     else if (ex == null) failure("ex is null");
     else if (ex.message == null) failure("ex.message is null");
     else if (ex.message != message) failure("ex.message [" + ex.message + "] != message [" + message + "]");
-    else if (ex.name != "java.lang.NullPointerException") failure("ex.name is not NPE [" + ex.name + "]");
+    else if (ex.javaClassName != "java.lang.NullPointerException") failure("ex.name is not NPE [" + ex.name + "]");
     else counter++;
   };
   var warningHandler = function(data) {
@@ -70,6 +70,44 @@ function testError1() {
     else success("Error test passed");
   };
   Test.throwNPE(callData);
+}
+
+function testError2() {
+  var incorrectHandler = function(data) {
+    failure("Wrong call of warningHandler with data: " + data + ". See console for more");
+    dwr.engine._debug("Wrong call of warningHandler with data: " + data, true);
+  }
+  dwr.engine.setWarningHandler(incorrectHandler);
+  var counter = 0;
+  var correctHandler = function(data) {
+    counter++;
+  };
+  var temp = dwr.engine._errorHandler;
+
+  // Test exceptions bouncing to global errors
+  dwr.engine.setErrorHandler(correctHandler);
+  Test.throwNPE();
+
+  // Test exceptions bouncing to batch errors
+  dwr.engine.setErrorHandler(incorrectHandler);
+  dwr.engine.beginBatch();
+  Test.throwNPE();
+  dwr.engine.endBatch({
+    errorHandler:correctHandler,
+    warningHandler:incorrectHandler
+  });
+
+  // Test exceptions bouncing to call errors
+  Test.throwNPE({
+    errorHandler:function(data) {
+      correctHandler(data);
+      if (counter != 3) failure("Some errors did not complete (Sync issue?) counter = " + counter);
+      else success("Error test passed");
+    },
+    warningHandler:incorrectHandler
+  });
+
+  dwr.engine.setErrorHandler(temp);
 }
 
 function testAsyncNesting() {
