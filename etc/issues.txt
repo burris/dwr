@@ -1,7 +1,5 @@
 
-What are we going to use for classname indicators?
-
-Test Hibernate
+Ensure script tag remoting calls _clearUp()
 
 IE slow on opening new windows with RA turned on.
 

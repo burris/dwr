@@ -353,12 +353,8 @@ public abstract class BaseCallMarshaller implements Marshaller
         sendOutboundScriptSuffix(out, replies.getBatchId());
     }
 
-    /**
-     * Try to find a batchId to send to the client so it knows what broke 
-     * @param request The incoming Http request
-     * @param response An Ajax response, XML, JSON, Javascript, etc.
-     * @param ex The exception that we wish to propogate to the client
-     * @throws IOException If writing to the output stream fails
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.Marshaller#marshallException(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.lang.Exception)
      */
     public void marshallException(HttpServletRequest request, HttpServletResponse response, Exception ex) throws IOException
     {

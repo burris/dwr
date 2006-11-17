@@ -27,16 +27,6 @@ import org.directwebremoting.util.MimeConstants;
  */
 public class HtmlCallMarshaller extends BaseCallMarshaller
 {
-    /**
-     * 
-     */
-    protected static final String HTML_SCRIPT_PREFIX = "<html><body><script type='text/javascript'>";
-
-    /**
-     * 
-     */
-    protected static final String HTML_SCRIPT_POSTFIX = "</script></body></html>";
-
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
      */
@@ -52,7 +42,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            out.println(HTML_SCRIPT_PREFIX);
+            out.println(ProtocolConstants.HTML_SCRIPT_PREFIX);
             out.println(EnginePrivate.remoteBeginIFrameResponse(batchId));
         }
     }
@@ -65,7 +55,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
         synchronized (out)
         {
             out.println(EnginePrivate.remoteEndIFrameResponse(batchId));
-            out.println(HTML_SCRIPT_POSTFIX);
+            out.println(ProtocolConstants.HTML_SCRIPT_POSTFIX);
         }
     }
 
