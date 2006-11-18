@@ -404,8 +404,6 @@ dwr.util.highlight = function(ele, options) {
 dwr.util.setValue = function(ele, val, options) {
   if (val == null) val = "";
   if (options == null) options = {};
-  if (options.useHtml )
-
   if (options.escapeHtml) {
     val = dwr.util.addEntities(val);
   }
