@@ -38,6 +38,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -233,9 +234,24 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             List configurators = new ManagedList();
             configurators.add(new RuntimeBeanReference(DEFAULT_SPRING_CONFIGURATOR_ID));
             dwrController.addPropertyValue("configurators", configurators);
-            dwrController.addPropertyValue("debug", element.getAttribute("debug"));
 
-            BeanDefinitionHolder holder = new BeanDefinitionHolder(dwrController.getBeanDefinition(), element.getAttribute("id"));
+            String debug = element.getAttribute("debug");
+            if (StringUtils.hasText(debug)) {
+                dwrController.addPropertyValue("debug", debug);
+            }
+
+            String beanName = element.getAttribute("id");
+            String[] aliases = null;
+            if (!StringUtils.hasText(beanName)) {
+                beanName = element.getAttribute("name");
+            } else {
+                String aliasName = element.getAttribute("name");
+                if (StringUtils.hasText(aliasName)) {
+                    aliases = new String[] { aliasName };
+                }
+            }
+            BeanDefinitionHolder holder = new BeanDefinitionHolder(
+                    dwrController.getBeanDefinition(), beanName, aliases);
             BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
 
             return dwrController.getBeanDefinition();

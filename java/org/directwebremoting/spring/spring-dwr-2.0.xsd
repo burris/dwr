@@ -22,9 +22,33 @@
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 
-    <xsd:element name="configuration" type="configuration"/>
-    <xsd:element name="remote" type="remote"/>
-    <xsd:element name="controller" type="controller"/>
+    <xsd:element name="configuration" type="configuration">
+        <xsd:annotation>
+            <xsd:documentation>
+	The element that can be used to specify DWR configuration that does not relate
+    directly to a Spring-managed bean.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+    <xsd:element name="remote" type="remote">
+        <xsd:annotation>
+            <xsd:documentation>
+	The element that can be used as an inner-tag for a bean definition in order to
+    have DWR remote it to JavaScript.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+    <xsd:element name="controller" type="controller">
+        <xsd:annotation>
+            <xsd:documentation source="org.directwebremoting.spring.DwrController">
+	The element which creates a DWR specific controller. You can use the id/name attribute
+    to identify the controller in order to map it to a certain path. You can also use the
+    optional debug attribute to allow access to the generated debug pages.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
 
     <xsd:complexType name="configuration">
         <xsd:sequence>
@@ -48,12 +72,8 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
-        <xsd:attribute name="javascript" type="xsd:ID" use="required"/>
+        <xsd:attribute name="javascript" type="xsd:string" use="required"/>
         <xsd:attribute name="class" type="xsd:string" use="optional"/>
-        <!--<xsd:unique name="javascript">
-            <xsd:selector xpath=".//create[@javascript]"/>
-            <xsd:field xpath="@javascript"/>
-        </xsd:unique>-->
     </xsd:complexType>
 
     <xsd:complexType name="convert">
@@ -93,7 +113,7 @@
             <xsd:element name="filter" type="filter" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="latencyfilter" type="latencyfilter" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
-        <xsd:attribute name="javascript" type="xsd:ID" use="required"/>
+        <xsd:attribute name="javascript" type="xsd:string" use="required"/>
     </xsd:complexType>
 
     <xsd:complexType name="latencyfilter">
@@ -130,6 +150,7 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
-        <xsd:attribute name="id" type="xsd:ID" use="required"/>
+        <xsd:attribute name="id" type="xsd:ID"/>
+        <xsd:attribute name="name" type="xsd:Name"/>
     </xsd:complexType>
 </xsd:schema>
