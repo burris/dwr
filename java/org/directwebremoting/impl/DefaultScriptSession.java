@@ -130,7 +130,12 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public long getLastAccessedTime()
     {
-        checkNotInvalidated();
+        // For many accesses here we check to see if we should invalidate
+        // ourselves, but getLastAccessedTime() is used as part of the process
+        // that DefaultScriptSessionManager goes through in order to check
+        // everything for validity. So if we do this check here then DSSM will
+        // give a ConcurrentModificationException if anything does timeout
+        // checkNotInvalidated();
         return lastAccessedTime;
     }
 
