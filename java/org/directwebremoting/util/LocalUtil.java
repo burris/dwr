@@ -383,7 +383,6 @@ public final class LocalUtil
                 {
                     // The conversion failed - it was speculative anyway so we
                     // don't worry now
-                    log.warn("conversion error converting: '" + value + "' into a " + propertyType.getName());
                 }
             }
         }
