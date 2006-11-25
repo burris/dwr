@@ -69,7 +69,7 @@ public class DefaultConverterManager implements ConverterManager
         Class clazz = (Class) converterTypes.get(type);
         if (clazz == null)
         {
-            log.info("Type '" + match + "' is not convertable due to missing converter '" + type + "'. This is only an problem if you wanted to use it.");
+            log.info("Probably not an issue: " + match + " is not available so the " + type + " converter will not load. This is only an problem if you wanted to use it.");
             return;
         }
 
