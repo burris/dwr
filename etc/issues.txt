@@ -1,9 +1,14 @@
 
+Check that IE copes when opening new windows
+
+It seems that when DWR needs to convert a two-dimensional int array (as a property), it hangs/never returns.....
+	When explicitely adding <convert type="array" class="[[I"/>, it works again.
+	I guess you want to handle multi-dimensional arrays for primitives or convertable types.
+	But even if not, then DWR should not hang I guess ;-)
+
 Ensure script tag remoting calls _clearUp()
 
 IE slow on opening new windows with RA turned on.
-
-Opera doesn't do reverse Ajax
 
 dwr.util.setOptions gets the wrong order in Opera
 
