@@ -775,7 +775,7 @@ dwr.engine._stateChange = function(batch) {
       dwr.engine._handleWarning(batch, { name:"dwr.engine.missingData", message:"No data received from server" });
     }
     else if (status != 200) {
-      dwr.engine._handleWarning(batch, { name:"dwr.engine.http." + status, message:reply });
+      dwr.engine._handleError(batch, { name:"dwr.engine.http." + status, message:reply });
     }
     else {
       var contentType = batch.req.getResponseHeader("Content-Type");

@@ -110,6 +110,26 @@ function testError2() {
   dwr.engine.setErrorHandler(temp);
 }
 
+function test404Handling() {
+  var oldPath = Test._path;
+  Test._path = "/thisPathDoesNotExist/dwr";
+  Test.intParam(1, {
+    callback:function(data) {
+      failure("New path did not take effect");
+    },
+    errorHandler:function(message, ex) {
+      if (ex.name != "dwr.engine.http.404") failure("Error name is: " + ex.name);
+      else if (ex.message != message) failure("errorHandler message != ex.message");
+      else if (!message.match(/<html>/)) failure("Expected HTML in response");
+      else success("Correct 404 handling");
+    }
+  });
+  Test._path = oldPath;
+  Test.intParam(1, function(data) {
+    success("Path handling returned to normal");
+  });
+}
+
 function testAsyncNesting() {
   Test.slowStringParam("AsyncNesting-2", 100, function(data1) {
     success(data1);
