@@ -768,7 +768,7 @@ dwr.util.addOptions = function(ele, data, options) {
         }
         else text = value = dwr.util._getValueFrom(data[i], arguments[3]);
 
-        if (text || value) ele.options[ele.options.length] = new Option(text, value);
+        if (text != null || value) ele.options[ele.options.length] = new Option(text, value);
       }
       else {
         li = document.createElement("li");
