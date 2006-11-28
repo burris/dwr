@@ -742,10 +742,11 @@ dwr.util._setDataProperties = function(data, prefixes) {
  * Add options to a list from an array or map.
  * @see http://getahead.ltd.uk/dwr/browser/lists
  */
-dwr.util.addOptions = function(ele, data, options) {
+dwr.util.addOptions = function(ele, data/*, options*/) {
   ele = dwr.util._getElementById(ele, "addOptions()");
   if (ele == null) return;
-  if (options == null) options = {};
+  // TODO: Restructure so we handle arguments to get proper options handling
+  // if (options == null) options = {};
   var useOptions = dwr.util._isHTMLElement(ele, "select");
   var useLi = dwr.util._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {
@@ -806,7 +807,7 @@ dwr.util.addOptions = function(ele, data, options) {
   }
 
   // All error routes through this function result in a return, so highlight now
-  dwr.util.highlight(ele, options);
+  dwr.util.highlight(ele, null); // TODO: forward options instead of null 
 };
 
 /**
