@@ -247,7 +247,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     protected long scriptSessionTimeout = DEFAULT_TIMEOUT_MILLIS;
 
     /**
-     * How long do we wait before we timeout script sessions?
+     * How often do we check for script sessions that need timing out
      */
     protected long scriptSessionCheckTime = DEFAULT_SESSION_CHECK_TIME;
 

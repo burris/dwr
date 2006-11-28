@@ -1,10 +1,10 @@
 
 function startPoll() {
-  dwr.engine.setReverseAjax(true);
+  dwr.engine.setCometPoll(true);
 }
 
 function stopPoll() {
-  dwr.engine.setReverseAjax(false);
+  dwr.engine.setCometPoll(false);
 }
 
 function sendMessage() {

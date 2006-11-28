@@ -144,14 +144,14 @@ public class Engine extends ScriptProxy
 
     /**
      * Does DWR poll the server for updates? (Default: false)
-     * @param reverseAjax True/False to turn RA on/off
+     * @param cometPoll True/False to turn RA on/off
      * @see <a href="http://getahead.ltd.uk/dwr/browser/engine/options">Options documentation</a>
      */
-    public void setReverseAjax(boolean reverseAjax)
+    public void setCometPoll(boolean cometPoll)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.engine.setReverseAjax(")
-              .appendData(reverseAjax)
+        script.appendScript("dwr.engine.setCometPoll(")
+              .appendData(cometPoll)
               .appendScript(");");
         addScript(script);
     }

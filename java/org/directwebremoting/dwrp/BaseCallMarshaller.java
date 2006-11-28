@@ -74,7 +74,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         Batch batch = (Batch) request.getAttribute(ATTRIBUTE_BATCH);
         if (batch == null)
         {
-            batch = new Batch(request, crossDomainSessionSecurity);
+            batch = new Batch(request, crossDomainSessionSecurity, allowGetForSafariButMakeForgeryEasier);
 
             // Save calls for retry exception
             request.setAttribute(ATTRIBUTE_BATCH, batch);
@@ -373,7 +373,8 @@ public abstract class BaseCallMarshaller implements Marshaller
         }
 
         sendOutboundScriptPrefix(out, batchId);
-        EnginePrivate.remoteHandleBatchException(response, batchId, ex);
+        String script = EnginePrivate.getRemoteHandleBatchExceptionScript(batchId, ex);
+        out.print(script);
         sendOutboundScriptSuffix(out, batchId);
     }
 
@@ -461,6 +462,14 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
+     * @param allowGetForSafariButMakeForgeryEasier Do we reduce security to help Safari
+     */
+    public void setAllowGetForSafariButMakeForgeryEasier(boolean allowGetForSafariButMakeForgeryEasier)
+    {
+        this.allowGetForSafariButMakeForgeryEasier = allowGetForSafariButMakeForgeryEasier;
+    }
+
+    /**
      * A ScriptConduit that works with the parent Marshaller.
      * In some ways this is nasty because it has access to essentially private parts
      * of BaseCallMarshaller, however there is nowhere sensible to store them
@@ -506,6 +515,11 @@ public abstract class BaseCallMarshaller implements Marshaller
          */
         private final PrintWriter out;
     }
+
+    /**
+     * By default we disable GET, but this hinders old Safaris
+     */
+    private boolean allowGetForSafariButMakeForgeryEasier = false;
 
     /**
      * To we perform cross-domain session security checks?

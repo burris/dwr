@@ -40,11 +40,13 @@ public class Batch
      * Parse an inbound request into a Calls object
      * @param request The original browser's request
      * @param crossDomainSessionSecurity Are we checking for CSRF attacks
+     * @param allowGetForSafariButMakeForgeryEasier Do we allow GET?
      * @throws ServerException If reading from the request body stream fails
      */
-    public Batch(HttpServletRequest request, boolean crossDomainSessionSecurity) throws ServerException
+    public Batch(HttpServletRequest request, boolean crossDomainSessionSecurity, boolean allowGetForSafariButMakeForgeryEasier) throws ServerException
     {
-        if (request.getMethod().equals("GET"))
+        boolean isGet = request.getMethod().equals("GET");
+        if (isGet)
         {
             setAllParameters(ParseUtil.parseGet(request));
         }
@@ -54,6 +56,11 @@ public class Batch
         }
 
         parseParameters();
+
+        if (!allowGetForSafariButMakeForgeryEasier && isGet)
+        {
+            throw new SecurityException("GET Disalowed");
+        }
 
         if (crossDomainSessionSecurity)
         {

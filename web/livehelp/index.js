@@ -1,6 +1,6 @@
 
 function init() {
-  dwr.engine.setReverseAjax(true);
+  dwr.engine.setCometPoll(true);
 }
 
 function notifyTyping(ele) {

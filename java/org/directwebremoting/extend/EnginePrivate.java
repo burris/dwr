@@ -16,9 +16,6 @@
 package org.directwebremoting.extend;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.dwrp.ProtocolConstants;
@@ -137,24 +134,48 @@ public class EnginePrivate extends ScriptProxy
 
     /**
      * Call the dwr.engine._remoteHandleServerException() in the browser
-     * @param response The HTTP response to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param ex The execption from which we make a reply
-     * @throws IOException If writing fails.
+     * @return The string that calls dwr.engine._remoteHandleServerException()
      */
-    public static void remoteHandleBatchException(HttpServletResponse response, String batchId, Exception ex) throws IOException
+    public static String getRemoteHandleBatchExceptionScript(String batchId, Exception ex)
     {
-        PrintWriter out = response.getWriter();
+        StringBuffer reply = new StringBuffer();
 
         String output = JavascriptUtil.escapeJavaScript(ex.getMessage());
-        String error = "{ type:'" + ex.getClass().getName() + "', message:'" + output + "' }";
+        String params = "{ name:'" + ex.getClass().getName() + "', message:'" + output + "' }";
         if (batchId != null)
         {
-            error += ", '" + batchId + "'";
+            params += ", '" + batchId + "'";
         }
-        out.println(ProtocolConstants.SCRIPT_CALL_REPLY);
-        out.println("if (window.dwr) dwr.engine._remoteHandleBatchException(" + error + ");");
-        out.println("else if (window.parent.dwr) window.parent.dwr.engine._remoteHandleBatchException(" + error + ");");
+
+        reply.append(ProtocolConstants.SCRIPT_CALL_REPLY).append("\r\n");
+        reply.append("if (window.dwr) dwr.engine._remoteHandleBatchException(").append(params).append(");\r\n");
+        reply.append("else if (window.parent.dwr) window.parent.dwr.engine._remoteHandleBatchException(").append(params).append(");\r\n");
+
+        return reply.toString();
+    }
+
+    /**
+     * Call the dwr.engine._remotePollCometDisabled() in the browser
+     * @param batchId The identifier of the batch that we are handling a response for
+     * @return The string that calls dwr.engine._remoteHandleServerException()
+     */
+    public static String getRemotePollCometDisabledScript(String batchId)
+    {
+        StringBuffer reply = new StringBuffer();
+
+        String params = "{ name:'dwr.engine.pollAndCometDisabled', message:'Polling and Comet are disabled. See the server logs.' }";
+        if (batchId != null)
+        {
+            params += ", '" + batchId + "'";
+        }
+
+        reply.append(ProtocolConstants.SCRIPT_CALL_REPLY).append("\r\n");
+        reply.append("if (window.dwr) dwr.engine._remotePollCometDisabled(").append(params).append(");\r\n");
+        reply.append("else if (window.parent.dwr) window.parent.dwr.engine._remotePollCometDisabled(").append(params).append(");\r\n");
+
+        return reply.toString();
     }
 
     /**

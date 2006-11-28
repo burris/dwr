@@ -70,12 +70,13 @@ public class PollHandler implements Handler
         WebContext webContext = WebContextFactory.get();
         Container container = webContext.getContainer();
 
+        boolean isGet = request.getMethod().equals("GET");
         Map parameters = (Map) request.getAttribute(ATTRIBUTE_PARAMETERS);
         if (parameters == null)
         {
             try
             {
-                if (request.getMethod().equals("GET"))
+                if (isGet)
                 {
                     parameters = ParseUtil.parseGet(request);
                 }
@@ -87,16 +88,7 @@ public class PollHandler implements Handler
             }
             catch (Exception ex)
             {
-                response.setContentType(plain ? MimeConstants.MIME_PLAIN : MimeConstants.MIME_HTML);
-                if (!plain)
-                {
-                    response.getWriter().println(ProtocolConstants.HTML_SCRIPT_PREFIX);
-                }
-                EnginePrivate.remoteHandleBatchException(response, null, ex);
-                if (!plain)
-                {
-                    response.getWriter().println(ProtocolConstants.HTML_SCRIPT_POSTFIX);
-                }
+                sendBatchExceptionResponse(response, null, ex);
                 return;
             }
         }
@@ -106,6 +98,18 @@ public class PollHandler implements Handler
         String page = extractParameter(request, parameters, ATTRIBUTE_PAGE, ProtocolConstants.INBOUND_KEY_PAGE);
         String prString = extractParameter(request, parameters, ATTRIBUTE_PARTIAL_RESPONSE, ProtocolConstants.INBOUND_KEY_PARTIAL_RESPONSE);
         boolean partialResponse = Boolean.valueOf(prString).booleanValue();
+
+        if (!pollAndCometEnabled)
+        {
+            sendNoPollingResponse(response, batchId);
+            return;
+        }
+
+        if (!allowGetForSafariButMakeForgeryEasier && isGet)
+        {
+            sendBatchExceptionResponse(response, batchId, new SecurityException("GET Disallowed"));
+            return;
+        }
 
         // Various bits of parseResponse need to be stashed away places
         String normalizedPage = pageNormalizer.normalizePage(page);
@@ -242,6 +246,33 @@ public class PollHandler implements Handler
     }
 
     /**
+     * We might need to complain that reverse ajax is not enabled.
+     * @param batchId The identifier of the batch that we are handling a response for
+     * @param response The http response to write to
+     * @throws IOException if writing fails.
+     */
+    protected void sendNoPollingResponse(HttpServletResponse response, String batchId) throws IOException
+    {
+        log.error("Polling and Comet are disabled. To enable them set the init-param pollAndCometEnabled to true. See http://getahead.ltd.uk/dwr/server/servlet for more.");
+        String script = EnginePrivate.getRemotePollCometDisabledScript(batchId);
+        sendScript(response, script);
+    }
+
+    /**
+     * If we need to send a batch exception to the server because the parse
+     * failed, then this is how we do it.
+     * @param response The http response to write to
+     * @param batchId The identifier of the batch that we are handling a response for
+     * @param ex The exception to write
+     * @throws IOException if writing fails.
+     */
+    protected void sendBatchExceptionResponse(HttpServletResponse response, String batchId, Exception ex) throws IOException
+    {
+        String script = EnginePrivate.getRemoteHandleBatchExceptionScript(batchId, ex);
+        sendScript(response, script);
+    }
+
+    /**
      * Make other threads from the same browser stop waiting and continue
      * @param request The HTTP request
      * @param scriptId The session id of the current page
@@ -291,6 +322,26 @@ public class PollHandler implements Handler
         }
 
         return id;
+    }
+
+    /**
+     * Send a script to the browser and wrap it in the required prefixes etc.
+     * @param response The http response to write to
+     * @param script The script to write
+     * @throws IOException if writing fails.
+     */
+    protected void sendScript(HttpServletResponse response, String script) throws IOException
+    {
+        PrintWriter out = response.getWriter();
+        if (plain)
+        {
+            response.setContentType(MimeConstants.MIME_PLAIN);
+        }
+        else
+        {
+            response.setContentType(MimeConstants.MIME_HTML);
+        }
+        sendScript(out, script);
     }
 
     /**
@@ -585,6 +636,32 @@ public class PollHandler implements Handler
     {
         this.scriptSessionManager = scriptSessionManager;
     }
+
+    /**
+     * @param pollAndCometEnabled Are we doing full reverse ajax
+     */
+    public void setPollAndCometEnabled(boolean pollAndCometEnabled)
+    {
+        this.pollAndCometEnabled = pollAndCometEnabled;
+    }
+
+    /**
+     * @param allowGetForSafariButMakeForgeryEasier Do we reduce security to help Safari
+     */
+    public void setAllowGetForSafariButMakeForgeryEasier(boolean allowGetForSafariButMakeForgeryEasier)
+    {
+        this.allowGetForSafariButMakeForgeryEasier = allowGetForSafariButMakeForgeryEasier;
+    }
+
+    /**
+     * Are we doing full reverse ajax
+     */
+    private boolean pollAndCometEnabled = false;
+
+    /**
+     * By default we disable GET, but this hinders old Safaris
+     */
+    private boolean allowGetForSafariButMakeForgeryEasier = false;
 
     /**
      * Are we using plain javascript or html wrapped javascript

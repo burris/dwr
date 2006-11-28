@@ -114,6 +114,11 @@ public class FileHandler implements Handler
                         {
                             line = LocalUtil.replace(line, PARAM_SCRIPT_SESSIONID, generator.generateId(pageIdLength));
                         }
+
+                        if (line.indexOf(PARAM_SCRIPT_ALLOWGET) != -1)
+                        {
+                            line = LocalUtil.replace(line, PARAM_SCRIPT_ALLOWGET, String.valueOf(allowGetForSafariButMakeForgeryEasier));
+                        }
                     }
 
                     buffer.append(line);
@@ -220,6 +225,14 @@ public class FileHandler implements Handler
     }
 
     /**
+     * @param allowGetForSafariButMakeForgeryEasier Do we reduce security to help Safari
+     */
+    public void setAllowGetForSafariButMakeForgeryEasier(boolean allowGetForSafariButMakeForgeryEasier)
+    {
+        this.allowGetForSafariButMakeForgeryEasier = allowGetForSafariButMakeForgeryEasier;
+    }
+
+    /**
      * @param ignoreLastModified The ignoreLastModified to set.
      */
     public void setIgnoreLastModified(boolean ignoreLastModified)
@@ -278,6 +291,11 @@ public class FileHandler implements Handler
     {
         this.mimeType = mimeType;
     }
+
+    /**
+     * By default we disable GET, but this hinders old Safaris
+     */
+    private boolean allowGetForSafariButMakeForgeryEasier = false;
 
     /**
      * Do we ignore all the Last-Modified/ETags blathering?
@@ -350,6 +368,11 @@ public class FileHandler implements Handler
 
         etag = "\"" + servletContainerStartTime + '\"';
     }
+
+    /**
+     * Does engine.js do GETs for Safari
+     */
+    protected static final String PARAM_SCRIPT_ALLOWGET = "${allowGetForSafariButMakeForgeryEasier}";
 
     /**
      * The page id parameter that goes in engine.js

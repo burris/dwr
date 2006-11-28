@@ -139,9 +139,9 @@ dwr.engine.setAsync = function(async) {
  * Does DWR poll the server for updates? (Default: false)
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
-dwr.engine.setReverseAjax = function(reverseAjax) {
-  dwr.engine._reverseAjax = reverseAjax;
-  if (dwr.engine._reverseAjax) dwr.engine._poll();
+dwr.engine.setCometPoll = function(reverseAjax) {
+  dwr.engine._cometPoll = reverseAjax;
+  if (dwr.engine._cometPoll) dwr.engine._poll();
 };
 
 /**
@@ -170,7 +170,7 @@ dwr.engine.setPollType = function(newPollType) {
  * @see http://getahead.ltd.uk/dwr/browser/engine/errors
  */
 dwr.engine.defaultErrorHandler = function(message, ex) {
-  dwr.engine._debug("Error: " + ex.name + ", " + ex.message);
+  dwr.engine._debug("Error: " + ex.name + ", " + ex.message, true);
 
   if (message == null || message == "") alert("A server error has occured. More information may be available in the console.");
   // Ignore NS_ERROR_NOT_AVAILABLE if Mozilla is being narky
@@ -238,6 +238,9 @@ dwr.engine._origScriptSessionId = "${scriptSessionId}";
 /** The session cookie name */
 dwr.engine._sessionCookieName = "${sessionCookieName}"; // JSESSIONID
 
+/** Is GET enabled for the benefit of Safari? */
+dwr.engine._allowGetForSafariButMakeForgeryEasier = ${allowGetForSafariButMakeForgeryEasier};
+
 /** The read page id that we calculate */
 dwr.engine._scriptSessionId = null;
 
@@ -294,8 +297,8 @@ dwr.engine._DOMDocument = ["Msxml2.DOMDocument.6.0", "Msxml2.DOMDocument.5.0", "
 /** The ActiveX objects to use when we want to do an XMLHttpRequest call. */
 dwr.engine._XMLHTTP = ["Msxml2.XMLHTTP.6.0", "Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
 
-/** Are we doing reverse ajax? */
-dwr.engine._reverseAjax = false;
+/** Are we doing comet or polling? */
+dwr.engine._cometPoll = false;
 
 /** Is there a long term poll (comet) interraction in place? */
 dwr.engine._pollComet = true;
@@ -399,7 +402,7 @@ dwr.engine._execute = function(path, scriptName, methodName, vararg_params) {
 
 /** @private Poll the server to see if there is any data waiting */
 dwr.engine._poll = function(overridePath) {
-  if (!dwr.engine._reverseAjax) return;
+  if (!dwr.engine._cometPoll) return;
 
   var batch = dwr.engine._createBatch();
   batch.map.id = 0; // TODO: Do we need this??
@@ -505,9 +508,9 @@ dwr.engine._getJSessionId =  function() {
 dwr.engine._checkCometPoll = function() {
   if (dwr.engine._pollComet) {
     // If the poll resources are still there, come back again
-    if (dwr.engine._pollFrame || dwr.engine._pollReq) {
-      setTimeout("dwr.engine._checkCometPoll()", dwr.engine._pollCometInterval);
-    }
+    //if (dwr.engine._pollFrame || dwr.engine._pollReq) {
+    //  setTimeout("dwr.engine._checkCometPoll()", dwr.engine._pollCometInterval);
+    //}
     try {
       dwr.engine._receivedBatch = dwr.engine._cometBatch;
       if (dwr.engine._pollFrame) {
@@ -522,6 +525,10 @@ dwr.engine._checkCometPoll = function() {
     }
     catch (ex) {
       // IE complains for no good reason for both options above. Ignore.
+    }
+    // If the poll resources are still there, come back again
+    if (dwr.engine._pollFrame || dwr.engine._pollReq) {
+      setTimeout("dwr.engine._checkCometPoll()", dwr.engine._pollCometInterval);
     }
   }
 };
@@ -565,7 +572,7 @@ dwr.engine._processCometResponse = function(response) {
         var lastEndTag = response.lastIndexOf("//#DWR-END#");
         // dwr.engine._debug("lastEndTag='" + lastEndTag + "'");
         if (lastEndTag != -1) {
-          dwr.engine._remoteEval(response.substring(firstStartTag + 13, lastEndTag));
+          var exec = response.substring(firstStartTag + 13, lastEndTag);
           // Skip the end tag too for next time, remembering CR and LF
           if (response.charCodeAt(lastEndTag + 11) == 13 && response.charCodeAt(lastEndTag + 12) == 10) {
             dwr.engine._cometProcessed = lastEndTag + 13;
@@ -573,11 +580,12 @@ dwr.engine._processCometResponse = function(response) {
           else {
             dwr.engine._cometProcessed = lastEndTag + 11;
           }
+          dwr.engine._eval(exec);
           // dwr.engine._debug("setting _cometProcessed='" + dwr.engine._cometProcessed + "'");
         }
-        else {
-          // dwr.engine._debug("No end tag. (yet) '" + response + "'");
-        }
+        // else {
+        //   dwr.engine._debug("No end tag. (yet) '" + response + "'");
+        // }
       }
     }
   }
@@ -620,8 +628,14 @@ dwr.engine._sendData = function(batch) {
     // Workaround for Safari 1.x POST bug
     var indexSafari = navigator.userAgent.indexOf("Safari/");
     if (indexSafari >= 0) {
-      var version = navigator.userAgent.substring(indexSafari + 7);
-      if (parseInt(version, 10) < 400) batch.httpMethod = "GET";
+      if (dwr.engine._allowGetForSafariButMakeForgeryEasier)
+      {
+        var version = navigator.userAgent.substring(indexSafari + 7);
+        if (parseInt(version, 10) < 400) batch.httpMethod = "GET";
+      }
+      else {
+        dwr.engine._handleWarning(batch, { name:"dwr.engine.oldSafari", message:"Safari GET support disabled. See http://getahead.ltd.uk/dwr/server/servlet and allowGetForSafariButMakeForgeryEasier." });
+      }
     }
     batch.mode = batch.isPoll ? dwr.engine._ModePlainPoll : dwr.engine._ModePlainCall;
     request = dwr.engine._constructRequest(batch);
@@ -811,13 +825,13 @@ dwr.engine._stateChange = function(batch) {
 
   // Outside of the try/catch so errors propogate normally:
   dwr.engine._receivedBatch = batch;
-  dwr.engine._remoteEval(toEval);
+  dwr.engine._eval(toEval);
   dwr.engine._receivedBatch = null;
 
   dwr.engine._clearUp(batch);
 };
 
-/** @private Called by reply scripts generated as a result of remote requests */
+/** @private Called by the server: Execute a callback */
 dwr.engine._remoteHandleCallback = function(batchId, callId, reply) {
   var batch = dwr.engine._batches[batchId];
   if (batch == null) {
@@ -838,7 +852,7 @@ dwr.engine._remoteHandleCallback = function(batchId, callId, reply) {
   }
 };
 
-/** @private This method is called by Javascript that is emitted by server */
+/** @private Called by the server: Handle an exception for a call */
 dwr.engine._remoteHandleException = function(batchId, callId, ex) {
   var batch = dwr.engine._batches[batchId];
   if (batch == null) { dwr.engine._debug("Warning: null batch in remoteHandleException", true); return; }
@@ -849,7 +863,7 @@ dwr.engine._remoteHandleException = function(batchId, callId, ex) {
   else if (typeof batch.errorHandler == "function") batch.errorHandler(ex.message, ex);
 };
 
-/** @private This method is called by Javascript that is emitted by server */
+/** @private Called by the server: The whole batch is broken */
 dwr.engine._remoteHandleBatchException = function(ex, batchId) {
   var searchBatch = (dwr.engine._receivedBatch == null && batchId != null);
   if (searchBatch) {
@@ -863,20 +877,35 @@ dwr.engine._remoteHandleBatchException = function(ex, batchId) {
   }
 };
 
-/** @private An IFrame reply is about to start */
+/** @private Called by the server: Reverse ajax should not be used */
+dwr.engine._remotePollCometDisabled = function(ex, batchId) {
+  dwr.engine.setCometPoll(false);
+  var searchBatch = (dwr.engine._receivedBatch == null && batchId != null);
+  if (searchBatch) {
+    dwr.engine._receivedBatch = dwr.engine._batches[batchId];
+  }
+  if (ex.message == undefined) ex.message = "";
+  dwr.engine._handleError(dwr.engine._receivedBatch, ex);
+  if (searchBatch) {
+    dwr.engine._receivedBatch = null;
+    dwr.engine._clearUp(dwr.engine._batches[batchId]);
+  }
+};
+
+/** @private Called by the server: An IFrame reply is about to start */
 dwr.engine._remoteBeginIFrameResponse = function(element, batchId) {
   dwr.engine._receivedBatch = element.batch;
   element.batch = null;
 };
 
-/** @private An IFrame reply is just completing */
+/** @private Called by the server: An IFrame reply is just completing */
 dwr.engine._remoteEndIFrameResponse = function(batchId) {
   dwr.engine._clearUp(dwr.engine._receivedBatch);
   dwr.engine._receivedBatch = null;
 };
 
 /** @private This is a hack to make the context be this window */
-dwr.engine._remoteEval = function(script) {
+dwr.engine._eval = function(script) {
   if (script == null) { return null; }
   if (script == "") { dwr.engine._debug("Warning: blank script", true); return null; }
   var debug = script;
