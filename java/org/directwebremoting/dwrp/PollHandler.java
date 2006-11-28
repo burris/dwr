@@ -53,16 +53,6 @@ import org.directwebremoting.util.MimeConstants;
 public class PollHandler implements Handler
 {
     /**
-     * 
-     */
-    public static final String HTML_SCRIPT_PREFIX = "<html><body><script type='text/javascript'>";
-
-    /**
-     * 
-     */
-    public static final String HTML_SCRIPT_POSTFIX = "</script></body></html>";
-
-    /**
      * @param plain Are we using plain javascript or html wrapped javascript
      */
     public PollHandler(boolean plain)
@@ -100,12 +90,12 @@ public class PollHandler implements Handler
                 response.setContentType(plain ? MimeConstants.MIME_PLAIN : MimeConstants.MIME_HTML);
                 if (!plain)
                 {
-                    response.getWriter().println(HTML_SCRIPT_PREFIX);
+                    response.getWriter().println(ProtocolConstants.HTML_SCRIPT_PREFIX);
                 }
                 EnginePrivate.remoteHandleBatchException(response, null, ex);
                 if (!plain)
                 {
-                    response.getWriter().println(HTML_SCRIPT_POSTFIX);
+                    response.getWriter().println(ProtocolConstants.HTML_SCRIPT_POSTFIX);
                 }
                 return;
             }
@@ -315,7 +305,7 @@ public class PollHandler implements Handler
         {
             if (!plain)
             {
-                out.println(HTML_SCRIPT_PREFIX);
+                out.println(ProtocolConstants.HTML_SCRIPT_PREFIX);
             }
 
             out.println(ProtocolConstants.SCRIPT_START_MARKER);
@@ -324,7 +314,7 @@ public class PollHandler implements Handler
 
             if (!plain)
             {
-                out.println(HTML_SCRIPT_POSTFIX);
+                out.println(ProtocolConstants.HTML_SCRIPT_POSTFIX);
             }
 
             if (out.checkError())
