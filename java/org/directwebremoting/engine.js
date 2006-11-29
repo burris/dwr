@@ -139,9 +139,9 @@ dwr.engine.setAsync = function(async) {
  * Does DWR poll the server for updates? (Default: false)
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
-dwr.engine.setCometPoll = function(reverseAjax) {
-  dwr.engine._cometPoll = reverseAjax;
-  if (dwr.engine._cometPoll) dwr.engine._poll();
+dwr.engine.setActiveReverseAjax = function(activeReverseAjax) {
+  dwr.engine._activeReverseAjax = activeReverseAjax;
+  if (dwr.engine._activeReverseAjax) dwr.engine._poll();
 };
 
 /**
@@ -298,7 +298,7 @@ dwr.engine._DOMDocument = ["Msxml2.DOMDocument.6.0", "Msxml2.DOMDocument.5.0", "
 dwr.engine._XMLHTTP = ["Msxml2.XMLHTTP.6.0", "Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
 
 /** Are we doing comet or polling? */
-dwr.engine._cometPoll = false;
+dwr.engine._activeReverseAjax = false;
 
 /** Is there a long term poll (comet) interraction in place? */
 dwr.engine._pollComet = true;
@@ -402,7 +402,7 @@ dwr.engine._execute = function(path, scriptName, methodName, vararg_params) {
 
 /** @private Poll the server to see if there is any data waiting */
 dwr.engine._poll = function(overridePath) {
-  if (!dwr.engine._cometPoll) return;
+  if (!dwr.engine._activeReverseAjax) return;
 
   var batch = dwr.engine._createBatch();
   batch.map.id = 0; // TODO: Do we need this??
@@ -879,7 +879,7 @@ dwr.engine._remoteHandleBatchException = function(ex, batchId) {
 
 /** @private Called by the server: Reverse ajax should not be used */
 dwr.engine._remotePollCometDisabled = function(ex, batchId) {
-  dwr.engine.setCometPoll(false);
+  dwr.engine.setActiveReverseAjax(false);
   var searchBatch = (dwr.engine._receivedBatch == null && batchId != null);
   if (searchBatch) {
     dwr.engine._receivedBatch = dwr.engine._batches[batchId];

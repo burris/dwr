@@ -1,6 +1,6 @@
 
 function startPoll() {
-  dwr.engine.setCometPoll(true);
+  dwr.engine.setActiveReverseAjax(true);
 }
 
 function stopPoll() {
