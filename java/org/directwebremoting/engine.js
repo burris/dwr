@@ -794,8 +794,8 @@ dwr.engine._stateChange = function(batch) {
     else {
       var contentType = batch.req.getResponseHeader("Content-Type");
       if (!contentType.match(/^text\/plain/) && !contentType.match(/^text\/javascript/)) {
-        if (dwr.engine._textHtmlHandler && contentType.match(/^text\/html/)) {
-          dwr.engine._textHtmlHandler();
+        if (contentType.match(/^text\/html/) && typeof batch.textHtmlHandler == "function") {
+          batch.textHtmlHandler();
         }
         else {
           dwr.engine._handleWarning(batch, { name:"dwr.engine.invalidMimeType", message:"Invalid content type: '" + contentType + "'" });
