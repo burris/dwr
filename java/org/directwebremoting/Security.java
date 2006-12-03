@@ -36,11 +36,12 @@ public class Security
      * <li>&quot; to &amp;quot;</li>
      * </ul>
      * These replacements are useful when the original sense is important, but
-     * when we wish to reduce the risk of XSS attacks
+     * when we wish to reduce the risk of XSS attacks.
      * @param original The string to perform entity replacement on
      * @return The original string with &amp;, &lt;, &gt;, ' and " escaped.
+     * @see #unescapeHtml(String)
      */
-    public static String addEntities(String original)
+    public static String escapeHtml(String original)
     {
         String reply = original;
         reply = LocalUtil.replace(reply, "&", "&amp;");
@@ -60,11 +61,12 @@ public class Security
      * <li>&amp;quot; to &quot;</li>
      * </ul>
      * These replacements are useful to reverse the effects of
-     * {@link #addEntities(String)}.
+     * {@link #escapeHtml(String)}.
      * @param original The string to perform entity replacement on
      * @return The original string with &amp;, &lt;, &gt;, ' and " replaced.
+     * @see #escapeHtml(String)
      */
-    public static String removeEntities(String original)
+    public static String unescapeHtml(String original)
     {
         String reply = original;
         reply = LocalUtil.replace(reply, "&amp;", "&");

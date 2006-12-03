@@ -35,7 +35,7 @@ public class Person
      */
     public void setAddress(String address)
     {
-        this.address = Security.addEntities(address);
+        this.address = Security.escapeHtml(address);
     }
 
     /**
@@ -67,7 +67,7 @@ public class Person
      */
     public void setName(String name)
     {
-        this.name = Security.addEntities(name);
+        this.name = Security.escapeHtml(name);
     }
 
     /**

@@ -36,7 +36,7 @@ public class Demo
      */
     public String sayHello(String name)
     {
-        return "Hello, " + Security.addEntities(name);
+        return "Hello, " + Security.escapeHtml(name);
     }
 
     /**

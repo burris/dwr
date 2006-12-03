@@ -823,6 +823,8 @@ dwr.engine._stateChange = function(batch) {
     dwr.engine._handleWarning(batch, ex);
   }
 
+  dwr.engine._callPostHooks(batch);
+
   // Outside of the try/catch so errors propogate normally:
   dwr.engine._receivedBatch = batch;
   dwr.engine._eval(toEval);
@@ -896,6 +898,7 @@ dwr.engine._remotePollCometDisabled = function(ex, batchId) {
 dwr.engine._remoteBeginIFrameResponse = function(element, batchId) {
   dwr.engine._receivedBatch = element.batch;
   element.batch = null;
+  dwr.engine._callPostHooks(batch);
 };
 
 /** @private Called by the server: An IFrame reply is just completing */
@@ -927,6 +930,16 @@ dwr.engine._abortRequest = function(batch) {
   }
 };
 
+/** @private call all the post hooks for a batch */
+dwr.engine._callPostHooks = function(batch) {
+  if (batch.postHooks) {
+    for (var i = 0; i < batch.postHooks.length; i++) {
+      batch.postHooks[i]();
+    }
+    batch.postHooks = null;
+  }
+}
+
 /** @private A call has finished by whatever means and we need to shut it all down. */
 dwr.engine._clearUp = function(batch) {
   if (!batch) { dwr.engine._debug("Warning: null batch in dwr.engine._clearUp()", true); return; }
@@ -946,13 +959,6 @@ dwr.engine._clearUp = function(batch) {
     // If this is a poll frame then stop comet polling
     if (batch.req == dwr.engine._pollReq) dwr.engine._pollReq = null;
     delete batch.req;
-  }
-
-  if (batch.postHooks) {
-    for (var i = 0; i < batch.postHooks.length; i++) {
-      batch.postHooks[i]();
-    }
-    batch.postHooks = null;
   }
 
   if (batch.map && batch.map.batchId) {

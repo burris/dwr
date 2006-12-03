@@ -129,13 +129,7 @@ public class Util extends ScriptProxy
      */
     public void addOptions(String elementId, String[] array)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.addOptions(")
-              .appendData(elementId)
-              .appendScript(",")
-              .appendData(array)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.addOptions", elementId, array);
     }
 
     /**
@@ -147,15 +141,7 @@ public class Util extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String property)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.addOptions(")
-              .appendData(elementId)
-              .appendScript(",")
-              .appendData(array)
-              .appendScript(",")
-              .appendData(property)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.addOptions", elementId, array, property);
     }
 
     /**
@@ -168,17 +154,7 @@ public class Util extends ScriptProxy
      */
     public void addOptions(String elementId, Collection array, String valueProperty, String textProperty)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.addOptions(")
-              .appendData(elementId)
-              .appendScript(",")
-              .appendData(array)
-              .appendScript(",")
-              .appendData(valueProperty)
-              .appendScript(",")
-              .appendData(textProperty)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.addOptions", elementId, array, valueProperty, textProperty);
     }
 
     /**
@@ -188,11 +164,7 @@ public class Util extends ScriptProxy
      */
     public void removeAllOptions(String elementId)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.removeAllOptions(")
-              .appendData(elementId)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.removeAllOptions", elementId);
     }
 
     /**
@@ -245,11 +217,7 @@ public class Util extends ScriptProxy
      */
     public void removeAllRows(String elementId)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.removeAllRows(")
-              .appendData(elementId)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.removeAllRows", elementId);
     }
 
     /**
@@ -259,11 +227,7 @@ public class Util extends ScriptProxy
      */
     public void cloneNode(String elementId)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.cloneNode(")
-              .appendData(elementId)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.cloneNode", elementId);
     }
 
     /**
@@ -311,13 +275,7 @@ public class Util extends ScriptProxy
      */
     public void setClassName(String elementId, String className)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.setClassName(")
-              .appendData(elementId)
-              .appendScript(",")
-              .appendData(className)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.setClassName", elementId, className);
     }
 
     /**
@@ -327,13 +285,7 @@ public class Util extends ScriptProxy
      */
     public void addClassName(String elementId, String className)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.addClassName(")
-              .appendData(elementId)
-              .appendScript(",")
-              .appendData(className)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.addClassName", elementId, className);
     }
 
     /**
@@ -343,13 +295,7 @@ public class Util extends ScriptProxy
      */
     public void removeClassName(String elementId, String className)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.removeClassName(")
-              .appendData(elementId)
-              .appendScript(",")
-              .appendData(className)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.removeClassName", elementId, className);
     }
 
     /**
@@ -359,13 +305,7 @@ public class Util extends ScriptProxy
      */
     public void toggleClassName(String elementId, String className)
     {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.toggleClassName(")
-              .appendData(elementId)
-              .appendScript(",")
-              .appendData(className)
-              .appendScript(");");
-        addScript(script);
+        addFunctionCall("dwr.util.toggleClassName", elementId, className);
     }
 
     /**

@@ -21,31 +21,43 @@ if (dwr == null) var dwr = {};
 if (dwr.util == null) dwr.util = {};
 if (DWRUtil == null) var DWRUtil = dwr.util;
 
+/** @private The flag we use to decide if we should escape html */
+dwr.util._escapeHtml = true;
 
 /**
- * Replace &, <, >, ' and " with their entities
- * @see TODO
+ * Set the global escapeHtml flag
  */
-dwr.util.addEntities = function(original) {
-  original = original.replace("&", "&amp;");
-  original = original.replace("<", "&lt;");
-  original = original.replace(">", "&gt;");
-  original = original.replace("\'", "&apos;");
-  original = original.replace("\"", "&quot;");
-  return original;
+dwr.util.setEscapeHtml = function(escapeHtml) {
+  dwr.util._escapeHtml = escapeHtml;
+}
+
+/** @private Work out from an options list and global settings if we should be esccaping */
+dwr.util._shouldEscapeHtml = function(options) {
+  if (options && options.escapeHtml != null) {
+    return options.escapeHtml;
+  }
+  return dwr.util._escapeHtml;
 }
 
 /**
- * Replace common XML entities with characters (see dwr.util.addEntities())
+ * Return a string with &, <, >, ' and " replaced with their entities
  * @see TODO
  */
-dwr.util.removeEntities = function(original) {
-  original = original.replace("&amp;", "&");
-  original = original.replace("&lt;", "<");
-  original = original.replace("&gt;", ">");
-  original = original.replace("&apos;", "\'");
-  original = original.replace("&quot;", "\"");
-  return original;
+dwr.util.escapeHtml = function(original) {
+  var div = document.createElement('div');
+  var text = document.createTextNode(original);
+  div.appendChild(text);
+  return div.innerHTML;
+}
+
+/**
+ * Replace common XML entities with characters (see dwr.util.escapeHtml())
+ * @see TODO
+ */
+dwr.util.unescapeHtml = function(original) {
+  var div = document.createElement('div');
+  div.innerHTML = original.replace(/<\/?[^>]+>/gi, '');
+  return div.childNodes[0] ? div.childNodes[0].nodeValue : '';
 }
 
 /**
@@ -404,8 +416,8 @@ dwr.util.highlight = function(ele, options) {
 dwr.util.setValue = function(ele, val, options) {
   if (val == null) val = "";
   if (options == null) options = {};
-  if (options.escapeHtml) {
-    val = dwr.util.addEntities(val);
+  if (dwr.util._shouldEscapeHtml(options) && typeof(val) == "string") {
+    val = dwr.util.escapeHtml(val);
   }
 
   var orig = ele;
@@ -613,7 +625,7 @@ dwr.util.getValue = function(ele, options) {
     return ele.value;
   }
 
-  if (options.textContent) {
+  if (dwr.util._shouldEscapeHtml(options)) {
     if (ele.textContent) return ele.textContent;
     else if (ele.innerText) return ele.innerText;
   }
@@ -900,7 +912,14 @@ dwr.util._addRowInner = function(cellFuncs, options) {
     if (td != null) {
       if (options.data != null) {
         if (dwr.util._isHTMLElement(options.data)) td.appendChild(options.data);
-        else td.innerHTML = options.data;
+        else {
+          if (dwr.util._shouldEscapeHtml(options) && typeof(options.data) == "string") {
+            td.innerHTML = dwr.util.escapeHtml(options.data);
+          }
+          else {
+            td.innerHTML = options.data;
+          }
+        }
       }
       tr.appendChild(td);
     }
