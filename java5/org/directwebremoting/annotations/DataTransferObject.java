@@ -30,7 +30,7 @@ import org.directwebremoting.extend.Converter;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Convert
+public @interface DataTransferObject
 {
     /**
      * Converter that converts instance of the class (default: bean converter).

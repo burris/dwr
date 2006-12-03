@@ -99,7 +99,7 @@ public class AnnotationsConfigurator implements Configurator
             processCreate(clazz, createAnn, container);
         }
 
-        Convert convertAnn = clazz.getAnnotation(Convert.class);
+        DataTransferObject convertAnn = clazz.getAnnotation(DataTransferObject.class);
         if (convertAnn != null)
         {
             processConvert(clazz, convertAnn, container);
@@ -208,14 +208,14 @@ public class AnnotationsConfigurator implements Configurator
     }
 
     /**
-     * Process the @Convert annotaion on a given class
-     * @param clazz The class annotated with @Convert
+     * Process the @DataTransferObject annotaion on a given class
+     * @param clazz The class annotated with @DataTransferObject
      * @param convertAnn The annotation
      * @param container The IoC container to configure
      * @throws InstantiationException
      * @throws IllegalAccessException
      */
-    private void processConvert(Class<?> clazz, Convert convertAnn, Container container) throws InstantiationException, IllegalAccessException
+    private void processConvert(Class<?> clazz, DataTransferObject convertAnn, Container container) throws InstantiationException, IllegalAccessException
     {
         Class<? extends Converter> converter = convertAnn.converter();
         String converterClass = converter.getName();

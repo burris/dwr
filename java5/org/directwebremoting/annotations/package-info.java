@@ -72,11 +72,11 @@
  * <h3>Object Conversion</h3>
  * 
  * <p>To make simple bean classes available for remote access, use the
- * {@link org.directwebremoting.annotations.Convert Convert} and
+ * {@link org.directwebremoting.annotations.DataTransferObject DataTransferObject} and
  * {@link org.directwebremoting.annotations.RemoteProperty RemoteProperty} annotations:</p>
  * 
  * <p><pre>
- * {@literal @Convert}
+ * {@literal @DataTransferObject}
  * public class Foo {
  *    {@literal @RemoteProperty}
  *    private int foo;
@@ -93,8 +93,8 @@
  * </pre></p>
  * 
  * <p>To use more sophisticated converters see the
- * {@link org.directwebremoting.annotations.Convert#converter converter} attribute of the
- * {@code Convert} annotation.</p>
+ * {@link org.directwebremoting.annotations.DataTransferObject#converter converter} attribute of the
+ * {@code DataTransferObject} annotation.</p>
  * 
  * @author Maik Schreiber &lt;blizzy AT blizzy DOT de&gt;
  */
