@@ -80,7 +80,7 @@ public class ScriptProxy
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendScript(funcName)
-              .appendScript("()");
+              .appendScript("();");
         addScript(script);
     }
 
@@ -95,7 +95,7 @@ public class ScriptProxy
         script.appendScript(funcName)
               .appendScript("(")
               .appendData(param1)
-              .appendScript("(");
+              .appendScript(");");
         addScript(script);
     }
 
@@ -113,7 +113,7 @@ public class ScriptProxy
               .appendData(param1)
               .appendScript(",")
               .appendData(param2)
-              .appendScript("(");
+              .appendScript(");");
         addScript(script);
     }
 
@@ -134,7 +134,7 @@ public class ScriptProxy
               .appendData(param2)
               .appendScript(",")
               .appendData(param3)
-              .appendScript("(");
+              .appendScript(");");
         addScript(script);
     }
 
@@ -158,7 +158,7 @@ public class ScriptProxy
               .appendData(param3)
               .appendScript(",")
               .appendData(param4)
-              .appendScript("(");
+              .appendScript(");");
         addScript(script);
     }
 
@@ -185,7 +185,7 @@ public class ScriptProxy
               .appendData(param4)
               .appendScript(",")
               .appendData(param5)
-              .appendScript("(");
+              .appendScript(");");
         addScript(script);
     }
 
