@@ -1,5 +1,43 @@
 
-Check that IE copes when opening new windows
+Hibernate exceptions not marshalled properly.
+	I did some work on our project's exception handling today, and discovered something strange when a Hibernate exception was sent up to the browser.
+	The exception thrown out of the called method looked like this:
+	    org.hibernate.exception.SQLGrammarException
+	        message: "invalid bla bla..."
+	        cause: ->
+	            java.sql.SQLException
+	                message: "ORA..."
+	                cause: null
+	but what came out on the other end was:
+	    {
+	        javaClassName: "org.hibernate.exception.SQLGrammarException",
+	        cause: {
+	            javaClassname: "java.sql.SQLException",
+	            message: "ORA...",
+	            cause: null
+	        }
+	    }
+	No message property on the SQLGrammarException!
+	I did a short debug session into DWR's BeanConverter and I can see that it gets the
+	    PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+	for SQLGrammarException, then in a loop subsequently getting to the descriptor for "message", which it skips out from because of
+	    if (readRequired && descriptor.getReadMethod() == null)
+	    {
+	        continue;
+	    }
+	where getReadMethod() returns null. 
+	Strange, because as far as I can see there is a getMessage() defined on the superclass org.hibernate.exception.NestableRuntimeException, so there *is* a read method...
+	----
+	I found the reason for the missing "message" property, and I think maybe you need to take a look at the ExceptionConverter code.
+	When you ask about the properties through
+	    Introspector.getBeanInfo(SQLGrammarException.class)
+	and the introspector scans the methods of Hibernate's exception class hierarchy, it will find
+	    org.hibernate.exception.NestableRuntimeException
+	        getMessage();
+	        getMessage(int);
+	(Ie, Hibernate has added an overloaded version with an int parameter) 
+	The Introspector now creates an IndexedPropertyDescriptor (used for "array" access) instead of a normal PropertyDescriptor, and the descriptor will have no readMethod but instead an indexedReadMethod.
+	I can't say if it's Hibernate or Introspector that is at fault here, but it does cause problems in DWR when marshalling Hibernate exceptions so I think you need to provide a workaround. Maybe add code that assures that Throwable's properties "message" and "cause" (that are guranteed to always exist on any exception) are always marshalled, whatever Introspector says?
 
 It seems that when DWR needs to convert a two-dimensional int array (as a property), it hangs/never returns.....
 	When explicitely adding <convert type="array" class="[[I"/>, it works again.
