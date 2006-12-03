@@ -15,9 +15,12 @@
  */
 package org.directwebremoting.convert;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.util.Map;
 
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.impl.PropertyDescriptorProperty;
 
 /**
  * A special case of BeanConverter that doesn't convert StackTraces
@@ -28,10 +31,34 @@ public class ExceptionConverter extends BeanConverter
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.BasicBeanConverter#getPropertyDescriptors(java.lang.Class, boolean, boolean)
      */
-    public Map getPropertyMapFromClass(Class data, boolean readRequired, boolean writeRequired) throws MarshallException
+    public Map getPropertyMapFromClass(Class type, boolean readRequired, boolean writeRequired) throws MarshallException
     {
-        Map descriptors = super.getPropertyMapFromClass(data, readRequired, writeRequired);
-        descriptors.put("javaClassName", new PlainProperty("javaClassName", data.getName()));
+        Map descriptors = super.getPropertyMapFromClass(type, readRequired, writeRequired);
+        descriptors.put("javaClassName", new PlainProperty("javaClassName", type.getName()));
+
+        // Make sure Throwable's standard properties are added 
+        // (fix for Bean Introspector peculiarities) 
+        try
+        {
+            fixMissingThrowableProperty(descriptors, "message", "getMessage");
+            fixMissingThrowableProperty(descriptors, "cause", "getCause");
+        }
+        catch (IntrospectionException ex)
+        {
+            throw new MarshallException(type, ex);
+        }
+        
         return descriptors;
+    }
+    
+    /* (non-Javadoc)
+     */
+    protected void fixMissingThrowableProperty(Map descriptors, String name, String readMethodName) throws IntrospectionException
+    {
+        if (!descriptors.containsKey(name) && isAllowedByIncludeExcludeRules(name))
+        {
+            PropertyDescriptor descriptor = new PropertyDescriptor(name, Throwable.class, readMethodName, null); 
+            descriptors.put(name, new PropertyDescriptorProperty(descriptor));
+        }
     }
 }
