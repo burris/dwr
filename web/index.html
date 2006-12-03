@@ -14,8 +14,6 @@
         document.getElementById("file").style.display = "block";
         return;
       }
-      // Turn warnings on
-      dwr.engine.setWarningHandler(dwr.engine.defaultMessageHandler);
       dwr.util.useLoadingMessage();
       // Turn on the generic error div
       $("error").style.display = "block";
@@ -25,7 +23,7 @@
 
     function load(data) {
       $("error").style.display = "none";
-      dwr.util.setValue("reply", data);
+      dwr.util.setValue("reply", data, { escapeHtml:false });
       $("reply").style.display = "block";
     }
   </script>

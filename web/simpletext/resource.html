@@ -56,6 +56,25 @@ public String getInclude() {
     return wctx.forwardToString("/simpletext/forward.html");
 }
 </pre>
+
+    <p>There is one other difference. In the previous example we were working
+    with plain text. Here we are working with HTML. To help protect you from XSS
+    attacks DWR automatically escapes HTML characters, however sometimes (like
+    in this case) we know that we have HTML, and that it is safe. So the
+    Javascipt code looks like this:</p>
+
+<pre>
+function forward() {
+  Demo.getInclude(function(data) {
+    dwr.util.setValue("forward", data, { escapeHtml:false });
+  });
+}
+</pre>
+
+    <p>The third parameter is the options parameter which is present on a number
+    of DWR functions. It allows you to customize how the function acts. In this
+    case we are asking DWR to not escape and HTML in the passed string.</p>
+
   </div>
 
   <div id="sourceDiv">
@@ -73,7 +92,7 @@ public String getInclude() {
 <pre>
 function forward() {
   Demo.getInclude(function(data) {
-    dwr.util.setValue("forward", data);
+    dwr.util.setValue("forward", data, { escapeHtml:false });
   });
 }
 </pre>

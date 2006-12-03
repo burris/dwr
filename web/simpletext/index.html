@@ -78,15 +78,15 @@ function loadinfo(data) {
   dwr.util.setValue("demoReply", data);
 }
 </pre>
-    
+
     <p><code>dwr.util.setValue()</code> is a utility that takes the data you pass in
     the second parameter and works out how to fit it to go into the HTML element
     specified by id in the first parameter. This function is one of several neat
     Javascript utilities that make working with DWR much easier.</p>
-    
+
     <p>We could simplify things by writing the 2 Javascript functions together like
     this:</p>
-    
+
 <pre>
 function update() {
   var name = dwr.util.getValue("demoName");
