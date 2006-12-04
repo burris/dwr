@@ -1194,8 +1194,13 @@ dwr.engine._newActiveXObject = function(axarray) {
 /** Used internally when some message needs to get to the programmer */
 dwr.engine._debug = function(message, stacktrace) {
   if (window.console) {
-    if (stacktrace && window.console.trace) window.console.trace();
-    window.console.log(message);
+    try {
+      if (stacktrace && window.console.trace) window.console.trace();
+      window.console.log(message);
+    }
+    catch (ex) {
+      // Ignore it. This could happen in live so an alert() is wrong.
+    }
   }
   else if (window.opera && window.opera.postError) {
     window.opera.postError(message);
