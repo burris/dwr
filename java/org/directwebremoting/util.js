@@ -1160,24 +1160,23 @@ dwr.util._importNode = function(doc, importedNode, deep) {
   return newNode;
 };
 
-/** Used internally when some message needs to get to the programmer */
+/** @private Used internally when some message needs to get to the programmer */
 dwr.util._debug = function(message, stacktrace) {
-  if (window.console) {
-    try {
+  var written = false;
+  try {
+    if (window.console) {
       if (stacktrace && window.console.trace) window.console.trace();
       window.console.log(message);
+      written = true;
     }
-    catch (ex) {
-      // Ignore it. This could happen in live so an alert() is wrong.
+    else if (window.opera && window.opera.postError) {
+      window.opera.postError(message);
+      written = true;
     }
   }
-  else if (window.opera && window.opera.postError) {
-    window.opera.postError(message);
-  }
-  // else if (window.navigator.product == "Gecko") {
-  //  window.dump(message + "\n");
-  // }
-  else {
+  catch (ex) { /* ignore */ }
+
+  if (!written) {
     var debug = document.getElementById("dwr-debug");
     if (debug) {
       var contents = message + "<br/>" + debug.innerHTML;
