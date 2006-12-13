@@ -671,8 +671,9 @@ dwr.util.setValues = function(map, options) {
  */
 dwr.util._getDataProperties = function(map, prefixes) {
   for (var property in map) {
-    if (map[property] != null && typeof map[property] == "object") {
-      var prefixClone = new Array();
+  	// Only recurse into plain objects, ie not functions, arrays, etc
+    if (dwr.util._isObject(map[property]) && !dwr.util._isArray(map[property])) {
+      var prefixClone = [];
       for (var i = 0; i < prefixes.length; i++) {
         prefixClone.push(prefixes[i]);
       }
@@ -728,9 +729,9 @@ dwr.util.getValues = function(data, options) {
  */
 dwr.util._setDataProperties = function(data, prefixes) {
   for (var property in data) {
-    // Are there any elements with that id or name
-    if (data[property] != null && typeof data[property] == "object") {
-      var prefixClone = new Array();
+  	// Only recurse into plain objects, ie not functions, arrays, etc
+    if (dwr.util._isObject(data[property]) && !dwr.util._isArray(data[property])) {
+      var prefixClone = [];
       for (var i = 0; i < prefixes.length; i++) {
         prefixClone.push(prefixes[i]);
       }
@@ -743,6 +744,7 @@ dwr.util._setDataProperties = function(data, prefixes) {
       if (prefixes.length > 0) {
         nestedProperty = (prefixes.join(".")) + "." + property;
       }
+      // Are there any elements with that id or name
       if (dwr.util.byId(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
         data[property] = dwr.util.getValue(nestedProperty);
       }
@@ -1114,17 +1116,24 @@ dwr.util._detailedTypeOf = function(x) {
 };
 
 /**
- * @private Array detector. Work around the lack of instanceof in some browsers.
+ * @private Object detector. Excluding null from objects.
  */
-dwr.util._isArray = function(data) {
-  return (data && data.join) ? true : false;
+dwr.util._isObject = function(data) {
+  return (data && typeof data == "object");
 };
 
 /**
- * @private Date detector. Work around the lack of instanceof in some browsers.
+ * @private Array detector.
+ */
+dwr.util._isArray = function(data) {
+  return (data && data instanceof Array);
+};
+
+/**
+ * @private Date detector.
  */
 dwr.util._isDate = function(data) {
-  return (data && data.toUTCString) ? true : false;
+  return (data && data instanceof Date);
 };
 
 /**
