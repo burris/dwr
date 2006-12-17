@@ -29,6 +29,16 @@
       <td><input id="pfx.company.name" type="text" value="Microsoft"><br></td>
     </tr>
     <tr>
+      <td width="10%">Work Options</td>
+      <td>
+        <SELECT multiple NAME="pfx.workoptions">
+          <OPTION VALUE="c">Contract
+          <OPTION VALUE="i">Intern
+          <OPTION VALUE="f">Full Time
+        </SELECT>
+        <br></td>
+    </tr>
+    <tr>
       <td width="10%">Ticker</td>
       <td><input id="pfx.company.symbol.ticker" type="text" value="MSFT"><br></td>
     </tr>
@@ -46,7 +56,7 @@
 <pre>
 
 function testNestedGetValues() {
-  var user = { userName:null, address :{ city:null, state:null}, password:"", company : {name : null, symbol : {ticker:null} } };
+  var user = { userName:null, address :{ city:null, state:null}, password:"", company : {name : null, symbol : {ticker:null} }, workoptions : null };
   dwr.util.getValues(user, {prefix : "pfx"});
 
   //fyi dwr.util.toDescriptiveString does not display the String representation of the 2 level deep nested property although
@@ -55,7 +65,7 @@ function testNestedGetValues() {
 }
 
 function testNestedSetValues() {
-  var user = { userName:"sjivan", address :{ city:"allston", state:"ma"}, password:"foobar", company : {name : "i2 Technologies", symbol : {ticker:"ITWO"} } };
+  var user = { userName:"sjivan", address :{ city:"allston", state:"ma"}, password:"foobar", company : {name : "i2 Technologies", symbol : {ticker:"ITWO"} }, workoptions: ["c", "f"] };
   dwr.util.setValues(user, {prefix : "pfx"});
 }
 
@@ -64,7 +74,7 @@ function testNestedSetValues() {
 <script type="text/javascript">
 
   function testNestedGetValues() {
-    var user = { userName:null, address :{ city:null, state:null}, password:"", company : {name : null, symbol : {ticker:null} } };
+    var user = { userName:null, address :{ city:null, state:null}, password:"", company : {name : null, symbol : {ticker:null} }, workoptions : null };
     dwr.util.getValues(user, {prefix : "pfx"});
 
     //fyi dwr.util.toDescriptiveString does not display the String representation of the 2 level deep nested property although
@@ -73,7 +83,7 @@ function testNestedSetValues() {
   }
 
   function testNestedSetValues() {
-    var user = { userName:"sjivan", address :{ city:"allston", state:"ma"}, password:"foobar", company : {name : "i2 Technologies", symbol : {ticker:"ITWO"} } };
+    var user = { userName:"sjivan", address :{ city:"allston", state:"ma"}, password:"foobar", company : {name : "i2 Technologies", symbol : {ticker:"ITWO"} }, workoptions: ["c", "f"] };
     dwr.util.setValues(user, {prefix : "pfx"});
   }
 
