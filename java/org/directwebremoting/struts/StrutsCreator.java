@@ -84,7 +84,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
             {
                 WebContext wc = WebContextFactory.get();
 
-                if (moduleUtilsClass == null)
+                if (getInstanceMethod != null)
                 {
                     try
                     {
