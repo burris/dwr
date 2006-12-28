@@ -21,6 +21,17 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:cvs:pserver:guest@cvs.dev.java.net:/cvs:dwr</connection>
+        <developerConnection>scm:cvs:pserver:${maven.username}@cvs.dev.java.net:/cvs:dwr</developerConnection>
+        <url>https://dwr.dev.java.net/source/browse/dwr/</url>
+    </scm>
+    
+    <description>
+        DWR is easy Ajax for Java. It makes it simple to call Java code directly from Javascript. 
+        It gets rid of almost all the boiler plate code between the web browser and your Java code.
+    </description>
+  
     <!-- Eventually would like to break into modules -->
     <dependencyManagement>
 
