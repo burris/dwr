@@ -99,7 +99,7 @@ public class ContainerUtil
             }
 
             log.debug("Using alternate Container implementation: " + typeName);
-            Class type = Class.forName(typeName);
+            Class type = LocalUtil.classForName(typeName);
             return (DefaultContainer) type.newInstance();
         }
         catch (Exception ex)

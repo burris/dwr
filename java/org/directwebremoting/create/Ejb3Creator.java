@@ -6,6 +6,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.directwebremoting.extend.Creator;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -20,12 +21,12 @@ public class Ejb3Creator extends AbstractCreator implements Creator
      * <b>If you don't have a common interface from which local and remote are
      * derived, you have to set the bean name manually!</b>
      * The BeanName is fetched from the part of the String behind the last '.'
-     * @param clazz The fully qualified classname of the Bean's interface
+     * @param className The fully qualified class name of the Bean's interface
      */
-    public void setInterface(String clazz)
+    public void setInterface(String className)
     {
-        this.clazz = clazz;
-        this.bean = clazz.substring(clazz.lastIndexOf('.') + 1);
+        this.className = className;
+        this.bean = className.substring(className.lastIndexOf('.') + 1);
     }
 
     /**
@@ -64,11 +65,11 @@ public class Ejb3Creator extends AbstractCreator implements Creator
     {
         try
         {
-            return Class.forName(clazz);
+            return LocalUtil.classForName(className);
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("Creator.BeanClassNotFound", clazz));
+            throw new IllegalArgumentException(Messages.getString("Creator.BeanClassNotFound", className));
         }
     }
 
@@ -111,7 +112,7 @@ public class Ejb3Creator extends AbstractCreator implements Creator
     /**
      * The type of the bean
      */
-    private String clazz;
+    private String className;
 
     /**
      * A suffix to help lookup
