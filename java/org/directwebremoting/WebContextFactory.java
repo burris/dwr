@@ -70,7 +70,7 @@ public class WebContextFactory
          * @param config The servlet configuration
          * @param context The servlet context
          * @param container The IoC container
-         * @see WebContextBuilder#unset()
+         * @see #unset()
          */
         void set(HttpServletRequest request, HttpServletResponse response, ServletConfig config, ServletContext context, Container container);
 
@@ -82,7 +82,7 @@ public class WebContextFactory
         /**
          * Unset the current ExecutionContext
          * This method is only for use internally to DWR.
-         * @see WebContextBuilder#set(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext, Container)
+         * @see #set(HttpServletRequest, HttpServletResponse, ServletConfig, ServletContext, Container)
          */
         void unset();
     }

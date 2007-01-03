@@ -86,8 +86,8 @@ public interface Creator
     /**
      * Request scope: the named reference remains available from the
      * ServletRequest associated with the Servlet until the current request is
-     * completed. This scope type is almost identical to {@value #PAGE} scope
-     * and it is recommended to use {@value #PAGE} scope in place of this scope.
+     * completed. This scope type is almost identical to {@link #PAGE} scope
+     * and it is recommended to use {@link #PAGE} scope in place of this scope.
      * Use of {@value #REQUEST} may be deprecated in the future.
      */
     static final String REQUEST = "request";

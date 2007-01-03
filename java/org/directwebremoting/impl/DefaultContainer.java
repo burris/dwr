@@ -97,7 +97,7 @@ public class DefaultContainer extends AbstractContainer implements Container
     }
 
     /**
-     * Called to indicate that we finished called setImplementation.
+     * Called to indicate that we finished adding parameters.
      * @see DefaultContainer#addParameter(Object, Object)
      * @noinspection UnnecessaryLabelOnContinueStatement
      */

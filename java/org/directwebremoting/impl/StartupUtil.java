@@ -100,14 +100,14 @@ public class StartupUtil
     {
         log.info("DWR Version " + VersionUtil.getVersion() + " starting.");
         log.info("- Servlet Engine: " + config.getServletContext().getServerInfo());
-        log.info("- Java Version:   " + System.getProperty("java.version")); //$NON-NLS-2$
-        log.info("- Java Vendor:    " + System.getProperty("java.vendor")); //$NON-NLS-2$
+        log.info("- Java Version:   " + System.getProperty("java.version"));
+        log.info("- Java Vendor:    " + System.getProperty("java.vendor"));
     }
 
     /**
-     * Get the {@link WebContextBuilder} out of the {@link Container}, configure
-     * it (call WebContextBuilder#set()) and use it to configure the
-     * {@link WebContextFactory}.
+     * Get the {@link WebContextFactory.WebContextBuilder} out of the
+     * {@link Container}, configure it (call WebContextBuilder#set()) and use it
+     * to configure the {@link WebContextFactory}.
      * @param servletConfig The servlet configuration
      * @param servletContext The servlet context
      * @param servlet The servlet that we are running under
@@ -126,8 +126,9 @@ public class StartupUtil
     }
 
     /**
-     * Get the {@link ServerContextBuilder} out of the {@link Container},
-     * configure it and use it to configure the {@link ServerContextFactory}
+     * Get the {@link ServerContextFactory.ServerContextBuilder} out of the
+     * {@link Container}, configure it and use it to configure the
+     * {@link ServerContextFactory}
      * @param servletConfig The servlet configuration
      * @param servletContext The servlet context
      * @param container The container to save in the ServletContext 

@@ -27,7 +27,7 @@ public interface AccessControl
      * Check the method for accessibility at runtime, and return an error
      * message if anything is wrong. If nothing is wrong, return null.
      * <p>See notes on <code>getReasonToNotDisplay()</code>. This method should
-     * duplicate the tests made by this method.
+     * duplicate the tests made by that method.
      * <p>This is not a great becuase it mixes 2 bits of information in the same
      * variable (is it wrong, and what is wrong) but without multi-value returns
      * in Java this seems like the most simple implementation.
