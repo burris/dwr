@@ -789,7 +789,7 @@ dwr.engine._stateChange = function(batch) {
       dwr.engine._handleWarning(batch, { name:"dwr.engine.missingData", message:"No data received from server" });
     }
     else if (status != 200) {
-      dwr.engine._handleError(batch, { name:"dwr.engine.http." + status, message:reply });
+      dwr.engine._handleError(batch, { name:"dwr.engine.http." + status, message:batch.req.statusText });
     }
     else {
       var contentType = batch.req.getResponseHeader("Content-Type");
@@ -911,12 +911,12 @@ dwr.engine._remoteEndIFrameResponse = function(batchId) {
 dwr.engine._eval = function(script) {
   if (script == null) { return null; }
   if (script == "") { dwr.engine._debug("Warning: blank script", true); return null; }
-  var debug = script;
-  debug = debug.replace(/\/\/#DWR-START#\r\n/g, "");
-  debug = debug.replace(/\/\/#DWR-END#\r\n/g, "");
-  debug = debug.replace(/\r/g, "");
-  debug = debug.replace(/\n/g, " ");
-  dwr.engine._debug("Exec: [" + debug + "]");
+  // var debug = script;
+  // debug = debug.replace(/\/\/#DWR-START#\r\n/g, "");
+  // debug = debug.replace(/\/\/#DWR-END#\r\n/g, "");
+  // debug = debug.replace(/\r/g, "");
+  // debug = debug.replace(/\n/g, " ");
+  // dwr.engine._debug("Exec: [" + debug + "]");
   return eval(script);
 };
 
