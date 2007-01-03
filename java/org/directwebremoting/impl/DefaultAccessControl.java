@@ -45,6 +45,16 @@ public class DefaultAccessControl implements AccessControl
      */
     public void assertExecutionIsPossible(Creator creator, String className, Method method) throws SecurityException
     {
+        assertIsRestrictedByRole(className, method);
+        assertIsDisplayable(creator, className, method);
+    }
+
+    /**
+     * @param className
+     * @param method
+     */
+    private void assertIsRestrictedByRole(String className, Method method)
+    {
         String methodName = method.getName();
 
         // What if there is some J2EE role based restriction?

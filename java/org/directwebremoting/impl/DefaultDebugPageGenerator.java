@@ -169,21 +169,6 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             Method method = methods[i];
             String methodName = method.getName();
 
-            // See also the call to getReasonToNotExecute() above
-            try
-            {
-                accessControl.assertIsDisplayable(creator, scriptName, method);
-            }
-            catch (SecurityException ex)
-            {
-                buffer.append(BLANK);
-                buffer.append("<li style='color: #A88;'>  " + methodName + "() is not available: " + ex.getMessage() + "</li>\n");
-                if (!allowImpossibleTests)
-                {
-                    continue;
-                }
-            }
-
             // Is it on the list of banned names
             if (JavascriptUtil.isReservedWord(methodName))
             {
@@ -291,15 +276,19 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
                 buffer.append("<br/><span class='warning'>(Warning: No Converter for " + method.getReturnType().getName() + ". See <a href='#missingConverter'>below</a>)</span>\n");
             }
 
-            // See also the call to getReasonToNotDisplay() above
+            // See also the call to getReasonToNotExecute() above
             try
             {
-                accessControl.assertExecutionIsPossible(creator, scriptName, method);
+                accessControl.assertIsDisplayable(creator, scriptName, method);
             }
             catch (SecurityException ex)
             {
-                buffer.append("<br/><span class='warning'>(Security restructions in place: " + ex.getMessage() + ".)</span>\n");
+                buffer.append("<br/><span class='warning'>(Warning: " + methodName + "() is excluded: " + ex.getMessage() + ". See <a href='#excludedMethod'>below</a>)</span>\n");
             }
+
+            // We don't need to call assertExecutionIsPossible() because those
+            // checks should be done by assertIsDisplayable() above
+            // accessControl.assertExecutionIsPossible(creator, scriptName, method);
             
             buffer.append("</li>\n");
         }
@@ -428,15 +417,6 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     }
 
     /**
-     * Do we allow impossible tests for debug purposes
-     * @param allowImpossibleTests The allowImpossibleTests to set.
-     */
-    public void setAllowImpossibleTests(boolean allowImpossibleTests)
-    {
-        this.allowImpossibleTests = allowImpossibleTests;
-    }
-
-    /**
      * @param engineHandlerUrl the engineHandlerUrl to set
      */
     public void setEngineHandlerUrl(String engineHandlerUrl)
@@ -503,11 +483,6 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      * The security manager
      */
     protected AccessControl accessControl = null;
-
-    /**
-     * This helps us test that access rules are being followed
-     */
-    private boolean allowImpossibleTests = false;
 
     /**
      * We cache the script output for speed

@@ -169,8 +169,8 @@ public class DefaultRemoter implements Remoter
             String methodName = method.getName();
 
             // We don't need to check accessControl.getReasonToNotExecute()
-            // because the checks are made by the doExec method, but we do check
-            // if we can display it
+            // because the checks are made by the execute() method, but we do
+            // check if we can display it
             try
             {
                 accessControl.assertIsDisplayable(creator, scriptName, method);
@@ -296,6 +296,11 @@ public class DefaultRemoter implements Remoter
             // parameters that we will use to call it if we choose to use that
             // method.
             Creator creator = creatorManager.getCreator(call.getScriptName());
+
+            // We don't need to check accessControl.getReasonToNotExecute()
+            // because the checks are made by the doExec method, but we do check
+            // if we can display it
+            accessControl.assertExecutionIsPossible(creator, call.getScriptName(), method);
 
             // Get ourselves an object to execute a method on unless the
             // method is static
