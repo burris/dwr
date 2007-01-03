@@ -267,7 +267,14 @@ public class DefaultRemoter implements Remoter
     {
         Replies replies = new Replies(calls.getBatchId());
 
-        for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
+        int callCount = calls.getCallCount();
+        if (callCount > maxCallCount)
+        {
+            log.error("Call count for batch exceeds maxCallCount. Add an init-param of maxCallCount to increase this limit");
+            throw new SecurityException("Call count for batch is too high");
+        }
+
+        for (int callNum = 0; callNum < callCount; callNum++)
         {
             Call call = calls.getCall(callNum);
             Reply reply = execute(call);
@@ -492,6 +499,16 @@ public class DefaultRemoter implements Remoter
     }
 
     /**
+     * To prevent a DoS attack we limit the max number of calls that can be
+     * made in a batch
+     * @param maxCallCount the maxCallCount to set
+     */
+    public void setMaxCallCount(int maxCallCount)
+    {
+        this.maxCallCount = maxCallCount;
+    }
+
+    /**
      * What AjaxFilters apply to which Ajax calls?
      */
     private AjaxFilterManager ajaxFilterManager = null;
@@ -520,6 +537,12 @@ public class DefaultRemoter implements Remoter
      * This helps us test that access rules are being followed
      */
     private boolean allowImpossibleTests = false;
+
+    /**
+     * To prevent a DoS attack we limit the max number of calls that can be
+     * made in a batch
+     */
+    private int maxCallCount = 20;
 
     /**
      * Generated Javascript cache
