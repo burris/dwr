@@ -27,7 +27,7 @@ public interface PageNormalizer
      * URL. In general this will work by stripping off extra components like
      * <code>index.html</code> rather than adding them in.
      * @param unnormalized The raw string from the browser
-     * @return A canonical form that renders the same page.
+     * @return A canonical form that DWR uses to compare pages for equivalence.
      */
     public String normalizePage(String unnormalized);
 }
