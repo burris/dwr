@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
-
 /**
  * Various utilities, mostly to make up for JDK 1.4 functionallity that is not
  * in JDK 1.3
@@ -354,6 +353,7 @@ public final class LocalUtil
             // Can we work with whatever type we were given?
             Method method = real.getMethod(setterName, new Class[] { value.getClass() });
             method.invoke(object, new Object[] { value });
+            return;
         }
         catch (NoSuchMethodException ex)
         {
