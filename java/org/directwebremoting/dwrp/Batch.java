@@ -29,6 +29,7 @@ import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.util.LocalUtil;
+import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -61,6 +62,7 @@ public class Batch
 
         if (!allowGetForSafariButMakeForgeryEasier && isGet)
         {
+            log.error("GET is disallowed because it makes request forgery easier. See http://getahead.ltd.uk/dwr/security/allowGetForSafariButMakeForgeryEasier for more details.");
             throw new SecurityException("GET Disalowed");
         }
 
@@ -221,6 +223,7 @@ public class Batch
                 }
 
                 // Otherwise error
+                log.error("A request has been denied as a potential CSRF attack.");
                 throw new SecurityException("Session Error");
             }
         }
@@ -303,4 +306,9 @@ public class Batch
     private Map allParameters = new HashMap();
 
     private Map spareParameters = new HashMap();
+
+    /**
+     * The log stream
+     */
+    protected static final Logger log = Logger.getLogger(Batch.class);
 }
