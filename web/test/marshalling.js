@@ -321,13 +321,13 @@ tests[tests.length] = { code:"stringStringTreeMapParam", data:map1 };
 tests[tests.length] = { code:"stringStringTreeMapParam", data:map2 };
 
 function startTest() {
-  $("start").disabled = true;
+  dwr.util.byId("start").disabled = true;
 
   failures.innerHTML = "";
   failreport.innerHTML = "0";
   execreport.innerHTML = "0";
   for (var i = 0; i < tests.length; i++) {
-    var numele = $("t" + i + "-num");
+    var numele = dwr.util.byId("t" + i + "-num");
     numele.style.backgroundColor = "white";
     dwr.util.setValue("t" + i + "-results", "");
   }
@@ -389,7 +389,7 @@ function sendBatch(start, size, rate) {
     callback = function(data) { testResults(data, start); };
     param = test.data;
 
-    numele = $("t" + start + "-num");
+    numele = dwr.util.byId("t" + start + "-num");
     numele.style.backgroundColor = "#ff8";
 
     Test[test.code](param, { callback:callback });
@@ -400,10 +400,15 @@ function sendBatch(start, size, rate) {
     for (var i = start; i < start + size && i < tests.length; i++) {
       test = tests[i];
 
-      numele = $("t" + i + "-num");
+      numele = dwr.util.byId("t" + i + "-num");
       numele.style.backgroundColor = "#ff8";
 
-      callback = new Function("data", "testResults(data, " + i + ");");
+      // These 2 do the same thing, the latter is faster but incomprehensible
+      // callback = new Function("data", "testResults(data, " + i + ");");
+      callback = new function(index) {
+        return function(d) { testResults(d, index); };
+      }(i);
+
       param = test.data;
       Test[test.code](param, callback);
     }
@@ -420,7 +425,7 @@ function sendBatch(start, size, rate) {
 
 function checkTidyUp(index) {
   if (index == tests.length) {
-    $("start").disabled = false;
+    dwr.util.byId("start").disabled = false;
 
     var mslen = new Date().getTime() - window.starttime.getTime();
     var tps = Math.round((10000 * tests.length) / mslen) / 10;
@@ -437,7 +442,7 @@ function testResults(data, index) {
   }
 
   var passed = testEquals(data, test.data, 0);
-  var numele = $("t" + index + "-num");
+  var numele = dwr.util.byId("t" + index + "-num");
 
   execreport.innerHTML = (index + 1);
 
@@ -470,7 +475,7 @@ function contentFailure() {
 }
 
 function runTest(num) {
-  var numele = $("t" + num + "-num");
+  var numele = dwr.util.byId("t" + num + "-num");
   numele.style.backgroundColor = "#ff8";
   var callback = function(data) {
     testResults(data, num);
@@ -481,9 +486,9 @@ function runTest(num) {
 }
 
 function init() {
-  failures = $("failures");
-  failreport = $("failreport");
-  execreport = $("execreport");
+  failures = dwr.util.byId("failures");
+  failreport = dwr.util.byId("failreport");
+  execreport = dwr.util.byId("execreport");
 
   dwr.engine.setErrorHandler(catchFailure);
   dwr.engine.setWarningHandler(catchFailure);
@@ -502,6 +507,7 @@ function init() {
     },
     function(row, options) { return ""; }
   ], {
+    escapeHtml:false,
     cellCreator:function(options) {
       var td = document.createElement("td");
       td.setAttribute("id", "t" + options.rowNum + cellNumIdSuffix[options.cellNum]);
