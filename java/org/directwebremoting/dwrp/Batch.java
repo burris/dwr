@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.directwebremoting.extend.Call;
@@ -41,9 +42,10 @@ public class Batch
      * @param request The original browser's request
      * @param crossDomainSessionSecurity Are we checking for CSRF attacks
      * @param allowGetForSafariButMakeForgeryEasier Do we allow GET?
+     * @param sessionCookieName "JSESSIONID" unless it has been overridden
      * @throws ServerException If reading from the request body stream fails
      */
-    public Batch(HttpServletRequest request, boolean crossDomainSessionSecurity, boolean allowGetForSafariButMakeForgeryEasier) throws ServerException
+    public Batch(HttpServletRequest request, boolean crossDomainSessionSecurity, boolean allowGetForSafariButMakeForgeryEasier, String sessionCookieName) throws ServerException
     {
         boolean isGet = request.getMethod().equals("GET");
         if (isGet)
@@ -64,7 +66,7 @@ public class Batch
 
         if (crossDomainSessionSecurity)
         {
-            checkNotCsrfAttack(request);
+            checkNotCsrfAttack(request, sessionCookieName);
         }
     }
 
@@ -183,8 +185,9 @@ public class Batch
     /**
      * Check that this request is not subject to a CSRF attack
      * @param request The original browser's request
+     * @param sessionCookieName "JSESSIONID" unless it has been overridden
      */
-    private void checkNotCsrfAttack(HttpServletRequest request)
+    private void checkNotCsrfAttack(HttpServletRequest request, String sessionCookieName)
     {
         // A check to see that this isn't a csrf attack
         // http://en.wikipedia.org/wiki/Cross-site_request_forgery
@@ -196,12 +199,29 @@ public class Batch
             {
                 String bodySessionId = getHttpSessionId();
 
-                // Weblogic sends JSESSIONIDs that are *longer* than the real
-                // session id. Why?!
-                if (!bodySessionId.startsWith(headerSessionId))
+                // Normal case; if same session cookie is supplied by DWR and
+                // in HTTP header then all is ok
+                if (headerSessionId.equals(bodySessionId))
                 {
-                    throw new SecurityException("Session Error");
+                    return;
                 }
+
+                // Weblogic adds creation time to the end of the incoming
+                // session cookie string (even for request.getRequestedSessionId()).
+                // Use the raw cookie instead
+                Cookie[] cookies = request.getCookies();
+                for (int i = 0; i < cookies.length; i++)
+                {
+                    Cookie cookie = cookies[i];
+                    if (cookie.getName().equals(sessionCookieName) &&
+                            cookie.getValue().equals(bodySessionId))
+                    {
+                        return;
+                    }
+                }
+
+                // Otherwise error
+                throw new SecurityException("Session Error");
             }
         }
     }

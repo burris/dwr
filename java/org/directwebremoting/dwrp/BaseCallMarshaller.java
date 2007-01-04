@@ -74,7 +74,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         Batch batch = (Batch) request.getAttribute(ATTRIBUTE_BATCH);
         if (batch == null)
         {
-            batch = new Batch(request, crossDomainSessionSecurity, allowGetForSafariButMakeForgeryEasier);
+            batch = new Batch(request, crossDomainSessionSecurity, allowGetForSafariButMakeForgeryEasier, sessionCookieName);
 
             // Save calls for retry exception
             request.setAttribute(ATTRIBUTE_BATCH, batch);
@@ -470,6 +470,15 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
+     * Alter the session cookie name from the default JSESSIONID.
+     * @param sessionCookieName the sessionCookieName to set
+     */
+    public void setSessionCookieName(String sessionCookieName)
+    {
+        this.sessionCookieName = sessionCookieName;
+    }
+
+    /**
      * A ScriptConduit that works with the parent Marshaller.
      * In some ways this is nasty because it has access to essentially private parts
      * of BaseCallMarshaller, however there is nowhere sensible to store them
@@ -515,6 +524,11 @@ public abstract class BaseCallMarshaller implements Marshaller
          */
         private final PrintWriter out;
     }
+
+    /**
+     * The session cookie name
+     */
+    protected String sessionCookieName = "JSESSIONID";
 
     /**
      * By default we disable GET, but this hinders old Safaris
