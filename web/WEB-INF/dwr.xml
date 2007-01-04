@@ -56,7 +56,7 @@
       <param name="class" value="uk.ltd.getahead.dwrdemo.test.Test"/>
     </create>
     <convert converter="bean" match="$Proxy*"/>
-    <convert converter="testbean" match="uk.ltd.getahead.dwrdemo.test.TestBean"/>
+    <convert converter="bean" match="uk.ltd.getahead.dwrdemo.test.TestBean"/>
     <convert converter="bean" javascript="ObjB" match="uk.ltd.getahead.dwrdemo.test.ObjB"/>
     <convert converter="object" javascript="ObjA" match="uk.ltd.getahead.dwrdemo.test.ObjA">
       <param name="force" value="true"/>
