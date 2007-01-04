@@ -50,40 +50,76 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
         this.characterEncoding = characterEncoding;
     }
 
-    /**
-     * @see javax.servlet.ServletResponse#setCharacterEncoding(java.lang.String)
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#addCookie(javax.servlet.http.Cookie)
      */
-    public void setCharacterEncoding(String characterEncoding)
+    public void addCookie(Cookie cookie)
     {
-        this.characterEncoding = characterEncoding;
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#getCharacterEncoding()
+     * @see javax.servlet.http.HttpServletResponseWrapper#addDateHeader(java.lang.String, long)
      */
-    public String getCharacterEncoding()
+    public void addDateHeader(String name, long value)
     {
-        return characterEncoding;
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#getOutputStream()
+     * @see javax.servlet.http.HttpServletResponseWrapper#addHeader(java.lang.String, java.lang.String)
      */
-    public ServletOutputStream getOutputStream()
+    public void addHeader(String name, String value)
     {
-        return outputStream;
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#getWriter()
+     * @see javax.servlet.http.HttpServletResponseWrapper#addIntHeader(java.lang.String, int)
      */
-    public PrintWriter getWriter()
+    public void addIntHeader(String name, int value)
     {
-        return pout;
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#flushBuffer()
+     * @see javax.servlet.http.HttpServletResponseWrapper#containsHeader(java.lang.String)
+     */
+    public boolean containsHeader(String name)
+    {
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#encodeRedirectUrl(java.lang.String)
+     */
+    public String encodeRedirectUrl(String url)
+    {
+        return url;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#encodeRedirectURL(java.lang.String)
+     */
+    public String encodeRedirectURL(String url)
+    {
+        return url;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#encodeUrl(java.lang.String)
+     */
+    public String encodeUrl(String url)
+    {
+        return url;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#encodeURL(java.lang.String)
+     */
+    public String encodeURL(String url)
+    {
+        return url;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#flushBuffer()
      */
     public void flushBuffer() throws IOException
     {
@@ -91,7 +127,122 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+     * @see javax.servlet.ServletResponseWrapper#getBufferSize()
+     */
+    public int getBufferSize()
+    {
+        return bufferSize;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#getCharacterEncoding()
+     */
+    public String getCharacterEncoding()
+    {
+        return characterEncoding;
+    }
+
+    /**
+     * @return The MIME type of the content
+     * @see javax.servlet.ServletResponse#setContentType(String)
+     */
+    public String getContentType()
+    {
+        return contentType;
+    }
+
+    /**
+     * Accessor for any error messages set using {@link #sendError(int)} or
+     * {@link #sendError(int, String)}
+     * @return The current error message
+     */
+    public String getErrorMessage()
+    {
+        return errorMessage;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#getLocale()
+     */
+    public Locale getLocale()
+    {
+        return locale;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#getOutputStream()
+     */
+    public ServletOutputStream getOutputStream()
+    {
+        return outputStream;
+    }
+
+    /**
+     * Accessor for the redirect URL set using {@link #sendRedirect(String)}
+     * @return The redirect URL
+     */
+    public String getRedirectedUrl()
+    {
+        return redirectedUrl;
+    }
+
+    /**
+     * What HTTP status code should be returned?
+     * @return The current http status code
+     */
+    public int getStatus()
+    {
+        return status;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#getWriter()
+     */
+    public PrintWriter getWriter()
+    {
+        return pout;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#isCommitted()
+     */
+    public boolean isCommitted()
+    {
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#reset()
+     */
+    public void reset()
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#resetBuffer()
+     */
+    public void resetBuffer()
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#sendError(int)
+     */
+    public void sendError(int newStatus)
+    {
+        if (committed)
+        {
+            throw new IllegalStateException("Cannot set error status - response is already committed");
+        }
+
+        log.warn("Ignoring call to sendError(" + newStatus + ')');
+
+        status = newStatus;
+        committed = true;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#sendError(int, java.lang.String)
      */
     public void sendError(int newStatus, String newErrorMessage)
     {
@@ -108,33 +259,7 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#sendError(int)
-     */
-    public void sendError(int newStatus)
-    {
-        if (committed)
-        {
-            throw new IllegalStateException("Cannot set error status - response is already committed");
-        }
-
-        log.warn("Ignoring call to sendError(" + newStatus + ')');
-
-        status = newStatus;
-        committed = true;
-    }
-
-    /**
-     * Accessor for any error messages set using {@link #sendError(int)} or
-     * {@link #sendError(int, String)}
-     * @return The current error message
-     */
-    public String getErrorMessage()
-    {
-        return errorMessage;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
+     * @see javax.servlet.http.HttpServletResponseWrapper#sendRedirect(java.lang.String)
      */
     public void sendRedirect(String location)
     {
@@ -149,17 +274,71 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
         committed = true;
     }
 
-    /**
-     * Accessor for the redirect URL set using {@link #sendRedirect(String)}
-     * @return The redirect URL
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#setBufferSize(int)
      */
-    public String getRedirectedUrl()
+    public void setBufferSize(int bufferSize)
     {
-        return redirectedUrl;
+        this.bufferSize = bufferSize;
+    }
+
+    /**
+     * @param characterEncoding The new encoding to use for response strings
+     * @see javax.servlet.ServletResponseWrapper#getCharacterEncoding()
+     */
+    public void setCharacterEncoding(String characterEncoding)
+    {
+        this.characterEncoding = characterEncoding;
     }
 
     /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#setStatus(int)
+     * @see javax.servlet.ServletResponseWrapper#setContentLength(int)
+     */
+    public void setContentLength(int i)
+    {
+        // The content length of the original document is not likely to be the
+        // same as the content length of the new document.
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#setContentType(java.lang.String)
+     */
+    public void setContentType(String contentType)
+    {
+        this.contentType = contentType;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#setDateHeader(java.lang.String, long)
+     */
+    public void setDateHeader(String name, long value)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#setHeader(java.lang.String, java.lang.String)
+     */
+    public void setHeader(String name, String value)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#setIntHeader(java.lang.String, int)
+     */
+    public void setIntHeader(String name, int value)
+    {
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletResponseWrapper#setLocale(java.util.Locale)
+     */
+    public void setLocale(Locale locale)
+    {
+        this.locale = locale;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.http.HttpServletResponseWrapper#setStatus(int)
      */
     public void setStatus(int status)
     {
@@ -179,206 +358,9 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
     }
 
     /**
-     * What HTTP status code should be returned?
-     * @return The current http status code
-     */
-    public int getStatus()
-    {
-        return status;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#setContentLength(int)
-     */
-    public void setContentLength(int i)
-    {
-        // The content length of the original document is not likely to be the
-        // same as the content length of the new document.
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
-     */
-    public void setContentType(String contentType)
-    {
-        this.contentType = contentType;
-    }
-
-    /**
-     * @see javax.servlet.ServletResponse#getContentType()
-     */
-    public String getContentType()
-    {
-        return contentType;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#setBufferSize(int)
-     */
-    public void setBufferSize(int bufferSize)
-    {
-        this.bufferSize = bufferSize;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#getBufferSize()
-     */
-    public int getBufferSize()
-    {
-        return bufferSize;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#isCommitted()
-     */
-    public boolean isCommitted()
-    {
-        return false;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#resetBuffer()
-     */
-    public void resetBuffer()
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#reset()
-     */
-    public void reset()
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#setLocale(java.util.Locale)
-     */
-    public void setLocale(Locale locale)
-    {
-        this.locale = locale;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletResponse#getLocale()
-     */
-    public Locale getLocale()
-    {
-        return locale;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)
-     */
-    public void addCookie(Cookie cookie)
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
-     */
-    public String encodeUrl(String url)
-    {
-        return url;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#encodeURL(java.lang.String)
-     */
-    public String encodeURL(String url)
-    {
-        return url;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#encodeRedirectUrl(java.lang.String)
-     */
-    public String encodeRedirectUrl(String url)
-    {
-        return url;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#encodeRedirectURL(java.lang.String)
-     */
-    public String encodeRedirectURL(String url)
-    {
-        return url;
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
-     */
-    public void addHeader(String name, String value)
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
-     */
-    public void setHeader(String name, String value)
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
-     */
-    public void addDateHeader(String name, long value)
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
-     */
-    public void setDateHeader(String name, long value)
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
-     */
-    public void addIntHeader(String name, int value)
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
-     */
-    public void setIntHeader(String name, int value)
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServletResponse#containsHeader(java.lang.String)
-     */
-    public boolean containsHeader(String name)
-    {
-        return false;
-    }
-
-    /**
-     * The log stream
-     */
-    private static final Logger log = Logger.getLogger(SwallowingHttpServletResponse.class);
-
-    /**
-     * The forwarding output stream
-     */
-    private final ServletOutputStream outputStream;
-
-    /**
-     * The forwarding output stream
-     */
-    private final PrintWriter pout;
-
-    /**
      * The ignored buffer size
      */
     private int bufferSize = 0;
-
-    /**
-     * Locale setting: defaults to platform default
-     */
-    private Locale locale = Locale.getDefault();
 
     /**
      * The character encoding used
@@ -391,9 +373,9 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
     private boolean committed = false;
 
     /**
-     * The HTTP status
+     * The MIME type of the output body
      */
-    private int status = HttpServletResponse.SC_OK;
+    private String contentType;
 
     /**
      * The error message sent with a status != HttpServletResponse.SC_OK
@@ -401,12 +383,32 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
     private String errorMessage;
 
     /**
+     * Locale setting: defaults to platform default
+     */
+    private Locale locale = Locale.getDefault();
+
+    /**
+     * The forwarding output stream
+     */
+    private final ServletOutputStream outputStream;
+
+    /**
+     * The forwarding output stream
+     */
+    private final PrintWriter pout;
+
+    /**
      * Where are we to redirect the user to?
      */
     private String redirectedUrl;
 
     /**
-     * The MIME type of the output body
+     * The HTTP status
      */
-    private String contentType;
+    private int status = HttpServletResponse.SC_OK;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(SwallowingHttpServletResponse.class);
 }
