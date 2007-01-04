@@ -100,21 +100,21 @@ public class DateConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
-        if (!(data instanceof Date))
-        {
-            throw new MarshallException(data.getClass());
-        }
-
         long millis;
+
         if (data instanceof Calendar)
         {
             Calendar cal = (Calendar) data;
             millis = cal.getTime().getTime();
         }
-        else
+        else if (data instanceof Date)
         {
             Date date = (Date) data;
             millis = date.getTime();
+        }
+        else
+        {
+            throw new MarshallException(data.getClass());
         }
 
         return new SimpleOutboundVariable("new Date(" + millis + ")", outctx, true);
