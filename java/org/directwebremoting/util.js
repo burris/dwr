@@ -1004,7 +1004,7 @@ dwr.util.toggleClassName = function(ele, className) {
   ele = dwr.util._getElementById(ele, "toggleClassName()");
   if (ele == null) return;
   var regex = new RegExp("(^|\\s)" + className + "(\\s|$)");
-  if (regex.test(element.className)) {
+  if (regex.test(ele.className)) {
     ele.className = ele.className.replace(regex, '');
   }
   else {
