@@ -1068,11 +1068,13 @@ dwr.engine._serializeObject = function(batch, referto, data, name) {
   var reply = "Object_" + dwr.engine._getObjectClassName(data) + ":{";
   var element;
   for (element in data) {
-    batch.paramCount++;
-    var childName = "c" + dwr.engine._batch.map.callCount + "-e" + batch.paramCount;
-    dwr.engine._serializeAll(batch, referto, data[element], childName);
+    if (typeof data[element] != "function") {
+      batch.paramCount++;
+      var childName = "c" + dwr.engine._batch.map.callCount + "-e" + batch.paramCount;
+      dwr.engine._serializeAll(batch, referto, data[element], childName);
 
-    reply += encodeURIComponent(element) + ":reference:" + childName + ", ";
+      reply += encodeURIComponent(element) + ":reference:" + childName + ", ";
+    }
   }
 
   if (reply.substring(reply.length - 2) == ", ") {
