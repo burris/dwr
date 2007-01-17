@@ -729,7 +729,7 @@ dwr.engine._constructRequest = function(batch) {
     request.url += "Multiple." + batch.map.callCount + ".dwr";
   }
   // Play nice with url re-writing
-  var sessionMatch = location.href.match(/jsessionid=(\w+)/);
+  var sessionMatch = location.href.match(/jsessionid=([^?]+)/);
   if (sessionMatch != null) {
     request.url += ";jsessionid=" + sessionMatch[1];
   }
