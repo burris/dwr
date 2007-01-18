@@ -204,7 +204,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             while (iter.hasNext())
             {
                 Element createElement = (Element) iter.next();
-                findDecoratorForNode(createElement).decorate(createElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
+                decorate(createElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
             List convertElements = DomUtils.getChildElementsByTagName(element, "convert");
@@ -212,14 +212,14 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             while (iter.hasNext())
             {
                 Element convertElement = (Element) iter.next();
-                findDecoratorForNode(convertElement).decorate(convertElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
+                decorate(convertElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
             List signatureElements = DomUtils.getChildElementsByTagName(element, "signatures");
             for (Iterator i = signatureElements.iterator(); i.hasNext(); )
             {
                 Element signatureElement = (Element) i.next();
-                findDecoratorForNode(signatureElement).decorate(signatureElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
+                decorate(signatureElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
             return beanDefinition;
