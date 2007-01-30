@@ -33,10 +33,8 @@ import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
-import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
-import org.springframework.beans.factory.xml.BeanDefinitionParser;
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
-import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.beans.factory.xml.*;
+import org.springframework.beans.FatalBeanException;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
@@ -240,14 +238,16 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 dwrController.addPropertyValue("debug", debug);
             }
 
-            String beanName = element.getAttribute("id");
+            String beanName = element.getAttribute(BeanDefinitionParserDelegate.ID_ATTRIBUTE);
+            String nameAttr = element.getAttribute(BeanDefinitionParserDelegate.NAME_ATTRIBUTE);
             String[] aliases = null;
             if (!StringUtils.hasText(beanName)) {
                 beanName = element.getAttribute("name");
             } else {
                 String aliasName = element.getAttribute("name");
                 if (StringUtils.hasText(aliasName)) {
-                    aliases = new String[] { aliasName };
+                    aliases = StringUtils.tokenizeToStringArray(nameAttr,
+                            BeanDefinitionParserDelegate.BEAN_NAME_DELIMITERS);
                 }
             }
             BeanDefinitionHolder holder = new BeanDefinitionHolder(
@@ -264,11 +264,23 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         {
             Element element = (Element) node;
 
-            String parentBeanName = definition.getBeanName();
             String javascript = element.getAttribute("javascript");
 
             BeanDefinitionBuilder beanCreator = BeanDefinitionBuilder.rootBeanDefinition(BeanCreator.class);
-            beanCreator.addPropertyValue("bean", new RuntimeBeanReference(parentBeanName));
+
+            try {
+                beanCreator.addPropertyValue("beanClass",
+                        ClassUtils.forName(definition.getBeanDefinition().getBeanClassName()));
+            } catch (ClassNotFoundException e) {
+                throw new FatalBeanException("Unable to create DWR bean creator for '" +
+                        definition.getBeanName() + "'.", e);
+            }
+
+            String name = definition.getBeanName();
+            if (name.startsWith("scopedTarget.")) {
+                name = name.substring(name.indexOf(".") + 1);
+            }
+            beanCreator.addPropertyValue("beanId", name);
             beanCreator.addPropertyValue("javascript", javascript);
 
             registerCreator(parserContext.getRegistry(), javascript, beanCreator, node.getChildNodes());
@@ -354,7 +366,13 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             {
                 // TODO: duplicate of RemoteBeanDefinitionDecorator
                 creator = BeanDefinitionBuilder.rootBeanDefinition(SpringCreator.class);
-                creator.addPropertyValue("bean", new RuntimeBeanReference(parentBeanName));
+                // creator.addPropertyValue("bean", new RuntimeBeanReference(parentBeanName));
+                try {
+                    creator.addPropertyValue("beanClass", Class.forName(definition.getBeanDefinition().getBeanClassName()));
+                } catch (ClassNotFoundException e) {
+                    throw new FatalBeanException("Unable to create DWR bean creator for '" +
+                            definition.getBeanName() + "'.", e);
+                }
                 creator.addPropertyValue("javascript", javascript);
             }
             else if ("new".equals(type))
