@@ -16,7 +16,12 @@
 package org.directwebremoting.spring;
 
 import org.directwebremoting.create.AbstractCreator;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.Assert;
 
 /**
  * A creator that proxies to the specified bean. <br>
@@ -26,8 +31,32 @@ import org.springframework.aop.framework.ProxyFactoryBean;
  * @see CreatorConfig
  * @author Bram Smeets
  */
-public class BeanCreator extends AbstractCreator
-{
+public class BeanCreator extends AbstractCreator implements ApplicationContextAware, InitializingBean {
+
+    /**
+     * Is called by the Spring container after all properties have been set. <br>
+     * It is implemented in order to initialize the beanClass field correctly and to make sure
+     * that either the bean id or the bean itself have been set on this creator.
+     * @see org.springframework.beans.factory.InitializingBean
+     */
+    public void afterPropertiesSet()
+    {
+        // make sure that either the bean or the beanId have been set correctly
+        if (bean != null) {
+            this.beanClass = bean.getClass();
+        } else if (beanId != null) {
+            this.beanClass = applicationContext.getType(beanId);
+        } else {
+            throw new FatalBeanException(
+                    "You should either set the bean property directly or set the beanId property");
+        }
+
+        // make sure to handle cglib proxies correctly
+        if(AopUtils.isCglibProxyClass(this.beanClass)) {
+            this.beanClass = this.beanClass.getSuperclass();
+        }
+    }
+
     /**
      * Accessor for the class that this creator allows access to. <br>
      * It returns the class specified by the <code>beanClass</code>
@@ -37,17 +66,7 @@ public class BeanCreator extends AbstractCreator
      */
     public Class getType()
     {
-        if (beanClass != null)
-        {
-            return beanClass;
-        }
-
-        if (bean instanceof ProxyFactoryBean) {
-            ProxyFactoryBean proxy = (ProxyFactoryBean) getInstance();
-            return proxy.getObjectType();
-        }
-
-        return bean.getClass();
+        return beanClass;
     }
 
     /**
@@ -57,6 +76,13 @@ public class BeanCreator extends AbstractCreator
      */
     public Object getInstance()
     {
+        synchronized(monitor) {
+            if (bean == null) {
+                Assert.notNull(beanId, "The bean id needs to be specified");
+                bean = applicationContext.getBean(beanId);
+            }
+        }
+
         return bean;
     }
 
@@ -74,11 +100,33 @@ public class BeanCreator extends AbstractCreator
      * Use this property to specify a different class or interface for
      * instance in case the specified bean is a proxy or implementation
      * and we want to expose the interface.
-     * @param beanClass
+     * @param beanClass the class of the bean to remote
      */
     public void setBeanClass(Class beanClass)
     {
         this.beanClass = beanClass;
+    }
+
+    /**
+     * Sets the application context. <br>
+     * This method is called by the Spring bean container to set a reference to the
+     * application context.
+     * @param applicationContext the application context
+     */
+    public void setApplicationContext(ApplicationContext applicationContext)
+    {
+        this.applicationContext = applicationContext;
+    }
+
+    /**
+     * Sets the id of the bean to remote using DWR. <br>
+     * Either set this property on the creator, or set the bean to be
+     * remoted directly on this creator.
+     * @param beanId the id of the bean to remote
+     */
+    public void setBeanId(String beanId)
+    {
+        this.beanId = beanId;
     }
 
     /**
@@ -113,7 +161,20 @@ public class BeanCreator extends AbstractCreator
     private Class beanClass;
 
     /**
+     * The optional bean name.
+     */
+    private String beanId;
+
+    /**
+     * The application context that creates this creator.
+     */
+    private ApplicationContext applicationContext;
+
+    /**
      * The optional creator configuration for this creator.
      */
     private CreatorConfig config;
+
+    /** Monitor object to synchronize on during inititalization. */
+    private final Object monitor = new Object();
 }
