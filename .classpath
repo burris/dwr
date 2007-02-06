@@ -22,7 +22,7 @@
 			<attribute name="javadoc_location" value="http://www.dom4j.org/apidocs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="jar/xom-1.1.jar">
+	<classpathentry kind="lib" path="jar/xom-1.1.jar" sourcepath="/library/jarlib/xom-1.1/xom-1.1.zip">
 		<attributes>
 			<attribute name="javadoc_location" value="http://www.cafeconleche.org/XOM/apidocs"/>
 		</attributes>
