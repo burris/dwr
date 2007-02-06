@@ -20,9 +20,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.Container;
@@ -231,7 +231,7 @@ public class AnnotationsConfigurator implements Configurator
         if (BeanConverter.class.isAssignableFrom(converter))
         {
             StringBuilder properties = new StringBuilder();
-            List<Field> fields = new ArrayList<Field>();
+            Set<Field> fields = new HashSet<Field>();
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
             fields.addAll(Arrays.asList(clazz.getFields()));
             for (Field field : fields)
