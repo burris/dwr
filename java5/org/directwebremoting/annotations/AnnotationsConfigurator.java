@@ -18,7 +18,10 @@ package org.directwebremoting.annotations;
 import java.beans.Introspector;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.directwebremoting.AjaxFilter;
@@ -228,12 +231,14 @@ public class AnnotationsConfigurator implements Configurator
         if (BeanConverter.class.isAssignableFrom(converter))
         {
             StringBuilder properties = new StringBuilder();
-            Field[] fields = clazz.getFields();
-            for (int i = 0; i < fields.length; i++)
+            List<Field> fields = new ArrayList<Field>();
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+            fields.addAll(Arrays.asList(clazz.getFields()));
+            for (Field field : fields)
             {
-                if (fields[i].getAnnotation(RemoteProperty.class) != null)
+                if (field.getAnnotation(RemoteProperty.class) != null)
                 {
-                    properties.append(',').append(fields[i].getName());
+                    properties.append(',').append(field.getName());
                 }
             }
 
