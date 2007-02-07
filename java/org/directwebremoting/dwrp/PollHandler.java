@@ -99,7 +99,7 @@ public class PollHandler implements Handler
         String prString = extractParameter(request, parameters, ATTRIBUTE_PARTIAL_RESPONSE, ProtocolConstants.INBOUND_KEY_PARTIAL_RESPONSE);
         boolean partialResponse = Boolean.valueOf(prString).booleanValue();
 
-        if (!pollAndCometEnabled)
+        if (!activeReverseAjaxEnabled)
         {
             sendNoPollingResponse(response, batchId);
             return;
@@ -253,7 +253,7 @@ public class PollHandler implements Handler
      */
     protected void sendNoPollingResponse(HttpServletResponse response, String batchId) throws IOException
     {
-        log.error("Polling and Comet are disabled. To enable them set the init-param pollAndCometEnabled to true. See http://getahead.ltd.uk/dwr/server/servlet for more.");
+        log.error("Polling and Comet are disabled. To enable them set the init-param activeReverseAjaxEnabled to true. See http://getahead.ltd.uk/dwr/server/servlet for more.");
         String script = EnginePrivate.getRemotePollCometDisabledScript(batchId);
         sendScript(response, script);
     }
@@ -638,11 +638,21 @@ public class PollHandler implements Handler
     }
 
     /**
+     * Use {@link #setActiveReverseAjaxEnabled(boolean)}
      * @param pollAndCometEnabled Are we doing full reverse ajax
+     * @deprecated Use {@link #setActiveReverseAjaxEnabled(boolean)}
      */
     public void setPollAndCometEnabled(boolean pollAndCometEnabled)
     {
-        this.pollAndCometEnabled = pollAndCometEnabled;
+        this.activeReverseAjaxEnabled = pollAndCometEnabled;
+    }
+
+    /**
+     * @param activeReverseAjaxEnabled Are we doing full reverse ajax
+     */
+    public void setActiveReverseAjaxEnabled(boolean activeReverseAjaxEnabled)
+    {
+        this.activeReverseAjaxEnabled = activeReverseAjaxEnabled;
     }
 
     /**
@@ -656,7 +666,7 @@ public class PollHandler implements Handler
     /**
      * Are we doing full reverse ajax
      */
-    private boolean pollAndCometEnabled = false;
+    private boolean activeReverseAjaxEnabled = false;
 
     /**
      * By default we disable GET, but this hinders old Safaris
