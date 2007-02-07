@@ -10,7 +10,7 @@
       // This turns off the no-javascript message
       document.getElementById("start").style.display = "none";
       // This checks for file: URLs and loading problems
-      if (window.dwr.engine == null || window.dwr.util == null) {
+      if (window.dwr == null || window.dwr.engine == null || window.dwr.util == null) {
         document.getElementById("file").style.display = "block";
         return;
       }
@@ -98,25 +98,6 @@
   <li>The generated <a href='dwr/'>configuration/test pages</a>.</li>
 </ul>
 
-<!--
-<p>Self test pages:</p>
-
-<ul>
-  <li>
-    <a href="test/integrationTest.html">Integration Test</a>
-    (Pages that test DWR can work with Spring, Struts, XOM, JDOM, DOM4J, DOM, Hibernate)
-  </li>
-  <li>
-    <a href="test/marshalling.html">Marshalling Test</a>
-    (Can DWR marshall all parameters, can they be done under load)
-  </li>
-  <li>
-    <a href="test/dhtml.html">DHTML Test</a>
-    (Can the DWR DHTML utility library manipulate the DOM properly)
-  </li>
-</ul>
--->
-
 <hr/>
 
 <div id="start">
@@ -154,9 +135,14 @@
   </p>
   <p>
     It appears that you may be attempting to run DWR outside a servlet container
-    (possibly using a file: URL). We think this because this page has missing
-    Javascript functions that should have been produced by DWR. To fix the
-    problem please use DWR from within a servlet container.
+    (possibly using a file: URL), or that the servlet engine has failed to load
+    the DWR servlet.
+  </p>
+  <p>
+    The problem is that this page failed to load resources from DWR. You might
+    try visiting the DWR <a href='dwr/'>configuration/test pages</a> to see
+    what happens when you access DWR directly. Pay careful attention to error
+    messages on the app-server console in trying to diagnose what is wrong. 
   </p>
   <p>
     Also there could be an issue with your browser. Try viewing this page in a

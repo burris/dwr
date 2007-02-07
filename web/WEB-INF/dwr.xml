@@ -51,17 +51,6 @@
       <param name="class" value="uk.ltd.getahead.dwrdemo.simpletext.Demo"/>
     </create>
 
-    <!-- test -->
-    <create creator="new" javascript="Test" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.test.Test"/>
-    </create>
-    <convert converter="bean" match="$Proxy*"/>
-    <convert converter="bean" match="uk.ltd.getahead.dwrdemo.test.TestBean"/>
-    <convert converter="bean" javascript="ObjB" match="uk.ltd.getahead.dwrdemo.test.ObjB"/>
-    <convert converter="object" javascript="ObjA" match="uk.ltd.getahead.dwrdemo.test.ObjA">
-      <param name="force" value="true"/>
-    </convert>
-
     <!-- resources not in this war file: java.util.Date -->
     <create creator="new" javascript="JDate" scope="session">
       <param name="class" value="java.util.Date"/>
@@ -72,7 +61,7 @@
       <filter class="uk.ltd.getahead.dwrdemo.filter.RandomSecurityAjaxFilter"/>
     </create>
 
-    <!-- resources not in this war file: Commons EmailValidator -->
+    <!-- resources in jars in this war file: Commons EmailValidator -->
     <create creator="script" javascript="EmailValidator" scope="application">
       <param name="language" value="beanshell"/>
       <param name="script">
@@ -82,30 +71,5 @@
     </create>
 
   </allow>
-
-  <signatures>
-  <![CDATA[
-  import java.util.*;
-  import uk.ltd.getahead.dwrdemo.test.*;
-
-  Test.testBeanSetParam(Set<TestBean>);
-  Test.testBeanListParam(List<TestBean>);
-  Test.charTestBeanMapParam(Map<Character, TestBean>);
-
-  Test.stringStringMapParam(Map<String, String>);
-  Test.stringStringHashMapParam(HashMap<String, String>);
-  Test.stringStringTreeMapParam(TreeMap<String, String>);
-
-  Test.stringCollectionParam(Collection<String>);
-
-  Test.stringListParam(List<String>);
-  Test.stringLinkedListParam(LinkedList<String>);
-  Test.stringArrayListParam(ArrayList<String>);
-
-  Test.stringSetParam(Set<String>);
-  Test.stringHashSetParam(HashSet<String>);
-  Test.stringTreeSetParam(TreeSet<String>);
-  ]]>
-  </signatures>
 
 </dwr>
