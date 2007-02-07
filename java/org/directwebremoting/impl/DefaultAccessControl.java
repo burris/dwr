@@ -49,25 +49,6 @@ public class DefaultAccessControl implements AccessControl
         assertIsDisplayable(creator, className, method);
     }
 
-    /**
-     * @param className
-     * @param method
-     */
-    private void assertIsRestrictedByRole(String className, Method method)
-    {
-        String methodName = method.getName();
-
-        // What if there is some J2EE role based restriction?
-        Set roles = getRoleRestrictions(className, methodName);
-        if (roles != null && !roles.isEmpty())
-        {
-            HttpServletRequest req = WebContextFactory.get().getHttpServletRequest();
-
-            assertAuthenticationIsValid(req);
-            assertAllowedByRoles(req, roles);
-        }
-    }
-
     /* (non-Javadoc)
      * @see org.directwebremoting.AccessControl#getReasonToNotDisplay(org.directwebremoting.Creator, java.lang.String, java.lang.reflect.Method)
      */
@@ -98,17 +79,6 @@ public class DefaultAccessControl implements AccessControl
         }
 
         roles.add(role);
-    }
-
-    /**
-     * @param scriptName The name of the creator to Javascript
-     * @param methodName The name of the method (without brackets)
-     * @return A Set of all the roles for the given script and method
-     */
-    protected Set getRoleRestrictions(String scriptName, String methodName)
-    {
-        String key = scriptName + '.' + methodName;
-        return (Set) roleRestrictMap.get(key);
     }
 
     /* (non-Javadoc)
@@ -155,6 +125,36 @@ public class DefaultAccessControl implements AccessControl
 
         // Add the rule to this policy
         policy.rules.add(methodName);
+    }
+
+    /**
+     * @param scriptName The name of the creator to Javascript
+     * @param method The method to execute
+     */
+    protected void assertIsRestrictedByRole(String scriptName, Method method)
+    {
+        String methodName = method.getName();
+
+        // What if there is some J2EE role based restriction?
+        Set roles = getRoleRestrictions(scriptName, methodName);
+        if (roles != null && !roles.isEmpty())
+        {
+            HttpServletRequest req = WebContextFactory.get().getHttpServletRequest();
+
+            assertAuthenticationIsValid(req);
+            assertAllowedByRoles(req, roles);
+        }
+    }
+
+    /**
+     * @param scriptName The name of the creator to Javascript
+     * @param methodName The name of the method (without brackets)
+     * @return A Set of all the roles for the given script and method
+     */
+    protected Set getRoleRestrictions(String scriptName, String methodName)
+    {
+        String key = scriptName + '.' + methodName;
+        return (Set) roleRestrictMap.get(key);
     }
 
     /**

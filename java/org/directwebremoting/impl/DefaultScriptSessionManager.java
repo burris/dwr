@@ -42,23 +42,21 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     {
         maybeCheckTimeouts();
 
-        DefaultScriptSession session;
-
         synchronized (sessionLock)
         {
-            session = (DefaultScriptSession) sessionMap.get(id);
-            if (session == null)
+            DefaultScriptSession scriptSession = (DefaultScriptSession) sessionMap.get(id);
+            if (scriptSession == null)
             {
-                session = new DefaultScriptSession(id, this);
-                sessionMap.put(id, session);
+                scriptSession = new DefaultScriptSession(id, this);
+                sessionMap.put(id, scriptSession);
             }
             else
             {
-                session.updateLastAccessedTime();
+                scriptSession.updateLastAccessedTime();
             }
-        }
 
-        return session;
+            return scriptSession;
+        }
     }
 
     /* (non-Javadoc)
@@ -116,25 +114,25 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /**
      * Remove the given session from the list of sessions that we manage, and
      * leave it for the GC vultures to pluck.
-     * @param session The session to get rid of
+     * @param scriptSession The session to get rid of
      */
-    protected void invalidate(RealScriptSession session)
+    protected void invalidate(RealScriptSession scriptSession)
     {
         // Can we think of a reason why we need to sync both together?
         // It feels like a deadlock risk to do so
         synchronized (sessionLock)
         {
-            RealScriptSession removed = (RealScriptSession) sessionMap.remove(session.getId());
-            if (!session.equals(removed))
+            RealScriptSession removed = (RealScriptSession) sessionMap.remove(scriptSession.getId());
+            if (!scriptSession.equals(removed))
             {
-                log.error("ScriptSession already removed from manager. session=" + session + " removed=" + removed);
+                log.error("ScriptSession already removed from manager. scriptSession=" + scriptSession + " removed=" + removed);
             }
 
             int removeCount = 0;
             for (Iterator it = pageSessionMap.values().iterator(); it.hasNext();)
             {
                 Set pageSessions = (Set) it.next();
-                boolean isRemoved = pageSessions.remove(session);
+                boolean isRemoved = pageSessions.remove(scriptSession);
                 
                 if (isRemoved)
                 {
@@ -144,7 +142,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
 
             if (removeCount != 1)
             {
-                log.error("DefaultScriptSessionManager.invalidate(): removeCount=" + removeCount + " when invalidating: " + session);
+                log.error("DefaultScriptSessionManager.invalidate(): removeCount=" + removeCount + " when invalidating: " + scriptSession);
             }
         }
     }
