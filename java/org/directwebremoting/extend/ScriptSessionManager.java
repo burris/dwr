@@ -72,7 +72,7 @@ public interface ScriptSessionManager
     /**
      * The default length of time a session can go unused before it 
      * automatically becomes invalid and is recycled.
-     * The default is 30mins
+     * The default is 5mins
      */
-    public static final long DEFAULT_TIMEOUT_MILLIS = 1800000;
+    public static final long DEFAULT_TIMEOUT_MILLIS = 300000;
 }
