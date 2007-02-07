@@ -565,7 +565,7 @@ dwr.util.getValue = function(ele, options) {
 
   if (dwr.util._isHTMLElement(ele, "select")) {
     // Using "type" property instead of "multiple" as "type" is an official 
-	// client-side property since JS 1.1
+    // client-side property since JS 1.1
     if (ele.type == "select-multiple") {
       var reply = new Array();
       for (i = 0; i < ele.options.length; i++) {
@@ -656,45 +656,59 @@ dwr.util.getText = function(ele) {
 };
 
 /**
- * Given a map, call setValue() for all the entries in the map using the entry key as an element id
+ * Given a map, or a recursive structure consisting of arrays and maps, call 
+ * setValue() for all leaf entries and use intermediate levels to form nested
+ * element ids.
  * @see http://getahead.ltd.uk/dwr/browser/util/setvalues
  */
-dwr.util.setValues = function(map, options) {
-  var prefixes = [];
-  if (options && options.prefix) prefixes.push(options.prefix);
-  dwr.util._getDataProperties(map, prefixes);
+dwr.util.setValues = function(data, options) {
+  var prefix = "";
+  if (options && options.prefix) prefix = options.prefix;
+  dwr.util._setValuesRecursive(data, prefix);
 };
 
 /**
- * @private retrieve values for the map and set the corresponding form fields. For object properties, recursively
- * read sub properties in order to matching nested form fields.
+ * @private Recursive helper for setValues()
  */
-dwr.util._getDataProperties = function(map, prefixes) {
-  for (var property in map) {
-  	// Only recurse into plain objects, ie not functions, arrays, etc
-    if (dwr.util._isObject(map[property]) && !dwr.util._isArray(map[property])) {
-      var prefixClone = [];
-      for (var i = 0; i < prefixes.length; i++) {
-        prefixClone.push(prefixes[i]);
+dwr.util._setValuesRecursive = function(data, idpath) {
+  // Array containing objects -> add "[n]" to prefix and make recursive call
+  // for each item object
+  if (data instanceof Array && data.length > 0 && dwr.util._isObject(data[0])) {
+    for (var i = 0; i < data.length; i++) {
+      dwr.util._setValuesRecursive(data[i], idpath+"["+i+"]");
+    }
+  }
+  // Object -> handle nested object properties
+  else if (dwr.util._isObject(data)) {
+    for (var prop in data) {
+      var subidpath = idpath ? idpath+"."+prop : prop;
+      // Object, or array containing objects -> call ourselves recursively
+      if (dwr.util._isObject(data[prop]) && !(data[prop] instanceof Array) 
+          || data[prop] instanceof Array && data[prop].length > 0 && dwr.util._isObject(data[prop][0])) {
+        dwr.util._setValuesRecursive(data[prop], subidpath);
       }
-      prefixClone.push(property);
-      dwr.util._getDataProperties(map[property], prefixClone);
-    } else {
-      var nestedProperty = property;
-      if (prefixes.length > 0) {
-        nestedProperty = (prefixes.join(".")) + "." + property;
+      // Functions -> skip
+      else if (typeof data[prop] == "function") {
+        // NOP
       }
-      // Are there any elements with that id or name
-      if (dwr.util.byId(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
-        dwr.util.setValue(nestedProperty, map[property]);
+      // Only simple values left (or array of simple values, or empty array)
+      // -> call setValue()
+      else {
+        // Are there any elements with that id or name
+        if (dwr.util.byId(subidpath) != null || document.getElementsByName(subidpath).length >= 1) {
+          dwr.util.setValue(subidpath, data[prop]);
+        }
       }
     }
   }
 };
 
 /**
- * Given a map, call getValue() for all the entries in the map using the entry key as an element id.
- * Given a string or element that refers to a form, create an object from the elements of the form.
+ * Given a map, or a recursive structure consisting of arrays and maps, call 
+ * getValue() for all leaf entries and use intermediate levels to form nested
+ * element ids.
+ * Given a string or element that refers to a form, create an object from the 
+ * elements of the form.
  * @see http://getahead.ltd.uk/dwr/browser/util/getvalues
  */
 dwr.util.getValues = function(data, options) {
@@ -702,14 +716,32 @@ dwr.util.getValues = function(data, options) {
   if (typeof data == "string") ele = dwr.util.byId(data);
   if (dwr.util._isHTMLElement(data)) ele = data;
   if (ele != null) {
+    return dwr.util.getFormValues(ele);
+  }
+  else {
+    var prefix = "";
+    if (options != null && options.prefix) prefix = options.prefix;
+    dwr.util._getValuesRecursive(data, prefix);
+    return data;
+  }
+};
+
+/**
+ * Given a string or element that refers to a form, create an object from the 
+ * elements of the form.
+ * @see http://getahead.ltd.uk/dwr/browser/util/getvalues
+ */
+dwr.util.getFormValues = function(ele) {
+  ele = dwr.util.byId(ele);
+  if (ele != null) {
     if (ele.elements == null) {
-      alert("getValues() requires an object or reference to a form element.");
+      alert("getFormValues() requires an object or reference to a form element.");
       return null;
     }
     var reply = {};
     var value;
     for (var i = 0; i < ele.elements.length; i++) {
-	  if (ele[i].type in {button:0,submit:0,reset:0,image:0,file:0}) continue;
+      if (ele[i].type in {button:0,submit:0,reset:0,image:0,file:0}) continue;
       if (ele[i].id != null) value = ele[i].id;
       else if (ele[i].value != null) value = ele[i].value;
       else value = "element" + i;
@@ -717,37 +749,39 @@ dwr.util.getValues = function(data, options) {
     }
     return reply;
   }
-  else {
-    var prefixes = [];
-    if (options != null && options.prefix) prefixes.push(options.prefix);
-    dwr.util._setDataProperties(data, prefixes);
-    return data;
-  }
 };
 
 /**
- * @private for each object property, set html field value if present. Recurse for object properties.
+ * @private Recursive helper for getValues().
  */
-dwr.util._setDataProperties = function(data, prefixes) {
-  for (var property in data) {
-  	// Only recurse into plain objects, ie not functions, arrays, etc
-    if (dwr.util._isObject(data[property]) && !dwr.util._isArray(data[property])) {
-      var prefixClone = [];
-      for (var i = 0; i < prefixes.length; i++) {
-        prefixClone.push(prefixes[i]);
-      }
-      prefixClone.push(property);
-      dwr.util._setDataProperties(data[property], prefixClone);
+dwr.util._getValuesRecursive = function(data, idpath) {
+  // Array containing objects -> add "[n]" to idpath and make recursive call
+  // for each item object
+  if (data instanceof Array && data.length > 0 && dwr.util._isObject(data[0])) {
+    for (var i = 0; i < data.length; i++) {
+      dwr.util._getValuesRecursive(data[i], idpath+"["+i+"]");
     }
-    else
-    {
-      var nestedProperty = property;
-      if (prefixes.length > 0) {
-        nestedProperty = (prefixes.join(".")) + "." + property;
+  }
+  // Object -> handle nested object properties
+  else if (dwr.util._isObject(data)) {
+    for (var prop in data) {
+      var subidpath = idpath ? idpath+"."+prop : prop;
+      // Object, or array containing objects -> call ourselves recursively
+      if (dwr.util._isObject(data[prop]) && !(data[prop] instanceof Array)
+          || data[prop] instanceof Array && data[prop].length > 0 && dwr.util._isObject(data[prop][0])) {
+        dwr.util._getValuesRecursive(data[prop], subidpath);
       }
-      // Are there any elements with that id or name
-      if (dwr.util.byId(nestedProperty) != null || document.getElementsByName(nestedProperty).length >= 1) {
-        data[property] = dwr.util.getValue(nestedProperty);
+      // Functions -> skip
+      else if (typeof data[prop] == "function") {
+        // NOP
+      }
+      // Only simple values left (or array of simple values, or empty array)
+      // -> call getValue()
+      else {
+        // Are there any elements with that id or name
+        if (dwr.util.byId(subidpath) != null || document.getElementsByName(subidpath).length >= 1) {
+          data[prop] = dwr.util.getValue(subidpath);
+        }
       }
     }
   }
@@ -1061,6 +1095,110 @@ dwr.util._removeIds = function(ele) {
     }
   }
 };
+
+/**
+ * Clone a template node and its embedded template child nodes according to
+ * cardinalities (of arrays) in supplied data.  
+ */
+dwr.util.cloneNodeForValues = function(templateEle, data, options) {
+  templateEle = dwr.util._getElementById(templateEle, "cloneNodeForValues()");
+  if (templateEle == null) return null;
+  if (options == null) options = {};
+  var idpath = "";
+  if (options.idPrefix) idpath == options.idPrefix;
+  dwr.util._cloneNodeForValuesRecursive(templateEle, data, idpath, options);
+};
+
+/**
+ * @private Recursive helper for cloneNodeForValues(). 
+ */
+dwr.util._cloneNodeForValuesRecursive = function(templateEle, data, idpath, options) {
+  // Incoming array containing objects -> make an id for each item and call  
+  // clone of the template for each of them
+  if (data instanceof Array && data.length > 0 && dwr.util._isObject(data[0])) {
+    var clones = [];
+    for(var i = 0; i < data.length; i++) {
+      var item = data[i];
+      var clone = dwr.util._cloneNodeForValuesRecursive(templateEle, item, idpath + "[" + i + "]", options);
+      clones.push(clone);
+    }
+    return clones;
+  }
+  else
+  // Incoming object -> clone the template, add id prefixes, add clone to DOM, 
+  // and then recurse into any array properties if it contains objects and
+  // there is a suitable template
+  if (dwr.util._isObject(data)) {
+    var clone = templateEle.cloneNode(true);
+    if (options.unhideClones && clone.style && clone.style.display == "none") clone.style.display = "";
+    dwr.util._replaceIds(clone, templateEle.id, idpath);
+    templateEle.parentNode.insertBefore(clone, templateEle);
+    dwr.util._cloneSubArrays(data, idpath, options);
+    return clone;
+  }
+
+  // It is an error to end up here
+  return null;
+};
+
+/**
+ * @private Substitute a leading idpath fragment with another idpath for all 
+ * element ids tree, and remove ids that don't match the idpath. 
+ */
+dwr.util._replaceIds = function(ele, oldidpath, newidpath) {
+  if (ele.id) {
+    var newId = null;
+    if (ele.id == oldidpath) {
+      newId = newidpath;
+    }
+    else if (ele.id.length > oldidpath.length) {
+      if (ele.id.substr(0, oldidpath.length) == oldidpath) {
+        var trailingChar = ele.id.charAt(oldidpath.length);
+        if (trailingChar == "." || trailingChar == "[") {
+          newId = newidpath + ele.id.substr(oldidpath.length);
+        }
+      }
+    }
+    if (newId) {
+      ele.setAttribute("id", newId);
+    }
+    else {
+      ele.removeAttribute("id");
+    }
+  }
+  var children = ele.childNodes;
+  for (var i = 0; i < children.length; i++) {
+    var child = children.item(i);
+    if (child.nodeType == 1 /*Node.ELEMENT_NODE*/) {
+      dwr.util._replaceIds(child, oldidpath, newidpath);
+    }
+  }
+};
+
+/**
+ * @private Finds arrays in supplied data and uses any corresponding template 
+ * node to make a clone for each item in the array. 
+ */
+dwr.util._cloneSubArrays = function(data, idpath, options) {
+  for(prop in data) {
+    var value = data[prop];
+    // Look for potential recursive cloning in all array properties
+    if (value instanceof Array) {
+      // Only arrays with objects are interesting for cloning
+      if (value.length > 0 && dwr.util._isObject(value[0])) {
+        var subTemplateId = idpath + "." + prop;
+        var subTemplateEle = dwr.util.byId(subTemplateId);
+        if (subTemplateEle != null) {
+          dwr.util._cloneNodeForValuesRecursive(subTemplateEle, value, subTemplateId, options);
+        }
+      }
+    }
+    // Continue looking for arrays in object properties
+    else if (dwr.util._isObject(value)) {
+      dwr.util._cloneSubArrays(value, idpath + "." + prop, options);
+    }
+  }
+}
 
 /**
  * @private Helper to turn a string into an element with an error message
