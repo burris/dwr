@@ -177,7 +177,7 @@ public class DefaultScriptSession implements RealScriptSession
                     }
                     catch (Exception ex)
                     {
-                        log.warn("Failed to write to ScriptConduit, removing from list: " + conduit);
+                        log.debug("Failed to write to ScriptConduit, removing from list: " + conduit);
                         it.remove();
                     }
                 }
@@ -247,7 +247,7 @@ public class DefaultScriptSession implements RealScriptSession
             boolean removed = conduits.remove(conduit);
             if (!removed)
             {
-                log.warn("Removing unattached ScriptConduit: " + conduit);
+                log.debug("Removing unattached ScriptConduit: " + conduit);
                 debug();
             }
         }
@@ -275,7 +275,7 @@ public class DefaultScriptSession implements RealScriptSession
                     }
                     catch (Exception ex)
                     {
-                        log.warn("Failed to flush to ScriptConduit, removing from list: " + conduit);
+                        log.debug("Failed to flush to ScriptConduit, removing from list: " + conduit);
                         it.remove();
                     }
                 }
@@ -326,7 +326,7 @@ public class DefaultScriptSession implements RealScriptSession
 
         if (invalidated)
         {
-            log.warn("ScriptSession has been invalidated.");
+            log.debug("ScriptSession has been invalidated.");
         }
     }
 
