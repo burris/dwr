@@ -664,6 +664,7 @@ dwr.util.getText = function(ele) {
 dwr.util.setValues = function(data, options) {
   var prefix = "";
   if (options && options.prefix) prefix = options.prefix;
+  if (options && options.idPrefix) prefix = options.idPrefix;
   dwr.util._setValuesRecursive(data, prefix);
 };
 
@@ -721,6 +722,7 @@ dwr.util.getValues = function(data, options) {
   else {
     var prefix = "";
     if (options != null && options.prefix) prefix = options.prefix;
+    if (options != null && options.idPrefix) prefix = options.idPrefix;
     dwr.util._getValuesRecursive(data, prefix);
     return data;
   }
@@ -1105,7 +1107,7 @@ dwr.util.cloneNodeForValues = function(templateEle, data, options) {
   if (templateEle == null) return null;
   if (options == null) options = {};
   var idpath = "";
-  if (options.idPrefix) idpath == options.idPrefix;
+  if (options.idPrefix) idpath = options.idPrefix;
   dwr.util._cloneNodeForValuesRecursive(templateEle, data, idpath, options);
 };
 
