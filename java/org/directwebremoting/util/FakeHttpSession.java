@@ -38,6 +38,16 @@ public class FakeHttpSession implements HttpSession
         creationTime = System.currentTimeMillis();
     }
 
+    /**
+     * Setup the creation time
+     * @param id The new session id
+     */
+    public FakeHttpSession(String id)
+    {
+        this.id = id;
+        creationTime = System.currentTimeMillis();
+    }
+
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpSession#getCreationTime()
      */
@@ -51,8 +61,13 @@ public class FakeHttpSession implements HttpSession
      */
     public String getId()
     {
-        log.warn("Inventing data in FakeHttpSession.getId() to remain plausible.");
-        return "fake";
+        if (id == null)
+        {
+            log.warn("Inventing data in FakeHttpSession.getId() to remain plausible.");
+            id = "fake";
+        }
+
+        return id;
     }
 
     /* (non-Javadoc)
@@ -174,6 +189,11 @@ public class FakeHttpSession implements HttpSession
     {
         return true;
     }
+
+    /**
+     * The session id
+     */
+    private String id = null;
 
     /**
      * The list of attributes
