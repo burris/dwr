@@ -89,16 +89,8 @@ public class Util extends ScriptProxy
      */
     public void setValue(String elementId, String value, boolean escapeHtml)
     {
-        String options = escapeHtml ? ", {escapeHtml:true}" : "";
-
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.setValue(")
-              .appendData(elementId)
-              .appendScript(",")
-              .appendData(value)
-              .appendScript(options)
-              .appendScript(");");
-        addScript(script);
+        String options = escapeHtml ? "{escapeHtml:true}" : "{escapeHtml:false}";
+        addFunctionCall("dwr.util.setValue", elementId, value, options);
     }
 
     /**
@@ -110,15 +102,8 @@ public class Util extends ScriptProxy
      */
     public void setValues(Map values, boolean escapeHtml)
     {
-        String options = escapeHtml ? "{escapeHtml:true}" : "null";
-
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.util.setValues(")
-              .appendData(values)
-              .appendScript(",")
-              .appendScript(options)
-              .appendScript(");");
-        addScript(script);
+        String options = escapeHtml ? "{escapeHtml:true}" : "{escapeHtml:false}";
+        addFunctionCall("dwr.util.setValue", values, options);
     }
 
     /**
