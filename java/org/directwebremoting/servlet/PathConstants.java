@@ -108,5 +108,5 @@ public class PathConstants
     /**
      * The position of web.xml
      */
-    public static final String RESOURCE_WEB_XML = "WEB-INF/web.xml";
+    public static final String RESOURCE_WEB_XML = "/WEB-INF/web.xml";
 }
