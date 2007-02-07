@@ -43,7 +43,7 @@ public class EnumConverter extends BaseV20Converter implements Converter
         try
         {
             Method getter = paramType.getMethod("values", new Class[0]);
-            values = (Object[]) getter.invoke(paramType, null);
+            values = (Object[]) getter.invoke(paramType, (Object[]) null);
         }
         catch (NoSuchMethodException ex)
         {
