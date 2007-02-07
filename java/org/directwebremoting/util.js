@@ -1267,7 +1267,7 @@ dwr.util._isObject = function(data) {
  * @private Array detector.
  */
 dwr.util._isArray = function(data) {
-  return (data && data instanceof Array);
+  return (data && data.join);
 };
 
 /**

@@ -239,7 +239,7 @@ dwr.engine._origScriptSessionId = "${scriptSessionId}";
 dwr.engine._sessionCookieName = "${sessionCookieName}"; // JSESSIONID
 
 /** Is GET enabled for the benefit of Safari? */
-dwr.engine._allowGetForSafariButMakeForgeryEasier = ${allowGetForSafariButMakeForgeryEasier};
+dwr.engine._allowGetForSafariButMakeForgeryEasier = "${allowGetForSafariButMakeForgeryEasier}";
 
 /** The read page id that we calculate */
 dwr.engine._scriptSessionId = null;
@@ -436,7 +436,7 @@ dwr.engine._createBatch = function() {
   var batch = {
     map:{
       callCount:0,
-      page:window.location.pathname,
+      page:window.location.pathname + window.location.search,
       httpSessionId:dwr.engine._getJSessionId(),
       scriptSessionId:dwr.engine._getScriptSessionId()
     },
@@ -628,8 +628,7 @@ dwr.engine._sendData = function(batch) {
     // Workaround for Safari 1.x POST bug
     var indexSafari = navigator.userAgent.indexOf("Safari/");
     if (indexSafari >= 0) {
-      if (dwr.engine._allowGetForSafariButMakeForgeryEasier)
-      {
+      if (dwr.engine._allowGetForSafariButMakeForgeryEasier == "true") {
         var version = navigator.userAgent.substring(indexSafari + 7);
         if (parseInt(version, 10) < 400) batch.httpMethod = "GET";
       }
@@ -1025,7 +1024,7 @@ dwr.engine._serializeAll = function(batch, referto, data, name) {
     else if (data instanceof Boolean) batch.map[name] = "Boolean:" + data;
     else if (data instanceof Number) batch.map[name] = "Number:" + data;
     else if (data instanceof Date) batch.map[name] = "Date:" + data.getTime();
-    else if (data instanceof Array) batch.map[name] = dwr.engine._serializeArray(batch, referto, data, name);
+    else if (data && data.join) batch.map[name] = dwr.engine._serializeArray(batch, referto, data, name);
     else batch.map[name] = dwr.engine._serializeObject(batch, referto, data, name);
     break;
   case "function":

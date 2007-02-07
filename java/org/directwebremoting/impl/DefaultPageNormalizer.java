@@ -65,12 +65,22 @@ public class DefaultPageNormalizer implements PageNormalizer
         }
 
         String normalized = unnormalized;
+
+        if (!normalizeIncludesQueryString)
+        {
+            int queryPos = normalized.indexOf('?');
+            if (queryPos != -1)
+            {
+                normalized = normalized.substring(queryPos + 1);
+            }
+        }
+
         for (Iterator it = welcomeFiles.iterator(); it.hasNext();)
         {
             String welcomeFile = (String) it.next();
-            if (unnormalized.endsWith(welcomeFile))
+            if (normalized.endsWith(welcomeFile))
             {
-                normalized = unnormalized.substring(0, unnormalized.length() - welcomeFile.length());
+                normalized = normalized.substring(0, normalized.length() - welcomeFile.length());
                 break;
             }
         }
@@ -175,6 +185,22 @@ public class DefaultPageNormalizer implements PageNormalizer
             welcomeFiles.add(st.nextToken());
         }
     }
+
+    /**
+     * Does the page normalizer include query strings in it's definition of
+     * pages?
+     * @param normalizeIncludesQueryString The new value
+     */
+    public void setNormalizeIncludesQueryString(boolean normalizeIncludesQueryString)
+    {
+        this.normalizeIncludesQueryString = normalizeIncludesQueryString;
+    }
+
+    /**
+     * Does the page normalizer include query strings in it's definition of
+     * pages?
+     */
+    private boolean normalizeIncludesQueryString = false;
 
     /**
      * The log stream
