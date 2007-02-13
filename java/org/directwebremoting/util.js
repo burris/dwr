@@ -1108,7 +1108,7 @@ dwr.util.cloneNodeForValues = function(templateEle, data, options) {
   if (options == null) options = {};
   var idpath = "";
   if (options.idPrefix) idpath = options.idPrefix;
-  dwr.util._cloneNodeForValuesRecursive(templateEle, data, idpath, options);
+  return dwr.util._cloneNodeForValuesRecursive(templateEle, data, idpath, options);
 };
 
 /**
