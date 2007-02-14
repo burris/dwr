@@ -674,18 +674,18 @@ dwr.util.setValues = function(data, options) {
 dwr.util._setValuesRecursive = function(data, idpath) {
   // Array containing objects -> add "[n]" to prefix and make recursive call
   // for each item object
-  if (data instanceof Array && data.length > 0 && dwr.util._isObject(data[0])) {
+  if (dwr.util._isArray(data) && data.length > 0 && dwr.util._isObject(data[0])) {
     for (var i = 0; i < data.length; i++) {
       dwr.util._setValuesRecursive(data[i], idpath+"["+i+"]");
     }
   }
-  // Object -> handle nested object properties
-  else if (dwr.util._isObject(data)) {
+  // Object (not array) -> handle nested object properties
+  else if (dwr.util._isObject(data) && !dwr.util._isArray(data)) {
     for (var prop in data) {
       var subidpath = idpath ? idpath+"."+prop : prop;
-      // Object, or array containing objects -> call ourselves recursively
-      if (dwr.util._isObject(data[prop]) && !(data[prop] instanceof Array) 
-          || data[prop] instanceof Array && data[prop].length > 0 && dwr.util._isObject(data[prop][0])) {
+      // Object (not array), or array containing objects -> call ourselves recursively
+      if (dwr.util._isObject(data[prop]) && !dwr.util._isArray(data[prop]) 
+          || dwr.util._isArray(data[prop]) && data[prop].length > 0 && dwr.util._isObject(data[prop][0])) {
         dwr.util._setValuesRecursive(data[prop], subidpath);
       }
       // Functions -> skip
@@ -759,18 +759,18 @@ dwr.util.getFormValues = function(ele) {
 dwr.util._getValuesRecursive = function(data, idpath) {
   // Array containing objects -> add "[n]" to idpath and make recursive call
   // for each item object
-  if (data instanceof Array && data.length > 0 && dwr.util._isObject(data[0])) {
+  if (dwr.util._isArray(data) && data.length > 0 && dwr.util._isObject(data[0])) {
     for (var i = 0; i < data.length; i++) {
       dwr.util._getValuesRecursive(data[i], idpath+"["+i+"]");
     }
   }
-  // Object -> handle nested object properties
-  else if (dwr.util._isObject(data)) {
+  // Object (not array) -> handle nested object properties
+  else if (dwr.util._isObject(data) && !dwr.util._isArray(data)) {
     for (var prop in data) {
       var subidpath = idpath ? idpath+"."+prop : prop;
       // Object, or array containing objects -> call ourselves recursively
-      if (dwr.util._isObject(data[prop]) && !(data[prop] instanceof Array)
-          || data[prop] instanceof Array && data[prop].length > 0 && dwr.util._isObject(data[prop][0])) {
+      if (dwr.util._isObject(data[prop]) && !dwr.util._isArray(data[prop])
+          || dwr.util._isArray(data[prop]) && data[prop].length > 0 && dwr.util._isObject(data[prop][0])) {
         dwr.util._getValuesRecursive(data[prop], subidpath);
       }
       // Functions -> skip
@@ -1115,11 +1115,11 @@ dwr.util.cloneNodeForValues = function(templateEle, data, options) {
  * @private Recursive helper for cloneNodeForValues(). 
  */
 dwr.util._cloneNodeForValuesRecursive = function(templateEle, data, idpath, options) {
-  // Incoming array containing objects -> make an id for each item and call  
-  // clone of the template for each of them
-  if (data instanceof Array && data.length > 0 && dwr.util._isObject(data[0])) {
+  // Incoming array -> make an id for each item and call clone of the template 
+  // for each of them
+  if (dwr.util._isArray(data)) {
     var clones = [];
-    for(var i = 0; i < data.length; i++) {
+    for (var i = 0; i < data.length; i++) {
       var item = data[i];
       var clone = dwr.util._cloneNodeForValuesRecursive(templateEle, item, idpath + "[" + i + "]", options);
       clones.push(clone);
@@ -1127,19 +1127,23 @@ dwr.util._cloneNodeForValuesRecursive = function(templateEle, data, idpath, opti
     return clones;
   }
   else
-  // Incoming object -> clone the template, add id prefixes, add clone to DOM, 
-  // and then recurse into any array properties if it contains objects and
-  // there is a suitable template
-  if (dwr.util._isObject(data)) {
+  // Incoming object (not array) -> clone the template, add id prefixes, add 
+  // clone to DOM, and then recurse into any array properties if they contain 
+  // objects and there is a suitable template
+  if (dwr.util._isObject(data) && !dwr.util._isArray(data)) {
     var clone = templateEle.cloneNode(true);
-    if (options.unhideClones && clone.style && clone.style.display == "none") clone.style.display = "";
+    if (options.updateCloneStyle && clone.style) {
+      for (var propname in options.updateCloneStyle) {
+        clone.style[propname] = options.updateCloneStyle[propname];
+      }
+    }
     dwr.util._replaceIds(clone, templateEle.id, idpath);
     templateEle.parentNode.insertBefore(clone, templateEle);
     dwr.util._cloneSubArrays(data, idpath, options);
     return clone;
   }
 
-  // It is an error to end up here
+  // It is an error to end up here so we return nothing
   return null;
 };
 
@@ -1182,10 +1186,10 @@ dwr.util._replaceIds = function(ele, oldidpath, newidpath) {
  * node to make a clone for each item in the array. 
  */
 dwr.util._cloneSubArrays = function(data, idpath, options) {
-  for(prop in data) {
+  for (prop in data) {
     var value = data[prop];
     // Look for potential recursive cloning in all array properties
-    if (value instanceof Array) {
+    if (dwr.util._isArray(value)) {
       // Only arrays with objects are interesting for cloning
       if (value.length > 0 && dwr.util._isObject(value[0])) {
         var subTemplateId = idpath + "." + prop;
