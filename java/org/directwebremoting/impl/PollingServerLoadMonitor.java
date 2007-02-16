@@ -23,20 +23,12 @@ import org.directwebremoting.extend.ServerLoadMonitor;
  * A default implementation of ServerLoadMonitor
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class PollingServerLoadMonitor implements ServerLoadMonitor 
+public class PollingServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor 
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#timeWithinPoll()
+     * @see org.directwebremoting.extend.ServerLoadMonitor#getMaxConnectedTime()
      */
-    public long getPreStreamWaitTime()
-    {
-        return 0;
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#timeWithinPoll()
-     */
-    public long getPostStreamWaitTime()
+    public long getMaxConnectedTime()
     {
         return 0;
     }
@@ -49,18 +41,13 @@ public class PollingServerLoadMonitor implements ServerLoadMonitor
         return random.nextInt(timeToNextPoll);
     }
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#threadWaitStarting()
+    /**
+     * Accessor for the disconnected time.
+     * @param timeToNextPoll How long should clients spend disconnected
      */
-    public void threadWaitStarting()
+    public void setTimeToNextPoll(int timeToNextPoll)
     {
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#threadWaitEnding()
-     */
-    public void threadWaitEnding()
-    {
+        this.timeToNextPoll = timeToNextPoll;
     }
 
     /**

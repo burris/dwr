@@ -16,6 +16,7 @@
 package org.directwebremoting.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -418,15 +419,42 @@ public class ContainerUtil
      * in the servlet context, under some name.
      * The name is specified in an initParameter. 
      * @param container The container to publish
-     * @param config Source of initParams to dictate publishing and contexts to publish to
+     * @param servletConfig Source of initParams to dictate publishing and contexts to publish to
      */
-    public static void publishContainer(Container container, ServletConfig config)
+    public static void publishContainer(Container container, ServletConfig servletConfig)
     {
-        String publishName = config.getInitParameter(INIT_PUBLISH_CONTAINER);
+        ServletContext servletContext = servletConfig.getServletContext();
+
+        String publishName = servletConfig.getInitParameter(INIT_PUBLISH_CONTAINER);
         if (publishName != null)
         {
-            config.getServletContext().setAttribute(publishName, container);
+            servletContext.setAttribute(publishName, container);
         }
+
+        List containers = (List) servletContext.getAttribute(ATTRIBUTE_CONTAINER_LIST);
+        if (containers == null)
+        {
+            containers = new ArrayList();
+        }
+        containers.add(container);
+        servletContext.setAttribute(ATTRIBUTE_CONTAINER_LIST, containers);
+    }
+
+    /**
+     * Get a list of all known Containers for the given {@link ServletContext}
+     * @param servletContext The context in which {@link Container}s are stored.
+     * @return a list of published {@link Container}s.
+     */
+    public static List getAllPublishedContainers(ServletContext servletContext)
+    {
+        List containers = (List) servletContext.getAttribute(ATTRIBUTE_CONTAINER_LIST);
+        if (containers == null)
+        {
+            log.warn("No container list found. It is likely that ContainerUtil.publishContainer() has not been called for this servlet context.");
+            containers = new ArrayList();
+        }
+
+        return containers;
     }
 
     /**
@@ -502,8 +530,8 @@ public class ContainerUtil
     public static final String INIT_LOGLEVEL = "logLevel";
 
     /**
-     * Init parameter: Should we publish the container to the servlet context,
-     * and if so, under what name?
+     * Init parameter: Should we publish the {@link Container} to the servlet
+     * context, and if so, under what name?
      */
     public static final String INIT_PUBLISH_CONTAINER = "publishContainerAs";
 
@@ -512,6 +540,11 @@ public class ContainerUtil
      * class name here
      */
     public static final String INIT_CUSTOM_CONFIGURATOR = "customConfigurator";
+
+    /**
+     * The name under which we publish all {@link Container}s.
+     */
+    public static final String ATTRIBUTE_CONTAINER_LIST = "org.directwebremoting.ContainerList";
 
     /**
      * The log stream

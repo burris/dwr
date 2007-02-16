@@ -36,6 +36,7 @@ import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.extend.ServerLoadMonitor;
+import org.directwebremoting.extend.WaitController;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.Logger;
@@ -118,131 +119,184 @@ public class PollHandler implements Handler
         RealScriptSession scriptSession = (RealScriptSession) webContext.getScriptSession();
         ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
 
-        long postStreamWaitTime = monitor.getPostStreamWaitTime();
-        long preStreamWaitTime = monitor.getPreStreamWaitTime();
-
-        // If the browser can't handle partial responses then we'll need to do
-        // all our waiting in the pre-stream phase where we plan to be
-        // interupted, and then reply quickly.
-        // 100ms should be enough work being done on other threads to complete.
-        // If not it can wait.
-        if (!partialResponse)
-        {
-            postStreamWaitTime = 100;
-            preStreamWaitTime += postStreamWaitTime;
-        }
+        long maxConnectedTime = monitor.getMaxConnectedTime();
+        long endTime = System.currentTimeMillis() + maxConnectedTime;
 
         // If we are going to be doing any waiting then check for other threads
         // from the same browser that are already waiting, and send them on
         // their way
-        if (preStreamWaitTime > 0 || postStreamWaitTime > 0)
+        if (maxConnectedTime > 0)
         {
             notifyThreadsFromSameBrowser(request, scriptId);
         }
 
+        boolean shutdown = false;
+
+        // Don't wait if we would wait for 0s or if there are queued scripts
+        if (maxConnectedTime > 0 && !scriptSession.hasWaitingScripts())
+        {
+            shutdown = preStreamWait(request, scriptSession, maxConnectedTime);
+        }
+
+        ScriptConduit conduit = openStream(response);
+
+        // How much longer do we wait now the stream is open?
+        long extraWait = endTime - System.currentTimeMillis();
+        if (extraWait > 0 && partialResponse && shutdown)
+        {
+            postStreamWait(conduit, scriptSession, extraWait);
+        }
+
+        addCallbackScript(batchId, partialResponse, scriptSession, conduit);
+    }
+
+    /**
+     * @param request
+     * @param scriptSession
+     * @param maxConnectedTime
+     * @return Did this wait stop as the result of a shutdown?
+     * @throws IOException
+     */
+    private boolean preStreamWait(HttpServletRequest request, RealScriptSession scriptSession, long maxConnectedTime) throws IOException
+    {
+        // The first wait - before we do any output
+        final Object lock = scriptSession.getScriptLock();
+        WaitController controller = new NotifyWaitController(lock);
+
         try
         {
-            serverLoadMonitor.threadWaitStarting();
+            serverLoadMonitor.threadWaitStarting(controller);
 
-            // Don't wait if we would wait for 0s or if there are queued scripts
-            if (preStreamWaitTime > 0 && !scriptSession.hasWaitingScripts())
+            synchronized (lock)
             {
-                // The first wait - before we do any output
-                Object lock = scriptSession.getScriptLock();
-                synchronized (lock)
+                // If this is Jetty then we can use Continuations
+                Continuation continuation = new Continuation(request);
+                if (continuation.isAvailable())
                 {
-                    // If this is Jetty then we can use Continuations
-                    Continuation continuation = new Continuation(request);
-                    if (continuation.isAvailable())
+                    if (!sleepWithContinuation(scriptSession, continuation, maxConnectedTime))
                     {
-                        if (!sleepWithContinuation(scriptSession, continuation, preStreamWaitTime))
-                        {
-                            sleepWithNotify(scriptSession, lock, preStreamWaitTime);
-                        }
-                    }
-                    else
-                    {
-                        sleepWithNotify(scriptSession, lock, preStreamWaitTime);
+                        sleepWithNotify(scriptSession, lock, maxConnectedTime);
                     }
                 }
-            }
-
-            // Get the output stream and setup the mimetype
-            response.setContentType(MimeConstants.MIME_PLAIN);
-            PrintWriter out;
-            if (log.isDebugEnabled())
-            {
-                // This might be considered evil - altering the program flow
-                // depending on the log status, however DebuggingPrintWriter is
-                // very thin and only about logging
-                out = new DebuggingPrintWriter("", response.getWriter());
-            }
-            else
-            {
-                out = response.getWriter();
-            }
-
-            // The conduit to pass on reverse ajax scripts
-            ScriptConduit conduit = new PollScriptConduit(out, response);
-    
-            // Setup a debugging prefix
-            if (out instanceof DebuggingPrintWriter)
-            {
-                DebuggingPrintWriter dpw = (DebuggingPrintWriter) out;
-                dpw.setPrefix("out(" + conduit.hashCode() + "): ");
-            }
-
-            try
-            {
-                // From the call to addScriptConduit() there could be 2 threads writing
-                // to 'out' so we synchronize on 'out' to make sure there are no
-                // clashes
-                scriptSession.addScriptConduit(conduit);
-
-                // The second wait - after we've started to do the output
-                if (postStreamWaitTime > 0)
+                else
                 {
-                    try
-                    {
-                        Thread thread = Thread.currentThread();
-                        String oldName = thread.getName();
-                        thread.setName("DWR:Poll:PostStreamWait:" + postStreamWaitTime);
-
-                        Thread.sleep(postStreamWaitTime);
-
-                        thread.setName(oldName);
-                    }
-                    catch (InterruptedException ex)
-                    {
-                        log.warn("Interupted", ex);
-                    }
+                    sleepWithNotify(scriptSession, lock, maxConnectedTime);
                 }
-
-                ScriptBuffer script = new ScriptBuffer();
-                try
-                {
-                    int wait = serverLoadMonitor.getTimeToNextPoll();
-                    Integer data = new Integer(wait);
-
-                    EnginePrivate.remoteHandleCallback(conduit, batchId, "0", data);
-                }
-                catch (Exception ex)
-                {
-                    EnginePrivate.remoteHandleException(conduit, batchId, "0", ex);
-                    log.warn("--Erroring: batchId[" + batchId + "] message[" + ex.toString() + ']', ex);
-                }
-
-                scriptSession.addScript(script);
-            }
-            finally
-            {
-                scriptSession.removeScriptConduit(conduit);
             }
         }
         finally
         {
-            serverLoadMonitor.threadWaitEnding();
+            serverLoadMonitor.threadWaitEnding(controller);
         }
+
+        return controller.isShutdown();
+    }
+
+    /**
+     * The second wait - after we've started to do the output
+     * @param conduit 
+     * @param partialResponse
+     * @param extraWait
+     * @param scriptSession 
+     * @throws IOException 
+     */
+    private void postStreamWait(ScriptConduit conduit, RealScriptSession scriptSession, long extraWait) throws IOException
+    {
+        // The first wait - before we do any output
+        final Object lock = scriptSession.getScriptLock();
+        WaitController controller = new NotifyWaitController(lock);
+
+        try
+        {
+            serverLoadMonitor.threadWaitStarting(controller);
+            scriptSession.addScriptConduit(conduit);
+
+            synchronized (lock)
+            {
+                Thread thread = Thread.currentThread();
+                String oldName = thread.getName();
+                thread.setName("DWR:Poll:PostStreamWait:" + extraWait);
+
+                lock.wait(extraWait);
+
+                thread.setName(oldName);
+            }
+        }
+        catch (InterruptedException ex)
+        {
+            log.warn("Interupted", ex);
+        }
+        finally
+        {
+            scriptSession.removeScriptConduit(conduit);
+            serverLoadMonitor.threadWaitEnding(controller);
+        }
+    }
+
+    /**
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    private ScriptConduit openStream(HttpServletResponse response) throws IOException
+    {
+        // Get the output stream and setup the mimetype
+        response.setContentType(MimeConstants.MIME_PLAIN);
+        PrintWriter out;
+        if (log.isDebugEnabled())
+        {
+            // This might be considered evil - altering the program flow
+            // depending on the log status, however DebuggingPrintWriter is
+            // very thin and only about logging
+            out = new DebuggingPrintWriter("", response.getWriter());
+        }
+        else
+        {
+            out = response.getWriter();
+        }
+
+        // The conduit to pass on reverse ajax scripts
+        ScriptConduit conduit = new PollScriptConduit(out, response);
+   
+        // Setup a debugging prefix
+        if (out instanceof DebuggingPrintWriter)
+        {
+            DebuggingPrintWriter dpw = (DebuggingPrintWriter) out;
+            dpw.setPrefix("out(" + conduit.hashCode() + "): ");
+        }
+        return conduit;
+    }
+
+    /**
+     * @param batchId
+     * @param partialResponse
+     * @param scriptSession
+     * @param conduit
+     * @throws IOException
+     */
+    private void addCallbackScript(String batchId, boolean partialResponse, RealScriptSession scriptSession, ScriptConduit conduit) throws IOException
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        try
+        {
+            int wait = serverLoadMonitor.getTimeToNextPoll();
+            // If the client can handle partial responses, then there is
+            // no need to stagger return callbacks (which we do to
+            // prevent massed reconnects in chat type apps.)
+            if (partialResponse)
+            {
+                wait = 0;
+            }
+
+            EnginePrivate.remoteHandleCallback(conduit, batchId, "0", new Integer(wait));
+        }
+        catch (Exception ex)
+        {
+            EnginePrivate.remoteHandleException(conduit, batchId, "0", ex);
+            log.warn("--Erroring: batchId[" + batchId + "] message[" + ex.toString() + ']', ex);
+        }
+
+        scriptSession.addScript(script);
     }
 
     /**
@@ -452,6 +506,57 @@ public class PollHandler implements Handler
         }
 
         return true;
+    }
+
+    /**
+     * A {@link WaitController} that works with {@link Object#wait(long)}
+     * @author Joe Walker [joe at getahead dot ltd dot uk]
+     */
+    public static class NotifyWaitController implements WaitController
+    {
+        /**
+         * @param lock
+         */
+        public NotifyWaitController(Object lock)
+        {
+            this.lock = lock;
+        }
+
+        /* (non-Javadoc)
+         * @see org.directwebremoting.extend.WaitController#outputHappened()
+         */
+        public void outputHappened()
+        {
+            lock.notifyAll();
+        }
+
+        /* (non-Javadoc)
+         * @see org.directwebremoting.extend.WaitController#shutdown()
+         */
+        public void shutdown()
+        {
+            lock.notifyAll();
+            shutdown = true;
+        }
+
+        /* (non-Javadoc)
+         * @see org.directwebremoting.extend.WaitController#isShutdown()
+         */
+        public boolean isShutdown()
+        {
+            return shutdown;
+        }
+
+        /**
+         * The object that is being {@link Object#wait(long)} on so we can
+         * move it on with {@link Object#notifyAll()}.
+         */
+        private Object lock;
+
+        /**
+         * Has {@link #shutdown()} been called on this object?
+         */
+        private boolean shutdown = false; 
     }
 
     /**

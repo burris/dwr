@@ -29,31 +29,30 @@ public interface ServerLoadMonitor
     int getTimeToNextPoll();
 
     /**
-     * How long should we hold up a client request before starting a
-     * response stream while waiting for some scripts come in.
-     * @return The time in millis to wait before opening an Ajax poll response stream.
+     * What's the longest time that we should wait before asking the client to
+     * reconnect?
+     * @return The maximum client connected time
      */
-    long getPreStreamWaitTime();
-
-    /**
-     * How long should we hold up a client request after starting 
-     * a response stream while waiting for more scripts
-     * come in.
-     * @return The time in millis to wait before closing an Ajax poll response stream
-     */
-    long getPostStreamWaitTime();
+    long getMaxConnectedTime();
 
     /**
      * A thread is about to begin a wait period.
      * This can be used by implementations to dynamically adjust the poll
      * timings. 
+     * @param controller An object that we can use to control the wait
      */
-    void threadWaitStarting();
+    void threadWaitStarting(WaitController controller);
 
     /**
      * A thread has just ended a wait period.
      * This can be used by implementations to dynamically adjust the poll
      * timings. 
+     * @param controller An object that we can use to control the wait
      */
-    void threadWaitEnding();
+    void threadWaitEnding(WaitController controller);
+
+    /**
+     * Kill all available long-poll requests
+     */
+    void shutdown();
 }

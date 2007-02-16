@@ -18,12 +18,17 @@ package org.directwebremoting.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -388,6 +393,32 @@ public final class LocalUtil
         }
 
         throw new NoSuchMethodException("Failed to find a property called: " + key + " on " + object.getClass().getName());
+    }
+
+    /**
+     * Can the type be used in a call to {@link #simpleConvert(String, Class)}?
+     * @param paramType The type to test
+     * @return true if the type is acceptable to simpleConvert()
+     */
+    public static boolean isTypeSimplyConvertable(Class paramType)
+    {
+        return paramType == String.class ||
+            paramType == Integer.class ||
+            paramType == Integer.TYPE ||
+            paramType == Short.class ||
+            paramType == Short.TYPE ||
+            paramType == Byte.class ||
+            paramType == Byte.TYPE ||
+            paramType == Long.class ||
+            paramType == Long.TYPE ||
+            paramType == Float.class ||
+            paramType == Float.TYPE ||
+            paramType == Double.class ||
+            paramType == Double.TYPE ||
+            paramType == Character.class ||
+            paramType == Character.TYPE ||
+            paramType == Boolean.class ||
+            paramType == Boolean.TYPE;
     }
 
     /**
@@ -865,6 +896,59 @@ public final class LocalUtil
         {
             log.warn(ex.getMessage(), ex);
         }
+    }
+
+    /**
+     * Return a List of superclasses for the given class.
+     * @param clazz the class to look up
+     * @return the List of superclasses in order going up from this one
+     */
+    public static List getAllSuperclasses(Class clazz)
+    {
+        List classes = new ArrayList();
+
+        Class superclass = clazz.getSuperclass();
+        while (superclass != null)
+        {
+            classes.add(superclass);
+            superclass = superclass.getSuperclass();
+        }
+
+        return classes;
+    }
+
+    /**
+     * Return a list of all fields (whatever access status, and on whatever
+     * superclass they were defined) that can be found on this class.
+     * <p>This is like a union of {@link Class#getDeclaredFields()} which
+     * ignores and superclasses, and {@link Class#getFields()} which ignored
+     * non-pubic fields
+     * @param clazz The class to introspect
+     * @return The complete list of fields
+     */
+    public static Field[] getAllFields(Class clazz)
+    {
+        List classes = getAllSuperclasses(clazz);
+        classes.add(clazz);
+        return getAllFields(classes);
+    }
+
+    /**
+     * As {@link #getAllFields(Class)} but acts on a list of {@link Class}s and
+     * uses only {@link Class#getDeclaredFields()}.
+     * @param classes The list of classes to reflect on
+     * @return The complete list of fields
+     */
+    private static Field[] getAllFields(List classes)
+    {
+        Set fields = new HashSet();
+        for (Iterator it = classes.iterator(); it.hasNext();)
+        {
+            Class clazz = (Class) it.next();
+            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+        }
+
+        return (Field[]) fields.toArray(new Field[fields.size()]);
     }
 
     /**

@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.impl;
-
-import org.directwebremoting.extend.ServerLoadMonitor;
+package org.directwebremoting.extend;
 
 /**
- * A default implementation of ServerLoadMonitor
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class SmallSiteServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor 
+public interface WaitController
 {
-    /* (non-Javadoc)
-     * @see org.directwebremoting.extend.ServerLoadMonitor#getMaxConnectedTime()
+    /**
+     * 
      */
-    public long getMaxConnectedTime()
-    {
-        // Start a new poll every 30 minutes
-        return 1800 * 1000;
-    }
+    void outputHappened();
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#timeToNextPoll()
+    /**
+     * 
      */
-    public int getTimeToNextPoll()
-    {
-        return 1;
-    }
+    void shutdown();
+
+    /**
+     * @return
+     */
+    boolean isShutdown();
 }

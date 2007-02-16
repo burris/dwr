@@ -18,6 +18,7 @@ package org.directwebremoting.impl;
 import java.util.Random;
 
 import org.directwebremoting.extend.ServerLoadMonitor;
+import org.directwebremoting.extend.WaitController;
 import org.directwebremoting.util.HitMonitor;
 import org.directwebremoting.util.Logger;
 
@@ -25,22 +26,14 @@ import org.directwebremoting.util.Logger;
  * A default implementation of ServerLoadMonitor
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultServerLoadMonitor implements ServerLoadMonitor 
+public class DefaultServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor 
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#timeWithinPoll()
+     * @see org.directwebremoting.extend.ServerLoadMonitor#getMaxConnectedTime()
      */
-    public long getPreStreamWaitTime()
+    public long getMaxConnectedTime()
     {
-        return preStreamWaitTime;
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#timeWithinPoll()
-     */
-    public long getPostStreamWaitTime()
-    {
-        return postStreamWaitTime;
+        return maxConnectedTime;
     }
 
     /* (non-Javadoc)
@@ -55,19 +48,21 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#threadWaitStarting()
+     * @see org.directwebremoting.impl.AbstractServerLoadMonitor#threadWaitStarting(org.directwebremoting.extend.WaitController)
      */
-    public void threadWaitStarting()
+    public void threadWaitStarting(WaitController controller)
     {
         waitingThreads++;
+        super.threadWaitStarting(controller);
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.ServerLoadMonitor#threadWaitEnding()
+     * @see org.directwebremoting.impl.AbstractServerLoadMonitor#threadWaitEnding(org.directwebremoting.extend.WaitController)
      */
-    public void threadWaitEnding()
+    public void threadWaitEnding(WaitController controller)
     {
         waitingThreads--;
+        super.threadWaitEnding(controller);
     }
 
     /**
@@ -90,33 +85,20 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
             timeToNextPoll = MIN_TIME_TO_NEXT_POLL;
         }
 
-        int totalPollTime = preStreamWaitTime + postStreamWaitTime;
         if (waitingThreads != 0)
         {
-            totalPollTime = totalPollTime * maxWaitingThreads / waitingThreads;
+            maxConnectedTime = maxConnectedTime * maxWaitingThreads / waitingThreads;
         }
 
-        if (totalPollTime > MAX_PRE_STREAM_WAIT_TIME + MAX_POST_STREAM_WAIT_TIME)
+        if (maxConnectedTime > MAX_MAX_CONNECTED_TIME)
         {
-            preStreamWaitTime = totalPollTime - MAX_POST_STREAM_WAIT_TIME;
-            postStreamWaitTime = MAX_POST_STREAM_WAIT_TIME;
-
-            if (preStreamWaitTime> MAX_PRE_STREAM_WAIT_TIME)
-            {
-                preStreamWaitTime = MAX_PRE_STREAM_WAIT_TIME;
-            }
-        }
-        else
-        {
-            preStreamWaitTime = 0;
-            postStreamWaitTime = totalPollTime;
+            maxConnectedTime = MAX_MAX_CONNECTED_TIME;
         }
 
         log.debug("hitsPerSecond=" + hitsPerSecond);
         log.debug("waitingThreads=" + waitingThreads);
         log.debug("timeToNextPoll=" + timeToNextPoll);
-        log.debug("preStreamWaitTime=" + preStreamWaitTime);
-        log.debug("postStreamWaitTime=" + postStreamWaitTime);
+        log.debug("maxConnectedTime=" + maxConnectedTime);
     }
 
     /**
@@ -140,12 +122,7 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
     /**
      * The max time we wait before opening a stream to reply.
      */
-    protected int preStreamWaitTime = 29000;
-
-    /**
-     * The max time we wait after opening a stream before we reply.
-     */
-    protected int postStreamWaitTime = 1000;
+    protected int maxConnectedTime = 60000;
 
     /**
      * How long are we telling users to wait before they come back next
@@ -160,12 +137,7 @@ public class DefaultServerLoadMonitor implements ServerLoadMonitor
     /**
      * What is the longest we wait for extra input after detecting output
      */
-    protected static final int MAX_PRE_STREAM_WAIT_TIME = 29000;
-
-    /**
-     * What is the longest we wait for extra input after detecting output
-     */
-    protected static final int MAX_POST_STREAM_WAIT_TIME = 1000;
+    protected static final int MAX_MAX_CONNECTED_TIME = 60000;
 
     /**
      * We are recording the number of hits in the last 5 seconds.

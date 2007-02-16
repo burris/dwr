@@ -140,8 +140,20 @@ dwr.engine.setAsync = function(async) {
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
  */
 dwr.engine.setActiveReverseAjax = function(activeReverseAjax) {
-  dwr.engine._activeReverseAjax = activeReverseAjax;
-  if (dwr.engine._activeReverseAjax) dwr.engine._poll();
+  if (activeReverseAjax) {
+    // Bail if we are already started
+    if (dwr.engine._activeReverseAjax) return;
+    dwr.engine._activeReverseAjax = true;
+    dwr.engine._poll();
+  }
+  else {
+    // Can we cancel an existing request?
+    if (dwr.engine._activeReverseAjax && dwr.engine._pollReq) dwr.engine._pollReq.abort();
+    dwr.engine._activeReverseAjax = false;
+  }
+  // TODO: in iframe mode, if we start, stop, start then the second start may
+  // well kick off a second iframe while the first is still about to return
+  // we should cope with this but we don't
 };
 
 /**

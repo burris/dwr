@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
+import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.DefaultContainer;
 import org.directwebremoting.impl.StartupUtil;
@@ -96,6 +97,30 @@ public class DwrServlet extends HttpServlet
 
             ServletLoggingOutput.unsetExecutionContext();
         }
+    }
+
+    /* (non-Javadoc)
+     * @see javax.servlet.GenericServlet#destroy()
+     */
+    public void destroy()
+    {
+        shutdown();
+        super.destroy();
+    }
+
+    /**
+     * Kill all comet polls.
+     * <p>Technically a servlet engine ought to call this only when all the
+     * threads are already removed, however at least Tomcat doesn't do this
+     * properly (it waits for a while and then calls destroy anyway).
+     * <p>It would be good if we could get {@link #destroy()} to call this
+     * method however destroy() is only called once all threads are done so it's
+     * too late. 
+     */
+    public void shutdown()
+    {
+        ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
+        monitor.shutdown();
     }
 
     /* (non-Javadoc)
