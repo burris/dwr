@@ -16,22 +16,19 @@
 package org.directwebremoting.extend;
 
 /**
+ * WaitControllers allow a {@link ServerLoadMonitor} to tell things that are
+ * waiting to stop waiting.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface WaitController
 {
     /**
-     * 
-     */
-    void outputHappened();
-
-    /**
-     * 
+     * Stop waiting - the server wants to shutdown
      */
     void shutdown();
 
     /**
-     * @return
+     * @return Has {@link #shutdown()} been called?
      */
     boolean isShutdown();
 }

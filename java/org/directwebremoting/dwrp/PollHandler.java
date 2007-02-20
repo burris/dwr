@@ -130,42 +130,48 @@ public class PollHandler implements Handler
             notifyThreadsFromSameBrowser(request, scriptId);
         }
 
-        boolean shutdown = false;
+        ScriptConduit notifyConduit = new NotifyOnlyScriptConduit(scriptSession.getScriptLock());
 
         // Don't wait if we would wait for 0s or if there are queued scripts
+        boolean shutdown = false;
         if (maxConnectedTime > 0 && !scriptSession.hasWaitingScripts())
         {
-            shutdown = preStreamWait(request, scriptSession, maxConnectedTime);
+            shutdown = streamWait(request, notifyConduit, scriptSession, maxConnectedTime);
         }
 
         ScriptConduit conduit = openStream(response);
 
         // How much longer do we wait now the stream is open?
         long extraWait = endTime - System.currentTimeMillis();
-        if (extraWait > 0 && partialResponse && shutdown)
+        if (extraWait > 0 && partialResponse && !shutdown)
         {
-            postStreamWait(conduit, scriptSession, extraWait);
+            streamWait(request, conduit, scriptSession, extraWait);
         }
 
         addCallbackScript(batchId, partialResponse, scriptSession, conduit);
     }
 
     /**
-     * @param request
-     * @param scriptSession
-     * @param maxConnectedTime
-     * @return Did this wait stop as the result of a shutdown?
-     * @throws IOException
+     * Perform a wait.
+     * @param request The HTTP request, needed to start a Jetty continuation
+     * @param conduit A conduit if there is an open stream or null if not 
+     * @param scriptSession The script that we lock against
+     * @param wait How long do we wait for?
+     * @return True if the wait did not end in a shutdown request
+     * @throws IOException If an IO error occurs
      */
-    private boolean preStreamWait(HttpServletRequest request, RealScriptSession scriptSession, long maxConnectedTime) throws IOException
+    private boolean streamWait(HttpServletRequest request, ScriptConduit conduit, RealScriptSession scriptSession, long wait) throws IOException
     {
-        // The first wait - before we do any output
-        final Object lock = scriptSession.getScriptLock();
+        Object lock = scriptSession.getScriptLock();
         WaitController controller = new NotifyWaitController(lock);
 
         try
         {
             serverLoadMonitor.threadWaitStarting(controller);
+            if (conduit != null)
+            {
+                scriptSession.addScriptConduit(conduit);
+            }
 
             synchronized (lock)
             {
@@ -173,53 +179,15 @@ public class PollHandler implements Handler
                 Continuation continuation = new Continuation(request);
                 if (continuation.isAvailable())
                 {
-                    if (!sleepWithContinuation(scriptSession, continuation, maxConnectedTime))
+                    if (!sleepWithContinuation(scriptSession, continuation, wait))
                     {
-                        sleepWithNotify(scriptSession, lock, maxConnectedTime);
+                        lock.wait(wait);
                     }
                 }
                 else
                 {
-                    sleepWithNotify(scriptSession, lock, maxConnectedTime);
+                    lock.wait(wait);
                 }
-            }
-        }
-        finally
-        {
-            serverLoadMonitor.threadWaitEnding(controller);
-        }
-
-        return controller.isShutdown();
-    }
-
-    /**
-     * The second wait - after we've started to do the output
-     * @param conduit 
-     * @param partialResponse
-     * @param extraWait
-     * @param scriptSession 
-     * @throws IOException 
-     */
-    private void postStreamWait(ScriptConduit conduit, RealScriptSession scriptSession, long extraWait) throws IOException
-    {
-        // The first wait - before we do any output
-        final Object lock = scriptSession.getScriptLock();
-        WaitController controller = new NotifyWaitController(lock);
-
-        try
-        {
-            serverLoadMonitor.threadWaitStarting(controller);
-            scriptSession.addScriptConduit(conduit);
-
-            synchronized (lock)
-            {
-                Thread thread = Thread.currentThread();
-                String oldName = thread.getName();
-                thread.setName("DWR:Poll:PostStreamWait:" + extraWait);
-
-                lock.wait(extraWait);
-
-                thread.setName(oldName);
             }
         }
         catch (InterruptedException ex)
@@ -228,14 +196,21 @@ public class PollHandler implements Handler
         }
         finally
         {
-            scriptSession.removeScriptConduit(conduit);
+            if (conduit != null)
+            {
+                scriptSession.removeScriptConduit(conduit);
+            }
             serverLoadMonitor.threadWaitEnding(controller);
         }
+
+        return controller.isShutdown();
     }
 
     /**
-     * @param response
-     * @return
+     * Open an output stream, set the mime type etc, and create a ScriptConduit
+     * for writing to that stream.
+     * @param response The HTTP response from which we create a {@link ScriptConduit}
+     * @return For writing to the HTTP response
      * @throws IOException
      */
     private ScriptConduit openStream(HttpServletResponse response) throws IOException
@@ -430,43 +405,6 @@ public class PollHandler implements Handler
     }
 
     /**
-     * Use a {@link NotifyOnlyScriptConduit} to wait on a lock
-     * @param scriptSession The session that we add the conduit to
-     * @param lock The object that we wait on
-     * @param preStreamWaitTime The length of time to wait
-     * @throws IOException If the write to the browser fails
-     */
-    protected void sleepWithNotify(RealScriptSession scriptSession, Object lock, long preStreamWaitTime) throws IOException
-    {
-        ScriptConduit listener = new NotifyOnlyScriptConduit(lock);
-
-        // The comet part of a poll request
-        try
-        {
-            scriptSession.addScriptConduit(listener);
-
-            try
-            {
-                Thread thread = Thread.currentThread();
-                String oldName = thread.getName();
-                thread.setName("DWR:Poll:PreStreamWait:" + preStreamWaitTime);
-
-                lock.wait(preStreamWaitTime);
-
-                thread.setName(oldName);
-            }
-            catch (InterruptedException ex)
-            {
-                log.warn("Interupted", ex);
-            }
-        }
-        finally
-        {
-            scriptSession.removeScriptConduit(listener);
-        }
-    }
-
-    /**
      * Use a {@link ResumeContinuationScriptConduit} to wait
      * @param scriptSession The session that we add the conduit to
      * @param continuation The Jetty continuation object
@@ -520,14 +458,6 @@ public class PollHandler implements Handler
         public NotifyWaitController(Object lock)
         {
             this.lock = lock;
-        }
-
-        /* (non-Javadoc)
-         * @see org.directwebremoting.extend.WaitController#outputHappened()
-         */
-        public void outputHappened()
-        {
-            lock.notifyAll();
         }
 
         /* (non-Javadoc)
