@@ -1,4 +1,4 @@
-#Sun Oct 08 12:44:26 BST 2006
+#Wed Feb 21 13:25:21 GMT 2007
 comment_clear_blank_lines=false
 comment_format_comments=false
 comment_format_header=false
@@ -12,7 +12,6 @@ comment_separate_root_tags=false
 eclipse.preferences.version=1
 formatter_profile=_DWR
 formatter_settings_version=10
-internal.default.compliance=user
 org.eclipse.jdt.ui.exception.name=ex
 org.eclipse.jdt.ui.gettersetter.use.is=true
 org.eclipse.jdt.ui.ignorelowercasenames=true
