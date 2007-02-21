@@ -450,11 +450,34 @@ public class ContainerUtil
         List containers = (List) servletContext.getAttribute(ATTRIBUTE_CONTAINER_LIST);
         if (containers == null)
         {
-            log.warn("No container list found. It is likely that ContainerUtil.publishContainer() has not been called for this servlet context.");
             containers = new ArrayList();
         }
 
         return containers;
+    }
+
+    /**
+     * Internal use only.
+     * <p>If we detect that the server is being shutdown then we want to kill
+     * any reverse ajax threads.
+     * @param containers The list of containers to look for ServerLoadMonitors in
+     * @param title What causes this (for debug purposes)
+     */
+    public static void shutdownServerLoadMonitorsInContainerList(List containers, String title)
+    {
+        if (containers == null || containers.size() == 0)
+        {
+            log.debug("No containers to shutdown for: " + title);
+            return;
+        }
+
+        log.debug("Shutting down containers for: " + title);
+        for (Iterator it = containers.iterator(); it.hasNext();)
+        {
+            Container container = (Container) it.next();
+            ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
+            monitor.shutdown();
+        }
     }
 
     /**

@@ -9,6 +9,7 @@
   <description>A Simple Demo DWR</description>
 
   <listener>
+    <listener-class>org.directwebremoting.servlet.EfficientShutdownServletContextAttributeListener</listener-class>
     <listener-class>org.directwebremoting.servlet.EfficientShutdownServletContextListener</listener-class>
   </listener>
 

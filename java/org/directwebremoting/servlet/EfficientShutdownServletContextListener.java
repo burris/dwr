@@ -15,16 +15,13 @@
  */
 package org.directwebremoting.servlet;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.directwebremoting.Container;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.impl.ContainerUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * A {@link ServletContextListener} that can be used to call
@@ -34,30 +31,18 @@ import org.directwebremoting.util.Logger;
 public class EfficientShutdownServletContextListener implements ServletContextListener
 {
     /* (non-Javadoc)
-     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
-     */
-    public void contextDestroyed(ServletContextEvent ev)
-    {
-        List containers = ContainerUtil.getAllPublishedContainers(ev.getServletContext());
-        for (Iterator it = containers.iterator(); it.hasNext();)
-        {
-            Container container = (Container) it.next();
-            log.debug("ServerLoadMonitor.shutdown() for container: " + container);
-
-            ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
-            monitor.shutdown();
-        }
-    }
-
-    /* (non-Javadoc)
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
      */
     public void contextInitialized(ServletContextEvent ev)
     {
     }
 
-    /**
-     * The log stream
+    /* (non-Javadoc)
+     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
-    private static final Logger log = Logger.getLogger(EfficientShutdownServletContextListener.class);
+    public void contextDestroyed(ServletContextEvent ev)
+    {
+        List containers = ContainerUtil.getAllPublishedContainers(ev.getServletContext());
+        ContainerUtil.shutdownServerLoadMonitorsInContainerList(containers, "EfficientShutdownServletContextListener");
+    }
 }

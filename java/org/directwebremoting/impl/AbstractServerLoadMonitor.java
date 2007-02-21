@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.extend.WaitController;
+import org.directwebremoting.util.Logger;
 
 /**
  * A base implementation of {@link ServerLoadMonitor} that implements waiting
@@ -50,15 +51,36 @@ public abstract class AbstractServerLoadMonitor implements ServerLoadMonitor
      */
     public void shutdown()
     {
-        for (Iterator it = waitControllers.iterator(); it.hasNext();)
+        if (shutdownCalled)
+        {
+            return;
+        }
+
+        List copy = new ArrayList();
+        copy.addAll(waitControllers);
+
+        for (Iterator it = copy.iterator(); it.hasNext();)
         {
             WaitController controller = (WaitController) it.next();
             controller.shutdown();
         }
+
+        log.debug(" - shutdown on: " + this);
+        shutdownCalled = true;
     }
+
+    /**
+     * Have we been shutdown already?
+     */
+    private boolean shutdownCalled = false;
 
     /**
      * The known wait controllers
      */
     protected List waitControllers = new ArrayList();
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(AbstractServerLoadMonitor.class);
 }

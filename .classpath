@@ -6,7 +6,7 @@
 			<attribute name="javadoc_location" value="http://jakarta.apache.org/commons/logging/api"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="jar/servlet-api-2.4.jar"/>
+	<classpathentry kind="lib" path="jar/servlet-api-2.4.jar" sourcepath="/library/jarlib/servlet-2.4/servlet-api-2.4-sources.jar"/>
 	<classpathentry kind="lib" path="jar/xml-apis.jar" sourcepath="/library/jarlib/xerces-2.6.2/Xerces-J-src.2.6.2.zip">
 		<attributes>
 			<attribute name="javadoc_location" value="http://xml.apache.org/xerces2-j/javadocs/api/"/>
@@ -46,9 +46,6 @@
 	<classpathentry kind="lib" path="jar/webwork-2.2.2.jar"/>
 	<classpathentry kind="lib" path="jar/xwork-1.1.1.jar"/>
 	<classpathentry kind="lib" path="jar/backport-util-concurrent.jar"/>
-	<classpathentry kind="src" path="java"/>
-	<classpathentry kind="src" path="demo"/>
-	<classpathentry kind="src" path="etc/classpath"/>
 	<classpathentry kind="lib" path="jar/jsp-api-2.0.jar"/>
 	<classpathentry kind="lib" path="jar/hibernate-2.1.7c.jar" sourcepath="/library/jarlib/hibernate-2.1.7c/hibernate-2.1.7c.zip">
 		<attributes>
@@ -65,5 +62,8 @@
 			<attribute name="javadoc_location" value="jar:file:/C:/Share/joe/tameion/library/jarlib/hibernate-3.2/hibernate-entitymanager-3.2.0.GA.zip!/hibernate-entitymanager-3.2.0.GA/doc/api"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="etc/classpath"/>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="src" path="demo"/>
 	<classpathentry kind="output" path="web/WEB-INF/classes"/>
 </classpath>

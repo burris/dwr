@@ -11,6 +11,11 @@
     </filter>
     -->
 
+    <!-- intro - for the test on index.html -->
+    <create creator="new" javascript="Intro">
+      <param name="class" value="uk.ltd.getahead.dwrdemo.intro.Intro"/>
+    </create>
+
     <!-- address -->
     <create creator="new" javascript="AddressLookup">
       <param name="class" value="uk.ltd.getahead.dwrdemo.address.AddressLookup"/>

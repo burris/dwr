@@ -465,7 +465,18 @@ public class PollHandler implements Handler
          */
         public void shutdown()
         {
-            lock.notifyAll();
+            try
+            {
+                synchronized (lock)
+                {
+                    lock.notifyAll();
+                }
+            }
+            catch (Exception ex)
+            {
+                log.warn("Failed to notify all ScriptSession users", ex);
+            }
+
             shutdown = true;
         }
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>DWR - Test Home</title>
-  <script type='text/javascript' src='dwr/interface/Test.js'></script>
+  <script type='text/javascript' src='dwr/interface/Intro.js'></script>
   <script type='text/javascript' src='dwr/engine.js'></script>
   <script type='text/javascript' src='dwr/util.js'></script>
   <script>
@@ -18,7 +18,7 @@
       // Turn on the generic error div
       $("error").style.display = "block";
       // Load a message from the server
-      Test.getInsert(load);
+      Intro.getInsert(load);
     }
 
     function load(data) {
