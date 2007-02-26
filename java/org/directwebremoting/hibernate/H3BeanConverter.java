@@ -141,11 +141,19 @@ public class H3BeanConverter extends BeanConverter implements Converter
 
             if (initializer.isUninitialized())
             {
-                // getImplementation is going to want to talk to a session
-                if (implementor.isClosed())
+                try
                 {
-                    // Give up and return example.getClass();
-                    return example.getClass();
+                    // getImplementation is going to want to talk to a session
+                    if (implementor.isClosed())
+                    {
+                        // Give up and return example.getClass();
+                        return example.getClass();
+                    }
+                }
+                catch (NoSuchMethodError ex)
+                {
+                    // We must be using Hibernate 3.0/3.1 which doesn't have
+                    // this method
                 }
             }
 
