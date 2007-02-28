@@ -416,7 +416,7 @@ dwr.engine._poll = function(overridePath) {
   batch.map.callCount = 1;
   batch.isPoll = true;
   if (document.all) {
-    batch.rpcType = dwr.engine._pollType;
+    batch.rpcType = dwr.engine.IFrame;
     batch.map.partialResponse = dwr.engine._partialResponseFlush;
   }
   else {
@@ -535,9 +535,15 @@ dwr.engine._getJSessionId =  function() {
 /** @private Check for reverse Ajax activity */
 dwr.engine._checkCometPoll = function() {
   for (var i = 0; i < dwr.engine._outstandingIFrames.length; i++) {
+    var text = "";
     var iframe = dwr.engine._outstandingIFrames[i];
-    var text = dwr.engine._getTextFromCometIFrame(iframe);
-    dwr.engine._processCometResponse(text, iframe.batch);
+    try {
+      text = dwr.engine._getTextFromCometIFrame(iframe);
+    }
+    catch (ex) {
+      dwr.engine._handleWarning(iframe.batch, ex);
+    }
+    if (text != "") dwr.engine._processCometResponse(text, iframe.batch);
   }
   if (dwr.engine._pollReq) {
     var req = dwr.engine._pollReq;
@@ -553,21 +559,10 @@ dwr.engine._checkCometPoll = function() {
 
 /** @private Extract the whole (executed an all) text from the current iframe */
 dwr.engine._getTextFromCometIFrame = function(frameEle) {
-  var body;
-  if (frameEle.contentDocument) {
-    body = frameEle.contentDocument.defaultView.document.body;
-  }
-  else if (frameEle.contentWindow) {
-    body = frameEle.contentWindow.document.body;
-  }
-  else {
-    return "";
-  }
+  var body = frameEle.contentWindow.document.body;
   if (body == null) return "";
   var text = body.innerHTML;
-  //var text = body.firstChild.firstChild.nodeValue;
-// Probably get rid of this
-  // Browsers and add <PRE>...</PRE> for some unknown reason
+  // We need to prevent IE from stripping line feeds
   if (text.indexOf("<PRE>") == 0 || text.indexOf("<pre>") == 0) {
     text = text.substring(5, text.length - 7);
   }
@@ -646,7 +641,12 @@ dwr.engine._sendData = function(batch) {
       batch.req.onreadystatechange = function() { dwr.engine._stateChange(batch); };
     }
     // If we're polling, record this for monitoring
-    if (batch.isPoll) dwr.engine._pollReq = batch.req;
+    if (batch.isPoll) {
+      dwr.engine._pollReq = batch.req;
+      // In IE XHR is an ActiveX control so you can't augment it like this
+      // however batch.isPoll uses IFrame on IE so were safe here
+      batch.req.batch = batch;
+    }
     // Workaround for Safari 1.x POST bug
     var indexSafari = navigator.userAgent.indexOf("Safari/");
     if (indexSafari >= 0) {
