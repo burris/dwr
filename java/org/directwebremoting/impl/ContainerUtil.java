@@ -43,6 +43,7 @@ import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.DebugPageGenerator;
 import org.directwebremoting.extend.DwrConstants;
+import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.ScriptSessionManager;
@@ -152,29 +153,41 @@ public class ContainerUtil
         container.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
 
         // Mapping handlers to URLs
-        container.addParameter(PathConstants.URL_PREFIX + "/index.html", IndexHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/engine.js", EngineHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/util.js", UtilHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/auth.js", AuthHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/webwork/DWRActionUtil.js", WebworkUtilHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/about", AboutHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/test/", TestHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/interface/", InterfaceHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/call/plaincall/", PlainCallHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/call/htmlcall/", HtmlCallHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/call/plainpoll/", PlainPollHandler.class.getName());
-        container.addParameter(PathConstants.URL_PREFIX + "/call/htmlpoll/", HtmlPollHandler.class.getName());
+        createUrlMapping(container, "/index.html", "indexHandlerUrl", IndexHandler.class);
+        createUrlMapping(container, "/engine.js", "engineHandlerUrl", EngineHandler.class);
+        createUrlMapping(container, "/util.js", "utilHandlerUrl", UtilHandler.class);
+        createUrlMapping(container, "/auth.js", "authHandlerUrl", AuthHandler.class);
+        createUrlMapping(container, "/webwork/DWRActionUtil.js", "webworkUtilHandlerUrl", WebworkUtilHandler.class);
+        createUrlMapping(container, "/about", "aboutHandlerUrl", AboutHandler.class);
+        createUrlMapping(container, "/test/", "testHandlerUrl", TestHandler.class);
+        createUrlMapping(container, "/interface/", "interfaceHandlerUrl", InterfaceHandler.class);
 
-        container.addParameter(PathConstants.URL_INDEX, "/index.html");
-        container.addParameter(PathConstants.URL_ENGINE, "/engine.js");
-        container.addParameter(PathConstants.URL_UTIL, "/util.js");
-        container.addParameter(PathConstants.URL_AUTH, "/auth.js");
-        container.addParameter(PathConstants.URL_WEBWORKUTIL, "/webwork/DWRActionUtil.js");
-        container.addParameter(PathConstants.URL_TEST, "/test/");
-        container.addParameter(PathConstants.URL_INTERFACE, "/interface/");
         // The Poll and Call URLs can not be changed easily because they are
         // referenced from engine.js. Maybe one day this would be a good
         // extension
+        createUrlMapping(container, "/call/plaincall/", "plainCallHandlerUrl", PlainCallHandler.class);
+        createUrlMapping(container, "/call/plainpoll/", "plainPollHandlerUrl", PlainPollHandler.class);
+        createUrlMapping(container, "/call/htmlcall/", "htmlCallHandlerUrl", HtmlCallHandler.class);
+        createUrlMapping(container, "/call/htmlpoll/", "htmlPollHandlerUrl", HtmlPollHandler.class);
+    }
+
+    /**
+     * Creates entries in the {@link Container} so 2 lookups are possible.
+     * <ul>
+     * <li>You can find a {@link Handler} for a URL. Used by {@link UrlProcessor}
+     * <li>You can inject (or lookup) the URL assigned to a {@link Handler}
+     * </ul>
+     * @param container The container to create the entries in
+     * @param url The URL of the new {@link Handler}
+     * @param propertyName The property name (for injection and lookup)
+     * @param handler The class of Handler
+     * @throws InstantiationException From {@link DefaultContainer#addParameter(Object, Object)}
+     * @throws IllegalAccessException From {@link DefaultContainer#addParameter(Object, Object)}
+     */
+    public static void createUrlMapping(DefaultContainer container, String url, String propertyName, Class handler) throws InstantiationException, IllegalAccessException
+    {
+        container.addParameter(PathConstants.URL_PREFIX + url, handler.getName());
+        container.addParameter(propertyName, url);
     }
 
     /**

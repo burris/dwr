@@ -157,14 +157,6 @@ dwr.engine.setActiveReverseAjax = function(activeReverseAjax) {
 };
 
 /**
- * Does DWR us comet polling? (Default: true)
- * @see http://getahead.ltd.uk/dwr/browser/engine/options
- */
-dwr.engine.setPollUsingComet = function(pollComet) {
-  dwr.engine._pollComet = pollComet;
-};
-
-/**
  * Set the preferred polling type.
  * @param newPollType One of dwr.engine.XMLHttpRequest or dwr.engine.IFrame
  * @see http://getahead.ltd.uk/dwr/browser/engine/options
@@ -312,24 +304,22 @@ dwr.engine._XMLHTTP = ["Msxml2.XMLHTTP.6.0", "Msxml2.XMLHTTP.5.0", "Msxml2.XMLHT
 /** Are we doing comet or polling? */
 dwr.engine._activeReverseAjax = false;
 
-/** Is there a long term poll (comet) interraction in place? */
-dwr.engine._pollComet = true;
-
 /** What is the default polling type */
 dwr.engine._pollType = dwr.engine.XMLHttpRequest;
 //dwr.engine._pollType = dwr.engine.IFrame;
 
 /** The iframe that we are using to poll */
-dwr.engine._pollFrame = null;
+dwr.engine._outstandingIFrames = [];
 
 /** The xhr object that we are using to poll */
 dwr.engine._pollReq = null;
 
-/** How much data has been received into a reverse ajax document */
-dwr.engine._cometProcessed = 0;
-
 /** How many milliseconds between internal comet polls */
 dwr.engine._pollCometInterval = 200;
+
+/** How many times have we re-tried to poll? */
+dwr.engine._pollRetries = 0;
+dwr.engine._maxPollRetries = 0;
 
 /** Do we do a document.reload if we get a text/html reply? */
 dwr.engine._textHtmlHandler = null;
@@ -352,6 +342,11 @@ dwr.engine._nextBatchId = 0;
 
 /** A list of the properties that need merging from calls to a batch */
 dwr.engine._propnames = [ "rpcType", "httpMethod", "async", "timeout", "errorHandler", "warningHandler", "textHtmlHandler" ];
+
+/** Do we stream, or can be hacked to do so? */
+dwr.engine._partialResponseNo = 0;
+dwr.engine._partialResponseYes = 1;
+dwr.engine._partialResponseFlush = 2;
 
 /**
  * @private Send a request. Called by the Javascript interface stub
@@ -419,27 +414,47 @@ dwr.engine._poll = function(overridePath) {
   var batch = dwr.engine._createBatch();
   batch.map.id = 0; // TODO: Do we need this??
   batch.map.callCount = 1;
-  batch.map.partialResponse = (document.all) ? "false" : "true";
   batch.isPoll = true;
-  batch.rpcType = dwr.engine._pollType;
+  if (document.all) {
+    batch.rpcType = dwr.engine._pollType;
+    batch.map.partialResponse = dwr.engine._partialResponseFlush;
+  }
+  else {
+    batch.rpcType = dwr.engine._pollType;
+    batch.map.partialResponse = dwr.engine._partialResponseYes;
+  }
   batch.httpMethod = "POST";
   batch.async = true;
   batch.timeout = 0;
   batch.path = (overridePath) ? overridePath : dwr.engine._defaultPath;
   batch.preHooks = [];
   batch.postHooks = [];
+  batch.errorHandler = dwr.engine._pollErrorHandler;
+  batch.warningHandler = dwr.engine._pollErrorHandler;
   batch.handlers[0] = {
     callback:function(pause) {
-      dwr.engine._cometBatch = null;
+      dwr.engine._pollRetries = 0;
       setTimeout("dwr.engine._poll()", pause);
     }
   };
 
   // Send the data
   dwr.engine._sendData(batch);
-  if (batch.map.partialResponse == "true") {
-    dwr.engine._cometBatch = batch;
+  if (batch.map.partialResponse != dwr.engine._partialResponseNo) {
     dwr.engine._checkCometPoll();
+  }
+};
+
+/** Try to recover from polling errors */
+dwr.engine._pollErrorHandler = function(msg, ex) {
+  // if anything goes wrong then just silently try again (up to 3x) after 10s
+  dwr.engine._pollRetries++;
+  dwr.engine._debug("Reverse Ajax poll failed (pollRetries=" + dwr.engine._pollRetries + "): " + ex.name + " : " + ex.message);
+  if (dwr.engine._pollRetries < dwr.engine._maxPollRetries) {
+    setTimeout("dwr.engine._poll()", 10000);
+  }
+  else {
+    dwr.engine._debug("Giving up.");
   }
 };
 
@@ -452,6 +467,7 @@ dwr.engine._createBatch = function() {
       httpSessionId:dwr.engine._getJSessionId(),
       scriptSessionId:dwr.engine._getScriptSessionId()
     },
+    charsProcessed:0,
     paramCount:0, // TODO: What's this for?
     isPoll:false, headers:{}, handlers:{}, preHooks:[], postHooks:[],
     rpcType:dwr.engine._rpcType,
@@ -518,89 +534,83 @@ dwr.engine._getJSessionId =  function() {
 
 /** @private Check for reverse Ajax activity */
 dwr.engine._checkCometPoll = function() {
-  if (dwr.engine._pollComet) {
-    // If the poll resources are still there, come back again
-    //if (dwr.engine._pollFrame || dwr.engine._pollReq) {
-    //  setTimeout("dwr.engine._checkCometPoll()", dwr.engine._pollCometInterval);
-    //}
-    try {
-      dwr.engine._receivedBatch = dwr.engine._cometBatch;
-      if (dwr.engine._pollFrame) {
-        var text = dwr.engine._getTextFromCometIFrame();
-        dwr.engine._processCometResponse(text);
-      }
-      else if (dwr.engine._pollReq) {
-        var xhrtext = dwr.engine._pollReq.responseText;
-        dwr.engine._processCometResponse(xhrtext);
-      }
-      dwr.engine._receivedBatch = null;
-    }
-    catch (ex) {
-      // IE complains for no good reason for both options above. Ignore.
-    }
-    // If the poll resources are still there, come back again
-    if (dwr.engine._pollFrame || dwr.engine._pollReq) {
-      setTimeout("dwr.engine._checkCometPoll()", dwr.engine._pollCometInterval);
-    }
+  for (var i = 0; i < dwr.engine._outstandingIFrames.length; i++) {
+    var iframe = dwr.engine._outstandingIFrames[i];
+    var text = dwr.engine._getTextFromCometIFrame(iframe);
+    dwr.engine._processCometResponse(text, iframe.batch);
+  }
+  if (dwr.engine._pollReq) {
+    var req = dwr.engine._pollReq;
+    var text = req.responseText;
+    dwr.engine._processCometResponse(text, req.batch);
+  }
+
+  // If the poll resources are still there, come back again
+  if (dwr.engine._outstandingIFrames.length > 0 || dwr.engine._pollReq) {
+    setTimeout("dwr.engine._checkCometPoll()", dwr.engine._pollCometInterval);
   }
 };
 
 /** @private Extract the whole (executed an all) text from the current iframe */
-dwr.engine._getTextFromCometIFrame = function() {
-  var frameDocument;
-  if (dwr.engine._pollFrame.contentDocument) {
-    frameDocument = dwr.engine._pollFrame.contentDocument.defaultView.document;
+dwr.engine._getTextFromCometIFrame = function(frameEle) {
+  var body;
+  if (frameEle.contentDocument) {
+    body = frameEle.contentDocument.defaultView.document.body;
   }
-  else if (dwr.engine._pollFrame.contentWindow) {
-    frameDocument = dwr.engine._pollFrame.contentWindow.document;
+  else if (frameEle.contentWindow) {
+    body = frameEle.contentWindow.document.body;
   }
   else {
     return "";
   }
-  var bodyNodes = frameDocument.getElementsByTagName("body");
-  if (bodyNodes == null || bodyNodes.length == 0) return "";
-  if (bodyNodes[0] == null) return "";
-  var text = bodyNodes[0].innerHTML.toString();
-  // IE plays silly-pants and adds <PRE>...</PRE> for some unknown reason
-  if (text.indexOf("<PRE>") == 0) text = text.substring(5, text.length - 7);
+  if (body == null) return "";
+  var text = body.innerHTML;
+  //var text = body.firstChild.firstChild.nodeValue;
+// Probably get rid of this
+  // Browsers and add <PRE>...</PRE> for some unknown reason
+  if (text.indexOf("<PRE>") == 0 || text.indexOf("<pre>") == 0) {
+    text = text.substring(5, text.length - 7);
+  }
   return text;
 };
 
 /** @private Some more text might have come in, test and execute the new stuff */
-dwr.engine._processCometResponse = function(response) {
-  if (dwr.engine._cometProcessed != response.length) {
-    if (response.length == 0) {
-      dwr.engine._cometProcessed = 0;
-    }
-    else {
-      // dwr.engine._debug("response.length=" + response.length + ", cometProcessed=" + dwr.engine._cometProcessed + ", extra chars=" + (response.length - dwr.engine._cometProcessed));
-      var firstStartTag = response.indexOf("//#DWR-START#", dwr.engine._cometProcessed);
-      // dwr.engine._debug("firstStartTag='" + firstStartTag + "'");
-      if (firstStartTag == -1) {
-        // dwr.engine._debug("Failed to find start tag when starting at " + firstStartTag + ". Dropping: " + (response.length - dwr.engine._cometProcessed) + " characters");
-        dwr.engine._cometProcessed = response.length;
-      }
-      else {
-        var lastEndTag = response.lastIndexOf("//#DWR-END#");
-        // dwr.engine._debug("lastEndTag='" + lastEndTag + "'");
-        if (lastEndTag != -1) {
-          var exec = response.substring(firstStartTag + 13, lastEndTag);
-          // Skip the end tag too for next time, remembering CR and LF
-          if (response.charCodeAt(lastEndTag + 11) == 13 && response.charCodeAt(lastEndTag + 12) == 10) {
-            dwr.engine._cometProcessed = lastEndTag + 13;
-          }
-          else {
-            dwr.engine._cometProcessed = lastEndTag + 11;
-          }
-          dwr.engine._eval(exec);
-          // dwr.engine._debug("setting _cometProcessed='" + dwr.engine._cometProcessed + "'");
-        }
-        // else {
-        //   dwr.engine._debug("No end tag. (yet) '" + response + "'");
-        // }
-      }
-    }
+dwr.engine._processCometResponse = function(response, batch) {
+  if (batch.charsProcessed == response.length) return;
+  if (response.length == 0) {
+    batch.charsProcessed = 0;
+    return;
   }
+
+  var firstStartTag = response.indexOf("//#DWR-START#", batch.charsProcessed);
+  if (firstStartTag == -1) {
+    // dwr.engine._debug("No start tag (search from " + batch.charsProcessed + "). skipping '" + response.substring(batch.charsProcessed) + "'");
+    batch.charsProcessed = response.length;
+    return;
+  }
+  // if (firstStartTag > 0) {
+  //   dwr.engine._debug("Start tag not at start (search from " + batch.charsProcessed + "). skipping '" + response.substring(batch.charsProcessed, firstStartTag) + "'");
+  // }
+
+  var lastEndTag = response.lastIndexOf("//#DWR-END#");
+  if (lastEndTag == -1) {
+    // dwr.engine._debug("No end tag. unchanged charsProcessed=" + batch.charsProcessed);
+    return;
+  }
+
+  // Skip the end tag too for next time, remembering CR and LF
+  if (response.charCodeAt(lastEndTag + 11) == 13 && response.charCodeAt(lastEndTag + 12) == 10) {
+    batch.charsProcessed = lastEndTag + 13;
+  }
+  else {
+    batch.charsProcessed = lastEndTag + 11;
+  }
+
+  var exec = response.substring(firstStartTag + 13, lastEndTag);
+
+  dwr.engine._receivedBatch = batch;
+  dwr.engine._eval(exec);
+  dwr.engine._receivedBatch = null;
 };
 
 /** @private Actually send the block of data in the batch object. */
@@ -670,24 +680,19 @@ dwr.engine._sendData = function(batch) {
     }
   }
   else if (batch.rpcType != dwr.engine.ScriptTag) {
-    var idname = "dwr-if-" + batch.map["c0-id"];
     // Proceed using iframe
+    var idname = batch.isPoll ? "dwr-if-poll-" + batch.map.batchId : "dwr-if-" + batch.map["c0-id"];
     batch.div = document.createElement("div");
-    batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' width='0' height='0' id='" + idname + "' name='" + idname + "'></iframe>";
+    batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' style='width:0px;height:0px;border:0;' id='" + idname + "' name='" + idname + "'></iframe>";
     document.body.appendChild(batch.div);
     batch.iframe = document.getElementById(idname);
-    batch.iframe.setAttribute("style", "width:0px; height:0px; border:0px;");
     batch.iframe.batch = batch;
     batch.mode = batch.isPoll ? dwr.engine._ModeHtmlPoll : dwr.engine._ModeHtmlCall;
-    if (batch.isPoll) {
-      // Settings that vary if we are polling
-      dwr.engine._pollFrame = batch.iframe;
-      dwr.engine._cometProcessed = 0;
-    }
+    if (batch.isPoll) dwr.engine._outstandingIFrames.push(batch.iframe);
     request = dwr.engine._constructRequest(batch);
     if (batch.httpMethod == "GET") {
       batch.iframe.setAttribute("src", request.url);
-      document.body.appendChild(batch.iframe);
+      // document.body.appendChild(batch.iframe);
     }
     else {
       batch.form = document.createElement("form");
@@ -781,8 +786,9 @@ dwr.engine._stateChange = function(batch) {
     return;
   }
 
+  var req = batch.req;
   try {
-    if (batch.req.readyState != 4) return;
+    if (req.readyState != 4) return;
   }
   catch (ex) {
     dwr.engine._handleWarning(batch, ex);
@@ -792,18 +798,18 @@ dwr.engine._stateChange = function(batch) {
   }
 
   try {
-    var reply = batch.req.responseText;
+    var reply = req.responseText;
     reply = dwr.engine._replyRewriteHandler(reply);
-    var status = batch.req.status; // causes Mozilla to except on page moves
+    var status = req.status; // causes Mozilla to except on page moves
 
     if (reply == null || reply == "") {
       dwr.engine._handleWarning(batch, { name:"dwr.engine.missingData", message:"No data received from server" });
     }
     else if (status != 200) {
-      dwr.engine._handleError(batch, { name:"dwr.engine.http." + status, message:batch.req.statusText });
+      dwr.engine._handleError(batch, { name:"dwr.engine.http." + status, message:req.statusText });
     }
     else {
-      var contentType = batch.req.getResponseHeader("Content-Type");
+      var contentType = req.getResponseHeader("Content-Type");
       if (!contentType.match(/^text\/plain/) && !contentType.match(/^text\/javascript/)) {
         if (contentType.match(/^text\/html/) && typeof batch.textHtmlHandler == "function") {
           batch.textHtmlHandler();
@@ -814,10 +820,8 @@ dwr.engine._stateChange = function(batch) {
       }
       else {
         // Comet replies might have already partially executed
-        if (batch.req == dwr.engine._pollReq && batch.map.partialResponse == "true") {
-          dwr.engine._receivedBatch = batch;
-          dwr.engine._processCometResponse(reply);
-          dwr.engine._receivedBatch = null;
+        if (batch.isPoll && batch.map.partialResponse == dwr.engine._partialResponseYes) {
+          dwr.engine._processCometResponse(reply, batch);
         }
         else {
           if (reply.search("//#DWR") == -1) {
@@ -906,10 +910,9 @@ dwr.engine._remotePollCometDisabled = function(ex, batchId) {
 };
 
 /** @private Called by the server: An IFrame reply is about to start */
-dwr.engine._remoteBeginIFrameResponse = function(element, batchId) {
-  dwr.engine._receivedBatch = element.batch;
-  element.batch = null;
-  dwr.engine._callPostHooks(batch);
+dwr.engine._remoteBeginIFrameResponse = function(iframe, batchId) {
+  if (iframe != null) dwr.engine._receivedBatch = iframe.batch;
+  dwr.engine._callPostHooks(dwr.engine._receivedBatch);
 };
 
 /** @private Called by the server: An IFrame reply is just completing */
@@ -920,14 +923,9 @@ dwr.engine._remoteEndIFrameResponse = function(batchId) {
 
 /** @private This is a hack to make the context be this window */
 dwr.engine._eval = function(script) {
-  if (script == null) { return null; }
+  if (script == null) return null;
   if (script == "") { dwr.engine._debug("Warning: blank script", true); return null; }
-  // var debug = script;
-  // debug = debug.replace(/\/\/#DWR-START#\r\n/g, "");
-  // debug = debug.replace(/\/\/#DWR-END#\r\n/g, "");
-  // debug = debug.replace(/\r/g, "");
-  // debug = debug.replace(/\n/g, " ");
-  // dwr.engine._debug("Exec: [" + debug + "]");
+  // dwr.engine._debug("Exec: [" + script + "]", true);
   return eval(script);
 };
 
@@ -960,7 +958,11 @@ dwr.engine._clearUp = function(batch) {
   if (batch.div) batch.div.parentNode.removeChild(batch.div);
   if (batch.iframe) {
     // If this is a poll frame then stop comet polling
-    if (batch.iframe == dwr.engine._pollFrame) dwr.engine._pollFrame = null;
+    for (var i = 0; i < dwr.engine._outstandingIFrames.length; i++) {
+      if (dwr.engine._outstandingIFrames[i] == batch.iframe) {
+        dwr.engine._outstandingIFrames.splice(i, 1);
+      }
+    }
     batch.iframe.parentNode.removeChild(batch.iframe);
   }
   if (batch.form) batch.form.parentNode.removeChild(batch.form);

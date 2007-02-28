@@ -218,21 +218,39 @@ public class EnginePrivate extends ScriptProxy
     /**
      * A script to send at the beginning of an iframe response
      * @param batchId The id of the current batch
+     * @param useWindowParent Will the exec happen from a child iframe which is
+     * the case for normal iframe based calls, or from the main window, which is
+     * the case for iframe streamed polling.
      * @return A script to init the environment
      */
-    public static String remoteBeginIFrameResponse(String batchId)
+    public static String remoteBeginIFrameResponse(String batchId, boolean useWindowParent)
     {
-        return "window.parent.dwr.engine._remoteBeginIFrameResponse(this.frameElement"+(batchId == null?"":", '" + batchId+"'") + ");";
+        String prefix = "";
+        if (useWindowParent)
+        {
+            prefix = "window.parent.";
+        }
+
+        return prefix + "dwr.engine._remoteBeginIFrameResponse(this.frameElement"+(batchId == null?"":", '" + batchId+"'") + ");";
     }
 
     /**
      * A script to send at the end of an iframe response
      * @param batchId The id of the current batch
+     * @param useWindowParent Will the exec happen from a child iframe which is
+     * the case for normal iframe based calls, or from the main window, which is
+     * the case for iframe streamed polling.
      * @return A script to tidy up the environment
      */
-    public static String remoteEndIFrameResponse(String batchId)
+    public static String remoteEndIFrameResponse(String batchId, boolean useWindowParent)
     {
-        return "window.parent.dwr.engine._remoteEndIFrameResponse("+(batchId == null?"":"'" + batchId+"'")+");";
+        String prefix = "";
+        if (useWindowParent)
+        {
+            prefix = "window.parent.";
+        }
+
+        return prefix + "dwr.engine._remoteEndIFrameResponse("+(batchId == null?"":"'" + batchId+"'")+");";
     }
 
     /**
@@ -242,7 +260,7 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteEval(String script)
     {
-        return "window.parent.dwr.engine._remoteEval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
+        return "window.parent.dwr.engine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
     }
 
     /**

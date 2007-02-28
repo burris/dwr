@@ -133,7 +133,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             {
                 Set pageSessions = (Set) it.next();
                 boolean isRemoved = pageSessions.remove(scriptSession);
-                
+
                 if (isRemoved)
                 {
                     removeCount++;

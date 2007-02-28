@@ -42,8 +42,8 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            out.println(ProtocolConstants.HTML_SCRIPT_PREFIX);
-            out.println(EnginePrivate.remoteBeginIFrameResponse(batchId));
+            out.println(ProtocolConstants.CALL_SCRIPT_PREFIX);
+            out.println(EnginePrivate.remoteBeginIFrameResponse(batchId, true));
         }
     }
 
@@ -54,8 +54,8 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            out.println(EnginePrivate.remoteEndIFrameResponse(batchId));
-            out.println(ProtocolConstants.HTML_SCRIPT_POSTFIX);
+            out.println(EnginePrivate.remoteEndIFrameResponse(batchId, true));
+            out.println(ProtocolConstants.CALL_SCRIPT_POSTFIX);
         }
     }
 

@@ -49,11 +49,16 @@ public class DefaultPageNormalizer implements PageNormalizer
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.PageNormalizer#normalizePage(java.lang.String)
      */
-    public String normalizePage(String unnormalized)
+    public synchronized String normalizePage(String unnormalized)
     {
-        if (welcomeFiles == null)
+        synchronized (welcomeFiles)
         {
-            if (!initWebXmlWelcomeFileList())
+            if (!welcomeFilesPopulated)
+            {
+                initWebXmlWelcomeFileList();
+            }
+
+            if (!welcomeFilesPopulated)
             {
                 initDefaultWelcomeFileList();
             }
@@ -90,9 +95,8 @@ public class DefaultPageNormalizer implements PageNormalizer
 
     /**
      * Accessor for the list of components to strip to normalize a filename
-     * @return True if we successfully configured a welcome file list
      */
-    public boolean initWebXmlWelcomeFileList()
+    protected void initWebXmlWelcomeFileList()
     {
         try
         {
@@ -101,7 +105,7 @@ public class DefaultPageNormalizer implements PageNormalizer
             if (in == null)
             {
                 log.warn("Missing " + PathConstants.RESOURCE_WEB_XML);
-                return false;
+                return;
             }
 
             if (buildFactory == null)
@@ -122,10 +126,9 @@ public class DefaultPageNormalizer implements PageNormalizer
             if (welcomeFileListNodes.getLength() == 0)
             {
                 log.debug("web.xml contains no <welcome-file-list> element");
-                return false;
+                return;
             }
 
-            welcomeFiles = new ArrayList();
             for (int i = 0; i < welcomeFileListNodes.getLength(); i++)
             {
                 Element welcomeFileListNode = (Element) welcomeFileListNodes.item(i);
@@ -140,26 +143,26 @@ public class DefaultPageNormalizer implements PageNormalizer
                 }
             }
 
-            return true;
+            welcomeFilesPopulated = true;
         }
         catch (Exception ex)
         {
             log.warn("Failed to calculate welcome files from web.xml.", ex);
-            return false;
         }
     }
 
     /**
      * Use the default list of components to strip to normalize a filename
      */
-    public void initDefaultWelcomeFileList()
+    protected void initDefaultWelcomeFileList()
     {
         log.debug("Using default welcome file list (index.[jsp|htm[l]])");
 
-        welcomeFiles = new ArrayList();
         welcomeFiles.add("index.html");
         welcomeFiles.add("index.htm");
         welcomeFiles.add("index.jsp");
+
+        welcomeFilesPopulated = true;
     }
 
     /**
@@ -169,6 +172,7 @@ public class DefaultPageNormalizer implements PageNormalizer
     public void setWelcomeFileList(List welcomeFiles)
     {
         this.welcomeFiles = welcomeFiles;
+        welcomeFilesPopulated = true;
     }
 
     /**
@@ -178,12 +182,12 @@ public class DefaultPageNormalizer implements PageNormalizer
      */
     public void setWelcomeFiles(String welcomeFileNames)
     {
-        welcomeFiles = new ArrayList();
         StringTokenizer st = new StringTokenizer(welcomeFileNames, "\n,");
         while (st.hasMoreTokens())
         {
             welcomeFiles.add(st.nextToken());
         }
+        welcomeFilesPopulated = true;
     }
 
     /**
@@ -200,20 +204,25 @@ public class DefaultPageNormalizer implements PageNormalizer
      * Does the page normalizer include query strings in it's definition of
      * pages?
      */
-    private boolean normalizeIncludesQueryString = false;
+    protected boolean normalizeIncludesQueryString = false;
+
+    /**
+     * How we create new documents
+     */
+    protected DocumentBuilderFactory buildFactory = null;
+
+    /**
+     * The list of filename components to strip to normalize a filename
+     */
+    protected List welcomeFiles = new ArrayList();
+
+    /**
+     * Have we got some welcomFile list from somewhere?
+     */
+    protected boolean welcomeFilesPopulated = false;
 
     /**
      * The log stream
      */
     private static final Logger log = Logger.getLogger(DefaultPageNormalizer.class);
-
-    /**
-     * How we create new documents
-     */
-    private DocumentBuilderFactory buildFactory = null;
-
-    /**
-     * The list of filename components to strip to normalize a filename
-     */
-    private List welcomeFiles = null;
 }

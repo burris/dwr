@@ -58,9 +58,10 @@ public class StartupUtil
             DefaultContainer container = ContainerUtil.createDefaultContainer(servletConfig);
             ContainerUtil.setupDefaultContainer(container, servletConfig);
 
-            StartupUtil.initWebContext(servletConfig, servletContext, null, container);
+            WebContextBuilder webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, container);
             StartupUtil.initServerContext(servletConfig, servletContext, container);
 
+            ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, null);
             ContainerUtil.configureContainerFully(container, servletConfig);
             ContainerUtil.publishContainer(container, servletConfig);
 
@@ -114,13 +115,11 @@ public class StartupUtil
      * @param container The container to save in the ServletContext 
      * @return a new WebContextBuilder
      */
-    public static WebContextBuilder initWebContext(ServletConfig servletConfig, ServletContext servletContext, HttpServlet servlet, Container container)
+    public static WebContextBuilder initWebContext(ServletConfig servletConfig, ServletContext servletContext, Container container)
     {
         WebContextBuilder webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
         WebContextFactory.setWebContextBuilder(webContextBuilder);
         webContextBuilder.set(null, null, servletConfig, servletContext, container);
-
-        ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, servlet);
 
         return webContextBuilder;
     }

@@ -48,6 +48,14 @@ public interface RealScriptSession extends ScriptSession
     void removeScriptConduit(ScriptConduit conduit);
 
     /**
+     * We might need to send a script directly to a conduit without adding the
+     * conduit to the "open" list and then removing it directly.
+     * @param conduit The conduit to write to
+     * @throws IOException If writing fails
+     */
+    void writeScripts(ScriptConduit conduit) throws IOException;
+
+    /**
      * Allows for checking to see if there is data waiting to be returned
      * @return true if there are no waiting scripts
      */

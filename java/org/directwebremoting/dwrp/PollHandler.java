@@ -98,7 +98,15 @@ public class PollHandler implements Handler
         String scriptId = extractParameter(request, parameters, ATTRIBUTE_SESSION_ID, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         String page = extractParameter(request, parameters, ATTRIBUTE_PAGE, ProtocolConstants.INBOUND_KEY_PAGE);
         String prString = extractParameter(request, parameters, ATTRIBUTE_PARTIAL_RESPONSE, ProtocolConstants.INBOUND_KEY_PARTIAL_RESPONSE);
-        boolean partialResponse = Boolean.valueOf(prString).booleanValue();
+        int partialResponse = Integer.valueOf(prString).intValue();
+
+        // TODO: remove (Hack while the 4k-buffer-flush this is broken)
+        /*
+        if (partialResponse == PARTIAL_RESPONSE_FLUSH)
+        {
+            partialResponse = PARTIAL_RESPONSE_NO;
+        }
+        //*/
 
         if (!activeReverseAjaxEnabled)
         {
@@ -139,28 +147,32 @@ public class PollHandler implements Handler
             shutdown = streamWait(request, notifyConduit, scriptSession, maxConnectedTime);
         }
 
-        ScriptConduit conduit = openStream(response);
+        PollScriptConduit conduit = openStream(response, batchId, partialResponse);
 
         // How much longer do we wait now the stream is open?
         long extraWait = endTime - System.currentTimeMillis();
-        if (extraWait > 0 && partialResponse && !shutdown)
+        if (extraWait > 0 && partialResponse != PARTIAL_RESPONSE_NO && !shutdown)
         {
             streamWait(request, conduit, scriptSession, extraWait);
         }
+        else
+        {
+            scriptSession.writeScripts(conduit);
+        }
 
-        addCallbackScript(batchId, partialResponse, scriptSession, conduit);
+        closeStream(batchId, partialResponse, conduit);
     }
 
     /**
      * Perform a wait.
      * @param request The HTTP request, needed to start a Jetty continuation
-     * @param conduit A conduit if there is an open stream or null if not 
+     * @param conduit A conduit if there is an open stream or null if not
      * @param scriptSession The script that we lock against
      * @param wait How long do we wait for?
      * @return True if the wait did not end in a shutdown request
      * @throws IOException If an IO error occurs
      */
-    private boolean streamWait(HttpServletRequest request, ScriptConduit conduit, RealScriptSession scriptSession, long wait) throws IOException
+    protected boolean streamWait(HttpServletRequest request, ScriptConduit conduit, RealScriptSession scriptSession, long wait) throws IOException
     {
         Object lock = scriptSession.getScriptLock();
         WaitController controller = new NotifyWaitController(lock);
@@ -210,13 +222,23 @@ public class PollHandler implements Handler
      * Open an output stream, set the mime type etc, and create a ScriptConduit
      * for writing to that stream.
      * @param response The HTTP response from which we create a {@link ScriptConduit}
+     * @param batchId The batch id that we are priming
+     * @param partialResponse Do we do the IE 4k flush hack
      * @return For writing to the HTTP response
      * @throws IOException
      */
-    private ScriptConduit openStream(HttpServletResponse response) throws IOException
+    protected PollScriptConduit openStream(HttpServletResponse response, String batchId, int partialResponse) throws IOException
     {
         // Get the output stream and setup the mimetype
-        response.setContentType(MimeConstants.MIME_PLAIN);
+        if (plain)
+        {
+            response.setContentType(MimeConstants.MIME_JS);
+        }
+        else
+        {
+            response.setContentType(MimeConstants.MIME_HTML);
+        }
+
         PrintWriter out;
         if (log.isDebugEnabled())
         {
@@ -231,34 +253,42 @@ public class PollHandler implements Handler
         }
 
         // The conduit to pass on reverse ajax scripts
-        ScriptConduit conduit = new PollScriptConduit(out, response);
-   
+        PollScriptConduit conduit = new PollScriptConduit(out, response, partialResponse);
+
         // Setup a debugging prefix
         if (out instanceof DebuggingPrintWriter)
         {
             DebuggingPrintWriter dpw = (DebuggingPrintWriter) out;
             dpw.setPrefix("out(" + conduit.hashCode() + "): ");
         }
+
+        if (!plain)
+        {
+            out.println(ProtocolConstants.POLL_SCRIPT_PREFIX);
+            out.println(ProtocolConstants.SCRIPT_START_MARKER);
+            out.println(EnginePrivate.remoteBeginIFrameResponse(batchId, false));
+            out.println(ProtocolConstants.SCRIPT_END_MARKER);
+        }
+
         return conduit;
     }
 
     /**
-     * @param batchId
-     * @param partialResponse
-     * @param scriptSession
-     * @param conduit
+     * A poll has finished, get the client to call us back
+     * @param batchId The id of the batch that we are responding to
+     * @param partialResponse Do we do the IE 4k flush hack
+     * @param conduit A conduit if there is an open stream or null if not
      * @throws IOException
      */
-    private void addCallbackScript(String batchId, boolean partialResponse, RealScriptSession scriptSession, ScriptConduit conduit) throws IOException
+    protected void closeStream(String batchId, int partialResponse, PollScriptConduit conduit) throws IOException
     {
-        ScriptBuffer script = new ScriptBuffer();
         try
         {
             int wait = serverLoadMonitor.getTimeToNextPoll();
             // If the client can handle partial responses, then there is
             // no need to stagger return callbacks (which we do to
             // prevent massed reconnects in chat type apps.)
-            if (partialResponse)
+            if (partialResponse != PARTIAL_RESPONSE_NO)
             {
                 wait = 0;
             }
@@ -271,7 +301,15 @@ public class PollHandler implements Handler
             log.warn("--Erroring: batchId[" + batchId + "] message[" + ex.toString() + ']', ex);
         }
 
-        scriptSession.addScript(script);
+        if (!plain)
+        {
+            PrintWriter out = conduit.getPrintWriter();
+
+            out.println(EnginePrivate.remoteEndIFrameResponse(batchId, false));
+            out.println(ProtocolConstants.SCRIPT_START_MARKER);
+            out.println(ProtocolConstants.POLL_SCRIPT_POSTFIX);
+            out.println(ProtocolConstants.SCRIPT_END_MARKER);
+        }
     }
 
     /**
@@ -377,29 +415,24 @@ public class PollHandler implements Handler
      * Write a script out in a synchronized manner to avoid thread clashes
      * @param out The servlet output stream
      * @param script The script to write
-     * @throws IOException If a write error occurs
      */
-    protected void sendScript(PrintWriter out, String script) throws IOException
+    protected void sendScript(PrintWriter out, String script)
     {
         synchronized (out)
         {
-            if (!plain)
-            {
-                out.println(ProtocolConstants.HTML_SCRIPT_PREFIX);
-            }
-
             out.println(ProtocolConstants.SCRIPT_START_MARKER);
             out.println(script);
             out.println(ProtocolConstants.SCRIPT_END_MARKER);
 
-            if (!plain)
-            {
-                out.println(ProtocolConstants.HTML_SCRIPT_POSTFIX);
-            }
-
+            // I'm not totally sure if this is the right thing to do.
+            // A PrintWriter that encounters an error never recovers so maybe
+            // we could be more robust by using a lower level object and
+            // working out what to do if something goes wrong. Annoyingly
+            // PrintWriter also throws the original exception away.
             if (out.checkError())
             {
-                throw new IOException("Error flushing buffered stream");
+                log.warn("Error writing to stream");
+                // throw new IOException("Error writing to stream");
             }
         }
     }
@@ -411,7 +444,7 @@ public class PollHandler implements Handler
      * @param preStreamWaitTime The length of time to wait
      * @return True if the continuation wait worked
      */
-    private boolean sleepWithContinuation(RealScriptSession scriptSession, Continuation continuation, long preStreamWaitTime)
+    protected boolean sleepWithContinuation(RealScriptSession scriptSession, Continuation continuation, long preStreamWaitTime)
     {
         ScriptConduit listener = null;
 
@@ -497,7 +530,7 @@ public class PollHandler implements Handler
         /**
          * Has {@link #shutdown()} been called on this object?
          */
-        private boolean shutdown = false; 
+        private boolean shutdown = false;
     }
 
     /**
@@ -507,18 +540,20 @@ public class PollHandler implements Handler
      * within that class, so this is a hacky simplification.
      * @author Joe Walker [joe at getahead dot ltd dot uk]
      */
-    private class PollScriptConduit extends ScriptConduit
+    protected class PollScriptConduit extends ScriptConduit
     {
         /**
          * Simple ctor
          * @param out The stream to write to
          * @param response Used to flush output
+         * @param partialResponse Do we do the IE 4k flush hack
          */
-        protected PollScriptConduit(PrintWriter out, HttpServletResponse response)
+        protected PollScriptConduit(PrintWriter out, HttpServletResponse response, int partialResponse)
         {
             super(RANK_FAST);
             this.out = out;
             this.response = response;
+            this.partialResponse = partialResponse;
         }
 
         /* (non-Javadoc)
@@ -535,14 +570,36 @@ public class PollHandler implements Handler
          */
         public void flush() throws IOException
         {
-            out.flush();
-            response.flushBuffer();
-
-            if (out.checkError())
+            synchronized (out)
             {
-                throw new IOException("Error flushing buffered stream");
+                if (partialResponse == PARTIAL_RESPONSE_FLUSH)
+                {
+                    out.print(fourKFlushData);
+                }
+
+                out.flush();
+                response.flushBuffer();
+
+                if (out.checkError())
+                {
+                    throw new IOException("Error flushing buffered stream");
+                }
             }
         }
+
+        /**
+         * PollHandler.closeStream() needs to be able to write closing HTML
+         * @return The underlying output stream
+         */
+        public PrintWriter getPrintWriter()
+        {
+            return out;
+        }
+
+        /**
+         * Do we need to do the IE 4k flush thing?
+         */
+        private int partialResponse;
 
         /**
          * Used to flush data to the output stream
@@ -559,9 +616,9 @@ public class PollHandler implements Handler
      * Implementation of ScriptConduit that simply calls <code>notifyAll()</code>
      * if a script is added.
      * No actual script adding is done here.
-     * Useful in conjunction with a preStreamWait to
+     * Useful in conjunction with a streamWait()
      */
-    private static final class NotifyOnlyScriptConduit extends ScriptConduit
+    protected static final class NotifyOnlyScriptConduit extends ScriptConduit
     {
         /**
          * @param lock Object to wait and notifyAll with
@@ -606,7 +663,7 @@ public class PollHandler implements Handler
     /**
      * Implementaion of ScriptConduit that just resumes a continuation.
      */
-    private static final class ResumeContinuationScriptConduit extends ScriptConduit
+    protected static final class ResumeContinuationScriptConduit extends ScriptConduit
     {
         /**
          * @param continuation
@@ -712,22 +769,22 @@ public class PollHandler implements Handler
     /**
      * Are we doing full reverse ajax
      */
-    private boolean activeReverseAjaxEnabled = false;
+    protected boolean activeReverseAjaxEnabled = false;
 
     /**
      * By default we disable GET, but this hinders old Safaris
      */
-    private boolean allowGetForSafariButMakeForgeryEasier = false;
+    protected boolean allowGetForSafariButMakeForgeryEasier = false;
 
     /**
      * Are we using plain javascript or html wrapped javascript
      */
-    private boolean plain;
+    protected boolean plain;
 
     /**
      * How we turn pages into the canonical form.
      */
-    private PageNormalizer pageNormalizer;
+    protected PageNormalizer pageNormalizer;
 
     /**
      * We need to tell the system that we are waiting so it can load adjust
@@ -773,6 +830,36 @@ public class PollHandler implements Handler
      * We remember people that are in a long poll so we can kick them out
      */
     public static final String ATTRIBUTE_LONGPOLL_SESSION_ID = "org.directwebremoting.dwrp.longPollSessionId";
+
+    /**
+     * The client can not handle partial responses
+     */
+    protected static final int PARTIAL_RESPONSE_NO = 0;
+
+    /**
+     * The client can handle partial responses
+     */
+    protected static final int PARTIAL_RESPONSE_YES = 1;
+
+    /**
+     * The client can only handle partial responses with a 4k data post
+     * (can be whitespace) - we're talking IE here.
+     */
+    protected static final int PARTIAL_RESPONSE_FLUSH = 2;
+
+    /**
+     * The slab of data we send to IE to get it to stream
+     */
+    protected static String fourKFlushData;
+    static
+    {
+        StringBuffer buffer = new StringBuffer(409600);
+        for (int i = 0; i < 4096; i++)
+        {
+            buffer.append(" ");
+        }
+        fourKFlushData = buffer.toString();
+    }
 
     /**
      * The log stream

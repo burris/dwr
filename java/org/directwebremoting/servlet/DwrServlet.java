@@ -72,9 +72,10 @@ public class DwrServlet extends HttpServlet
             container = ContainerUtil.createDefaultContainer(servletConfig);
             ContainerUtil.setupDefaultContainer(container, servletConfig);
 
-            webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, this, container);
+            webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, container);
             StartupUtil.initServerContext(servletConfig, servletContext, container);
 
+            ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, this);
             ContainerUtil.configureContainerFully(container, servletConfig);
             ContainerUtil.publishContainer(container, servletConfig);
         }

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -61,7 +62,10 @@ public class DefaultScriptSession implements RealScriptSession
     public Object getAttribute(String name)
     {
         checkNotInvalidated();
-        return attributes.get(name);
+        synchronized (attributes)
+        {
+            return attributes.get(name);
+        }
     }
 
     /* (non-Javadoc)
@@ -70,7 +74,10 @@ public class DefaultScriptSession implements RealScriptSession
     public void setAttribute(String name, Object value)
     {
         checkNotInvalidated();
-        attributes.put(name, value);
+        synchronized (attributes)
+        {
+            attributes.put(name, value);
+        }
     }
 
     /* (non-Javadoc)
@@ -79,7 +86,10 @@ public class DefaultScriptSession implements RealScriptSession
     public void removeAttribute(String name)
     {
         checkNotInvalidated();
-        attributes.remove(name);
+        synchronized (attributes)
+        {
+            attributes.remove(name);
+        }
     }
 
     /* (non-Javadoc)
@@ -88,7 +98,11 @@ public class DefaultScriptSession implements RealScriptSession
     public Iterator getAttributeNames()
     {
         checkNotInvalidated();
-        return attributes.keySet().iterator();
+        synchronized (attributes)
+        {
+            Set keys = Collections.unmodifiableSet(attributes.keySet());
+            return keys.iterator();
+        }
     }
 
     /* (non-Javadoc)
@@ -96,8 +110,11 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public void invalidate()
     {
-        invalidated = true;
-        manager.invalidate(this);
+        synchronized (invalidLock)
+        {
+            invalidated = true;
+            manager.invalidate(this);
+        }
     }
 
     /* (non-Javadoc)
@@ -105,7 +122,10 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public boolean isInvalidated()
     {
-        return invalidated;
+        synchronized (invalidLock)
+        {
+            return invalidated;
+        }
     }
 
     /* (non-Javadoc)
@@ -130,13 +150,16 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public long getLastAccessedTime()
     {
-        // For many accesses here we check to see if we should invalidate
-        // ourselves, but getLastAccessedTime() is used as part of the process
-        // that DefaultScriptSessionManager goes through in order to check
-        // everything for validity. So if we do this check here then DSSM will
-        // give a ConcurrentModificationException if anything does timeout
-        // checkNotInvalidated();
-        return lastAccessedTime;
+        synchronized (invalidLock)
+        {
+            // For many accesses here we check to see if we should invalidate
+            // ourselves, but getLastAccessedTime() is used as part of the process
+            // that DefaultScriptSessionManager goes through in order to check
+            // everything for validity. So if we do this check here then DSSM will
+            // give a ConcurrentModificationException if anything does timeout
+            // checkNotInvalidated();
+            return lastAccessedTime;
+        }
     }
 
     /* (non-Javadoc)
@@ -197,11 +220,22 @@ public class DefaultScriptSession implements RealScriptSession
     {
         checkNotInvalidated();
 
-        // And add the conduit into the list
         synchronized (scriptLock)
         {
+            writeScripts(conduit);
             conduits.add(conduit);
+        }
+    }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#writeScripts(org.directwebremoting.extend.ScriptConduit)
+     */
+    public void writeScripts(ScriptConduit conduit) throws IOException
+    {
+        checkNotInvalidated();
+
+        synchronized (scriptLock)
+        {
             // If there are any outstanding scripts, dump them to the new conduit
             boolean output = false;
 
@@ -307,7 +341,10 @@ public class DefaultScriptSession implements RealScriptSession
      */
     protected void updateLastAccessedTime()
     {
-        lastAccessedTime = System.currentTimeMillis();
+        synchronized (invalidLock)
+        {
+            lastAccessedTime = System.currentTimeMillis();
+        }
     }
 
     /**
@@ -317,16 +354,19 @@ public class DefaultScriptSession implements RealScriptSession
      */
     protected void checkNotInvalidated()
     {
-        long now = System.currentTimeMillis();
-        long age = now - lastAccessedTime;
-        if (age > manager.getScriptSessionTimeout())
+        synchronized (invalidLock)
         {
-            invalidate();
-        }
+            long now = System.currentTimeMillis();
+            long age = now - lastAccessedTime;
+            if (age > manager.getScriptSessionTimeout())
+            {
+                invalidate();
+            }
 
-        if (invalidated)
-        {
-            log.debug("ScriptSession has been invalidated.");
+            if (invalidated)
+            {
+                log.debug("ScriptSession has been invalidated.");
+            }
         }
     }
 
@@ -393,50 +433,64 @@ public class DefaultScriptSession implements RealScriptSession
     }
 
     /**
-     * The script conduits that we can use to transfer data to the browser
+     * The server side attributes for this page.
+     * <p>GuardedBy("attributes")
      */
-    protected final SortedSet conduits = new TreeSet();
-
-    /**
-     * The list of waiting scripts
-     */
-    protected final List scripts = new ArrayList();
-
-    /**
-     * What is our page session id?
-     */
-    protected String id = null;
-
-    /**
-     * When we we created?
-     */
-    protected long creationTime = 0L;
+    protected final Map attributes = Collections.synchronizedMap(new HashMap());
 
     /**
      * When the the web page that we represent last contact us using DWR?
+     * <p>GuardedBy("invalidLock")
      */
     protected long lastAccessedTime = 0L;
 
     /**
      * Have we been made invalid?
+     * <p>GuardedBy("invalidLock")
      */
     protected boolean invalidated = false;
 
     /**
-     * The server side attributes for this page
+     * The object that we use to synchronize against when we want to work with
+     * the invalidation state of this object
      */
-    protected Map attributes = Collections.synchronizedMap(new HashMap());
+    private final Object invalidLock = new Object();
 
     /**
-     * The session manager that collects sessions together
+     * The script conduits that we can use to transfer data to the browser.
+     * <p>GuardedBy("scriptLock")
      */
-    protected DefaultScriptSessionManager manager;
+    protected final SortedSet conduits = new TreeSet();
+
+    /**
+     * The list of waiting scripts.
+     * <p>GuardedBy("scriptLock")
+     */
+    protected final List scripts = new ArrayList();
 
     /**
      * The object that we use to synchronize against when we want to alter
      * the path of scripts (to conduits or the scripts list)
      */
     private final Object scriptLock = new Object();
+
+    /**
+     * What is our page session id?
+     * <p>This should not need careful synchronization since it is unchanging
+     */
+    protected final String id;
+
+    /**
+     * When we we created?
+     * <p>This should not need careful synchronization since it is unchanging
+     */
+    protected final long creationTime;
+
+    /**
+     * The session manager that collects sessions together
+     * <p>This should not need careful synchronization since it is unchanging
+     */
+    protected final DefaultScriptSessionManager manager;
 
     /**
      * The log stream
