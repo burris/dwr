@@ -129,15 +129,16 @@ public class IdGenerator
             {
                 digest = MessageDigest.getInstance(algorithm);
             }
-            catch (NoSuchAlgorithmException e)
+            catch (NoSuchAlgorithmException ex)
             {
                 try
                 {
                     digest = MessageDigest.getInstance(DEFAULT_ALGORITHM);
                 }
-                catch (NoSuchAlgorithmException f)
+                catch (NoSuchAlgorithmException ex2)
                 {
                     digest = null;
+                    throw new IllegalStateException("No algorithms for IdGenerator");
                 }
             }
 

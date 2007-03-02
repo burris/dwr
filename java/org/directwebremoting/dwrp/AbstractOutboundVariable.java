@@ -324,7 +324,7 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
     private boolean calculated = false;
 
     /**
-     * The init code for the non-inline case 
+     * The init code for the non-inline case
      */
     private NotInlineDefinition notInlineDefinition;
 

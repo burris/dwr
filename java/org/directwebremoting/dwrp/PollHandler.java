@@ -850,7 +850,7 @@ public class PollHandler implements Handler
     /**
      * The slab of data we send to IE to get it to stream
      */
-    protected static String fourKFlushData;
+    protected static final String fourKFlushData;
     static
     {
         StringBuffer buffer = new StringBuffer(409600);

@@ -113,7 +113,7 @@ public class DefaultConverterManager implements ConverterManager
     {
         return (Converter) converters.get(match);
     }
-    
+
     /* (non-Javadoc)
      * @see org.directwebremoting.ConverterManager#isConvertable(java.lang.Class)
      */
@@ -130,12 +130,12 @@ public class DefaultConverterManager implements ConverterManager
         Object converted = inctx.getConverted(iv, paramType);
         if (converted == null)
         {
-            // Was the inbound variable marshalled as an Object in the client 
+            // Was the inbound variable marshalled as an Object in the client
             // (could mean that this is an instance of one of our generated
             // JavaScript classes)
             Converter converter = getNamedConverter(paramType, iv.getType());
 
-            // Fall back to the standard way of locating a converter if we 
+            // Fall back to the standard way of locating a converter if we
             // didn't find anything above
             if (converter == null)
             {
@@ -238,7 +238,7 @@ public class DefaultConverterManager implements ConverterManager
      * When we are using typed Javascript names we sometimes want to get a
      * specially named converter
      * @param paramType The class that we are converting to
-     * @param type The type name as passed in from the client 
+     * @param type The type name as passed in from the client
      * @return The Converter that matches this request (if any)
      * @throws MarshallException
      */
@@ -263,7 +263,7 @@ public class DefaultConverterManager implements ConverterManager
                     NamedConverter boConv = (NamedConverter) conv;
                     if (boConv.getJavascript() != null && boConv.getJavascript().equals(javascriptClassName))
                     {
-                        // We found a potential converter! But is the 
+                        // We found a potential converter! But is the
                         // converter's Java class compatible with the
                         // parameter type?
                         try
@@ -272,8 +272,8 @@ public class DefaultConverterManager implements ConverterManager
                             if (paramType.isAssignableFrom(inboundClass))
                             {
                                 // Hack: We also want to make sure that the
-                                // converter creates its object based on the 
-                                // inbound class instead of the parameter 
+                                // converter creates its object based on the
+                                // inbound class instead of the parameter
                                 // type, and we have to use the other ref
                                 // for this:
                                 boConv.setInstanceType(inboundClass);
@@ -369,7 +369,7 @@ public class DefaultConverterManager implements ConverterManager
                 if (converter != null)
                 {
                     return converter;
-                }                
+                }
             }
         }
 

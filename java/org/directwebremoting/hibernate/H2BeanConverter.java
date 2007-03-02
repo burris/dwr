@@ -118,5 +118,5 @@ public class H2BeanConverter extends BeanConverter implements Converter
     /**
      * The cache of method lookups that we've already done
      */
-    protected static Map methods = new HashMap();
+    protected static final Map methods = new HashMap();
 }

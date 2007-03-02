@@ -16,6 +16,7 @@
 package org.directwebremoting.dwrp;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,6 +49,7 @@ public class ParseUtil
     {
         Map paramMap = new HashMap();
 
+        BufferedReader in = null;
         try
         {
             // I've had reports of data loss in Tomcat 5.0 that relate to this bug
@@ -57,17 +59,17 @@ public class ParseUtil
             //   From: CAKALIC, JAMES P [AG-Contractor/1000]
             // It would be more normal to do the following:
             // BufferedReader in = req.getReader();
-            BufferedReader in = new BufferedReader(new InputStreamReader(req.getInputStream()));
-    
+            in = new BufferedReader(new InputStreamReader(req.getInputStream()));
+
             while (true)
             {
                 String line = in.readLine();
-    
+
                 if (line == null)
                 {
                     break;
                 }
-    
+
                 if (line.indexOf('&') != -1)
                 {
                     // If there are any &s then this must be iframe post and all the
@@ -78,7 +80,7 @@ public class ParseUtil
                     {
                         String part = st.nextToken();
                         part = LocalUtil.decode(part);
-    
+
                         parsePostLine(part, paramMap);
                     }
                 }
@@ -92,6 +94,20 @@ public class ParseUtil
         catch (Exception ex)
         {
             throw new ServerException(Messages.getString("ParseUtil.InputReadFailed"), ex);
+        }
+        finally
+        {
+            if (in != null)
+            {
+                try
+                {
+                    in.close();
+                }
+                catch (IOException ex)
+                {
+                    // Ignore
+                }
+            }
         }
 
         // If there is only 1 param then this must be a broken Safari. All
@@ -170,10 +186,11 @@ public class ParseUtil
         Map convertedMap = new HashMap();
         Map paramMap = req.getParameterMap();
 
-        for (Iterator it = paramMap.keySet().iterator(); it.hasNext();)
+        for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
         {
-            String key = (String) it.next();
-            String[] array = (String[]) paramMap.get(key);
+            Map.Entry entry = (Map.Entry) it.next();
+            String key = (String) entry.getKey();
+            String[] array = (String[]) entry.getValue();
 
             if (array.length == 1)
             {
@@ -197,7 +214,7 @@ public class ParseUtil
     public static String[] splitInbound(String data)
     {
         String[] reply = new String[2];
-    
+
         int colon = data.indexOf(ProtocolConstants.INBOUND_TYPE_SEPARATOR);
         if (colon == -1)
         {
@@ -210,7 +227,7 @@ public class ParseUtil
             reply[LocalUtil.INBOUND_INDEX_TYPE] = data.substring(0, colon);
             reply[LocalUtil.INBOUND_INDEX_VALUE] = data.substring(colon + 1);
         }
-    
+
         return reply;
     }
 

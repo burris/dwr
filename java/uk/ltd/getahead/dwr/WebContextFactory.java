@@ -31,7 +31,7 @@ import org.directwebremoting.ScriptSession;
 /**
  * Accessor for the current WebContext.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
- * @deprecated Use org.directwebremoting.WebContextFactory 
+ * @deprecated Use org.directwebremoting.WebContextFactory
  */
 public class WebContextFactory
 {

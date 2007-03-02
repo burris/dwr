@@ -538,7 +538,7 @@ public abstract class BaseCallMarshaller implements Marshaller
     /**
      * To we perform cross-domain session security checks?
      */
-    protected boolean crossDomainSessionSecurity = true; 
+    protected boolean crossDomainSessionSecurity = true;
 
     /**
      * How we turn pages into the canonical form.

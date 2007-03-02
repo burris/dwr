@@ -49,7 +49,7 @@ public class DefaultPageNormalizer implements PageNormalizer
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.PageNormalizer#normalizePage(java.lang.String)
      */
-    public synchronized String normalizePage(String unnormalized)
+    public String normalizePage(String unnormalized)
     {
         synchronized (welcomeFiles)
         {

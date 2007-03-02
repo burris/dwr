@@ -79,10 +79,11 @@ public class SpringCreator extends AbstractCreator implements Creator
     {
         List locValues = new ArrayList();
 
-        for (Iterator it = params.keySet().iterator(); it.hasNext();)
+        for (Iterator it = params.entrySet().iterator(); it.hasNext();)
         {
-            String key = (String) it.next();
-            String value = (String) params.get(key);
+            Map.Entry entry = (Map.Entry) it.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
             if (key.startsWith("location"))
             {
                 log.debug("Adding configLocation: " + value + " from parameter: " + key);
