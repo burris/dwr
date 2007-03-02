@@ -65,7 +65,7 @@ public class ScriptBuffer
      */
     public ScriptBuffer appendData(boolean b)
     {
-        Boolean data = new Boolean(b);
+        Boolean data = b ? Boolean.TRUE : Boolean.FALSE;
         parts.add(data);
         return this;
     }
