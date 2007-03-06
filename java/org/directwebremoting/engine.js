@@ -23,7 +23,7 @@ if (DWREngine == null) var DWREngine = dwr.engine;
 
 /**
  * Set an alternative error handler from the default alert box.
- * @see http://getahead.ltd.uk/dwr/browser/engine/errors
+ * @see getahead.org/dwr/browser/engine/errors
  */
 dwr.engine.setErrorHandler = function(handler) {
   dwr.engine._errorHandler = handler;
@@ -31,7 +31,7 @@ dwr.engine.setErrorHandler = function(handler) {
 
 /**
  * Set an alternative warning handler from the default alert box.
- * @see http://getahead.ltd.uk/dwr/browser/engine/errors
+ * @see getahead.org/dwr/browser/engine/errors
  */
 dwr.engine.setWarningHandler = function(handler) {
   dwr.engine._warningHandler = handler;
@@ -47,7 +47,7 @@ dwr.engine.setTextHtmlHandler = function(handler) {
 
 /**
  * Set a default timeout value for all calls. 0 (the default) turns timeouts off.
- * @see http://getahead.ltd.uk/dwr/browser/engine/errors
+ * @see getahead.org/dwr/browser/engine/errors
  */
 dwr.engine.setTimeout = function(timeout) {
   dwr.engine._timeout = timeout;
@@ -55,7 +55,7 @@ dwr.engine.setTimeout = function(timeout) {
 
 /**
  * The Pre-Hook is called before any DWR remoting is done.
- * @see http://getahead.ltd.uk/dwr/browser/engine/hooks
+ * @see getahead.org/dwr/browser/engine/hooks
  */
 dwr.engine.setPreHook = function(handler) {
   dwr.engine._preHook = handler;
@@ -63,7 +63,7 @@ dwr.engine.setPreHook = function(handler) {
 
 /**
  * The Post-Hook is called after any DWR remoting is done.
- * @see http://getahead.ltd.uk/dwr/browser/engine/hooks
+ * @see getahead.org/dwr/browser/engine/hooks
  */
 dwr.engine.setPostHook = function(handler) {
   dwr.engine._postHook = handler;
@@ -71,7 +71,7 @@ dwr.engine.setPostHook = function(handler) {
 
 /**
  * Custom headers for all DWR calls
- * @see http://getahead.ltd.uk/dwr/????
+ * @see getahead.org/dwr/????
  */
 dwr.engine.setHeaders = function(headers) {
   dwr.engine._headers = headers;
@@ -79,7 +79,7 @@ dwr.engine.setHeaders = function(headers) {
 
 /**
  * Custom parameters for all DWR calls
- * @see http://getahead.ltd.uk/dwr/????
+ * @see getahead.org/dwr/????
  */
 dwr.engine.setParameters = function(parameters) {
   dwr.engine._parameters = parameters;
@@ -97,7 +97,7 @@ dwr.engine.ScriptTag = 3;
 /**
  * Set the preferred remoting type.
  * @param newType One of dwr.engine.XMLHttpRequest or dwr.engine.IFrame or dwr.engine.ScriptTag
- * @see http://getahead.ltd.uk/dwr/browser/engine/options
+ * @see getahead.org/dwr/browser/engine/options
  */
 dwr.engine.setRpcType = function(newType) {
   if (newType != dwr.engine.XMLHttpRequest && newType != dwr.engine.IFrame && newType != dwr.engine.ScriptTag) {
@@ -109,7 +109,7 @@ dwr.engine.setRpcType = function(newType) {
 
 /**
  * Which HTTP method do we use to send results? Must be one of "GET" or "POST".
- * @see http://getahead.ltd.uk/dwr/browser/engine/options
+ * @see getahead.org/dwr/browser/engine/options
  */
 dwr.engine.setHttpMethod = function(httpMethod) {
   if (httpMethod != "GET" && httpMethod != "POST") {
@@ -121,7 +121,7 @@ dwr.engine.setHttpMethod = function(httpMethod) {
 
 /**
  * Ensure that remote calls happen in the order in which they were sent? (Default: false)
- * @see http://getahead.ltd.uk/dwr/browser/engine/ordering
+ * @see getahead.org/dwr/browser/engine/ordering
  */
 dwr.engine.setOrdered = function(ordered) {
   dwr.engine._ordered = ordered;
@@ -129,7 +129,7 @@ dwr.engine.setOrdered = function(ordered) {
 
 /**
  * Do we ask the XHR object to be asynchronous? (Default: true)
- * @see http://getahead.ltd.uk/dwr/browser/engine/options
+ * @see getahead.org/dwr/browser/engine/options
  */
 dwr.engine.setAsync = function(async) {
   dwr.engine._async = async;
@@ -137,7 +137,7 @@ dwr.engine.setAsync = function(async) {
 
 /**
  * Does DWR poll the server for updates? (Default: false)
- * @see http://getahead.ltd.uk/dwr/browser/engine/options
+ * @see getahead.org/dwr/browser/engine/options
  */
 dwr.engine.setActiveReverseAjax = function(activeReverseAjax) {
   if (activeReverseAjax) {
@@ -159,7 +159,7 @@ dwr.engine.setActiveReverseAjax = function(activeReverseAjax) {
 /**
  * Set the preferred polling type.
  * @param newPollType One of dwr.engine.XMLHttpRequest or dwr.engine.IFrame
- * @see http://getahead.ltd.uk/dwr/browser/engine/options
+ * @see getahead.org/dwr/browser/engine/options
  */
 dwr.engine.setPollType = function(newPollType) {
   if (newPollType != dwr.engine.XMLHttpRequest && newPollType != dwr.engine.IFrame) {
@@ -171,7 +171,7 @@ dwr.engine.setPollType = function(newPollType) {
 
 /**
  * The default message handler.
- * @see http://getahead.ltd.uk/dwr/browser/engine/errors
+ * @see getahead.org/dwr/browser/engine/errors
  */
 dwr.engine.defaultErrorHandler = function(message, ex) {
   dwr.engine._debug("Error: " + ex.name + ", " + ex.message, true);
@@ -184,7 +184,7 @@ dwr.engine.defaultErrorHandler = function(message, ex) {
 
 /**
  * The default warning handler.
- * @see http://getahead.ltd.uk/dwr/browser/engine/errors
+ * @see getahead.org/dwr/browser/engine/errors
  */
 dwr.engine.defaultWarningHandler = function(message, ex) {
   dwr.engine._debug(message);
@@ -192,7 +192,7 @@ dwr.engine.defaultWarningHandler = function(message, ex) {
 
 /**
  * For reduced latency you can group several remote calls together using a batch.
- * @see http://getahead.ltd.uk/dwr/browser/engine/batch
+ * @see getahead.org/dwr/browser/engine/batch
  */
 dwr.engine.beginBatch = function() {
   if (dwr.engine._batch) {
@@ -204,7 +204,7 @@ dwr.engine.beginBatch = function() {
 
 /**
  * Finished grouping a set of remote calls together. Go and execute them all.
- * @see http://getahead.ltd.uk/dwr/browser/engine/batch
+ * @see getahead.org/dwr/browser/engine/batch
  */
 dwr.engine.endBatch = function(options) {
   var batch = dwr.engine._batch;
@@ -650,12 +650,10 @@ dwr.engine._sendData = function(batch) {
     // Workaround for Safari 1.x POST bug
     var indexSafari = navigator.userAgent.indexOf("Safari/");
     if (indexSafari >= 0) {
-      if (dwr.engine._allowGetForSafariButMakeForgeryEasier == "true") {
-        var version = navigator.userAgent.substring(indexSafari + 7);
-        if (parseInt(version, 10) < 400) batch.httpMethod = "GET";
-      }
-      else {
-        dwr.engine._handleWarning(batch, { name:"dwr.engine.oldSafari", message:"Safari GET support disabled. See http://getahead.ltd.uk/dwr/server/servlet and allowGetForSafariButMakeForgeryEasier." });
+      var version = navigator.userAgent.substring(indexSafari + 7);
+      if (parseInt(version, 10) < 400) {
+        if (dwr.engine._allowGetForSafariButMakeForgeryEasier == "true") batch.httpMethod = "GET";
+        else dwr.engine._handleWarning(batch, { name:"dwr.engine.oldSafari", message:"Safari GET support disabled. See getahead.org/dwr/server/servlet and allowGetForSafariButMakeForgeryEasier." });
       }
     }
     batch.mode = batch.isPoll ? dwr.engine._ModePlainPoll : dwr.engine._ModePlainCall;
@@ -1054,7 +1052,7 @@ dwr.engine._serializeAll = function(batch, referto, data, name) {
 /** @private Have we already converted this object? */
 dwr.engine._lookup = function(referto, data, name) {
   var lookup;
-  // Can't use a map: http://getahead.ltd.uk/ajax/javascript-gotchas
+  // Can't use a map: getahead.org/ajax/javascript-gotchas
   for (var i = 0; i < referto.length; i++) {
     if (referto[i].data == data) {
       lookup = referto[i];
