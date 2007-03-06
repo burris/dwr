@@ -415,13 +415,17 @@ dwr.engine._poll = function(overridePath) {
   batch.map.id = 0; // TODO: Do we need this??
   batch.map.callCount = 1;
   batch.isPoll = true;
-  if (document.all) {
+  if (navigator.userAgent.indexOf("Gecko/") != -1) {
+    batch.rpcType = dwr.engine._pollType;
+    batch.map.partialResponse = dwr.engine._partialResponseYes;
+  }
+  else if (document.all) {
     batch.rpcType = dwr.engine.IFrame;
     batch.map.partialResponse = dwr.engine._partialResponseFlush;
   }
   else {
     batch.rpcType = dwr.engine._pollType;
-    batch.map.partialResponse = dwr.engine._partialResponseYes;
+    batch.map.partialResponse = dwr.engine._partialResponseNo;
   }
   batch.httpMethod = "POST";
   batch.async = true;
