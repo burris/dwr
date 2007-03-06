@@ -92,8 +92,9 @@ public class DefaultRemoter implements Remoter
                         {
                             paramBuffer.append('\n');
 
-                            // output: if ( typeof <class> != "function" ) function <class>() {
-                            paramBuffer.append("if (typeof " + jsClassName + " != \"function\") function " + jsClassName + "() {\n");
+                            // output: if (typeof <class> != "function") { var <class> = function() {
+                            paramBuffer.append("if (typeof " + jsClassName + " != \"function\") {\n");
+                            paramBuffer.append("  var " + jsClassName + " = function() {\n");
 
                             // output: this.<property> = <init-value>;
                             Class mappedType;
@@ -115,7 +116,7 @@ public class DefaultRemoter implements Remoter
                                 Class propType = property.getPropertyType();
 
                                 // Property name
-                                paramBuffer.append("  this." + name + " = ");
+                                paramBuffer.append("    this." + name + " = ");
 
                                 // Default property values
                                 if (propType.isArray())
@@ -138,6 +139,7 @@ public class DefaultRemoter implements Remoter
                                 paramBuffer.append(";\n");
                             }
 
+                            paramBuffer.append("  }\n");
                             paramBuffer.append("}\n");
                         }
                     }
