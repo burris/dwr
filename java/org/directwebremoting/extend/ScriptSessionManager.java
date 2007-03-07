@@ -37,7 +37,7 @@ public interface ScriptSessionManager
     /**
      * For a given script session id, either create a new ScriptSession object
      * or retrieve an existing one if one exists.
-     * @param url The URL including 'http://', up to (but not including) '?' or '#' 
+     * @param url The URL including 'http://', up to (but not including) '?' or '#'
      * @return A ScriptSession.
      */
     Collection getScriptSessionsByPage(String url);
@@ -53,7 +53,7 @@ public interface ScriptSessionManager
     /**
      * Locate the given script session on a page
      * @param scriptSession The session to locate on a page
-     * @param url The URL including 'http://', up to (but not including) '?' or '#' 
+     * @param url The URL including 'http://', up to (but not including) '?' or '#'
      */
     void setPageForScriptSession(RealScriptSession scriptSession, String url);
 
@@ -70,7 +70,7 @@ public interface ScriptSessionManager
     public void setScriptSessionTimeout(long scriptSessionTimeout);
 
     /**
-     * The default length of time a session can go unused before it 
+     * The default length of time a session can go unused before it
      * automatically becomes invalid and is recycled.
      * The default is 5mins
      */

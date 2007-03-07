@@ -17,20 +17,20 @@ import org.directwebremoting.util.Logger;
  * A {@link Configurator} that used the FluentInterface style as
  * <a href="http://www.martinfowler.com/bliki/FluentInterface.html">described by
  * Martin Fowler</a>.
- * 
+ *
  * <p>To wire up the configuration programatically rather than having to use
  * <code>dwr.xml</code>. In order to use this style, you'll need to:</p>
- * 
+ *
  * <ul>
  * <li>Create a concrete implementation of {@link FluentConfigurator} which
  * implements the {@link #configure()} method.</li>
  * <li>Add an init param '<code>customConfigurator</code>' to the DWR servlet in
  * <code>web.xml</code> to point at your new class.</li>
  * </ul>
- * 
+ *
  * <p>The implementation of {@link #configure()} will look something like
  * this:</p>
- * 
+ *
  * <pre>
  * public void configure() {
  *    withConverterType("dog", "com.yourcompany.beans.Dog");
@@ -206,9 +206,9 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * Because some parts of the configuration require multiple steps, the instance
      * needs to maintain a state across invocations. Whenever the state is changed
-     * by calling this method, the instance will 'flush' anything in the queue 
+     * by calling this method, the instance will 'flush' anything in the queue
      * applicable to that state EVEN IF the state itself doesn't change. Thus, it's
-     * important that the child methods don't call setState() when being invoked. 
+     * important that the child methods don't call setState() when being invoked.
      * @param state
      */
     private void setState(int state)

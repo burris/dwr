@@ -49,7 +49,7 @@ public interface Marshaller
     void marshallOutbound(Replies replies, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
-     * Try to find a batchId to send to the client so it knows what broke 
+     * Try to find a batchId to send to the client so it knows what broke
      * @param request The incoming Http request
      * @param response An Ajax response, XML, JSON, Javascript, etc.
      * @param ex The exception that we wish to propogate to the client

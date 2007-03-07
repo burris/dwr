@@ -66,7 +66,7 @@ public interface ConverterManager
      * @see #getConverterMatchStrings()
      */
     Converter getConverterByMatchString(String match);
-    
+
     /**
      * Check if we can coerce the given type
      * @param paramType The type to check
@@ -101,7 +101,7 @@ public interface ConverterManager
      * able to cast the inbound data to a set of Users. This method enables us
      * to specify this extra information.
      * @param thc The context to find any extra type information from
-     * @param type The type of the specified parameter. 
+     * @param type The type of the specified parameter.
      */
     void setExtraTypeInfo(TypeHintContext thc, Class type);
 

@@ -23,7 +23,7 @@ package org.directwebremoting.spring;
  * <ul>
  *  <li>includes - the list of method names to include</li>
  *  <li>excludes - the list of method names to exclude</li>
- *  <li>force - if <code>true</code> instructs DWR to use reflection modifiers to access private 
+ *  <li>force - if <code>true</code> instructs DWR to use reflection modifiers to access private
  *      members of objects</li>
  * </ul>
  *
@@ -61,7 +61,7 @@ public class ConverterConfig extends AbstractConfig
 
     /**
      * Instruct DWR to use reflection modifiers to access private members of objects
-     * 
+     *
      * @param force - if true DWR will use reflection to access private members of objects
      */
     public void setForce(boolean force)
@@ -71,7 +71,7 @@ public class ConverterConfig extends AbstractConfig
 
     /** The converter type. */
     private String type;
-    
+
     /**
      * If <code>true</code> instructs DWR to use reflection modifiers to access private members of objects
      */

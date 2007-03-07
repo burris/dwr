@@ -151,7 +151,7 @@ public class TypeHintContext
                 Object/*Type*/ ptype = /*(Type)*/ parameterType;
                 // Type rawType = ptype.getRawType();
                 Object rawType = LocalUtil.invoke(ptype, getRawTypeMethod, new Object[0]);
-    
+
                 if (rawType instanceof Class)
                 {
                     type = (Class) rawType;

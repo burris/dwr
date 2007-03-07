@@ -30,7 +30,7 @@ import com.opensymphony.xwork.util.XWorkContinuationConfig;
  * result.
  * You can configure an <code>IDWRActionProcessor</code> through a context-wide initialization parameter
  * <code>dwrActionProcessor</code> that whose methods will be invoked around action invocation.
- * 
+ *
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class DWRAction
@@ -41,11 +41,11 @@ public class DWRAction
     private static final Logger log = Logger.getLogger(DWRAction.class);
 
     private static final String DWRACTIONPROCESSOR_INIT_PARAM = "dwrActionProcessor";
-    
+
     private static DWRAction s_instance;
 
     private DispatcherUtils m_wwDispatcher;
-    
+
     private IDWRActionProcessor m_actionProcessor;
 
     private DWRAction(ServletContext servletContext) throws ServletException
@@ -57,35 +57,35 @@ public class DWRAction
 
     /**
      * Entry point for all action invocations.
-     * 
+     *
      * @param actionDefinition the identification information for the action
      * @param params action invocation parameters
      * @param request original request
      * @param response original response
      * @param servletContext current <code>ServletContext</code>
      * @return an <code>AjaxResult</code> wrapping invocation result
-     * 
+     *
      * @throws ServletException thrown if the initialization or invocation of the action fails
      */
     public static AjaxResult execute(ActionDefinition actionDefinition, Map params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
     {
         initialize(servletContext);
-        
+
         return s_instance.doExecute(actionDefinition, params, request, response, servletContext);
     }
 
     protected AjaxResult doExecute(ActionDefinition actionDefinition, Map params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
     {
-        
+
         FakeHttpServletResponse actionResponse = new FakeHttpServletResponse();
 
-        if (null != m_actionProcessor) 
+        if (null != m_actionProcessor)
         {
             m_actionProcessor.preProcess(request, response, actionResponse, params);
         }
-        
+
         m_wwDispatcher.prepare(request, actionResponse);
-        
+
         ActionInvocation invocation = invokeAction(m_wwDispatcher, request, actionResponse, servletContext, actionDefinition, params);
 
         AjaxResult result = null;
@@ -103,7 +103,7 @@ public class DWRAction
         {
             m_actionProcessor.postProcess(request, response, actionResponse, result);
         }
-        
+
         return result;
     }
 
@@ -210,17 +210,19 @@ public class DWRAction
         result.setText(text);
         return result;
     }
-    
+
     /**
      * Performs the one time initialization of the singleton <code>DWRAction</code>.
-     * 
+     *
      * @param servletContext
      * @throws ServletException thrown in case the singleton initialization fails
      */
     private static void initialize(ServletContext servletContext) throws ServletException
     {
-        synchronized(DWRAction.class) {
-            if (null == s_instance) {
+        synchronized(DWRAction.class)
+        {
+            if (null == s_instance)
+            {
                 s_instance = new DWRAction(servletContext);
             }
         }
@@ -228,7 +230,7 @@ public class DWRAction
 
     /**
      * Tries to instantiate an <code>IDWRActionProcessor</code> if defined in web.xml.
-     * 
+     *
      * @param actionProcessorClassName
      * @return an instance of <code>IDWRActionProcessor</code> if the init-param is defined or <code>null</code>
      * @throws ServletException thrown if the <code>IDWRActionProcessor</code> cannot be loaded and instantiated
@@ -239,14 +241,14 @@ public class DWRAction
         {
             return null;
         }
-        
-        try 
+
+        try
         {
             Class actionProcessorClass = LocalUtil.classForName(actionProcessorClassName);
-            
+
             return (IDWRActionProcessor) actionProcessorClass.newInstance();
         }
-        catch(ClassNotFoundException cnfe) 
+        catch(ClassNotFoundException cnfe)
         {
             throw new ServletException("Cannot load DWRActionProcessor class '" + actionProcessorClassName + "'", cnfe);
         }
@@ -254,7 +256,7 @@ public class DWRAction
         {
             throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'. Default constructor is not visible", iae);
         }
-        catch(InstantiationException ie) 
+        catch(InstantiationException ie)
         {
             throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'. No default constructor found", ie);
         }

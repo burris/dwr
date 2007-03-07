@@ -2,9 +2,9 @@
 package org.directwebremoting.webwork;
 
 /**
- * A simple WebWork action invocation definition 
+ * A simple WebWork action invocation definition
  * (it is mapped to a <code>com.opensymphony.webwork.dispatcher.mapper.ActionMapping</code>).
- * 
+ *
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class ActionDefinition

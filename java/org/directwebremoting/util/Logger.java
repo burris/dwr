@@ -19,7 +19,7 @@ package org.directwebremoting.util;
  * A very quick and dirty logging implementation.
  * <code>java.util.logging</code> is out because we work with JDK 1.3 and we
  * don't want to force users to import log4j or commons-logging.
- * Don't use this outside of DWR - it's just a quick hack to keep things simple. 
+ * Don't use this outside of DWR - it's just a quick hack to keep things simple.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public final class Logger

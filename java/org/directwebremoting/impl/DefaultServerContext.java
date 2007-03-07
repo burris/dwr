@@ -103,7 +103,7 @@ public class DefaultServerContext implements ServerContext
         {
             sessionManager = (ScriptSessionManager) container.getBean(ScriptSessionManager.class.getName());
         }
-        
+
         return sessionManager;
     }
 
@@ -117,7 +117,7 @@ public class DefaultServerContext implements ServerContext
         {
             converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
         }
-        
+
         return converterManager;
     }
 

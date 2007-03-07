@@ -32,7 +32,7 @@ import org.directwebremoting.util.Logger;
 public class Clock implements Runnable
 {
     /**
-     * 
+     *
      */
     public Clock()
     {
@@ -41,7 +41,7 @@ public class Clock implements Runnable
     }
 
     /**
-     * 
+     *
      */
     public synchronized void toggle()
     {
@@ -82,7 +82,7 @@ public class Clock implements Runnable
         {
             ex.printStackTrace();
         }
-    }        
+    }
 
     /**
      * Our key to get hold of ServerContexts

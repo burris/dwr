@@ -165,18 +165,18 @@ public class SpringConfigurator implements Configurator
                     String match = (String) entry.getKey();
                     ConverterConfig converterConfig = (ConverterConfig) entry.getValue();
                     Map params = converterConfig.getParams();
-                    if (converterConfig.getIncludes().size() > 0) 
+                    if (converterConfig.getIncludes().size() > 0)
                     {
                         params.put("include", StringUtils.collectionToCommaDelimitedString(
                                 converterConfig.getIncludes()));
                     }
-                    
+
                     if (converterConfig.getExcludes().size() > 0)
                     {
                         params.put("exclude", StringUtils.collectionToCommaDelimitedString(
                                 converterConfig.getExcludes()));
                     }
-                    
+
                     // params.put("force", Boolean.valueOf(converterConfig.isForce()));
                     converterManager.addConverter(match, converterConfig.getType(), params);
                 }
@@ -186,16 +186,16 @@ public class SpringConfigurator implements Configurator
                 throw new IllegalArgumentException(Messages.getString("SpringConfigurator.ConfigureConverterError"));
             }
         }
-        
-        // Configure the signatures 
+
+        // Configure the signatures
         if (StringUtils.hasText(signatures)) {
             SignatureParser sigp = new SignatureParser(converterManager, creatorManager);
             sigp.parse(signatures);
         }
     }
-    
+
     /**
-     * Setter for the map of Creator types 
+     * Setter for the map of Creator types
      * @param creatorTypes The new creator types map
      */
     public void setCreatorTypes(Map creatorTypes)
@@ -204,7 +204,7 @@ public class SpringConfigurator implements Configurator
     }
 
     /**
-     * Setter for the map of Converter types 
+     * Setter for the map of Converter types
      * @param converterTypes The new creator types map
      */
     public void setConverterTypes(Map converterTypes)
@@ -213,7 +213,7 @@ public class SpringConfigurator implements Configurator
     }
 
     /**
-     * Setter for the map of real Creators 
+     * Setter for the map of real Creators
      * @param creators The new creator map
      */
     public void setCreators(Map creators)
@@ -222,14 +222,14 @@ public class SpringConfigurator implements Configurator
     }
 
     /**
-     * Setter for the map of real Converter 
+     * Setter for the map of real Converter
      * @param converters The new creator map
      */
     public void setConverters(Map converters)
     {
         this.converters = converters;
     }
-    
+
     /**
      * @param signatures the signatures to set
      */
@@ -245,7 +245,7 @@ public class SpringConfigurator implements Configurator
     {
         return signatures;
     }
-    
+
     /**
      * The map of Converter types
      */

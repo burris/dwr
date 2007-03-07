@@ -289,7 +289,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             // We don't need to call assertExecutionIsPossible() because those
             // checks should be done by assertIsDisplayable() above
             // accessControl.assertExecutionIsPossible(creator, scriptName, method);
-            
+
             buffer.append("</li>\n");
         }
 

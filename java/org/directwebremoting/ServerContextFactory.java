@@ -71,7 +71,7 @@ public class ServerContextFactory
 
         /**
          * Accessor for the current ServerContext
-         * @param context The web application environment 
+         * @param context The web application environment
          * @return The ServerContext that is associated with this web application
          */
         ServerContext get(ServletContext context);

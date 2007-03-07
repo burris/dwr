@@ -31,7 +31,7 @@ public class Effect extends ScriptProxy
     /**
      * Http thread constructor, that affects no browsers.
      * Calls to {@link Effect#addScriptSession(ScriptSession)} or to
-     * {@link Effect#addScriptSessions(Collection)} will be needed  
+     * {@link Effect#addScriptSessions(Collection)} will be needed
      */
     public Effect()
     {

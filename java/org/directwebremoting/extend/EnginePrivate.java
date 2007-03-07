@@ -191,7 +191,7 @@ public class EnginePrivate extends ScriptProxy
     }
 
     /**
-     * Get a string which will initialize a dwr.engine object 
+     * Get a string which will initialize a dwr.engine object
      * @param path The setting for the _defaultPath property
      * @return A dwr.engine init script
      */

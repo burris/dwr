@@ -26,7 +26,7 @@ import org.directwebremoting.util.Logger;
  * A default implementation of ServerLoadMonitor
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor 
+public class DefaultServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor
 {
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.ServerLoadMonitor#getMaxConnectedTime()

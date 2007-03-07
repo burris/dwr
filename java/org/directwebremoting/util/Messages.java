@@ -103,7 +103,7 @@ public class Messages
     /**
      * Internationalize a parameterized string
      * @param key The lookup key
-     * @param params 
+     * @param params
      * @return The internationalized version of the key
      */
     public static String getString(String key, Object[] params)

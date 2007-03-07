@@ -65,21 +65,21 @@ public interface Creator
 
     /**
      * Application scope: named reference remains available in the
-     * ServletContext until it is reclaimed. 
+     * ServletContext until it is reclaimed.
      */
     static final String APPLICATION = "application";
 
     /**
      * Session scope (only valid if this page participates in a session): the
      * named reference remains available from the HttpSession (if any)
-     * associated with the Servlet until the HttpSession is invalidated. 
+     * associated with the Servlet until the HttpSession is invalidated.
      */
     static final String SESSION = "session";
 
     /**
      * Script scope (tied to a id recorded in Javascript): the named reference
      * remains available while the script variable remains stored in the
-     * browser. 
+     * browser.
      */
     static final String SCRIPT = "script";
 

@@ -112,7 +112,7 @@ public class StartupUtil
      * @param servletConfig The servlet configuration
      * @param servletContext The servlet context
      * @param servlet The servlet that we are running under
-     * @param container The container to save in the ServletContext 
+     * @param container The container to save in the ServletContext
      * @return a new WebContextBuilder
      */
     public static WebContextBuilder initWebContext(ServletConfig servletConfig, ServletContext servletContext, Container container)
@@ -130,7 +130,7 @@ public class StartupUtil
      * {@link ServerContextFactory}
      * @param servletConfig The servlet configuration
      * @param servletContext The servlet context
-     * @param container The container to save in the ServletContext 
+     * @param container The container to save in the ServletContext
      * @return The newly created ServerContextBuilder
      */
     public static ServerContextBuilder initServerContext(ServletConfig servletConfig, ServletContext servletContext, Container container)
@@ -138,7 +138,7 @@ public class StartupUtil
         ServerContextBuilder serverContextBuilder = (ServerContextBuilder) container.getBean(ServerContextBuilder.class.getName());
         ServerContextFactory.setServerContextBuilder(serverContextBuilder);
         serverContextBuilder.set(servletConfig, servletContext, container);
-    
+
         return serverContextBuilder;
     }
 

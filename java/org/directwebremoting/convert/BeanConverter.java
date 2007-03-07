@@ -52,38 +52,38 @@ public class BeanConverter extends BasicObjectConverter implements Converter
         {
             BeanInfo info = Introspector.getBeanInfo(type);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
-            
+
             Map properties = new HashMap();
             for (int i = 0; i < descriptors.length; i++)
             {
                 PropertyDescriptor descriptor = descriptors[i];
                 String name = descriptor.getName();
-            
+
                 // We don't marshall getClass()
                 if (name.equals("class"))
                 {
                     continue;
                 }
-            
+
                 // Access rules mean we might not want to do this one
                 if (!isAllowedByIncludeExcludeRules(name))
                 {
                     continue;
                 }
-            
+
                 if (readRequired && descriptor.getReadMethod() == null)
                 {
                     continue;
                 }
-            
+
                 if (writeRequired && descriptor.getWriteMethod() == null)
                 {
                     continue;
                 }
-            
+
                 properties.put(name, new PropertyDescriptorProperty(descriptor));
             }
-            
+
             return properties;
         }
         catch (IntrospectionException ex)

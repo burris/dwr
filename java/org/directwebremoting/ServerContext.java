@@ -31,7 +31,7 @@ public interface ServerContext
      * possible that the list will be out of date by the time it is used. For
      * this reason you should check that getScriptSession(String id) returns
      * something non null.
-     * @param url The URL including 'http://', up to (but not including) '?' or '#' 
+     * @param url The URL including 'http://', up to (but not including) '?' or '#'
      * @return A collection of all the ScriptSessions.
      */
     Collection getScriptSessionsByPage(String url);

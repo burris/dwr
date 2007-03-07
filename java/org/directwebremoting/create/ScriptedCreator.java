@@ -81,7 +81,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     }
 
     /**
-     * @param reloadable Whether or not to reload the script.  
+     * @param reloadable Whether or not to reload the script.
      * The default is <b>true</b>. This parameter is only used if scriptPath is
      * used instead of script.  When reloadable is true, ScriptedCreator will
      * check to see if the script has been modified before returning the
@@ -162,7 +162,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
 
     /**
      * @return Returns the script.
-     * @throws InstantiationException 
+     * @throws InstantiationException
      */
     public String getScript() throws InstantiationException
     {

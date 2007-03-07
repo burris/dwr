@@ -36,8 +36,8 @@ public class ExceptionConverter extends BeanConverter
         Map descriptors = super.getPropertyMapFromClass(type, readRequired, writeRequired);
         descriptors.put("javaClassName", new PlainProperty("javaClassName", type.getName()));
 
-        // Make sure Throwable's standard properties are added 
-        // (fix for Bean Introspector peculiarities) 
+        // Make sure Throwable's standard properties are added
+        // (fix for Bean Introspector peculiarities)
         try
         {
             fixMissingThrowableProperty(descriptors, "message", "getMessage");
@@ -47,17 +47,17 @@ public class ExceptionConverter extends BeanConverter
         {
             throw new MarshallException(type, ex);
         }
-        
+
         return descriptors;
     }
-    
+
     /* (non-Javadoc)
      */
     protected void fixMissingThrowableProperty(Map descriptors, String name, String readMethodName) throws IntrospectionException
     {
         if (!descriptors.containsKey(name) && isAllowedByIncludeExcludeRules(name))
         {
-            PropertyDescriptor descriptor = new PropertyDescriptor(name, Throwable.class, readMethodName, null); 
+            PropertyDescriptor descriptor = new PropertyDescriptor(name, Throwable.class, readMethodName, null);
             descriptors.put(name, new PropertyDescriptorProperty(descriptor));
         }
     }

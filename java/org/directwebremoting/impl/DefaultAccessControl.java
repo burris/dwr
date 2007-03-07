@@ -160,7 +160,7 @@ public class DefaultAccessControl implements AccessControl
     /**
      * Check the users session for validity
      * @param req The users request
-     * @throws SecurityException if the users session is invalid 
+     * @throws SecurityException if the users session is invalid
      */
     protected void assertAuthenticationIsValid(HttpServletRequest req) throws SecurityException
     {

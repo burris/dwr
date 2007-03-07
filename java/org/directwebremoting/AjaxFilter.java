@@ -18,7 +18,7 @@ package org.directwebremoting;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
-/** 
+/**
  * A filter is a way to insert procesing tasks at various points during the
  * processing of an Ajax call.
  * <p>Example filters:</p>

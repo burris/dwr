@@ -32,7 +32,7 @@ public class Engine extends ScriptProxy
     /**
      * Http thread constructor, that affects no browsers.
      * Calls to {@link Engine#addScriptSession(ScriptSession)} or to
-     * {@link Engine#addScriptSessions(Collection)} will be needed  
+     * {@link Engine#addScriptSessions(Collection)} will be needed
      */
     public Engine()
     {

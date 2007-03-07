@@ -40,7 +40,7 @@ import org.directwebremoting.util.Messages;
 public class StrutsCreator extends AbstractCreator implements Creator
 {
     /**
-     * 
+     *
      */
     public StrutsCreator()
     {

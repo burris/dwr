@@ -40,7 +40,7 @@ public interface OutboundVariable
     /**
      * Get a reference to this OutboundVariable.
      * If <code>this</code> already is a reference then this method returns
-     * <code>this</code>, or if not it creates one that does. 
+     * <code>this</code>, or if not it creates one that does.
      * @return An OutboundVariable that refers to this one.
      */
     OutboundVariable getReferenceVariable();

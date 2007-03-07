@@ -10,7 +10,7 @@ import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
 
 /**
- * A Creator that works against EJB3 beans 
+ * A Creator that works against EJB3 beans
  * @author Squishy [Squishy_I at gmx dot net]
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */

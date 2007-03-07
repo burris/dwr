@@ -52,7 +52,7 @@ public class JavascriptChat
     private LinkedList messages = new LinkedList();
 
     /**
-     * 
+     *
      */
     public void pingMe()
     {

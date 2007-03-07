@@ -39,7 +39,7 @@ public interface ServerLoadMonitor
     /**
      * A thread is about to begin a wait period.
      * This can be used by implementations to dynamically adjust the poll
-     * timings. 
+     * timings.
      * @param controller An object that we can use to control the wait
      */
     void threadWaitStarting(WaitController controller);
@@ -47,7 +47,7 @@ public interface ServerLoadMonitor
     /**
      * A thread has just ended a wait period.
      * This can be used by implementations to dynamically adjust the poll
-     * timings. 
+     * timings.
      * @param controller An object that we can use to control the wait
      */
     void threadWaitEnding(WaitController controller);

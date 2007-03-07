@@ -302,7 +302,7 @@ public class DefaultScriptSession implements RealScriptSession
                 for (Iterator it = conduits.iterator(); it.hasNext();)
                 {
                     ScriptConduit conduit = (ScriptConduit) it.next();
-                    
+
                     try
                     {
                         conduit.flush();

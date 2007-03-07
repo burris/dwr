@@ -38,7 +38,7 @@ public class LoggingAjaxFilter implements AjaxFilter
         log.debug("Executed: " + method.getName() + "() giving " + reply);
         return reply;
     }
-    
+
     /**
      * The log stream
      */

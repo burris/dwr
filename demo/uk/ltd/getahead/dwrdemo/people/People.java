@@ -135,13 +135,13 @@ public class People
 
     private Random random = new Random();
 
-    private static final String[] FIRSTNAMES = 
+    private static final String[] FIRSTNAMES =
     {
         "Fred", "Jim", "Shiela", "Jack", "Betty", "Jacob", "Martha", "Kelly",
         "Luke", "Matt", "Gemma", "Joe", "Ben", "Jessie", "Leanne", "Becky",
     };
 
-    private static final String[] SURNAMES = 
+    private static final String[] SURNAMES =
     {
         "Sutcliffe", "MacDonald", "Duckworth", "Smith", "Wisner", "Iversen",
         "Nield", "Turton", "Trelfer", "Wilson", "Johnson", "Cowan", "Daniels",

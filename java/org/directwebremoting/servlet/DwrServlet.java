@@ -116,7 +116,7 @@ public class DwrServlet extends HttpServlet
      * properly (it waits for a while and then calls destroy anyway).
      * <p>It would be good if we could get {@link #destroy()} to call this
      * method however destroy() is only called once all threads are done so it's
-     * too late. 
+     * too late.
      */
     public void shutdown()
     {

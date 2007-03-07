@@ -88,7 +88,7 @@ public class ContainerUtil
      * @param servletConfig The source of init parameters
      * @return An unsetup implementaion of DefaultContainer
      * @throws ServletException If the specified class could not be found
-     * @see ServletConfig#getInitParameter(String) 
+     * @see ServletConfig#getInitParameter(String)
      */
     public static DefaultContainer createDefaultContainer(ServletConfig servletConfig) throws ServletException
     {
@@ -213,7 +213,7 @@ public class ContainerUtil
      * can find the Container etc.
      * @param context The servlet context
      * @param config The servlet configuration
-     * @param container The container to save in the ServletContext 
+     * @param container The container to save in the ServletContext
      * @param webContextBuilder The WebContextBuilder to save
      * @param servlet The Servlet to save
      */
@@ -240,7 +240,7 @@ public class ContainerUtil
     }
 
     /**
-     * Configure using the users dwr.xml that sits next in WEB-INF 
+     * Configure using the users dwr.xml that sits next in WEB-INF
      * @param container The container to configure
      * @throws ParserConfigurationException If the config file parse fails
      * @throws IOException If the config file read fails
@@ -319,7 +319,7 @@ public class ContainerUtil
         try
         {
             Class annotationCfgClass = LocalUtil.classForName("org.directwebremoting.annotations.AnnotationsConfigurator");
-    
+
             Configurator configurator = (Configurator) annotationCfgClass.newInstance();
             configurator.configure(container);
 
@@ -430,7 +430,7 @@ public class ContainerUtil
     /**
      * If helps some situations if people can get at the container by looking
      * in the servlet context, under some name.
-     * The name is specified in an initParameter. 
+     * The name is specified in an initParameter.
      * @param container The container to publish
      * @param servletConfig Source of initParams to dictate publishing and contexts to publish to
      */

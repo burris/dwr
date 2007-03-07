@@ -44,7 +44,7 @@ public class Util extends ScriptProxy
     /**
      * Http thread constructor, that affects no browsers.
      * Calls to {@link Util#addScriptSession(ScriptSession)} or to
-     * {@link Util#addScriptSessions(Collection)} will be needed  
+     * {@link Util#addScriptSessions(Collection)} will be needed
      */
     public Util()
     {
