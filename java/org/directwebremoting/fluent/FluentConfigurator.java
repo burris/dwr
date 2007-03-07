@@ -250,7 +250,7 @@ public abstract class FluentConfigurator implements Configurator
         case STATE_ALLOW_CREATE:
             try
             {
-                creatorManager.addCreator(typeName, scriptName, params);
+                creatorManager.addCreator(scriptName, typeName, params);
             }
             catch (Exception e)
             {
