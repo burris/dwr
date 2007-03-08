@@ -1,20 +1,12 @@
 
-function startPoll() {
+function init() {
   dwr.engine.setActiveReverseAjax(true);
-}
-
-function stopPoll() {
-  dwr.engine.setCometPoll(false);
 }
 
 function sendMessage() {
   var text = dwr.util.getValue("text");
   dwr.util.setValue("text", "");
   JavascriptChat.addMessage(text);
-}
-
-function pingMe() {
-  JavascriptChat.pingMe();
 }
 
 function receiveMessages(messages) {
