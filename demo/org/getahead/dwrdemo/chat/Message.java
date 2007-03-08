@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwrdemo.chat;
+package org.getahead.dwrdemo.chat;
 
 /**
  * A POJO that represents a typed message

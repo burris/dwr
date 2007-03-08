@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwrdemo.address;
+package org.getahead.dwrdemo.address;
 
 import java.util.HashMap;
 import java.util.Map;

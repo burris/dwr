@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwrdemo.intro;
+package org.getahead.dwrdemo.simpletext;
 
 import java.io.IOException;
 
@@ -23,19 +23,30 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 
 /**
- * Used by the default webapp landing page to check basic functionallity
+ * Some simple text demos
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Intro
+public class Demo
 {
     /**
-     * A simple test that the DWr is working. Used by the front page.
-     * @return The text of the insert.html page
-     * @throws IOException From {@link WebContext#forwardToString(String)}
-     * @throws ServletException From {@link WebContext#forwardToString(String)}
+     * Return a server side string to display on the client in real time
+     * @param name The name of person to say hello to
+     * @return A demo string
      */
-    public String getInsert() throws ServletException, IOException
+    public String sayHello(String name)
     {
-        return WebContextFactory.get().forwardToString("/insert.html");
+        return "Hello, " + name;
+    }
+
+    /**
+     * Fetch a resource using forwardToString()
+     * @return a demo HTML page
+     * @throws ServletException If the servlet engine breaks
+     * @throws IOException If the servlet engine breaks
+     */
+    public String getInclude() throws ServletException, IOException
+    {
+        WebContext wctx = WebContextFactory.get();
+        return wctx.forwardToString("/simpletext/forward.html");
     }
 }

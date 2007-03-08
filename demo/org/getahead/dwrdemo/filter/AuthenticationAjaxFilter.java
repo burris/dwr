@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwrdemo.filter;
+package org.getahead.dwrdemo.filter;
 
 import java.lang.reflect.Method;
 

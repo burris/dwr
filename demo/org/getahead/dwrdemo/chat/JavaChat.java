@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwrdemo.chat;
+package org.getahead.dwrdemo.chat;
 
 import java.util.Collection;
 import java.util.LinkedList;

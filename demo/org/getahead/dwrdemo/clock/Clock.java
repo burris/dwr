@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwrdemo.clock;
+package org.getahead.dwrdemo.clock;
 
 import java.util.Collection;
 import java.util.Date;
@@ -92,7 +92,7 @@ public class Clock implements Runnable
     /**
      * Are we updating the clocks on all the pages?
      */
-    private boolean active = false;
+    private transient boolean active = false;
 
     /**
      * The log stream

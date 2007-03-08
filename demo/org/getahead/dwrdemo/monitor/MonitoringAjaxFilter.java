@@ -13,34 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwrdemo.filter;
+package org.getahead.dwrdemo.monitor;
 
 import java.lang.reflect.Method;
 
+import javax.servlet.ServletContext;
+
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
-
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
 
 /**
- * An example filter that uses a fairly random event to define it's security
- * policy: If the current system time (in milliseconds) is even then the call
- * is allowed, otherwise it is denied.
+ * An AjaxFilter that simply tells Control that someone did something.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class RandomSecurityAjaxFilter implements AjaxFilter
+public class MonitoringAjaxFilter implements AjaxFilter
 {
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.AjaxFilter#doFilter(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], uk.ltd.getahead.dwr.AjaxFilterChain)
+     * @see org.directwebremoting.AjaxFilter#doFilter(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], org.directwebremoting.AjaxFilterChain)
      */
     public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
     {
-        if (System.currentTimeMillis() % 2 == 1)
+        WebContext webContext = WebContextFactory.get();
+        ServletContext servletContext = webContext.getServletContext();
+        Control published = (Control) servletContext.getAttribute(Control.ATTRIBUTE_CONTROL);
+        if (published != null)
         {
-            return chain.doFilter(obj, method, params);
+            published.takeNote();
         }
-        else
-        {
-            throw new SecurityException("Wrong time. Try again later");
-        }
+
+        return chain.doFilter(obj, method, params);
     }
 }

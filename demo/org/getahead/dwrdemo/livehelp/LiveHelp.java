@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package uk.ltd.getahead.dwrdemo.livehelp;
+package org.getahead.dwrdemo.livehelp;
 
 import java.util.Collection;
 

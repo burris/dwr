@@ -1,4 +1,4 @@
-package uk.ltd.getahead.dwrdemo.chat;
+package org.getahead.dwrdemo.chat;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -50,37 +50,6 @@ public class JavascriptChat
      * The current set of messages
      */
     private LinkedList messages = new LinkedList();
-
-    /**
-     *
-     */
-    public void pingMe()
-    {
-        WebContext wctx = WebContextFactory.get();
-        final ScriptSession scriptSession = wctx.getScriptSession();
-        Thread worker = new Thread(new Runnable()
-        {
-            public void run()
-            {
-                int count = 0;
-                while (count < 100)
-                {
-                    count++;
-                    try
-                    {
-                        Thread.sleep(1000);
-                        log.debug("ping: " + count);
-                        scriptSession.addScript(new ScriptBuffer("dwr.util.setValue('ping', 'count=" + count + "');"));
-                    }
-                    catch (Exception ex)
-                    {
-                        log.warn("Waking:", ex);
-                    }
-                }
-            }
-        });
-        worker.start();
-    }
 
     /**
      * The log stream

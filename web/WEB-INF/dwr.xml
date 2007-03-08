@@ -6,6 +6,7 @@
   <allow>
 
     <!--
+    <filter class="org.getahead.dwrdemo.monitor.MonitoringAjaxFilter"/>
     <filter class="org.directwebremoting.filter.ExtraLatencyAjaxFilter">
       <param name="delay" value="200"/>
     </filter>
@@ -13,47 +14,59 @@
 
     <!-- intro - for the test on index.html -->
     <create creator="new" javascript="Intro">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.intro.Intro"/>
+      <param name="class" value="org.getahead.dwrdemo.intro.Intro"/>
     </create>
 
     <!-- address -->
     <create creator="new" javascript="AddressLookup">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.address.AddressLookup"/>
+      <param name="class" value="org.getahead.dwrdemo.address.AddressLookup"/>
     </create>
 
     <!-- anti-spam mailto generator -->
     <create creator="new" javascript="Generator" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.asmg.Generator"/>
+      <param name="class" value="org.getahead.dwrdemo.asmg.Generator"/>
     </create>
 
     <!-- chat -->
     <create creator="new" javascript="JavascriptChat" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.chat.JavascriptChat"/>
+      <param name="class" value="org.getahead.dwrdemo.chat.JavascriptChat"/>
     </create>
     <create creator="new" javascript="JavaChat" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.chat.JavaChat"/>
+      <param name="class" value="org.getahead.dwrdemo.chat.JavaChat"/>
     </create>
-    <convert converter="bean" match="uk.ltd.getahead.dwrdemo.chat.Message"/>
+    <convert converter="bean" match="org.getahead.dwrdemo.chat.Message"/>
 
     <!-- clock -->
     <create creator="new" javascript="Clock" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.clock.Clock"/>
+      <param name="class" value="org.getahead.dwrdemo.clock.Clock"/>
     </create>
+
+    <!-- monitor
+    <create creator="new" javascript="Control" scope="application">
+      <param name="class" value="org.getahead.dwrdemo.monitor.Control"/>
+    </create>
+    <convert converter="bean" match="org.getahead.dwrdemo.monitor.Browser">
+      <param name="exclude" value="httpSessionId"/>
+    </convert>
+    <convert converter="bean" match="org.getahead.dwrdemo.monitor.ScriptView">
+      <param name="exclude" value="scriptSession"/>
+    </convert>
+    -->
 
     <!-- livehelp -->
     <create creator="new" javascript="LiveHelp" scope="application">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.livehelp.LiveHelp"/>
+      <param name="class" value="org.getahead.dwrdemo.livehelp.LiveHelp"/>
     </create>
 
     <!-- people -->
     <create creator="new" javascript="People" scope="script">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.people.People"/>
+      <param name="class" value="org.getahead.dwrdemo.people.People"/>
     </create>
-    <convert match="uk.ltd.getahead.dwrdemo.people.Person" javascript="Person" converter="bean"/>
+    <convert match="org.getahead.dwrdemo.people.Person" javascript="Person" converter="bean"/>
 
     <!-- simpletext -->
     <create creator="new" javascript="Demo">
-      <param name="class" value="uk.ltd.getahead.dwrdemo.simpletext.Demo"/>
+      <param name="class" value="org.getahead.dwrdemo.simpletext.Demo"/>
     </create>
 
     <!-- resources not in this war file: java.util.Date -->
@@ -62,8 +75,8 @@
       <exclude method="getHours"/>
       <auth method="getMinutes" role="admin"/>
       <auth method="getMinutes" role="devel"/>
-      <filter class="uk.ltd.getahead.dwrdemo.filter.LoggingAjaxFilter"/>
-      <filter class="uk.ltd.getahead.dwrdemo.filter.RandomSecurityAjaxFilter"/>
+      <filter class="org.getahead.dwrdemo.filter.LoggingAjaxFilter"/>
+      <filter class="org.getahead.dwrdemo.filter.RandomSecurityAjaxFilter"/>
     </create>
 
     <!-- resources in jars in this war file: Commons EmailValidator -->
