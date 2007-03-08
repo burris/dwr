@@ -224,32 +224,30 @@ public class Util extends ScriptProxy
      */
     public void cloneNode(String elementId, String idPrefix, String idSuffix)
     {
-        ScriptBuffer options = new ScriptBuffer();
-        options.appendScript("{");
-
-        if (idPrefix != null)
-        {
-            options.appendScript("idPrefix:").appendData(idPrefix);
-        }
-
-        if (idPrefix != null && idSuffix != null)
-        {
-            options.appendScript(",");
-        }
-
-        if (idSuffix != null)
-        {
-            options.appendScript("idSuffix:").appendData(idSuffix);
-        }
-
-        options.appendScript("}");
-
         ScriptBuffer script = new ScriptBuffer();
         script.appendScript("dwr.util.cloneNode(")
               .appendData(elementId)
-              .appendScript(",")
-              .appendData(options)
-              .appendScript(");");
+              .appendScript(", { idPrefix:")
+              .appendData(idPrefix)
+              .appendScript(", idSuffix:")
+              .appendData(idSuffix)
+              .appendScript("});");
+        addScript(script);
+    }
+
+    /**
+     * Sets a CSS style on an element
+     * @param elementId The HTML element to update (by id)
+     * @param selector The CSS selector to update
+     * @param value The new value for the CSS class on the given element
+     */
+    public void removeNode(String elementId)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript("dwr.util._temp = dwr.util.byId(")
+              .appendData(elementId)
+              .appendScript("); ")
+              .appendScript("if (dwr.util._temp) { dwr.util._temp.parentNode.removeChild(dwr.util._temp); dwr.util._temp = null; }");
         addScript(script);
     }
 
@@ -302,7 +300,7 @@ public class Util extends ScriptProxy
     public void setStyle(String elementId, String selector, String value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("$(")
+        script.appendScript("dwr.util.byId(")
               .appendData(elementId)
               .appendScript(").style.")
               .appendScript(selector)
