@@ -1,16 +1,23 @@
 package org.directwebremoting.fluent;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.Container;
 import org.directwebremoting.extend.AccessControl;
+import org.directwebremoting.extend.AjaxFilterManager;
 import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.impl.SignatureParser;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
 /**
@@ -117,6 +124,17 @@ public abstract class FluentConfigurator implements Configurator
         this.scriptName = newScriptName;
         return this;
     }
+    
+    /**
+     * @param className filter class name
+     * @return <code>this</code> to continue the fluency
+     */
+    public FluentConfigurator withFilter(String className)
+    {
+        setState(STATE_ALLOW_FILTER);
+        this.className = className;
+        return this;
+    }
 
     /**
      * Add a parameter to whatever is being configured.
@@ -132,6 +150,22 @@ public abstract class FluentConfigurator implements Configurator
         }
 
         params.put(name, value);
+        return this;
+    }
+
+    /**
+     * Add a filter to whatever is being configured.
+     * @param className The class to add as a filter
+     * @return <code>this</code> to continue the fluency
+     */
+    public FluentConfigurator addFilter(String className)
+    {
+        if (filters == null)
+        {
+            filters = new ArrayList();
+        }
+
+        filters.add(className);
         return this;
     }
 
@@ -236,7 +270,14 @@ public abstract class FluentConfigurator implements Configurator
         case STATE_ALLOW_CONVERT:
             try
             {
-                converterManager.addConverter(match, converter, params);
+                if (params == null)
+                { 
+                    converterManager.addConverter(match, converter, Collections.emptyMap());
+                }
+                else
+                {
+                    converterManager.addConverter(match, converter, params);
+                }
             }
             catch (Exception e)
             {
@@ -250,7 +291,30 @@ public abstract class FluentConfigurator implements Configurator
         case STATE_ALLOW_CREATE:
             try
             {
-                creatorManager.addCreator(scriptName, typeName, params);
+                if (params == null)
+                { 
+                    creatorManager.addCreator(scriptName, typeName, Collections.emptyMap());
+                }
+                else
+                {
+                    creatorManager.addCreator(scriptName, typeName, params);
+                }
+                
+                if (filters != null)
+                {
+                    for (Iterator iter = filters.iterator(); iter.hasNext();)
+                    {
+                        String filterClassName = (String) iter.next();
+                        AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(scriptName, filterClassName, AjaxFilter.class);
+
+                        if (filter != null)
+                        {
+                            LocalUtil.setParams(filter, Collections.EMPTY_MAP, Collections.EMPTY_LIST);
+                            ajaxFilterManager.addAjaxFilter(filter, scriptName);
+                        }
+
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -259,6 +323,37 @@ public abstract class FluentConfigurator implements Configurator
             params = null;
             scriptName = null;
             typeName = null;
+            filters = null;
+            break;
+            
+        case STATE_ALLOW_FILTER:
+            try
+            {
+                Class impl = LocalUtil.classForName(className);
+                AjaxFilter object = (AjaxFilter) impl.newInstance();
+
+                if (params != null) {
+                    LocalUtil.setParams(object, params, Collections.EMPTY_LIST);
+                }
+                
+                ajaxFilterManager.addAjaxFilter(object);
+            }
+            catch (ClassCastException ex)
+            {
+                log.error(className + " does not implement " + AjaxFilter.class.getName(), ex);
+            }
+            catch (NoClassDefFoundError ex)
+            {
+                log.info("Missing class for filter (class='" + className + "'). Cause: " + ex.getMessage());
+            }
+            catch (Exception ex)
+            {
+                log.error("Failed to add filter: class=" + className, ex);
+            }
+            
+            params = null;
+            className = null;
+            
             break;
 
         case STATE_SIGNATURE:
@@ -280,6 +375,7 @@ public abstract class FluentConfigurator implements Configurator
     public void configure(Container container)
     {
         converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+        ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
         accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
         creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
 
@@ -299,6 +395,11 @@ public abstract class FluentConfigurator implements Configurator
     private String scriptName;
 
     /**
+     * Used for <allow filter .../>
+     */
+    private String className;
+    
+    /**
      * Used for <allow convert .../>
      */
     private String converter;
@@ -312,6 +413,11 @@ public abstract class FluentConfigurator implements Configurator
      * holds name / value pairs used in <allow create|convert ... />
      */
     private Map params = null;
+    
+    /**
+     * holds classNames of filters used in <allow create/ filter />
+     */
+    private List filters = null;
 
     /**
      * holds signature lines
@@ -323,6 +429,11 @@ public abstract class FluentConfigurator implements Configurator
      */
     private int state = -1;
 
+    /**
+     * What AjaxFilters apply to which Ajax calls?
+     */
+    private AjaxFilterManager ajaxFilterManager = null;
+    
     /**
      * The ConverterManager that we are configuring
      */
@@ -352,21 +463,26 @@ public abstract class FluentConfigurator implements Configurator
      * {@link #state} to say we are working in {@link #withCreator(String, String)}
      */
     private static final int STATE_ALLOW_CREATE = 2;
+    
+    /**
+     * {@link #state} to say we are working in {@link #withFilter(String, String)}
+     */
+    private static final int STATE_ALLOW_FILTER = 3;
 
     /**
      * {@link #state} to say we are working in {@link #withConverter(String, String)}
      */
-    private static final int STATE_ALLOW_CONVERT = 3;
+    private static final int STATE_ALLOW_CONVERT = 4;
 
     /**
      * {@link #state} to say we are working in {@link #withSignature()}
      */
-    private static final int STATE_SIGNATURE = 4;
+    private static final int STATE_SIGNATURE = 5;
 
     /**
      * {@link #state} to say {@link #configure()} has completed
      */
-    private static final int STATE_COMPLETE = 5;
+    private static final int STATE_COMPLETE = 6;
 
     /**
      * The log stream
