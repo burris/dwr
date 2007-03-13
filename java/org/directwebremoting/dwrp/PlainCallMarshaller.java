@@ -31,7 +31,7 @@ public class PlainCallMarshaller extends BaseCallMarshaller
      */
     protected String getOutboundMimeType()
     {
-        return MimeConstants.MIME_PLAIN;
+        return MimeConstants.MIME_JS;
     }
 
     /* (non-Javadoc)
