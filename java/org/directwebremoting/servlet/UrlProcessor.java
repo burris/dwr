@@ -145,5 +145,5 @@ public class UrlProcessor implements Handler, InitializingBean
     /**
      * The log stream
      */
-    protected static final Logger log = Logger.getLogger(UrlProcessor.class);
+    private static final Logger log = Logger.getLogger(UrlProcessor.class);
 }

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.extend.Handler;
+import org.directwebremoting.util.Logger;
 
 /**
  * Display a 404 "not found" message
@@ -33,9 +34,14 @@ public class NotFoundHandler implements Handler
      */
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        UrlProcessor.log.warn("Page not found. pathInfo='" + request.getPathInfo() + "' requestUrl='" + request.getRequestURI() + "'");
-        UrlProcessor.log.warn("In debug/test mode try viewing /[WEB-APP]/dwr/");
+        log.warn("Page not found. pathInfo='" + request.getPathInfo() + "' requestUrl='" + request.getRequestURI() + "'");
+        log.warn("In debug/test mode try viewing /[WEB-APP]/dwr/");
 
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(NotFoundHandler.class);
 }

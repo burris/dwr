@@ -31,6 +31,7 @@ import org.directwebremoting.extend.Handler;
 import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
+import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -167,7 +168,7 @@ public class FileHandler implements Handler
         }
         catch (RuntimeException ex)
         {
-            UrlProcessor.log.warn("Websphere/RAD date failure. If you understand why this might happen please report to dwr-users mailing list");
+            log.warn("Websphere/RAD date failure. If you understand why this might happen please report to dwr-users mailing list");
         }
 
         if (modifiedSince != -1)
@@ -183,9 +184,9 @@ public class FileHandler implements Handler
             // There is no ETag, just go with If-Modified-Since
             if (modifiedSince > servletContainerStartTime)
             {
-                if (UrlProcessor.log.isDebugEnabled())
+                if (log.isDebugEnabled())
                 {
-                    UrlProcessor.log.debug("Sending 304 for " + filePath + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + servletContainerStartTime);
+                    log.debug("Sending 304 for " + filePath + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + servletContainerStartTime);
                 }
                 return true;
             }
@@ -200,9 +201,9 @@ public class FileHandler implements Handler
             if (!etag.equals(givenEtag))
             {
                 // There is an ETag, but no If-Modified-Since
-                if (UrlProcessor.log.isDebugEnabled())
+                if (log.isDebugEnabled())
                 {
-                    UrlProcessor.log.debug("Sending 304 for " + filePath + " Old ETag=" + givenEtag + ", New ETag=" + etag);
+                    log.debug("Sending 304 for " + filePath + " Old ETag=" + givenEtag + ", New ETag=" + etag);
                 }
                 return true;
             }
@@ -214,9 +215,9 @@ public class FileHandler implements Handler
         // Do both values indicate that we are in-date?
         if (etag.equals(givenEtag) && modifiedSince <= servletContainerStartTime)
         {
-            if (UrlProcessor.log.isDebugEnabled())
+            if (log.isDebugEnabled())
             {
-                UrlProcessor.log.debug("Sending 304 for " + filePath);
+                log.debug("Sending 304 for " + filePath);
             }
             return true;
         }
@@ -383,4 +384,9 @@ public class FileHandler implements Handler
      * Under what cookie name is the session id stored?
      */
     protected static final String PARAM_SCRIPT_COOKIENAME = "${sessionCookieName}";
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(FileHandler.class);
 }

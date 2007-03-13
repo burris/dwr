@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.extend.Handler;
 import org.directwebremoting.util.Continuation;
+import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -39,14 +40,14 @@ public class ExceptionHandler implements Handler
         // Allow Jetty RequestRetry exception to propogate to container
         Continuation.rethrowIfContinuation(cause);
 
-        UrlProcessor.log.warn("Error: " + cause);
-        if (cause instanceof SecurityException && UrlProcessor.log.isDebugEnabled())
+        log.warn("Error: " + cause);
+        if (cause instanceof SecurityException && log.isDebugEnabled())
         {
-            UrlProcessor.log.debug("- User Agent: " + request.getHeader(HttpConstants.HEADER_USER_AGENT));
-            UrlProcessor.log.debug("- Remote IP:  " + request.getRemoteAddr());
-            UrlProcessor.log.debug("- Request URL:" + request.getRequestURL());
-            UrlProcessor.log.debug("- Query:      " + request.getQueryString());
-            UrlProcessor.log.debug("- Method:     " + request.getMethod());
+            log.debug("- User Agent: " + request.getHeader(HttpConstants.HEADER_USER_AGENT));
+            log.debug("- Remote IP:  " + request.getRemoteAddr());
+            log.debug("- Request URL:" + request.getRequestURL());
+            log.debug("- Query:      " + request.getQueryString());
+            log.debug("- Method:     " + request.getMethod());
         }
 
         // We are going to act on this in engine.js so we are hoping that
@@ -59,7 +60,7 @@ public class ExceptionHandler implements Handler
         PrintWriter out = response.getWriter();
         out.println(cause.getMessage());
 
-        UrlProcessor.log.warn("Sent 501", cause);
+        log.warn("Sent 501", cause);
     }
 
     /**
@@ -74,4 +75,9 @@ public class ExceptionHandler implements Handler
      * The cause of the failure
      */
     private Exception cause;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(ExceptionHandler.class);
 }
