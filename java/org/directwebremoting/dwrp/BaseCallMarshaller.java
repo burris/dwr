@@ -338,7 +338,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             catch (MarshallException ex)
             {
                 EnginePrivate.remoteHandleMarshallException(conduit, batchId, callId, ex);
-                log.warn("--MarshallException: batchId=" + batchId + " class=" + ex.getConversionType().getName() + " message=" + ex.toString());
+                log.warn("--MarshallException: batchId=" + batchId + " class=" + ex.getConversionType().getName(), ex);
             }
             catch (Exception ex)
             {
