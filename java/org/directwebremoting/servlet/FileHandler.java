@@ -168,7 +168,7 @@ public class FileHandler implements Handler
         }
         catch (RuntimeException ex)
         {
-            // TODO: Check for length and re-parse
+            // TODO: Check for "length" and re-parse
             // Normally clients send If-Modified-Since in rfc-compliant form
             // ("If-Modified-Since: Tue, 13 Mar 2007 13:11:09 GMT") some proxies
             // or browsers add length to this header so it comes like
@@ -176,6 +176,7 @@ public class FileHandler implements Handler
             // Servlet spec says container can throw IllegalArgumentException
             // if header value can not be parsed as http-date.
             // We might want to check for "; length=" and then do our own parsing
+            // See: http://getahead.org/bugs/browse/DWR-20
         }
 
         if (modifiedSince != -1)
