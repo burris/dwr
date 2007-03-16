@@ -15,8 +15,6 @@
  */
 package org.directwebremoting.impl;
 
-import java.util.Random;
-
 import org.directwebremoting.extend.ServerLoadMonitor;
 
 /**
@@ -38,7 +36,7 @@ public class PollingServerLoadMonitor extends AbstractServerLoadMonitor implemen
      */
     public int getTimeToNextPoll()
     {
-        return random.nextInt(timeToNextPoll);
+        return timeToNextPoll;
     }
 
     /**
@@ -49,12 +47,6 @@ public class PollingServerLoadMonitor extends AbstractServerLoadMonitor implemen
     {
         this.timeToNextPoll = timeToNextPoll;
     }
-
-    /**
-     * We ask clients to wait a random number of millis before they come
-     * back to avoid killing the server
-     */
-    protected Random random = new Random();
 
     /**
      * How long are we telling users to wait before they come back next
