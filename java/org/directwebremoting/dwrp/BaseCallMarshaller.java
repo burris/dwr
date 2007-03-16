@@ -99,7 +99,10 @@ public abstract class BaseCallMarshaller implements Marshaller
                 if (key.startsWith(ProtocolConstants.INBOUND_CALLNUM_PREFIX) &&
                     key.indexOf(ProtocolConstants.INBOUND_CALLNUM_SUFFIX + ProtocolConstants.INBOUND_KEY_ENV) != -1)
                 {
-                    buffer.append(key + '=' + value.toString() + ", ");
+                    buffer.append(key);
+                    buffer.append('=');
+                    buffer.append(value.toString());
+                    buffer.append(", ");
                 }
             }
 
@@ -543,7 +546,7 @@ public abstract class BaseCallMarshaller implements Marshaller
     /**
      * How we turn pages into the canonical form.
      */
-    protected PageNormalizer pageNormalizer;
+    protected PageNormalizer pageNormalizer = null;
 
     /**
      * How we convert parameters
