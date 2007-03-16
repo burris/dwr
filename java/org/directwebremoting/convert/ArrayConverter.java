@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.directwebremoting.dwrp.ArrayOutboundVariable;
+import org.directwebremoting.dwrp.ErrorOutboundVariable;
 import org.directwebremoting.dwrp.ParseUtil;
 import org.directwebremoting.dwrp.ProtocolConstants;
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.InboundContext;
@@ -123,8 +123,10 @@ public class ArrayConverter extends BaseV20Converter implements Converter
             }
             catch (Exception ex)
             {
-                nested = new SimpleOutboundVariable("'Conversion Error. See console log.'", outctx, true);
-                log.warn("Failed to convert array member " + i + ". Conversion error for type: " + data.getClass().getName(), ex);
+                String errorMessage = "Conversion error for " + data.getClass().getName() + ".";
+                log.warn(errorMessage, ex);
+
+                nested = new ErrorOutboundVariable(outctx, errorMessage, true);
             }
             ovs.add(nested);
         }
