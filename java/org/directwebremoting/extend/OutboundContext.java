@@ -29,6 +29,7 @@ import org.directwebremoting.util.LocalUtil;
 public final class OutboundContext
 {
     /**
+     * JDK14: Can use IdentityHashMap directly
      * Since map needs to have referencial equality rather than object equality
      * this constructor tries to use java.util.IdentityHashMap (>=1.4), and
      * failing that falls back on wrapper objects in a HashMap.
