@@ -72,13 +72,13 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * Add a new {@link Converter} definition.
      * @param id The id referred to by the {@link #withConverter(String, String)}
-     * @param className The implementation of {@link Converter} to instansitate.
+     * @param converterClassName The implementation of {@link Converter} to instansitate.
      * @return <code>this</code> to continue the fluency
      */
-    public FluentConfigurator withConverterType(String id, String className)
+    public FluentConfigurator withConverterType(String id, String converterClassName)
     {
         setState(STATE_INIT_CONVERT);
-        converterManager.addConverterType(id, className);
+        converterManager.addConverterType(id, converterClassName);
         return this;
     }
 
@@ -100,13 +100,13 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * Add a new {@link Creator} definition.
      * @param id The id referred to by the {@link #withCreator(String, String)}
-     * @param className The implementation of {@link Creator} to instansitate.
+     * @param creatorClassName The implementation of {@link Creator} to instansitate.
      * @return <code>this</code> to continue the fluency
      */
-    public FluentConfigurator withCreatorType(String id, String className)
+    public FluentConfigurator withCreatorType(String id, String creatorClassName)
     {
         setState(STATE_INIT_CREATE);
-        creatorManager.addCreatorType(id, className);
+        creatorManager.addCreatorType(id, creatorClassName);
         return this;
     }
 
@@ -155,17 +155,17 @@ public abstract class FluentConfigurator implements Configurator
 
     /**
      * Add a filter to whatever is being configured.
-     * @param className The class to add as a filter
+     * @param filterClassName The class to add as a filter
      * @return <code>this</code> to continue the fluency
      */
-    public FluentConfigurator addFilter(String className)
+    public FluentConfigurator addFilter(String filterClassName)
     {
         if (filters == null)
         {
             filters = new ArrayList();
         }
 
-        filters.add(className);
+        filters.add(filterClassName);
         return this;
     }
 
@@ -233,7 +233,9 @@ public abstract class FluentConfigurator implements Configurator
             signature = new StringBuffer();
         }
 
-        signature.append(line + System.getProperty("line.separator"));
+        signature.append(line);
+        signature.append(System.getProperty("line.separator"));
+
         return this;
     }
 
@@ -243,7 +245,7 @@ public abstract class FluentConfigurator implements Configurator
      * by calling this method, the instance will 'flush' anything in the queue
      * applicable to that state EVEN IF the state itself doesn't change. Thus, it's
      * important that the child methods don't call setState() when being invoked.
-     * @param state
+     * @param state The new state. See the STATE_* constants.
      */
     private void setState(int state)
     {
@@ -272,7 +274,7 @@ public abstract class FluentConfigurator implements Configurator
             {
                 if (params == null)
                 { 
-                    converterManager.addConverter(match, converter, Collections.emptyMap());
+                    converterManager.addConverter(match, converter, EMPTY_MAP);
                 }
                 else
                 {
@@ -293,7 +295,7 @@ public abstract class FluentConfigurator implements Configurator
             {
                 if (params == null)
                 { 
-                    creatorManager.addCreator(scriptName, typeName, Collections.emptyMap());
+                    creatorManager.addCreator(scriptName, typeName, EMPTY_MAP);
                 }
                 else
                 {
@@ -387,27 +389,27 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * Used for <allow create .../>
      */
-    private String typeName;
+    private String typeName = null;
 
     /**
      * Used for <allow create .../>
      */
-    private String scriptName;
+    private String scriptName = null;
 
     /**
      * Used for <allow filter .../>
      */
-    private String className;
+    private String className = null;
     
     /**
      * Used for <allow convert .../>
      */
-    private String converter;
+    private String converter = null;
 
     /**
      * Used for <allow convert .../>
      */
-    private String match;
+    private String match = null;
 
     /**
      * holds name / value pairs used in <allow create|convert ... />
@@ -422,12 +424,17 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * holds signature lines
      */
-    private StringBuffer signature;
+    private StringBuffer signature = null;
 
     /**
      * What section of a configuration are we in?
      */
     private int state = -1;
+
+    /**
+     * JDK5: we can convert this to Collections.emptyMap();
+     */
+    private static final Map EMPTY_MAP = Collections.unmodifiableMap(new HashMap());
 
     /**
      * What AjaxFilters apply to which Ajax calls?
@@ -437,17 +444,17 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * The ConverterManager that we are configuring
      */
-    private ConverterManager converterManager;
+    private ConverterManager converterManager = null;
 
     /**
      * The AccessControl that we are configuring
      */
-    private AccessControl accessControl;
+    private AccessControl accessControl = null;
 
     /**
      * The CreatorManager that we are configuring
      */
-    private CreatorManager creatorManager;
+    private CreatorManager creatorManager = null;
 
     /**
      * {@link #state} to say we are working in {@link #withCreatorType(String, String)}
@@ -465,7 +472,7 @@ public abstract class FluentConfigurator implements Configurator
     private static final int STATE_ALLOW_CREATE = 2;
     
     /**
-     * {@link #state} to say we are working in {@link #withFilter(String, String)}
+     * {@link #state} to say we are working in {@link #withFilter(String)}
      */
     private static final int STATE_ALLOW_FILTER = 3;
 
