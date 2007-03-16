@@ -69,7 +69,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                 String name = field.getName();
 
                 // We don't marshall getClass()
-                if (name.equals("class"))
+                if ("class".equals(name))
                 {
                     continue fieldLoop;
                 }
@@ -77,7 +77,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                 // Access rules mean we might not want to do this one
                 if (!isAllowedByIncludeExcludeRules(name))
                 {
-                    continue;
+                    continue fieldLoop;
                 }
 
                 if (!Modifier.isPublic(field.getModifiers()))
@@ -88,7 +88,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
                     }
                     else
                     {
-                        continue;
+                        continue fieldLoop;
                     }
                 }
 
@@ -106,12 +106,11 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
      */
     protected TypeHintContext createTypeHintContext(InboundContext inctx, Property property)
     {
-        TypeHintContext incc = inctx.getCurrentTypeHintContext();
-        return incc;
+        return inctx.getCurrentTypeHintContext();
     }
 
     /**
      * Do we force accessibillity for hidden fields
      */
-    private boolean force;
+    private boolean force = false;
 }

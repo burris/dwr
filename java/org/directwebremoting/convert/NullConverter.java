@@ -40,7 +40,7 @@ public class NullConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx)
+    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx)
     {
         return null;
     }
