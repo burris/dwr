@@ -12,7 +12,7 @@ function sendMessage() {
 function receiveMessages(messages) {
   var chatlog = "";
   for (var data in messages) {
-    chatlog = "<div>" + messages[data].text + "</div>" + chatlog;
+    chatlog = "<div>" + dwr.util.escapeHtml(messages[data].text) + "</div>" + chatlog;
   }
-  dwr.util.setValue("chatlog", chatlog);
+  dwr.util.setValue("chatlog", chatlog, { escapeHtml:false });
 }
