@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.3">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.3">
 		<accessrules>
 			<accessrule kind="accessible" pattern="org/w3c/dom/**"/>
 			<accessrule kind="accessible" pattern="org/xml/sax/**"/>
@@ -69,6 +69,8 @@
 			<attribute name="javadoc_location" value="jar:file:/C:/Share/joe/tameion/library/jarlib/hibernate-3.2/hibernate-entitymanager-3.2.0.GA.zip!/hibernate-entitymanager-3.2.0.GA/doc/api"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="jar/jetty-6.1.1.jar"/>
+	<classpathentry kind="lib" path="jar/jetty-util-6.1.1.jar"/>
 	<classpathentry kind="src" path="etc/classpath"/>
 	<classpathentry kind="src" path="java"/>
 	<classpathentry kind="src" path="demo"/>
