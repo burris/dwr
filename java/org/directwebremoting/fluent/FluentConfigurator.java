@@ -126,13 +126,13 @@ public abstract class FluentConfigurator implements Configurator
     }
     
     /**
-     * @param className filter class name
+     * @param newFilterClassName filter class name
      * @return <code>this</code> to continue the fluency
      */
-    public FluentConfigurator withFilter(String className)
+    public FluentConfigurator withFilter(String newFilterClassName)
     {
         setState(STATE_ALLOW_FILTER);
-        this.className = className;
+        this.filterClassName = newFilterClassName;
         return this;
     }
 
@@ -155,17 +155,17 @@ public abstract class FluentConfigurator implements Configurator
 
     /**
      * Add a filter to whatever is being configured.
-     * @param filterClassName The class to add as a filter
+     * @param newFilterClassName The class to add as a filter
      * @return <code>this</code> to continue the fluency
      */
-    public FluentConfigurator addFilter(String filterClassName)
+    public FluentConfigurator addFilter(String newFilterClassName)
     {
         if (filters == null)
         {
             filters = new ArrayList();
         }
 
-        filters.add(filterClassName);
+        filters.add(newFilterClassName);
         return this;
     }
 
@@ -304,10 +304,10 @@ public abstract class FluentConfigurator implements Configurator
                 
                 if (filters != null)
                 {
-                    for (Iterator iter = filters.iterator(); iter.hasNext();)
+                    for (Iterator it = filters.iterator(); it.hasNext();)
                     {
-                        String filterClassName = (String) iter.next();
-                        AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(scriptName, filterClassName, AjaxFilter.class);
+                        String className = (String) it.next();
+                        AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(scriptName, className, AjaxFilter.class);
 
                         if (filter != null)
                         {
@@ -331,7 +331,7 @@ public abstract class FluentConfigurator implements Configurator
         case STATE_ALLOW_FILTER:
             try
             {
-                Class impl = LocalUtil.classForName(className);
+                Class impl = LocalUtil.classForName(filterClassName);
                 AjaxFilter object = (AjaxFilter) impl.newInstance();
 
                 if (params != null) {
@@ -342,19 +342,19 @@ public abstract class FluentConfigurator implements Configurator
             }
             catch (ClassCastException ex)
             {
-                log.error(className + " does not implement " + AjaxFilter.class.getName(), ex);
+                log.error(filterClassName + " does not implement " + AjaxFilter.class.getName(), ex);
             }
             catch (NoClassDefFoundError ex)
             {
-                log.info("Missing class for filter (class='" + className + "'). Cause: " + ex.getMessage());
+                log.info("Missing class for filter (class='" + filterClassName + "'). Cause: " + ex.getMessage());
             }
             catch (Exception ex)
             {
-                log.error("Failed to add filter: class=" + className, ex);
+                log.error("Failed to add filter: class=" + filterClassName, ex);
             }
             
             params = null;
-            className = null;
+            filterClassName = null;
             
             break;
 
@@ -399,7 +399,7 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * Used for <allow filter .../>
      */
-    private String className = null;
+    private String filterClassName = null;
     
     /**
      * Used for <allow convert .../>
