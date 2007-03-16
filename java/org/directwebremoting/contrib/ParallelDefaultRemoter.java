@@ -31,7 +31,9 @@ import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
 
 /**
- * Remoter implementation executing in parallel a group of remote calls
+ * This implementation is not officially supported, and may be removed
+ * at some point in the future.
+ * Remoter implementation executing in parallel a group of remote calls.
  * @author <a href="mailto:chussenet@yahoo.com">Claude Hussenet</a>
  */
 public class ParallelDefaultRemoter extends DefaultRemoter
@@ -41,7 +43,7 @@ public class ParallelDefaultRemoter extends DefaultRemoter
         private Call call;
 
         /**
-         * @param call
+         * @param call The call to execute
          */
         public OneCall(Call call)
         {
@@ -82,7 +84,7 @@ public class ParallelDefaultRemoter extends DefaultRemoter
 
     /**
      * Sets the core number of threads.
-     * @param corePoolsize
+     * @param corePoolsize How many threads do we use
      */
     public void setParallelDefaultRemoterCorePoolsize(int corePoolsize)
     {
