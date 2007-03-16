@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.ltd.uk/dwr/dwr20.dtd">
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr/dwr20.dtd">
 
 <dwr>
 
@@ -41,18 +41,6 @@
       <param name="class" value="org.getahead.dwrdemo.clock.Clock"/>
     </create>
 
-    <!-- monitor
-    <create creator="new" javascript="Control" scope="application">
-      <param name="class" value="org.getahead.dwrdemo.monitor.Control"/>
-    </create>
-    <convert converter="bean" match="org.getahead.dwrdemo.monitor.Browser">
-      <param name="exclude" value="httpSessionId"/>
-    </convert>
-    <convert converter="bean" match="org.getahead.dwrdemo.monitor.ScriptView">
-      <param name="exclude" value="scriptSession"/>
-    </convert>
-    -->
-
     <!-- livehelp -->
     <create creator="new" javascript="LiveHelp" scope="application">
       <param name="class" value="org.getahead.dwrdemo.livehelp.LiveHelp"/>
@@ -76,7 +64,6 @@
       <auth method="getMinutes" role="admin"/>
       <auth method="getMinutes" role="devel"/>
       <filter class="org.getahead.dwrdemo.filter.LoggingAjaxFilter"/>
-      <filter class="org.getahead.dwrdemo.filter.RandomSecurityAjaxFilter"/>
     </create>
 
     <!-- resources in jars in this war file: Commons EmailValidator -->

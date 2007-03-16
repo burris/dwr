@@ -71,7 +71,7 @@ public class Util extends ScriptProxy
 
     /**
      * Set the value an HTML element to the specified value.
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/util/setvalue">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/util/setvalue">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param value The text to insert into the HTML element
      */
@@ -82,7 +82,7 @@ public class Util extends ScriptProxy
 
     /**
      * Set the value an HTML element to the specified value.
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/util/setvalue">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/util/setvalue">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param value The text to insert into the HTML element
      * @param escapeHtml Should we escape HTML characters?
@@ -96,7 +96,7 @@ public class Util extends ScriptProxy
     /**
      * Given a map, call setValue() for all the entries in the map using the
      * entry key as an element id.
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/util/setvalues">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/util/setvalues">More</a>.
      * @param values The map of elementIds to values to alter
      * @param escapeHtml Should we escape HTML characters?
      */
@@ -108,7 +108,7 @@ public class Util extends ScriptProxy
 
     /**
      * Add options to a list from an array or map.
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param array An array of strings to use as both value and text of options
      */
@@ -119,7 +119,7 @@ public class Util extends ScriptProxy
 
     /**
      * Add options to a list from an array or map.
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param array And array of objects from which to create options
      * @param property The object property to use for the option value and text
@@ -131,7 +131,7 @@ public class Util extends ScriptProxy
 
     /**
      * Add options to a list from an array or map.
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param array And array of objects from which to create options
      * @param valueProperty The object property to use for the option value
@@ -144,7 +144,7 @@ public class Util extends ScriptProxy
 
     /**
      * Remove all the options from a select list (specified by id)
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/lists">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/lists">More</a>.
      * @param elementId The HTML element to update (by id)
      */
     public void removeAllOptions(String elementId)
@@ -154,7 +154,7 @@ public class Util extends ScriptProxy
 
     /**
      * Create rows inside a the table, tbody, thead or tfoot element (given by id).
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/tables">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param data The cells to add to the table
      * @param options See link above for documentation on the options
@@ -186,7 +186,7 @@ public class Util extends ScriptProxy
 
     /**
      * Create rows inside a the table, tbody, thead or tfoot element (given by id).
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/tables">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param data The cells to add to the table
      */
@@ -197,7 +197,7 @@ public class Util extends ScriptProxy
 
     /**
      * Remove all the children of a given node.
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/tables">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/tables">More</a>.
      * @param elementId The HTML element to update (by id)
      */
     public void removeAllRows(String elementId)
@@ -207,7 +207,7 @@ public class Util extends ScriptProxy
 
     /**
      * Clone a given node.
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/TODO">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/TODO">More</a>.
      * @param elementId The HTML element to update (by id)
      */
     public void cloneNode(String elementId)
@@ -217,7 +217,7 @@ public class Util extends ScriptProxy
 
     /**
      * Clone a given node.
-     * <p><a href="http://getahead.ltd.uk/dwr/browser/TODO">More</a>.
+     * <p><a href="http://getahead.org/dwr/browser/TODO">More</a>.
      * @param elementId The HTML element to update (by id)
      * @param idPrefix How do we prefix ids in the cloned version of the node tree
      * @param idSuffix How do we suffix ids in the cloned version of the node tree

@@ -87,7 +87,7 @@ dwr.util.containsXssRiskyCharacters = function(original) {
 
 /**
  * Enables you to react to return being pressed in an input
- * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
+ * @see http://getahead.org/dwr/browser/util/selectrange
  */
 dwr.util.onReturn = function(event, action) {
   if (!event) event = window.event;
@@ -96,7 +96,7 @@ dwr.util.onReturn = function(event, action) {
 
 /**
  * Select a specific range in a text box. Useful for 'google suggest' type functions.
- * @see http://getahead.ltd.uk/dwr/browser/util/selectrange
+ * @see http://getahead.org/dwr/browser/util/selectrange
  */
 dwr.util.selectRange = function(ele, start, end) {
   ele = dwr.util._getElementById(ele, "selectRange()");
@@ -115,7 +115,7 @@ dwr.util.selectRange = function(ele, start, end) {
 
 /**
  * Find the element in the current HTML document with the given id or ids
- * @see http://getahead.ltd.uk/dwr/browser/util/$
+ * @see http://getahead.org/dwr/browser/util/$
  */
 if (document.getElementById) {
   dwr.util.byId = function() {
@@ -152,7 +152,7 @@ else if (document.all) {
 
 /**
  * Alias $ to dwr.util.byId
- * @see http://getahead.ltd.uk/dwr/browser/util/$
+ * @see http://getahead.org/dwr/browser/util/$
  */
 var $;
 if (!$) {
@@ -161,7 +161,7 @@ if (!$) {
 
 /**
  * Like toString but aimed at debugging
- * @see http://getahead.ltd.uk/dwr/browser/util/todescriptivestring
+ * @see http://getahead.org/dwr/browser/util/todescriptivestring
  */
 dwr.util.toDescriptiveString = function(data, level, depth) {
   var reply = "";
@@ -293,7 +293,7 @@ dwr.util._indent = function(level, depth) {
 
 /**
  * Setup a GMail style loading message.
- * @see http://getahead.ltd.uk/dwr/browser/util/useloadingmessage
+ * @see http://getahead.org/dwr/browser/util/useloadingmessage
  */
 dwr.util.useLoadingMessage = function(message) {
   var loadingMessage;
@@ -411,7 +411,7 @@ dwr.util.highlight = function(ele, options) {
 
 /**
  * Set the value an HTML element to the specified value.
- * @see http://getahead.ltd.uk/dwr/browser/util/setvalue
+ * @see http://getahead.org/dwr/browser/util/setvalue
  */
 dwr.util.setValue = function(ele, val, options) {
   if (val == null) val = "";
@@ -546,7 +546,7 @@ dwr.util._selectListItem = function(ele, val) {
 
 /**
  * Read the current value for a given HTML element.
- * @see http://getahead.ltd.uk/dwr/browser/util/getvalue
+ * @see http://getahead.org/dwr/browser/util/getvalue
  */
 dwr.util.getValue = function(ele, options) {
   if (options == null) options = {};
@@ -634,7 +634,7 @@ dwr.util.getValue = function(ele, options) {
 
 /**
  * getText() is like getValue() except that it reads the text (and not the value) from select elements
- * @see http://getahead.ltd.uk/dwr/browser/util/gettext
+ * @see http://getahead.org/dwr/browser/util/gettext
  */
 dwr.util.getText = function(ele) {
   ele = dwr.util._getElementById(ele, "getText()");
@@ -659,7 +659,7 @@ dwr.util.getText = function(ele) {
  * Given a map, or a recursive structure consisting of arrays and maps, call 
  * setValue() for all leaf entries and use intermediate levels to form nested
  * element ids.
- * @see http://getahead.ltd.uk/dwr/browser/util/setvalues
+ * @see http://getahead.org/dwr/browser/util/setvalues
  */
 dwr.util.setValues = function(data, options) {
   var prefix = "";
@@ -710,7 +710,7 @@ dwr.util._setValuesRecursive = function(data, idpath) {
  * element ids.
  * Given a string or element that refers to a form, create an object from the 
  * elements of the form.
- * @see http://getahead.ltd.uk/dwr/browser/util/getvalues
+ * @see http://getahead.org/dwr/browser/util/getvalues
  */
 dwr.util.getValues = function(data, options) {
   var ele;
@@ -731,7 +731,7 @@ dwr.util.getValues = function(data, options) {
 /**
  * Given a string or element that refers to a form, create an object from the 
  * elements of the form.
- * @see http://getahead.ltd.uk/dwr/browser/util/getvalues
+ * @see http://getahead.org/dwr/browser/util/getvalues
  */
 dwr.util.getFormValues = function(ele) {
   ele = dwr.util.byId(ele);
@@ -791,7 +791,7 @@ dwr.util._getValuesRecursive = function(data, idpath) {
 
 /**
  * Add options to a list from an array or map.
- * @see http://getahead.ltd.uk/dwr/browser/lists
+ * @see http://getahead.org/dwr/browser/lists
  */
 dwr.util.addOptions = function(ele, data/*, options*/) {
   ele = dwr.util._getElementById(ele, "addOptions()");
@@ -872,7 +872,7 @@ dwr.util._getValueFrom = function(data, method) {
 
 /**
  * Remove all the options from a select list (specified by id)
- * @see http://getahead.ltd.uk/dwr/browser/lists
+ * @see http://getahead.org/dwr/browser/lists
  */
 dwr.util.removeAllOptions = function(ele) {
   ele = dwr.util._getElementById(ele, "removeAllOptions()");
@@ -895,7 +895,7 @@ dwr.util.removeAllOptions = function(ele) {
 
 /**
  * Create rows inside a the table, tbody, thead or tfoot element (given by id).
- * @see http://getahead.ltd.uk/dwr/browser/tables
+ * @see http://getahead.org/dwr/browser/tables
  */
 dwr.util.addRows = function(ele, data, cellFuncs, options) {
   ele = dwr.util._getElementById(ele, "addRows()");
@@ -982,7 +982,7 @@ dwr.util._defaultCellCreator = function(options) {
 
 /**
  * Remove all the children of a given node.
- * @see http://getahead.ltd.uk/dwr/browser/tables
+ * @see http://getahead.org/dwr/browser/tables
  */
 dwr.util.removeAllRows = function(ele, options) {
   ele = dwr.util._getElementById(ele, "removeAllRows()");
@@ -1050,7 +1050,7 @@ dwr.util.toggleClassName = function(ele, className) {
 
 /**
  * Clone a node and insert it into the document just above the 'template' node
- * @see http://getahead.ltd.uk/dwr/???
+ * @see http://getahead.org/dwr/???
  */
 dwr.util.cloneNode = function(ele, options) {
   ele = dwr.util._getElementById(ele, "cloneNode()");

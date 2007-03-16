@@ -62,7 +62,7 @@ public class Batch
 
         if (!allowGetForSafariButMakeForgeryEasier && isGet)
         {
-            log.error("GET is disallowed because it makes request forgery easier. See http://getahead.ltd.uk/dwr/security/allowGetForSafariButMakeForgeryEasier for more details.");
+            log.error("GET is disallowed because it makes request forgery easier. See http://getahead.org/dwr/security/allowGetForSafariButMakeForgeryEasier for more details.");
             throw new SecurityException("GET Disalowed");
         }
 

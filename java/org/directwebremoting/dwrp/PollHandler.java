@@ -320,7 +320,7 @@ public class PollHandler implements Handler
      */
     protected void sendNoPollingResponse(HttpServletResponse response, String batchId) throws IOException
     {
-        log.error("Polling and Comet are disabled. To enable them set the init-param activeReverseAjaxEnabled to true. See http://getahead.ltd.uk/dwr/server/servlet for more.");
+        log.error("Polling and Comet are disabled. To enable them set the init-param activeReverseAjaxEnabled to true. See http://getahead.org/dwr/server/servlet for more.");
         String script = EnginePrivate.getRemotePollCometDisabledScript(batchId);
         sendScript(response, script);
     }

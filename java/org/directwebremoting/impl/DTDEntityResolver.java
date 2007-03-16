@@ -44,7 +44,7 @@ public final class DTDEntityResolver implements EntityResolver
                 if (i != MAPPINGS.length - 1)
                 {
                     String doctype = "<!DOCTYPE dwr PUBLIC \"" +
-                        MAPPINGS[MAPPINGS.length - 1][0] + "\" \"http://www.getahead.ltd.uk/dwr/" +
+                        MAPPINGS[MAPPINGS.length - 1][0] + "\" \"http://getahead.org/dwr/" +
                         MAPPINGS[MAPPINGS.length - 1][1] + "\">";
 
                     log.warn("Deprecated public id in dwr.xml. Use: " + doctype);
