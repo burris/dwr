@@ -352,6 +352,8 @@ public class DefaultRemoter implements Remoter
                 {
                     if (scope.equals(Creator.APPLICATION))
                     {
+                        // This might also be done at application startup by
+                        // DefaultCreatorManager.addCreator(String, Creator)
                         webcx.getServletContext().setAttribute(call.getScriptName(), object);
                     }
                     else if (scope.equals(Creator.SESSION))

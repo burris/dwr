@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.util.LocalUtil;
@@ -132,6 +134,26 @@ public class DefaultCreatorManager implements CreatorManager
         {
             log.error("Error loading class for creator '" + creator + "'.", ex);
         }
+
+        // If this is application scope then it might make sense to create one
+        // now rather than wait for first use. Otherwise this job is done by
+        // DefaultRemoter.execute(Call call)
+        if (initApplicationScopeCreatorsAtStartup && creator.getScope().equals(Creator.APPLICATION))
+        {
+            try
+            {
+                WebContext webcx = WebContextFactory.get();
+                Object object = creator.getInstance();            
+                webcx.getServletContext().setAttribute(creator.getJavascript(), object);
+
+                log.debug("Created new " + creator.getJavascript() + ", stored in application.");
+            }
+            catch (InstantiationException ex)
+            {
+                log.warn("Failed to create " + creator.getJavascript(), ex);
+                log.debug("Maybe it will succeed when the application is in flight. If so you should probably set initApplicationScopeCreatorsAtStartup=false in web.xml");
+            }
+        }
     }
 
     /* (non-Javadoc)
@@ -199,8 +221,31 @@ public class DefaultCreatorManager implements CreatorManager
     private boolean debug = false;
 
     /**
+     * Do we do full-create on startup?
+     */
+    private boolean initApplicationScopeCreatorsAtStartup = false;
+
+    /**
      * The properties that we don't warn about if they don't exist.
      * @see DefaultCreatorManager#addCreator(String, String, Map)
      */
     private static List ignore = Arrays.asList(new String[] { "creator", "class" });
+
+    /**
+     * Do we do full-create on startup?
+     * @return true if we are doing full-create
+     */
+    public boolean isInitApplicationScopeCreatorsAtStartup()
+    {
+        return initApplicationScopeCreatorsAtStartup;
+    }
+
+    /**
+     * Do we do full-create on startup?
+     * @param initApplicationScopeCreatorsAtStartup true for full create
+     */
+    public void setInitApplicationScopeCreatorsAtStartup(boolean initApplicationScopeCreatorsAtStartup)
+    {
+        this.initApplicationScopeCreatorsAtStartup = initApplicationScopeCreatorsAtStartup;
+    }
 }
