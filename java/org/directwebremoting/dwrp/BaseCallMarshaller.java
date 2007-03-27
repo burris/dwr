@@ -305,8 +305,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         RealScriptSession scriptSession = (RealScriptSession) WebContextFactory.get().getScriptSession();
 
         out.println(ProtocolConstants.SCRIPT_CALL_INSERT);
-        scriptSession.addScriptConduit(conduit);
-        scriptSession.removeScriptConduit(conduit);
+        scriptSession.writeScripts(conduit);
         out.println(ProtocolConstants.SCRIPT_CALL_REPLY);
 
         String batchId = replies.getBatchId();
