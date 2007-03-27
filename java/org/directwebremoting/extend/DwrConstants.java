@@ -36,4 +36,9 @@ public interface DwrConstants
      * The default dwr.xml file path
      */
     public static final String DEFAULT_DWR_XML = "/WEB-INF/dwr.xml";
+
+    /**
+     * The string that we use to make scripts fail eval() without processing
+     */
+    public static final String SCRIPT_TAG_PROTECTION = "throw 'crossDomainSessionSecurity is on.';";
 }

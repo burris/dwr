@@ -18,6 +18,7 @@ package org.directwebremoting.dwrp;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -39,6 +40,13 @@ public class PlainCallMarshaller extends BaseCallMarshaller
      */
     protected void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException
     {
+        if (crossDomainSessionSecurity)
+        {
+            synchronized (out)
+            {
+                out.println(scriptTagProtection);
+            }
+        }
     }
 
     /* (non-Javadoc)
@@ -58,4 +66,18 @@ public class PlainCallMarshaller extends BaseCallMarshaller
             out.println(script);
         }
     }
+
+    /**
+     * What is the string we use for script tag hack protection
+     * @param scriptTagProtection the scriptTagProtection to set
+     */
+    public void setScriptTagProtection(String scriptTagProtection)
+    {
+        this.scriptTagProtection = scriptTagProtection;
+    }
+
+    /**
+     * What is the string we use for script tag hack protection
+     */
+    private String scriptTagProtection = DwrConstants.SCRIPT_TAG_PROTECTION;
 }

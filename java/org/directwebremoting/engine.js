@@ -245,6 +245,9 @@ dwr.engine._sessionCookieName = "${sessionCookieName}"; // JSESSIONID
 /** Is GET enabled for the benefit of Safari? */
 dwr.engine._allowGetForSafariButMakeForgeryEasier = "${allowGetForSafariButMakeForgeryEasier}";
 
+/** The script prefix to strip in the case of scriptTagProtection. */
+dwr.engine._scriptTagProtection = "${scriptTagProtection}";
+
 /** The read page id that we calculate */
 dwr.engine._scriptSessionId = null;
 
@@ -844,6 +847,7 @@ dwr.engine._stateChange = function(batch) {
 
   // Outside of the try/catch so errors propogate normally:
   dwr.engine._receivedBatch = batch;
+  toEval = toEval.replace(dwr.engine._scriptTagProtection, "");
   dwr.engine._eval(toEval);
   dwr.engine._receivedBatch = null;
 

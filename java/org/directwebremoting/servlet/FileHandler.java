@@ -120,6 +120,11 @@ public class FileHandler implements Handler
                         {
                             line = LocalUtil.replace(line, PARAM_SCRIPT_ALLOWGET, String.valueOf(allowGetForSafariButMakeForgeryEasier));
                         }
+
+                        if (line.indexOf(PARAM_SCRIPT_TAG_PROTECTION) != -1)
+                        {
+                            line = LocalUtil.replace(line, PARAM_SCRIPT_TAG_PROTECTION, scriptTagProtection );
+                        }
                     }
 
                     buffer.append(line);
@@ -177,6 +182,7 @@ public class FileHandler implements Handler
             // if header value can not be parsed as http-date.
             // We might want to check for "; length=" and then do our own parsing
             // See: http://getahead.org/bugs/browse/DWR-20
+            // And: http://www-1.ibm.com/support/docview.wss?uid=swg1PK20062
         }
 
         if (modifiedSince != -1)
@@ -302,9 +308,23 @@ public class FileHandler implements Handler
     }
 
     /**
+     * What is the string we use for script tag hack protection
+     * @param scriptTagProtection the scriptTagProtection to set
+     */
+    public void setScriptTagProtection(String scriptTagProtection)
+    {
+        this.scriptTagProtection = scriptTagProtection;
+    }
+
+    /**
      * By default we disable GET, but this hinders old Safaris
      */
     private boolean allowGetForSafariButMakeForgeryEasier = false;
+
+    /**
+     * What is the string we use for script tag hack protection
+     */
+    private String scriptTagProtection = DwrConstants.SCRIPT_TAG_PROTECTION;
 
     /**
      * Do we ignore all the Last-Modified/ETags blathering?
@@ -392,6 +412,12 @@ public class FileHandler implements Handler
      * Under what cookie name is the session id stored?
      */
     protected static final String PARAM_SCRIPT_COOKIENAME = "${sessionCookieName}";
+
+    /**
+     * What is the replacement field we use to tell engine.js what we are using
+     * for script tag hack protection
+     */
+    protected static final String PARAM_SCRIPT_TAG_PROTECTION = "${scriptTagProtection}";
 
     /**
      * The log stream
