@@ -847,7 +847,7 @@ dwr.engine._stateChange = function(batch) {
 
   // Outside of the try/catch so errors propogate normally:
   dwr.engine._receivedBatch = batch;
-  toEval = toEval.replace(dwr.engine._scriptTagProtection, "");
+  if (toEval != null) toEval = toEval.replace(dwr.engine._scriptTagProtection, "");
   dwr.engine._eval(toEval);
   dwr.engine._receivedBatch = null;
 
