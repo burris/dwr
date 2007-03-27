@@ -100,14 +100,6 @@ public class PollHandler implements Handler
         String prString = extractParameter(request, parameters, ATTRIBUTE_PARTIAL_RESPONSE, ProtocolConstants.INBOUND_KEY_PARTIAL_RESPONSE);
         int partialResponse = Integer.valueOf(prString).intValue();
 
-        // TODO: remove (Hack while the 4k-buffer-flush this is broken)
-        /*
-        if (partialResponse == PARTIAL_RESPONSE_FLUSH)
-        {
-            partialResponse = PARTIAL_RESPONSE_NO;
-        }
-        //*/
-
         if (!activeReverseAjaxEnabled)
         {
             sendNoPollingResponse(response, batchId);
