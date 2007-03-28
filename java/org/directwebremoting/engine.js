@@ -494,13 +494,13 @@ dwr.engine._createBatch = function() {
   if (dwr.engine._headers) {
     for (propname in dwr.engine._headers) {
       data = dwr.engine._headers[propname];
-      if (typeof data != "function") batch.headers[propname] = "" + data;
+      if (typeof data != "function") batch.headers[propname] = data;
     }
   }
   if (dwr.engine._parameters) {
     for (propname in dwr.engine._parameters) {
       data = dwr.engine._parameters[propname];
-      if (typeof data != "function") batch.parameters[propname] = "" + data;
+      if (typeof data != "function") batch.parameters[propname] = data;
     }
   }
   return batch;
@@ -517,14 +517,14 @@ dwr.engine._mergeBatch = function(batch, overrides) {
   if (overrides.postHook != null) batch.postHooks.push(overrides.postHook);
   if (overrides.headers) {
     for (propname in overrides.headers) {
-      data = overrides[propname];
-      if (typeof data != "function") batch.headers[propname] = "" + data;
+      data = overrides.headers[propname];
+      if (typeof data != "function") batch.headers[propname] = data;
     }
   }
   if (overrides.parameters) {
     for (propname in overrides.parameters) {
-      data = overrides[propname];
-      if (typeof data != "function") batch.map[propname] = "" + data;
+      data = overrides.parameters[propname];
+      if (typeof data != "function") batch.map["p-" + propname] = "" + data;
     }
   }
 };

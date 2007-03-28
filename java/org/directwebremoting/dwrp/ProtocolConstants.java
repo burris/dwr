@@ -118,6 +118,11 @@ public interface ProtocolConstants
     public static final String INBOUND_KEY_ENV = "e";
 
     /**
+     * What prefix do we put to the meta-data paramters
+     */
+    public static final String INBOUND_KEY_METADATA = "p-";
+
+    /**
      * The inbound key to declare if the XHR.responseText is readable when half filled
      */
     public static final String INBOUND_KEY_PARTIAL_RESPONSE = "partialResponse";

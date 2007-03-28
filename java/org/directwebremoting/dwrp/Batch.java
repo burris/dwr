@@ -290,7 +290,16 @@ public class Batch
         scriptSessionId = (String) paramMap.remove(ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         page = (String) paramMap.remove(ProtocolConstants.INBOUND_KEY_PAGE);
 
-        setSpareParameters(paramMap);
+        for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+        {
+            Map.Entry entry = (Map.Entry) it.next();
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            if (key.startsWith(ProtocolConstants.INBOUND_KEY_METADATA))
+            {
+                spareParameters.put(key.substring(ProtocolConstants.INBOUND_KEY_METADATA.length()), value);
+            }
+        }
     }
 
     private List inboundContexts = new ArrayList();
