@@ -134,7 +134,7 @@ public class AnnotationsConfigurator implements Configurator
         creatorManager.addCreatorType(creatorName, creatorClass);
 
         Map<String, String> params = new HashMap<String, String>();
-        if (NewCreator.class.isAssignableFrom(NewCreator.class))
+        if (NewCreator.class.isAssignableFrom(creator))
         {
             params.put("class", clazz.getName());
         }
