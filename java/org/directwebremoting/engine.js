@@ -248,6 +248,9 @@ dwr.engine._allowGetForSafariButMakeForgeryEasier = "${allowGetForSafariButMakeF
 /** The script prefix to strip in the case of scriptTagProtection. */
 dwr.engine._scriptTagProtection = "${scriptTagProtection}";
 
+/** The default path to the DWR servlet */
+dwr.engine._defaultPath = "${defaultPath}";
+
 /** The read page id that we calculate */
 dwr.engine._scriptSessionId = null;
 

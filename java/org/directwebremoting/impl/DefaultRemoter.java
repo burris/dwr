@@ -158,7 +158,7 @@ public class DefaultRemoter implements Remoter
 
         buffer.append('\n');
 
-        String init = EnginePrivate.getEngineInitScript(actualPath);
+        String init = EnginePrivate.getEngineInitScript();
         buffer.append(init);
 
         buffer.append("if (" + scriptName + " == null) var " + scriptName + " = {};\n");

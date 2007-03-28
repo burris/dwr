@@ -123,7 +123,17 @@ public class FileHandler implements Handler
 
                         if (line.indexOf(PARAM_SCRIPT_TAG_PROTECTION) != -1)
                         {
-                            line = LocalUtil.replace(line, PARAM_SCRIPT_TAG_PROTECTION, scriptTagProtection );
+                            line = LocalUtil.replace(line, PARAM_SCRIPT_TAG_PROTECTION, scriptTagProtection);
+                        }
+
+                        if (line.indexOf(PARAM_DEFAULT_PATH) != -1)
+                        {
+                            String path = request.getContextPath() + request.getServletPath();
+                            if (overridePath != null)
+                            {
+                                path = overridePath;
+                            }
+                            line = LocalUtil.replace(line, PARAM_DEFAULT_PATH, path);
                         }
                     }
 
@@ -317,6 +327,20 @@ public class FileHandler implements Handler
     }
 
     /**
+     * If we need to override the default path
+     * @param overridePath The new override path
+     */
+    public void setOverridePath(String overridePath)
+    {
+        this.overridePath = overridePath;
+    }
+
+    /**
+     * If we need to override the default path
+     */
+    private String overridePath = null;
+
+    /**
      * By default we disable GET, but this hinders old Safaris
      */
     private boolean allowGetForSafariButMakeForgeryEasier = false;
@@ -418,6 +442,12 @@ public class FileHandler implements Handler
      * for script tag hack protection
      */
     protected static final String PARAM_SCRIPT_TAG_PROTECTION = "${scriptTagProtection}";
+
+    /**
+     * What is the replacement field we use to tell engine.js what we are using
+     * for script tag hack protection
+     */
+    protected static final String PARAM_DEFAULT_PATH = "${defaultPath}";
 
     /**
      * The log stream
