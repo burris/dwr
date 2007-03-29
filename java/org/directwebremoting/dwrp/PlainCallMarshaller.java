@@ -40,7 +40,7 @@ public class PlainCallMarshaller extends BaseCallMarshaller
      */
     protected void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException
     {
-        if (crossDomainSessionSecurity)
+        if (allowScriptTagRemoting)
         {
             synchronized (out)
             {
@@ -66,6 +66,20 @@ public class PlainCallMarshaller extends BaseCallMarshaller
             out.println(script);
         }
     }
+
+    /**
+     * Do we allow ScriptTag remoting?
+     * @param allowScriptTagRemoting The new value to set
+     */
+    public void setAllowScriptTagRemoting(boolean allowScriptTagRemoting)
+    {
+        this.allowScriptTagRemoting = allowScriptTagRemoting;
+    }
+
+    /**
+     * Do we allow ScriptTag remoting.
+     */
+    private boolean allowScriptTagRemoting = false;
 
     /**
      * What is the string we use for script tag hack protection

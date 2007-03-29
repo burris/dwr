@@ -40,5 +40,5 @@ public interface DwrConstants
     /**
      * The string that we use to make scripts fail eval() without processing
      */
-    public static final String SCRIPT_TAG_PROTECTION = "throw 'crossDomainSessionSecurity is on.';";
+    public static final String SCRIPT_TAG_PROTECTION = "throw 'allowScriptTagRemoting is false.';";
 }
