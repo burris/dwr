@@ -27,7 +27,37 @@ public class JettySpringLauncher
         connector.setPort(8080);
         server.addConnector(connector);
 
-        Context context = new Context(server, "/", Context.SESSIONS);
+        Context htmlContext = new Context(server, "/", Context.SESSIONS);
+
+        ResourceHandler htmlHandler = new ResourceHandler();
+        htmlHandler.setResourceBase("web");
+        htmlContext.setHandler(htmlHandler);
+
+        Context servletContext = new Context(server, "/", Context.SESSIONS);
+
+        GenericWebApplicationContext springContext = new GenericWebApplicationContext();
+        springContext.setParent(new ClassPathXmlApplicationContext("org/getahead/dwrdemo/cli/spring.xml"));
+        servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, springContext);
+
+        ServletHolder holder = new ServletHolder(new DwrSpringServlet());
+        holder.setInitParameter("pollAndCometEnabled", "true");
+        holder.setInitParameter("debug", "true");
+        servletContext.addServlet(holder, "/dwr/*");
+
+        try
+        {
+            JettyShutdown.addShutdownHook(server);
+            server.start();
+            server.join();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+}
+/*
+        Context context = new Context(server, "/dwr", Context.SESSIONS);
 
         ResourceHandler handler = new ResourceHandler();
         handler.setResourceBase("web");
@@ -41,17 +71,6 @@ public class JettySpringLauncher
         webapp.setParent(new ClassPathXmlApplicationContext("org/getahead/dwrdemo/cli/spring.xml"));
 
         context.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, webapp);
-        context.addServlet(holder, "/dwr/*");
+        context.addServlet(holder, "/dwr/dwr/*");
 
-        try
-        {
-            // JettyShutdown.addShutdownHook(server);
-            server.start();
-            server.join();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-}
+*/

@@ -18,32 +18,27 @@ public class JettyLauncher
      */
     public static void main(String[] args)
     {
-        final Server server = new Server();
+        Server server = new Server();
+
         SelectChannelConnector connector = new SelectChannelConnector();
         connector.setPort(8080);
         server.addConnector(connector);
 
-        Context context = new Context(server, "/", Context.SESSIONS);
-
+        Context htmlContext = new Context(server, "/", Context.SESSIONS);
         ResourceHandler htmlHandler = new ResourceHandler();
         htmlHandler.setResourceBase("web");
-        context.setHandler(htmlHandler);
+        htmlContext.setHandler(htmlHandler);
 
-        ServletHolder servletHolder = new ServletHolder(new DwrServlet());
-        servletHolder.setInitParameter("activeReverseAjaxEnabled", "true");
-        servletHolder.setInitParameter("debug", "true");
-        context.addServlet(servletHolder, "/dwr/*");
-
-        /*
-        ContextHandler handler = new ContextHandler();
-        handler.setContextPath("/");
-        handler.setResourceBase("web");
-        root.setHandler(handler);
-        */
+        Context servletContext = new Context(server, "/", Context.SESSIONS);
+        ServletHolder holder = new ServletHolder(new DwrServlet());
+        holder.setInitParameter("activeReverseAjaxEnabled", "true");
+        holder.setInitParameter("debug", "true");
+        servletContext.addServlet(holder, "/dwr/*");
+        servletContext.setResourceBase("web");
 
         try
         {
-            // JettyShutdown.addShutdownHook(server);
+            JettyShutdown.addShutdownHook(server);
             server.start();
             server.join();
         }
