@@ -18,6 +18,7 @@ package org.directwebremoting.guice;
 
 /**
  * Constants for DWR-Guice integration
+ * @author Tim Peierls [tim at peierls dot net]
  */
 class Constants {
 

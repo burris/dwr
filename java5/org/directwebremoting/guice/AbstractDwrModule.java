@@ -29,6 +29,7 @@ import static org.directwebremoting.guice.Constants.CLASSES;
 /**
  * An extension of {@link AbstractModule} that adds DWR configuration methods,
  * in conjunction with {@link DwrGuiceServlet}.
+ * @author Tim Peierls [tim at peierls dot net]
  */
 public abstract class AbstractDwrModule extends AbstractModule
 {

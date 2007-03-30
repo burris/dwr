@@ -104,5 +104,6 @@
  *   and the <code>HelloRecord</code> class would need to be annotated with
  *   <code>@DataTransferObject</code>.
  * </p>
+ * @author Tim Peierls [tim at peierls dot net]
  */
 package org.directwebremoting.guice;

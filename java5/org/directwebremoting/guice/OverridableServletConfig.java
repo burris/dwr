@@ -28,6 +28,7 @@ import javax.servlet.ServletContext;
 
 /**
  * Wraps an existing ServletConfig, allowing changes to be made to the existing initParams.
+ * @author Tim Peierls [tim at peierls dot net]
  */
 class OverridableServletConfig implements ServletConfig {
     private final ServletConfig servletConfig;

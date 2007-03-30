@@ -24,6 +24,7 @@ import org.directwebremoting.WebContextFactory;
 
 /**
  * Utility for retrieving an Injector in a servlet context.
+ * @author Tim Peierls [tim at peierls dot net]
  */
 public class DwrGuiceUtil
 {

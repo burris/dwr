@@ -31,6 +31,7 @@ import static org.directwebremoting.guice.DwrGuiceUtil.uninstallInjector;
 /**
  * Register a concrete subclass of this as a servlet context listener to
  * configure an {@link Injector} and stash it in the {@link ServletContext}.
+ * @author Tim Peierls [tim at peierls dot net]
  */
 public abstract class DwrGuiceServletContextListener
     extends AbstractDwrModule

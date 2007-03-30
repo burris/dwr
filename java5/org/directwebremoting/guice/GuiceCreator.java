@@ -24,6 +24,7 @@ import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 
 /**
  * A creator that uses Guice dependency injection to create remoted objects.
+ * @author Tim Peierls [tim at peierls dot net]
  */
 public class GuiceCreator extends NewCreator implements Creator {
 
@@ -37,7 +38,7 @@ public class GuiceCreator extends NewCreator implements Creator {
      * Specified via {@link org.directwebremoting.annotations.RemoteProxy @RemoteProxy}
      * or via a parameter in XML configuration.
      */
-    public void setClass(String classname)
+    @Override public void setClass(String classname)
     {
         try
         {
@@ -56,7 +57,7 @@ public class GuiceCreator extends NewCreator implements Creator {
     /**
      * The class named through {@link GuiceCreator#setClass setClass}.
      */
-    public Class getType()
+    @Override public Class getType()
     {
         return type;
     }
@@ -65,7 +66,7 @@ public class GuiceCreator extends NewCreator implements Creator {
      * Looks up an instance of this creator's type with an
      * {@link com.google.inject.Injector Injector}.
      */
-    public Object getInstance()
+    @Override public Object getInstance()
     {
         return injector.getInstance(type);
     }

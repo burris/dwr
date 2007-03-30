@@ -40,6 +40,7 @@ import static org.directwebremoting.impl.ContainerUtil.INIT_CUSTOM_CONFIGURATOR;
  * An extension of the basic {@link DwrServlet} that configures itself for
  * dependency injection with Guice. Must be used in conjunction with
  * {@link DwrGuiceServletContextFilter}.
+ * @author Tim Peierls [tim at peierls dot net]
  */
 public class DwrGuiceServlet extends DwrServlet {
 

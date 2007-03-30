@@ -19,8 +19,7 @@ import org.directwebremoting.fluent.FluentConfigurator;
 
 /**
  * Extends {@link FluentConfigurator} with type-safe methods to be more Guice-friendly.
- *
- * @todo Type-safe versions of withCreator/withCreatorType/withFilter/etc.
+ * @author Tim Peierls [tim at peierls dot net]
  */
 public abstract class GuiceConfigurator extends FluentConfigurator {
 
