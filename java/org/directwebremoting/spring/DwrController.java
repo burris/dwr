@@ -36,7 +36,6 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -98,7 +97,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @author Bram Smeets
  */
-public class DwrController extends AbstractController implements BeanNameAware, InitializingBean, BeanFactoryAware, ServletContextAware
+public class DwrController extends AbstractController implements BeanNameAware, InitializingBean, BeanFactoryAware
 {
     /**
      * Is called by the Spring container to set the bean factory. <br/>
@@ -155,6 +154,10 @@ public class DwrController extends AbstractController implements BeanNameAware, 
     {
         ServletContext servletContext = getServletContext();
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("afterPropertiesSet() called with servletContext '" + servletContext + "'");  
+        }
+        
         Assert.notNull(servletContext, "The servlet context has not been set on the controller");
         Assert.notNull(configurators, "The required 'configurators' property should be set");
 
