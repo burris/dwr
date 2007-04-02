@@ -32,6 +32,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.ChildBeanDefinition;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
@@ -174,7 +175,9 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 catch (ClassNotFoundException e)
                 {
                     // TODO: proper error handling
-                    throw new IllegalArgumentException("bla");
+                    throw new IllegalArgumentException("DWR filter class '" + filterClass + "' was not found. " + 
+                                                       "Check the class name specified in <dwr:filter class=\"" + filterClass + 
+                                                       "\" /> exists");
                 }
                 BeanDefinitionHolder holder2 = new BeanDefinitionHolder(beanFilter.getBeanDefinition(), "__filter_" + filterClass + "_" + javascript);
                 BeanDefinitionReaderUtils.registerBeanDefinition(holder2, registry);
@@ -279,7 +282,14 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
             try
             {
-                beanCreator.addPropertyValue("beanClass", ClassUtils.forName(definition.getBeanDefinition().getBeanClassName()));
+                String beanClassName = resolveBeanClassname(definition.getBeanDefinition(), parserContext.getRegistry());
+                if (beanClassName == null) 
+                {
+                    throw new FatalBeanException("Unabled to find type for beanName '" + definition.getBeanName() + 
+                                                 "'. " + "Check your bean has a correctly configured parent or provide a class for " + 
+                                                 " the bean definition");
+                }
+                beanCreator.addPropertyValue("beanClass", ClassUtils.forName(beanClassName));
             }
             catch (ClassNotFoundException e)
             {
@@ -298,6 +308,31 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
             return definition;
         }
+        
+        /**
+         *  Try getting the beanClassName from the definition and if that fails try to get it from 
+         *  the parent.
+         *  @param definition 
+         *  @param registry
+         *  @return class name or null if not found
+         */
+        private String resolveBeanClassname(BeanDefinition definition, BeanDefinitionRegistry registry) 
+        {
+            String beanClassName = definition.getBeanClassName();    
+            if (!StringUtils.hasText(beanClassName)) 
+            {
+                while (definition instanceof ChildBeanDefinition )
+                {
+                    String parentName = ((ChildBeanDefinition)definition).getParentName();
+                    BeanDefinition parentDefinition =  registry.getBeanDefinition(parentName);
+                    beanClassName = parentDefinition.getBeanClassName();
+                    if (StringUtils.hasText(beanClassName )) break;
+                    definition = parentDefinition;
+                }
+            }
+        
+            return beanClassName;
+        }
     }
 
     protected class ConverterBeanDefinitionDecorator implements BeanDefinitionDecorator
@@ -308,11 +343,13 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             Element element = (Element) node;
             String type = element.getAttribute("type");
             String className = element.getAttribute("class");
-
+            String javascriptClassName = element.getAttribute("javascript");
+            
             BeanDefinitionRegistry registry = parserContext.getRegistry();
 
             ConverterConfig converterConfig = new ConverterConfig();
             converterConfig.setType(type);
+            converterConfig.setJavascriptClassName(javascriptClassName);
             parseConverterSettings(converterConfig, element);
             lookupConverters(registry).put(className, converterConfig);
 
