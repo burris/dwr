@@ -51,6 +51,22 @@ public class ConverterConfig extends AbstractConfig
     }
 
     /**
+     * @return the javascriptClassName
+     */
+    public String getJavascriptClassName()
+    {
+        return javascriptClassName;
+    }
+
+    /**
+     * @param javascriptClassName the javascriptClassName to set
+     */
+    public void setJavascriptClassName(String javascriptClassName)
+    {
+        this.javascriptClassName = javascriptClassName;
+    }
+
+    /**
      * If true DWR will use reflection modifiers to access private members of objects
      * @return - Returns whether to use reflection for accessing private members
      */
@@ -76,5 +92,10 @@ public class ConverterConfig extends AbstractConfig
      * If <code>true</code> instructs DWR to use reflection modifiers to access private members of objects
      */
     private boolean force = false;
+    
+    /**
+     * The javascriptClassName to set
+     */
+    private String javascriptClassName; 
 
 }
