@@ -174,6 +174,8 @@ public class DefaultScriptSession implements RealScriptSession
             throw new NullPointerException("null script");
         }
 
+        // log.debug("addScript() to " + this);
+
         // First we try to add the script to an existing conduit
         synchronized (scriptLock)
         {
@@ -181,6 +183,7 @@ public class DefaultScriptSession implements RealScriptSession
             {
                 // There are no conduits, just store it until there are
                 scripts.add(script);
+                // log.debug("- No conduits. Adding script to waiting list");
             }
             else
             {
@@ -197,17 +200,20 @@ public class DefaultScriptSession implements RealScriptSession
                         {
                             conduit.flush();
                         }
+
+                        // log.debug("- Adding script to conduit (written=" + written + "): " + conduit);
                     }
                     catch (Exception ex)
                     {
-                        log.debug("Failed to write to ScriptConduit, removing from list: " + conduit);
                         it.remove();
+                        log.debug("Failed to write to ScriptConduit, removing from list: " + conduit);
                     }
                 }
 
                 if (!written)
                 {
                     scripts.add(script);
+                    // log.debug("- No conduits passed it on. Adding script to waiting list");
                 }
             }
         }
@@ -224,6 +230,8 @@ public class DefaultScriptSession implements RealScriptSession
         {
             writeScripts(conduit);
             conduits.add(conduit);
+
+            // log.debug("Adding Conduit: conduit=" + conduit + " scriptsession=" + this);
         }
     }
 
@@ -264,6 +272,7 @@ public class DefaultScriptSession implements RealScriptSession
 
             if (output)
             {
+                // log.debug("Adding stored script to conduit: " + conduit);
                 conduit.flush();
             }
         }
@@ -285,6 +294,8 @@ public class DefaultScriptSession implements RealScriptSession
                 debug();
             }
         }
+
+        // log.debug("Removing Conduit: conduit=" + conduit + " scriptsession=" + this);
     }
 
     /* (non-Javadoc)

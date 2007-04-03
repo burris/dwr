@@ -453,19 +453,20 @@ public class PollHandler implements Handler
 
             // JETTY: throws a RuntimeException that must propogate to the container!
             continuation.suspend(preStreamWaitTime);
+
+            scriptSession.removeScriptConduit(listener);
         }
         catch (Exception ex)
         {
             Continuation.rethrowIfContinuation(ex);
-            log.warn("Exception", ex);
-            return false;
-        }
-        finally
-        {
+
             if (listener != null)
             {
                 scriptSession.removeScriptConduit(listener);
             }
+
+            log.warn("Exception", ex);
+            return false;
         }
 
         return true;
