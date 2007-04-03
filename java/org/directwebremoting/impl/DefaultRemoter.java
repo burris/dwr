@@ -203,7 +203,7 @@ public class DefaultRemoter implements Remoter
             {
                 String key = scriptName + "." + method.getName();
 
-                // For optimal performance we might use the Memonizer pattern
+                // For optimal performance we might use the Memoizer pattern
                 // JCiP#108 however performance isn't a big issue and we are
                 // prepared to cope with getMethodJS() being run more than once.
                 script = (String) methodCache.get(key);
