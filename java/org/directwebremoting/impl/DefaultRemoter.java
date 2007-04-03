@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -202,9 +203,9 @@ public class DefaultRemoter implements Remoter
             {
                 String key = scriptName + "." + method.getName();
 
-                // For optimal performance we might synchronize on methodCache however
-                // since performance isn't a big issue we are prepared to cope with
-                // the off chance that getMethodJS() may be run more than once.
+                // For optimal performance we might use the Memonizer pattern
+                // JCiP#108 however performance isn't a big issue and we are
+                // prepared to cope with getMethodJS() being run more than once.
                 script = (String) methodCache.get(key);
                 if (script == null)
                 {
@@ -551,7 +552,7 @@ public class DefaultRemoter implements Remoter
     /**
      * Generated Javascript cache
      */
-    private Map methodCache = new HashMap();
+    private Map methodCache = Collections.synchronizedMap(new HashMap());
 
     /**
      * The log stream
