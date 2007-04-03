@@ -192,14 +192,18 @@ public class PollHandler implements Handler
                 {
                     lock.wait(wait);
                 }
+
+                if (conduit != null)
+                {
+                    scriptSession.removeScriptConduit(conduit);
+                }
+                serverLoadMonitor.threadWaitEnding(controller);
             }
         }
         catch (InterruptedException ex)
         {
             log.warn("Interupted", ex);
-        }
-        finally
-        {
+
             if (conduit != null)
             {
                 scriptSession.removeScriptConduit(conduit);
