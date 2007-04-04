@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -565,7 +566,7 @@ public class JavascriptUtil
      */
     private static String hex(char ch)
     {
-        return Integer.toHexString(ch).toUpperCase();
+        return Integer.toHexString(ch).toUpperCase(Locale.ENGLISH);
     }
 
     /**

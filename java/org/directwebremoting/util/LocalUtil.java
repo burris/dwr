@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -351,7 +352,7 @@ public final class LocalUtil
     {
         Class real = object.getClass();
 
-        String setterName = "set" + key.substring(0, 1).toUpperCase() + key.substring(1);
+        String setterName = "set" + key.substring(0, 1).toUpperCase(Locale.ENGLISH) + key.substring(1);
 
         try
         {
