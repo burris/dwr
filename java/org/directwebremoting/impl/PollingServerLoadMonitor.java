@@ -26,7 +26,7 @@ public class PollingServerLoadMonitor extends AbstractServerLoadMonitor implemen
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.ServerLoadMonitor#getMaxConnectedTime()
      */
-    public long getMaxConnectedTime()
+    public long getConnectedTime()
     {
         return 0;
     }
@@ -34,22 +34,22 @@ public class PollingServerLoadMonitor extends AbstractServerLoadMonitor implemen
     /* (non-Javadoc)
      * @see org.directwebremoting.ServerLoadMonitor#timeToNextPoll()
      */
-    public int getTimeToNextPoll()
+    public int getDisconnectedTime()
     {
-        return timeToNextPoll;
+        return disconnectedTime;
     }
 
     /**
      * Accessor for the disconnected time.
-     * @param timeToNextPoll How long should clients spend disconnected
+     * @param disconnectedTime How long should clients spend disconnected
      */
-    public void setTimeToNextPoll(int timeToNextPoll)
+    public void setTimeToNextPoll(int disconnectedTime)
     {
-        this.timeToNextPoll = timeToNextPoll;
+        this.disconnectedTime = disconnectedTime;
     }
 
     /**
      * How long are we telling users to wait before they come back next
      */
-    protected int timeToNextPoll = 5000;
+    protected int disconnectedTime = 5000;
 }

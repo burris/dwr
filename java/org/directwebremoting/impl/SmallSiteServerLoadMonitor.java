@@ -26,7 +26,7 @@ public class SmallSiteServerLoadMonitor extends AbstractServerLoadMonitor implem
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.ServerLoadMonitor#getMaxConnectedTime()
      */
-    public long getMaxConnectedTime()
+    public long getConnectedTime()
     {
         // Start a new poll every 30 minutes
         return 1800 * 1000;
@@ -35,7 +35,7 @@ public class SmallSiteServerLoadMonitor extends AbstractServerLoadMonitor implem
     /* (non-Javadoc)
      * @see org.directwebremoting.ServerLoadMonitor#timeToNextPoll()
      */
-    public int getTimeToNextPoll()
+    public int getDisconnectedTime()
     {
         return 1;
     }

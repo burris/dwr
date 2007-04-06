@@ -35,7 +35,10 @@ public abstract class AbstractServerLoadMonitor implements ServerLoadMonitor
      */
     public void threadWaitStarting(WaitController controller)
     {
-        waitControllers.add(controller);
+        synchronized (waitControllers)
+        {
+            waitControllers.add(controller);
+        }
     }
 
     /* (non-Javadoc)
@@ -43,7 +46,27 @@ public abstract class AbstractServerLoadMonitor implements ServerLoadMonitor
      */
     public void threadWaitEnding(WaitController controller)
     {
-        waitControllers.remove(controller);
+        synchronized (waitControllers)
+        {
+            waitControllers.remove(controller);
+        }
+    }
+
+    /**
+     * If there are too many WaitControllers waiting then we can kill one off at
+     * random.
+     * @param count How many {@link WaitController}s do we shutdown?
+     */
+    public void shutdownRandomWaitControllers(int count)
+    {
+        synchronized (waitControllers)
+        {
+            for (int i = 0; i < count && waitControllers.size() > 0; i++)
+            {
+                WaitController controller = (WaitController) waitControllers.get(0);
+                controller.shutdown();
+            }
+        }
     }
 
     /* (non-Javadoc)
@@ -56,17 +79,20 @@ public abstract class AbstractServerLoadMonitor implements ServerLoadMonitor
             return;
         }
 
-        List copy = new ArrayList();
-        copy.addAll(waitControllers);
-
-        for (Iterator it = copy.iterator(); it.hasNext();)
+        synchronized (waitControllers)
         {
-            WaitController controller = (WaitController) it.next();
-            controller.shutdown();
+            List copy = new ArrayList();
+            copy.addAll(waitControllers);
+    
+            for (Iterator it = copy.iterator(); it.hasNext();)
+            {
+                WaitController controller = (WaitController) it.next();
+                controller.shutdown();
+            }
+    
+            log.debug(" - shutdown on: " + this);
+            shutdownCalled = true;
         }
-
-        log.debug(" - shutdown on: " + this);
-        shutdownCalled = true;
     }
 
     /**

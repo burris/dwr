@@ -16,8 +16,8 @@
 package org.directwebremoting.extend;
 
 /**
- * WaitControllers allow a {@link ServerLoadMonitor} to tell things that are
- * waiting to stop waiting.
+ * A WaitController allows the {@link ServerLoadMonitor} to know what is waiting
+ * and enables it to tell them to stop waiting.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface WaitController

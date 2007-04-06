@@ -42,7 +42,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     {
         synchronized (out)
         {
-            out.println(ProtocolConstants.CALL_SCRIPT_PREFIX);
+            out.println("<html><body><script type='text/javascript'>");
             out.println(EnginePrivate.remoteBeginIFrameResponse(batchId, true));
         }
     }
@@ -55,7 +55,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
         synchronized (out)
         {
             out.println(EnginePrivate.remoteEndIFrameResponse(batchId, true));
-            out.println(ProtocolConstants.CALL_SCRIPT_POSTFIX);
+            out.println("</script></body></html>");
         }
     }
 

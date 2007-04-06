@@ -27,14 +27,14 @@ public interface ServerLoadMonitor
      * <p>TODO: We should probably get rid of this and leave it to PollHandler?
      * @return How long should this client wait until it next polls?
      */
-    int getTimeToNextPoll();
+    int getDisconnectedTime();
 
     /**
      * What's the longest time that we should wait before asking the client to
      * reconnect?
      * @return The maximum client connected time
      */
-    long getMaxConnectedTime();
+    long getConnectedTime();
 
     /**
      * A thread is about to begin a wait period.

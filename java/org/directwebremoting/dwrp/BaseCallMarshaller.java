@@ -513,14 +513,6 @@ public abstract class BaseCallMarshaller implements Marshaller
             return true;
         }
 
-        /* (non-Javadoc)
-         * @see org.directwebremoting.ScriptConduit#flush()
-         */
-        public void flush() throws IOException
-        {
-            // We don't flush because that puts us into chunked mode
-        }
-
         /**
          * The PrintWriter to send output to, and that we should synchronize against
          */

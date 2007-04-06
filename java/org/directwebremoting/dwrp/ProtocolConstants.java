@@ -23,30 +23,6 @@ package org.directwebremoting.dwrp;
 public interface ProtocolConstants
 {
     /**
-     * The text that we send to begin a Javascript block in an HTML context
-     * when in a normal forwards ajax call.
-     */
-    public static final String CALL_SCRIPT_PREFIX = "<html><body><script type='text/javascript'>";
-
-    /**
-     * The text that we send to end a Javascript block in an HTML context
-     * when in a normal forwards ajax call.
-     */
-    public static final String CALL_SCRIPT_POSTFIX = "</script></body></html>";
-
-    /**
-     * The text that we send to begin a Javascript block in an HTML context
-     * when polling.
-     */
-    public static final String POLL_SCRIPT_PREFIX = "<html><body><pre>";
-
-    /**
-     * The text that we send to end a Javascript block in an HTML context
-     * when polling.
-     */
-    public static final String POLL_SCRIPT_POSTFIX = "</pre></body></html>";
-
-    /**
      * The name for reference types from javascript
      */
     public static final String TYPE_REFERENCE = "reference";

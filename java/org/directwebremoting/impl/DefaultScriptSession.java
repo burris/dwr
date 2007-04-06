@@ -195,12 +195,6 @@ public class DefaultScriptSession implements RealScriptSession
                     try
                     {
                         written = conduit.addScript(script);
-
-                        if (written)
-                        {
-                            conduit.flush();
-                        }
-
                         // log.debug("- Adding script to conduit (written=" + written + "): " + conduit);
                     }
                     catch (Exception ex)
@@ -244,9 +238,6 @@ public class DefaultScriptSession implements RealScriptSession
 
         synchronized (scriptLock)
         {
-            // If there are any outstanding scripts, dump them to the new conduit
-            boolean output = false;
-
             for (Iterator it = scripts.iterator(); it.hasNext();)
             {
                 ScriptBuffer script = (ScriptBuffer) it.next();
@@ -255,7 +246,7 @@ public class DefaultScriptSession implements RealScriptSession
                 {
                     if (conduit.addScript(script))
                     {
-                        output = true;
+                        // log.debug("Adding stored script to conduit: " + conduit);
                         it.remove();
                     }
                     else
@@ -268,12 +259,6 @@ public class DefaultScriptSession implements RealScriptSession
                 {
                     log.warn("Failed to convert data. Dropping Javascript: " + script, ex);
                 }
-            }
-
-            if (output)
-            {
-                // log.debug("Adding stored script to conduit: " + conduit);
-                conduit.flush();
             }
         }
     }
@@ -296,36 +281,6 @@ public class DefaultScriptSession implements RealScriptSession
         }
 
         // log.debug("Removing Conduit: conduit=" + conduit + " scriptsession=" + this);
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.extend.RealScriptSession#flushConduits()
-     */
-    public void flushConduits()
-    {
-        checkNotInvalidated();
-
-        // First we try to add the script to an existing conduit
-        synchronized (scriptLock)
-        {
-            if (conduits.size() > 0)
-            {
-                for (Iterator it = conduits.iterator(); it.hasNext();)
-                {
-                    ScriptConduit conduit = (ScriptConduit) it.next();
-
-                    try
-                    {
-                        conduit.flush();
-                    }
-                    catch (Exception ex)
-                    {
-                        log.debug("Failed to flush to ScriptConduit, removing from list: " + conduit);
-                        it.remove();
-                    }
-                }
-            }
-        }
     }
 
     /* (non-Javadoc)

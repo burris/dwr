@@ -75,12 +75,6 @@ public abstract class ScriptConduit implements Comparable
     public static final int RANK_SLOW = 1;
 
     /**
-     * Called to flush any scripts written to the conduit
-     * @throws IOException
-     */
-    public abstract void flush() throws IOException;
-
-    /**
      * Add a script to the list bound for remote execution.
      * <p>It is not an error to refuse to handle the script and return false, it
      * just indicates that this ScriptConduit did not accept the script.

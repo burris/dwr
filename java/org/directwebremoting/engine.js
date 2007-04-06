@@ -450,7 +450,8 @@ dwr.engine._poll = function(overridePath) {
 
   // Send the data
   dwr.engine._sendData(batch);
-  if (batch.map.partialResponse != dwr.engine._partialResponseNo) {
+  if (batch.rpcType = dwr.engine.XMLHttpRequest) {
+  // if (batch.map.partialResponse != dwr.engine._partialResponseNo) {
     dwr.engine._checkCometPoll();
   }
 };

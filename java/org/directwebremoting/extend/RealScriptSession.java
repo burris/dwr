@@ -62,13 +62,11 @@ public interface RealScriptSession extends ScriptSession
     boolean hasWaitingScripts();
 
     /**
-     * Accessor for the mutex used to synchronize access to
+     * Accessor for an object that we use to announce to people that might be
+     * waiting on output from this ScriptSession that there is some output
+     * ready for action.
+     * TODO: Replace this with a listener mechanism
      * @return The mutex object used by the script session
      */
     Object getScriptLock();
-
-    /**
-     * Flush the session conduits
-     */
-    void flushConduits();
 }
