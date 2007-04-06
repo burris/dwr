@@ -33,9 +33,8 @@ import javax.servlet.ServletContextListener;
 
 import org.directwebremoting.impl.DefaultContainer;
 
-import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
-import static org.directwebremoting.guice.DwrGuiceUtil.installInjector;
-import static org.directwebremoting.guice.DwrGuiceUtil.uninstallInjector;
+import static org.directwebremoting.guice.DwrGuiceUtil.popServletContext;
+import static org.directwebremoting.guice.DwrGuiceUtil.pushServletContext;
 
 /**
  * Register a concrete subclass of this as a servlet context listener to
@@ -48,17 +47,22 @@ public abstract class DwrGuiceServletContextListener
 {
     public void contextInitialized(ServletContextEvent servletContextEvent)
     {
-        Stage stage = getStage();
-        Injector injector = Guice.createInjector(stage, this);
-        installInjector(servletContextEvent.getServletContext(), injector);
+        ServletContext servletContext = servletContextEvent.getServletContext();
+        pushServletContext(servletContext);
+        try
+        {
+            Stage stage = getStage();
+            Injector injector = Guice.createInjector(stage, this);
+            publishInjector(servletContext, injector);
+        }
+        finally
+        {
+            popServletContext();
+        }
     }
-
+   
     public void contextDestroyed(ServletContextEvent servletContextEvent)
     {
-        ServletContext context = servletContextEvent.getServletContext();
-        Injector injector = getInjector(context);
-        shutdown(injector);
-        uninstallInjector(context);
     }
     
     
@@ -68,7 +72,6 @@ public abstract class DwrGuiceServletContextListener
      * this method to use binding code from other modules.
      */
     protected abstract void configure();
-
 
     /**
      * Override this method to specify which stage to run Guice in.
@@ -107,12 +110,46 @@ public abstract class DwrGuiceServletContextListener
         return stage;
     }
     
-    
-    private void shutdown(Injector injector)
+    /**
+     * Subclasses can use this during stage determination and binding to
+     * read values from the current servlet context.
+     */
+    protected ServletContext getServletContext()
     {
-        // Placeholder for future work.
+        return DwrGuiceUtil.getServletContext();
     }
-    
+
+
+    /**
+     * Returns the Injector instance installed in the given ServletContext.
+     */
+    static Injector getPublishedInjector(ServletContext servletContext)
+    {
+        Injector injector = (Injector) servletContext.getAttribute(INJECTOR);
+
+        if (injector == null)
+        {
+            throw new IllegalStateException("Cannot find Injector in servlet context."
+                + " You need to register a concrete extension of "
+                + DwrGuiceServletContextListener.class.getName()
+                + " as a servlet context listener in your web.xml.");
+        }
+
+        return injector;
+    }
+
+    static void publishInjector(ServletContext servletContext, Injector injector)
+    {
+        servletContext.setAttribute(INJECTOR, injector);
+    }
+
+    /**
+     * The key under which a provided Injector is stashed in a ServletContext.
+     * The name is prefixed by the package to avoid conflicting with other
+     * listeners using the same technique.
+     */
+    private static final String INJECTOR =
+        DwrGuiceServletContextListener.class.getPackage().getName() + ".Injector";
 
     /** The name of the node to examine for a STAGE property. */
     private static final Class<?> PACKAGE = DwrGuiceServletContextListener.class;
