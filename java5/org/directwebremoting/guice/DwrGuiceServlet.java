@@ -22,7 +22,6 @@ import com.google.inject.Key;
 import com.google.inject.name.Named;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import static java.util.Map.Entry;
@@ -36,11 +35,11 @@ import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.servlet.DwrServlet;
+import org.directwebremoting.util.Logger;
 
-import static org.directwebremoting.guice.DwrGuiceUtil.classListToString;
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
-import static org.directwebremoting.guice.DwrGuiceUtil.removeServletContext;
-import static org.directwebremoting.guice.DwrGuiceUtil.setServletContext;
+import static org.directwebremoting.guice.DwrGuiceUtil.popServletContext;
+import static org.directwebremoting.guice.DwrGuiceUtil.pushServletContext;
 import static org.directwebremoting.guice.DwrScopes.hasApplicationScope;
 import static org.directwebremoting.guice.ParamName.*;
 import static org.directwebremoting.impl.ContainerUtil.INIT_CUSTOM_CONFIGURATOR;
@@ -67,7 +66,7 @@ public class DwrGuiceServlet extends DwrServlet
         
         // Set the current context thread-locally so our internal classes can
         // look up the Injector and use it in turn to look up further objects.
-        setServletContext(this.servletContext);
+        pushServletContext(this.servletContext);
         try
         {      
             // Since ServletConfig is immutable, we use a modifiable 
@@ -94,7 +93,7 @@ public class DwrGuiceServlet extends DwrServlet
         finally
         {
             // Clean up the ThreadLocal we just used.
-            removeServletContext();
+            popServletContext();
         }
     }
     
@@ -104,22 +103,22 @@ public class DwrGuiceServlet extends DwrServlet
      */
     @Override public void destroy()
     {
-        setServletContext(this.servletContext);
+        pushServletContext(this.servletContext);
         try
         {            
             // Closeable objects with (non-global) application scope are closed.
-            List<IOException> ioExceptions = destroyApplicationScoped();
+            List<Exception> exceptions = destroyApplicationScoped();
             
             super.destroy();
             
-            if (!ioExceptions.isEmpty())
+            for (Exception ex : exceptions)
             {
-                // log IO exceptions?
+                log.warn("During servlet shutdown", ex);
             }
         }
         finally
         {
-            removeServletContext();
+            popServletContext();
             this.servletContext = null;
         }
     }
@@ -247,9 +246,9 @@ public class DwrGuiceServlet extends DwrServlet
         }
     }
     
-    private static List<IOException> destroyApplicationScoped()
+    private static List<Exception> destroyApplicationScoped()
     {
-        List<IOException> exceptions = new ArrayList<IOException>();
+        List<Exception> exceptions = new ArrayList<Exception>();
 
         Injector injector = getInjector();
         for (Entry<Key<?>, Binding<?>> entry : injector.getBindings().entrySet())
@@ -263,7 +262,7 @@ public class DwrGuiceServlet extends DwrServlet
                     {
                         ((Closeable) object).close();
                     }
-                    catch (IOException e)
+                    catch (Exception e)
                     {
                         exceptions.add(e);
                     }
@@ -273,9 +272,23 @@ public class DwrGuiceServlet extends DwrServlet
         
         return exceptions;
     }
+
+
+    static String classListToString(List<Class> classList)
+    {
+        StringBuilder buf = new StringBuilder();
+        int count = 0;
+        for (Class cls : classList)
+        {
+            if (count++ > 0) buf.append(", ");
+            buf.append(cls.getName());
+        }
+        return buf.toString();
+    }
+
     
     /**
-     * 
+     * Used to stash context for later use by destroy().
      */
     private volatile ServletContext servletContext;
     
@@ -294,4 +307,9 @@ public class DwrGuiceServlet extends DwrServlet
      * The name DWR uses to look up an AjaxFilterManager implementation class name 
      */
     private static final String INIT_AJAX_FILTER_MANAGER = AjaxFilterManager.class.getName();
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DwrGuiceServlet.class);
 }
