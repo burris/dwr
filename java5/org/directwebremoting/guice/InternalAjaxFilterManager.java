@@ -26,6 +26,7 @@ import java.util.Map;
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.impl.DefaultAjaxFilterManager;
 import org.directwebremoting.extend.*;
+import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
@@ -76,7 +77,14 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
             {
                 String scriptName = Filtering.class.cast(key.getAnnotation()).value();
                 Provider<AjaxFilter> provider = injector.getProvider((Key<AjaxFilter>) key);
-                addAjaxFilter(new InternalAjaxFilter(provider), scriptName);
+                if ("".equals(scriptName))
+                {
+                    addAjaxFilter(new InternalAjaxFilter(provider));
+                }
+                else
+                {
+                    addAjaxFilter(new InternalAjaxFilter(provider), scriptName);
+                }
             }
         }
     }
@@ -102,10 +110,22 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
         }
         catch (Exception e)
         {
-            // log.warn("Couldn't make AjaxFilterManager from type: " + name);
+            if (name != null && !"".equals(name)) {
+                log.warn("Couldn't make AjaxFilterManager from type: " + name);
+            }
             return new DefaultAjaxFilterManager();
         }
     }
-    
+
+
+    /**
+     * Place to stash a type name for retrieval in same thread.
+     */
     private static final ThreadLocal<String> typeName = new ThreadLocal<String>();
+
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(InternalAjaxFilterManager.class);
 }

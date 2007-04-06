@@ -17,67 +17,33 @@ package org.directwebremoting.guice;
 
 import com.google.inject.Injector;
 
-import java.util.List;
+import java.util.Stack;
 
 import javax.servlet.ServletContext;
 
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import static org.directwebremoting.guice.DwrGuiceServletContextListener.getPublishedInjector;
 
 
 /**
- * Utility for retrieving an Injector in a servlet context.
+ * Utilities for making Injector and ServletContext instances available.
  * @author Tim Peierls [tim at peierls dot net]
  */
 class DwrGuiceUtil
 {
     /**
-     * Returns the Injector instance installed in the current web context.
+     * Returns the Injector instance published in the current servlet context.
      */
-    public static Injector getInjector()
+    static Injector getInjector()
     {
-        return getInjector(getServletContext());
-    }
-
-
-    /**
-     * Returns the Injector instance installed in the given ServletContext.
-     */
-    static Injector getInjector(ServletContext servletContext)
-    {
-        Injector injector = (Injector) servletContext.getAttribute(INJECTOR);
-
-        if (injector == null)
-        {
-            throw new IllegalStateException("Cannot find Injector in servlet context."
-                + " You need to register a concrete extension of "
-                + DwrGuiceServletContextListener.class.getName()
-                + " as a servlet context listener in your web.xml.");
-        }
-
-        return injector;
-    }
-
-    static void installInjector(ServletContext servletContext, Injector injector)
-    {
-        servletContext.setAttribute(INJECTOR, injector);
-    }
-
-    static void uninstallInjector(ServletContext servletContext)
-    {
-        servletContext.removeAttribute(INJECTOR);
+        return getPublishedInjector(getServletContext());
     }
 
     /**
-     * The key under which a provided Injector is stashed in a ServletContext.
-     * The name is prefixed by the package to avoid conflicting with other
-     * listeners using the same technique.
+     * Gets the servlet context from the current web context, if one exists,
+     * otherwise gets it from the thread-local stash.
      */
-    private static final String INJECTOR =
-        DwrGuiceServletContextListener.class.getPackage().getName() + ".Injector";
-
-
-    
     static ServletContext getServletContext()
     {
         WebContext webcx = WebContextFactory.get();
@@ -87,34 +53,34 @@ class DwrGuiceUtil
         }
         else
         {
-            return servletContext.get();
+            return servletContext.get().peek();
         }
     }
     
-    static void setServletContext(ServletContext context)
+    /**
+     * Thread-locally pushes a servlet context. Call {@link #popServletContext}
+     * in a finally block when calling this method.
+     */
+    static void pushServletContext(ServletContext context)
     {
-        servletContext.set(context);
+        servletContext.get().push(context);
     }
     
-    static void removeServletContext()
+    /**
+     * Pops a thread-locally stashed servlet context. Call this in
+     * a finally block when {@link #pushServletContext} is called.
+     */
+    static void popServletContext()
     {
-        servletContext.remove();
+        servletContext.get().pop();
     }
     
-    private static final ThreadLocal<ServletContext> servletContext = 
-        new ThreadLocal<ServletContext>();
-
-
-    
-    static String classListToString(List<Class> classList)
-    {
-        StringBuilder buf = new StringBuilder();
-        int count = 0;
-        for (Class cls : classList)
+    private static final ThreadLocal<Stack<ServletContext>> servletContext = 
+        new ThreadLocal<Stack<ServletContext>>()
         {
-            if (count++ > 0) buf.append(", ");
-            buf.append(cls.getName());
-        }
-        return buf.toString();
-    }
+            protected Stack<ServletContext> initialValue()
+            {
+                return new Stack<ServletContext>();
+            }
+        };
 }

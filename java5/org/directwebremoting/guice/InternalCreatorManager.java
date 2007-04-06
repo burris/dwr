@@ -26,6 +26,7 @@ import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.impl.DefaultCreatorManager;
 import org.directwebremoting.util.LocalUtil;
+import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
@@ -155,10 +156,21 @@ public class InternalCreatorManager implements CreatorManager
         }
         catch (Exception e)
         {
-            // log.warn("Couldn't make CreatorManager from type: " + name);
+            if (name != null && !"".equals(name)) {
+                log.warn("Couldn't make CreatorManager from type: " + name);
+            }
             return new DefaultCreatorManager();
         }
     }
-    
+
+    /**
+     * Place to stash a type name for retrieval in same thread.
+     */
     private static final ThreadLocal<String> typeName = new ThreadLocal<String>();
+
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(InternalCreatorManager.class);
 }

@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.directwebremoting.dwrp.DefaultConverterManager;
 import org.directwebremoting.extend.*;
+import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
@@ -197,10 +198,22 @@ public class InternalConverterManager implements ConverterManager
         }
         catch (Exception e)
         {
-            // log.warn("Couldn't make ConverterManager from type: " + name);
+            if (name != null && !"".equals(name)) {
+                log.warn("Couldn't make ConverterManager from type: " + name);
+            }
             return new DefaultConverterManager();
         }
     }
-    
+
+
+    /**
+     * Place to stash a type name for retrieval in same thread.
+     */
     private static final ThreadLocal<String> typeName = new ThreadLocal<String>();
+
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(InternalConverterManager.class);
 }
