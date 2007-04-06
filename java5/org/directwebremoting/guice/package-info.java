@@ -1,52 +1,26 @@
 /**
  * <p>
- *   This package provides support for Guice dependency injection in DWR-based
- *   web applications. To use this support minimally,
- *   <ol>
- *   <li> install a concrete extension of {@link DwrGuiceServletContextListener}
- *     as a <code>&lt;listener&gt;</code> in your web application's configuration
- *     file (web.xml), </li>
- *   <li> install {@link com.google.inject.servlet.GuiceFilter} as a filter
- *     for all requests, and </li>
- *   <li> install {@link DwrGuiceServlet} for all requests to <code>/dwr/*</code>. </li>
- *   </ol>
+ *   This package provides support for 
+ *   <a href="http://code.google.com/p/google-guice/">Guice</a> 
+ *   dependency injection in DWR-based web applications. 
+ *   This documentation assumes you already understand Guice concepts.
  * </p>
  * <p>
- *   Your listener class will have define a <code>configure</code> method.
- *   This is where to do your Guice binding, since DwrGuiceServletContextListener
- *   extends AbstractDwrModule, which in turn extends Guice's AbstractModule. You
- *   can move the binding code to a separate class by using
- *   {@link AbstractModule#install AbstractModule.install(Module module)}.
- * </p>
- * <p>
- *   You can configure DWR normally via dwr.xml and servlet init params,
- *   but you can also configure some aspects by calling the methods of
- *   AbstractDwrModule in your Guice binding code. You can install your
- *   own DWR Configurator in this way, and use a FluentConfigurator (or
- *   GuiceConfigurator, which extends FluentConfigurator with methods that
- *   provide additional type-safety).
- * </p>
- * <p>
- *   When you use a GuiceCreator to create your remote proxies, it gets
- *   an instance from the Injector using your bindings.
- * </p>
- * <p>
- *   A sample web.xml with the parts listed above:
+ *   To use this support minimally,
+ *   <ul>
+ *   <li> install a concrete extension of 
+ *     {@link org.directwebremoting.guice.DwrGuiceServletContextListener}
+ *     as a {@code <listener>} in your web application's configuration
+ *     file ({@code web.xml}), </li>
+ *   <li> install {@link org.directwebremoting.guice.DwrGuiceServlet} for all 
+ *     requests to {@code /dwr/*}. </li>
+ *   </ul>
+ *   For example:
  * </p>
  * <pre>
  *   &lt;listener&gt;
  *     &lt;listener-class&gt;org.myorg.myproj.MyServletContextListener&lt;/listener-class&gt;
  *   &lt;/listener&gt;
- *
- *   &lt;filter&gt;
- *     &lt;filter-name&gt;guice-filter&lt;/filter-name&gt;
- *     &lt;filter-class&gt;com.google.inject.servlet.GuiceFilter&lt;/filter-class&gt;
- *   &lt;/filter&gt;
- *
- *   &lt;filter-mapping&gt;
- *     &lt;filter-name&gt;guice-filter&lt;/filter-name&gt;
- *     &lt;servlet-name&gt;dwr-invoker&lt;/servlet-name&gt;
- *   &lt;/filter-mapping&gt;
  *
  *   &lt;servlet&gt;
  *     &lt;servlet-name&gt;dwr-invoker&lt;/servlet-name&gt;
@@ -59,50 +33,139 @@
  *   &lt;/servlet-mapping&gt;
  * </pre>
  * <p>
- *   An example of pure Java configuration via Guice:
+ *   {@link org.directwebremoting.guice.DwrGuiceServletContextListener DwrGuiceServletContextListener}
+ *   is also an abstract Guice module; it extends 
+ *   {@link org.directwebremoting.guice.AbstractDwrModule AbstractDwrModule}, 
+ *   which in turn extends Guice's {@link AbstractModule}.
+ *   Your listener class must define
+ *   {@link org.directwebremoting.guice.AbstractDwrModule#configure configure};
+ *   this is where you do your Guice binding.
+ *   You can also put binding code in a separate class or classes with
+ *   {@link AbstractModule#install AbstractModule.install}.
+ * </p>
+ * <p>
+ *   Use {@link org.directwebremoting.guice.GuiceCreator GuiceCreator}
+ *   when annotating classes with {@code RemoteProxy}. When you use a 
+ *   {@code GuiceCreator} to create your remoted objects, it gets an 
+ *   instance from a Guice injector using your bindings. 
+ * </p>
+ * <p>
+ *   For bind-time control over how JavaScript names map to Java targets, use the
+ *   {@link org.directwebremoting.guice.AbstractDwrModule#bindRemoted(Class) bindRemoted}
+ *   or
+ *   {@link org.directwebremoting.guice.AbstractDwrModule#bindRemotedAs(String,Class) bindRemotedAs}
+ *   methods. The target of the script can be an abstract class or interface 
+ *   bound in the normal Guice way to a concrete class, instance, or provider. 
+ *   In that case only the methods defined on the abstract class or 
+ *   interface are accessible, even if the implementing class has other public 
+ *   methods. You can supply different bindings for different script names, including
+ *   using the same interface with different implementations for different script names,
+ *   or different interfaces for different script names mapping to the same implementation
+ *   type (assuming it implements both interfaces).
+ * </p>
+ * <p>
+ *   You can bind a type or type pattern string to a custom converter with
+ *   {@link org.directwebremoting.guice.AbstractDwrModule#bindConversion(Class) bindConversion},
+ *   and you can put Ajax filters on scripts with
+ *   {@link org.directwebremoting.guice.AbstractDwrModule#bindFilter(String) bindFilter}.
+ *   Note, however, that you can achieve the same effect (and more flexibly) using Guice's 
+ *   {@code bindInterceptors} method.
+ * </p>
+ * <p>
+ *   You can install your own DWR configurator using
+ *   {@code bind(Configurator.class).toInstance(yourConfigurator)}, 
+ *   which then overrides any {@code dwr.xml} configuration. 
+ *   You'll probably want to use a
+ *   {@link org.directwebremoting.fluent.FluentConfigurator FluentConfigurator}
+ *   for this purpose.
+ * </p>
+ * <p>
+ *   You can still configure DWR's settings normally via {@code <init-param>} 
+ *   directives in {@code web.xml}, but usually there is no need to. Most DWR 
+ *   settings can be set with
+ *   {@link org.directwebremoting.guice.AbstractDwrModule#bindParameter(ParamName) bindParameter}. 
+ *   The {@link org.directwebremoting.guice.ParamName ParamName} 
+ *   enum type lists the available parameters.
+ * </p>
+ * <p>
+ *   To be able to use the DWR scopes for all your injected objects, not just
+ *   DWR-remoted objects, your binding code should call 
+ *   {@link org.directwebremoting.guice.AbstractDwrModule#bindDwrScopes() bindDwrScopes}
+ *   at some point.
+ * </p>
+ * <p>
+ *   This example illustrates two ways to define remoted objects,
+ *   calling {@code bindRemotedAs} and annotating with {@code @RemoteProxy};
+ *   two ways to define conversions, using {@code bindConversion}
+ *   and using a custom configurator; how to register annotated classes
+ *   at bind-time; how to bind a script name to an {@code AjaxFilter}; and
+ *   how to set a DWR parameter (debug, in this case) at bind-time.
+ *   It does not use an {@code <init-param>} directive, and it doesn't have
+ *   a {@code dwr.xml}.
  * </p>
  * <pre>
+ *    public final class MyServletContextListener extends DwrGuiceServletContextListener
+ *    {
+ *        protected void configure()
+ *        {
+ *            bindRemotedAs("Hello", HelloService.class)
+ *                .to(HelloServiceImpl.class)
+ *                .in(DwrScopes.APPLICATION);
  *
- *   public final class MyServletContextListener extends DwrGuiceServletContextListener
- *   {
- *       protected void configure()
- *       {
- *           bind(MessageService.class)
- *               .to(MessageServiceImpl.class)
- *               .in(ServletScopes.SESSION);
+ *            bindFilter("Hello")
+ *                .to(TraceFilter.class);
  *
- *           setDebug(true);
+ *            bind(MessageService.class)
+ *                .to(MessageServiceImpl.class)
+ *                .in(DwrScopes.SCRIPT);
  *
- *           setAnnotatedClasses(
- *               DomainService.class,
- *               HelloService.class,
- *               HelloRecord.class
- *           );
+ *            bindAnnotatedClasses(
+ *                DomainService.class,   // @RemoteProxy(creator=GuiceCreator.class)/@RemoteMethod
+ *                HelloRecordImpl.class  // @DataTransferObject/@RemoteProperty
+ *            );
+ *            
+ *            // When converting HelloRecord, use existing converter for HelloRecordImpl.
+ *            bindConversion(HelloRecord.class, HelloRecordImpl.class);
  *
- *           setConfiguratorClass(LocalConfigurator.class);
- *       }
+ *            bindConversion(DateTime.class)
+ *                .toInstance(DateTimeConverter.get("yyyy-MM-dd hh:mm a"));
  *
- *       public static class LocalConfigurator extends GuiceConfigurator
- *       {
- *           public void configure()
- *           {
- *               withConverterType(DATE_TIME_CONVERTER, DateTimeConverter.class);
- *               withConverter(DATE_TIME_CONVERTER, DateTime.class)
- *                   .addParam("format", "yyyy-MM-dd hh:mm a");
- *               withConverter(DATE_TIME_CONVERTER, LocalTime.class)
- *                   .addParam("format", "yyyy-MM-dd");
- *           }
- *       }
+ *            bind(Configurator.class).toInstance(new FluentConfigurator()
+ *            {
+ *                public void configure() {
+ *                    String localTime = "localTime";
+ *                    withConverterType(localTime, DateTimeConverter.class.getName());
+ *                    withConverter(localTime, LocalTime.class.getName())
+ *                        .addParam("format", "yyyy-MM-dd");
+ *                }
+ *            });
  *
- *       private static final String DATE_TIME_CONVERTER = "dateTime";
- *   }
+ *            bindParameter(DEBUG).to(true);
+ *
+ *            bindDwrScopes();
+ *        }
+ *    }
  * </pre>
  * <p>
- *   In this example, the <code>DomainService</code> and <code>HelloService</code>
- *   classes would need to be annotated with
- *   <code>@RemoteProxy(creator=GuiceCreator.class)</code>
- *   and the <code>HelloRecord</code> class would need to be annotated with
- *   <code>@DataTransferObject</code>.
+ *   Note that because application scope is larger than script session scope, 
+ *   {@code HelloServiceImpl} has an injected constructor (not shown here)
+ *   that takes a {@code Provider<MessageService>} rather than a plain
+ *   {@code MessageService}.
+ * </p>
+ * <p>
+ *   There are four classes with names that start with "Internal". These classes
+ *   have to be public with a parameterless constructor so the non-Guicy DWR
+ *   machinery can create them. They are not meant to be used directly.
+ * </p>
+ * <p>
+ *   The classes that handle DWR scopes are modeled on the classes in the
+ *   {@code com.google.inject.servlet} package, but are independent of them.
+ *   You do <em>not</em> need to install the Guice {@code ServletModule} and
+ *   {@code GuiceFilter} to use the DWR scopes, but if you do, you have to be 
+ *   careful to install the DWR scopes without creating conflicting bindings 
+ *   for request, response, and session. Calling
+ *   {@link org.directwebremoting.guice.AbstractDwrModule#bindDwrScopes(boolean) bindDwrScopes(false)}
+ *   accomplishes this.
  * </p>
  * @author Tim Peierls [tim at peierls dot net]
  */

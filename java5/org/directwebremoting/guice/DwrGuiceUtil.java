@@ -17,8 +17,11 @@ package org.directwebremoting.guice;
 
 import com.google.inject.Injector;
 
+import java.util.List;
+
 import javax.servlet.ServletContext;
 
+import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 
 
@@ -26,14 +29,14 @@ import org.directwebremoting.WebContextFactory;
  * Utility for retrieving an Injector in a servlet context.
  * @author Tim Peierls [tim at peierls dot net]
  */
-public class DwrGuiceUtil
+class DwrGuiceUtil
 {
     /**
      * Returns the Injector instance installed in the current web context.
      */
     public static Injector getInjector()
     {
-        return getInjector(WebContextFactory.get().getServletContext());
+        return getInjector(getServletContext());
     }
 
 
@@ -72,4 +75,46 @@ public class DwrGuiceUtil
      */
     private static final String INJECTOR =
         DwrGuiceServletContextListener.class.getPackage().getName() + ".Injector";
+
+
+    
+    static ServletContext getServletContext()
+    {
+        WebContext webcx = WebContextFactory.get();
+        if (webcx != null)
+        {
+            return webcx.getServletContext();
+        }
+        else
+        {
+            return servletContext.get();
+        }
+    }
+    
+    static void setServletContext(ServletContext context)
+    {
+        servletContext.set(context);
+    }
+    
+    static void removeServletContext()
+    {
+        servletContext.remove();
+    }
+    
+    private static final ThreadLocal<ServletContext> servletContext = 
+        new ThreadLocal<ServletContext>();
+
+
+    
+    static String classListToString(List<Class> classList)
+    {
+        StringBuilder buf = new StringBuilder();
+        int count = 0;
+        for (Class cls : classList)
+        {
+            if (count++ > 0) buf.append(", ");
+            buf.append(cls.getName());
+        }
+        return buf.toString();
+    }
 }

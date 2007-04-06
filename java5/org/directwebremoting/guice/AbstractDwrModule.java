@@ -16,15 +16,23 @@
 package org.directwebremoting.guice;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Key;
+import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
-import static com.google.inject.name.Names.named;
+import com.google.inject.binder.AnnotatedBindingBuilder;
+import com.google.inject.binder.ConstantBindingBuilder;
+import com.google.inject.binder.LinkedBindingBuilder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import static java.util.Arrays.asList;
 
+import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.extend.Configurator;
-import static org.directwebremoting.guice.Constants.DEBUG;
-import static org.directwebremoting.guice.Constants.CLASSES;
+import org.directwebremoting.extend.Converter;
+
+import static org.directwebremoting.guice.ParamName.CLASSES;
 
 /**
  * An extension of {@link AbstractModule} that adds DWR configuration methods,
@@ -34,42 +42,144 @@ import static org.directwebremoting.guice.Constants.CLASSES;
 public abstract class AbstractDwrModule extends AbstractModule
 {
     /**
-     * Implement this method to configure Guice bindings for the servlet context.
+     * Implement this method to configure Guice bindings for a DWR-based
+     * web application.
      */
     protected abstract void configure();
 
-
-    /**
-     * Call this method in {@link AbstractDwrModule#configure configure}
-     * to specify a Configurator implementation (which must be public and
-     * have a public parameterless constructor).
+    
+    /** 
+     * Configure DWR scopes and bindings for servlet-related types;
+     * incompatible with Guice's {@link ServletModule} because their
+     * bindings for request, response, and session conflict.
      */
-    protected void setConfiguratorClass(Class<? extends Configurator> configuratorClass)
+    protected void bindDwrScopes() 
     {
-        bind(Configurator.class)
-            .to(configuratorClass);
+        install(new DwrGuiceServletModule(true));
+    }
+
+    
+    /** 
+     * Configure DWR scopes and bindings for servlet-related types,
+     * specifying whether to include bindings that conflict with those
+     * provided by Guice's {@link ServletModule}.
+     * @param bindPotentiallyConflictingTypes whether to bind request, response,
+     *     and session types (risking conflict with Guice)
+     */
+    protected void bindDwrScopes(boolean bindPotentiallyConflictingTypes) 
+    {
+        install(new DwrGuiceServletModule(bindPotentiallyConflictingTypes));
+    }
+    
+    
+    /**
+     * Creates a binding for a conversion for types with names matching 
+     * {@code match}.
+     * @param match the string describing which types to convert
+     */
+    protected LinkedBindingBuilder<Converter> bindConversion(String match)
+    {
+        return bind(Converter.class)
+            .annotatedWith(new ConvertingImpl(match));
+    }
+    
+    
+    /**
+     * Creates a binding for a conversion for {@code type}.
+     * @param type the type to be converted
+     */
+    protected LinkedBindingBuilder<Converter> bindConversion(Class<?> type)
+    {
+        return bind(Converter.class)
+            .annotatedWith(new ConvertingImpl(type));
+    }
+    
+    
+    /**
+     * Creates a binding for a conversion for {@code type} using an existing
+     * conversion for {@code impl}, which must be assignable to {@code type}. 
+     * The check for an existing conversion happens at run-time.
+     * @param type the type to be converted
+     */
+    protected <T> void bindConversion(Class<T> type, Class<? extends T> impl)
+    {
+        bind(Converter.class)
+            .annotatedWith(new ConvertingImpl(type, impl))
+            .to(InternalConverter.class); // never used, subverted by InternalConverterManager
+    }
+    
+    
+    /**
+     * Creates a binding to {@code type} that is used as the target of a
+     * remote method call with the class's unqualified name as the script name.
+     * @param type the type to bind as a target for remote method calls
+     */
+    protected <T> LinkedBindingBuilder<T> bindRemoted(Class<T> type)
+    {
+        return bind(type)
+            .annotatedWith(new RemotedImpl());
+    }
+    
+    
+    /**
+     * Creates a binding to a type that is used as the target of a
+     * remote method call with the given {@code scriptName}.
+     * @param type the type to bind as a target for remote method calls
+     * @param scriptName the name by which the target type will be known to script callers
+     */
+    protected <T> LinkedBindingBuilder<T> bindRemotedAs(String scriptName, Class<T> type)
+    {
+        return bind(type)
+            .annotatedWith(new RemotedImpl(scriptName));
+    }
+    
+    
+    /**
+     * Creates a binding for an Ajax filter for the script named
+     * {@code scriptName}.
+     * @param scriptName the script to filter
+     */
+    protected LinkedBindingBuilder<AjaxFilter> bindFilter(String scriptName)
+    {
+        return bind(AjaxFilter.class)
+            .annotatedWith(new FilteringImpl(scriptName));
+    }
+    
+    
+    /**
+     * Creates a binding for a global Ajax filter.
+     * @param scriptName the script to filter
+     */
+    protected LinkedBindingBuilder<AjaxFilter> bindGlobalFilter()
+    {
+        return bind(AjaxFilter.class)
+            .annotatedWith(new FilteringImpl());
+    }
+
+    
+    /**
+     * Call this method in 
+     * {@link org.directwebremoting.guice.AbstractDwrModule#configure configure}
+     * to create a binding for a DWR parameter.
+     * @param paramName a parameter name supported by DWR
+     */
+    protected ConstantBindingBuilder bindParameter(ParamName paramName)
+    {
+        return bindConstant()
+            .annotatedWith(new InitParamImpl(paramName));
     }
 
 
     /**
-     * Call this method in {@link AbstractDwrModule#configure configure}
-     * to specify a debug setting for DWR.
-     */
-    protected void setDebug(boolean debug)
-    {
-        bindConstant()
-            .annotatedWith(named(DEBUG))
-            .to(debug);
-    }
-
-    /**
-     * Call this method in {@link AbstractDwrModule#configure configure}
+     * Call this method in 
+     * {@link org.directwebremoting.guice.AbstractDwrModule#configure configure}
      * to specify classes that DWR should scan for annotations.
+     * @param classes the classes to be scanned for DWR-specific annotations
      */
-    protected void setAnnotatedClasses(Class... classes)
+    protected void bindAnnotatedClasses(Class... classes)
     {
         bind(new TypeLiteral<List<Class>>(){})
-            .annotatedWith(named(CLASSES))
+            .annotatedWith(new InitParamImpl(CLASSES))
             .toInstance(asList(classes));
 
     }

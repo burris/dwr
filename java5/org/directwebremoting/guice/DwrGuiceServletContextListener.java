@@ -15,16 +15,25 @@
  */
 package org.directwebremoting.guice;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Module;
 import com.google.inject.Stage;
-import com.google.inject.servlet.ServletModule;
+import com.google.inject.TypeLiteral;
+import static com.google.inject.name.Names.named;
 
+import java.util.Map;
 import java.util.prefs.Preferences;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.directwebremoting.impl.DefaultContainer;
+
+import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.installInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.uninstallInjector;
 
@@ -40,18 +49,25 @@ public abstract class DwrGuiceServletContextListener
     public void contextInitialized(ServletContextEvent servletContextEvent)
     {
         Stage stage = getStage();
-
-        // Install ServletModule to let Guice inject with request and session scopes.
-        // (DWR does its own scoping of remoted objects.)
-        Injector injector = Guice.createInjector(stage, new ServletModule(), this);
-
+        Injector injector = Guice.createInjector(stage, this);
         installInjector(servletContextEvent.getServletContext(), injector);
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent)
     {
-        uninstallInjector(servletContextEvent.getServletContext());
+        ServletContext context = servletContextEvent.getServletContext();
+        Injector injector = getInjector(context);
+        shutdown(injector);
+        uninstallInjector(context);
     }
+    
+    
+    /**
+     * Define this method to configure bindings at servlet context initialization.
+     * Call {@link AbstractModule#install AbstractModule.install(Module)} within
+     * this method to use binding code from other modules.
+     */
+    protected abstract void configure();
 
 
     /**
@@ -90,7 +106,13 @@ public abstract class DwrGuiceServletContextListener
 
         return stage;
     }
-
+    
+    
+    private void shutdown(Injector injector)
+    {
+        // Placeholder for future work.
+    }
+    
 
     /** The name of the node to examine for a STAGE property. */
     private static final Class<?> PACKAGE = DwrGuiceServletContextListener.class;
