@@ -15,9 +15,6 @@
  */
 package org.directwebremoting.util;
 
-import java.util.LinkedList;
-import java.util.ListIterator;
-
 /**
  * We need a way to record how heavily used the server is, and adjust our
  * behavior to reduce the load on the server.
@@ -28,11 +25,11 @@ public class HitMonitor
     /**
      * Create a HitMonitor that records the number of hits in the last n
      * milliseconds.
-     * @param millis The number of millis to record hits for
+     * @param seconds The number of seconds to record hits for
      */
-    public HitMonitor(int millis)
+    public HitMonitor(int seconds)
     {
-        this.millis = millis;
+        hitLog = new long[seconds];
     }
 
     /**
@@ -42,8 +39,8 @@ public class HitMonitor
     {
         synchronized (hitLog)
         {
-            Long time = new Long(System.currentTimeMillis());
-            hitLog.add(time);
+            trimHitLog();
+            hitLog[0]++;
         }
     }
 
@@ -57,7 +54,14 @@ public class HitMonitor
         synchronized (hitLog)
         {
             trimHitLog();
-            return hitLog.size();
+
+            int count = 0;
+            for (int i = 0; i < hitLog.length; i++)
+            {
+                count += hitLog[i];
+            }
+
+            return count;
         }
     }
 
@@ -67,27 +71,43 @@ public class HitMonitor
      */
     private void trimHitLog()
     {
-        long now = System.currentTimeMillis();
-        long purgeBefore = now - millis;
+        long now = getCurrentTimestamp();
+        int secondsPassedSinceLastHit = (int) (now - zeroTimestamp);
+        zeroTimestamp = now;
 
-        ListIterator it = hitLog.listIterator(hitLog.size());
-        while (it.hasPrevious())
+        if (secondsPassedSinceLastHit > 0)
         {
-            Long hitTime = (Long) it.previous();
-            if (hitTime.longValue() >= purgeBefore)
+            // Move the counts down
+            for (int i = hitLog.length - 1; i >= 0; i--)
             {
-                it.remove();
+                if (i >= secondsPassedSinceLastHit)
+                {
+                    hitLog[i] = hitLog[i - secondsPassedSinceLastHit];
+                }
+                else
+                {
+                    hitLog[i] = 0;
+                }
             }
         }
     }
 
     /**
-     * Our log of hits
+     * A timestamp is {@link System#currentTimeMillis()} divided by 1000
+     * @return The current timestamp
      */
-    private LinkedList hitLog = new LinkedList();
+    private long getCurrentTimestamp()
+    {
+        return System.currentTimeMillis() / 1000;
+    }
 
     /**
-     * How many milliseconds are we recording the hits for?
+     * What is the timestamp of the first element of the hitLog?
      */
-    private int millis;
+    private long zeroTimestamp = getCurrentTimestamp();
+
+    /**
+     * Our log of hits
+     */
+    private final long[] hitLog;
 }
