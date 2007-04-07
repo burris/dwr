@@ -31,7 +31,7 @@
   <xsd:element name="remote" type="remote">
     <xsd:annotation>
       <xsd:documentation>The element that can be used as an inner-tag for a bean definition in order to have DWR remote it to JavaScript.</xsd:documentation>
-    </xsd:annotation>
+    </xsd:annotation> 
   </xsd:element>
 
   <xsd:element name="controller" type="controller">
@@ -85,17 +85,16 @@
         </xsd:restriction>
       </xsd:simpleType>
     </xsd:attribute>
+    <xsd:attribute name="javascript" type="xsd:string" use="optional" />
   </xsd:complexType>
-  
-  <!-- 
+
   <xsd:complexType name="signatures" mixed="true">
     <xsd:sequence>
       <xsd:element name="data" type="xsd:string" />
     </xsd:sequence>
     <xsd:attribute name="class" type="xsd:string" use="required" />
   </xsd:complexType>
-  -->
- 
+
   <xsd:complexType name="remote">
     <xsd:sequence>
       <xsd:element name="include" type="include" minOccurs="0" maxOccurs="unbounded"/>
@@ -132,8 +131,16 @@
     <xsd:attribute name="method" type="xsd:string" use="required"/>
     <xsd:attribute name="role" type="xsd:string" use="required"/>
   </xsd:complexType>
+  
+  <xsd:complexType name="config-param">
+    <xsd:attribute name="name" type="xsd:string" use="required"/>
+    <xsd:attribute name="value" type="xsd:string" use="required"/>
+  </xsd:complexType>
 
   <xsd:complexType name="controller">
+    <xsd:sequence>
+      <xsd:element name="config-param" type="config-param" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
     <xsd:attribute name="debug" use="optional">
       <xsd:simpleType>
         <xsd:restriction base="xsd:NMTOKEN">

@@ -15,7 +15,9 @@
  */
 package org.directwebremoting.spring;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -162,8 +164,16 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         Assert.notNull(configurators, "The required 'configurators' property should be set");
 
         // Use a fake servlet config as Spring 1.x does not provide ServletConfigAware functionality
-        servletConfig = new FakeServletConfig(name, servletContext, new ContainerMap(container, true));
-
+        // Now only allow Controller to be configured using parameters
+        
+        // We should remove adding the ContainerMap here, but that will break anyone 
+        // who has used the spring container to configure the DwrController e.g:
+        // <bean name="pollAndCometEnabled" class="java.lang.String">
+        //     <constructor-arg index="0"><value>true</value></constructor-arg>
+        // </bean>
+        configParams.putAll(new ContainerMap(container, true));
+        servletConfig = new FakeServletConfig(name, servletContext, configParams);
+        
         try
         {
             ContainerUtil.setupDefaults(container);
@@ -243,6 +253,18 @@ public class DwrController extends AbstractController implements BeanNameAware, 
     }
 
     /**
+     * Additional parameters such as pollAndCometEnabled. For a full list see:
+     * <a href="http://getahead.org/dwr/server/servlet">http://getahead.org/dwr/server/servlet</a>
+     * @param configParams the configParams to set
+     */
+    public void setConfigParams(Map configParams)
+    {
+        Assert.notNull(configParams, "configParams cannot be null");
+        this.configParams = configParams;
+    }
+    
+    
+    /**
      * How is this deployed in Spring
      */
     private String name;
@@ -279,6 +301,12 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      */
     private List configurators;
 
+    /**
+     * Additional parameters such as pollAndCometEnabled. For a full list see:
+     * <a href="http://getahead.org/dwr/server/servlet">http://getahead.org/dwr/server/servlet</a>
+     */
+    private Map configParams = new HashMap();
+    
     /**
      * The log stream
      */

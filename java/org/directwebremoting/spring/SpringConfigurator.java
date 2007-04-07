@@ -178,6 +178,9 @@ public class SpringConfigurator implements Configurator
                     }
 
                     // params.put("force", Boolean.valueOf(converterConfig.isForce()));
+                    if (StringUtils.hasText(converterConfig.getJavascriptClassName())) {
+                        params.put("javascript", converterConfig.getJavascriptClassName());
+                    }
                     converterManager.addConverter(match, converterConfig.getType(), params);
                 }
             }

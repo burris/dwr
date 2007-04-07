@@ -17,6 +17,7 @@
 package org.directwebremoting.spring;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -265,10 +266,41 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                     aliases = StringUtils.tokenizeToStringArray(nameAttr, BeanDefinitionParserDelegate.BEAN_NAME_DELIMITERS);
                 }
             }
+
+            parseControllerParameters(dwrController, element);
+            
             BeanDefinitionHolder holder = new BeanDefinitionHolder(dwrController.getBeanDefinition(), beanName, aliases);
             BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
 
             return dwrController.getBeanDefinition();
+        }
+        
+        protected void parseControllerParameters(BeanDefinitionBuilder dwrControllerDefinition, Element parent)
+        {
+            NodeList children = parent.getChildNodes();
+            Map params = new HashMap();
+            for (int i = 0; i < children.getLength(); i++)
+            {
+                Node node = children.item(i);
+
+                if (node.getNodeType() == Node.TEXT_NODE || node.getNodeType() == Node.COMMENT_NODE)
+                {
+                    continue;
+                }
+
+                Element child = (Element) node;
+                if (child.getNodeName().equals("dwr:config-param"))
+                {
+                    String paramName = child.getAttribute("name");
+                    String value = child.getAttribute("value");
+                    params.put(paramName, value);
+                }
+                else
+                {
+                    throw new RuntimeException("an unknown dwr:controller sub node was fouund: " + node.getNodeName());
+                }
+            }
+            dwrControllerDefinition.addPropertyValue("configParams", params);
         }
     }
 
