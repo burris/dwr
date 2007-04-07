@@ -26,6 +26,8 @@ import org.directwebremoting.create.NewCreator;
 import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
 import org.directwebremoting.util.Logger;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.HierarchicalBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -311,7 +313,8 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         
         /**
          *  Try getting the beanClassName from the definition and if that fails try to get it from 
-         *  the parent.
+         *  the parent (and even parent BeanFactory if we have to).
+         *  
          *  @param definition 
          *  @param registry
          *  @return class name or null if not found
@@ -323,15 +326,48 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             {
                 while (definition instanceof ChildBeanDefinition )
                 {
-                    String parentName = ((ChildBeanDefinition)definition).getParentName();
-                    BeanDefinition parentDefinition =  registry.getBeanDefinition(parentName);
+                    String parentName = ((ChildBeanDefinition)definition).getParentName();                    
+                    BeanDefinition parentDefinition = findParentDefinition(parentName, registry);
+                    if (parentDefinition == null)
+                    {
+                        if (log.isDebugEnabled()) 
+                        {
+                            log.debug("No parent bean named '" + parentName + "' could be found in the " + 
+                                      "hierarchy of BeanFactorys. Check you've defined a bean called '" + parentName + "'");
+                        }
+                        break;
+                    }
                     beanClassName = parentDefinition.getBeanClassName();
-                    if (StringUtils.hasText(beanClassName )) break;
+                    if (StringUtils.hasText(beanClassName ))
+                    {
+                        // found the class name we were looking for
+                        break;
+                    }
                     definition = parentDefinition;
                 }
             }
-        
+           
             return beanClassName;
+        }
+        
+        private BeanDefinition findParentDefinition(String parentName, BeanDefinitionRegistry registry)
+        {   
+            if (registry != null) 
+            {
+                if (registry.containsBeanDefinition(parentName)) 
+                {
+                    return registry.getBeanDefinition(parentName);
+                } 
+                else if (registry instanceof HierarchicalBeanFactory) 
+                {
+                    // Try to get parent definition from the parent BeanFactory. This could return null
+                    BeanFactory parentBeanFactory = ((HierarchicalBeanFactory)registry).getParentBeanFactory();
+                    return findParentDefinition(parentName, (BeanDefinitionRegistry)parentBeanFactory);
+                } 
+            }
+            
+            // we've exhausted all possibilities        
+            return null;
         }
     }
 
