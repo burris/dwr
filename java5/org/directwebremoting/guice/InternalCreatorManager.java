@@ -25,7 +25,6 @@ import java.util.Map;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.impl.DefaultCreatorManager;
-import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
@@ -128,7 +127,7 @@ public class InternalCreatorManager implements CreatorManager
                 if (scriptName.equals(""))
                 {
                     Class cls = (Class) key.getTypeLiteral().getType();
-                    scriptName = LocalUtil.getShortClassName(cls);
+                    scriptName = cls.getSimpleName();
                 }
                 addCreator(scriptName, new InternalCreator(injector, key, scriptName));
             }

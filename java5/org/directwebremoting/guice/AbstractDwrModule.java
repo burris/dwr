@@ -112,6 +112,15 @@ public abstract class AbstractDwrModule extends AbstractModule
     /**
      * Creates a binding to {@code type} that is used as the target of a
      * remote method call with the class's unqualified name as the script name.
+     * 
+     * <p>Note: if you are scoping the result, don't rely on implicit binding.
+     * Instead, link the type to itself explicitly. For example,
+     * <pre>
+     *   bindRemoted(ConcreteService.class)
+     *       .to(ConcreteService.class) // this line is required
+     *       .in(DwrScopes.SESSION);
+     * </pre>
+     * This could be considered a bug.
      * @param type the type to bind as a target for remote method calls
      */
     protected <T> LinkedBindingBuilder<T> bindRemoted(Class<T> type)
@@ -124,6 +133,15 @@ public abstract class AbstractDwrModule extends AbstractModule
     /**
      * Creates a binding to a type that is used as the target of a
      * remote method call with the given {@code scriptName}.
+     * 
+     * <p>Note: if you are scoping the result, don't rely on implicit binding.
+     * Instead, link the type to itself explicitly. For example,
+     * <pre>
+     *   bindRemotedAs("Mixer", ConcreteService.class)
+     *       .to(ConcreteService.class) // this line is required
+     *       .in(DwrScopes.SESSION);
+     * </pre>
+     * This could be considered a bug.
      * @param type the type to bind as a target for remote method calls
      * @param scriptName the name by which the target type will be known to script callers
      */

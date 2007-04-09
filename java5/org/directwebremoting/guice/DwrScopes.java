@@ -18,9 +18,12 @@ package org.directwebremoting.guice;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
+import com.google.inject.util.ToStringBuilder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletContext;
+
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
@@ -38,15 +41,25 @@ public class DwrScopes
      */
     public static final Scope REQUEST = new Scope() 
     {
-        public <T> Provider<T> scope(Key<T> key, final Provider<T> creator) 
+        public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) 
         {
             final String name = key.toString();
             return new Provider<T>() 
             {
-                public T get() {
+                public T get() 
+                {
                     WebContext webcx = WebContextFactory.get();
-                    HttpServletRequest request = webcx.getHttpServletRequest();
-                    synchronized (request) {
+                    HttpServletRequest request;
+                    try
+                    {
+                        request = webcx.getHttpServletRequest();
+                    } 
+                    catch (RuntimeException ex)
+                    {
+                        throw new OutOfScopeException(REQUEST, key, ex);
+                    }
+                    synchronized (request) 
+                    {
                         @SuppressWarnings("unchecked")
                         T t = (T) request.getAttribute(name);
                         if (t == null) 
@@ -60,7 +73,7 @@ public class DwrScopes
 
                 public String toString() 
                 {
-                    return creator.toString() + "/Request";
+                    return asString(this, "REQUEST", key, creator);
                 }
             };
         }
@@ -76,13 +89,22 @@ public class DwrScopes
      */
     public static final Scope SCRIPT = new Scope() 
     {
-        public <T> Provider<T> scope(Key<T> key, final Provider<T> creator) {
+        public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
             final String name = key.toString();
-            return new Provider<T>() {
+            return new Provider<T>() 
+            {
                 public T get() 
                 {
                     WebContext webcx = WebContextFactory.get();
-                    ScriptSession session = webcx.getScriptSession();
+                    ScriptSession session;
+                    try
+                    {
+                        session = webcx.getScriptSession();
+                    } 
+                    catch (RuntimeException ex)
+                    {
+                        throw new OutOfScopeException(SCRIPT, key, ex);
+                    }
                     synchronized (session) 
                     {
                         @SuppressWarnings("unchecked")
@@ -97,7 +119,7 @@ public class DwrScopes
                 }
                 public String toString() 
                 {
-                    return creator.toString() + "/ScriptSession";
+                    return asString(this, "SCRIPT", key, creator);
                 }
             };
         }
@@ -113,14 +135,21 @@ public class DwrScopes
      */
     public static final Scope SESSION = new Scope() 
     {
-        public <T> Provider<T> scope(Key<T> key, final Provider<T> creator) {
+        public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
             final String name = key.toString();
             return new Provider<T>() 
             {
                 public T get() 
                 {
                     WebContext webcx = WebContextFactory.get();
-                    HttpSession session = webcx.getSession();
+                    HttpSession session;
+                    try
+                    {
+                        session = webcx.getSession();
+                    } catch (RuntimeException ex)
+                    {
+                        throw new OutOfScopeException(SESSION, key, ex);
+                    }
                     synchronized (session) 
                     {
                         @SuppressWarnings("unchecked")
@@ -135,7 +164,7 @@ public class DwrScopes
                 }
                 public String toString() 
                 {
-                    return creator.toString() + "/Session";
+                    return asString(this, "SESSION", key, creator);
                 }
             };
         }
@@ -168,13 +197,20 @@ public class DwrScopes
             this.global = global;
         }
         
-        public <T> Provider<T> scope(Key<T> key, final Provider<T> creator) {
+        public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
             final String name = key.toString();
             return new Provider<T>() 
             {
                 public T get() 
                 {
-                    ServletContext servletContext = getServletContext();
+                    ServletContext servletContext;
+                    try
+                    {
+                        servletContext = getServletContext();
+                    } catch (RuntimeException ex)
+                    {
+                        throw new OutOfScopeException(ApplicationScope.this, key, ex);
+                    }
                     synchronized (servletContext) 
                     {
                         @SuppressWarnings("unchecked")
@@ -189,12 +225,8 @@ public class DwrScopes
                 }
                 public String toString() 
                 {
-                    String result = creator.toString() + "/Application";
-                    if (!global)
-                    {
-                        result = result + APPLICATION_SCOPE_MARKER;
-                    }
-                    return result;
+                    String name = global ? "GLOBAL" : APPLICATION_SCOPE_MARKER;
+                    return asString(this, name, key, creator);
                 }
             };
         }
@@ -207,12 +239,33 @@ public class DwrScopes
         private final boolean global;
     };
     
-    static <T> boolean hasApplicationScope(Provider<T> provider)
+    private static final String asString(Object obj, String name, Key<?> key, Provider<?> creator) 
     {
-        return provider.toString().endsWith(APPLICATION_SCOPE_MARKER);
+        return new ToStringBuilder(obj.getClass())
+            .add("name", name)
+            .add("key", key)
+            .add("creator", creator)
+            .toString();
     }
     
-    private static final String APPLICATION_SCOPE_MARKER = "[DWR_GUICE_APPLICATION_SCOPE]";
+    /**
+     * A very cheesy way to see if a Provider is using application-scoping.
+     * Relies on Provider decorators (e.g., Scopes) having {@code toString()} 
+     * implementations that recursively use the decorated Provider's 
+     * {@code toString()} method. This is strongly recommended by the Guice
+     * Scope spec, but impossible to enforce.
+     */
+    static <T> boolean hasApplicationScope(Provider<T> provider)
+    {
+        try {
+            return provider.toString().indexOf(APPLICATION_SCOPE_MARKER) != -1;
+        } catch (RuntimeException e) {
+            // Failure in toString(), so assume this is not application-scoped.
+            return false;
+        }
+    }
+    
+    private static final String APPLICATION_SCOPE_MARKER = "DWR_GUICE_APP_SCOPE";
     
 
     private DwrScopes() { /* uninstantiable */ }

@@ -94,6 +94,11 @@
  *   at some point.
  * </p>
  * <p>
+ *   For creating your own scopes where the instance injected depends on some
+ *   run-time value, create a concrete extension of 
+ *   {@link org.directwebremoting.guice.AbstractContextScope AbstractContextScope}.
+ * </p>
+ * <p>
  *   This example illustrates two ways to define remoted objects,
  *   calling {@code bindRemotedAs} and annotating with {@code @RemoteProxy};
  *   two ways to define conversions, using {@code bindConversion}
