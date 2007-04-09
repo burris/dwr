@@ -33,7 +33,7 @@ import java.util.concurrent.FutureTask;
  * {@code get()} to return the current context identifier.
  * @author Tim Peierls [tim at peierls dot net]
  */
-public abstract class AbstractContextScope<C> implements Scope, Provider<C> 
+public abstract class AbstractContextScope<C> implements ContextScope<C>
 {        
     public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) 
     {
