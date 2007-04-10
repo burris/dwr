@@ -17,7 +17,7 @@ package org.directwebremoting.guice;
 
 import com.google.inject.Injector;
 
-import java.util.Stack;
+import java.util.LinkedList;
 
 import javax.servlet.ServletContext;
 
@@ -53,7 +53,7 @@ class DwrGuiceUtil
         }
         else
         {
-            return servletContext.get().peek();
+            return servletContexts.get().getFirst();
         }
     }
     
@@ -63,7 +63,7 @@ class DwrGuiceUtil
      */
     static void pushServletContext(ServletContext context)
     {
-        servletContext.get().push(context);
+        servletContexts.get().addFirst(context);
     }
     
     /**
@@ -72,15 +72,15 @@ class DwrGuiceUtil
      */
     static void popServletContext()
     {
-        servletContext.get().pop();
+        servletContexts.get().removeFirst();
     }
     
-    private static final ThreadLocal<Stack<ServletContext>> servletContext = 
-        new ThreadLocal<Stack<ServletContext>>()
+    private static final ThreadLocal<LinkedList<ServletContext>> servletContexts = 
+        new ThreadLocal<LinkedList<ServletContext>>()
         {
-            protected Stack<ServletContext> initialValue()
+            protected LinkedList<ServletContext> initialValue()
             {
-                return new Stack<ServletContext>();
+                return new LinkedList<ServletContext>();
             }
         };
 }

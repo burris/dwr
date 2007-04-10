@@ -43,9 +43,9 @@ import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
 public class DwrScopes 
 {
     /**
-     * HTTP request scope
+     * HTTP request scope.
      */
-    public static final Scope REQUEST = 
+    public static final ContextScope<HttpServletRequest> REQUEST = 
         new AbstractSimpleContextScope<HttpServletRequest>(
             HttpServletRequest.class, "DwrScopes.REQUEST")
         {
@@ -78,9 +78,9 @@ public class DwrScopes
         };
 
     /**
-     * DWR script session scope
+     * DWR script session scope.
      */
-    public static final Scope SCRIPT = 
+    public static final ContextScope<ScriptSession> SCRIPT = 
         new AbstractSimpleContextScope<ScriptSession>(ScriptSession.class, "DwrScopes.SCRIPT")
         {
             public ScriptSession get()
@@ -112,9 +112,13 @@ public class DwrScopes
         };
 
     /**
-     * HTTP session scope
+     * HTTP session scope. The implementation uses session identity to
+     * to track which sessions are open. Since the servlet spec doesn't
+     * guarantee identity of sessions between requests, don't rely on
+     * {@code getOpenContexts()} or {@code close(session, handlers)} to
+     * work correctly for this scope.
      */
-    public static final Scope SESSION = 
+    public static final ContextScope<HttpSession> SESSION = 
         new AbstractSimpleContextScope<HttpSession>(HttpSession.class, "DwrScopes.SESSION")
         {
             public HttpSession get()
@@ -146,17 +150,18 @@ public class DwrScopes
         };
 
     /**
-     * Application scope: objects in this scope <em>are</em> initialized on
-     * DWR servlet startup, and Closeable objects in this scope are closed 
-     * on DWR servlet shutdown.
+     * Application scope: objects in this scope <em>are</em> eagerly initialized 
+     * during DWR servlet initialization, and Closeable objects in this scope are 
+     * closed during DWR servlet destruction.
      */
     public static final ContextScope<ServletContext> APPLICATION = 
         new ApplicationScope("DwrScopes.APPLICATION");
 
     /**
-     * Global application scope: like application scope, but objects in 
-     * this scope are <em>not</em> initialized on servlet startup or closed 
-     * on servlet shutdown.
+     * Global application scope: like {@link #APPLICATION}, but objects in 
+     * this scope are <em>not</em> eagerly initialized and Closeable objects
+     * in this scope are closed during servlet context destruction (not
+     * during DWR servlet destruction).
      */
     public static final ContextScope<ServletContext> GLOBAL = 
         new ApplicationScope("DwrScopes.GLOBAL");
