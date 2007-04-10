@@ -31,6 +31,9 @@ import org.directwebremoting.util.Logger;
 
 /**
  * A default implmentation of ScriptSessionManager.
+ * <p>There are synchronization constraints on this class that could be broken
+ * by subclasses. Specifically anyone accessing either <code>sessionMap</code>
+ * or <code>pageSessionMap</code> must be holding the <code>sessionLock</code>.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultScriptSessionManager implements ScriptSessionManager
@@ -263,11 +266,13 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
 
     /**
      * The map of all the known sessions
+     * <p>GuardedBy("sessionLock")
      */
     protected Map sessionMap = new HashMap();
 
     /**
      * The map of pages that have sessions
+     * <p>GuardedBy("sessionLock")
      */
     protected Map pageSessionMap = new HashMap();
 

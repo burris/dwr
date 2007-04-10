@@ -34,6 +34,8 @@ import org.directwebremoting.util.Logger;
 
 /**
  * An implementation of ScriptSession and RealScriptSession.
+ * <p>There are synchronization constraints on this class. See the field
+ * comments of the type: <code>GuardedBy("lock")</code>
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultScriptSession implements RealScriptSession
