@@ -34,6 +34,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 import org.directwebremoting.util.Logger;
+import static org.directwebremoting.guice.AbstractContextScope.State.*;
 
 /**
  * Partial implementation of {@link ContextScope}. Concrete implementations
@@ -135,8 +136,7 @@ public abstract class AbstractContextScope<C, R>
         Collection<C> openContexts = new ArrayList<C>();
         for (C context : contexts.keySet())
         {
-            Boolean isOpen = contexts.get(context);
-            if (isOpen != null && isOpen)
+            if (contexts.get(context) == OPEN)
             {
                 openContexts.add(context);
             }
@@ -146,8 +146,7 @@ public abstract class AbstractContextScope<C, R>
     
     public void close(C context, ContextCloseHandler<?>... closeHandlers)
     {
-        Boolean wasOpen = contexts.putIfAbsent(context, false);
-        if (wasOpen == null || !wasOpen)
+        if (!contexts.replace(context, OPEN, CLOSED))
         {
             // Context hadn't been opened or was already closed.
             return;
@@ -207,8 +206,7 @@ public abstract class AbstractContextScope<C, R>
         try
         {
             context = get();
-            Boolean isOpen = contexts.putIfAbsent(context, true);
-            if (isOpen != null && !isOpen)
+            if (contexts.putIfAbsent(context, OPEN) == CLOSED)
             {
                 // Context is closed.
                 context = null;
@@ -226,6 +224,12 @@ public abstract class AbstractContextScope<C, R>
         return context;
     }
     
+    enum State
+    {
+        OPEN,
+        CLOSED
+    }
+    
     private final Class<C> type;
     
     private final String scopeName;
@@ -235,8 +239,8 @@ public abstract class AbstractContextScope<C, R>
     private final ConcurrentMap<C, ConcurrentMap> map =
           new ConcurrentHashMap<C, ConcurrentMap>();
     
-    private final ConcurrentMap<C, Boolean> contexts =
-          new ConcurrentHashMap<C, Boolean>();
+    private final ConcurrentMap<C, State> contexts =
+          new ConcurrentHashMap<C, State>();
 
     /**
      * The log stream
