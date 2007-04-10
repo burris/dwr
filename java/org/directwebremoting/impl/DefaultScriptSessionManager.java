@@ -34,6 +34,9 @@ import org.directwebremoting.util.Logger;
  * <p>There are synchronization constraints on this class that could be broken
  * by subclasses. Specifically anyone accessing either <code>sessionMap</code>
  * or <code>pageSessionMap</code> must be holding the <code>sessionLock</code>.
+ * <p>In addition you should note that {@link DefaultScriptSession} and
+ * {@link DefaultScriptSessionManager} make calls to each other and you should
+ * take care not to break any constraints in inheriting from these classes.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultScriptSessionManager implements ScriptSessionManager
