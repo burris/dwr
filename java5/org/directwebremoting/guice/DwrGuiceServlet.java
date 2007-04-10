@@ -21,7 +21,6 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Named;
 
-import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 import static java.util.Map.Entry;
@@ -40,7 +39,6 @@ import org.directwebremoting.util.Logger;
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.popServletContext;
 import static org.directwebremoting.guice.DwrGuiceUtil.pushServletContext;
-import static org.directwebremoting.guice.DwrScopes.hasApplicationScope;
 import static org.directwebremoting.guice.ParamName.*;
 import static org.directwebremoting.impl.ContainerUtil.INIT_CUSTOM_CONFIGURATOR;
 
@@ -236,40 +234,21 @@ public class DwrGuiceServlet extends DwrServlet
     private static void initApplicationScoped()
     {
         Injector injector = getInjector();
-        for (Entry<Key<?>, Binding<?>> entry : injector.getBindings().entrySet())
+        for (Key<?> key : DwrScopes.APPLICATION.getKeysInScope())
         {
-            if (hasApplicationScope(entry.getValue().getProvider()))
-            {
-                // Forces application-scoped object to be created.
-                injector.getInstance(entry.getKey());
-            }
+            // Eagerly create application-scoped object.
+            injector.getInstance(key);
         }
     }
     
     private static List<Exception> destroyApplicationScoped()
     {
-        List<Exception> exceptions = new ArrayList<Exception>();
-
-        Injector injector = getInjector();
-        for (Entry<Key<?>, Binding<?>> entry : injector.getBindings().entrySet())
+        final List<Exception> exceptions = new ArrayList<Exception>();
+        ContextScope<ServletContext> appScope = DwrScopes.APPLICATION;
+        for (ServletContext servletContext : appScope.getOpenContexts())
         {
-            if (hasApplicationScope(entry.getValue().getProvider()))
-            {
-                Object object = injector.getInstance(entry.getKey());
-                if (object instanceof Closeable)
-                {
-                    try
-                    {
-                        ((Closeable) object).close();
-                    }
-                    catch (Exception e)
-                    {
-                        exceptions.add(e);
-                    }
-                }
-            }
+            appScope.close(servletContext, new ExceptionLoggingCloseableHandler(exceptions));
         }
-        
         return exceptions;
     }
 

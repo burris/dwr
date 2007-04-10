@@ -20,6 +20,11 @@ import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.util.ToStringBuilder;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletContext;
@@ -27,6 +32,7 @@ import javax.servlet.ServletContext;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
 
@@ -39,234 +45,170 @@ public class DwrScopes
     /**
      * HTTP request scope
      */
-    public static final Scope REQUEST = new Scope() 
-    {
-        public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) 
+    public static final Scope REQUEST = 
+        new AbstractSimpleContextScope<HttpServletRequest>(
+            HttpServletRequest.class, "DwrScopes.REQUEST")
         {
-            final String name = key.toString();
-            return new Provider<T>() 
+            public HttpServletRequest get()
             {
-                public T get() 
+                return WebContextFactory.get().getHttpServletRequest();
+            }
+            
+            @SuppressWarnings("unchecked")
+            public Object get(HttpServletRequest request, String name)
+            {
+                return request.getAttribute(name);
+            }
+            
+            public void put(HttpServletRequest request, String name, Object value)
+            {
+                request.setAttribute(name, value);
+            }
+            
+            public Iterable<Object> asIterable(HttpServletRequest request)
+            {
+                List<Object> result = new ArrayList<Object>();
+                Enumeration<String> attrNames = request.getAttributeNames();
+                while (attrNames.hasMoreElements())
                 {
-                    WebContext webcx = WebContextFactory.get();
-                    HttpServletRequest request;
-                    try
-                    {
-                        request = webcx.getHttpServletRequest();
-                    } 
-                    catch (RuntimeException ex)
-                    {
-                        throw new OutOfScopeException(REQUEST, key, ex);
-                    }
-                    synchronized (request) 
-                    {
-                        @SuppressWarnings("unchecked")
-                        T t = (T) request.getAttribute(name);
-                        if (t == null) 
-                        {
-                            t = creator.get();
-                            request.setAttribute(name, t);
-                        }
-                        return t;
-                    }
+                    result.add(request.getAttribute(attrNames.nextElement()));
                 }
-
-                public String toString() 
-                {
-                    return asString(this, "REQUEST", key, creator);
-                }
-            };
-        }
-
-        public String toString() 
-        {
-            return "DwrScopes.REQUEST";
-        }
-    };
+                return result;
+            }
+        };
 
     /**
      * DWR script session scope
      */
-    public static final Scope SCRIPT = new Scope() 
-    {
-        public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
-            final String name = key.toString();
-            return new Provider<T>() 
-            {
-                public T get() 
-                {
-                    WebContext webcx = WebContextFactory.get();
-                    ScriptSession session;
-                    try
-                    {
-                        session = webcx.getScriptSession();
-                    } 
-                    catch (RuntimeException ex)
-                    {
-                        throw new OutOfScopeException(SCRIPT, key, ex);
-                    }
-                    synchronized (session) 
-                    {
-                        @SuppressWarnings("unchecked")
-                        T t = (T) session.getAttribute(name);
-                        if (t == null) 
-                        {
-                            t = creator.get();
-                            session.setAttribute(name, t);
-                        }
-                        return t;
-                    }
-                }
-                public String toString() 
-                {
-                    return asString(this, "SCRIPT", key, creator);
-                }
-            };
-        }
-
-        public String toString() 
+    public static final Scope SCRIPT = 
+        new AbstractSimpleContextScope<ScriptSession>(ScriptSession.class, "DwrScopes.SCRIPT")
         {
-            return "DwrScopes.SCRIPT";
-        }
-    };
+            public ScriptSession get()
+            {
+                return WebContextFactory.get().getScriptSession();
+            }
+            
+            @SuppressWarnings("unchecked")
+            public Object get(ScriptSession scriptSession, String name)
+            {
+                return scriptSession.getAttribute(name);
+            }
+            
+            public void put(ScriptSession scriptSession, String name, Object value)
+            {
+                scriptSession.setAttribute(name, value);
+            }
+            
+            public Iterable<Object> asIterable(ScriptSession scriptSession)
+            {
+                List<Object> result = new ArrayList<Object>();
+                Iterator<String> attrNames = scriptSession.getAttributeNames();
+                while (attrNames.hasNext())
+                {
+                    result.add(scriptSession.getAttribute(attrNames.next()));
+                }
+                return result;
+            }
+        };
 
     /**
      * HTTP session scope
      */
-    public static final Scope SESSION = new Scope() 
-    {
-        public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
-            final String name = key.toString();
-            return new Provider<T>() 
-            {
-                public T get() 
-                {
-                    WebContext webcx = WebContextFactory.get();
-                    HttpSession session;
-                    try
-                    {
-                        session = webcx.getSession();
-                    } catch (RuntimeException ex)
-                    {
-                        throw new OutOfScopeException(SESSION, key, ex);
-                    }
-                    synchronized (session) 
-                    {
-                        @SuppressWarnings("unchecked")
-                        T t = (T) session.getAttribute(name);
-                        if (t == null) 
-                        {
-                            t = creator.get();
-                            session.setAttribute(name, t);
-                        }
-                        return t;
-                    }
-                }
-                public String toString() 
-                {
-                    return asString(this, "SESSION", key, creator);
-                }
-            };
-        }
-
-        public String toString() 
+    public static final Scope SESSION = 
+        new AbstractSimpleContextScope<HttpSession>(HttpSession.class, "DwrScopes.SESSION")
         {
-            return "DwrScopes.SESSION";
-        }
-    };
+            public HttpSession get()
+            {
+                return WebContextFactory.get().getSession();
+            }
+            
+            @SuppressWarnings("unchecked")
+            public Object get(HttpSession session, String name)
+            {
+                return session.getAttribute(name);
+            }
+            
+            public void put(HttpSession session, String name, Object value)
+            {
+                session.setAttribute(name, value);
+            }
+            
+            public Iterable<Object> asIterable(HttpSession session)
+            {
+                List<Object> result = new ArrayList<Object>();
+                Enumeration<String> attrNames = session.getAttributeNames();
+                while (attrNames.hasMoreElements())
+                {
+                    result.add(session.getAttribute(attrNames.nextElement()));
+                }
+                return result;
+            }
+        };
 
     /**
      * Application scope: objects in this scope <em>are</em> initialized on
      * DWR servlet startup, and Closeable objects in this scope are closed 
      * on DWR servlet shutdown.
      */
-    public static final Scope APPLICATION = new ApplicationScope(false);
+    public static final ContextScope<ServletContext> APPLICATION = 
+        new ApplicationScope("DwrScopes.APPLICATION");
 
     /**
      * Global application scope: like application scope, but objects in 
      * this scope are <em>not</em> initialized on servlet startup or closed 
      * on servlet shutdown.
      */
-    public static final Scope GLOBAL = new ApplicationScope(true);
+    public static final ContextScope<ServletContext> GLOBAL = 
+        new ApplicationScope("DwrScopes.GLOBAL");
     
     
-    static class ApplicationScope implements Scope
+    static class ApplicationScope extends AbstractSimpleContextScope<ServletContext>
     {
-        ApplicationScope(boolean global)
+        ApplicationScope(String scopeName)
         {
-            this.global = global;
-        }
-        
-        public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
-            final String name = key.toString();
-            return new Provider<T>() 
-            {
-                public T get() 
-                {
-                    ServletContext servletContext;
-                    try
-                    {
-                        servletContext = getServletContext();
-                    } catch (RuntimeException ex)
-                    {
-                        throw new OutOfScopeException(ApplicationScope.this, key, ex);
-                    }
-                    synchronized (servletContext) 
-                    {
-                        @SuppressWarnings("unchecked")
-                        T t = (T) servletContext.getAttribute(name);
-                        if (t == null) 
-                        {
-                            t = creator.get();
-                            servletContext.setAttribute(name, t);
-                        }
-                        return t;
-                    }
-                }
-                public String toString() 
-                {
-                    String name = global ? "GLOBAL" : APPLICATION_SCOPE_MARKER;
-                    return asString(this, name, key, creator);
-                }
-            };
+            super(ServletContext.class, scopeName);
         }
 
-        public String toString() 
+        public ServletContext get()
         {
-            return global ? "DwrScopes.GLOBAL" : "DwrScopes.APPLICATION" ;
+            return getServletContext();
         }
         
-        private final boolean global;
-    };
-    
-    private static final String asString(Object obj, String name, Key<?> key, Provider<?> creator) 
-    {
-        return new ToStringBuilder(obj.getClass())
-            .add("name", name)
-            .add("key", key)
-            .add("creator", creator)
-            .toString();
-    }
-    
-    /**
-     * A very cheesy way to see if a Provider is using application-scoping.
-     * Relies on Provider decorators (e.g., Scopes) having {@code toString()} 
-     * implementations that recursively use the decorated Provider's 
-     * {@code toString()} method. This is strongly recommended by the Guice
-     * Scope spec, but impossible to enforce.
-     */
-    static <T> boolean hasApplicationScope(Provider<T> provider)
-    {
-        try {
-            return provider.toString().indexOf(APPLICATION_SCOPE_MARKER) != -1;
-        } catch (RuntimeException e) {
-            // Failure in toString(), so assume this is not application-scoped.
-            return false;
+        @SuppressWarnings("unchecked")
+        public Object get(ServletContext servletContext, String name)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug(String.format("servletContext.getAttribute(%s)", name));
+            }
+            return servletContext.getAttribute(name);
         }
-    }
-    
-    private static final String APPLICATION_SCOPE_MARKER = "DWR_GUICE_APP_SCOPE";
-    
+        
+        public void put(ServletContext servletContext, String name, Object value)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug(String.format("servletContext.setAttribute(%s, %s)", name, value));
+            }
+            servletContext.setAttribute(name, value);
+        }
+        
+        public Iterable<Object> asIterable(ServletContext servletContext)
+        {
+            List<Object> result = new ArrayList<Object>();
+            Enumeration<String> attrNames = servletContext.getAttributeNames();
+            while (attrNames.hasMoreElements())
+            {
+                result.add(servletContext.getAttribute(attrNames.nextElement()));
+            }
+            return result;
+        }
+    };
 
     private DwrScopes() { /* uninstantiable */ }
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DwrScopes.class);
 }

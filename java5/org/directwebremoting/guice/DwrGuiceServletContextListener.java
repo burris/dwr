@@ -24,6 +24,8 @@ import com.google.inject.Stage;
 import com.google.inject.TypeLiteral;
 import static com.google.inject.name.Names.named;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
@@ -32,6 +34,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.directwebremoting.impl.DefaultContainer;
+import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.popServletContext;
 import static org.directwebremoting.guice.DwrGuiceUtil.pushServletContext;
@@ -63,6 +66,16 @@ public abstract class DwrGuiceServletContextListener
    
     public void contextDestroyed(ServletContextEvent servletContextEvent)
     {
+        List<Exception> exceptions = new ArrayList<Exception>();
+        ContextScope<ServletContext> globalScope = DwrScopes.GLOBAL;
+        for (ServletContext servletContext : globalScope.getOpenContexts())
+        {
+            globalScope.close(servletContext, new ExceptionLoggingCloseableHandler(exceptions));
+        }
+        for (Exception e : exceptions)
+        {
+            log.warn("During context destroy, closing globally-scoped Closeables: " + e, e);
+        }
     }
     
     
@@ -156,4 +169,9 @@ public abstract class DwrGuiceServletContextListener
 
     /** The node property to examine for a value for Stage. */
     private static final String STAGE_KEY = "stage";
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(DwrGuiceServletContextListener.class);
 }

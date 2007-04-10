@@ -20,6 +20,12 @@ import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.util.ToStringBuilder;
 
+import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+import static java.util.Collections.synchronizedList;
+import static java.util.Collections.unmodifiableList;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -27,105 +33,91 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import org.directwebremoting.util.Logger;
+
 /**
  * Partial implementation of {@link ContextScope}. Concrete implementations
- * must pass the context identifier type to this super-constructor and define
- * {@code get()} to return the current context identifier.
+ * must pass the context identifier type to the super constructor and define 
+ * {@code get()} to return the current context identifier (and to return null 
+ * or throw an exception if there is no current context). They must also implement
+ * the {@link ContextRegistry} interface.
  * @author Tim Peierls [tim at peierls dot net]
  */
-public abstract class AbstractContextScope<C> implements ContextScope<C>
+public abstract class AbstractContextScope<C, R> 
+    implements ContextScope<C>, ContextRegistry<C, R>
 {        
+    protected AbstractContextScope(Class<C> type, String scopeName) 
+    {
+        this.type = type;
+        this.scopeName = scopeName;
+    }
+    
+    public String toString()
+    {
+        return scopeName;
+    }
+    
+    public List<Key<?>> getKeysInScope()
+    {
+        synchronized (scopedKeys)
+        {
+            return unmodifiableList(scopedKeys);
+        }
+    }
+    
     public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) 
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug(String.format(
+                "scope %s: adding key %s with creator %s", 
+                scopeName, key, creator
+            ));
+        }
+        
+        scopedKeys.add(key);
+        final String name = key.toString();
         return new Provider<T>() 
         {
             public T get() 
             {
+                if (log.isDebugEnabled())
+                {
+                    log.debug(String.format(
+                        "scope %s: getting key %s with creator %s", 
+                        scopeName, key, creator
+                    ));
+                }
+        
                 C context = getContext(key);
-                ConcurrentMap<Key<T>, Future<T>> instanceMap = getInstanceMap(context);
-                Future<T> future = getFuture(instanceMap);
-                return getValueFromFuture(future);
+                R registry = registryFor(context);
+                InstanceProvider<T> future = 
+                    AbstractContextScope.this.get(registry, key, name);
+                if (future == null)
+                {
+                    InstanceProvider<T> futureTask = new FutureTaskProvider<T>(creator);
+                    future = putIfAbsent(registry, key, name, futureTask);
+                    if (future == null)
+                    {
+                        future = futureTask;
+                        futureTask.run();
+                        if (Thread.currentThread().isInterrupted())
+                        {
+                            remove(registry, key, name, futureTask);
+                        }
+                    }
+                }
+                return future.get();
             }
 
             public String toString() 
             {
                 return new ToStringBuilder(this.getClass())
+                    .add("scopeName", scopeName)
                     .add("type", type)
                     .add("key", key)
                     .add("creator", creator)
                     .toString();
-            }
-
-            private ConcurrentMap<Key<T>, Future<T>> getInstanceMap(C context)
-            {
-                @SuppressWarnings("unchecked")
-                ConcurrentMap<Key<T>, Future<T>> instanceMap =
-                    (ConcurrentMap<Key<T>, Future<T>>) map.get(context);
-
-                if (instanceMap == null) 
-                {
-                    ConcurrentMap<Key<T>, Future<T>> emptyMap = 
-                        new ConcurrentHashMap<Key<T>, Future<T>>();
-                    instanceMap = map.putIfAbsent(context, emptyMap);
-                    if (instanceMap == null) 
-                    {
-                        instanceMap = emptyMap;
-                    }
-                }
-
-                return instanceMap;
-            }
-
-            private Future<T> getFuture(ConcurrentMap<Key<T>, Future<T>> instanceMap)
-            {
-                Future<T> future = instanceMap.get(key);
-                
-                if (future == null) {
-                    FutureTask<T> futureTask = new FutureTask<T>(new Callable<T>() 
-                    {
-                        public T call() 
-                        {
-                            return creator.get(); 
-                        }
-                    });
-                    future = instanceMap.putIfAbsent(key, futureTask);
-                    if (future == null) 
-                    { 
-                        future = futureTask;
-                        futureTask.run(); 
-                        if (Thread.currentThread().isInterrupted()) 
-                        {
-                            instanceMap.remove(key, futureTask);
-                        }
-                    }
-                }
-
-                return future;
-            }
-            
-            private T getValueFromFuture(Future<T> future)
-            {
-                try 
-                {
-                    return future.get();
-                } 
-                catch (InterruptedException e) 
-                {
-                    Thread.currentThread().interrupt();
-                    return null;
-                } 
-                catch (ExecutionException ex) 
-                {
-                    Throwable e = ex.getCause();
-                    if (e instanceof RuntimeException)
-                    {
-                        throw (RuntimeException) e;
-                    }
-                    else
-                    {
-                        throw new IllegalStateException("unexpected Exception", e);
-                    }
-                }
             }
         };
     }
@@ -137,13 +129,76 @@ public abstract class AbstractContextScope<C> implements ContextScope<C>
     {
         return type;
     }
-
     
-    protected AbstractContextScope(Class<C> type) 
+    public Collection<C> getOpenContexts()
     {
-        this.type = type;
+        Collection<C> openContexts = new ArrayList<C>();
+        for (C context : contexts.keySet())
+        {
+            Boolean isOpen = contexts.get(context);
+            if (isOpen != null && isOpen)
+            {
+                openContexts.add(context);
+            }
+        }
+        return openContexts;
     }
-
+    
+    public void close(C context, ContextCloseHandler<?>... closeHandlers)
+    {
+        Boolean wasOpen = contexts.putIfAbsent(context, false);
+        if (wasOpen == null || !wasOpen)
+        {
+            // Context hadn't been opened or was already closed.
+            return;
+        }
+        
+        R registry = registryFor(context);
+        Collection<InstanceProvider<?>> providers = values(registry);
+        for (InstanceProvider<?> provider : providers)
+        {
+            Object value = null;
+            try
+            {
+                value = provider.get();
+            }
+            catch (RuntimeException e)
+            {
+                // Ignore runtime exceptions: they were thrown when
+                // attempting creation and mean that no object was
+                // created.
+            }
+            
+            if (value == null)
+            {
+                // No instance was created by this provider, so we ignore.
+                continue;
+            }
+            
+            for (ContextCloseHandler<?> closeHandler : closeHandlers)
+            {
+                handleClose(closeHandler, value);
+            }
+        }
+    }
+    
+    private <T> void handleClose(ContextCloseHandler<T> closeHandler, Object value)
+    {
+        Class<T> type = closeHandler.type();
+        if (type.isInstance(value))
+        {
+            try
+            {
+                closeHandler.close(type.cast(value));
+            }
+            catch (Exception e)
+            {
+                // Ignore exceptions when closing,
+                // the closeHandler should have taken
+                // appropriate action before rethrowing.
+            }
+        }
+    }
     
     private C getContext(Key<?> key)
     {
@@ -152,6 +207,12 @@ public abstract class AbstractContextScope<C> implements ContextScope<C>
         try
         {
             context = get();
+            Boolean isOpen = contexts.putIfAbsent(context, true);
+            if (isOpen != null && !isOpen)
+            {
+                // Context is closed.
+                context = null;
+            }
         }
         catch (RuntimeException ex)
         {
@@ -167,6 +228,18 @@ public abstract class AbstractContextScope<C> implements ContextScope<C>
     
     private final Class<C> type;
     
+    private final String scopeName;
+    
+    private final List<Key<?>> scopedKeys = synchronizedList(new ArrayList<Key<?>>());
+    
     private final ConcurrentMap<C, ConcurrentMap> map =
           new ConcurrentHashMap<C, ConcurrentMap>();
+    
+    private final ConcurrentMap<C, Boolean> contexts =
+          new ConcurrentHashMap<C, Boolean>();
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(AbstractContextScope.class);
 }
