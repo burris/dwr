@@ -1,6 +1,6 @@
 @CHARSET "ISO-8859-1";
 
-body { margin:60px 40px 0px 40px; color:#666;
+body { margin:60px 40px 0px 40px; color:#666; line-height:1.3em;
   font-family:'Century Gothic', Helvetica, Arial, clean, sans-serif;
 }
 
@@ -8,9 +8,6 @@ select, textarea, input[type='text'], input[type='password'] {
   font-family:'Century Gothic', Helvetica, Arial, clean, sans-serif;
   font-size:1em; padding:0px 3px; margin:2px; border:1px solid #999;
 }
-
-select, textarea, input[type='text'], input[type='password']
-{ -moz-border-radius:5px; }
 
 button, input[type='button'], input[type='submit'], input[type='cancel'] {
   font-family:'Century Gothic', Helvetica, Arial, clean, sans-serif;
