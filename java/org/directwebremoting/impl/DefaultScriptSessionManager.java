@@ -187,12 +187,12 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
                     timeouts.add(session);
                 }
             }
-        }
 
-        for (Iterator it = timeouts.iterator(); it.hasNext();)
-        {
-            DefaultScriptSession session = (DefaultScriptSession) it.next();
-            session.invalidate();
+            for (Iterator it = timeouts.iterator(); it.hasNext();)
+            {
+                DefaultScriptSession session = (DefaultScriptSession) it.next();
+                session.invalidate();
+            }
         }
     }
 
