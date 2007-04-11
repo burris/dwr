@@ -19,8 +19,11 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.EnginePrivate;
+import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -74,20 +77,25 @@ public class Html4kScriptConduit extends BaseScriptConduit
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseScriptConduit#beginScript()
+     * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
      */
-    public void beginScript()
+    public boolean addScript(ScriptBuffer scriptBuffer) throws IOException, MarshallException
     {
-    }
+        String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseScriptConduit#endScript()
-     */
-    public void endScript()
-    {
-        if (partialResponse == PollHandler.PARTIAL_RESPONSE_FLUSH)
+        // Write a script out in a synchronized manner to avoid thread clashes
+        synchronized (out)
         {
-            out.print(fourKFlushData);
+            out.println(ProtocolConstants.SCRIPT_START_MARKER);
+            out.println(script);
+            out.println(ProtocolConstants.SCRIPT_END_MARKER);
+
+            if (partialResponse == PollHandler.PARTIAL_RESPONSE_FLUSH)
+            {
+                out.print(fourKFlushData);
+            }
+
+            return flush();
         }
     }
 

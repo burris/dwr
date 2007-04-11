@@ -19,7 +19,10 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.extend.ConverterManager;
+import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -63,16 +66,20 @@ public class PlainScriptConduit extends BaseScriptConduit
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseScriptConduit#beginScript()
+     * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
      */
-    public void beginScript()
+    public boolean addScript(ScriptBuffer scriptBuffer) throws IOException, MarshallException
     {
-    }
+        String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseScriptConduit#endScript()
-     */
-    public void endScript()
-    {
+        // Write a script out in a synchronized manner to avoid thread clashes
+        synchronized (out)
+        {
+            out.println(ProtocolConstants.SCRIPT_START_MARKER);
+            out.println(script);
+            out.println(ProtocolConstants.SCRIPT_END_MARKER);
+
+            return flush();
+        }
     }
 }

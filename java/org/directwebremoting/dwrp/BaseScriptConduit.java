@@ -6,11 +6,8 @@ import java.io.PrintWriter;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.EnginePrivate;
-import org.directwebremoting.extend.MarshallException;
-import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.Logger;
@@ -66,7 +63,7 @@ public abstract class BaseScriptConduit extends ScriptConduit
     /**
      * Setup a stream before we call {@link ServletResponse#getWriter()}
      */
-    public abstract void preStreamSetup();
+    protected abstract void preStreamSetup();
 
     /**
      * Called when we are initially setting up the stream. This does not send
@@ -74,69 +71,14 @@ public abstract class BaseScriptConduit extends ScriptConduit
      * <p>This method is always called exactly once in the lifetime of a
      * conduit, after {@link #preStreamSetup()} and before any scripts are sent.
      */
-    public abstract void beginStream();
+    protected abstract void beginStream();
 
     /**
      * Called when we are shutting the stream down.
      * <p>This method is always called exactly once in the lifetime of a
      * conduit, just before the stream is closed.
      */
-    public abstract void endStream();
-
-    /**
-     * Called just before a single script is sent.
-     * <p>This method can be called many times in the lifetime of a
-     * {@link ScriptConduit}
-     */
-    public abstract void beginScript();
-
-    /**
-     * Called just after a single script is sent.
-     * <p>This method can be called many times in the lifetime of a
-     * {@link ScriptConduit}
-     */
-    public abstract void endScript();
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
-     */
-    public boolean addScript(ScriptBuffer scriptBuffer) throws IOException, MarshallException
-    {
-        String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);
-
-        // Write a script out in a synchronized manner to avoid thread clashes
-        synchronized (out)
-        {
-            beginScript();
-
-            out.println(ProtocolConstants.SCRIPT_START_MARKER);
-            out.println(script);
-            out.println(ProtocolConstants.SCRIPT_END_MARKER);
-
-            endScript();
-
-            // I'm not totally sure if this is the right thing to do.
-            // A PrintWriter that encounters an error never recovers so maybe
-            // we could be more robust by using a lower level object and
-            // working out what to do if something goes wrong. Annoyingly
-            // PrintWriter also throws the original exception away.
-            if (out.checkError())
-            {
-                log.warn("Error writing to stream");
-                // throw new IOException("Error writing to stream");
-            }
-
-            out.flush();
-            response.flushBuffer();
-
-            if (out.checkError())
-            {
-                throw new IOException("Error flushing buffered stream");
-            }
-        }
-
-        return true;
-    }
+    protected abstract void endStream();
 
     /**
      * A poll has finished, get the client to call us back
@@ -156,6 +98,40 @@ public abstract class BaseScriptConduit extends ScriptConduit
         }
 
         endStream();
+    }
+
+    /**
+     * Ensure that output we have done is written to the client
+     * @return true/false depending on the write status
+     */
+    protected boolean flush()
+    {
+        out.flush();
+
+        // I'm not totally sure if this is the right thing to do.
+        // A PrintWriter that encounters an error never recovers so maybe
+        // we could be more robust by using a lower level object and
+        // working out what to do if something goes wrong. Annoyingly
+        // PrintWriter also throws the original exception away.
+        if (out.checkError())
+        {
+            log.debug("Error writing to stream");
+            // throw new IOException("Error writing to stream");
+            return false;
+        }
+
+        try
+        {
+            response.flushBuffer();
+            return true;
+        }
+        catch (IOException ex)
+        {
+            // This is likely to be because the user has gone away. Maybe
+            // we should do something clever like remove the script session?
+            log.debug("Error writing to HTTP response:" + ex);
+            return false;
+        }
     }
 
     /**
