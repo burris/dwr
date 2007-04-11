@@ -66,6 +66,7 @@ public class NewCreator extends AbstractCreator implements Creator
         }
         catch (IllegalAccessException ex)
         {
+            // JDK5: We should really be passing the exception on
             throw new InstantiationException(Messages.getString("Creator.IllegalAccess"));
         }
     }
