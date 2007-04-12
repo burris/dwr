@@ -478,8 +478,8 @@ dwr.engine._createBatch = function() {
       httpSessionId:dwr.engine._getJSessionId(),
       scriptSessionId:dwr.engine._getScriptSessionId()
     },
-    charsProcessed:0,
-    paramCount:0, // TODO: What's this for?
+    charsProcessed:0, paramCount:0,
+    headers:[], parameters:[],
     isPoll:false, headers:{}, handlers:{}, preHooks:[], postHooks:[],
     rpcType:dwr.engine._rpcType,
     httpMethod:dwr.engine._httpMethod,
