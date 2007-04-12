@@ -51,7 +51,13 @@ public class ExceptionConverter extends BeanConverter
         return descriptors;
     }
 
-    /* (non-Javadoc)
+    /**
+     * Make sure Throwable's standard properties are added
+     * (fix for Bean Introspector peculiarities)
+     * @param descriptors The Map of the known descriptors
+     * @param name The name of the property to add
+     * @param readMethodName A method name to use when getting said property
+     * @throws IntrospectionException If we fail to build a PropertyDescriptor
      */
     protected void fixMissingThrowableProperty(Map descriptors, String name, String readMethodName) throws IntrospectionException
     {

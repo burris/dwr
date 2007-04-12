@@ -35,15 +35,14 @@
     <converter id="hibernate3" class="org.directwebremoting.hibernate.H3BeanConverter"/>
     <converter id="url" class="org.directwebremoting.convert.URLConverter"/>
     <converter id="exception" class="org.directwebremoting.convert.ExceptionConverter"/>
+    <converter id="miniException" class="org.directwebremoting.convert.MinimalistExceptionConverter"/>
   </init>
 
   <allow>
     <convert converter="null" match="void"/>
     <convert converter="null" match="java.lang.Void"/>
 
-    <convert converter="exception" match="java.lang.Throwable">
-      <param name="include" value="cause, message, type"/>
-    </convert>
+    <convert converter="miniException" match="java.lang.Throwable"/>
 
     <convert converter="primitive" match="boolean"/>
     <convert converter="primitive" match="byte"/>
