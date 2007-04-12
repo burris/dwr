@@ -3,7 +3,6 @@ package org.directwebremoting.dwrp;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.extend.ConverterManager;
@@ -36,7 +35,7 @@ public abstract class BaseScriptConduit extends ScriptConduit
         this.batchId = batchId;
         this.converterManager = converterManager;
 
-        preStreamSetup();
+        response.setContentType(getOutboundMimeType());
 
         if (log.isDebugEnabled())
         {
@@ -61,9 +60,10 @@ public abstract class BaseScriptConduit extends ScriptConduit
     }
 
     /**
-     * Setup a stream before we call {@link ServletResponse#getWriter()}
+     * What mime type should we send to the browser for this data?
+     * @return A mime-type
      */
-    protected abstract void preStreamSetup();
+    protected abstract String getOutboundMimeType();
 
     /**
      * Called when we are initially setting up the stream. This does not send

@@ -46,9 +46,9 @@ public class PlainScriptConduit extends BaseScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseScriptConduit#preStreamSetup()
      */
-    public void preStreamSetup()
+    protected String getOutboundMimeType()
     {
-        response.setContentType(MimeConstants.MIME_JS);
+        return MimeConstants.MIME_JS;
     }
 
     /* (non-Javadoc)
@@ -72,7 +72,6 @@ public class PlainScriptConduit extends BaseScriptConduit
     {
         String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);
 
-        // Write a script out in a synchronized manner to avoid thread clashes
         synchronized (out)
         {
             out.println(ProtocolConstants.SCRIPT_START_MARKER);

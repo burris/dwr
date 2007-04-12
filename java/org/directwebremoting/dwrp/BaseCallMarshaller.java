@@ -389,8 +389,8 @@ public abstract class BaseCallMarshaller implements Marshaller
     protected abstract void sendScript(PrintWriter out, String script) throws IOException;
 
     /**
-     * iframe mode starts as HTML, so get into script mode
-     * @return A script prefix
+     * What mime type should we send to the browser for this data?
+     * @return A mime-type
      */
     protected abstract String getOutboundMimeType();
 

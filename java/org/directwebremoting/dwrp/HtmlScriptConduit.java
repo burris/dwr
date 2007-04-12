@@ -45,11 +45,11 @@ public class HtmlScriptConduit extends BaseScriptConduit
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseScriptConduit#preStreamSetup()
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
      */
-    public void preStreamSetup()
+    protected String getOutboundMimeType()
     {
-        response.setContentType(MimeConstants.MIME_HTML);
+        return MimeConstants.MIME_HTML;
     }
 
     /* (non-Javadoc)
@@ -57,12 +57,13 @@ public class HtmlScriptConduit extends BaseScriptConduit
      */
     public void beginStream()
     {
-        out.println("<html><body>");
-        out.println("<script type=\"text/javascript\">");
-        out.println(ProtocolConstants.SCRIPT_START_MARKER);
-        out.println(EnginePrivate.remoteBeginIFrameResponse(batchId, false));
-        out.println(ProtocolConstants.SCRIPT_END_MARKER);
-        out.println("</script>");
+        synchronized (out)
+        {
+            out.println("<html><body>");
+            out.println("<script type=\"text/javascript\">");
+            out.println(EnginePrivate.remoteBeginIFrameResponse(batchId, true));
+            out.println("</script>");
+        }
     }
 
     /* (non-Javadoc)
@@ -70,12 +71,13 @@ public class HtmlScriptConduit extends BaseScriptConduit
      */
     public void endStream()
     {
-        out.println("<script type=\"text/javascript\">");
-        out.println(EnginePrivate.remoteEndIFrameResponse(batchId, false));
-        out.println(ProtocolConstants.SCRIPT_START_MARKER);
-        out.println("</script>");
-        out.println("</body></html>");
-        out.println(ProtocolConstants.SCRIPT_END_MARKER);
+        synchronized (out)
+        {
+            out.println("<script type=\"text/javascript\">");
+            out.println(EnginePrivate.remoteEndIFrameResponse(batchId, true));
+            out.println("</script>");
+            out.println("</body></html>");
+        }
     }
 
     /* (non-Javadoc)
@@ -85,7 +87,6 @@ public class HtmlScriptConduit extends BaseScriptConduit
     {
         String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);
 
-        // Write a script out in a synchronized manner to avoid thread clashes
         synchronized (out)
         {
             out.println("<script type=\"text/javascript\">");

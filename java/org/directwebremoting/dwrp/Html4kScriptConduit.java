@@ -47,11 +47,11 @@ public class Html4kScriptConduit extends BaseScriptConduit
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseScriptConduit#preStreamSetup()
+     * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
      */
-    public void preStreamSetup()
+    protected String getOutboundMimeType()
     {
-        response.setContentType(MimeConstants.MIME_HTML);
+        return MimeConstants.MIME_HTML;
     }
 
     /* (non-Javadoc)
@@ -59,10 +59,13 @@ public class Html4kScriptConduit extends BaseScriptConduit
      */
     public void beginStream()
     {
-        out.println("<html><body><pre>");
-        out.println(ProtocolConstants.SCRIPT_START_MARKER);
-        out.println(EnginePrivate.remoteBeginIFrameResponse(batchId, false));
-        out.println(ProtocolConstants.SCRIPT_END_MARKER);
+        synchronized (out)
+        {
+            out.println("<html><body><pre>");
+            out.println(ProtocolConstants.SCRIPT_START_MARKER);
+            out.println(EnginePrivate.remoteBeginIFrameResponse(batchId, false));
+            out.println(ProtocolConstants.SCRIPT_END_MARKER);
+        }
     }
 
     /* (non-Javadoc)
@@ -70,10 +73,13 @@ public class Html4kScriptConduit extends BaseScriptConduit
      */
     public void endStream()
     {
-        out.println(EnginePrivate.remoteEndIFrameResponse(batchId, false));
-        out.println(ProtocolConstants.SCRIPT_START_MARKER);
-        out.println("</pre></body></html>");
-        out.println(ProtocolConstants.SCRIPT_END_MARKER);
+        synchronized (out)
+        {
+            out.println(EnginePrivate.remoteEndIFrameResponse(batchId, false));
+            out.println(ProtocolConstants.SCRIPT_START_MARKER);
+            out.println("</pre></body></html>");
+            out.println(ProtocolConstants.SCRIPT_END_MARKER);
+        }
     }
 
     /* (non-Javadoc)
@@ -83,7 +89,6 @@ public class Html4kScriptConduit extends BaseScriptConduit
     {
         String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);
 
-        // Write a script out in a synchronized manner to avoid thread clashes
         synchronized (out)
         {
             out.println(ProtocolConstants.SCRIPT_START_MARKER);
