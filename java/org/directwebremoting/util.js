@@ -971,7 +971,7 @@ dwr.util.getFormValues = function(ele) {
     var value;
     for (var i = 0; i < ele.elements.length; i++) {
       if (ele[i].type in {button:0,submit:0,reset:0,image:0,file:0}) continue;
-      if (ele[i].id != null) value = ele[i].id;
+      if (ele[i].id) value = ele[i].id;
       else if (ele[i].value != null) value = ele[i].value;
       else value = "element" + i;
       reply[value] = dwr.util.getValue(ele[i]);
