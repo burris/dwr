@@ -796,7 +796,8 @@ dwr.util.getValue = function(ele, options) {
       for (i = 0; i < ele.options.length; i++) {
         var item = ele.options[i];
         if (item.selected) {
-          if (item.value != null && item.value != "") {
+          var valueAttr = item.getAttributeNode("value");
+          if (valueAttr && valueAttr.specified) {
             reply.push(item.value);
           }
           else {
@@ -810,7 +811,8 @@ dwr.util.getValue = function(ele, options) {
       var sel = ele.selectedIndex;
       if (sel != -1) {
         var item = ele.options[sel];
-        if (item.value != null && item.value != "") {
+        var valueAttr = item.getAttributeNode("value");
+        if (valueAttr && valueAttr.specified) {
           return item.value;
         }
         return item.text;
