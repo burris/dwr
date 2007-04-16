@@ -62,7 +62,7 @@ public abstract class AbstractContextScope<C, R>
     {
         synchronized (scopedKeys)
         {
-            return unmodifiableList(scopedKeys);
+            return new ArrayList<Key<?>>(scopedKeys);
         }
     }
     
@@ -234,6 +234,7 @@ public abstract class AbstractContextScope<C, R>
     
     private final String scopeName;
     
+    /* @GuardedBy("self") */
     private final List<Key<?>> scopedKeys = synchronizedList(new ArrayList<Key<?>>());
     
     private final ConcurrentMap<C, ConcurrentMap> map =

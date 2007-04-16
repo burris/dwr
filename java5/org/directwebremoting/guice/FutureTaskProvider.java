@@ -38,7 +38,7 @@ class FutureTaskProvider<T> extends FutureTask<T> implements InstanceProvider<T>
         });
     }
     
-    public T get()
+    @Override public T get()
     {
         try
         {

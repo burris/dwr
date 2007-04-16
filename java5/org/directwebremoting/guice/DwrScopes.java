@@ -54,7 +54,6 @@ public class DwrScopes
                 return WebContextFactory.get().getHttpServletRequest();
             }
             
-            @SuppressWarnings("unchecked")
             public Object get(HttpServletRequest request, String name)
             {
                 return request.getAttribute(name);
@@ -88,7 +87,6 @@ public class DwrScopes
                 return WebContextFactory.get().getScriptSession();
             }
             
-            @SuppressWarnings("unchecked")
             public Object get(ScriptSession scriptSession, String name)
             {
                 return scriptSession.getAttribute(name);
@@ -126,7 +124,6 @@ public class DwrScopes
                 return WebContextFactory.get().getSession();
             }
             
-            @SuppressWarnings("unchecked")
             public Object get(HttpSession session, String name)
             {
                 return session.getAttribute(name);
@@ -179,7 +176,6 @@ public class DwrScopes
             return getServletContext();
         }
         
-        @SuppressWarnings("unchecked")
         public Object get(ServletContext servletContext, String name)
         {
             if (log.isDebugEnabled())
