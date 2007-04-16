@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.spring;
 
 import java.util.ArrayList;
@@ -49,8 +48,6 @@ import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.sun.java_cup.internal.parser;
 
 /**
  * The Spring namespace handler which handles all elements that are defined as
