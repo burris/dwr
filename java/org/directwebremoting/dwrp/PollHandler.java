@@ -132,11 +132,12 @@ public class PollHandler implements Handler
 
         ScriptConduit notifyConduit = new NotifyOnlyScriptConduit(scriptSession.getScriptLock());
 
+        // The pre-stream wait. A wait before we open any output stream
         // Don't wait if we would wait for 0s or if there are queued scripts
-        boolean shutdown = false;
+        boolean canWaitMore = true;
         if (maxConnectedTime > 0 && !scriptSession.hasWaitingScripts())
         {
-            shutdown = streamWait(request, notifyConduit, scriptSession, maxConnectedTime);
+            canWaitMore = streamWait(request, notifyConduit, scriptSession, maxConnectedTime);
         }
 
         BaseScriptConduit conduit;
@@ -152,7 +153,12 @@ public class PollHandler implements Handler
 
         // How much longer do we wait now the stream is open?
         long extraWait = endTime - System.currentTimeMillis();
-        if (extraWait > 0 && partialResponse != PARTIAL_RESPONSE_NO && !shutdown)
+        if (extraWait <= 0)
+        {
+            canWaitMore = false;
+        }
+
+        if (canWaitMore && !alwaysCloseStreamAfterWrite && partialResponse != PARTIAL_RESPONSE_NO)
         {
             streamWait(request, conduit, scriptSession, extraWait);
         }
@@ -222,7 +228,7 @@ public class PollHandler implements Handler
             serverLoadMonitor.threadWaitEnding(controller);
         }
 
-        return controller.isShutdown();
+        return !controller.isShutdown();
     }
 
     /**
@@ -406,6 +412,14 @@ public class PollHandler implements Handler
     }
 
     /**
+     * @param alwaysCloseStreamAfterWrite the alwaysCloseStreamAfterWrite to set
+     */
+    public void setAlwaysCloseStreamAfterWrite(boolean alwaysCloseStreamAfterWrite)
+    {
+        this.alwaysCloseStreamAfterWrite = alwaysCloseStreamAfterWrite;
+    }
+
+    /**
      * Are we doing full reverse ajax
      */
     protected boolean activeReverseAjaxEnabled = false;
@@ -414,6 +428,12 @@ public class PollHandler implements Handler
      * By default we disable GET, but this hinders old Safaris
      */
     protected boolean allowGetForSafariButMakeForgeryEasier = false;
+
+    /**
+     * Sometimes with proxies, you need to close the stream all the time to
+     * make the flush work.
+     */
+    protected boolean alwaysCloseStreamAfterWrite = false;
 
     /**
      * Are we using plain javascript or html wrapped javascript
