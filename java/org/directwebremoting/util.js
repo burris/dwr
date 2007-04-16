@@ -500,7 +500,7 @@ dwr.util.toDescriptiveString2 = function(data, showLevels, options) {
     else {
       reply = "" + data;
     }
-	
+
     return reply;
   }
 
@@ -646,11 +646,16 @@ dwr.util.setValue = function(ele, val, options) {
   }
 
   var orig = ele;
-  var nodes, node, i;
-  ele = dwr.util.byId(ele);
-
-  // We can work with names and need to sometimes for radio buttons
+  if (typeof ele == "string") {
+    ele = dwr.util.byId(ele);
+    // We can work with names and need to sometimes for radio buttons, and IE has
+    // an annoying bug where getElementById() returns an element based on name if
+    // it doesn't find it by id. Here we don't want to do that, so:
+    if (ele && ele.id != orig) ele = null;
+  }
+  var nodes = null;
   if (ele == null) {
+    // Now it is time to look by name
     nodes = document.getElementsByName(orig);
     if (nodes.length >= 1) ele = nodes.item(0);
   }
@@ -670,18 +675,23 @@ dwr.util.setValue = function(ele, val, options) {
   }
 
   if (dwr.util._isHTMLElement(ele, "input")) {
-    if (ele.type == "radio") {
-      // Some browsers match names when looking for ids, so check names anyway.
-      if (nodes == null) nodes = document.getElementsByName(orig);
-      if (nodes != null && nodes.length > 1) {
-        for (i = 0; i < nodes.length; i++) {
-          node = nodes.item(i);
-          if (node.type == "radio") node.checked = (node.value == val);
+    if (ele.type == "radio" || ele.type == "checkbox") {
+      if (nodes && nodes.length >= 1) {
+        for (var i = 0; i < nodes.length; i++) {
+          var node = nodes.item(i);
+          if (node.type != ele.type) continue;
+          if (dwr.util._isArray(val)) {
+            node.checked = false;
+            for (var j = 0; j < val.length; j++)
+              if (val[i] == node.value) node.checked = true;
+          }
+          else {
+            node.checked = (node.value == val);
+          }
         }
       }
       else ele.checked = (val == true);
     }
-    else if (ele.type == "checkbox") ele.checked = val;
     else ele.value = val;
 
     return;
@@ -776,12 +786,18 @@ dwr.util._selectListItem = function(ele, val) {
 dwr.util.getValue = function(ele, options) {
   if (options == null) options = {};
   var orig = ele;
-  ele = dwr.util.byId(ele);
-  // We can work with names and need to sometimes for radio buttons, and IE has
-  // an annoying bug where
-  var nodes = document.getElementsByName(orig);
-  if (ele == null && nodes.length >= 1) {
-    ele = nodes.item(0);
+  if (typeof ele == "string") {
+    ele = dwr.util.byId(ele);
+    // We can work with names and need to sometimes for radio buttons, and IE has
+    // an annoying bug where getElementById() returns an element based on name if
+    // it doesn't find it by id. Here we don't want to do that, so:
+    if (ele && ele.id != orig) ele = null;
+  }
+  var nodes = null;
+  if (ele == null) {
+    // Now it is time to look by name
+    nodes = document.getElementsByName(orig);
+    if (nodes.length >= 1) ele = nodes.item(0);
   }
   if (ele == null) {
     dwr.util._debug("getValue() can't find an element with id/name: " + orig + ".");
@@ -793,7 +809,7 @@ dwr.util.getValue = function(ele, options) {
     // client-side property since JS 1.1
     if (ele.type == "select-multiple") {
       var reply = new Array();
-      for (i = 0; i < ele.options.length; i++) {
+      for (var i = 0; i < ele.options.length; i++) {
         var item = ele.options[i];
         if (item.selected) {
           var valueAttr = item.getAttributeNode("value");
@@ -825,27 +841,30 @@ dwr.util.getValue = function(ele, options) {
 
   if (dwr.util._isHTMLElement(ele, "input")) {
     if (ele.type == "radio") {
-      var node;
-      for (i = 0; i < nodes.length; i++) {
-        node = nodes.item(i);
-        if (node.type == "radio") {
-          if (node.checked) {
-            if (nodes.length > 1) return node.value;
-            else return true;
+      if (nodes && nodes.length >= 1) {
+        for (var i = 0; i < nodes.length; i++) {
+          var node = nodes.item(i);
+          if (node.type == ele.type) {
+            if (node.checked) return node.value;
           }
         }
       }
-    }
-    switch (ele.type) {
-    case "checkbox":
-    case "check-box":
-    case "radio":
-      // if (ele.checked && ele.value != "") return ele.value;
-      // else
       return ele.checked;
-    default:
-      return ele.value;
     }
+    if (ele.type == "checkbox") {
+      if (nodes && nodes.length >= 1) {
+        var reply = [];
+        for (var i = 0; i < nodes.length; i++) {
+          var node = nodes.item(i);
+          if (node.type == ele.type) {
+            if (node.checked) reply.push(node.value);
+          }
+        }
+        return reply;
+      }
+      return ele.checked;
+    }
+    return ele.value;
   }
 
   if (dwr.util._isHTMLElement(ele, "textarea")) {
@@ -940,11 +959,8 @@ dwr.util._setValuesRecursive = function(data, idpath) {
  * @see http://getahead.org/dwr/browser/util/getvalues
  */
 dwr.util.getValues = function(data, options) {
-  var ele;
-  if (typeof data == "string") ele = dwr.util.byId(data);
-  if (dwr.util._isHTMLElement(data)) ele = data;
-  if (ele != null) {
-    return dwr.util.getFormValues(ele);
+  if (typeof data == "string" || dwr.util._isHTMLElement(data)) {
+    return dwr.util.getFormValues(data);
   }
   else {
     var prefix = "";
@@ -960,21 +976,35 @@ dwr.util.getValues = function(data, options) {
  * elements of the form.
  * @see http://getahead.org/dwr/browser/util/getvalues
  */
-dwr.util.getFormValues = function(ele) {
-  ele = dwr.util.byId(ele);
+dwr.util.getFormValues = function(eleOrNameOrId) {
+  var ele = null;
+  if (typeof eleOrNameOrId == "string") {
+    ele = document.forms[eleOrNameOrId];
+    if (ele == null) ele = dwr.util.byId(eleOrNameOrId);
+  }
+  else if (dwr.util._isHTMLElement(eleOrNameOrId)) {
+    ele = eleOrNameOrId;
+  }
   if (ele != null) {
     if (ele.elements == null) {
       alert("getFormValues() requires an object or reference to a form element.");
       return null;
     }
     var reply = {};
+    var name;
     var value;
     for (var i = 0; i < ele.elements.length; i++) {
       if (ele[i].type in {button:0,submit:0,reset:0,image:0,file:0}) continue;
-      if (ele[i].id) value = ele[i].id;
-      else if (ele[i].value != null) value = ele[i].value;
-      else value = "element" + i;
-      reply[value] = dwr.util.getValue(ele[i]);
+      if (ele[i].name) {
+        name = ele[i].name;
+        value = dwr.util.getValue(name);
+      }
+      else {
+        if (ele[i].id) name = ele[i].id;
+        else name = "element" + i;
+        value = dwr.util.getValue(ele[i]);
+      }
+      reply[name] = value;
     }
     return reply;
   }
