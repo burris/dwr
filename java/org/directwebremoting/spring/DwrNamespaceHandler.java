@@ -50,6 +50,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.java_cup.internal.parser;
+
 /**
  * The Spring namespace handler which handles all elements that are defined as
  * part of the DWR namespace. <br/>
@@ -72,6 +74,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         registerBeanDefinitionParser("configuration", new ConfigurationBeanDefinitionParser());
         registerBeanDefinitionParser("controller", new ControllerBeanDefinitionParser());
 
+        registerBeanDefinitionDecorator("init", new InitDefinitionDecorator());
         registerBeanDefinitionDecorator("create", new CreatorBeanDefinitionDecorator());
         registerBeanDefinitionDecorator("convert", new ConverterBeanDefinitionDecorator());
         registerBeanDefinitionDecorator("signatures", new SignaturesBeanDefinitionDecorator());
@@ -177,7 +180,6 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 }
                 catch (ClassNotFoundException e)
                 {
-                    // TODO: proper error handling
                     throw new IllegalArgumentException("DWR filter class '" + filterClass + "' was not found. " + 
                                                        "Check the class name specified in <dwr:filter class=\"" + filterClass + 
                                                        "\" /> exists");
@@ -225,6 +227,12 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 decorate(convertElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
+            Element initElement = DomUtils.getChildElementByTagName(element, "init");
+            if (initElement != null)
+            {
+                decorate(initElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);    
+            }
+            
             List signatureElements = DomUtils.getChildElementsByTagName(element, "signatures");
             for (Iterator i = signatureElements.iterator(); i.hasNext();)
             {
@@ -297,7 +305,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 }
                 else
                 {
-                    throw new RuntimeException("an unknown dwr:controller sub node was fouund: " + node.getNodeName());
+                    throw new RuntimeException("an unknown dwr:controller sub node was found: " + node.getNodeName());
                 }
             }
             dwrControllerDefinition.addPropertyValue("configParams", params);
@@ -456,12 +464,60 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
              */
             else
             {
-                throw new RuntimeException("an unknown dwr:remote sub node was fouund: " + node.getNodeName());
+                throw new RuntimeException("an unknown dwr:remote sub node was found: " + node.getNodeName());
             }
         }
 
     }
 
+    /**
+     * Parse the <code>&lt;dwr:init&gt;</code> elements
+     */
+    protected class InitDefinitionDecorator implements BeanDefinitionDecorator
+    {
+        public BeanDefinitionHolder decorate(Node parent, BeanDefinitionHolder definition, ParserContext parserContext)
+        {           
+            Map converters = new HashMap();
+            Map creators = new HashMap();
+            NodeList inits = parent.getChildNodes();
+            for (int j = 0; j < inits.getLength(); j++)
+            {
+                Node node = inits.item(j);
+                if (node.getNodeType() == Node.TEXT_NODE || node.getNodeType() == Node.COMMENT_NODE)
+                {
+                    continue;
+                }
+
+                Element child = (Element)inits.item(j);
+                if (child.getNodeName().equals(ELEMENT_CREATOR))
+                {
+                    String id = child.getAttribute(ATTRIBUTE_ID);
+                    String className = child.getAttribute(ATTRIBUTE_CLASS);
+                    creators.put(id, className);
+                }
+                else if (child.getNodeName().equals(ELEMENT_CONVERTER))
+                {
+                    String id = child.getAttribute(ATTRIBUTE_ID);
+                    String className = child.getAttribute(ATTRIBUTE_CLASS);
+                    converters.put(id, className);
+                }
+                else
+                {
+                    throw new RuntimeException("An unknown sub node '" + child.getNodeName() + 
+                            "' was found while parsing dwr:init");
+                }
+            }
+
+            
+            BeanDefinition configurator = registerSpringConfiguratorIfNecessary(parserContext.getRegistry());
+            configurator.getPropertyValues().addPropertyValue("creatorTypes", creators);
+            configurator.getPropertyValues().addPropertyValue("converterTypes", converters);
+
+            return definition;
+        }
+    }
+
+    
     /**
      * Uses the BeanDefinitionDecorator since we need access to the name of the parent definition??
      */
@@ -553,4 +609,19 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
      * The log stream
      */
     protected static final Logger log = Logger.getLogger(DwrNamespaceHandler.class);
+    
+    /*
+     * The element names
+     */
+    private static final String ELEMENT_CONVERTER = "dwr:converter";
+    
+    private static final String ELEMENT_CREATOR = "dwr:creator";
+    
+    /*
+     * The attribute names
+     */
+    private static final String ATTRIBUTE_ID = "id";
+
+    private static final String ATTRIBUTE_CLASS = "class";
+    
 }

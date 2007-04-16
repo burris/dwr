@@ -42,9 +42,20 @@
 
   <xsd:complexType name="configuration">
     <xsd:sequence>
+      <xsd:element name="init" type="init" minOccurs="0" maxOccurs="1"/>
       <xsd:element name="create" type="create" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="convert" type="convert" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="signatures" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="init">
+    <xsd:annotation>
+      <xsd:documentation source="org.directwebremoting.spring.DwrController">The optional init section declares the classes that can be used to create beans to remote and the classes that can be used to convert beans in the marshalling process.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="creator" type="creator" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="converter" type="converter" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -72,17 +83,24 @@
       <xsd:element name="exclude" type="exclude" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
     <xsd:attribute name="class" type="xsd:string" use="required"/>
-    <xsd:attribute name="type" use="required">
+    <xsd:attribute name="type" use="required"  >
       <xsd:simpleType>
-        <xsd:restriction base="xsd:string">
-          <xsd:enumeration value="array"/>
-          <xsd:enumeration value="bean"/>
-          <xsd:enumeration value="collection"/>
-          <xsd:enumeration value="map"/>
-          <xsd:enumeration value="enum"/>
-          <xsd:enumeration value="hibernate2"/>
-          <xsd:enumeration value="hibernate3"/>
-        </xsd:restriction>
+        <xsd:union >
+          <xsd:simpleType>
+            <xsd:restriction  base="xsd:string">
+              <xsd:enumeration value="array"/>
+              <xsd:enumeration value="bean"/>
+              <xsd:enumeration value="collection"/>
+              <xsd:enumeration value="map"/>
+              <xsd:enumeration value="enum"/>
+              <xsd:enumeration value="hibernate2"/>
+              <xsd:enumeration value="hibernate3"/>
+            </xsd:restriction>  
+          </xsd:simpleType>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:IDREF" />
+          </xsd:simpleType>
+        </xsd:union>  
       </xsd:simpleType>
     </xsd:attribute>
     <xsd:attribute name="javascript" type="xsd:string" use="optional" />
@@ -105,6 +123,16 @@
       <xsd:element name="latencyfilter" type="latencyfilter" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
     <xsd:attribute name="javascript" type="xsd:string" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="creator">
+    <xsd:attribute name="id" type="xsd:ID" use="required"/>
+    <xsd:attribute name="class" type="xsd:string" use="required"/>
+  </xsd:complexType>
+  
+  <xsd:complexType name="converter">
+    <xsd:attribute name="id" type="xsd:ID" use="required"/>
+    <xsd:attribute name="class" type="xsd:string" use="required"/>
   </xsd:complexType>
 
   <xsd:complexType name="latencyfilter">
