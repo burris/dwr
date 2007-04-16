@@ -135,6 +135,15 @@ public class Continuation
     }
 
     /**
+     * Did we find any of the 
+     * @return
+     */
+    public static boolean isJetty()
+    {
+        return isJetty;
+    }
+
+    /**
      * Unwrap an InvocationTargetException
      * @param ex The exception to unwrap
      * @return Nothing. This method will not complete normally
@@ -156,6 +165,9 @@ public class Continuation
         throw ex;
     }
 
+    /**
+     * The real continuation object
+     */
     private Object proxy;
 
     /**
@@ -195,6 +207,11 @@ public class Continuation
     protected static Method setObject;
 
     /**
+     * Are we using Jetty at all?
+     */
+    protected static boolean isJetty;
+
+    /**
      * Can we use Jetty?
      */
     static
@@ -206,9 +223,11 @@ public class Continuation
             resumeMethod = continuationClass.getMethod("resume", new Class[] {});
             getObject = continuationClass.getMethod("getObject", new Class[] {});
             setObject = continuationClass.getMethod("setObject", new Class[] { Object.class });
+            isJetty = true;
         }
         catch (Exception ex)
         {
+            isJetty = false;
             log.debug("No Jetty ContuniationSupport class, using standard Servlet API");
         }
     }

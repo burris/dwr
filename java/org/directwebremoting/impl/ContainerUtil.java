@@ -63,6 +63,7 @@ import org.directwebremoting.servlet.TestHandler;
 import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.servlet.UtilHandler;
 import org.directwebremoting.servlet.WebworkUtilHandler;
+import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.xml.sax.SAXException;
@@ -149,8 +150,16 @@ public class ContainerUtil
         container.addParameter(PlainPollHandler.class.getName(), PlainPollHandler.class.getName());
         container.addParameter(HtmlPollHandler.class.getName(), HtmlPollHandler.class.getName());
         container.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
-        container.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
         container.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
+
+        if (Continuation.isJetty())
+        {
+            container.addParameter(ServerLoadMonitor.class.getName(), JettyServerLoadMonitor.class.getName());
+        }
+        else
+        {
+            container.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
+        }
 
         // Mapping handlers to URLs
         createUrlMapping(container, "/index.html", "indexHandlerUrl", IndexHandler.class);
