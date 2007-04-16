@@ -160,185 +160,10 @@ if (!$) {
 }
 
 /**
- * Like toString but aimed at debugging
+ * This function pretty-prints simple data or whole object graphs, f ex as an aid in debugging.
  * @see http://getahead.org/dwr/browser/util/todescriptivestring
  */
-dwr.util.toDescriptiveString = function(data, level, depth) {
-  var reply = "";
-  var i = 0;
-  var value;
-  var obj;
-  if (level == null) level = 0;
-  if (depth == null) depth = 0;
-  if (data == null) return "null";
-  if (dwr.util._isArray(data)) {
-    if (data.length == 0) reply += "[]";
-    else {
-      if (level != 0) reply += "[\n";
-      else reply = "[";
-      for (i = 0; i < data.length; i++) {
-        try {
-          obj = data[i];
-          if (obj == null || typeof obj == "function") {
-            continue;
-          }
-          else if (typeof obj == "object") {
-            if (level > 0) value = dwr.util.toDescriptiveString(obj, level - 1, depth + 1);
-            else value = dwr.util._detailedTypeOf(obj);
-          }
-          else {
-            value = "" + obj;
-            value = value.replace(/\/n/g, "\\n");
-            value = value.replace(/\/t/g, "\\t");
-          }
-        }
-        catch (ex) {
-          value = "" + ex;
-        }
-       if (level != 0)  {
-          reply += dwr.util._indent(level, depth + 2) + value + ", \n";
-       }
-        else {
-          if (value.length > 13) value = value.substring(0, 10) + "...";
-          reply += value + ", ";
-          if (i > 5) {
-            reply += "...";
-            break;
-          }
-        }
-      }
-      if (level != 0) reply += dwr.util._indent(level, depth) + "]";
-      else reply += "]";
-    }
-    return reply;
-  }
-  if (typeof data == "string" || typeof data == "number" || dwr.util._isDate(data)) {
-    return data.toString();
-  }
-  if (typeof data == "object") {
-    var typename = dwr.util._detailedTypeOf(data);
-    if (typename != "Object")  reply = typename + " ";
-    if (level != 0) reply += "{\n";
-    else reply = "{";
-    var isHtml = dwr.util._isHTMLElement(data);
-    for (var prop in data) {
-      if (isHtml) {
-        // HTML nodes have far too much stuff. Chop out the constants
-        if (prop.toUpperCase() == prop || prop == "title" ||
-          prop == "lang" || prop == "dir" || prop == "className" ||
-          prop == "form" || prop == "name" || prop == "prefix" ||
-          prop == "namespaceURI" || prop == "nodeType" ||
-          prop == "firstChild" || prop == "lastChild" ||
-          prop.match(/^offset/)) {
-          continue;
-        }
-      }
-      value = "";
-      try {
-        obj = data[prop];
-        if (obj == null || typeof obj == "function") {
-          continue;
-        }
-        else if (typeof obj == "object") {
-          if (level > 0) {
-            value = "\n";
-            value += dwr.util._indent(level, depth + 2);
-            value = dwr.util.toDescriptiveString(obj, level - 1, depth + 1);
-          }
-          else {
-            value = dwr.util._detailedTypeOf(obj);
-          }
-        }
-        else {
-          value = "" + obj;
-          value = value.replace(/\/n/g, "\\n");
-          value = value.replace(/\/t/g, "\\t");
-        }
-      }
-      catch (ex) {
-        value = "" + ex;
-      }
-      if (level == 0 && value.length > 13) value = value.substring(0, 10) + "...";
-      var propStr = prop;
-      if (propStr.length > 30) propStr = propStr.substring(0, 27) + "...";
-      if (level != 0) reply += dwr.util._indent(level, depth + 1);
-      reply += prop + ":" + value + ", ";
-      if (level != 0) reply += "\n";
-      i++;
-      if (level == 0 && i > 5) {
-        reply += "...";
-        break;
-      }
-    }
-    reply += dwr.util._indent(level, depth);
-    reply += "}";
-    return reply;
-  }
-  return data.toString();
-};
-
-/**
- * @private Indenting for dwr.util.toDescriptiveString
- */
-dwr.util._indent = function(level, depth) {
-  var reply = "";
-  if (level != 0) {
-    for (var j = 0; j < depth; j++) {
-      reply += "\u00A0\u00A0";
-    }
-    reply += " ";
-  }
-  return reply;
-};
-
-/**
- * This function pretty-prints simple data or object graphs, f ex as an aid in debugging.
- * 
- * data
- *   The data to pretty-print.
- * 
- * showLevels
- *   The number of levels to recursively descend into data's sub-objects (object 
- *   properties or array items).
- *   0  = Don't descend into sub-objects
- *   1  = Print a limited number of the first level of sub-objects on one line
- *   2  = Print all first-level sub-objects, with a limited number of second-level 
- *        sub-objects, on separate lines
- *   >2 = Go deeper...
- *   Default: 1 
- *   
- * options = <number>
- *   Number is used to construct a default baseIndent (for backward compatibility).
- * 
- * options = {
- *   escapeHtml:
- *     Set to true when displaying output in an HTML element. Set to false when
- *     displaying in an alert() or <textarea>.
- *     Default: false
- *   baseIndent: <string>
- *     String will be added as prefix to every line except the first.
- *     Default: empty string
- *   childIndent: <string>
- *     String will be added to each line recursing into deeper levels in data,
- *     once for each recursive level. 
- *     Default: two hard Unicode spaces 
- *   lineTerminator: <string>
- *     String will be added at end of each output line.
- *     Default: "\n"
- *   oneLineMaxItems: <number>
- *     The maximum number of sub-objects to print on a line in one-line mode.
- *     -1 means no limit.
- *     Default: 5
- *   oneLineStringMaxLength
- *     The maximum number of characters in a string to print on a line in one-
- *     line mode.
- *     Default: 13
- *   propertyNameMaxLength
- *     The maximum number of characters to print of property names in objects.
- *     Default: 30
- * }
- */
-dwr.util.toDescriptiveString2 = function(data, showLevels, options) {
+dwr.util.toDescriptiveString = function(data, showLevels, options) {
   if (showLevels === undefined) showLevels = 1;
   var opt = {};
   if (dwr.util._isObject(options)) opt = options;
@@ -348,7 +173,7 @@ dwr.util.toDescriptiveString2 = function(data, showLevels, options) {
     childIndent: "\u00A0\u00A0",
     lineTerminator: "\n",
     oneLineMaxItems: 5,
-    oneLineStringMaxLength: 13,
+    shortStringMaxLength: 13,
     propertyNameMaxLength: 30 
   };
   for (var p in defaultoptions) if (!(p in opt)) opt[p] = defaultoptions[p];
@@ -372,136 +197,140 @@ dwr.util.toDescriptiveString2 = function(data, showLevels, options) {
   
   function recursive(data, showLevels, indentDepth, options) {
     var reply = "";
+    try {
+      // string
+      if (typeof data == "string") {
+        var str = data;
+        if (showLevels == 0 && str.length > options.shortStringMaxLength)
+          str = str.substring(0, options.shortStringMaxLength-3) + "...";
+        if (options.escapeHtml) {
+          // Do the escape separately for every line as escapeHtml() on some 
+          // browsers (IE) will strip line breaks and we want to preserve them
+          var lines = str.split("\n");
+          for (var i = 0; i < lines.length; i++) lines[i] = dwr.util.escapeHtml(lines[i]);
+          str = lines.join("\n");
+        }
+        if (showLevels == 0) { // Short format
+          str = str.replace(/\n|\r|\t/g, function(ch) {
+            switch (ch) {
+              case "\n": return "\\n";
+              case "\r": return "";
+              case "\t": return "\\t";
+            }
+          });
+        }
+        else { // Long format
+          str = str.replace(/\n|\r|\t/g, function(ch) {
+            switch (ch) {
+              case "\n": return options.lineTerminator + indent(indentDepth+1, options);
+              case "\r": return "";
+              case "\t": return "\\t";
+            }
+          });
+        }
+        reply = '"' + str + '"';
+      }
+      
+      // function
+      else if (typeof data == "function") {
+        reply = "function";
+      }
     
-    // string
-    if (typeof data == "string") {
-      var str = data;
-      if (showLevels == 0 && str.length > options.oneLineStringMaxLength)
-        str = str.substring(0, options.oneLineStringMaxLength-3) + "...";
-      if (options.escapeHtml) {
-        // Do the escape separately for every line as escapeHtml() on some 
-        // browsers (IE) will strip line breaks and we want to preserve them
-        var lines = str.split("\n");
-        for (var i = 0; i < lines.length; i++) lines[i] = dwr.util.escapeHtml(lines[i]);
-        str = lines.join("\n");
-      }
-      if (showLevels == 0) { // Short format
-        str = str.replace(/\n|\r|\t/g, function(ch) {
-          switch (ch) {
-            case "\n": return "\\n";
-            case "\r": return "";
-            case "\t": return "\\t";
+      // Array
+      else if (dwr.util._isArray(data)) {
+        if (showLevels == 0) { // Short format (don't show items)
+          if (data.length > 0)
+            reply = "[...]";
+          else
+            reply = "[]";
+        }
+        else { // Long format (show items)
+          var strarr = [];
+          strarr.push("[");
+          var count = 0;
+          for (var i = 0; i < data.length; i++) {
+            if (! (i in data)) continue;
+            var itemvalue = data[i];
+            if (count > 0) strarr.push(", ");
+            if (showLevels == 1) { // One-line format
+              if (count == options.oneLineMaxItems) {
+                strarr.push("...");
+                break;
+              }
+            }
+            else { // Multi-line format
+              strarr.push(options.lineTerminator + indent(indentDepth+1, options));
+            }
+            if (i != count) {
+              strarr.push(i);
+              strarr.push(":");
+            }
+            strarr.push(recursive(itemvalue, showLevels-1, indentDepth+1, options));
+            count++;
           }
-        });
+          if (showLevels > 1) strarr.push(options.lineTerminator + indent(indentDepth, options));
+          strarr.push("]");
+          reply = strarr.join("");
+        }
       }
-      else { // Long format
-        str = str.replace(/\n|\r|\t/g, function(ch) {
-          switch (ch) {
-            case "\n": return options.lineTerminator + indent(indentDepth+1, options);
-            case "\r": return "";
-            case "\t": return "\\t";
+      
+      // Objects except Date
+      else if (dwr.util._isObject(data) && !dwr.util._isDate(data)) {
+        if (showLevels == 0) { // Short format (don't show properties)
+          reply = dwr.util._detailedTypeOf(data);
+        }
+        else { // Long format (show properties)
+          var strarr = [];
+          if (dwr.util._detailedTypeOf(data) != "Object") {
+            strarr.push(dwr.util._detailedTypeOf(data));
+            if (typeof data.valueOf() != "object") {
+              strarr.push(":");
+              strarr.push(recursive(data.valueOf(), 1, indentDepth, options));
+            }
+            strarr.push(" ");
           }
-        });
+          strarr.push("{");
+          var isDomObject = dwr.util._isHTMLElement(data); 
+          var count = 0;
+          for (var prop in data) {
+            var propvalue = data[prop];
+            if (isDomObject) {
+              if (!propvalue) continue;
+              if (typeof propvalue == "function") continue;
+              if (skipDomProperties[prop]) continue;
+              if (prop.toUpperCase() == prop) continue;
+            }
+            if (count > 0) strarr.push(", ");
+            if (showLevels == 1) { // One-line format
+              if (count == options.oneLineMaxItems) {
+                strarr.push("...");
+                break;
+              }
+            }
+            else { // Multi-line format
+              strarr.push(options.lineTerminator + indent(indentDepth+1, options));
+            }
+            strarr.push(prop.length > options.propertyNameMaxLength ? prop.substring(0, options.propertyNameMaxLength-3) + "..." : prop);
+            strarr.push(":");
+            strarr.push(recursive(propvalue, showLevels-1, indentDepth+1, options));
+            count++;
+          }
+          if (showLevels > 1 && count > 0) strarr.push(options.lineTerminator + indent(indentDepth, options));
+          strarr.push("}");
+          reply = strarr.join("");
+        }
       }
-      reply = '"' + str + '"';
-    }
-    
-    // function
-    else if (typeof data == "function") {
-      reply = "function";
-    }
   
-    // Array
-    else if (dwr.util._isArray(data)) {
-      if (showLevels == 0) { // Short format (don't show items)
-        if (data.length > 0)
-          reply = "[...]";
-        else
-          reply = "[]";
+      // undefined, null, number, boolean, Date
+      else {
+        reply = "" + data;
       }
-      else { // Long format (show items)
-        var strarr = [];
-        strarr.push("[");
-        var count = 0;
-        for (var i = 0; i < data.length; i++) {
-          if (! (i in data)) continue;
-          var itemvalue = data[i];
-          if (count > 0) strarr.push(", ");
-          if (showLevels == 1) { // One-line format
-            if (count == options.oneLineMaxItems) {
-              strarr.push("...");
-              break;
-            }
-          }
-          else { // Multi-line format
-            strarr.push(options.lineTerminator + indent(indentDepth+1, options));
-          }
-          if (i != count) {
-            strarr.push(i);
-            strarr.push(":");
-          }
-          strarr.push(recursive(itemvalue, showLevels-1, indentDepth+1, options));
-          count++;
-        }
-        if (showLevels > 1) strarr.push(options.lineTerminator + indent(indentDepth, options));
-        strarr.push("]");
-        reply = strarr.join("");
-      }
+  
+      return reply;
     }
-    
-    // Objects except Date
-    else if (dwr.util._isObject(data) && !dwr.util._isDate(data)) {
-      if (showLevels == 0) { // Short format (don't show properties)
-        reply = dwr.util._detailedTypeOf(data);
-      }
-      else { // Long format (show properties)
-        var strarr = [];
-        if (dwr.util._detailedTypeOf(data) != "Object") {
-          strarr.push(dwr.util._detailedTypeOf(data));
-          if (typeof data.valueOf() != "object") {
-            strarr.push(":");
-            strarr.push(recursive(data.valueOf(), 1, indentDepth, options));
-          }
-          strarr.push(" ");
-        }
-        strarr.push("{");
-        var isDomObject = dwr.util._isHTMLElement(data); 
-        var count = 0;
-        for (var prop in data) {
-          var propvalue = data[prop];
-          if (isDomObject) {
-            if (!propvalue) continue;
-            if (typeof propvalue == "function") continue;
-            if (skipDomProperties[prop]) continue;
-            if (prop.toUpperCase() == prop) continue;
-          }
-          if (count > 0) strarr.push(", ");
-          if (showLevels == 1) { // One-line format
-            if (count == options.oneLineMaxItems) {
-              strarr.push("...");
-              break;
-            }
-          }
-          else { // Multi-line format
-            strarr.push(options.lineTerminator + indent(indentDepth+1, options));
-          }
-          strarr.push(prop.length > options.propertyNameMaxLength ? prop.substring(0, options.propertyNameMaxLength-3) + "..." : prop);
-          strarr.push(":");
-          strarr.push(recursive(propvalue, showLevels-1, indentDepth+1, options));
-          count++;
-        }
-        if (showLevels > 1 && count > 0) strarr.push(options.lineTerminator + indent(indentDepth, options));
-        strarr.push("}");
-        reply = strarr.join("");
-      }
+    catch(err) {
+      return (err.message ? err.message : ""+err);
     }
-
-    // undefined, null, number, boolean, Date
-    else {
-      reply = "" + data;
-    }
-
-    return reply;
   }
 
   function indent(count, options) {
