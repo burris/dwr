@@ -1053,8 +1053,6 @@ dwr.util._getValuesRecursive = function(data, idpath) {
 dwr.util.addOptions = function(ele, data/*, options*/) {
   ele = dwr.util._getElementById(ele, "addOptions()");
   if (ele == null) return;
-  // TODO: Restructure so we handle arguments to get proper options handling
-  // if (options == null) options = {};
   var useOptions = dwr.util._isHTMLElement(ele, "select");
   var useLi = dwr.util._isHTMLElement(ele, ["ul", "ol"]);
   if (!useOptions && !useLi) {
@@ -1080,9 +1078,12 @@ dwr.util.addOptions = function(ele, data/*, options*/) {
         if (text != null || value) ele.options[ele.options.length] = new Option(text, value);
       }
       else {
-        li = document.createElement("li");
         value = dwr.util._getValueFrom(data[i], arguments[2]);
         if (value != null) {
+          li = document.createElement("li");
+          if (dwr.util._shouldEscapeHtml(arguments[3])) {
+            value = dwr.util.escapeHtml(value);
+          }
           li.innerHTML = value;
           ele.appendChild(li);
         }
