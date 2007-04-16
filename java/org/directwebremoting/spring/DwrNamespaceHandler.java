@@ -554,6 +554,9 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             }
             else
             {
+                // TODO need to actually register the creator first... 
+                
+                // the creator type should have been registered
                 throw new UnsupportedOperationException("Type " + type + " is not yet supported");
             }
 
