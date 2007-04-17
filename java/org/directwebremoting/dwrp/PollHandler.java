@@ -153,12 +153,20 @@ public class PollHandler implements Handler
 
         // How much longer do we wait now the stream is open?
         long extraWait = endTime - System.currentTimeMillis();
+
+        // We might need to cut out waiting short to force proxies to flush
+        if (maxWaitAfterWrite != -1 && extraWait > maxWaitAfterWrite)
+        {
+            extraWait = maxWaitAfterWrite;
+        }
+
+        // Short-circut if we are not waiting at all
         if (extraWait <= 0)
         {
             canWaitMore = false;
         }
 
-        if (canWaitMore && !alwaysCloseStreamAfterWrite && partialResponse != PARTIAL_RESPONSE_NO)
+        if (canWaitMore && partialResponse != PARTIAL_RESPONSE_NO)
         {
             streamWait(request, conduit, scriptSession, extraWait);
         }
@@ -396,6 +404,7 @@ public class PollHandler implements Handler
     }
 
     /**
+     * Are we doing full reverse ajax
      * @param activeReverseAjaxEnabled Are we doing full reverse ajax
      */
     public void setActiveReverseAjaxEnabled(boolean activeReverseAjaxEnabled)
@@ -412,11 +421,14 @@ public class PollHandler implements Handler
     }
 
     /**
-     * @param alwaysCloseStreamAfterWrite the alwaysCloseStreamAfterWrite to set
+     * Sometimes with proxies, you need to close the stream all the time to
+     * make the flush work. A value of -1 indicated that we do not do early
+     * closing after writes.
+     * @param maxWaitAfterWrite the maxWaitAfterWrite to set
      */
-    public void setAlwaysCloseStreamAfterWrite(boolean alwaysCloseStreamAfterWrite)
+    public void setMaxWaitAfterWrite(int maxWaitAfterWrite)
     {
-        this.alwaysCloseStreamAfterWrite = alwaysCloseStreamAfterWrite;
+        this.maxWaitAfterWrite = maxWaitAfterWrite;
     }
 
     /**
@@ -431,9 +443,10 @@ public class PollHandler implements Handler
 
     /**
      * Sometimes with proxies, you need to close the stream all the time to
-     * make the flush work.
+     * make the flush work. A value of -1 indicated that we do not do early
+     * closing after writes.
      */
-    protected boolean alwaysCloseStreamAfterWrite = false;
+    protected int maxWaitAfterWrite = -1;
 
     /**
      * Are we using plain javascript or html wrapped javascript
