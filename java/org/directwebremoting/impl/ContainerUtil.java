@@ -63,7 +63,6 @@ import org.directwebremoting.servlet.TestHandler;
 import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.servlet.UtilHandler;
 import org.directwebremoting.servlet.WebworkUtilHandler;
-import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Logger;
 import org.xml.sax.SAXException;
@@ -123,7 +122,7 @@ public class ContainerUtil
      */
     public static void setupDefaultContainer(DefaultContainer container, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
     {
-        setupDefaults(container);
+        setupDefaults(container, servletConfig);
         setupFromServletConfig(container, servletConfig);
         container.setupFinished();
     }
@@ -131,10 +130,11 @@ public class ContainerUtil
     /**
      * Take a DefaultContainer and setup the default beans
      * @param container The container to configure
+     * @param servletConfig The source of init parameters
      * @throws InstantiationException If we can't instantiate a bean
      * @throws IllegalAccessException If we have access problems creating a bean
      */
-    public static void setupDefaults(DefaultContainer container) throws InstantiationException, IllegalAccessException
+    public static void setupDefaults(DefaultContainer container, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
     {
         container.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
         container.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
@@ -152,9 +152,9 @@ public class ContainerUtil
         container.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
         container.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
 
-        if (Continuation.isJetty())
+        if (servletConfig.getServletContext().getServerInfo().startsWith("jetty-6"))
         {
-            container.addParameter(ServerLoadMonitor.class.getName(), JettyServerLoadMonitor.class.getName());
+            container.addParameter(ServerLoadMonitor.class.getName(), ThreadDroppingServerLoadMonitor.class.getName());
         }
         else
         {

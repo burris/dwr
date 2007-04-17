@@ -176,7 +176,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         
         try
         {
-            ContainerUtil.setupDefaults(container);
+            ContainerUtil.setupDefaults(container, servletConfig);
             ContainerUtil.setupFromServletConfig(container, servletConfig);
             container.addParameter("debug", "" + debug);
             container.setupFinished();

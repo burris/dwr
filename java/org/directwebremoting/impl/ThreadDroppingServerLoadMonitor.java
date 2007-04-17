@@ -23,11 +23,11 @@ import org.directwebremoting.util.HitMonitor;
 
 /**
  * A smart implementation of ServerLoadMonitor, customized for Jetty.
- * The JettyServerLoadMonitor attempts to keep the hit rate down by increasing
+ * The ThreadDroppingServerLoadMonitor attempts to keep the hit rate down by increasing
  * the disconnected time as usage increases.
  * @author Joe Walker [joe at getahead dot org]
  */
-public class JettyServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor
+public class ThreadDroppingServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor
 {
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.ServerLoadMonitor#getConnectedTime()
