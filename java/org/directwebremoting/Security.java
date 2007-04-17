@@ -110,9 +110,9 @@ public class Security
     public static boolean containsXssRiskyCharacters(String original)
     {
         return (original.indexOf('&') != -1
-            && original.indexOf('<') != -1
-            && original.indexOf('>') != -1
-            && original.indexOf('\'') != -1
-            && original.indexOf('\"') != -1);
+            || original.indexOf('<') != -1
+            || original.indexOf('>') != -1
+            || original.indexOf('\'') != -1
+            || original.indexOf('\"') != -1);
     }
 }
