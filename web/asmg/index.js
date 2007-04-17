@@ -20,7 +20,7 @@ function process() {
   var address = dwr.util.getValue("address");
   var name = dwr.util.getValue("name");
   Generator.generateAntiSpamMailto(name, address, function(contents) {
-    dwr.util.setValue("outputFull", contents);
-    $("output").style.display = "block";
+    dwr.util.setValue("outputFull", contents, { escapeHtml:false });
+    dwr.util.byId("output").style.display = "block";
   });
 }
