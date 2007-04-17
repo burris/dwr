@@ -15,8 +15,6 @@
  */
 package org.directwebremoting.impl;
 
-import java.util.Random;
-
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.extend.WaitController;
 import org.directwebremoting.util.HitMonitor;
@@ -297,12 +295,6 @@ public class DefaultServerLoadMonitor extends AbstractServerLoadMonitor implemen
      * What is the current usage mode.
      */
     protected int mode = USAGE_LOW;
-
-    /**
-     * We ask clients to wait a random number of millis before they come
-     * back to avoid killing the server
-     */
-    protected Random random = new Random();
 
     /**
      * The time we are currently waiting before sending a browser away and
