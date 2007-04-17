@@ -144,6 +144,9 @@
   <target name="clean">
     <delete dir="${target.class}"/>
     <delete dir="${target.root}"/>
+    <delete defaultexcludes="false" verbose="true">
+      <fileset dir="." includes="**/.DS_Store"/>
+    </delete>
   </target>
 
   <!--=======================================================================-->
