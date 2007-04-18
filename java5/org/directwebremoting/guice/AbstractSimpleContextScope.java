@@ -45,8 +45,6 @@ public abstract class AbstractSimpleContextScope<C> extends AbstractContextScope
     
     public abstract void put(C registry, String keyString, Object creator);
     
-    public abstract Iterable<Object> asIterable(C registry);
-    
     
     //
     // ContextRegistry methods
@@ -103,19 +101,5 @@ public abstract class AbstractSimpleContextScope<C> extends AbstractContextScope
                 return false;
             }
         }
-    }
-    
-    @SuppressWarnings("unchecked")
-    public Collection<InstanceProvider<?>> values(C registry)
-    {
-        Collection<InstanceProvider<?>> values = new ArrayList<InstanceProvider<?>>();
-        for (Object object : asIterable(registry))
-        {
-            if (object instanceof InstanceProvider)
-            {
-                values.add((InstanceProvider<?>) object);
-            }
-        }
-        return values;
     }
 }

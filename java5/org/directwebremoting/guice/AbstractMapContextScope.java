@@ -88,15 +88,6 @@ public abstract class AbstractMapContextScope<C>
         
         return instanceMap.remove(key, creator);
     }
-    
-    public Collection<InstanceProvider<?>> values(ConcurrentMap registry)
-    {
-        @SuppressWarnings("unchecked")
-        ConcurrentMap<Key<?>, InstanceProvider<?>> instanceMap =
-            (ConcurrentMap<Key<?>, InstanceProvider<?>>) registry;
-        
-        return instanceMap.values();
-    }
 
     private final ConcurrentMap<C, ConcurrentMap> map =
           new ConcurrentHashMap<C, ConcurrentMap>();

@@ -62,4 +62,9 @@ public interface ContextScope<C> extends Scope, Provider<C>
      * Closes the given context.
      */
     void close(C context, ContextCloseHandler<?>... closeHandlers);
+    
+    /**
+     * Closes all open contexts.
+     */
+    void closeAll(ContextCloseHandler<?>... closeHandlers);
 }

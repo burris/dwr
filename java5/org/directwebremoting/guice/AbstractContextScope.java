@@ -152,9 +152,7 @@ public abstract class AbstractContextScope<C, R>
             return;
         }
         
-        R registry = registryFor(context);
-        Collection<InstanceProvider<?>> providers = values(registry);
-        for (InstanceProvider<?> provider : providers)
+        for (InstanceProvider<?> provider : registeredProviders(registryFor(context)))
         {
             Object value = null;
             try
@@ -178,6 +176,14 @@ public abstract class AbstractContextScope<C, R>
             {
                 handleClose(closeHandler, value);
             }
+        }
+    }
+    
+    public void closeAll(ContextCloseHandler<?>... closeHandlers)
+    {
+        for (C context : getOpenContexts())
+        {
+            close(context, closeHandlers);
         }
     }
     
@@ -224,6 +230,20 @@ public abstract class AbstractContextScope<C, R>
         return context;
     }
     
+    private Collection<InstanceProvider<?>> registeredProviders(R registry) 
+    {
+        List<InstanceProvider<?>> providers = new ArrayList<InstanceProvider<?>>();
+        for (Key<?> key : getKeysInScope())
+        {
+            InstanceProvider<?> provider = get(registry, key, key.toString());
+            if (provider != null)
+            {
+                providers.add(provider);
+            }
+        }
+        return providers;
+    }
+    
     enum State
     {
         OPEN,
@@ -237,11 +257,7 @@ public abstract class AbstractContextScope<C, R>
     /* @GuardedBy("self") */
     private final List<Key<?>> scopedKeys = synchronizedList(new ArrayList<Key<?>>());
     
-    private final ConcurrentMap<C, ConcurrentMap> map =
-          new ConcurrentHashMap<C, ConcurrentMap>();
-    
-    private final ConcurrentMap<C, State> contexts =
-          new ConcurrentHashMap<C, State>();
+    private final ConcurrentMap<C, State> contexts = new ConcurrentHashMap<C, State>();
 
     /**
      * The log stream

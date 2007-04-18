@@ -67,11 +67,7 @@ public abstract class DwrGuiceServletContextListener
     public void contextDestroyed(ServletContextEvent servletContextEvent)
     {
         List<Exception> exceptions = new ArrayList<Exception>();
-        ContextScope<ServletContext> globalScope = DwrScopes.GLOBAL;
-        for (ServletContext servletContext : globalScope.getOpenContexts())
-        {
-            globalScope.close(servletContext, new ExceptionLoggingCloseableHandler(exceptions));
-        }
+        DwrScopes.GLOBAL.closeAll(new ExceptionLoggingCloseableHandler(exceptions));
         for (Exception e : exceptions)
         {
             log.warn("During context destroy, closing globally-scoped Closeables: " + e, e);

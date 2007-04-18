@@ -57,10 +57,4 @@ public interface ContextRegistry<C, R>
      */
     <T> boolean remove(R registry, Key<T> key, String keyString, 
                        InstanceProvider<T> creator);
-    
-    /**
-     * Returns a collection of instances of {@link InstanceProvider} that 
-     * have been put into the given registry.
-     */
-    Collection<InstanceProvider<?>> values(R registry);
 }

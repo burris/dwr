@@ -158,6 +158,8 @@ public class DwrGuiceServlet extends DwrServlet
             setParameter(SCRIPT_SESSION_TIMEOUT,          scriptSessionTimeout);
             setParameter(MAX_CALL_COUNT,                  maxCallCount);
             setParameter(ACTIVE_REVERSE_AJAX_ENABLED,     activeReverseAjaxEnabled);
+            setParameter(MAX_WAIT_AFTER_WRITE,            maxWaitAfterWrite);
+            setParameter(DISCONNECTED_TIME,               disconnectedTime);
             setParameter(POLL_AND_COMET_ENABLED,          pollAndCometEnabled);
             setParameter(MAX_WAITING_THREADS,             maxWaitingThreads);
             setParameter(MAX_POLL_HITS_PER_SECOND,        maxPollHitsPerSecond);
@@ -190,6 +192,8 @@ public class DwrGuiceServlet extends DwrServlet
         @Inject(optional=true) @InitParam(SCRIPT_SESSION_TIMEOUT)          Long    scriptSessionTimeout = null;
         @Inject(optional=true) @InitParam(MAX_CALL_COUNT)                  Integer maxCallCount = null;
         @Inject(optional=true) @InitParam(ACTIVE_REVERSE_AJAX_ENABLED)     Boolean activeReverseAjaxEnabled = null;
+        @Inject(optional=true) @InitParam(MAX_WAIT_AFTER_WRITE)            Long    maxWaitAfterWrite = null;
+        @Inject(optional=true) @InitParam(DISCONNECTED_TIME)               Long    disconnectedTime = null;
         @Inject(optional=true) @InitParam(POLL_AND_COMET_ENABLED)          Boolean pollAndCometEnabled = null;
         @Inject(optional=true) @InitParam(MAX_WAITING_THREADS)             Integer maxWaitingThreads = null;
         @Inject(optional=true) @InitParam(MAX_POLL_HITS_PER_SECOND)        Integer maxPollHitsPerSecond = null;
@@ -244,11 +248,7 @@ public class DwrGuiceServlet extends DwrServlet
     private static List<Exception> destroyApplicationScoped()
     {
         final List<Exception> exceptions = new ArrayList<Exception>();
-        ContextScope<ServletContext> appScope = DwrScopes.APPLICATION;
-        for (ServletContext servletContext : appScope.getOpenContexts())
-        {
-            appScope.close(servletContext, new ExceptionLoggingCloseableHandler(exceptions));
-        }
+        DwrScopes.APPLICATION.closeAll(new ExceptionLoggingCloseableHandler(exceptions));
         return exceptions;
     }
 

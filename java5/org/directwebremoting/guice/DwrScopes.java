@@ -63,17 +63,6 @@ public class DwrScopes
             {
                 request.setAttribute(name, value);
             }
-            
-            public Iterable<Object> asIterable(HttpServletRequest request)
-            {
-                List<Object> result = new ArrayList<Object>();
-                Enumeration<String> attrNames = request.getAttributeNames();
-                while (attrNames.hasMoreElements())
-                {
-                    result.add(request.getAttribute(attrNames.nextElement()));
-                }
-                return result;
-            }
         };
 
     /**
@@ -95,17 +84,6 @@ public class DwrScopes
             public void put(ScriptSession scriptSession, String name, Object value)
             {
                 scriptSession.setAttribute(name, value);
-            }
-            
-            public Iterable<Object> asIterable(ScriptSession scriptSession)
-            {
-                List<Object> result = new ArrayList<Object>();
-                Iterator<String> attrNames = scriptSession.getAttributeNames();
-                while (attrNames.hasNext())
-                {
-                    result.add(scriptSession.getAttribute(attrNames.next()));
-                }
-                return result;
             }
         };
 
@@ -132,17 +110,6 @@ public class DwrScopes
             public void put(HttpSession session, String name, Object value)
             {
                 session.setAttribute(name, value);
-            }
-            
-            public Iterable<Object> asIterable(HttpSession session)
-            {
-                List<Object> result = new ArrayList<Object>();
-                Enumeration<String> attrNames = session.getAttributeNames();
-                while (attrNames.hasMoreElements())
-                {
-                    result.add(session.getAttribute(attrNames.nextElement()));
-                }
-                return result;
             }
         };
 
@@ -192,17 +159,6 @@ public class DwrScopes
                 log.debug(String.format("servletContext.setAttribute(%s, %s)", name, value));
             }
             servletContext.setAttribute(name, value);
-        }
-        
-        public Iterable<Object> asIterable(ServletContext servletContext)
-        {
-            List<Object> result = new ArrayList<Object>();
-            Enumeration<String> attrNames = servletContext.getAttributeNames();
-            while (attrNames.hasMoreElements())
-            {
-                result.add(servletContext.getAttribute(attrNames.nextElement()));
-            }
-            return result;
         }
     };
 

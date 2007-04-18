@@ -29,6 +29,8 @@ public enum ParamName
     SCRIPT_SESSION_TIMEOUT              ("scriptSessionTimeout"),
     MAX_CALL_COUNT                      ("maxCallCount"),
     ACTIVE_REVERSE_AJAX_ENABLED         ("activeReverseAjaxEnabled"),
+    MAX_WAIT_AFTER_WRITE                ("maxWaitAfterWrite"),
+    DISCONNECTED_TIME                   ("disconnectedTime"),
     POLL_AND_COMET_ENABLED              ("pollAndCometEnabled"),
     MAX_WAITING_THREADS                 ("maxWaitingThreads"),
     MAX_POLL_HITS_PER_SECOND            ("maxPollHitsPerSecond"),
