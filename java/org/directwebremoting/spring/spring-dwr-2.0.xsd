@@ -60,6 +60,15 @@
   </xsd:complexType>
 
   <xsd:complexType name="create">
+    <xsd:sequence>
+      <xsd:element name="param" type="config-param" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="include" type="include" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="exclude" type="exclude" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="auth" type="auth" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="convert" type="convert" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="filter" type="filter" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="latencyfilter" type="latencyfilter" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
     <xsd:attribute name="type" use="required">
     <xsd:simpleType>
         <xsd:union >

@@ -26,7 +26,9 @@ import org.directwebremoting.create.NewCreator;
 import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
 import org.directwebremoting.util.Logger;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.HierarchicalBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -77,7 +79,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         registerBeanDefinitionDecorator("signatures", new SignaturesBeanDefinitionDecorator());
         registerBeanDefinitionDecorator("remote", new RemoteBeanDefinitionDecorator());
     }
-
+    
     /*
      *
      */
@@ -95,21 +97,14 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
     /**
      * Registers a new {@link org.directwebremoting.extend.Creator} in the registry using name <code>javascript</code>.
-     * TODO: Specifically tailored to SpringCreator; ignores <code>type</code>
      * @param registry The definition of all the Beans
      * @param javascript The name of the bean in the registry.
      * @param beanCreator The {@link org.directwebremoting.extend.Creator} to register.
      * @param children The node list to check for nested elements
      */
-    protected void registerCreator(BeanDefinitionRegistry registry, String javascript, BeanDefinitionBuilder beanCreator, NodeList children)
+    protected void registerCreator(BeanDefinitionRegistry registry, String javascript, BeanDefinitionBuilder creatorConfig, Map params,  NodeList children)
     {
         registerSpringConfiguratorIfNecessary(registry);
-
-        BeanDefinitionHolder holder = new BeanDefinitionHolder(beanCreator.getBeanDefinition(), "__" + javascript + "_creator");
-        BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
-
-        BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);
-        creatorConfig.addPropertyReference("creator", "__" + javascript + "_creator");
 
         List includes = new ArrayList();
         creatorConfig.addPropertyValue("includes", includes);
@@ -188,12 +183,20 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 filterList.add(new RuntimeBeanReference("__filter_" + filterClass + "_" + javascript));
                 creatorConfig.addPropertyValue("filters", filterList);
             }
+            else if (node.getNodeName().equals("dwr:param"))
+            {
+                Element element = (Element) node;
+                String name = element.getAttribute("name");
+                String value = element.getAttribute("value");
+                params.put(name, value);
+            }
             else
             {
                 throw new RuntimeException("an unknown dwr:remote sub node was fouund: " + node.getNodeName());
             }
         }
-
+        creatorConfig.addPropertyValue("params", params);
+        
         String creatorConfigName = "__" + javascript;
         BeanDefinitionHolder holder3 = new BeanDefinitionHolder(creatorConfig.getBeanDefinition(), creatorConfigName);
         BeanDefinitionReaderUtils.registerBeanDefinition(holder3, registry);
@@ -203,11 +206,18 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
     protected class ConfigurationBeanDefinitionParser implements BeanDefinitionParser
     {
+        
         public BeanDefinition parse(Element element, ParserContext parserContext)
         {
             BeanDefinitionRegistry registry = parserContext.getRegistry();
             BeanDefinition beanDefinition = registerSpringConfiguratorIfNecessary(registry);
 
+            Element initElement = DomUtils.getChildElementByTagName(element, "init");
+            if (initElement != null)
+            {
+                decorate(initElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);    
+            }
+            
             List createElements = DomUtils.getChildElementsByTagName(element, "create");
             Iterator iter = createElements.iterator();
             while (iter.hasNext())
@@ -222,12 +232,6 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             {
                 Element convertElement = (Element) iter.next();
                 decorate(convertElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
-            }
-
-            Element initElement = DomUtils.getChildElementByTagName(element, "init");
-            if (initElement != null)
-            {
-                decorate(initElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);    
             }
             
             List signatureElements = DomUtils.getChildElementsByTagName(element, "signatures");
@@ -311,6 +315,9 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
     protected class RemoteBeanDefinitionDecorator implements BeanDefinitionDecorator
     {
+        /**
+         * Registers an &lt;dwr:remote ... /&gt; element.
+         */
         public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext)
         {
             Element element = (Element) node;
@@ -343,7 +350,9 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             beanCreator.addPropertyValue("beanId", name);
             beanCreator.addPropertyValue("javascript", javascript);
 
-            registerCreator(parserContext.getRegistry(), javascript, beanCreator, node.getChildNodes());
+            BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);
+            creatorConfig.addPropertyValue("creator", beanCreator.getBeanDefinition());            
+            registerCreator(parserContext.getRegistry(), javascript, creatorConfig, new HashMap(), node.getChildNodes());
 
             return definition;
         }
@@ -517,18 +526,24 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     
     /**
      * Uses the BeanDefinitionDecorator since we need access to the name of the parent definition??
+     * Register the creatores: spring, new, null, scripted, jsf, struts, pageflow
      */
     protected class CreatorBeanDefinitionDecorator implements BeanDefinitionDecorator
     {
+        
         public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext)
         {
             Element element = (Element) node;
             String javascript = element.getAttribute("javascript");
-            String type = element.getAttribute("type");
+            String creatorType = element.getAttribute("type");
 
-            // Make sure the Creator is registered in the registry.
+            BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);
+            
+            // Configure "known" creators in the CreatorConfig. If unknown then just create the configuration
+            // and leave it up DWR itself to decide if it's a valid creator type
             BeanDefinitionBuilder creator;
-            if ("spring".equals(type))
+            Map params = new HashMap();
+            if ("spring".equals(creatorType))
             {
                 // TODO: duplicate of RemoteBeanDefinitionDecorator
                 creator = BeanDefinitionBuilder.rootBeanDefinition(SpringCreator.class);
@@ -542,22 +557,75 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                     throw new FatalBeanException("Unable to create DWR bean creator for '" + definition.getBeanName() + "'.", e);
                 }
                 creator.addPropertyValue("javascript", javascript);
+                creatorConfig.addPropertyValue("creator", creator.getBeanDefinition());
             }
-            else if ("new".equals(type))
+            else if ("new".equals(creatorType))
             {
                 creator = BeanDefinitionBuilder.rootBeanDefinition(NewCreator.class);
                 creator.addPropertyValue("className", node.getAttributes().getNamedItem("class").getNodeValue());
                 creator.addPropertyValue("javascript", javascript);
+                creatorConfig.addPropertyValue("creator", creator.getBeanDefinition());
+            }
+            else if ("null".equals(creatorType))
+            {
+                creatorConfig.addPropertyValue("creatorType", "none");
+                String className = element.getAttribute("class");
+                if (className == null || "".equals(className)) 
+                {
+                    throw new BeanInitializationException("'class' is a required attribute for the declaration <dwr:creator type=\"null\"" + 
+                            " javascript=\"" + javascript + "\" ... />");
+                }
+                params.put("class", className);
+            }
+            else if ("pageflow".equals(creatorType))
+            {
+                creatorConfig.addPropertyValue("creatorType", creatorType);
+            }
+            else if ("jsf".equals(creatorType) || "scripted".equals(creatorType) || "struts".equals(creatorType))
+            {
+                creatorConfig.addPropertyValue("creatorType", creatorType);
             }
             else
             {
-                // TODO need to actually register the creator first... 
-                
-                // the creator type should have been registered
-                throw new UnsupportedOperationException("Type " + type + " is not yet supported");
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Looking up creator type '" + creatorType + "'");
+                }
+                // TODO We should delay the initialization of the creatorClass until after the bean 
+                // definitions have been parsed.  
+                BeanDefinition configurator = registerSpringConfiguratorIfNecessary(parserContext.getRegistry());
+                PropertyValue registeredCreators = configurator.getPropertyValues().getPropertyValue("creatorTypes");
+                Map registeredCreatorMap = (Map)registeredCreators.getValue();
+                String creatorClass = (String)registeredCreatorMap.get(creatorType);
+                if (creatorClass == null)
+                {
+                    // the creator type should have been registered
+                    throw new UnsupportedOperationException("Type " + creatorType + " is not supported " + 
+                            " or the custom creator has not been registered dwr:init");                    
+                } 
+                else 
+                {
+                    try 
+                    {
+                        Class clazz = Class.forName(creatorClass);
+                        creator = BeanDefinitionBuilder.rootBeanDefinition(clazz);
+                        creatorConfig.addPropertyValue("creator", creator.getBeanDefinition());
+                        String className = element.getAttribute("class");
+                        if (StringUtils.hasText(className))
+                        {
+                            params.put("class", className);
+                        }
+                    } 
+                    catch (ClassNotFoundException ex) 
+                    {
+                        throw new FatalBeanException("ClassNotFoundException trying to register " +  
+                                " creator '" + creatorClass +  "' for javascript type '" + javascript +"'. Check the " + 
+                                " class in the classpath and that the creator is register in dwr:init", ex);
+                    }
+                }
             }
 
-            registerCreator(parserContext.getRegistry(), javascript, creator, node.getChildNodes());
+            registerCreator(parserContext.getRegistry(), javascript, creatorConfig, params, node.getChildNodes());
 
             return definition;
         }
@@ -623,5 +691,6 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     private static final String ATTRIBUTE_ID = "id";
 
     private static final String ATTRIBUTE_CLASS = "class";
+    
     
 }
