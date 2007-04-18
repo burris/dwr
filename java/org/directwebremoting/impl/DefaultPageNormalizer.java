@@ -76,7 +76,7 @@ public class DefaultPageNormalizer implements PageNormalizer
             int queryPos = normalized.indexOf('?');
             if (queryPos != -1)
             {
-                normalized = normalized.substring(queryPos + 1);
+                normalized = normalized.substring(0, queryPos);
             }
         }
 
