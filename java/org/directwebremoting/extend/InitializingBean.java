@@ -28,11 +28,8 @@ import org.directwebremoting.Container;
 public interface InitializingBean
 {
     /**
-     * Invoked by a BeanFactory after it has set all bean properties supplied
-     * (and satisfied BeanFactoryAware and ApplicationContextAware).
      * <p>This method allows the bean instance to perform initialization only
-     * possible when all bean properties have been set and to throw an
-     * exception in the event of misconfiguration.
+     * possible when all bean properties have been set
      * @param container The container that is doing the initialization
      */
     void afterContainerSetup(Container container);
