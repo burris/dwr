@@ -75,6 +75,12 @@
       </param>
     </create>
 
+    <!-- The TIBCO GI Demo -->
+    <create creator="new" javascript="Publisher" scope="application">
+      <param name="class" value="org.getahead.dwrdemo.gidemo.Publisher"/>
+    </create>
+    <convert converter="bean" match="org.getahead.dwrdemo.gidemo.Corporation"/>
+
     <!-- this is a bad idea for live, but can be useful in testing -->
     <convert converter="exception" match="java.lang.Exception"/>
     <convert converter="bean" match="java.lang.StackTraceElement"/>
