@@ -889,46 +889,72 @@ dwr.util.addOptions = function(ele, data/*, options*/) {
     return;
   }
   if (data == null) return;
+  
+  var argcount = arguments.length;
+  var options = {};
+  var lastarg = arguments[argcount - 1]; 
+  if (argcount > 2 && dwr.util._isObject(lastarg)) {
+    options = lastarg;
+    argcount--;
+  }
+  var arg3 = null; if (argcount >= 3) arg3 = arguments[2];
+  var arg4 = null; if (argcount >= 4) arg4 = arguments[3];
+  if (!options.optionCreator && useOptions) options.optionCreator = dwr.util._defaultOptionCreator;
+  if (!options.optionCreator && useLi) options.optionCreator = dwr.util._defaultListItemCreator;
 
   var text, value, li;
   if (dwr.util._isArray(data)) {
     // Loop through the data that we do have
     for (var i = 0; i < data.length; i++) {
+      options.data = data[i];
+      options.text = null;
+      options.value = null;
       if (useOptions) {
-        if (arguments[2] != null) {
-          if (arguments[3] != null) {
-            text = dwr.util._getValueFrom(data[i], arguments[3]);
-            value = dwr.util._getValueFrom(data[i], arguments[2]);
+        if (arg3 != null) {
+          if (arg4 != null) {
+            options.text = dwr.util._getValueFrom(data[i], arg4);
+            options.value = dwr.util._getValueFrom(data[i], arg3);
           }
-          else text = value = dwr.util._getValueFrom(data[i], arguments[2]);
+          else options.text = options.value = dwr.util._getValueFrom(data[i], arg3);
         }
-        else text = value = dwr.util._getValueFrom(data[i], arguments[3]);
+        else options.text = options.value = dwr.util._getValueFrom(data[i]);
 
-        if (text != null || value) ele.options[ele.options.length] = new Option(text, value);
+        if (options.text != null || options.value) {
+          var opt = options.optionCreator(options);
+          opt.text = options.text;
+          opt.value = options.value;
+          ele.options[ele.options.length] = opt;
+        }
       }
       else {
-        value = dwr.util._getValueFrom(data[i], arguments[2]);
-        if (value != null) {
-          li = document.createElement("li");
-          if (dwr.util._shouldEscapeHtml(arguments[3])) {
-            value = dwr.util.escapeHtml(value);
+        options.value = dwr.util._getValueFrom(data[i], arg3);
+        if (options.value != null) {
+          li = options.optionCreator(options);
+          if (dwr.util._shouldEscapeHtml(options)) {
+            options.value = dwr.util.escapeHtml(options.value);
           }
-          li.innerHTML = value;
+          li.innerHTML = options.value;
           ele.appendChild(li);
         }
       }
     }
   }
-  else if (arguments[3] != null) {
+  else if (arg4 != null) {
     if (!useOptions) {
       alert("dwr.util.addOptions can only create select lists from objects.");
       return;
     }
     for (var prop in data) {
-      value = dwr.util._getValueFrom(data[prop], arguments[2]);
-      text = dwr.util._getValueFrom(data[prop], arguments[3]);
+      options.data = data[prop];
+      options.value = dwr.util._getValueFrom(data[prop], arg3);
+      options.text = dwr.util._getValueFrom(data[prop], arg4);
 
-      if (text || value) ele.options[ele.options.length] = new Option(text, value);
+      if (options.text != null || options.value) {
+        var opt = options.optionCreator(options);
+        opt.text = options.text;
+        opt.value = options.value;
+        ele.options[ele.options.length] = opt;
+      }
     }
   }
   else {
@@ -937,15 +963,26 @@ dwr.util.addOptions = function(ele, data/*, options*/) {
       return;
     }
     for (var prop in data) {
-      if (typeof data[prop] != "function") {
-        if (arguments[2]) ele.options[ele.options.length] = new Option(prop, data[prop]);
-        else ele.options[ele.options.length] = new Option(data[prop], prop);
+      options.data = data[prop];
+      if (!arg3) {
+        options.value = prop;
+        options.text = data[prop];
+      }
+      else {
+        options.value = data[prop];
+        options.text = prop;
+      }
+      if (options.text != null || options.value) {
+        var opt = options.optionCreator(options);
+        opt.text = options.text;
+        opt.value = options.value;
+        ele.options[ele.options.length] = opt;
       }
     }
   }
 
   // All error routes through this function result in a return, so highlight now
-  dwr.util.highlight(ele, null); // TODO: forward options instead of null 
+  dwr.util.highlight(ele, options); 
 };
 
 /**
@@ -955,6 +992,20 @@ dwr.util._getValueFrom = function(data, method) {
   if (method == null) return data;
   else if (typeof method == 'function') return method(data);
   else return data[method];
+};
+
+/**
+ * @private Default option creation function
+ */
+dwr.util._defaultOptionCreator = function(options) {
+  return new Option();
+};
+
+/**
+ * @private Default list item creation function
+ */
+dwr.util._defaultListItemCreator = function(options) {
+  return document.createElement("li");
 };
 
 /**
