@@ -25,6 +25,7 @@ import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.servlet.PathConstants;
@@ -51,16 +52,35 @@ public class DefaultPageNormalizer implements PageNormalizer
      */
     public String normalizePage(String unnormalized)
     {
-        synchronized (welcomeFiles)
+        synchronized (initLock)
         {
-            if (!welcomeFilesPopulated)
+            if (welcomeFiles == null)
             {
-                initWebXmlWelcomeFileList();
+                if (servletContext != null)
+                {
+                    welcomeFiles = getWebXmlWelcomeFileList(servletContext);
+                }
+                else
+                {
+                    WebContext webContext = WebContextFactory.get();
+                    if (webContext == null)
+                    {
+                        log.warn("Can't find ServletContext to check for <welcome-file-list> in web.xml. Assuming defaults.");
+                        log.warn(" - To prevent this message from happening, either call the PageNormalizer from a DWR thread");
+                        log.warn(" - Or seed the PageNormalizer with a ServletContext before access from outside a DWR thread");
+                    }
+                    else
+                    {
+                        ServletContext threadServletContext = webContext.getServletContext();
+                        welcomeFiles = getWebXmlWelcomeFileList(threadServletContext);
+                    }
+                }
             }
 
-            if (!welcomeFilesPopulated)
+            if (welcomeFiles == null)
             {
-                initDefaultWelcomeFileList();
+                log.debug("Using default welcome file list (index.[jsp|htm[l]])");
+                welcomeFiles = getDefaultWelcomeFileList();
             }
         }
 
@@ -95,17 +115,18 @@ public class DefaultPageNormalizer implements PageNormalizer
 
     /**
      * Accessor for the list of components to strip to normalize a filename
+     * @param context Our route to reading web.xml
+     * @return A list of the welcome files from web.xml or null if none are found there
      */
-    protected void initWebXmlWelcomeFileList()
+    protected static List getWebXmlWelcomeFileList(ServletContext context)
     {
         try
         {
-            ServletContext context = WebContextFactory.get().getServletContext();
             InputStream in = context.getResourceAsStream(PathConstants.RESOURCE_WEB_XML);
             if (in == null)
             {
                 log.warn("Missing " + PathConstants.RESOURCE_WEB_XML);
-                return;
+                return null;
             }
 
             if (buildFactory == null)
@@ -126,9 +147,10 @@ public class DefaultPageNormalizer implements PageNormalizer
             if (welcomeFileListNodes.getLength() == 0)
             {
                 log.debug("web.xml contains no <welcome-file-list> element");
-                return;
+                return null;
             }
 
+            List reply = new ArrayList();
             for (int i = 0; i < welcomeFileListNodes.getLength(); i++)
             {
                 Element welcomeFileListNode = (Element) welcomeFileListNodes.item(i);
@@ -137,32 +159,32 @@ public class DefaultPageNormalizer implements PageNormalizer
                 {
                     Element welcomeFileNode = (Element) welcomeFileNodes.item(j);
                     String welcomeFile = DomUtil.getText(welcomeFileNode);
-                    welcomeFiles.add(welcomeFile);
+                    reply.add(welcomeFile);
 
                     log.debug("Adding welcome-file: " + welcomeFile);
                 }
             }
 
-            welcomeFilesPopulated = true;
+            return reply;
         }
         catch (Exception ex)
         {
             log.warn("Failed to calculate welcome files from web.xml.", ex);
+            return null;
         }
     }
 
     /**
      * Use the default list of components to strip to normalize a filename
+     * @return A list of the default welcome files
      */
-    protected void initDefaultWelcomeFileList()
+    protected static List getDefaultWelcomeFileList()
     {
-        log.debug("Using default welcome file list (index.[jsp|htm[l]])");
-
-        welcomeFiles.add("index.html");
-        welcomeFiles.add("index.htm");
-        welcomeFiles.add("index.jsp");
-
-        welcomeFilesPopulated = true;
+        List reply = new ArrayList();
+        reply.add("index.html");
+        reply.add("index.htm");
+        reply.add("index.jsp");
+        return reply;
     }
 
     /**
@@ -172,7 +194,6 @@ public class DefaultPageNormalizer implements PageNormalizer
     public void setWelcomeFileList(List welcomeFiles)
     {
         this.welcomeFiles = welcomeFiles;
-        welcomeFilesPopulated = true;
     }
 
     /**
@@ -187,7 +208,6 @@ public class DefaultPageNormalizer implements PageNormalizer
         {
             welcomeFiles.add(st.nextToken());
         }
-        welcomeFilesPopulated = true;
     }
 
     /**
@@ -201,6 +221,19 @@ public class DefaultPageNormalizer implements PageNormalizer
     }
 
     /**
+     * @param servletContext the servletContext to set
+     */
+    public void setServletContext(ServletContext servletContext)
+    {
+        this.servletContext = servletContext;
+    }
+
+    /**
+     * We need one of these to do the init process.
+     */
+    protected ServletContext servletContext = null;
+
+    /**
      * Does the page normalizer include query strings in it's definition of
      * pages?
      */
@@ -209,17 +242,17 @@ public class DefaultPageNormalizer implements PageNormalizer
     /**
      * How we create new documents
      */
-    protected DocumentBuilderFactory buildFactory = null;
+    protected static DocumentBuilderFactory buildFactory = null;
+
+    /**
+     * The lock to prevent 2 things from calling init at the same time
+     */
+    protected static final Object initLock = new Object();
 
     /**
      * The list of filename components to strip to normalize a filename
      */
-    protected List welcomeFiles = new ArrayList();
-
-    /**
-     * Have we got some welcomFile list from somewhere?
-     */
-    protected boolean welcomeFilesPopulated = false;
+    protected List welcomeFiles;
 
     /**
      * The log stream
