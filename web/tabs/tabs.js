@@ -8,14 +8,14 @@ function Tabs() { }
  * 
  */
 Tabs.init = function(tabListId) {
-  Tabs.tabLinks = $(tabListId).getElementsByTagName("A");
+  Tabs.tabLinks = document.getElementById(tabListId).getElementsByTagName("A");
 
   var link, tabId, tab;
   for (var i = 0; i < Tabs.tabLinks.length; i++) {
     link = Tabs.tabLinks[i];
     tabId = link.getAttribute("tabId");
     if (!tabId) alert("Expand link does not have a tabId element: " + link.innerHTML);
-    tab = $(tabId);
+    tab = document.getElementById(tabId);
     if (!tab) alert("tabId does not exist: " + tabId);
 
     if (i == 0) {
@@ -33,11 +33,11 @@ Tabs.init = function(tabListId) {
         var link = Tabs.tabLinks[i];
         var loopId = link.getAttribute("tabId");
         if (loopId == tabId) {
-          $(loopId).style.display = "block";
+          document.getElementById(loopId).style.display = "block";
           link.className = "linkSelected " ;//+ link.className.replace(Tabs.removeUnselectedRegex, '');
         }
         else {
-          $(loopId).style.display = "none";
+          document.getElementById(loopId).style.display = "none";
           link.className = "linkUnselected " ;//+ link.className.replace(Tabs.removeSelectedRegex, '');
         }
       }
