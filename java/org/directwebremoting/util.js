@@ -1409,17 +1409,17 @@ dwr.util._isObject = function(data) {
 };
 
 /**
- * @private Array detector.
+ * @private Array detector. Note: instanceof doesn't work with multiple frames.
  */
 dwr.util._isArray = function(data) {
   return (data && data.join);
 };
 
 /**
- * @private Date detector.
+ * @private Date detector. Note: instanceof doesn't work with multiple frames.
  */
 dwr.util._isDate = function(data) {
-  return (data && data instanceof Date);
+  return (data && data.toUTCString) ? true : false;
 };
 
 /**
