@@ -163,7 +163,7 @@ if (!$) {
  * This function pretty-prints simple data or whole object graphs, f ex as an aid in debugging.
  * @see http://getahead.org/dwr/browser/util/todescriptivestring
  */
-dwr.util.toDescriptiveString = function(data, showLevels, options) {
+ dwr.util.toDescriptiveString = function(data, showLevels, options) {
   if (showLevels === undefined) showLevels = 1;
   var opt = {};
   if (dwr.util._isObject(options)) opt = options;
@@ -177,10 +177,6 @@ dwr.util.toDescriptiveString = function(data, showLevels, options) {
     propertyNameMaxLength: 30 
   };
   for (var p in defaultoptions) if (!(p in opt)) opt[p] = defaultoptions[p];
-  if (typeof options == "number") {
-    var baseDepth = options;
-    opt.baseIndent = dwr.util._indent2(baseDepth, opt);
-  }
 
   var skipDomProperties = {
     document:true, ownerDocument:true,
