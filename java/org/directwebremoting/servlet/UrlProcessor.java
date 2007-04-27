@@ -80,10 +80,11 @@ public class UrlProcessor implements Handler, InitializingBean
         try
         {
             String pathInfo = request.getPathInfo();
+            contextPath = request.getContextPath();
 
             if (pathInfo == null || pathInfo.length() == 0 || "/".equals(pathInfo))
             {
-                response.sendRedirect(request.getContextPath() + request.getServletPath() + indexHandlerUrl);
+                response.sendRedirect(contextPath + request.getServletPath() + indexHandlerUrl);
             }
             else
             {
@@ -112,6 +113,15 @@ public class UrlProcessor implements Handler, InitializingBean
     }
 
     /**
+     * The contextPath cached from the last HTTP servlet request
+     * @return the contextPath
+     */
+    public String getContextPath()
+    {
+        return contextPath;
+    }
+
+    /**
      * The URL for the {@link IndexHandler}
      * @param indexHandlerUrl the indexHandlerUrl to set
      */
@@ -123,22 +133,27 @@ public class UrlProcessor implements Handler, InitializingBean
     /**
      * The URL for the {@link IndexHandler}
      */
-    private String indexHandlerUrl;
+    protected String indexHandlerUrl;
 
     /**
      * The mapping of URLs to {@link Handler}s
      */
-    private Map<String, Object> urlMapping = new HashMap<String, Object>();
+    protected Map<String, Object> urlMapping = new HashMap<String, Object>();
 
     /**
      * The default if we have no other action (HTTP-404)
      */
-    private Handler notFoundHandler = new NotFoundHandler();
+    protected Handler notFoundHandler = new NotFoundHandler();
 
     /**
      * If execution fails, we do this (HTTP-501)
      */
-    private ExceptionHandler exceptionHandler = new ExceptionHandler();
+    protected ExceptionHandler exceptionHandler = new ExceptionHandler();
+
+    /**
+     * The contextPath cached from the last HTTP servlet request
+     */
+    protected String contextPath = null;
 
     /**
      * The log stream

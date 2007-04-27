@@ -160,6 +160,14 @@ public class ExecutionContext implements WebContext
         throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()");
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ServerContext#getContextPath()
+     */
+    public String getContextPath()
+    {
+        throw new UnsupportedOperationException("Use WebContextFactory.get().toJavascript()");
+    }
+
     /**
      * Accessor for the current ExecutionContext.
      * @return The current ExecutionContext or null if the current thread was

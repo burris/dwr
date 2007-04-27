@@ -176,6 +176,14 @@ public class WebContextFactory
             proxy.setCurrentPageInformation(page, scriptSessionId);
         }
 
+        /* (non-Javadoc)
+         * @see org.directwebremoting.ServerContext#getContextPath()
+         */
+        public String getContextPath()
+        {
+            return proxy.getContextPath();
+        }
+
         /**
          * The WebContext that we proxy to
          */

@@ -60,6 +60,19 @@ public interface ServerContext
     ServletContext getServletContext();
 
     /**
+     * Returns the portion of the request URI that indicates the context
+     * of the request.
+     * <p>Annoyingly you can't get to this from the {@link ServletContext} so
+     * you need to cache the value from a recent HttpServletRequest.
+     * <p>The context path always comes first in a request URI.  The path starts
+     * with a "/" character but does not end with a "/" character.
+     * For servlets in the default (root) context, this method returns "".
+     * The container does not decode this string.
+     * @return The portion of the request URI that indicates the context
+     */
+    String getContextPath();
+
+    /**
      * Accessor for the IoC container.
      * @return The IoC container that created the interface implementations.
      */

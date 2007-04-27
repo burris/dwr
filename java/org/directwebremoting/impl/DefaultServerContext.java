@@ -25,6 +25,7 @@ import org.directwebremoting.ServerContext;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.ScriptSessionManager;
+import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.util.VersionUtil;
 
 /**
@@ -92,6 +93,15 @@ public class DefaultServerContext implements ServerContext
     public String getVersion()
     {
         return VersionUtil.getVersion();
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ServerContext#getContextPath()
+     */
+    public String getContextPath()
+    {
+        UrlProcessor urlProcessor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+        return urlProcessor.getContextPath();
     }
 
     /**
