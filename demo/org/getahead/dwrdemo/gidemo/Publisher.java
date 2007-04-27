@@ -28,6 +28,7 @@ public class Publisher implements Runnable
         ServletContext servletContext = webContext.getServletContext();
 
         serverContext = ServerContextFactory.get(servletContext);
+        contextPath = serverContext.getContextPath();
 
         // A bit nasty: the call to serverContext.getScriptSessionsByPage()
         // below could fail because the system might need to read web.xml which
@@ -57,7 +58,7 @@ public class Publisher implements Runnable
 
             while (!Thread.currentThread().isInterrupted())
             {
-                Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage("/dwr/gi/index.html");
+                Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/index.html");
                 ScriptProxy proxy = new ScriptProxy(sessions);
 
                 Corporation corp = corporations.getNextChangedCorporation();
@@ -76,6 +77,11 @@ public class Publisher implements Runnable
             log.info("Stopping Publisher thread");
         }
     }
+
+    /**
+     * Where are we located in this webapp?
+     */
+    private String contextPath;
 
     /**
      * The thread that does the work

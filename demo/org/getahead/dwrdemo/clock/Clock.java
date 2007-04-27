@@ -62,10 +62,11 @@ public class Clock implements Runnable
         try
         {
             log.debug("CLOCK: Starting server-side thread");
+            String contextPath = sctx.getContextPath();
 
             while (active)
             {
-                Collection<ScriptSession> sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html");
+                Collection<ScriptSession> sessions = sctx.getScriptSessionsByPage(contextPath + "/clock/index.html");
                 Util pages = new Util(sessions);
                 pages.setValue("clockDisplay", new Date().toString());
 
@@ -73,7 +74,7 @@ public class Clock implements Runnable
                 Thread.sleep(1000);
             }
 
-            Collection<ScriptSession> sessions = sctx.getScriptSessionsByPage("/dwr/clock/index.html");
+            Collection<ScriptSession> sessions = sctx.getScriptSessionsByPage(contextPath + "/clock/index.html");
             Util pages = new Util(sessions);
             pages.setValue("clockDisplay", "");
 

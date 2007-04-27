@@ -89,6 +89,7 @@ public class Person
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj)
     {
         if (obj == null)
@@ -119,6 +120,7 @@ public class Person
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode()
     {
         return 5924 + id;
@@ -127,6 +129,7 @@ public class Person
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return "Person[id=" + id + ",name=" + name + "]";
