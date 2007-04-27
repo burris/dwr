@@ -98,7 +98,7 @@ public class ServletLoggingOutput implements LoggingOutput
     {
         if (loglevel >= level)
         {
-            HttpServlet servlet = (HttpServlet) servlets.get();
+            HttpServlet servlet = servlets.get();
             if (servlet != null)
             {
                 // Tomcat 4 NPEs is th is null
@@ -149,23 +149,23 @@ public class ServletLoggingOutput implements LoggingOutput
      */
     public static void setLevel(String logLevel)
     {
-        if (logLevel.equalsIgnoreCase("FATAL"))
+        if ("FATAL".equalsIgnoreCase(logLevel))
         {
             setLevel(LEVEL_FATAL);
         }
-        else if (logLevel.equalsIgnoreCase("ERROR"))
+        else if ("ERROR".equalsIgnoreCase(logLevel))
         {
             setLevel(LEVEL_ERROR);
         }
-        else if (logLevel.equalsIgnoreCase("WARN"))
+        else if ("WARN".equalsIgnoreCase(logLevel))
         {
             setLevel(LEVEL_WARN);
         }
-        else if (logLevel.equalsIgnoreCase("INFO"))
+        else if ("INFO".equalsIgnoreCase(logLevel))
         {
             setLevel(LEVEL_INFO);
         }
-        else if (logLevel.equalsIgnoreCase("DEBUG"))
+        else if ("DEBUG".equalsIgnoreCase(logLevel))
         {
             setLevel(LEVEL_DEBUG);
         }
@@ -202,7 +202,7 @@ public class ServletLoggingOutput implements LoggingOutput
     /**
      * The container for all known threads
      */
-    private static final ThreadLocal servlets = new ThreadLocal();
+    private static final ThreadLocal<HttpServlet> servlets = new ThreadLocal<HttpServlet>();
 
     /**
      * What is the current debug level?

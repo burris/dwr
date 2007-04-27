@@ -72,7 +72,7 @@ public class HitMonitor
     private void trimHitLog()
     {
         long now = getCurrentTimestamp();
-        int secondsPassedSinceLastHit = (int) (now - zeroTimestamp);
+        long secondsPassedSinceLastHit = now - zeroTimestamp;
         zeroTimestamp = now;
 
         if (secondsPassedSinceLastHit > 0)
@@ -82,7 +82,7 @@ public class HitMonitor
             {
                 if (i >= secondsPassedSinceLastHit)
                 {
-                    hitLog[i] = hitLog[i - secondsPassedSinceLastHit];
+                    hitLog[i] = hitLog[i - (int) secondsPassedSinceLastHit];
                 }
                 else
                 {
@@ -96,7 +96,7 @@ public class HitMonitor
      * A timestamp is {@link System#currentTimeMillis()} divided by 1000
      * @return The current timestamp
      */
-    private long getCurrentTimestamp()
+    private static long getCurrentTimestamp()
     {
         return System.currentTimeMillis() / 1000;
     }

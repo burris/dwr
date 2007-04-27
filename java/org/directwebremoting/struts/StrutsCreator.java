@@ -46,16 +46,15 @@ public class StrutsCreator extends AbstractCreator implements Creator
     {
         try
         {
-            moduleUtilsClass = LocalUtil.classForName("org.apache.struts.util.ModuleUtils");
-            getInstanceMethod = moduleUtilsClass.getMethod("getInstance", new Class[0]);
-            getModuleNameMethod = moduleUtilsClass.getMethod("getModuleName", new Class[] { String.class, ServletContext.class });
-            getModuleConfigMethod = moduleUtilsClass.getMethod("getModuleConfig", new Class[] { String.class, ServletContext.class });
+            Class<?> moduleUtilsClass = LocalUtil.classForName("org.apache.struts.util.ModuleUtils");
+            getInstanceMethod = moduleUtilsClass.getMethod("getInstance");
+            getModuleNameMethod = moduleUtilsClass.getMethod("getModuleName", String.class, ServletContext.class);
+            getModuleConfigMethod = moduleUtilsClass.getMethod("getModuleConfig", String.class, ServletContext.class);
 
             log.debug("Using Struts 1.2 based ModuleUtils code");
         }
         catch (Exception ex)
         {
-            moduleUtilsClass = null;
             getInstanceMethod = null;
             getModuleNameMethod = null;
             getModuleConfigMethod = null;
@@ -76,7 +75,7 @@ public class StrutsCreator extends AbstractCreator implements Creator
     /* (non-Javadoc)
      * @see org.directwebremoting.Creator#getType()
      */
-    public Class getType()
+    public Class<?> getType()
     {
         synchronized (this)
         {
@@ -89,13 +88,13 @@ public class StrutsCreator extends AbstractCreator implements Creator
                     try
                     {
                         // ModuleUtils utils = ModuleUtils.getInstance();
-                        Object utils = getInstanceMethod.invoke(null, new Object[0]);
+                        Object utils = getInstanceMethod.invoke(null);
 
                         // String moduleName = utils.getModuleName("/", wc.getServletContext());
-                        String moduleName = (String) getModuleNameMethod.invoke(utils, new Object[] { "/", wc.getServletContext() });
+                        String moduleName = (String) getModuleNameMethod.invoke(utils, "/", wc.getServletContext());
 
                         // moduleConfig = utils.getModuleConfig(moduleName, wc.getServletContext());
-                        moduleConfig = (ModuleConfig) getModuleConfigMethod.invoke(utils, new Object[] { moduleName, wc.getServletContext() });
+                        moduleConfig = (ModuleConfig) getModuleConfigMethod.invoke(utils, moduleName, wc.getServletContext());
                     }
                     catch (Exception ex)
                     {
@@ -144,17 +143,12 @@ public class StrutsCreator extends AbstractCreator implements Creator
     /**
      * The FormBean that we lookup to call methods on
      */
-    private String formBean;
+    private String formBean = null;
 
     /**
      * moduleConfig allows us to do the lookup
      */
-    private ModuleConfig moduleConfig;
-
-    /**
-     * Reflection access to 1.2 code for compatibility with 1.1
-     */
-    private Class moduleUtilsClass;
+    private ModuleConfig moduleConfig = null;
 
     /**
      * Reflection access to 1.2 code for compatibility with 1.1

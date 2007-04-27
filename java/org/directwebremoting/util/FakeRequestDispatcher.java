@@ -52,11 +52,11 @@ public class FakeRequestDispatcher implements RequestDispatcher
             throw new IllegalArgumentException("FakeRequestDispatcher requires FakeHttpServletResponse");
         }
 
-        ((FakeHttpServletResponse) response).setForwardedUrl(this.url);
+        ((FakeHttpServletResponse) response).setForwardedUrl(url);
 
         if (log.isDebugEnabled())
         {
-            log.debug("FakeRequestDispatcher: forwarding to URL [" + this.url + "]");
+            log.debug("FakeRequestDispatcher: forwarding to URL [" + url + "]");
         }
     }
 
@@ -70,11 +70,11 @@ public class FakeRequestDispatcher implements RequestDispatcher
             throw new IllegalArgumentException("FakeRequestDispatcher requires FakeHttpServletResponse");
         }
 
-        ((FakeHttpServletResponse) response).setIncludedUrl(this.url);
+        ((FakeHttpServletResponse) response).setIncludedUrl(url);
 
         if (log.isDebugEnabled())
         {
-            log.debug("FakeRequestDispatcher: including URL [" + this.url + "]");
+            log.debug("FakeRequestDispatcher: including URL [" + url + "]");
         }
     }
 

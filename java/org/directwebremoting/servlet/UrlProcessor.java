@@ -18,8 +18,8 @@ package org.directwebremoting.servlet;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,10 +53,9 @@ public class UrlProcessor implements Handler, InitializingBean
      */
     public void afterContainerSetup(Container container)
     {
-        Collection beanNames = container.getBeanNames();
-        for (Iterator it = beanNames.iterator(); it.hasNext();)
+        Collection<String> beanNames = container.getBeanNames();
+        for (String name : beanNames)
         {
-            String name = (String) it.next();
             if (name.startsWith(PathConstants.URL_PREFIX))
             {
                 Object bean = container.getBean(name);
@@ -82,17 +81,16 @@ public class UrlProcessor implements Handler, InitializingBean
         {
             String pathInfo = request.getPathInfo();
 
-            if (pathInfo == null || pathInfo.length() == 0 || pathInfo.equals("/"))
+            if (pathInfo == null || pathInfo.length() == 0 || "/".equals(pathInfo))
             {
                 response.sendRedirect(request.getContextPath() + request.getServletPath() + indexHandlerUrl);
             }
             else
             {
                 // Loop through all the known URLs
-                for (Iterator it = urlMapping.entrySet().iterator(); it.hasNext();)
+                for (Entry<String, Object> entry : urlMapping.entrySet())
                 {
-                    Map.Entry entry = (Map.Entry) it.next();
-                    String url = (String) entry.getKey();
+                    String url = entry.getKey();
 
                     // If this URL matches, call the handler
                     if (pathInfo.startsWith(url))
@@ -130,7 +128,7 @@ public class UrlProcessor implements Handler, InitializingBean
     /**
      * The mapping of URLs to {@link Handler}s
      */
-    private Map urlMapping = new HashMap();
+    private Map<String, Object> urlMapping = new HashMap<String, Object>();
 
     /**
      * The default if we have no other action (HTTP-404)

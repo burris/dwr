@@ -31,15 +31,14 @@ import java.util.Map;
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @author Brendan Grainger
  */
-abstract class AbstractConfig
+public class AbstractConfig
 {
-
     /**
      * Gets the list of method names to include for this creator.
      * @return the list of method names to include
      * @see org.directwebremoting.extend.AccessControl#addIncludeRule(String, String)
      */
-    public List getIncludes()
+    public List<String> getIncludes()
     {
         return includes;
     }
@@ -49,7 +48,7 @@ abstract class AbstractConfig
      * @param includes the list of method names to include
      * @see org.directwebremoting.extend.AccessControl#addIncludeRule(String, String)
      */
-    public void setIncludes(List includes)
+    public void setIncludes(List<String> includes)
     {
         this.includes = includes;
     }
@@ -59,7 +58,7 @@ abstract class AbstractConfig
      * @return the list of method names to exclude
      * @see org.directwebremoting.extend.AccessControl#addExcludeRule(String, String)
      */
-    public List getExcludes()
+    public List<String> getExcludes()
     {
         return excludes;
     }
@@ -69,7 +68,7 @@ abstract class AbstractConfig
      * @param excludes the list of method names to exclude
      * @see org.directwebremoting.extend.AccessControl#addExcludeRule(String, String)
      */
-    public void setExcludes(List excludes)
+    public void setExcludes(List<String> excludes)
     {
         this.excludes = excludes;
     }
@@ -100,7 +99,7 @@ abstract class AbstractConfig
      * creator directly.
      * @return Returns the params.
      */
-    public Map getParams()
+    public Map<String, String> getParams()
     {
         return params;
     }
@@ -111,7 +110,7 @@ abstract class AbstractConfig
      * creator directly.
      * @param params The params to set.
      */
-    public void setParams(Map params)
+    public void setParams(Map<String, String> params)
     {
         this.params = params;
     }
@@ -119,15 +118,15 @@ abstract class AbstractConfig
     /**
      * The list of method names to include for this creator.
      */
-    private List includes = new ArrayList();
+    private List<String> includes = new ArrayList<String>();
 
     /**
      * The list of method names to exclude for this creator.
      */
-    private List excludes = new ArrayList();
+    private List<String> excludes = new ArrayList<String>();
 
     /**
      * The set of key/value pairs to provide further configuration
      */
-    private Map params = new HashMap();
+    private Map<String, String> params = new HashMap<String, String>();
 }

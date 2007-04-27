@@ -34,7 +34,7 @@ public interface ServerContext
      * @param url The URL including 'http://', up to (but not including) '?' or '#'
      * @return A collection of all the ScriptSessions.
      */
-    Collection getScriptSessionsByPage(String url);
+    Collection<ScriptSession> getScriptSessionsByPage(String url);
 
     /**
      * Get a list of all the ScriptSessions known to this server at the given
@@ -45,7 +45,7 @@ public interface ServerContext
      * something non null.
      * @return A collection of all the ScriptSessions.
      */
-    Collection getAllScriptSessions();
+    Collection<ScriptSession> getAllScriptSessions();
 
     /**
      * Accessor for the servlet config.

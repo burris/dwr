@@ -196,7 +196,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
             // used here.
             scriptModified = scriptFile.lastModified();
             in = new RandomAccessFile(scriptFile, "r");
-            byte bytes[] = new byte[(int) in.length()];
+            byte[] bytes = new byte[(int) in.length()];
             in.readFully(bytes);
             cachedScript = new String(bytes);
 
@@ -250,7 +250,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     /* (non-Javadoc)
      * @see org.directwebremoting.Creator#getType()
      */
-    public Class getType()
+    public Class<?> getType()
     {
         if (clazz == null || (reloadable && scriptUpdated()))
         {
@@ -309,7 +309,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     /**
      * The cached type of object that we are creating.
      */
-    private Class clazz = null;
+    private Class<?> clazz = null;
 
     /**
      * The language that we are scripting in. Passed to BSF.

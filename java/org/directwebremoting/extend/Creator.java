@@ -29,14 +29,14 @@ public interface Creator
      * @param params The map of paramters to configure the creator
      * @throws IllegalArgumentException If the config data in the Element is invalid
      */
-    void setProperties(Map params) throws IllegalArgumentException;
+    void setProperties(Map<String, String> params) throws IllegalArgumentException;
 
     /**
      * Accessor for the <code>java.lang.Class</code> that this Creator
      * allows access to.
      * @return The type of this allowed class
      */
-    Class getType();
+    Class<?> getType();
 
     /**
      * Accessor for the/an instance of this Creator.

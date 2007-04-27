@@ -52,7 +52,7 @@ public final class LogErrorHandler implements ErrorHandler
      * @param ex The exception to create a message from
      * @return A summary of what went wrong.
      */
-    private String getMessage(SAXParseException ex)
+    private static String getMessage(SAXParseException ex)
     {
         if (ex.getSystemId() != null)
         {

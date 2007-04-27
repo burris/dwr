@@ -33,6 +33,7 @@ import org.directwebremoting.ScriptSession;
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @deprecated Use org.directwebremoting.WebContextFactory
  */
+@Deprecated
 public class WebContextFactory
 {
     /**
@@ -41,6 +42,7 @@ public class WebContextFactory
      * started by DWR.
      * @deprecated Use org.directwebremoting.WebContextFactory.get()
      */
+    @Deprecated
     public static WebContext get()
     {
         org.directwebremoting.WebContext wctx = org.directwebremoting.WebContextFactory.get();
@@ -73,7 +75,7 @@ public class WebContextFactory
         /* (non-Javadoc)
          * @see org.directwebremoting.WebContext#getAllScriptSessions()
          */
-        public Collection getAllScriptSessions()
+        public Collection<ScriptSession> getAllScriptSessions()
         {
             return proxy.getAllScriptSessions();
         }
@@ -121,7 +123,7 @@ public class WebContextFactory
         /* (non-Javadoc)
          * @see org.directwebremoting.WebContext#getScriptSessionsByPage(java.lang.String)
          */
-        public Collection getScriptSessionsByPage(String url)
+        public Collection<ScriptSession> getScriptSessionsByPage(String url)
         {
             return proxy.getScriptSessionsByPage(url);
         }

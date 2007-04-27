@@ -48,7 +48,7 @@ public class PlainProperty implements Property
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.Property#getPropertyType()
      */
-    public Class getPropertyType()
+    public Class<?> getPropertyType()
     {
         return value.getClass();
     }
@@ -80,12 +80,12 @@ public class PlainProperty implements Property
     /**
      * The name of this property
      */
-    private String name;
+    private final String name;
 
     /**
      * The property value irrespective of the object that we read it on
      */
-    private Object value;
+    private final Object value;
 
     /**
      * The log stream

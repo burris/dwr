@@ -28,6 +28,7 @@ import net.sf.hibernate.Hibernate;
 import org.directwebremoting.convert.BeanConverter;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.Property;
 
 /**
  * BeanConverter that works with Hibernate to get BeanInfo.
@@ -38,15 +39,16 @@ public class H2BeanConverter extends BeanConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.NamedConverter#getPropertyMapFromObject(java.lang.Object, boolean, boolean)
      */
-    public Map getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException
+    @Override
+    public Map<String, Property> getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException
     {
-        Class clazz = Hibernate.getClass(example);
+        Class<?> clazz = Hibernate.getClass(example);
         try
         {
             BeanInfo info = Introspector.getBeanInfo(clazz);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
 
-            Map properties = new HashMap();
+            Map<String, Property> properties = new HashMap<String, Property>();
             for (int i = 0; i < descriptors.length; i++)
             {
                 PropertyDescriptor descriptor = descriptors[i];
@@ -97,7 +99,7 @@ public class H2BeanConverter extends BeanConverter implements Converter
     {
         String key = data.getClass().getName() + ":" + property;
 
-        Method method = (Method) methods.get(key);
+        Method method = methods.get(key);
         if (method == null)
         {
             PropertyDescriptor[] props = Introspector.getBeanInfo(data.getClass()).getPropertyDescriptors();
@@ -118,5 +120,5 @@ public class H2BeanConverter extends BeanConverter implements Converter
     /**
      * The cache of method lookups that we've already done
      */
-    protected static final Map methods = new HashMap();
+    protected static final Map<String, Method> methods = new HashMap<String, Method>();
 }

@@ -29,7 +29,7 @@ import org.directwebremoting.util.LocalUtil;
  * This interface allows this to happen.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public abstract class ScriptConduit implements Comparable
+public abstract class ScriptConduit implements Comparable<ScriptConduit>
 {
     /**
      * All ScriptConduit need a rank
@@ -93,10 +93,8 @@ public abstract class ScriptConduit implements Comparable
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj)
+    public int compareTo(ScriptConduit that)
     {
-        ScriptConduit that = (ScriptConduit) obj;
-
         int rankdiff = this.getRank() - that.getRank();
         if (rankdiff != 0)
         {
@@ -109,6 +107,7 @@ public abstract class ScriptConduit implements Comparable
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         if (classname == null)
@@ -140,7 +139,8 @@ public abstract class ScriptConduit implements Comparable
      */
     private static synchronized long getNextId()
     {
-        return nextId++;
+        nextId++;
+        return nextId;
     }
 
     /**

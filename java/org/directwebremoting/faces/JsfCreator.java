@@ -37,7 +37,7 @@ public class JsfCreator extends AbstractCreator implements Creator
     /* (non-Javadoc)
      * @see org.directwebremoting.Creator#getType()
      */
-    public Class getType()
+    public Class<?> getType()
     {
         if (instanceType == null)
         {
@@ -145,7 +145,7 @@ public class JsfCreator extends AbstractCreator implements Creator
     /**
      * The cached type of bean that we are creating
      */
-    private Class instanceType;
+    private Class<?> instanceType;
 
     /**
      * The log stream

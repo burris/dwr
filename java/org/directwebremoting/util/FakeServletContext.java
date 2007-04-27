@@ -24,12 +24,12 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
 
 /**
  * Fake implementation of the ServletContext interface.
@@ -114,7 +114,7 @@ public class FakeServletContext implements ServletContext
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#getResourcePaths(java.lang.String)
      */
-    public Set getResourcePaths(String path)
+    public Set<String> getResourcePaths(String path)
     {
         throw new UnsupportedOperationException();
     }
@@ -166,7 +166,7 @@ public class FakeServletContext implements ServletContext
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#getServlets()
      */
-    public Enumeration getServlets()
+    public Enumeration<HttpServlet> getServlets()
     {
         throw new UnsupportedOperationException("getServlets");
     }
@@ -174,7 +174,7 @@ public class FakeServletContext implements ServletContext
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#getServletNames()
      */
-    public Enumeration getServletNames()
+    public Enumeration<String> getServletNames()
     {
         throw new UnsupportedOperationException("getServletNames");
     }
@@ -224,7 +224,7 @@ public class FakeServletContext implements ServletContext
      */
     public String getInitParameter(String name)
     {
-        return initParameters.getProperty(name);
+        return initParameters.get(name);
     }
 
     /**
@@ -234,15 +234,15 @@ public class FakeServletContext implements ServletContext
      */
     public void addInitParameter(String name, String value)
     {
-        initParameters.setProperty(name, value);
+        initParameters.put(name, value);
     }
 
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#getInitParameterNames()
      */
-    public Enumeration getInitParameterNames()
+    public Enumeration<String> getInitParameterNames()
     {
-        return initParameters.keys();
+        return Collections.enumeration(initParameters.keySet());
     }
 
     /* (non-Javadoc)
@@ -256,7 +256,7 @@ public class FakeServletContext implements ServletContext
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#getAttributeNames()
      */
-    public Enumeration getAttributeNames()
+    public Enumeration<String> getAttributeNames()
     {
         return Collections.enumeration(attributes.keySet());
     }
@@ -324,12 +324,12 @@ public class FakeServletContext implements ServletContext
     /**
      * The init parameters to this servlet
      */
-    private final Properties initParameters = new Properties();
+    private final Map<String, String> initParameters = new HashMap<String, String>();
 
     /**
      * The servlet level attributes
      */
-    private final Map attributes = new HashMap();
+    private final Map<String, Object> attributes = new HashMap<String, Object>();
 
     /**
      * The servlet context name

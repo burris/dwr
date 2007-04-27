@@ -36,7 +36,6 @@ public class Engine extends ScriptProxy
      */
     public Engine()
     {
-        super();
     }
 
     /**
@@ -52,7 +51,7 @@ public class Engine extends ScriptProxy
      * Http thread constructor that alters a number of browsers
      * @param scriptSessions A collection of ScriptSessions that we should act on.
      */
-    public Engine(Collection scriptSessions)
+    public Engine(Collection<ScriptSession> scriptSessions)
     {
         super(scriptSessions);
     }

@@ -49,7 +49,7 @@ public class Replies
      */
     public Reply getReply(int index)
     {
-        return (Reply) replies.get(index);
+        return replies.get(index);
     }
 
     /**
@@ -82,5 +82,5 @@ public class Replies
     /**
      * The collection of Replies that we should execute
      */
-    private List replies = new ArrayList();
+    private List<Reply> replies = new ArrayList<Reply>();
 }

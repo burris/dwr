@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.LocalUtil;
@@ -31,7 +32,7 @@ public class Ejb3Creator extends AbstractCreator implements Creator
 
     /**
      * Set the name of the bean for the JNDI lookup
-     * @param bean
+     * @param bean The JNDI name to lookup
      */
     public void setBean(String bean)
     {
@@ -61,7 +62,7 @@ public class Ejb3Creator extends AbstractCreator implements Creator
     /* (non-Javadoc)
      * @see org.directwebremoting.Creator#getType()
      */
-    public Class getType()
+    public Class<?> getType()
     {
         try
         {
@@ -80,11 +81,13 @@ public class Ejb3Creator extends AbstractCreator implements Creator
     {
         String type = remote ? "remote" : "local";
 
+        Context jndi = null;
+
         try
         {
             Properties props = new Properties();
             props.load(getClass().getResourceAsStream("/jndi.properties"));
-            Context jndi = new InitialContext(props);
+            jndi = new InitialContext(props);
 
             return jndi.lookup(bean + beanNamePostfix + "/" + type);
         }
@@ -92,12 +95,26 @@ public class Ejb3Creator extends AbstractCreator implements Creator
         {
             throw new InstantiationException(bean + "/" + type + " not bound:" + ex.getMessage());
         }
+        finally
+        {
+            if (jndi != null)
+            {
+                try
+                {
+                    jndi.close();
+                }
+                catch (NamingException ex)
+                {
+                    // Ignore
+                }
+            }
+        }
     }
 
     /**
      * Constant for local/remote lookup
      */
-    private final static String LOCAL = "local";
+    private static final String LOCAL = "local";
 
     /**
      * Are we using a remote interface? Default == true

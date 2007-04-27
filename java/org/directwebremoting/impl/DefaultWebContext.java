@@ -31,7 +31,6 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.SwallowingHttpServletResponse;
-import org.directwebremoting.util.VersionUtil;
 
 /**
  * A default implementation of WebContext
@@ -135,14 +134,6 @@ public class DefaultWebContext extends DefaultServerContext implements WebContex
         getServletContext().getRequestDispatcher(url).forward(realRequest, fakeResponse);
 
         return buffer.toString();
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.WebContext#getVersion()
-     */
-    public String getVersion()
-    {
-        return VersionUtil.getVersion();
     }
 
     /**

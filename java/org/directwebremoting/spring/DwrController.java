@@ -18,6 +18,7 @@ package org.directwebremoting.spring;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
+import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.impl.ContainerMap;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.StartupUtil;
@@ -129,7 +131,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      * The configurators are used to set up DWR correctly.
      * @param configurators the configurators to apply to this controller
      */
-    public void setConfigurators(List configurators)
+    public void setConfigurators(List<Configurator> configurators)
     {
         this.configurators = configurators;
     }
@@ -156,7 +158,8 @@ public class DwrController extends AbstractController implements BeanNameAware, 
     {
         ServletContext servletContext = getServletContext();
 
-        if (logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled())
+        {
             logger.debug("afterPropertiesSet() called with servletContext '" + servletContext + "'");  
         }
         
@@ -171,7 +174,17 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         // <bean name="pollAndCometEnabled" class="java.lang.String">
         //     <constructor-arg index="0"><value>true</value></constructor-arg>
         // </bean>
-        configParams.putAll(new ContainerMap(container, true));
+        // TODO: Decide if we want to get rid of this
+        ContainerMap containerMap = new ContainerMap(container, true);
+        for (Entry<String, Object> entry : containerMap.entrySet())
+        {
+            Object value = entry.getValue();
+            if (value instanceof String)
+            {
+                configParams.put(entry.getKey(), (String) value);
+            }
+        }
+
         servletConfig = new FakeServletConfig(name, servletContext, configParams);
         
         try
@@ -223,6 +236,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      * @throws Exception in case handling of the request fails unexpectedly
      * @see org.directwebremoting.WebContext
      */
+    @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception
     {
         try
@@ -257,7 +271,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      * <a href="http://getahead.org/dwr/server/servlet">http://getahead.org/dwr/server/servlet</a>
      * @param configParams the configParams to set
      */
-    public void setConfigParams(Map configParams)
+    public void setConfigParams(Map<String, String> configParams)
     {
         Assert.notNull(configParams, "configParams cannot be null");
         this.configParams = configParams;
@@ -299,13 +313,13 @@ public class DwrController extends AbstractController implements BeanNameAware, 
     /**
      * What Configurators exist for us to configure ourselves.
      */
-    private List configurators;
+    private List<Configurator> configurators;
 
     /**
      * Additional parameters such as pollAndCometEnabled. For a full list see:
      * <a href="http://getahead.org/dwr/server/servlet">http://getahead.org/dwr/server/servlet</a>
      */
-    private Map configParams = new HashMap();
+    private Map<String, String> configParams = new HashMap<String, String>();
     
     /**
      * The log stream

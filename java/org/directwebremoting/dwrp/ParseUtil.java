@@ -45,9 +45,9 @@ public class ParseUtil
      * @return The equivalent of HttpServletRequest.getParameterMap() for now
      * @throws ServerException If reading from the request body stream fails
      */
-    public static Map parsePost(HttpServletRequest req) throws ServerException
+    public static Map<String, String> parsePost(HttpServletRequest req) throws ServerException
     {
-        Map paramMap = new HashMap();
+        Map<String, String> paramMap = new HashMap<String, String>();
 
         BufferedReader in = null;
         try
@@ -122,15 +122,15 @@ public class ParseUtil
             log.debug("Using Broken Safari POST mode");
 
             // Iterators insist that we call hasNext() before we start
-            Iterator it = paramMap.keySet().iterator();
+            Iterator<String> it = paramMap.keySet().iterator();
             if (!it.hasNext())
             {
                 throw new IllegalStateException("No entries in non empty map!");
             }
 
             // So get the first
-            String key = (String) it.next();
-            String value = (String) paramMap.get(key);
+            String key = it.next();
+            String value = paramMap.get(key);
             String line = key + ProtocolConstants.INBOUND_DECL_SEPARATOR + value;
 
             StringTokenizer st = new StringTokenizer(line, "\n");
@@ -151,7 +151,7 @@ public class ParseUtil
      * @param line The line to parse
      * @param paramMap The map to add parsed parameters to
      */
-    private static void parsePostLine(String line, Map paramMap)
+    private static void parsePostLine(String line, Map<String, String> paramMap)
     {
         if (line.length() == 0)
         {
@@ -181,16 +181,17 @@ public class ParseUtil
      * @return Simply HttpRequest.getParameterMap() for now
      * @throws ServerException If the parsing fails
      */
-    public static Map parseGet(HttpServletRequest req) throws ServerException
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> parseGet(HttpServletRequest req) throws ServerException
     {
-        Map convertedMap = new HashMap();
-        Map paramMap = req.getParameterMap();
+        Map<String, String> convertedMap = new HashMap<String, String>();
+        Map<String, String[]> paramMap = req.getParameterMap();
 
-        for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+        for (Iterator<Map.Entry<String, String[]>> it = paramMap.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            String key = (String) entry.getKey();
-            String[] array = (String[]) entry.getValue();
+            Map.Entry<String, String[]> entry = it.next();
+            String key = entry.getKey();
+            String[] array = entry.getValue();
 
             if (array.length == 1)
             {

@@ -10,7 +10,7 @@ import org.directwebremoting.util.Logger;
 public class NotifyWaitController implements WaitController
 {
     /**
-     * @param lock
+     * @param lock The object to notify on shutdown
      */
     public NotifyWaitController(Object lock)
     {
@@ -49,7 +49,7 @@ public class NotifyWaitController implements WaitController
      * The object that is being {@link Object#wait(long)} on so we can
      * move it on with {@link Object#notifyAll()}.
      */
-    private Object lock;
+    private final Object lock;
 
     /**
      * The log stream

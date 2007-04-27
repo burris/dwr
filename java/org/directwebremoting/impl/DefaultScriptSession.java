@@ -100,12 +100,12 @@ public class DefaultScriptSession implements RealScriptSession
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSession#getAttributeNames()
      */
-    public Iterator getAttributeNames()
+    public Iterator<String> getAttributeNames()
     {
         checkNotInvalidated();
         synchronized (attributes)
         {
-            Set keys = Collections.unmodifiableSet(attributes.keySet());
+            Set<String> keys = Collections.unmodifiableSet(attributes.keySet());
             return keys.iterator();
         }
     }
@@ -184,7 +184,7 @@ public class DefaultScriptSession implements RealScriptSession
         // First we try to add the script to an existing conduit
         synchronized (scriptLock)
         {
-            if (conduits.size() == 0)
+            if (conduits.isEmpty())
             {
                 // There are no conduits, just store it until there are
                 scripts.add(script);
@@ -194,9 +194,9 @@ public class DefaultScriptSession implements RealScriptSession
             {
                 // Try all the conduits, starting with the first
                 boolean written = false;
-                for (Iterator it = conduits.iterator(); !written && it.hasNext();)
+                for (Iterator<ScriptConduit> it = conduits.iterator(); !written && it.hasNext();)
                 {
-                    ScriptConduit conduit = (ScriptConduit) it.next();
+                    ScriptConduit conduit = it.next();
                     try
                     {
                         written = conduit.addScript(script);
@@ -243,9 +243,9 @@ public class DefaultScriptSession implements RealScriptSession
 
         synchronized (scriptLock)
         {
-            for (Iterator it = scripts.iterator(); it.hasNext();)
+            for (Iterator<ScriptBuffer> it = scripts.iterator(); it.hasNext();)
             {
-                ScriptBuffer script = (ScriptBuffer) it.next();
+                ScriptBuffer script = it.next();
 
                 try
                 {
@@ -312,9 +312,12 @@ public class DefaultScriptSession implements RealScriptSession
      */
     protected void updateLastAccessedTime()
     {
+        // It's a bad idea to call native methods with locks held
+        long temp = System.currentTimeMillis();
+
         synchronized (invalidLock)
         {
-            lastAccessedTime = System.currentTimeMillis();
+            lastAccessedTime = temp;
         }
     }
 
@@ -325,9 +328,11 @@ public class DefaultScriptSession implements RealScriptSession
      */
     protected void checkNotInvalidated()
     {
+        // It's a bad idea to call native methods with locks held
+        long now = System.currentTimeMillis();
+
         synchronized (invalidLock)
         {
-            long now = System.currentTimeMillis();
             long age = now - lastAccessedTime;
             if (age > manager.getScriptSessionTimeout())
             {
@@ -349,10 +354,9 @@ public class DefaultScriptSession implements RealScriptSession
         if (log.isDebugEnabled())
         {
             log.debug("Known ScriptConduits:");
-            for (Iterator it = conduits.iterator(); it.hasNext();)
+            for (ScriptConduit scriptConduit : conduits)
             {
-                ScriptConduit c = (ScriptConduit) it.next();
-                log.debug("- " + c);
+                log.debug("- " + scriptConduit);
             }
         }
     }
@@ -360,6 +364,7 @@ public class DefaultScriptSession implements RealScriptSession
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode()
     {
         return 572 + id.hashCode();
@@ -368,6 +373,7 @@ public class DefaultScriptSession implements RealScriptSession
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj)
     {
         if (obj == null)
@@ -387,17 +393,14 @@ public class DefaultScriptSession implements RealScriptSession
 
         DefaultScriptSession that = (DefaultScriptSession) obj;
 
-        if (!this.id.equals(that.id))
-        {
-            return false;
-        }
+        return this.id.equals(that.id);
 
-        return true;
     }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return "DefaultScriptSession[id=" + id + "]";
@@ -407,19 +410,19 @@ public class DefaultScriptSession implements RealScriptSession
      * The server side attributes for this page.
      * <p>GuardedBy("attributes")
      */
-    protected final Map attributes = Collections.synchronizedMap(new HashMap());
+    protected final Map<String, Object> attributes = Collections.synchronizedMap(new HashMap<String, Object>());
 
     /**
      * When the the web page that we represent last contact us using DWR?
      * <p>GuardedBy("invalidLock")
      */
-    protected long lastAccessedTime = 0L;
+    private long lastAccessedTime = 0L;
 
     /**
      * Have we been made invalid?
      * <p>GuardedBy("invalidLock")
      */
-    protected boolean invalidated = false;
+    private boolean invalidated = false;
 
     /**
      * The object that we use to synchronize against when we want to work with
@@ -431,13 +434,13 @@ public class DefaultScriptSession implements RealScriptSession
      * The script conduits that we can use to transfer data to the browser.
      * <p>GuardedBy("scriptLock")
      */
-    protected final SortedSet conduits = new TreeSet();
+    protected final SortedSet<ScriptConduit> conduits = new TreeSet<ScriptConduit>();
 
     /**
      * The list of waiting scripts.
      * <p>GuardedBy("scriptLock")
      */
-    protected final List scripts = new ArrayList();
+    protected final List<ScriptBuffer> scripts = new ArrayList<ScriptBuffer>();
 
     /**
      * The object that we use to synchronize against when we want to alter

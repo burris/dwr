@@ -89,12 +89,12 @@ public abstract class BaseCallMarshaller implements Marshaller
         if (log.isDebugEnabled() && calls.getCallCount() > 0)
         {
             // We can just use 0 because they are all shared
-            InboundContext inctx = (InboundContext) batch.getInboundContexts().get(0);
+            InboundContext inctx = batch.getInboundContexts().get(0);
             StringBuffer buffer = new StringBuffer();
 
-            for (Iterator it = inctx.getInboundVariableNames(); it.hasNext();)
+            for (Iterator<String> it = inctx.getInboundVariableNames(); it.hasNext();)
             {
-                String key = (String) it.next();
+                String key = it.next();
                 InboundVariable value = inctx.getInboundVariable(key);
                 if (key.startsWith(ProtocolConstants.INBOUND_CALLNUM_PREFIX) &&
                     key.indexOf(ProtocolConstants.INBOUND_CALLNUM_SUFFIX + ProtocolConstants.INBOUND_KEY_ENV) != -1)
@@ -116,7 +116,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         for (int callNum = 0; callNum < calls.getCallCount(); callNum++)
         {
             Call call = calls.getCall(callNum);
-            InboundContext inctx = (InboundContext) batch.getInboundContexts().get(callNum);
+            InboundContext inctx = batch.getInboundContexts().get(callNum);
 
             // Get a list of the available matching methods with the coerced
             // parameters that we will use to call it if we choose to use
@@ -149,7 +149,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             {
                 try
                 {
-                    Class paramType = method.getParameterTypes()[j];
+                    Class<?> paramType = method.getParameterTypes()[j];
                     InboundVariable param = inctx.getParameter(callNum, j);
                     TypeHintContext incc = new TypeHintContext(converterManager, method, j);
                     params[j] = converterManager.convertInbound(paramType, param, inctx, incc);
@@ -184,14 +184,14 @@ public abstract class BaseCallMarshaller implements Marshaller
         webContext.setCurrentPageInformation(normalizedPage, batch.getScriptSessionId());
 
         // Remaining parameters get put into the request for later consumption
-        Map paramMap = batch.getSpareParameters();
-        if (paramMap.size() != 0)
+        Map<String, String> paramMap = batch.getSpareParameters();
+        if (!paramMap.isEmpty())
         {
-            for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+            for (Iterator<Map.Entry<String, String>> it = paramMap.entrySet().iterator(); it.hasNext();)
             {
-                Map.Entry entry = (Map.Entry) it.next();
-                String key = (String) entry.getKey();
-                String value = (String) entry.getValue();
+                Map.Entry<String, String> entry = it.next();
+                String key = entry.getKey();
+                String value = entry.getValue();
 
                 request.setAttribute(key, value);
                 log.debug("Moved param to request: " + key + "=" + value);
@@ -219,7 +219,7 @@ public abstract class BaseCallMarshaller implements Marshaller
 
         Creator creator = creatorManager.getCreator(call.getScriptName());
         Method[] methods = creator.getType().getMethods();
-        List available = new ArrayList();
+        List<Method> available = new ArrayList<Method>();
 
         methods:
         for (int i = 0; i < methods.length; i++)
@@ -237,7 +237,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                     // Check parameter types
                     for (int j = 0; j < methods[i].getParameterTypes().length; j++)
                     {
-                        Class paramType = methods[i].getParameterTypes()[j];
+                        Class<?> paramType = methods[i].getParameterTypes()[j];
                         if (!converterManager.isConvertable(paramType))
                         {
                             // Give up with this method and try the next
@@ -263,7 +263,7 @@ public abstract class BaseCallMarshaller implements Marshaller
 
         // At the moment we are just going to take the first match, for a
         // later increment we might pick the best implementation
-        return (Method) available.get(0);
+        return available.get(0);
     }
 
     /* (non-Javadoc)
@@ -413,7 +413,7 @@ public abstract class BaseCallMarshaller implements Marshaller
     /* (non-Javadoc)
      * @see org.directwebremoting.Marshaller#isConvertable(java.lang.Class)
      */
-    public boolean isConvertable(Class paramType)
+    public boolean isConvertable(Class<?> paramType)
     {
         return converterManager.isConvertable(paramType);
     }
@@ -507,6 +507,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         /* (non-Javadoc)
          * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
          */
+        @Override
         public boolean addScript(ScriptBuffer script) throws IOException, MarshallException
         {
             sendScript(out, ScriptBufferUtil.createOutput(script, converterManager));

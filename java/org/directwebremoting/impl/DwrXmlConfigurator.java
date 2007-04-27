@@ -246,7 +246,7 @@ public class DwrXmlConfigurator implements Configurator
 
         try
         {
-            Map params = createSettingMap(allower);
+            Map<String, String> params = createSettingMap(allower);
             converterManager.addConverter(match, type, params);
         }
         catch (NoClassDefFoundError ex)
@@ -270,7 +270,7 @@ public class DwrXmlConfigurator implements Configurator
 
         try
         {
-            Map params = createSettingMap(allower);
+            Map<String, String> params = createSettingMap(allower);
             creatorManager.addCreator(javascript, type, params);
 
             processPermissions(javascript, allower);
@@ -298,7 +298,7 @@ public class DwrXmlConfigurator implements Configurator
 
         try
         {
-            Class impl = LocalUtil.classForName(type);
+            Class<?> impl = LocalUtil.classForName(type);
             AjaxFilter object = (AjaxFilter) impl.newInstance();
 
             LocalUtil.setParams(object, createSettingMap(allower), ignore);
@@ -325,9 +325,9 @@ public class DwrXmlConfigurator implements Configurator
      * @param parent The parent element
      * @return A map of parameters
      */
-    private static Map createSettingMap(Element parent)
+    private static Map<String, String> createSettingMap(Element parent)
     {
-        Map params = new HashMap();
+        Map<String, String> params = new HashMap<String, String>();
 
         // Go through the attributes in the allower element, adding to the param map
         NamedNodeMap attrs = parent.getAttributes();
@@ -436,7 +436,7 @@ public class DwrXmlConfigurator implements Configurator
             Element include = (Element) nodes.item(i);
 
             String type = include.getAttribute(ATTRIBUTE_CLASS);
-            AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(javascript, type, AjaxFilter.class);
+            AjaxFilter filter = LocalUtil.classNewInstance(javascript, type, AjaxFilter.class);
             if (filter != null)
             {
                 LocalUtil.setParams(filter, createSettingMap(include), ignore);
@@ -492,7 +492,7 @@ public class DwrXmlConfigurator implements Configurator
 
             // Try to find the method that we are annotating
             Creator creator = creatorManager.getCreator(javascript);
-            Class dest = creator.getType();
+            Class<?> dest = creator.getType();
 
             Method method = null;
             Method[] methods = dest.getMethods();
@@ -528,8 +528,9 @@ public class DwrXmlConfigurator implements Configurator
             while (st.hasMoreTokens())
             {
                 String type = st.nextToken();
-                Class clazz = LocalUtil.classForName(type.trim());
-                TypeHintContext thc = new TypeHintContext(converterManager, method, paramNo).createChildContext(j++);
+                Class<?> clazz = LocalUtil.classForName(type.trim());
+                TypeHintContext thc = new TypeHintContext(converterManager, method, paramNo).createChildContext(j);
+                j++;
                 converterManager.setExtraTypeInfo(thc, clazz);
             }
         }
@@ -538,6 +539,7 @@ public class DwrXmlConfigurator implements Configurator
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         if (servletResourceName != null)
@@ -558,7 +560,7 @@ public class DwrXmlConfigurator implements Configurator
     /**
      * The properties that we don't warn about if they don't exist.
      */
-    private static List ignore = Arrays.asList(new String[] { "class", });
+    private static List<String> ignore = Arrays.asList("class");
 
     /**
      * The log stream

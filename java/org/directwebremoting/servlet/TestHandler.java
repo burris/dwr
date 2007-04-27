@@ -50,7 +50,7 @@ public class TestHandler implements Handler
 
     /**
      * Setter for the debug page generator
-     * @param debugPageGenerator
+     * @param debugPageGenerator The new debug page generator
      */
     public void setDebugPageGenerator(DebugPageGenerator debugPageGenerator)
     {

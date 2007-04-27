@@ -33,10 +33,10 @@ public abstract class AbstractContainer implements Container
      */
     protected void callInitializingBeans()
     {
-        Collection beanNames = getBeanNames();
-        for (Iterator it = beanNames.iterator(); it.hasNext();)
+        Collection<String> beanNames = getBeanNames();
+        for (Iterator<String> it = beanNames.iterator(); it.hasNext();)
         {
-            String name = (String) it.next();
+            String name = it.next();
             Object bean = getBean(name);
 
             if (bean instanceof InitializingBean)

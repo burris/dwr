@@ -55,7 +55,7 @@ public class WebContextFactory
     /**
      * The WebContextBuilder from which we will get WebContext objects
      */
-    private static WebContextBuilder builder;
+    private static WebContextBuilder builder = null;
 
     /**
      * Class to enable us to access servlet parameters.

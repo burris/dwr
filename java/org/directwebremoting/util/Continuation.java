@@ -32,7 +32,7 @@ public class Continuation
      */
     public Continuation(HttpServletRequest request)
     {
-        this.proxy = request.getAttribute(ATTRIBUTE_JETTY_CONTINUATION);
+        proxy = request.getAttribute(ATTRIBUTE_JETTY_CONTINUATION);
     }
 
     /**
@@ -54,7 +54,7 @@ public class Continuation
     {
         try
         {
-            suspendMethod.invoke(proxy, new Object[] { new Long(sleepTime) });
+            suspendMethod.invoke(proxy, sleepTime);
         }
         catch (InvocationTargetException ex)
         {
@@ -72,7 +72,7 @@ public class Continuation
     {
         try
         {
-            resumeMethod.invoke(proxy, new Object[0]);
+            resumeMethod.invoke(proxy);
         }
         catch (InvocationTargetException ex)
         {
@@ -89,7 +89,7 @@ public class Continuation
     {
         try
         {
-            return getObject.invoke(proxy, new Object[0]);
+            return getObject.invoke(proxy);
         }
         catch (InvocationTargetException ex)
         {
@@ -106,7 +106,7 @@ public class Continuation
     {
         try
         {
-            setObject.invoke(proxy, new Object[] { object });
+            setObject.invoke(proxy, object);
         }
         catch (InvocationTargetException ex)
         {
@@ -132,15 +132,6 @@ public class Continuation
         {
             throw (RuntimeException) ex;
         }
-    }
-
-    /**
-     * Did we find any of the 
-     * @return
-     */
-    public static boolean isJetty()
-    {
-        return isJetty;
     }
 
     /**
@@ -184,27 +175,27 @@ public class Continuation
     /**
      * Jetty code used by reflection to allow it to run outside of Jetty
      */
-    protected static Class continuationClass;
+    protected static Class<?> continuationClass = null;
 
     /**
      * How we suspend the continuation
      */
-    protected static Method suspendMethod;
+    protected static Method suspendMethod = null;
 
     /**
      * How we resume the continuation
      */
-    protected static Method resumeMethod;
+    protected static Method resumeMethod = null;
 
     /**
      * How we get the associated continuation object
      */
-    protected static Method getObject;
+    protected static Method getObject = null;
 
     /**
      * How we set the associated continuation object
      */
-    protected static Method setObject;
+    protected static Method setObject = null;
 
     /**
      * Are we using Jetty at all?
@@ -219,10 +210,10 @@ public class Continuation
         try
         {
             continuationClass = LocalUtil.classForName("org.mortbay.util.ajax.Continuation");
-            suspendMethod = continuationClass.getMethod("suspend", new Class[] { Long.TYPE });
-            resumeMethod = continuationClass.getMethod("resume", new Class[] {});
-            getObject = continuationClass.getMethod("getObject", new Class[] {});
-            setObject = continuationClass.getMethod("setObject", new Class[] { Object.class });
+            suspendMethod = continuationClass.getMethod("suspend", Long.TYPE);
+            resumeMethod = continuationClass.getMethod("resume");
+            getObject = continuationClass.getMethod("getObject");
+            setObject = continuationClass.getMethod("setObject", Object.class);
             isJetty = true;
         }
         catch (Exception ex)

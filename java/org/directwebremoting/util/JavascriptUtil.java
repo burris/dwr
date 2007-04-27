@@ -785,7 +785,7 @@ public class JavascriptUtil
         */
     };
 
-    private static SortedSet reserved = new TreeSet();
+    private static SortedSet<String> reserved = new TreeSet<String>();
 
     /**
      * For easy access ...

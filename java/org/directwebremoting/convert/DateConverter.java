@@ -39,9 +39,9 @@ public class DateConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
+    public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        String value = iv.getValue();
+        String value = data.getValue();
 
         // If the text is null then the whole bean is null
         if (value.trim().equals(ProtocolConstants.INBOUND_NULL))

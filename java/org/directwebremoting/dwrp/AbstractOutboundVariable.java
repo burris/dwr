@@ -48,7 +48,7 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
     /**
      * @param children the dependent children of this variable
      */
-    protected void setChildren(Collection children)
+    protected void setChildren(Collection<OutboundVariable> children)
     {
         this.children = children;
     }
@@ -188,9 +188,9 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
         StringBuffer buffer = new StringBuffer();
 
         // Make sure the nested things are declared
-        for (Iterator it = children.iterator(); it.hasNext();)
+        for (Iterator<OutboundVariable> it = children.iterator(); it.hasNext();)
         {
-            OutboundVariable nested = (OutboundVariable) it.next();
+            OutboundVariable nested = it.next();
             buffer.append(nested.getBuildCode());
         }
 
@@ -211,9 +211,9 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
         StringBuffer buffer = new StringBuffer();
 
         // Make sure the nested things are declared
-        for (Iterator it = children.iterator(); it.hasNext();)
+        for (Iterator<OutboundVariable> it = children.iterator(); it.hasNext();)
         {
-            OutboundVariable nested = (OutboundVariable) it.next();
+            OutboundVariable nested = it.next();
             buffer.append(nested.getDeclareCode());
         }
 
@@ -346,5 +346,5 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
     /**
      * The OutboundVariables that we depend on
      */
-    private Collection children;
+    private Collection<OutboundVariable> children;
 }

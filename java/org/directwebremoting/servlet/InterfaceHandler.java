@@ -54,7 +54,7 @@ public class InterfaceHandler implements Handler
 
     /**
      * Setter for the remoter
-     * @param remoter
+     * @param remoter The new remoter
      */
     public void setRemoter(Remoter remoter)
     {

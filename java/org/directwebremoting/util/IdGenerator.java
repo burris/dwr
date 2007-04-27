@@ -41,7 +41,7 @@ public class IdGenerator
         long seed = System.currentTimeMillis();
 
         // Also throw in the system identifier for 'this' from toString
-        char[] entropy = this.toString().toCharArray();
+        char[] entropy = toString().toCharArray();
         for (int i = 0; i < entropy.length; i++)
         {
             long update = ((byte) entropy[i]) << ((i % 8) * 8);
@@ -58,7 +58,7 @@ public class IdGenerator
      */
     public synchronized String generateId(int length)
     {
-        byte buffer[] = new byte[16];
+        byte[] buffer = new byte[16];
 
         // Render the result as a String of hexadecimal digits
         StringBuffer reply = new StringBuffer();
@@ -151,7 +151,9 @@ public class IdGenerator
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
-    public String toString()
+    @SuppressWarnings({"EmptyMethod"})
+    @Override
+    public final String toString()
     {
         // This is to make the point that we need toString to return something
         // that includes some sort of system identifier as does the default.
@@ -170,18 +172,18 @@ public class IdGenerator
      * identifiers.  This must be an algorithm supported by the
      * <code>java.security.MessageDigest</code> class on your platform.
      */
-    protected String algorithm = DEFAULT_ALGORITHM;
+    private String algorithm = DEFAULT_ALGORITHM;
 
     /**
      * A random number generator to use when generating session identifiers.
      */
-    protected Random random = new SecureRandom();
+    private Random random = new SecureRandom();
 
     /**
      * Return the MessageDigest implementation to be used when creating session
      * identifiers.
      */
-    protected MessageDigest digest = null;
+    private MessageDigest digest = null;
 
     /**
      * The log stream

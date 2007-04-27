@@ -16,7 +16,6 @@
 package org.directwebremoting.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.directwebremoting.extend.ServerLoadMonitor;
@@ -61,10 +60,9 @@ public abstract class AbstractServerLoadMonitor implements ServerLoadMonitor
     {
         synchronized (waitControllers)
         {
-            for (int i = 0; i < count && waitControllers.size() > 0; i++)
+            for (int i = 0; i < count && !waitControllers.isEmpty(); i++)
             {
-                WaitController controller = (WaitController) waitControllers.get(0);
-                controller.shutdown();
+                waitControllers.get(0).shutdown();
             }
         }
     }
@@ -81,15 +79,14 @@ public abstract class AbstractServerLoadMonitor implements ServerLoadMonitor
 
         synchronized (waitControllers)
         {
-            List copy = new ArrayList();
+            List<WaitController> copy = new ArrayList<WaitController>();
             copy.addAll(waitControllers);
-    
-            for (Iterator it = copy.iterator(); it.hasNext();)
+
+            for (WaitController controller : copy)
             {
-                WaitController controller = (WaitController) it.next();
                 controller.shutdown();
             }
-    
+
             log.debug(" - shutdown on: " + this);
             shutdownCalled = true;
         }
@@ -103,7 +100,7 @@ public abstract class AbstractServerLoadMonitor implements ServerLoadMonitor
     /**
      * The known wait controllers
      */
-    protected List waitControllers = new ArrayList();
+    protected final List<WaitController> waitControllers = new ArrayList<WaitController>();
 
     /**
      * The log stream

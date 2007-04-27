@@ -51,7 +51,7 @@ public class Corporations
         Thread.sleep(timeToSleep);
 
         // Who's is gonna be
-        Corporation corporation = (Corporation) corporations.get(random.nextInt(corporations.size()));
+        Corporation corporation = corporations.get(random.nextInt(corporations.size()));
         corporation.change();
 
         return corporation;
@@ -65,5 +65,5 @@ public class Corporations
     /**
      * The corporations that we manage
      */
-    private List corporations = new ArrayList();
+    private List<Corporation> corporations = new ArrayList<Corporation>();
 }

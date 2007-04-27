@@ -39,33 +39,32 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
      */
     public void setForce(String force)
     {
-        this.force = Boolean.valueOf(force).booleanValue();
+        this.force = Boolean.valueOf(force);
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.NamedConverter#getPropertyMapFromObject(java.lang.Object, boolean, boolean)
      */
-    public Map getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException
+    public Map<String, Property> getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException
     {
-        Class clazz = example.getClass();
+        Class<?> clazz = example.getClass();
         return getPropertyMapFromClass(clazz, readRequired, writeRequired);
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.NamedConverter#getPropertyMap(java.lang.Class, boolean, boolean)
      */
-    public Map getPropertyMapFromClass(Class type, boolean readRequired, boolean writeRequired)
+    public Map<String, Property> getPropertyMapFromClass(Class<?> type, boolean readRequired, boolean writeRequired)
     {
-        Map allFields = new HashMap();
+        Map<String, Property> allFields = new HashMap<String, Property>();
 
         while (type != Object.class)
         {
             Field[] fields = type.getDeclaredFields();
 
             fieldLoop:
-            for (int i = 0; i < fields.length; i++)
+            for (Field field : fields)
             {
-                Field field = fields[i];
                 String name = field.getName();
 
                 // We don't marshall getClass()
@@ -104,6 +103,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.BasicObjectConverter#createTypeHintContext(org.directwebremoting.extend.InboundContext, org.directwebremoting.extend.Property)
      */
+    @Override
     protected TypeHintContext createTypeHintContext(InboundContext inctx, Property property)
     {
         return inctx.getCurrentTypeHintContext();

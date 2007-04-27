@@ -37,7 +37,7 @@ public class PlainCallHandler implements Handler
      */
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        Calls calls = null;
+        Calls calls;
 
         try
         {
@@ -55,16 +55,16 @@ public class PlainCallHandler implements Handler
 
     /**
      * Setter for the Plain Javascript Marshaller
-     * @param marshaller The new marshaller
+     * @param plainCallMarshaller The new marshaller
      */
-    public void setPlainCallMarshaller(PlainCallMarshaller marshaller)
+    public void setPlainCallMarshaller(PlainCallMarshaller plainCallMarshaller)
     {
-        this.plainCallMarshaller = marshaller;
+        this.plainCallMarshaller = plainCallMarshaller;
     }
 
     /**
      * Setter for the remoter
-     * @param remoter
+     * @param remoter The new remoter
      */
     public void setRemoter(Remoter remoter)
     {

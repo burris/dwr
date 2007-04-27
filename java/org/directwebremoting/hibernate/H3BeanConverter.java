@@ -27,6 +27,7 @@ import org.directwebremoting.convert.BeanConverter;
 import org.directwebremoting.convert.PlainProperty;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.Property;
 import org.directwebremoting.util.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.engine.SessionImplementor;
@@ -42,29 +43,29 @@ public class H3BeanConverter extends BeanConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.BeanConverter#getPropertyMapFromObject(java.lang.Object, boolean, boolean)
      */
-    public Map getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException
+    @Override
+    public Map<String, Property> getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException
     {
-        Class clazz = getClass(example);
+        Class<?> clazz = getClass(example);
 
         try
         {
             BeanInfo info = Introspector.getBeanInfo(clazz);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
 
-            Map properties = new HashMap();
-            for (int i = 0; i < descriptors.length; i++)
+            Map<String, Property> properties = new HashMap<String, Property>();
+            for (PropertyDescriptor descriptor : descriptors)
             {
-                PropertyDescriptor descriptor = descriptors[i];
                 String name = descriptor.getName();
 
                 // We don't marshall getClass()
-                if (name.equals("class"))
+                if ("class".equals(name))
                 {
                     continue;
                 }
 
                 // And this is something added by hibernate
-                if (name.equals("hibernateLazyInitializer"))
+                if ("hibernateLazyInitializer".equals(name))
                 {
                     continue;
                 }
@@ -107,7 +108,7 @@ public class H3BeanConverter extends BeanConverter implements Converter
                     }
 
                     // This might be a lazy-collection so we need to double check
-                    Object retval = method.invoke(example, new Object[] {});
+                    Object retval = method.invoke(example);
                     if (!Hibernate.isInitialized(retval))
                     {
                         properties.put(name, new PlainProperty(propertyName, null));
@@ -131,7 +132,7 @@ public class H3BeanConverter extends BeanConverter implements Converter
      * @param example The class that we want to call {@link Class#getClass()} on
      * @return The type of the given object
      */
-    public Class getClass(Object example)
+    public Class<?> getClass(Object example)
     {
         if (example instanceof HibernateProxy)
         {
@@ -171,21 +172,21 @@ public class H3BeanConverter extends BeanConverter implements Converter
      * @param data The bean to introspect
      * @param property The property to get the accessor for
      * @return The getter method
-     * @throws IntrospectionException
+     * @throws IntrospectionException If Introspector.getBeanInfo() fails
      */
     protected Method findGetter(Object data, String property) throws IntrospectionException
     {
         String key = data.getClass().getName() + ":" + property;
 
-        Method method = (Method) methods.get(key);
+        Method method = methods.get(key);
         if (method == null)
         {
             PropertyDescriptor[] props = Introspector.getBeanInfo(data.getClass()).getPropertyDescriptors();
-            for (int i = 0; i < props.length; i++)
+            for (PropertyDescriptor prop : props)
             {
-                if (props[i].getName().equalsIgnoreCase(property))
+                if (prop.getName().equalsIgnoreCase(property))
                 {
-                    method = props[i].getReadMethod();
+                    method = prop.getReadMethod();
                 }
             }
 
@@ -211,7 +212,7 @@ public class H3BeanConverter extends BeanConverter implements Converter
     /**
      * The cache of method lookups that we've already done
      */
-    protected static final Map methods = new HashMap();
+    protected static final Map<String, Method> methods = new HashMap<String, Method>();
 
     /**
      * The log stream

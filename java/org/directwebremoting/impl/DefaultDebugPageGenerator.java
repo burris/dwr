@@ -66,9 +66,9 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         buffer.append("<h2>Classes known to DWR:</h2>\n");
         buffer.append("<ul>\n");
-        for (Iterator it = creatorManager.getCreatorNames().iterator(); it.hasNext();)
+        for (Iterator<String> it = creatorManager.getCreatorNames().iterator(); it.hasNext();)
         {
-            String name = (String) it.next();
+            String name = it.next();
             Creator creator = creatorManager.getCreator(name);
 
             buffer.append("<li><a href='");
@@ -181,10 +181,10 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             buffer.append("<li>\n");
             buffer.append("  " + methodName + '(');
 
-            Class[] paramTypes = method.getParameterTypes();
+            Class<?>[] paramTypes = method.getParameterTypes();
             for (int j = 0; j < paramTypes.length; j++)
             {
-                Class paramType = paramTypes[j];
+                Class<?> paramType = paramTypes[j];
 
                 // The special type that we handle transparently
                 if (LocalUtil.isServletClass(paramType))
@@ -303,7 +303,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         synchronized (scriptCache)
         {
-            String output = (String) scriptCache.get(PathConstants.FILE_HELP);
+            String output = scriptCache.get(PathConstants.FILE_HELP);
             if (output == null)
             {
                 InputStream raw = getClass().getResourceAsStream(DwrConstants.PACKAGE + PathConstants.FILE_HELP);
@@ -379,11 +379,11 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see org.directwebremoting.DebugPageGenerator#getAvailableLibraries()
      */
-    public Collection getAvailableLibraries()
+    public Collection<String> getAvailableLibraries()
     {
         if (availableLibraries == null)
         {
-            availableLibraries = Collections.unmodifiableCollection(Arrays.asList(new String[] { utilHandlerUrl }));
+            availableLibraries = Collections.unmodifiableCollection(Arrays.asList(utilHandlerUrl));
         }
 
         return availableLibraries;
@@ -487,13 +487,13 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /**
      * We cache the script output for speed
      */
-    protected final Map scriptCache = new HashMap();
+    protected final Map<String, String> scriptCache = new HashMap<String, String>();
 
     /**
      * For getAvailableLibraries() - just a RO Collection that currently returns
      * only util.js, but may be expanded in the future.
      */
-    private Collection availableLibraries = null;
+    private Collection<String> availableLibraries = null;
 
     /**
      * 2 dots

@@ -26,7 +26,6 @@ public class ErrorOutboundVariable extends AbstractOutboundVariable implements O
 {
     /**
      * Default ctor that leaves blank (not null) members
-     * @param code the access for the inited code
      * @param outboundContext The conversion context
      * @param errorMessage Some message for the developer to see.
      * @param forceInline true to force inline status, false to let the system decide
@@ -45,6 +44,7 @@ public class ErrorOutboundVariable extends AbstractOutboundVariable implements O
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getNotInlineDefinition()
      */
+    @Override
     protected NotInlineDefinition getNotInlineDefinition()
     {
         return new NotInlineDefinition("var " + getVariableName() + "=null;", "");
@@ -53,6 +53,7 @@ public class ErrorOutboundVariable extends AbstractOutboundVariable implements O
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getInlineDefinition()
      */
+    @Override
     protected String getInlineDefinition()
     {
         return "null";
@@ -61,6 +62,7 @@ public class ErrorOutboundVariable extends AbstractOutboundVariable implements O
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return "Error:null";

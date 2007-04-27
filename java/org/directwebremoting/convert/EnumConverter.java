@@ -35,14 +35,14 @@ public class EnumConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
+    public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        String value = LocalUtil.decode(iv.getValue());
+        String value = LocalUtil.decode(data.getValue());
 
         Object[] values;
         try
         {
-            Method getter = paramType.getMethod("values", new Class[0]);
+            Method getter = paramType.getMethod("values");
             values = (Object[]) getter.invoke(paramType, (Object[]) null);
         }
         catch (NoSuchMethodException ex)
@@ -56,9 +56,8 @@ public class EnumConverter extends BaseV20Converter implements Converter
             throw new MarshallException(paramType, ex);
         }
 
-        for (int i = 0; i < values.length; i++)
+        for (Object en : values)
         {
-            Object en = values[i];
             if (value.equals(en.toString()))
             {
                 return en;
@@ -71,8 +70,8 @@ public class EnumConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object object, OutboundContext outctx)
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return new SimpleOutboundVariable('\'' + object.toString() + '\'', outctx, true);
+        return new SimpleOutboundVariable('\'' + data.toString() + '\'', outctx, true);
     }
 }

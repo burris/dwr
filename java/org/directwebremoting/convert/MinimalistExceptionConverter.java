@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.Property;
 
 /**
  * A special case of BeanConverter for use by default with {@link Throwable}s,
@@ -32,9 +33,10 @@ public class MinimalistExceptionConverter extends BeanConverter
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.BasicBeanConverter#getPropertyDescriptors(java.lang.Class, boolean, boolean)
      */
-    public Map getPropertyMapFromClass(Class type, boolean readRequired, boolean writeRequired) throws MarshallException
+    @Override
+    public Map<String, Property> getPropertyMapFromClass(Class<?> type, boolean readRequired, boolean writeRequired) throws MarshallException
     {
-        Map descriptors = new HashMap();
+        Map<String, Property> descriptors = new HashMap<String, Property>();
 
         descriptors.put("message", new PlainProperty("message", "Error"));
         descriptors.put("javaClassName", new PlainProperty("javaClassName", "java.lang.Throwable"));

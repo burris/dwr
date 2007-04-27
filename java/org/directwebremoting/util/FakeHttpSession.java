@@ -106,6 +106,7 @@ public class FakeHttpSession implements HttpSession
      * @see javax.servlet.http.HttpSession#getSessionContext()
      * @deprecated
      */
+    @Deprecated
     public javax.servlet.http.HttpSessionContext getSessionContext()
     {
         return null;
@@ -130,7 +131,7 @@ public class FakeHttpSession implements HttpSession
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpSession#getAttributeNames()
      */
-    public Enumeration getAttributeNames()
+    public Enumeration<String> getAttributeNames()
     {
         return Collections.enumeration(attributes.keySet());
     }
@@ -140,7 +141,7 @@ public class FakeHttpSession implements HttpSession
      */
     public String[] getValueNames()
     {
-        return (String[]) attributes.keySet().toArray(new String[attributes.keySet().size()]);
+        return attributes.keySet().toArray(new String[attributes.keySet().size()]);
     }
 
     /* (non-Javadoc)
@@ -198,7 +199,7 @@ public class FakeHttpSession implements HttpSession
     /**
      * The list of attributes
      */
-    private Map attributes = new HashMap();
+    private Map<String, Object> attributes = new HashMap<String, Object>();
 
     /**
      * When were we created

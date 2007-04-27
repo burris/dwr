@@ -150,6 +150,7 @@ public class ScriptBuffer
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return parts.toString();
@@ -160,7 +161,7 @@ public class ScriptBuffer
      * Do not use it without understanding the implications for future proofing.
      * @return The list of parts of the final output script
      */
-    public List getParts()
+    public List<? extends Object> getParts()
     {
         return parts;
     }
@@ -169,7 +170,7 @@ public class ScriptBuffer
      * A wrapper around a string to distinguish a string entered into this
      * buffer as code and a string entered as data
      */
-    public class StringWrapper
+    public static class StringWrapper
     {
         StringWrapper(String data)
         {
@@ -181,6 +182,7 @@ public class ScriptBuffer
         /* (non-Javadoc)
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString()
         {
             return data;
@@ -190,5 +192,5 @@ public class ScriptBuffer
     /**
      * This is where we store all the script components waiting to be serialized
      */
-    private List parts = new ArrayList();
+    private List<Object> parts = new ArrayList<Object>();
 }

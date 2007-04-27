@@ -17,6 +17,8 @@ package org.directwebremoting.extend;
 
 import java.util.Collection;
 
+import org.directwebremoting.ScriptSession;
+
 /**
  * A ScriptSessionManager looks after a number of sessions (keyed using a
  * Javascript variable)
@@ -32,7 +34,7 @@ public interface ScriptSessionManager
      * something non null.
      * @return An iterator over the currently known sessions, by id
      */
-    Collection getAllScriptSessions();
+    Collection<ScriptSession> getAllScriptSessions();
 
     /**
      * For a given script session id, either create a new ScriptSession object
@@ -40,7 +42,7 @@ public interface ScriptSessionManager
      * @param url The URL including 'http://', up to (but not including) '?' or '#'
      * @return A ScriptSession.
      */
-    Collection getScriptSessionsByPage(String url);
+    Collection<ScriptSession> getScriptSessionsByPage(String url);
 
     /**
      * For a given script session id, either create a new ScriptSession object
@@ -61,18 +63,18 @@ public interface ScriptSessionManager
      * Accessor for the time (in milliseconds) when unused ScriptSessions will expire
      * @return the scriptSessionTimeout
      */
-    public long getScriptSessionTimeout();
+    long getScriptSessionTimeout();
 
     /**
      * Accessor for the time (in milliseconds) when unused ScriptSessions will expire
      * @param scriptSessionTimeout the timeout to set
      */
-    public void setScriptSessionTimeout(long scriptSessionTimeout);
+    void setScriptSessionTimeout(long scriptSessionTimeout);
 
     /**
      * The default length of time a session can go unused before it
      * automatically becomes invalid and is recycled.
      * The default is 5mins
      */
-    public static final long DEFAULT_TIMEOUT_MILLIS = 300000;
+    static final long DEFAULT_TIMEOUT_MILLIS = 300000;
 }

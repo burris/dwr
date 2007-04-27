@@ -35,12 +35,12 @@ public class ConstructorConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx)
+    public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx)
     {
         try
         {
-            Constructor converter = paramType.getConstructor(new Class[] { String.class });
-            return converter.newInstance(new Object[] { iv.getValue() });
+            Constructor<?> converter = paramType.getConstructor(String.class);
+            return converter.newInstance(data.getValue());
         }
         catch (Exception ex)
         {

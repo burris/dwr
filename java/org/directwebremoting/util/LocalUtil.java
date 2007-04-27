@@ -18,6 +18,7 @@ package org.directwebremoting.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -133,7 +134,7 @@ public final class LocalUtil
      * @param c2 the second class to test
      * @return true if the classes are equivalent
      */
-    public static boolean isEquivalent(Class c1, Class c2)
+    public static boolean isEquivalent(Class<?> c1, Class<?> c2)
     {
         if (c1 == Boolean.class || c1 == Boolean.TYPE)
         {
@@ -179,7 +180,7 @@ public final class LocalUtil
      * @param type The class to de-primitivize
      * @return The non-privitive version of the class
      */
-    public static Class getNonPrimitiveType(Class type)
+    public static Class<?> getNonPrimitiveType(Class<?> type)
     {
         if (!type.isPrimitive())
         {
@@ -249,7 +250,7 @@ public final class LocalUtil
      * @param paramType The type to test
      * @return true if the type is a Servlet type
      */
-    public static boolean isServletClass(Class paramType)
+    public static boolean isServletClass(Class<?> paramType)
     {
         return paramType == HttpServletRequest.class ||
                paramType == HttpServletResponse.class ||
@@ -266,37 +267,15 @@ public final class LocalUtil
      */
     public static String decode(String value)
     {
-        if (!testedDecoder)
+        try
         {
-            try
-            {
-                decode14 = URLDecoder.class.getMethod("decode", new Class[] { String.class, String.class });
-            }
-            catch (Exception ex)
-            {
-                if (!warn13)
-                {
-                    log.warn("URLDecoder.decode(String, String) is not available. Falling back to 1.3 variant.");
-                    warn13 = true;
-                }
-            }
-
-            testedDecoder = true;
+            return URLDecoder.decode(value, "UTF-8");
         }
-
-        if (decode14 != null)
+        catch (UnsupportedEncodingException ex)
         {
-            try
-            {
-                return (String) decode14.invoke(null, new Object[] { value, "UTF-8" });
-            }
-            catch (Exception ex)
-            {
-                log.warn("Failed to use JDK 1.4 decoder", ex);
-            }
+            log.error("UTF-8 is not a valid char sequence?", ex);
+            return value;
         }
-
-        return URLDecoder.decode(value);
     }
 
     /**
@@ -307,12 +286,12 @@ public final class LocalUtil
      * @param ignore List of keys to not warn about if they are not properties
      *               Note only the warning is skipped, we still try the setter
      */
-    public static void setParams(Object object, Map params, List ignore)
+    public static void setParams(Object object, Map<String, ?> params, List<String> ignore)
     {
-        for (Iterator it = params.entrySet().iterator(); it.hasNext();)
+        for (Iterator<? extends Map.Entry<String, ?>> it = params.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            String key = (String) entry.getKey();
+            Map.Entry<String, ?> entry = it.next();
+            String key = entry.getKey();
             Object value = entry.getValue();
 
             try
@@ -350,15 +329,15 @@ public final class LocalUtil
      */
     public static void setProperty(Object object, String key, Object value) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
-        Class real = object.getClass();
+        Class<? extends Object> real = object.getClass();
 
         String setterName = "set" + key.substring(0, 1).toUpperCase(Locale.ENGLISH) + key.substring(1);
 
         try
         {
             // Can we work with whatever type we were given?
-            Method method = real.getMethod(setterName, new Class[] { value.getClass() });
-            method.invoke(object, new Object[] { value });
+            Method method = real.getMethod(setterName, value.getClass());
+            method.invoke(object, value);
             return;
         }
         catch (NoSuchMethodException ex)
@@ -378,11 +357,11 @@ public final class LocalUtil
 
             if (setter.getName().equals(setterName) && setter.getParameterTypes().length == 1)
             {
-                Class propertyType = setter.getParameterTypes()[0];
+                Class<?> propertyType = setter.getParameterTypes()[0];
                 try
                 {
-                    Object param = LocalUtil.simpleConvert((String) value, propertyType);
-                    setter.invoke(object, new Object[] { param });
+                    Object param = simpleConvert((String) value, propertyType);
+                    setter.invoke(object, param);
                     return;
                 }
                 catch (IllegalArgumentException ex)
@@ -401,7 +380,7 @@ public final class LocalUtil
      * @param paramType The type to test
      * @return true if the type is acceptable to simpleConvert()
      */
-    public static boolean isTypeSimplyConvertable(Class paramType)
+    public static boolean isTypeSimplyConvertable(Class<?> paramType)
     {
         return paramType == String.class ||
             paramType == Integer.class ||
@@ -430,7 +409,7 @@ public final class LocalUtil
      * String are supported.
      * @return The converted object.
      */
-    public static Object simpleConvert(String value, Class paramType)
+    public static Object simpleConvert(String value, Class<?> paramType)
     {
         if (paramType == String.class)
         {
@@ -441,7 +420,7 @@ public final class LocalUtil
         {
             if (value.length() == 1)
             {
-                return new Character(value.charAt(0));
+                return value.charAt(0);
             }
             else
             {
@@ -480,7 +459,7 @@ public final class LocalUtil
         {
             if (trimValue.length() == 0)
             {
-                return new Integer(0);
+                return 0;
             }
 
             return Integer.valueOf(trimValue);
@@ -500,7 +479,7 @@ public final class LocalUtil
         {
             if (trimValue.length() == 0)
             {
-                return new Short((short) 0);
+                return (short) 0;
             }
 
             return Short.valueOf(trimValue);
@@ -520,7 +499,7 @@ public final class LocalUtil
         {
             if (trimValue.length() == 0)
             {
-                return new Byte((byte) 0);
+                return (byte) 0;
             }
 
             return Byte.valueOf(trimValue);
@@ -540,7 +519,7 @@ public final class LocalUtil
         {
             if (trimValue.length() == 0)
             {
-                return new Long(0);
+                return (long) 0;
             }
 
             return Long.valueOf(trimValue);
@@ -560,7 +539,7 @@ public final class LocalUtil
         {
             if (trimValue.length() == 0)
             {
-                return new Float(0);
+                return 0.0F;
             }
 
             return Float.valueOf(trimValue);
@@ -580,7 +559,7 @@ public final class LocalUtil
         {
             if (trimValue.length() == 0)
             {
-                return new Double(0);
+                return 0.0D;
             }
 
             return Double.valueOf(trimValue);
@@ -594,7 +573,7 @@ public final class LocalUtil
      * @param clazz the class to get the short name of
      * @return the class name of the class without the package name
      */
-    public static String getShortClassName(Class clazz)
+    public static String getShortClassName(Class<?> clazz)
     {
         String className = clazz.getName();
 
@@ -657,7 +636,7 @@ public final class LocalUtil
      * @return The class if it is safe or null otherwise.
      * @throws ClassNotFoundException If <code>className</code> is not valid
      */
-    public static Class classForName(String className) throws ClassNotFoundException
+    public static Class<?> classForName(String className) throws ClassNotFoundException
     {
         // Class.forName(className);
         return Thread.currentThread().getContextClassLoader().loadClass(className);
@@ -698,18 +677,20 @@ public final class LocalUtil
      * Utility to essentially do Class forName with the assumption that the
      * environment expects failures for missing jar files and can carry on if
      * this process fails.
+     * @param <T> The base type that we want a class to implement
      * @param name The name for debugging purposes
      * @param className The class to create
      * @param impl The implementation class - what should className do?
      * @return The class if it is safe or null otherwise.
      */
-    public static Class classForName(String name, String className, Class impl)
+    @SuppressWarnings("unchecked")
+    public static <T> Class<? extends T> classForName(String name, String className, Class<T> impl)
     {
-        Class clazz;
+        Class<? extends T> clazz;
 
         try
         {
-            clazz = classForName(className);
+            clazz = (Class<? extends T>) classForName(className);
         }
         catch (ClassNotFoundException ex)
         {
@@ -789,18 +770,20 @@ public final class LocalUtil
      * Utility to essentially do Class forName and newInstance with the
      * assumption that the environment expects failures for missing jar files
      * and can carry on if this process fails.
+     * @param <T> The base type that we want a class to implement
      * @param name The name for debugging purposes
      * @param className The class to create
      * @param impl The implementation class - what should className do?
      * @return The new instance if it is safe or null otherwise.
      */
-    public static Object classNewInstance(String name, String className, Class impl)
+    @SuppressWarnings("unchecked")
+    public static <T> T classNewInstance(String name, String className, Class<T> impl)
     {
-        Class clazz;
+        Class<T> clazz;
 
         try
         {
-            clazz = LocalUtil.classForName(className);
+            clazz = (Class<T>) classForName(className);
         }
         catch (ClassNotFoundException ex)
         {
@@ -904,11 +887,11 @@ public final class LocalUtil
      * @param clazz the class to look up
      * @return the List of superclasses in order going up from this one
      */
-    public static List getAllSuperclasses(Class clazz)
+    public static List<Class<?>> getAllSuperclasses(Class<?> clazz)
     {
-        List classes = new ArrayList();
+        List<Class<?>> classes = new ArrayList<Class<?>>();
 
-        Class superclass = clazz.getSuperclass();
+        Class<?> superclass = clazz.getSuperclass();
         while (superclass != null)
         {
             classes.add(superclass);
@@ -927,9 +910,9 @@ public final class LocalUtil
      * @param clazz The class to introspect
      * @return The complete list of fields
      */
-    public static Field[] getAllFields(Class clazz)
+    public static Field[] getAllFields(Class<?> clazz)
     {
-        List classes = getAllSuperclasses(clazz);
+        List<Class<?>> classes = getAllSuperclasses(clazz);
         classes.add(clazz);
         return getAllFields(classes);
     }
@@ -940,35 +923,20 @@ public final class LocalUtil
      * @param classes The list of classes to reflect on
      * @return The complete list of fields
      */
-    private static Field[] getAllFields(List classes)
+    private static Field[] getAllFields(List<Class<?>> classes)
     {
-        Set fields = new HashSet();
-        for (Iterator it = classes.iterator(); it.hasNext();)
+        Set<Field> fields = new HashSet<Field>();
+        for (Iterator<Class<?>> it = classes.iterator(); it.hasNext();)
         {
-            Class clazz = (Class) it.next();
+            Class<?> clazz = it.next();
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         }
 
-        return (Field[]) fields.toArray(new Field[fields.size()]);
+        return fields.toArray(new Field[fields.size()]);
     }
 
     /**
      * The log stream
      */
     private static final Logger log = Logger.getLogger(LocalUtil.class);
-
-    /**
-     * Have we given a warning about URLDecoder.decode() in jdk 1.3
-     */
-    private static boolean warn13 = false;
-
-    /**
-     * Have we tested for the correct URLDecoder.decode()
-     */
-    private static boolean testedDecoder = false;
-
-    /**
-     * Are we using the jdk 1.4 version of URLDecoder.decode()
-     */
-    private static Method decode14 = null;
 }

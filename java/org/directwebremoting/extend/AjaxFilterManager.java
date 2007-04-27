@@ -31,7 +31,7 @@ public interface AjaxFilterManager
      * @param scriptname The scriptname to use to filter the class-based filters
      * @return An iterator over the available filters.
      */
-    Iterator getAjaxFilters(String scriptname);
+    Iterator<AjaxFilter> getAjaxFilters(String scriptname);
 
     /**
      * Add a global AjaxFilter

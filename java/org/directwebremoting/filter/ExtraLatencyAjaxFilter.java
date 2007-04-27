@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
+import org.directwebremoting.util.Logger;
 
 /**
  * An example filter that delays responding to a query by a customizable time
@@ -34,30 +35,24 @@ public class ExtraLatencyAjaxFilter implements AjaxFilter
      */
     public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
     {
-        synchronized (this)
+        try
         {
-            try
-            {
-                wait(delay/2);
-            }
-            catch (InterruptedException ex)
-            {
-                ex.printStackTrace();
-            }
+            Thread.sleep(delay/2);
+        }
+        catch (InterruptedException ex)
+        {
+            log.warn("Pre-exec interuption", ex);
         }
 
         Object reply = chain.doFilter(obj, method, params);
 
-        synchronized (this)
+        try
         {
-            try
-            {
-                wait(delay/2);
-            }
-            catch (InterruptedException ex)
-            {
-                ex.printStackTrace();
-            }
+            Thread.sleep(delay/2);
+        }
+        catch (InterruptedException ex)
+        {
+            log.warn("Post-exec interuption", ex);
         }
 
         return reply;
@@ -79,5 +74,14 @@ public class ExtraLatencyAjaxFilter implements AjaxFilter
         this.delay = delay;
     }
 
+    /**
+     * The delay time in milliseconds.
+     * We wait for half this value before and half after the call
+     */
     private long delay = 100;
+
+    /**
+     * The log stream
+     */
+    private static final Logger log = Logger.getLogger(ExtraLatencyAjaxFilter.class);
 }

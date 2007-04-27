@@ -24,6 +24,7 @@ public class NotifyOnlyScriptConduit extends ScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
      */
+    @Override
     public boolean addScript(ScriptBuffer script)
     {
         try

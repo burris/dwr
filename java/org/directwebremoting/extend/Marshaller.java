@@ -62,5 +62,5 @@ public interface Marshaller
      * @param paramType The type to check
      * @return true iff <code>paramType</code> is coercable
      */
-    boolean isConvertable(Class paramType);
+    boolean isConvertable(Class<?> paramType);
 }

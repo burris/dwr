@@ -30,6 +30,7 @@ public class PlainCallMarshaller extends BaseCallMarshaller
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
      */
+    @Override
     protected String getOutboundMimeType()
     {
         return MimeConstants.MIME_JS;
@@ -38,6 +39,7 @@ public class PlainCallMarshaller extends BaseCallMarshaller
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter, java.lang.String)
      */
+    @Override
     protected void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException
     {
         if (allowScriptTagRemoting)
@@ -52,6 +54,7 @@ public class PlainCallMarshaller extends BaseCallMarshaller
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter, java.lang.String)
      */
+    @Override
     protected void sendOutboundScriptSuffix(PrintWriter out, String batchId) throws IOException
     {
     }
@@ -59,6 +62,7 @@ public class PlainCallMarshaller extends BaseCallMarshaller
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendScript(java.io.PrintWriter, java.lang.String)
      */
+    @Override
     protected void sendScript(PrintWriter out, String script) throws IOException
     {
         synchronized (out)

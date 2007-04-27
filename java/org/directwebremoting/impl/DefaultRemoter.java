@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
@@ -68,11 +69,11 @@ public class DefaultRemoter implements Remoter
         StringBuffer buffer = new StringBuffer();
 
         // Output the class definitions for the converted objects
-        Collection converterMatches = converterManager.getConverterMatchStrings();
-        Iterator it = converterMatches.iterator();
+        Collection<String> converterMatches = converterManager.getConverterMatchStrings();
+        Iterator<String> it = converterMatches.iterator();
         while (it.hasNext())
         {
-            String match = (String) it.next();
+            String match = it.next();
 
             try
             {
@@ -86,7 +87,7 @@ public class DefaultRemoter implements Remoter
                     String jsClassName = boConv.getJavascript();
 
                     // We need a configured JavaScript class name
-                    if (jsClassName != null && !jsClassName.equals(""))
+                    if (jsClassName != null && !"".equals(jsClassName))
                     {
                         // Wildcard match strings are currently not supported
                         if (match.indexOf("*") == -1)
@@ -98,7 +99,7 @@ public class DefaultRemoter implements Remoter
                             paramBuffer.append("  var " + jsClassName + " = function() {\n");
 
                             // output: this.<property> = <init-value>;
-                            Class mappedType;
+                            Class<?> mappedType;
                             try
                             {
                                 mappedType = LocalUtil.classForName(match);
@@ -108,13 +109,12 @@ public class DefaultRemoter implements Remoter
                                 throw new IllegalArgumentException(ex.getMessage());
                             }
 
-                            Map properties = boConv.getPropertyMapFromClass(mappedType, true, true);
-                            for (Iterator pit = properties.entrySet().iterator(); pit.hasNext();)
+                            Map<String, Property> properties = boConv.getPropertyMapFromClass(mappedType, true, true);
+                            for (Entry<String, Property> entry : properties.entrySet())
                             {
-                                Map.Entry entry = (Map.Entry) pit.next();
-                                String name = (String) entry.getKey();
-                                Property property = (Property) entry.getValue();
-                                Class propType = property.getPropertyType();
+                                String name = entry.getKey();
+                                Property property = entry.getValue();
+                                Class<?> propType = property.getPropertyType();
 
                                 // Property name
                                 paramBuffer.append("    this." + name + " = ");
@@ -166,9 +166,8 @@ public class DefaultRemoter implements Remoter
         buffer.append(scriptName + "._path = '" + actualPath + "';\n");
 
         Method[] methods = creator.getType().getMethods();
-        for (int i = 0; i < methods.length; i++)
+        for (Method method : methods)
         {
-            Method method = methods[i];
             String methodName = method.getName();
 
             // We don't need to check accessControl.getReasonToNotExecute()
@@ -206,7 +205,7 @@ public class DefaultRemoter implements Remoter
                 // For optimal performance we might use the Memoizer pattern
                 // JCiP#108 however performance isn't a big issue and we are
                 // prepared to cope with getMethodJS() being run more than once.
-                script = (String) methodCache.get(key);
+                script = methodCache.get(key);
                 if (script == null)
                 {
                     script = getMethodJS(scriptName, method);
@@ -232,7 +231,7 @@ public class DefaultRemoter implements Remoter
 
         String methodName = method.getName();
         buffer.append(scriptName + '.' + methodName + " = function(");
-        Class[] paramTypes = method.getParameterTypes();
+        Class<?>[] paramTypes = method.getParameterTypes();
         for (int j = 0; j < paramTypes.length; j++)
         {
             if (!LocalUtil.isServletClass(paramTypes[j]))
@@ -277,9 +276,8 @@ public class DefaultRemoter implements Remoter
             throw new SecurityException("Call count for batch is too high");
         }
 
-        for (int callNum = 0; callNum < callCount; callNum++)
+        for (Call call : calls)
         {
-            Call call = calls.getCall(callNum);
             Reply reply = execute(call);
             replies.addReply(reply);
         }
@@ -419,12 +417,12 @@ public class DefaultRemoter implements Remoter
             }
 
             // Execute the filter chain method.toString()
-            final Iterator it = ajaxFilterManager.getAjaxFilters(call.getScriptName());
+            final Iterator<AjaxFilter> it = ajaxFilterManager.getAjaxFilters(call.getScriptName());
             AjaxFilterChain chain = new AjaxFilterChain()
             {
                 public Object doFilter(Object obj, Method meth, Object[] p) throws Exception
                 {
-                    AjaxFilter next = (AjaxFilter) it.next();
+                    AjaxFilter next = it.next();
                     return next.doFilter(obj, meth, p, this);
                 }
             };
@@ -552,7 +550,7 @@ public class DefaultRemoter implements Remoter
     /**
      * Generated Javascript cache
      */
-    private Map methodCache = Collections.synchronizedMap(new HashMap());
+    private Map<String, String> methodCache = Collections.synchronizedMap(new HashMap<String, String>());
 
     /**
      * The log stream

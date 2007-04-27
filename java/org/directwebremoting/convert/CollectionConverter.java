@@ -52,17 +52,19 @@ public class CollectionConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.BaseV20Converter#setConverterManager(org.directwebremoting.ConverterManager)
      */
-    public void setConverterManager(ConverterManager newConfig)
+    @Override
+    public void setConverterManager(ConverterManager converterManager)
     {
-        this.config = newConfig;
+        this.converterManager = converterManager;
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
+    @SuppressWarnings("unchecked")
+    public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        String value = iv.getValue();
+        String value = data.getValue();
 
         // If the text is null then the whole bean is null
         if (value.trim().equals(ProtocolConstants.INBOUND_NULL))
@@ -87,16 +89,16 @@ public class CollectionConverter extends BaseV20Converter implements Converter
             TypeHintContext icc = inctx.getCurrentTypeHintContext();
 
             TypeHintContext subthc = icc.createChildContext(0);
-            Class subtype = subthc.getExtraTypeInfo();
+            Class<?> subtype = subthc.getExtraTypeInfo();
 
             // subtype.getMethod("h", null).getTypeParameters();
-            Collection col;
+            Collection<Object> col;
 
             // If they want an iterator then just use an array list and fudge
             // at the end.
             if (Iterator.class.isAssignableFrom(paramType))
             {
-                col = new ArrayList();
+                col = new ArrayList<Object>();
             }
             // If paramType is concrete then just use whatever we've got.
             else if (!paramType.isInterface() && !Modifier.isAbstract(paramType.getModifiers()))
@@ -105,27 +107,28 @@ public class CollectionConverter extends BaseV20Converter implements Converter
                 // of completing this - they asked for a specific type and we
                 // can't create that type. I don't know of a way of finding
                 // subclasses that might be instaniable so we accept failure.
-                col = (Collection) paramType.newInstance();
+                //noinspection unchecked
+                col = (Collection<Object>) paramType.newInstance();
             }
             // If they want a SortedSet then use TreeSet
             else if (SortedSet.class.isAssignableFrom(paramType))
             {
-                col = new TreeSet();
+                col = new TreeSet<Object>();
             }
             // If they want a Set then use HashSet
             else if (Set.class.isAssignableFrom(paramType))
             {
-                col = new HashSet();
+                col = new HashSet<Object>();
             }
             // If they want a List then use an ArrayList
             else if (List.class.isAssignableFrom(paramType))
             {
-                col = new ArrayList();
+                col = new ArrayList<Object>();
             }
             // If they just want a Collection then just use an ArrayList
             else if (Collection.class.isAssignableFrom(paramType))
             {
-                col = new ArrayList();
+                col = new ArrayList<Object>();
             }
             else
             {
@@ -134,7 +137,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            inctx.addConverted(iv, paramType, col);
+            inctx.addConverted(data, paramType, col);
 
             StringTokenizer st = new StringTokenizer(value, ProtocolConstants.INBOUND_ARRAY_SEPARATOR);
             int size = st.countTokens();
@@ -146,9 +149,9 @@ public class CollectionConverter extends BaseV20Converter implements Converter
                 String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
                 String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
 
-                InboundVariable nested = new InboundVariable(iv.getLookup(), null, splitType, splitValue);
+                InboundVariable nested = new InboundVariable(data.getLookup(), null, splitType, splitValue);
 
-                Object output = config.convertInbound(subtype, nested, inctx, subthc);
+                Object output = converterManager.convertInbound(subtype, nested, inctx, subthc);
                 col.add(output);
             }
 
@@ -172,18 +175,19 @@ public class CollectionConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
      */
+    @SuppressWarnings("unchecked")
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         // First we need to get ourselves the collection data
-        Iterator it;
+        Iterator<Object> it;
         if (data instanceof Collection)
         {
-            Collection col = (Collection) data;
+            Collection<Object> col = (Collection<Object>) data;
             it = col.iterator();
         }
         else if (data instanceof Iterator)
         {
-            it = (Iterator) data;
+            it = (Iterator<Object>) data;
         }
         else
         {
@@ -195,7 +199,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         outctx.put(data, ov);
 
         // Convert all the data members
-        List ovs = new ArrayList();
+        List<OutboundVariable> ovs = new ArrayList<OutboundVariable>();
         while (it.hasNext())
         {
             Object member = it.next();
@@ -203,7 +207,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
 
             try
             {
-                nested = config.convertOutbound(member, outctx);
+                nested = converterManager.convertOutbound(member, outctx);
             }
             catch (Exception ex)
             {
@@ -225,7 +229,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
     /**
      * For nested conversions
      */
-    private ConverterManager config = null;
+    private ConverterManager converterManager = null;
 
     /**
      * The log stream

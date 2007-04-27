@@ -83,6 +83,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#print(boolean)
      */
+    @Override
     public void print(boolean x)
     {
         super.print(x);
@@ -92,6 +93,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#print(char)
      */
+    @Override
     public void print(char x)
     {
         super.print(x);
@@ -101,6 +103,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#print(int)
      */
+    @Override
     public void print(int x)
     {
         super.print(x);
@@ -110,6 +113,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#print(long)
      */
+    @Override
     public void print(long x)
     {
         super.print(x);
@@ -119,6 +123,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#print(float)
      */
+    @Override
     public void print(float x)
     {
         super.print(x);
@@ -128,6 +133,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#print(double)
      */
+    @Override
     public void print(double x)
     {
         super.print(x);
@@ -137,7 +143,8 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#print(char[])
      */
-    public void print(char x[])
+    @Override
+    public void print(char[] x)
     {
         super.print(x);
         buffer.append(x);
@@ -146,6 +153,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#print(java.lang.String)
      */
+    @Override
     public void print(String x)
     {
         super.print(x);
@@ -155,6 +163,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#print(java.lang.Object)
      */
+    @Override
     public void print(Object x)
     {
         super.print(x);
@@ -164,6 +173,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println()
      */
+    @Override
     public void println()
     {
         synchronized (lock)
@@ -176,6 +186,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println(boolean)
      */
+    @Override
     public void println(boolean x)
     {
         synchronized (lock)
@@ -188,6 +199,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println(char)
      */
+    @Override
     public void println(char x)
     {
         synchronized (lock)
@@ -200,6 +212,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println(int)
      */
+    @Override
     public void println(int x)
     {
         synchronized (lock)
@@ -212,6 +225,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println(long)
      */
+    @Override
     public void println(long x)
     {
         synchronized (lock)
@@ -224,6 +238,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println(float)
      */
+    @Override
     public void println(float x)
     {
         synchronized (lock)
@@ -236,6 +251,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println(double)
      */
+    @Override
     public void println(double x)
     {
         synchronized (lock)
@@ -248,7 +264,8 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println(char[])
      */
-    public void println(char x[])
+    @Override
+    public void println(char[] x)
     {
         synchronized (lock)
         {
@@ -260,6 +277,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println(java.lang.String)
      */
+    @Override
     public void println(String x)
     {
         synchronized (lock)
@@ -272,6 +290,7 @@ public class DebuggingPrintWriter extends PrintWriter
     /* (non-Javadoc)
      * @see java.io.PrintWriter#println(java.lang.Object)
      */
+    @Override
     public void println(Object x)
     {
         synchronized (lock)

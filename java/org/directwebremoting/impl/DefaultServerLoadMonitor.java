@@ -95,6 +95,7 @@ public class DefaultServerLoadMonitor extends AbstractServerLoadMonitor implemen
     /* (non-Javadoc)
      * @see org.directwebremoting.impl.AbstractServerLoadMonitor#threadWaitStarting(org.directwebremoting.extend.WaitController)
      */
+    @Override
     public void threadWaitStarting(WaitController controller)
     {
         hitMonitor.recordHit();
@@ -107,6 +108,7 @@ public class DefaultServerLoadMonitor extends AbstractServerLoadMonitor implemen
     /* (non-Javadoc)
      * @see org.directwebremoting.impl.AbstractServerLoadMonitor#threadWaitEnding(org.directwebremoting.extend.WaitController)
      */
+    @Override
     public void threadWaitEnding(WaitController controller)
     {
         waitingThreads--;
@@ -196,7 +198,6 @@ public class DefaultServerLoadMonitor extends AbstractServerLoadMonitor implemen
         }
 
         setMode(USAGE_DIGG);
-        return;
     }
 
     /**

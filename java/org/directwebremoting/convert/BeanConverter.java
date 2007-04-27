@@ -38,7 +38,7 @@ public class BeanConverter extends BasicObjectConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.NamedConverter#getPropertyMapFromObject(java.lang.Object, boolean, boolean)
      */
-    public Map getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException
+    public Map<String, Property> getPropertyMapFromObject(Object example, boolean readRequired, boolean writeRequired) throws MarshallException
     {
         return getPropertyMapFromClass(example.getClass(), readRequired, writeRequired);
     }
@@ -46,21 +46,20 @@ public class BeanConverter extends BasicObjectConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.NamedConverter#getPropertyMap(java.lang.Class, boolean, boolean)
      */
-    public Map getPropertyMapFromClass(Class type, boolean readRequired, boolean writeRequired) throws MarshallException
+    public Map<String, Property> getPropertyMapFromClass(Class<?> type, boolean readRequired, boolean writeRequired) throws MarshallException
     {
         try
         {
             BeanInfo info = Introspector.getBeanInfo(type);
             PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
 
-            Map properties = new HashMap();
-            for (int i = 0; i < descriptors.length; i++)
+            Map<String, Property> properties = new HashMap<String, Property>();
+            for (PropertyDescriptor descriptor : descriptors)
             {
-                PropertyDescriptor descriptor = descriptors[i];
                 String name = descriptor.getName();
 
                 // We don't marshall getClass()
-                if (name.equals("class"))
+                if ("class".equals(name))
                 {
                     continue;
                 }
@@ -95,6 +94,7 @@ public class BeanConverter extends BasicObjectConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.BasicObjectConverter#createTypeHintContext(org.directwebremoting.extend.InboundContext, org.directwebremoting.extend.Property)
      */
+    @Override
     protected TypeHintContext createTypeHintContext(InboundContext inctx, Property property)
     {
         return new TypeHintContext(converterManager, property.getSetter(), 0);

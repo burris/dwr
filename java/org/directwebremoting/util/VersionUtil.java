@@ -74,9 +74,9 @@ public class VersionUtil
             }
             catch (Exception ex)
             {
-                props.put(KEY_VERSION, VALUE_UNKNOWN);
-                props.put(KEY_SCCINFO, VALUE_UNKNOWN);
-                props.put(KEY_ERROR, ex.toString());
+                props.setProperty(KEY_VERSION, VALUE_UNKNOWN);
+                props.setProperty(KEY_SCCINFO, VALUE_UNKNOWN);
+                props.setProperty(KEY_ERROR, ex.toString());
             }
         }
     }

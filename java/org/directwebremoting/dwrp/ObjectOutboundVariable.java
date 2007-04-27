@@ -42,12 +42,12 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
      * @param aOvs The map of the converted contents
      * @param aScriptClassName The object name or null for pure(ish) json
      */
-    public void init(Map aOvs, String aScriptClassName)
+    public void init(Map<String, OutboundVariable> aOvs, String aScriptClassName)
     {
         this.ovs = aOvs;
         this.scriptClassName = aScriptClassName;
 
-        isNamed = (scriptClassName != null && !scriptClassName.equals(""));
+        isNamed = (scriptClassName != null && !"".equals(scriptClassName));
         if (isNamed)
         {
             forceInline(false);
@@ -59,6 +59,7 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getNotInlineDefinition()
      */
+    @Override
     protected NotInlineDefinition getNotInlineDefinition()
     {
         String declareCode;
@@ -72,11 +73,11 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
         }
 
         StringBuffer buildCode = new StringBuffer();
-        for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
+        for (Iterator<Map.Entry<String, OutboundVariable>> it = ovs.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            String name = (String) entry.getKey();
-            OutboundVariable nested = (OutboundVariable) entry.getValue();
+            Map.Entry<String, OutboundVariable> entry = it.next();
+            String name = entry.getKey();
+            OutboundVariable nested = entry.getValue();
 
             String nestedAssignCode = nested.getAssignCode();
             String varName = getVariableName();
@@ -110,17 +111,18 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getInlineDefinition()
      */
+    @Override
     protected String getInlineDefinition()
     {
         StringBuffer buffer = new StringBuffer();
         buffer.append('{');
 
         boolean first = true;
-        for (Iterator it = ovs.entrySet().iterator(); it.hasNext();)
+        for (Iterator<Map.Entry<String, OutboundVariable>> it = ovs.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            String name = (String) entry.getKey();
-            OutboundVariable nested = (OutboundVariable) entry.getValue();
+            Map.Entry<String, OutboundVariable> entry = it.next();
+            String name = entry.getKey();
+            OutboundVariable nested = entry.getValue();
 
             String innerAssignCode = nested.getAssignCode();
 
@@ -156,6 +158,7 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return "Object:" + toStringDefinitionHint() + ":" + ovs;
@@ -169,7 +172,7 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
     /**
      * The contained variables
      */
-    private Map ovs;
+    private Map<String, OutboundVariable> ovs;
 
     /**
      * The name of this typed class if there is one

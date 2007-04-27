@@ -50,7 +50,7 @@ public class NewCreator extends AbstractCreator implements Creator
     /* (non-Javadoc)
      * @see org.directwebremoting.Creator#getType()
      */
-    public Class getType()
+    public Class<?> getType()
     {
         return clazz;
     }
@@ -97,5 +97,5 @@ public class NewCreator extends AbstractCreator implements Creator
     /**
      * The type of the class that we are creating
      */
-    private Class clazz;
+    private Class<?> clazz;
 }

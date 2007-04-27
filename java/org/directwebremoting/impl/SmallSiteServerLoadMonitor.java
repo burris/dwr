@@ -29,7 +29,7 @@ public class SmallSiteServerLoadMonitor extends AbstractServerLoadMonitor implem
     public long getConnectedTime()
     {
         // Start a new poll every 30 minutes
-        return 1800 * 1000;
+        return 1800000;
     }
 
     /* (non-Javadoc)

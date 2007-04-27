@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
+import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.servlet.UrlProcessor;
@@ -60,7 +61,7 @@ public class DwrSpringServlet extends HttpServlet
      * exist for us to configure ourselves.
      * @param configurators
      */
-    public void setConfigurators(List configurators)
+    public void setConfigurators(List<Configurator> configurators)
     {
         this.configurators = configurators;
     }
@@ -78,6 +79,7 @@ public class DwrSpringServlet extends HttpServlet
     /* (non-Javadoc)
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
      */
+    @Override
     public void init(ServletConfig servletConfig) throws ServletException
     {
         super.init(servletConfig);
@@ -101,7 +103,7 @@ public class DwrSpringServlet extends HttpServlet
             // retrieve the configurators from Spring (loaded by the ContextLoaderListener)
             try
             {
-                configurators.add(webappContext.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID));
+                configurators.add((Configurator) webappContext.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID));
             }
             catch (NoSuchBeanDefinitionException ex)
             {
@@ -140,6 +142,7 @@ public class DwrSpringServlet extends HttpServlet
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException
     {
         doPost(req, resp);
@@ -148,6 +151,7 @@ public class DwrSpringServlet extends HttpServlet
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
         try
@@ -182,7 +186,7 @@ public class DwrSpringServlet extends HttpServlet
     /**
      * What Configurators exist for us to configure ourselves.
      */
-    private List configurators = new ArrayList();
+    private List<Configurator> configurators = new ArrayList<Configurator>();
 
     /**
      * The log stream

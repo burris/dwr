@@ -32,8 +32,8 @@ public class PageFlowCreator extends AbstractCreator implements Creator
         {
             bhFlowClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowController");
 
-            Class bhUtilClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowUtils");
-            bhGetter = bhUtilClass.getMethod("getCurrentPageFlow", new Class[] { HttpServletRequest.class });
+            Class<?> bhUtilClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowUtils");
+            bhGetter = bhUtilClass.getMethod("getCurrentPageFlow", HttpServletRequest.class);
         }
         catch (Exception ex)
         {
@@ -45,8 +45,8 @@ public class PageFlowCreator extends AbstractCreator implements Creator
         {
             wlFlowClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowController");
 
-            Class wlUtilClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowUtils");
-            wlGetter = wlUtilClass.getMethod("getCurrentPageFlow", new Class[] { HttpServletRequest.class });
+            Class<?> wlUtilClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowUtils");
+            wlGetter = wlUtilClass.getMethod("getCurrentPageFlow", HttpServletRequest.class);
         }
         catch (Exception ex)
         {
@@ -86,7 +86,7 @@ public class PageFlowCreator extends AbstractCreator implements Creator
         try
         {
             HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-            return getter.invoke(null, new Object[] { request });
+            return getter.invoke(null, request);
         }
         catch (InvocationTargetException ex)
         {
@@ -101,7 +101,7 @@ public class PageFlowCreator extends AbstractCreator implements Creator
     /**
      * @return The PageFlowController that we are using (Beehive/Weblogic)
      */
-    public Class getType()
+    public Class<?> getType()
     {
         if (instanceType == null)
         {
@@ -124,15 +124,15 @@ public class PageFlowCreator extends AbstractCreator implements Creator
      */
     private static final Logger log = Logger.getLogger(PageFlowCreator.class);
 
-    private Class instanceType;
+    private Class<?> instanceType = null;
 
-    private Method getter;
+    private Method getter = null;
 
-    private Method bhGetter;
+    private Method bhGetter = null;
 
-    private Method wlGetter;
+    private Method wlGetter = null;
 
-    private Class bhFlowClass;
+    private Class<?> bhFlowClass = null;
 
-    private Class wlFlowClass;
+    private Class<?> wlFlowClass = null;
 }

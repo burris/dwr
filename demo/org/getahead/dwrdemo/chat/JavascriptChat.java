@@ -38,10 +38,10 @@ public class JavascriptChat
               .appendScript(");");
 
         // Loop over all the users on the current page
-        Collection pages = wctx.getScriptSessionsByPage(currentPage);
-        for (Iterator it = pages.iterator(); it.hasNext();)
+        Collection<ScriptSession> sessions = wctx.getScriptSessionsByPage(currentPage);
+        for (Iterator<ScriptSession> it = sessions.iterator(); it.hasNext();)
         {
-            ScriptSession otherSession = (ScriptSession) it.next();
+            ScriptSession otherSession = it.next();
             otherSession.addScript(script);
         }
     }
@@ -49,7 +49,7 @@ public class JavascriptChat
     /**
      * The current set of messages
      */
-    private LinkedList messages = new LinkedList();
+    private LinkedList<Message> messages = new LinkedList<Message>();
 
     /**
      * The log stream

@@ -30,7 +30,7 @@ public abstract class AbstractCreator implements Creator
     /* (non-Javadoc)
      * @see org.directwebremoting.Creator#setProperties(java.util.Map)
      */
-    public void setProperties(Map params) throws IllegalArgumentException
+    public void setProperties(Map<String, String> params) throws IllegalArgumentException
     {
         // The default is to use getters and setters
     }
@@ -99,6 +99,7 @@ public abstract class AbstractCreator implements Creator
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return LocalUtil.getShortClassName(getClass()) + "[" + getJavascript() + "]";

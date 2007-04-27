@@ -39,22 +39,23 @@ public class ArrayOutboundVariable extends AbstractOutboundVariable implements O
      * Generate an array declaration for a list of Outbound variables
      * @param aOvs The list of contents of this array
      */
-    public void init(List aOvs)
+    public void init(List<OutboundVariable> aOvs)
     {
-        this.ovs = aOvs;
+        ovs = aOvs;
         setChildren(ovs);
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getNotInlineDefinition()
      */
+    @Override
     protected NotInlineDefinition getNotInlineDefinition()
     {
         StringBuffer buffer = new StringBuffer();
 
         for (int i = 0; i < ovs.size(); i++)
         {
-            OutboundVariable nested = (OutboundVariable) ovs.get(i);
+            OutboundVariable nested = ovs.get(i);
             String varName = getVariableName();
 
             if (nested != null)
@@ -75,6 +76,7 @@ public class ArrayOutboundVariable extends AbstractOutboundVariable implements O
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getInlineDefinition()
      */
+    @Override
     protected String getInlineDefinition()
     {
         StringBuffer buffer = new StringBuffer();
@@ -84,7 +86,7 @@ public class ArrayOutboundVariable extends AbstractOutboundVariable implements O
         boolean first = true;
         for (int i = 0; i < ovs.size(); i++)
         {
-            OutboundVariable ov = (OutboundVariable) ovs.get(i);
+            OutboundVariable ov = ovs.get(i);
 
             if (!first)
             {
@@ -103,6 +105,7 @@ public class ArrayOutboundVariable extends AbstractOutboundVariable implements O
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return "Array:" + toStringDefinitionHint() + ":" + ovs;
@@ -111,5 +114,5 @@ public class ArrayOutboundVariable extends AbstractOutboundVariable implements O
     /**
      * The contained variables
      */
-    private List ovs;
+    private List<OutboundVariable> ovs = null;
 }

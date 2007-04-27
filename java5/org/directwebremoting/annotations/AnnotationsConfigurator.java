@@ -18,7 +18,6 @@ package org.directwebremoting.annotations;
 import java.beans.Introspector;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -95,7 +94,7 @@ public class AnnotationsConfigurator implements Configurator
      * @throws IllegalAccessException If annotation processing fails
      * @throws InstantiationException If annotation processing fails
      */
-    private void processClass(Class<?> clazz, Container container) throws InstantiationException, IllegalAccessException
+    protected void processClass(Class<?> clazz, Container container) throws InstantiationException, IllegalAccessException
     {
         RemoteProxy createAnn = clazz.getAnnotation(RemoteProxy.class);
         if (createAnn != null)
@@ -122,7 +121,7 @@ public class AnnotationsConfigurator implements Configurator
      * @param createAnn The annotation
      * @param container The IoC container to configure
      */
-    private void processCreate(Class<?> clazz, RemoteProxy createAnn, Container container)
+    protected void processCreate(Class<?> clazz, RemoteProxy createAnn, Container container)
     {
         Class<? extends Creator> creator = createAnn.creator();
         String creatorClass = creator.getName();
@@ -199,10 +198,10 @@ public class AnnotationsConfigurator implements Configurator
      * @param name The Javascript name of the class to filter 
      * @param container The IoC container to configure
      */
-    private void processFilter(Filter filterAnn, String name, Container container)
+    protected void processFilter(Filter filterAnn, String name, Container container)
     {
         Map<String, String> filterParams = getParamsMap(filterAnn.params());
-        AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(name, filterAnn.type().getName(), AjaxFilter.class);
+        AjaxFilter filter = LocalUtil.classNewInstance(name, filterAnn.type().getName(), AjaxFilter.class);
         if (filter != null)
         {
             LocalUtil.setParams(filter, filterParams, null);
@@ -216,10 +215,10 @@ public class AnnotationsConfigurator implements Configurator
      * @param clazz The class annotated with @DataTransferObject
      * @param convertAnn The annotation
      * @param container The IoC container to configure
-     * @throws InstantiationException
-     * @throws IllegalAccessException
+     * @throws InstantiationException If there are problems instansiating the Converter
+     * @throws IllegalAccessException If there are problems instansiating the Converter
      */
-    private void processConvert(Class<?> clazz, DataTransferObject convertAnn, Container container) throws InstantiationException, IllegalAccessException
+    protected void processConvert(Class<?> clazz, DataTransferObject convertAnn, Container container) throws InstantiationException, IllegalAccessException
     {
         Class<? extends Converter> converter = convertAnn.converter();
         String converterClass = converter.getName();
@@ -282,7 +281,7 @@ public class AnnotationsConfigurator implements Configurator
      * @throws InstantiationException In case we can't create the given clazz
      * @throws IllegalAccessException In case we can't create the given clazz
      */
-    private void processGlobalFilter(Class<?> clazz, GlobalFilter globalFilterAnn, Container container) throws InstantiationException, IllegalAccessException
+    protected void processGlobalFilter(Class<?> clazz, GlobalFilter globalFilterAnn, Container container) throws InstantiationException, IllegalAccessException
     {
         if (!AjaxFilter.class.isAssignableFrom(clazz))
         {
@@ -301,12 +300,12 @@ public class AnnotationsConfigurator implements Configurator
 
     /**
      * Utility to turn a Param array into a Map<String, String>.
-     * TODO: Should we move this code into Param? Is that even possible? 
      * @param params The params array from annotations
      * @return A Map<String, String>
      */
-    private Map<String, String> getParamsMap(Param[] params)
+    protected Map<String, String> getParamsMap(Param[] params)
     {
+        // TODO: Should we move this code into Param? Is that even possible?
         Map<String, String> result = new HashMap<String, String>();
         if (params != null)
         {

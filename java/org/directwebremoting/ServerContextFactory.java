@@ -53,7 +53,7 @@ public class ServerContextFactory
     /**
      * The ServerContextBuilder from which we will get ServerContext objects
      */
-    private static ServerContextBuilder builder;
+    private static ServerContextBuilder builder = null;
 
     /**
      * Class to enable us to access servlet parameters.

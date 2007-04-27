@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +27,7 @@ import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.Logger;
+import org.directwebremoting.ScriptSession;
 
 /**
  * A default implmentation of ScriptSessionManager.
@@ -50,7 +50,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
 
         synchronized (sessionLock)
         {
-            DefaultScriptSession scriptSession = (DefaultScriptSession) sessionMap.get(id);
+            DefaultScriptSession scriptSession = sessionMap.get(id);
             if (scriptSession == null)
             {
                 scriptSession = new DefaultScriptSession(id, this);
@@ -68,15 +68,15 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#setPageForScriptSession(org.directwebremoting.extend.RealScriptSession, java.lang.String)
      */
-    public void setPageForScriptSession(RealScriptSession scriptSession, String page)
+    public void setPageForScriptSession(RealScriptSession scriptSession, String url)
     {
-        String normalizedPage = pageNormalizer.normalizePage(page);
+        String normalizedPage = pageNormalizer.normalizePage(url);
         synchronized (sessionLock)
         {
-            Set pageSessions = (Set) pageSessionMap.get(normalizedPage);
+            Set<RealScriptSession> pageSessions = pageSessionMap.get(normalizedPage);
             if (pageSessions == null)
             {
-                pageSessions = new HashSet();
+                pageSessions = new HashSet<RealScriptSession>();
                 pageSessionMap.put(normalizedPage, pageSessions);
             }
 
@@ -87,18 +87,18 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#getScriptSessionsByPage(java.lang.String)
      */
-    public Collection getScriptSessionsByPage(String page)
+    public Collection<ScriptSession> getScriptSessionsByPage(String url)
     {
-        String normalizedPage = pageNormalizer.normalizePage(page);
+        String normalizedPage = pageNormalizer.normalizePage(url);
         synchronized (sessionLock)
         {
-            Set pageSessions = (Set) pageSessionMap.get(normalizedPage);
+            Set<RealScriptSession> pageSessions = pageSessionMap.get(normalizedPage);
             if (pageSessions == null)
             {
-                pageSessions = new HashSet();
+                pageSessions = new HashSet<RealScriptSession>();
             }
 
-            Set reply = new HashSet();
+            Set<ScriptSession> reply = new HashSet<ScriptSession>();
             reply.addAll(pageSessions);
             return reply;
         }
@@ -107,11 +107,11 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#getAllScriptSessions()
      */
-    public Collection getAllScriptSessions()
+    public Collection<ScriptSession> getAllScriptSessions()
     {
         synchronized (sessionLock)
         {
-            Set reply = new HashSet();
+            Set<ScriptSession> reply = new HashSet<ScriptSession>();
             reply.addAll(sessionMap.values());
             return reply;
         }
@@ -128,16 +128,15 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         // It feels like a deadlock risk to do so
         synchronized (sessionLock)
         {
-            RealScriptSession removed = (RealScriptSession) sessionMap.remove(scriptSession.getId());
+            RealScriptSession removed = sessionMap.remove(scriptSession.getId());
             if (!scriptSession.equals(removed))
             {
                 log.error("ScriptSession already removed from manager. scriptSession=" + scriptSession + " removed=" + removed);
             }
 
             int removeCount = 0;
-            for (Iterator it = pageSessionMap.values().iterator(); it.hasNext();)
+            for (Set<RealScriptSession> pageSessions : pageSessionMap.values())
             {
-                Set pageSessions = (Set) it.next();
                 boolean isRemoved = pageSessions.remove(scriptSession);
 
                 if (isRemoved)
@@ -174,14 +173,12 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     protected void checkTimeouts()
     {
         long now = System.currentTimeMillis();
-        List timeouts = new ArrayList();
+        List<ScriptSession> timeouts = new ArrayList<ScriptSession>();
 
         synchronized (sessionLock)
         {
-            for (Iterator it = sessionMap.values().iterator(); it.hasNext();)
+            for (DefaultScriptSession session : sessionMap.values())
             {
-                DefaultScriptSession session = (DefaultScriptSession) it.next();
-
                 if (session.isInvalidated())
                 {
                     continue;
@@ -194,9 +191,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
                 }
             }
 
-            for (Iterator it = timeouts.iterator(); it.hasNext();)
+            for (ScriptSession scriptSession : timeouts)
             {
-                DefaultScriptSession session = (DefaultScriptSession) it.next();
+                DefaultScriptSession session = (DefaultScriptSession) scriptSession;
                 session.invalidate();
             }
         }
@@ -213,9 +210,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#setScriptSessionTimeout(long)
      */
-    public void setScriptSessionTimeout(long timeout)
+    public void setScriptSessionTimeout(long scriptSessionTimeout)
     {
-        this.scriptSessionTimeout = timeout;
+        this.scriptSessionTimeout = scriptSessionTimeout;
     }
 
     /**
@@ -248,7 +245,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /**
      * How long do we wait before we timeout script sessions?
      */
-    protected long scriptSessionTimeout = DEFAULT_TIMEOUT_MILLIS;
+    private long scriptSessionTimeout = DEFAULT_TIMEOUT_MILLIS;
 
     /**
      * How often do we check for script sessions that need timing out
@@ -271,13 +268,13 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      * The map of all the known sessions
      * <p>GuardedBy("sessionLock")
      */
-    protected Map sessionMap = new HashMap();
+    private Map<String, DefaultScriptSession> sessionMap = new HashMap<String, DefaultScriptSession>();
 
     /**
      * The map of pages that have sessions
      * <p>GuardedBy("sessionLock")
      */
-    protected Map pageSessionMap = new HashMap();
+    private Map<String, Set<RealScriptSession>> pageSessionMap = new HashMap<String, Set<RealScriptSession>>();
 
     /**
      * The log stream

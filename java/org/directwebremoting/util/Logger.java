@@ -28,7 +28,7 @@ public final class Logger
      * @param base The class to log against
      * @return A new logger
      */
-    public static Logger getLogger(Class base)
+    public static Logger getLogger(Class<?> base)
     {
         return new Logger(base);
     }
@@ -37,7 +37,7 @@ public final class Logger
      * Prevent instansiation
      * @param base The class to log against
      */
-    private Logger(Class base)
+    private Logger(Class<?> base)
     {
         if (!commonsLoggingTried)
         {

@@ -79,7 +79,7 @@ public interface ScriptSession
      *     names of all the objects bound to this session
      * @throws IllegalStateException if the page has been invalidated
      */
-    Iterator getAttributeNames();
+    Iterator<String> getAttributeNames();
 
     /**
      * Invalidates this session then unbinds any objects bound to it.

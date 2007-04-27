@@ -83,7 +83,7 @@ public class FileHandler implements Handler
 
         synchronized (scriptCache)
         {
-            output = (String) scriptCache.get(filePath);
+            output = scriptCache.get(filePath);
             if (output == null)
             {
                 StringBuffer buffer = new StringBuffer();
@@ -156,8 +156,8 @@ public class FileHandler implements Handler
         }
 
         response.setContentType(mimeType);
-        response.setDateHeader(HttpConstants.HEADER_LAST_MODIFIED, servletContainerStartTime);
-        response.setHeader(HttpConstants.HEADER_ETAG, etag);
+        response.setDateHeader(HttpConstants.HEADER_LAST_MODIFIED, CONTAINER_START_TIME);
+        response.setHeader(HttpConstants.HEADER_ETAG, ETAG);
 
         PrintWriter out = response.getWriter();
         out.println(output);
@@ -206,11 +206,11 @@ public class FileHandler implements Handler
         if (givenEtag == null)
         {
             // There is no ETag, just go with If-Modified-Since
-            if (modifiedSince > servletContainerStartTime)
+            if (modifiedSince > CONTAINER_START_TIME)
             {
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Sending 304 for " + filePath + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + servletContainerStartTime);
+                    log.debug("Sending 304 for " + filePath + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + CONTAINER_START_TIME);
                 }
                 return true;
             }
@@ -222,12 +222,12 @@ public class FileHandler implements Handler
         // Deal with missing If-Modified-Since
         if (modifiedSince == -1)
         {
-            if (!etag.equals(givenEtag))
+            if (!ETAG.equals(givenEtag))
             {
                 // There is an ETag, but no If-Modified-Since
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Sending 304 for " + filePath + " Old ETag=" + givenEtag + ", New ETag=" + etag);
+                    log.debug("Sending 304 for " + filePath + " Old ETag=" + givenEtag + ", New ETag=" + ETAG);
                 }
                 return true;
             }
@@ -237,7 +237,7 @@ public class FileHandler implements Handler
         }
 
         // Do both values indicate that we are in-date?
-        if (etag.equals(givenEtag) && modifiedSince <= servletContainerStartTime)
+        if (ETAG.equals(givenEtag) && modifiedSince <= CONTAINER_START_TIME)
         {
             if (log.isDebugEnabled())
             {
@@ -368,7 +368,7 @@ public class FileHandler implements Handler
     /**
      * Do we retain comments and unneeded spaces in Javascript code?
      */
-    protected boolean scriptCompressed = false;
+    private boolean scriptCompressed = false;
 
     /**
      * The method by which we get new page ids
@@ -383,7 +383,7 @@ public class FileHandler implements Handler
     /**
      * We cache the script output for speed
      */
-    protected final Map scriptCache = new HashMap();
+    protected final Map<String, String> scriptCache = new HashMap<String, String>();
 
     /**
      * The file filePath and resource filePath (minus org.directwebremoting) to read from
@@ -403,12 +403,12 @@ public class FileHandler implements Handler
     /**
      * The time on the script files
      */
-    private static final long servletContainerStartTime;
+    private static final long CONTAINER_START_TIME;
 
     /**
-     * The etag (=time for us) on the script files
+     * The ETAG (=time for us) on the script files
      */
-    private static final String etag;
+    private static final String ETAG;
 
     /**
      * Initialize the container start time
@@ -417,9 +417,9 @@ public class FileHandler implements Handler
     {
         // Browsers are only accurate to the second
         long now = System.currentTimeMillis();
-        servletContainerStartTime = now - (now % 1000);
+        CONTAINER_START_TIME = now - (now % 1000);
 
-        etag = "\"" + servletContainerStartTime + '\"';
+        ETAG = "\"" + CONTAINER_START_TIME + '\"';
     }
 
     /**

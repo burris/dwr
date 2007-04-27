@@ -17,7 +17,6 @@ package org.directwebremoting.impl;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -100,9 +99,8 @@ public class DefaultPageNormalizer implements PageNormalizer
             }
         }
 
-        for (Iterator it = welcomeFiles.iterator(); it.hasNext();)
+        for (String welcomeFile : welcomeFiles)
         {
-            String welcomeFile = (String) it.next();
             if (normalized.endsWith(welcomeFile))
             {
                 normalized = normalized.substring(0, normalized.length() - welcomeFile.length());
@@ -118,7 +116,7 @@ public class DefaultPageNormalizer implements PageNormalizer
      * @param context Our route to reading web.xml
      * @return A list of the welcome files from web.xml or null if none are found there
      */
-    protected static List getWebXmlWelcomeFileList(ServletContext context)
+    protected static List<String> getWebXmlWelcomeFileList(ServletContext context)
     {
         try
         {
@@ -150,7 +148,7 @@ public class DefaultPageNormalizer implements PageNormalizer
                 return null;
             }
 
-            List reply = new ArrayList();
+            List<String> reply = new ArrayList<String>();
             for (int i = 0; i < welcomeFileListNodes.getLength(); i++)
             {
                 Element welcomeFileListNode = (Element) welcomeFileListNodes.item(i);
@@ -178,9 +176,9 @@ public class DefaultPageNormalizer implements PageNormalizer
      * Use the default list of components to strip to normalize a filename
      * @return A list of the default welcome files
      */
-    protected static List getDefaultWelcomeFileList()
+    protected static List<String> getDefaultWelcomeFileList()
     {
-        List reply = new ArrayList();
+        List<String> reply = new ArrayList<String>();
         reply.add("index.html");
         reply.add("index.htm");
         reply.add("index.jsp");
@@ -191,7 +189,7 @@ public class DefaultPageNormalizer implements PageNormalizer
      * Accessor for the list of components to strip to normalize a filename
      * @param welcomeFiles the welcomeFiles to set
      */
-    public void setWelcomeFileList(List welcomeFiles)
+    public void setWelcomeFileList(List<String> welcomeFiles)
     {
         this.welcomeFiles = welcomeFiles;
     }
@@ -231,7 +229,7 @@ public class DefaultPageNormalizer implements PageNormalizer
     /**
      * We need one of these to do the init process.
      */
-    protected ServletContext servletContext = null;
+    private ServletContext servletContext = null;
 
     /**
      * Does the page normalizer include query strings in it's definition of
@@ -242,7 +240,7 @@ public class DefaultPageNormalizer implements PageNormalizer
     /**
      * How we create new documents
      */
-    protected static DocumentBuilderFactory buildFactory = null;
+    private static DocumentBuilderFactory buildFactory = null;
 
     /**
      * The lock to prevent 2 things from calling init at the same time
@@ -252,7 +250,7 @@ public class DefaultPageNormalizer implements PageNormalizer
     /**
      * The list of filename components to strip to normalize a filename
      */
-    protected List welcomeFiles;
+    private List<String> welcomeFiles;
 
     /**
      * The log stream

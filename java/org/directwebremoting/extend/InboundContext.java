@@ -53,7 +53,7 @@ public final class InboundContext
      */
     public TypeHintContext getCurrentTypeHintContext()
     {
-        return (TypeHintContext) contexts.getFirst();
+        return contexts.getFirst();
     }
 
     /**
@@ -97,7 +97,7 @@ public final class InboundContext
      */
     public InboundVariable getInboundVariable(String name)
     {
-        return (InboundVariable) variables.get(name);
+        return variables.get(name);
     }
 
     /**
@@ -117,7 +117,7 @@ public final class InboundContext
      * @param type The type that we converted the object to
      * @param bean The converted version
      */
-    public void addConverted(InboundVariable iv, Class type, Object bean)
+    public void addConverted(InboundVariable iv, Class<?> type, Object bean)
     {
         Conversion conversion = new Conversion(iv, type);
         Object old = converted.put(conversion, bean);
@@ -133,7 +133,7 @@ public final class InboundContext
      * @param type The type that we want the object converted to
      * @return The converted data or null if it has not been converted
      */
-    public Object getConverted(InboundVariable iv, Class type)
+    public Object getConverted(InboundVariable iv, Class<?> type)
     {
         Conversion conversion = new Conversion(iv, type);
         return converted.get(conversion);
@@ -158,9 +158,9 @@ public final class InboundContext
     {
         int count = 0;
         String prefix = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum + ProtocolConstants.INBOUND_CALLNUM_SUFFIX + ProtocolConstants.INBOUND_KEY_PARAM;
-        for (Iterator it = variables.keySet().iterator(); it.hasNext();)
+        for (Iterator<String> it = variables.keySet().iterator(); it.hasNext();)
         {
-            String key = (String) it.next();
+            String key = it.next();
             if (key.startsWith(prefix))
             {
                 count++;
@@ -181,28 +181,29 @@ public final class InboundContext
                      ProtocolConstants.INBOUND_CALLNUM_SUFFIX +
                      ProtocolConstants.INBOUND_KEY_PARAM + index;
 
-        return (InboundVariable) variables.get(key);
+        return variables.get(key);
     }
 
     /**
      * A debug method so people can get a list of all the variable names
      * @return an iterator over the known variable names
      */
-    public Iterator getInboundVariableNames()
+    public Iterator<String> getInboundVariableNames()
     {
         return variables.keySet().iterator();
     }
 
     /**
-     * A Class to use as a key in a map for conversion purposes
+     * A Class to use as a key in a map for conversion purposes.
+     * A collection of an InboundVariable and a type
      */
     protected static class Conversion
     {
         /**
-         * @param inboundVariable
-         * @param type
+         * @param inboundVariable The new inboundVariable
+         * @param type The new type
          */
-        Conversion(InboundVariable inboundVariable, Class type)
+        Conversion(InboundVariable inboundVariable, Class<?> type)
         {
             this.inboundVariable = inboundVariable;
             this.type = type;
@@ -211,6 +212,7 @@ public final class InboundContext
         /* (non-Javadoc)
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @Override
         public boolean equals(Object obj)
         {
             if (!(obj instanceof Conversion))
@@ -220,17 +222,13 @@ public final class InboundContext
 
             Conversion that = (Conversion) obj;
 
-            if (!this.type.equals(that.type))
-            {
-                return false;
-            }
-
-            return this.inboundVariable.equals(that.inboundVariable);
+            return this.type.equals(that.type) && this.inboundVariable.equals(that.inboundVariable);
         }
 
         /* (non-Javadoc)
          * @see java.lang.Object#hashCode()
          */
+        @Override
         public int hashCode()
         {
             return inboundVariable.hashCode() + type.hashCode();
@@ -239,6 +237,7 @@ public final class InboundContext
         /* (non-Javadoc)
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString()
         {
             return "Conversion[" + inboundVariable + "," + type.getName() + "]";
@@ -246,19 +245,20 @@ public final class InboundContext
 
         private InboundVariable inboundVariable;
 
-        private Class type;
+        private Class<?> type;
     }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
         buffer.append("InboundContext[");
-        for (Iterator it = variables.entrySet().iterator(); it.hasNext();)
+        for (Iterator<Map.Entry<String, InboundVariable>> it = variables.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Map.Entry) it.next();
+            Map.Entry<String, InboundVariable> entry = it.next();
             buffer.append(entry.getKey());
             buffer.append('=');
             buffer.append(entry.getValue());
@@ -272,7 +272,7 @@ public final class InboundContext
      * The stack of pushed conversion contexts.
      * i.e. What is the context of this type conversion.
      */
-    private LinkedList contexts = new LinkedList();
+    private LinkedList<TypeHintContext> contexts = new LinkedList<TypeHintContext>();
 
     /**
      * How many params are there?.
@@ -284,12 +284,12 @@ public final class InboundContext
     /**
      * A map of all the inbound variables
      */
-    private final Map variables = new HashMap();
+    private final Map<String, InboundVariable> variables = new HashMap<String, InboundVariable>();
 
     /**
      * A map of all the variables converted.
      */
-    private final Map converted = new HashMap();
+    private Map<Conversion, Object> converted = new HashMap<Conversion, Object>();
 
     /**
      * The log stream

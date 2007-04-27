@@ -37,7 +37,7 @@ public class HtmlCallHandler implements Handler
      */
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        Calls calls = null;
+        Calls calls;
 
         try
         {
@@ -55,16 +55,16 @@ public class HtmlCallHandler implements Handler
 
     /**
      * Setter for the HTML Javascript Marshaller
-     * @param marshaller The new marshaller
+     * @param htmlCallMarshaller The new marshaller
      */
-    public void setHtmlCallMarshaller(HtmlCallMarshaller marshaller)
+    public void setHtmlCallMarshaller(HtmlCallMarshaller htmlCallMarshaller)
     {
-        this.htmlCallMarshaller = marshaller;
+        this.htmlCallMarshaller = htmlCallMarshaller;
     }
 
     /**
      * Setter for the remoter
-     * @param remoter
+     * @param remoter The new remoter
      */
     public void setRemoter(Remoter remoter)
     {

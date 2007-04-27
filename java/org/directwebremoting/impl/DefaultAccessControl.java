@@ -71,10 +71,10 @@ public class DefaultAccessControl implements AccessControl
     public void addRoleRestriction(String scriptName, String methodName, String role)
     {
         String key = scriptName + '.' + methodName;
-        Set roles = (Set) roleRestrictMap.get(key);
+        Set<String> roles = roleRestrictMap.get(key);
         if (roles == null)
         {
-            roles = new HashSet();
+            roles = new HashSet<String>();
             roleRestrictMap.put(key, roles);
         }
 
@@ -92,7 +92,7 @@ public class DefaultAccessControl implements AccessControl
         // to default disallow mode, and check that the are not rules applied
         if (policy.defaultAllow)
         {
-            if (policy.rules.size() > 0)
+            if (!policy.rules.isEmpty())
             {
                 throw new IllegalArgumentException(Messages.getString("DefaultAccessControl.MixedIncludesAndExcludes", scriptName));
             }
@@ -115,7 +115,7 @@ public class DefaultAccessControl implements AccessControl
         // to default disallow mode, and check that the are not rules applied
         if (!policy.defaultAllow)
         {
-            if (policy.rules.size() > 0)
+            if (!policy.rules.isEmpty())
             {
                 throw new IllegalArgumentException(Messages.getString("DefaultAccessControl.MixedIncludesAndExcludes", scriptName));
             }
@@ -136,7 +136,7 @@ public class DefaultAccessControl implements AccessControl
         String methodName = method.getName();
 
         // What if there is some J2EE role based restriction?
-        Set roles = getRoleRestrictions(scriptName, methodName);
+        Set<String> roles = getRoleRestrictions(scriptName, methodName);
         if (roles != null && !roles.isEmpty())
         {
             HttpServletRequest req = WebContextFactory.get().getHttpServletRequest();
@@ -151,10 +151,10 @@ public class DefaultAccessControl implements AccessControl
      * @param methodName The name of the method (without brackets)
      * @return A Set of all the roles for the given script and method
      */
-    protected Set getRoleRestrictions(String scriptName, String methodName)
+    protected Set<String> getRoleRestrictions(String scriptName, String methodName)
     {
         String key = scriptName + '.' + methodName;
-        return (Set) roleRestrictMap.get(key);
+        return roleRestrictMap.get(key);
     }
 
     /**
@@ -162,7 +162,7 @@ public class DefaultAccessControl implements AccessControl
      * @param req The users request
      * @throws SecurityException if the users session is invalid
      */
-    protected void assertAuthenticationIsValid(HttpServletRequest req) throws SecurityException
+    protected static void assertAuthenticationIsValid(HttpServletRequest req) throws SecurityException
     {
         // ensure that at least the next call has a valid session
         req.getSession();
@@ -185,11 +185,11 @@ public class DefaultAccessControl implements AccessControl
      * @param roles The list of roles to check
      * @throws SecurityException if this user is not allowed by the list of roles
      */
-    protected void assertAllowedByRoles(HttpServletRequest req, Set roles) throws SecurityException
+    protected static void assertAllowedByRoles(HttpServletRequest req, Set<String> roles) throws SecurityException
     {
-        for (Iterator it = roles.iterator(); it.hasNext();)
+        for (Iterator<String> it = roles.iterator(); it.hasNext();)
         {
-            String role = (String) it.next();
+            String role = it.next();
             if ("*".equals(role) || req.isUserInRole(role))
             {
                 return;
@@ -203,7 +203,7 @@ public class DefaultAccessControl implements AccessControl
      * Is the method public?
      * @param method The method that we wish to execute
      */
-    protected void assertIsMethodPublic(Method method)
+    protected static void assertIsMethodPublic(Method method)
     {
         if (!Modifier.isPublic(method.getModifiers()))
         {
@@ -215,7 +215,7 @@ public class DefaultAccessControl implements AccessControl
      * We ban some methods from {@link java.lang.Object}
      * @param method The method that should not be owned by {@link java.lang.Object}
      */
-    protected void assertIsNotOnBaseObject(Method method)
+    protected static void assertIsNotOnBaseObject(Method method)
     {
         if (method.getDeclaringClass() == Object.class)
         {
@@ -232,7 +232,7 @@ public class DefaultAccessControl implements AccessControl
      */
     protected void assertIsExecutable(String scriptName, String methodName) throws SecurityException
     {
-        Policy policy = (Policy) policyMap.get(scriptName);
+        Policy policy = policyMap.get(scriptName);
         if (policy == null)
         {
             return;
@@ -240,9 +240,9 @@ public class DefaultAccessControl implements AccessControl
 
         // Find a match for this method in the policy rules
         String match = null;
-        for (Iterator it = policy.rules.iterator(); it.hasNext() && match == null;)
+        for (Iterator<String> it = policy.rules.iterator(); it.hasNext() && match == null;)
         {
-            String test = (String) it.next();
+            String test = it.next();
 
             // If at some point we wish to do regex matching on rules, here is
             // the place to do it.
@@ -277,11 +277,11 @@ public class DefaultAccessControl implements AccessControl
      * Check the parameters are not DWR internal either
      * @param method The method that we want to execute
      */
-    protected void assertAreParametersDwrInternal(Method method)
+    protected static void assertAreParametersDwrInternal(Method method)
     {
         for (int j = 0; j < method.getParameterTypes().length; j++)
         {
-            Class paramType = method.getParameterTypes()[j];
+            Class<?> paramType = method.getParameterTypes()[j];
 
             if (paramType.getName().startsWith(PACKAGE_DWR_DENY))
             {
@@ -294,7 +294,7 @@ public class DefaultAccessControl implements AccessControl
      * Is the class that we are executing a method on part of DWR?
      * @param creator The {@link Creator} that exposes the class
      */
-    protected void assertIsClassDwrInternal(Creator creator)
+    protected static void assertIsClassDwrInternal(Creator creator)
     {
         if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY))
         {
@@ -309,7 +309,7 @@ public class DefaultAccessControl implements AccessControl
      */
     protected Policy getPolicy(String type)
     {
-        Policy policy = (Policy) policyMap.get(type);
+        Policy policy = policyMap.get(type);
         if (policy == null)
         {
             policy = new Policy();
@@ -336,12 +336,12 @@ public class DefaultAccessControl implements AccessControl
     /**
      * A map of Creators to policies
      */
-    protected Map policyMap = new HashMap();
+    protected Map<String, Policy> policyMap = new HashMap<String, Policy>();
 
     /**
      * What role based restrictions are there?
      */
-    protected Map roleRestrictMap = new HashMap();
+    protected Map<String, Set<String>> roleRestrictMap = new HashMap<String, Set<String>>();
 
     /**
      * A struct that contains a method access policy for a Creator
@@ -349,7 +349,7 @@ public class DefaultAccessControl implements AccessControl
     static class Policy
     {
         boolean defaultAllow = true;
-        List rules = new ArrayList();
+        List<String> rules = new ArrayList<String>();
     }
 
     /**

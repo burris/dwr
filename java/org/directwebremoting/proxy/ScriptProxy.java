@@ -51,13 +51,13 @@ public class ScriptProxy
      * Non-http thread constructor
      * @param scriptSessions The browsers to alter
      */
-    public ScriptProxy(Collection scriptSessions)
+    public ScriptProxy(Collection<ScriptSession> scriptSessions)
     {
         this.scriptSessions.addAll(scriptSessions);
     }
 
     /**
-     * @param scriptSession
+     * @param scriptSession The script session to add to the list
      */
     public void addScriptSession(ScriptSession scriptSession)
     {
@@ -65,9 +65,9 @@ public class ScriptProxy
     }
 
     /**
-     * @param addScriptSessions
+     * @param addScriptSessions The script sessions to add to the list
      */
-    public void addScriptSessions(Collection addScriptSessions)
+    public void addScriptSessions(Collection<ScriptSession> addScriptSessions)
     {
         scriptSessions.addAll(addScriptSessions);
     }
@@ -195,9 +195,9 @@ public class ScriptProxy
      */
     public void addScript(ScriptBuffer script)
     {
-        for (Iterator it = scriptSessions.iterator(); it.hasNext();)
+        for (Iterator<ScriptSession> it = scriptSessions.iterator(); it.hasNext();)
         {
-            ScriptSession scriptSession = (ScriptSession) it.next();
+            ScriptSession scriptSession = it.next();
             scriptSession.addScript(script);
         }
     }
@@ -205,5 +205,5 @@ public class ScriptProxy
     /**
      * The browsers that we affect.
      */
-    private final List scriptSessions = new ArrayList();
+    private final List<ScriptSession> scriptSessions = new ArrayList<ScriptSession>();
 }

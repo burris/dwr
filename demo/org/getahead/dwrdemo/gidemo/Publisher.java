@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.servlet.ServletContext;
 
+import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContext;
@@ -39,7 +40,7 @@ public class Publisher implements Runnable
         {
             while (!Thread.currentThread().isInterrupted())
             {
-                Collection sessions = serverContext.getScriptSessionsByPage("/dwr/gi/index.html");
+                Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage("/dwr/gi/index.html");
                 ScriptProxy proxy = new ScriptProxy(sessions);
 
                 Corporation corp = corporations.getNextChangedCorporation();

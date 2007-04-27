@@ -33,14 +33,14 @@ public class NullConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#setConverterManager(org.directwebremoting.ConverterManager)
      */
-    public void setConverterManager(ConverterManager config)
+    public void setConverterManager(ConverterManager converterManager)
     {
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx)
+    public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx)
     {
         return null;
     }

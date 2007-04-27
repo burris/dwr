@@ -59,14 +59,15 @@ public class PollHandler implements Handler
     /* (non-Javadoc)
      * @see org.directwebremoting.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @SuppressWarnings("unchecked")
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         // We must parse the parameters before we setup the conduit because it's
         // only after doing this that we know the scriptSessionId
         WebContext webContext = WebContextFactory.get();
 
-        boolean isGet = request.getMethod().equals("GET");
-        Map parameters = (Map) request.getAttribute(ATTRIBUTE_PARAMETERS);
+        boolean isGet = "GET".equals(request.getMethod());
+        Map<String, String> parameters = (Map<String, String>) request.getAttribute(ATTRIBUTE_PARAMETERS);
         if (parameters == null)
         {
             try
@@ -94,7 +95,7 @@ public class PollHandler implements Handler
         String scriptId = extractParameter(request, parameters, ATTRIBUTE_SESSION_ID, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         String page = extractParameter(request, parameters, ATTRIBUTE_PAGE, ProtocolConstants.INBOUND_KEY_PAGE);
         String prString = extractParameter(request, parameters, ATTRIBUTE_PARTIAL_RESPONSE, ProtocolConstants.INBOUND_KEY_PARTIAL_RESPONSE);
-        int partialResponse = Integer.valueOf(prString).intValue();
+        int partialResponse = Integer.valueOf(prString);
 
         // We might need to complain that reverse ajax is not enabled.
         if (!activeReverseAjaxEnabled)
@@ -317,13 +318,13 @@ public class PollHandler implements Handler
      * @param paramName The name of the parameter sent
      * @return The found value
      */
-    protected String extractParameter(HttpServletRequest request, Map parameters, String attrName, String paramName)
+    protected String extractParameter(HttpServletRequest request, Map<String, String> parameters, String attrName, String paramName)
     {
         String id = (String) request.getAttribute(attrName);
 
         if (id == null)
         {
-            id = (String) parameters.remove(paramName);
+            id = parameters.remove(paramName);
             request.setAttribute(attrName, id);
         }
 
@@ -398,6 +399,7 @@ public class PollHandler implements Handler
      * @param pollAndCometEnabled Are we doing full reverse ajax
      * @deprecated Use {@link #setActiveReverseAjaxEnabled(boolean)}
      */
+    @Deprecated
     public void setPollAndCometEnabled(boolean pollAndCometEnabled)
     {
         this.activeReverseAjaxEnabled = pollAndCometEnabled;

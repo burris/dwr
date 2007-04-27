@@ -20,6 +20,7 @@ import java.beans.PropertyDescriptor;
 import java.util.Map;
 
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.Property;
 import org.directwebremoting.impl.PropertyDescriptorProperty;
 
 /**
@@ -31,9 +32,10 @@ public class ExceptionConverter extends BeanConverter
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.BasicBeanConverter#getPropertyDescriptors(java.lang.Class, boolean, boolean)
      */
-    public Map getPropertyMapFromClass(Class type, boolean readRequired, boolean writeRequired) throws MarshallException
+    @Override
+    public Map<String, Property> getPropertyMapFromClass(Class<?> type, boolean readRequired, boolean writeRequired) throws MarshallException
     {
-        Map descriptors = super.getPropertyMapFromClass(type, readRequired, writeRequired);
+        Map<String, Property> descriptors = super.getPropertyMapFromClass(type, readRequired, writeRequired);
         descriptors.put("javaClassName", new PlainProperty("javaClassName", type.getName()));
 
         // Make sure Throwable's standard properties are added
@@ -59,7 +61,7 @@ public class ExceptionConverter extends BeanConverter
      * @param readMethodName A method name to use when getting said property
      * @throws IntrospectionException If we fail to build a PropertyDescriptor
      */
-    protected void fixMissingThrowableProperty(Map descriptors, String name, String readMethodName) throws IntrospectionException
+    protected void fixMissingThrowableProperty(Map<String, Property> descriptors, String name, String readMethodName) throws IntrospectionException
     {
         if (!descriptors.containsKey(name) && isAllowedByIncludeExcludeRules(name))
         {

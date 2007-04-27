@@ -44,8 +44,7 @@ public class ServerException extends Exception
      */
     public ServerException(String message, Throwable ex)
     {
-        super(message);
-        this.ex = ex;
+        super(message, ex);
     }
 
     /**
@@ -54,20 +53,6 @@ public class ServerException extends Exception
      */
     public ServerException(Throwable ex)
     {
-        super(ex.getMessage());
-        this.ex = ex;
+        super(ex.getMessage(), ex);
     }
-
-    /**
-     * @return The cause of this exception (if any)
-     */
-    public Throwable getCause()
-    {
-        return ex;
-    }
-
-    /**
-     * Stored exception cause
-     */
-    private Throwable ex = null;
 }

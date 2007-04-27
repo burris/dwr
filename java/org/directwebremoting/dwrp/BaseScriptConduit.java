@@ -69,7 +69,7 @@ public abstract class BaseScriptConduit extends ScriptConduit
      * Called when we are initially setting up the stream. This does not send
      * any data to the client, just sets it up for data.
      * <p>This method is always called exactly once in the lifetime of a
-     * conduit, after {@link #preStreamSetup()} and before any scripts are sent.
+     * conduit.
      */
     protected abstract void beginStream();
 
@@ -83,13 +83,13 @@ public abstract class BaseScriptConduit extends ScriptConduit
     /**
      * A poll has finished, get the client to call us back
      * @param timetoNextPoll How long before we tell the browser to come back?
-     * @throws IOException
+     * @throws IOException When we fail to call endStream()
      */
     public void close(int timetoNextPoll) throws IOException
     {
         try
         {
-            EnginePrivate.remoteHandleCallback(this, batchId, "0", new Integer(timetoNextPoll));
+            EnginePrivate.remoteHandleCallback(this, batchId, "0", timetoNextPoll);
         }
         catch (Exception ex)
         {
@@ -162,7 +162,7 @@ public abstract class BaseScriptConduit extends ScriptConduit
     /**
      * The slab of data we send to IE to get it to stream
      */
-    protected static final String fourKFlushData;
+    protected static final String FOUR_K_FLUSH_DATA;
     static
     {
         StringBuffer buffer = new StringBuffer(409600);
@@ -170,6 +170,6 @@ public abstract class BaseScriptConduit extends ScriptConduit
         {
             buffer.append(" ");
         }
-        fourKFlushData = buffer.toString();
+        FOUR_K_FLUSH_DATA = buffer.toString();
     }
 }

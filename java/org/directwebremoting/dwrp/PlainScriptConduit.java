@@ -46,6 +46,7 @@ public class PlainScriptConduit extends BaseScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseScriptConduit#preStreamSetup()
      */
+    @Override
     protected String getOutboundMimeType()
     {
         return MimeConstants.MIME_JS;
@@ -54,6 +55,7 @@ public class PlainScriptConduit extends BaseScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseScriptConduit#beginStream()
      */
+    @Override
     public void beginStream()
     {
     }
@@ -61,6 +63,7 @@ public class PlainScriptConduit extends BaseScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseScriptConduit#endStream()
      */
+    @Override
     public void endStream()
     {
     }
@@ -68,6 +71,7 @@ public class PlainScriptConduit extends BaseScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
      */
+    @Override
     public boolean addScript(ScriptBuffer scriptBuffer) throws IOException, MarshallException
     {
         String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);

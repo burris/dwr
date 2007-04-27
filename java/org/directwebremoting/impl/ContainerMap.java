@@ -18,7 +18,6 @@ package org.directwebremoting.impl;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,7 +27,7 @@ import org.directwebremoting.Container;
  * A {@link Map} that uses a {@link Container} as it's source of data.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ContainerMap extends AbstractMap implements Map
+public class ContainerMap extends AbstractMap<String, Object> implements Map<String, Object>
 {
     /**
      * Create a ContainerMap with a Container to proxy requests to
@@ -48,12 +47,10 @@ public class ContainerMap extends AbstractMap implements Map
     {
         if (proxy == null)
         {
-            proxy = new HashMap();
-            for (Iterator it = container.getBeanNames().iterator(); it.hasNext();)
+            proxy = new HashMap<String, Object>();
+            for (String name : container.getBeanNames())
             {
-                String name = (String) it.next();
                 Object value = container.getBean(name);
-
                 if (!filterNonStringValues || value instanceof String)
                 {
                     proxy.put(name, value);
@@ -65,6 +62,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#get(java.lang.Object)
      */
+    @Override
     public Object get(Object key)
     {
         init();
@@ -74,7 +72,8 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#entrySet()
      */
-    public Set entrySet()
+    @Override
+    public Set<Map.Entry<String, Object>> entrySet()
     {
         init();
         return proxy.entrySet();
@@ -83,6 +82,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#containsKey(java.lang.Object)
      */
+    @Override
     public boolean containsKey(Object key)
     {
         init();
@@ -92,6 +92,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#containsValue(java.lang.Object)
      */
+    @Override
     public boolean containsValue(Object value)
     {
         init();
@@ -101,6 +102,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o)
     {
         init();
@@ -110,6 +112,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#hashCode()
      */
+    @Override
     public int hashCode()
     {
         init();
@@ -119,6 +122,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#isEmpty()
      */
+    @Override
     public boolean isEmpty()
     {
         init();
@@ -128,7 +132,8 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#keySet()
      */
-    public Set keySet()
+    @Override
+    public Set<String> keySet()
     {
         init();
         return proxy.keySet();
@@ -137,6 +142,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#size()
      */
+    @Override
     public int size()
     {
         init();
@@ -146,7 +152,8 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#values()
      */
-    public Collection values()
+    @Override
+    public Collection<Object> values()
     {
         init();
         return proxy.values();
@@ -155,6 +162,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#toString()
      */
+    @Override
     public String toString()
     {
         init();
@@ -164,7 +172,8 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#put(java.lang.Object, java.lang.Object)
      */
-    public Object put(Object key, Object value)
+    @Override
+    public Object put(String key, Object value)
     {
         throw new UnsupportedOperationException("ContainerMaps are read only");
     }
@@ -172,7 +181,8 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#putAll(java.util.Map)
      */
-    public void putAll(Map t)
+    @Override
+    public void putAll(Map<? extends String, ?extends Object> t)
     {
         throw new UnsupportedOperationException("ContainerMaps are read only");
     }
@@ -180,6 +190,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#remove(java.lang.Object)
      */
+    @Override
     public Object remove(Object key)
     {
         throw new UnsupportedOperationException("ContainerMaps are read only");
@@ -188,6 +199,7 @@ public class ContainerMap extends AbstractMap implements Map
     /* (non-Javadoc)
      * @see java.util.AbstractMap#clear()
      */
+    @Override
     public void clear()
     {
         throw new UnsupportedOperationException("ContainerMaps are read only");
@@ -206,5 +218,5 @@ public class ContainerMap extends AbstractMap implements Map
     /**
      * The cache of filtered values
      */
-    protected Map proxy;
+    protected Map<String, Object> proxy;
 }

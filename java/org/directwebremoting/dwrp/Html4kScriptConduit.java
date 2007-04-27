@@ -49,6 +49,7 @@ public class Html4kScriptConduit extends BaseScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
      */
+    @Override
     protected String getOutboundMimeType()
     {
         return MimeConstants.MIME_HTML;
@@ -57,6 +58,7 @@ public class Html4kScriptConduit extends BaseScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseScriptConduit#beginStream()
      */
+    @Override
     public void beginStream()
     {
         synchronized (out)
@@ -71,6 +73,7 @@ public class Html4kScriptConduit extends BaseScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.BaseScriptConduit#endStream()
      */
+    @Override
     public void endStream()
     {
         synchronized (out)
@@ -85,6 +88,7 @@ public class Html4kScriptConduit extends BaseScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
      */
+    @Override
     public boolean addScript(ScriptBuffer scriptBuffer) throws IOException, MarshallException
     {
         String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);
@@ -97,7 +101,7 @@ public class Html4kScriptConduit extends BaseScriptConduit
 
             if (partialResponse == PollHandler.PARTIAL_RESPONSE_FLUSH)
             {
-                out.print(fourKFlushData);
+                out.print(FOUR_K_FLUSH_DATA);
             }
 
             return flush();

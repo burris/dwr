@@ -49,28 +49,43 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
         this.beanFactory = beanFactory;
     }
 
-    public void addParameter(Object askFor, Object valueParam)
-    throws InstantiationException, IllegalAccessException {
-        try {
-            Class clz = ClassUtils.forName((String)askFor);
-            if (log.isDebugEnabled()) {
+    /* (non-Javadoc)
+     * @see org.directwebremoting.impl.DefaultContainer#addParameter(java.lang.String, java.lang.Object)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void addParameter(String askFor, Object valueParam) throws InstantiationException, IllegalAccessException
+    {
+        try
+        {
+            Class<?> clz = ClassUtils.forName(askFor);
+            if (log.isDebugEnabled())
+            {
                 log.debug("trying to resolve the following class from the Spring bean container: " + clz.getName());
             }
 
-            Map beansOfType = ((ListableBeanFactory)beanFactory).getBeansOfType(clz);
-            if (log.isDebugEnabled()) {
+            Map<String, Object> beansOfType = ((ListableBeanFactory) beanFactory).getBeansOfType(clz);
+            if (log.isDebugEnabled())
+            {
                 log.debug("beans: " + beansOfType + " - " + beansOfType.size());
             }
-            if (beansOfType.size() == 0) {
+            if (beansOfType.size() == 0)
+            {
                 log.debug("adding parameter the normal way");
                 super.addParameter(askFor, valueParam);
-            } else if (beansOfType.size() > 1) {
+            }
+            else if (beansOfType.size() > 1)
+            {
                 // TODO: handle multiple declarations
                 throw new InstantiationException("multiple beans of type '" + clz.getName() + "' were found in the spring configuration");
-            } else {
-                this.beans.put(askFor, beansOfType.values().iterator().next());
             }
-        } catch (ClassNotFoundException e) {
+            else
+            {
+                beans.put(askFor, beansOfType.values().iterator().next());
+            }
+        }
+        catch (ClassNotFoundException ex)
+        {
             super.addParameter(askFor, valueParam);
         }
     }
@@ -78,10 +93,12 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
     /* (non-Javadoc)
      * @see org.directwebremoting.impl.DefaultContainer#getBean(java.lang.String)
      */
+    @Override
     public Object getBean(String id)
     {
         Object reply;
-        try {
+        try
+        {
             reply = beanFactory.getBean(id);
         }
         catch (BeansException ex)
@@ -96,9 +113,10 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
     /* (non-Javadoc)
      * @see org.directwebremoting.impl.DefaultContainer#getBeanNames()
      */
-    public Collection getBeanNames()
+    @Override
+    public Collection<String> getBeanNames()
     {
-        List names = new ArrayList();
+        List<String> names = new ArrayList<String>();
 
         // Snarf the beans from Spring
         if (beanFactory instanceof ListableBeanFactory)

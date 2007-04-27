@@ -17,8 +17,8 @@ package org.directwebremoting.convert;
 
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.directwebremoting.dwrp.ParseUtil;
@@ -47,17 +47,18 @@ public class MapConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#setConverterManager(org.directwebremoting.ConverterManager)
      */
-    public void setConverterManager(ConverterManager newConfig)
+    public void setConverterManager(ConverterManager converterManager)
     {
-        this.config = newConfig;
+        this.converterManager = converterManager;
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
+    @SuppressWarnings("unchecked")
+    public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        String value = iv.getValue();
+        String value = data.getValue();
 
         // If the text is null then the whole bean is null
         if (value.trim().equals(ProtocolConstants.INBOUND_NULL))
@@ -81,7 +82,7 @@ public class MapConverter implements Converter
         {
             // Maybe we ought to check that the paramType isn't expecting a more
             // distinct type of Map and attempt to create that?
-            Map map;
+            Map<Object, Object> map;
 
             // If paramType is concrete then just use whatever we've got.
             if (!paramType.isInterface() && !Modifier.isAbstract(paramType.getModifiers()))
@@ -90,26 +91,26 @@ public class MapConverter implements Converter
                 // of completing this - they asked for a specific type and we
                 // can't create that type. I don't know of a way of finding
                 // subclasses that might be instaniable so we accept failure.
-                map = (Map) paramType.newInstance();
+                map = (Map<Object, Object>) paramType.newInstance();
             }
             else
             {
-                map = new HashMap();
+                map = new HashMap<Object, Object>();
             }
 
             // Get the extra type info
             TypeHintContext thc = inctx.getCurrentTypeHintContext();
 
             TypeHintContext keyThc = thc.createChildContext(0);
-            Class keyType = keyThc.getExtraTypeInfo();
+            Class<?> keyType = keyThc.getExtraTypeInfo();
 
             TypeHintContext valThc = thc.createChildContext(1);
-            Class valType = valThc.getExtraTypeInfo();
+            Class<?> valType = valThc.getExtraTypeInfo();
 
             // We should put the new object into the working map in case it
             // is referenced later nested down in the conversion process.
-            inctx.addConverted(iv, paramType, map);
-            InboundContext incx = iv.getLookup();
+            inctx.addConverted(data, paramType, map);
+            InboundContext incx = data.getLookup();
 
             // Loop through the property declarations
             StringTokenizer st = new StringTokenizer(value, ",");
@@ -135,7 +136,7 @@ public class MapConverter implements Converter
                 String splitIvValue = splitIv[LocalUtil.INBOUND_INDEX_VALUE];
                 String splitIvType = splitIv[LocalUtil.INBOUND_INDEX_TYPE];
                 InboundVariable valIv = new InboundVariable(incx, null, splitIvType, splitIvValue);
-                Object val = config.convertInbound(valType, valIv, inctx, valThc);
+                Object val = converterManager.convertInbound(valType, valIv, inctx, valThc);
 
                 // Keys (unlike values) do not have type info passed with them
                 // Could we have recurrsive key? - I don't think so because keys
@@ -144,7 +145,7 @@ public class MapConverter implements Converter
                 //String[] keySplit = LocalUtil.splitInbound(keyStr);
                 //InboundVariable keyIv = new InboundVariable(incx, splitIv[LocalUtil.INBOUND_INDEX_TYPE], splitIv[LocalUtil.INBOUND_INDEX_VALUE]);
                 InboundVariable keyIv = new InboundVariable(incx, null, ProtocolConstants.TYPE_STRING, keyStr);
-                Object key = config.convertInbound(keyType, keyIv, inctx, keyThc);
+                Object key = converterManager.convertInbound(keyType, keyIv, inctx, keyThc);
 
                 map.put(key, val);
             }
@@ -164,13 +165,15 @@ public class MapConverter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
      */
+    @SuppressWarnings("unchecked")
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         // First we just collect our converted children
-        Map ovs = (Map) LocalUtil.classNewInstance("OrderedConvertOutbound", "java.util.LinkedHashMap", Map.class);
+        //noinspection unchecked
+        Map<String, OutboundVariable> ovs = LocalUtil.classNewInstance("OrderedConvertOutbound", "java.util.LinkedHashMap", Map.class);
         if (ovs == null)
         {
-            ovs = new HashMap();
+            ovs = new HashMap<String, OutboundVariable>();
         }
 
         ObjectOutboundVariable ov = new ObjectOutboundVariable(outctx);
@@ -178,10 +181,9 @@ public class MapConverter implements Converter
 
         // Loop through the map outputting any init code and collecting
         // converted outbound variables into the ovs map
-        Map map = (Map) data;
-        for (Iterator it = map.entrySet().iterator(); it.hasNext();)
+        Map<Object, Object> map = (Map<Object, Object>) data;
+        for (Entry<Object, Object> entry : map.entrySet())
         {
-            Map.Entry entry = (Map.Entry) it.next();
             Object key = entry.getKey();
             Object value = entry.getValue();
 
@@ -194,11 +196,11 @@ public class MapConverter implements Converter
 
             String outkey = JavascriptUtil.escapeJavaScript(key.toString());
 
-            // OutboundVariable ovkey = config.convertOutbound(key, outctx);
+            // OutboundVariable ovkey = converterManager.convertOutbound(key, outctx);
             // buffer.append(ovkey.getInitCode());
             // outkey = ovkey.getAssignCode();
 
-            OutboundVariable nested = config.convertOutbound(value, outctx);
+            OutboundVariable nested = converterManager.convertOutbound(value, outctx);
 
             ovs.put(outkey, nested);
         }
@@ -216,7 +218,7 @@ public class MapConverter implements Converter
     /**
      * To forward marshalling requests
      */
-    private ConverterManager config = null;
+    private ConverterManager converterManager = null;
 
     /**
      * The log stream

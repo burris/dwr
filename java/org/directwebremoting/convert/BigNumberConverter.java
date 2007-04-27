@@ -36,9 +36,9 @@ public class BigNumberConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
+    public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        String value = iv.getValue();
+        String value = data.getValue();
 
         if (value == null || value.length() == 0)
         {
@@ -68,13 +68,13 @@ public class BigNumberConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object object, OutboundContext outctx)
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        if (object == null)
+        if (data == null)
         {
             return new SimpleOutboundVariable("null", outctx, true);
         }
 
-        return new SimpleOutboundVariable(object.toString(), outctx, true);
+        return new SimpleOutboundVariable(data.toString(), outctx, true);
     }
 }

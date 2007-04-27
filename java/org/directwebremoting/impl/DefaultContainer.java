@@ -19,8 +19,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.servlet.Servlet;
@@ -46,7 +46,7 @@ public class DefaultContainer extends AbstractContainer implements Container
      * @throws IllegalAccessException If the specified beans could not be accessed
      * @throws InstantiationException If the specified beans could not be created
      */
-    public void addParameter(Object askFor, Object valueParam) throws InstantiationException, IllegalAccessException
+    public void addParameter(String askFor, Object valueParam) throws InstantiationException, IllegalAccessException
     {
         Object value = valueParam;
 
@@ -55,7 +55,7 @@ public class DefaultContainer extends AbstractContainer implements Container
         {
             try
             {
-                Class impl = LocalUtil.classForName((String) value);
+                Class<?> impl = LocalUtil.classForName((String) value);
                 value = impl.newInstance();
             }
             catch (ClassNotFoundException ex)
@@ -66,11 +66,11 @@ public class DefaultContainer extends AbstractContainer implements Container
 
         // If we have an instansiated value object and askFor is an interface
         // then we can check that one implements the other
-        if (!(value instanceof String) && askFor instanceof String)
+        if (!(value instanceof String))
         {
             try
             {
-                Class iface = LocalUtil.classForName((String) askFor);
+                Class<?> iface = LocalUtil.classForName(askFor);
                 if (!iface.isAssignableFrom(value.getClass()))
                 {
                     log.error("Can't cast: " + value + " to " + askFor);
@@ -104,15 +104,14 @@ public class DefaultContainer extends AbstractContainer implements Container
      * where all the setup is done, and where we depend on the undocumented
      * feature of all servlet containers that they complete the init process
      * of a Servlet before they begin servicing requests.
-     * @see DefaultContainer#addParameter(Object, Object)
+     * @see DefaultContainer#addParameter(String, Object)
      * @noinspection UnnecessaryLabelOnContinueStatement
      */
     public void setupFinished()
     {
         // We try to autowire each bean in turn
-        for (Iterator it = beans.entrySet().iterator(); it.hasNext();)
+        for (Entry<String, Object> entry : beans.entrySet())
         {
-            Map.Entry entry = (Map.Entry) it.next();
             // Class type = (Class) entry.getKey();
             Object ovalue = entry.getValue();
 
@@ -122,16 +121,14 @@ public class DefaultContainer extends AbstractContainer implements Container
 
                 Method[] methods = ovalue.getClass().getMethods();
                 methods:
-                for (int i = 0; i < methods.length; i++)
+                for (Method setter : methods)
                 {
-                    Method setter = methods[i];
-
                     if (setter.getName().startsWith("set") &&
-                        setter.getName().length() > 3 &&
-                        setter.getParameterTypes().length == 1)
+                            setter.getName().length() > 3 &&
+                            setter.getParameterTypes().length == 1)
                     {
                         String name = Character.toLowerCase(setter.getName().charAt(3)) + setter.getName().substring(4);
-                        Class propertyType = setter.getParameterTypes()[0];
+                        Class<?> propertyType = setter.getParameterTypes()[0];
 
                         // First we try auto-wire by name
                         Object setting = beans.get(name);
@@ -192,7 +189,7 @@ public class DefaultContainer extends AbstractContainer implements Container
     {
         try
         {
-            setter.invoke(bean, new Object[] { value });
+            setter.invoke(bean, value);
         }
         catch (IllegalArgumentException ex)
         {
@@ -225,7 +222,7 @@ public class DefaultContainer extends AbstractContainer implements Container
     /* (non-Javadoc)
      * @see org.directwebremoting.Container#getBeanNames()
      */
-    public Collection getBeanNames()
+    public Collection<String> getBeanNames()
     {
         return Collections.unmodifiableCollection(beans.keySet());
     }
@@ -233,7 +230,7 @@ public class DefaultContainer extends AbstractContainer implements Container
     /**
      * The beans that we know of indexed by type
      */
-    protected Map beans = new TreeMap();
+    protected Map<String, Object> beans = new TreeMap<String, Object>();
 
     /**
      * The log stream

@@ -35,7 +35,6 @@ public class Effect extends ScriptProxy
      */
     public Effect()
     {
-        super();
     }
 
     /**
@@ -51,7 +50,7 @@ public class Effect extends ScriptProxy
      * Http thread constructor that alters a number of browsers
      * @param scriptSessions A collection of ScriptSessions that we should act on.
      */
-    public Effect(Collection scriptSessions)
+    public Effect(Collection<ScriptSession> scriptSessions)
     {
         super(scriptSessions);
     }

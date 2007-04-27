@@ -146,7 +146,7 @@ public abstract class FluentConfigurator implements Configurator
     {
         if (params == null)
         {
-            params = new HashMap();
+            params = new HashMap<String, String>();
         }
 
         params.put(name, value);
@@ -162,7 +162,7 @@ public abstract class FluentConfigurator implements Configurator
     {
         if (filters == null)
         {
-            filters = new ArrayList();
+            filters = new ArrayList<String>();
         }
 
         filters.add(newFilterClassName);
@@ -304,14 +304,14 @@ public abstract class FluentConfigurator implements Configurator
                 
                 if (filters != null)
                 {
-                    for (Iterator it = filters.iterator(); it.hasNext();)
+                    for (Iterator<String> it = filters.iterator(); it.hasNext();)
                     {
-                        String className = (String) it.next();
-                        AjaxFilter filter = (AjaxFilter) LocalUtil.classNewInstance(scriptName, className, AjaxFilter.class);
+                        String className = it.next();
+                        AjaxFilter filter = LocalUtil.classNewInstance(scriptName, className, AjaxFilter.class);
 
                         if (filter != null)
                         {
-                            LocalUtil.setParams(filter, Collections.EMPTY_MAP, Collections.EMPTY_LIST);
+                            LocalUtil.setParams(filter, Collections.<String, Object>emptyMap(), Collections.<String>emptyList());
                             ajaxFilterManager.addAjaxFilter(filter, scriptName);
                         }
 
@@ -331,11 +331,12 @@ public abstract class FluentConfigurator implements Configurator
         case STATE_ALLOW_FILTER:
             try
             {
-                Class impl = LocalUtil.classForName(filterClassName);
+                Class<?> impl = LocalUtil.classForName(filterClassName);
                 AjaxFilter object = (AjaxFilter) impl.newInstance();
 
-                if (params != null) {
-                    LocalUtil.setParams(object, params, Collections.EMPTY_LIST);
+                if (params != null)
+                {
+                    LocalUtil.setParams(object, params, Collections.<String>emptyList());
                 }
                 
                 ajaxFilterManager.addAjaxFilter(object);
@@ -414,12 +415,12 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * holds name / value pairs used in <allow create|convert ... />
      */
-    private Map params = null;
+    private Map<String, String> params = null;
     
     /**
      * holds classNames of filters used in <allow create/ filter />
      */
-    private List filters = null;
+    private List<String> filters = null;
 
     /**
      * holds signature lines
@@ -434,7 +435,7 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * JDK5: we can convert this to Collections.emptyMap();
      */
-    private static final Map EMPTY_MAP = Collections.unmodifiableMap(new HashMap());
+    private static final Map<String, String> EMPTY_MAP = Collections.unmodifiableMap(new HashMap<String, String>());
 
     /**
      * What AjaxFilters apply to which Ajax calls?

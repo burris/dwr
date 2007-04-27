@@ -11,7 +11,7 @@ import org.directwebremoting.util.Logger;
 public class ResumeContinuationScriptConduit extends ScriptConduit
 {
     /**
-     * @param continuation
+     * @param continuation Our Jetty Continuation wrapper
      */
     public ResumeContinuationScriptConduit(Continuation continuation)
     {
@@ -22,6 +22,7 @@ public class ResumeContinuationScriptConduit extends ScriptConduit
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
      */
+    @Override
     public boolean addScript(ScriptBuffer script)
     {
         try

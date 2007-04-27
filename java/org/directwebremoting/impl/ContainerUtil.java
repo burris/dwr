@@ -32,6 +32,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.directwebremoting.Container;
 import org.directwebremoting.ServerContextFactory.ServerContextBuilder;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
+import org.directwebremoting.annotations.AnnotationsConfigurator;
 import org.directwebremoting.dwrp.DefaultConverterManager;
 import org.directwebremoting.dwrp.HtmlCallMarshaller;
 import org.directwebremoting.dwrp.PlainCallMarshaller;
@@ -101,7 +102,7 @@ public class ContainerUtil
             }
 
             log.debug("Using alternate Container implementation: " + typeName);
-            Class type = LocalUtil.classForName(typeName);
+            Class<?> type = LocalUtil.classForName(typeName);
             return (DefaultContainer) type.newInstance();
         }
         catch (Exception ex)
@@ -190,10 +191,10 @@ public class ContainerUtil
      * @param url The URL of the new {@link Handler}
      * @param propertyName The property name (for injection and lookup)
      * @param handler The class of Handler
-     * @throws InstantiationException From {@link DefaultContainer#addParameter(Object, Object)}
-     * @throws IllegalAccessException From {@link DefaultContainer#addParameter(Object, Object)}
+     * @throws InstantiationException From {@link DefaultContainer#addParameter(String, Object)}
+     * @throws IllegalAccessException From {@link DefaultContainer#addParameter(String, Object)}
      */
-    public static void createUrlMapping(DefaultContainer container, String url, String propertyName, Class handler) throws InstantiationException, IllegalAccessException
+    public static void createUrlMapping(DefaultContainer container, String url, String propertyName, Class<?> handler) throws InstantiationException, IllegalAccessException
     {
         container.addParameter(PathConstants.URL_PREFIX + url, handler.getName());
         container.addParameter(propertyName, url);
@@ -206,12 +207,13 @@ public class ContainerUtil
      * @throws InstantiationException If we can't instantiate a bean
      * @throws IllegalAccessException If we have access problems creating a bean
      */
+    @SuppressWarnings("unchecked")
     public static void setupFromServletConfig(DefaultContainer container, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
     {
-        Enumeration en = servletConfig.getInitParameterNames();
+        Enumeration<String> en = servletConfig.getInitParameterNames();
         while (en.hasMoreElements())
         {
-            String name = (String) en.nextElement();
+            String name = en.nextElement();
             String value = servletConfig.getInitParameter(name);
             container.addParameter(name, value);
         }
@@ -272,13 +274,14 @@ public class ContainerUtil
      * @throws ParserConfigurationException If the config file parse fails
      * @throws IOException If the config file read fails
      */
+    @SuppressWarnings("unchecked")
     public static boolean configureFromInitParams(Container container, ServletConfig servletConfig) throws IOException, ParserConfigurationException, SAXException
     {
-        Enumeration en = servletConfig.getInitParameterNames();
+        Enumeration<String> en = servletConfig.getInitParameterNames();
         boolean foundConfig = false;
         while (en.hasMoreElements())
         {
-            String name = (String) en.nextElement();
+            String name = en.nextElement();
             String value = servletConfig.getInitParameter(name);
 
             // if the init param starts with "config" then try to load it
@@ -301,7 +304,7 @@ public class ContainerUtil
 
                 try
                 {
-                    Configurator configurator = (Configurator) LocalUtil.classNewInstance(INIT_CUSTOM_CONFIGURATOR, value, Configurator.class);
+                    Configurator configurator = LocalUtil.classNewInstance(INIT_CUSTOM_CONFIGURATOR, value, Configurator.class);
                     configurator.configure(container);
                     log.debug("Loaded config from: " + value);
                 }
@@ -325,58 +328,11 @@ public class ContainerUtil
      */
     public static boolean configureFromAnnotations(Container container)
     {
-        try
-        {
-            Class annotationCfgClass = LocalUtil.classForName("org.directwebremoting.annotations.AnnotationsConfigurator");
+        Configurator configurator = new AnnotationsConfigurator();
+        configurator.configure(container);
 
-            Configurator configurator = (Configurator) annotationCfgClass.newInstance();
-            configurator.configure(container);
-
-            log.debug("Java5 AnnotationsConfigurator enabled");
-            return true;
-        }
-        catch (UnsupportedClassVersionError ex)
-        {
-            // This will happen in JDK 1.4 and below
-            return false;
-        }
-        catch (ClassNotFoundException ex)
-        {
-            // This will happen when run in an IDE without the java5 tree
-            log.warn("AnnotationsConfigurator is missing. Are you running from within an IDE?");
-            return false;
-        }
-        catch (Exception ex)
-        {
-            // This happens if there is a bug in AnnotationsConfigurator
-            log.warn("Failed to start annotations", ex);
-            return false;
-        }
-        catch (Throwable ex)
-        {
-            if (ex.getClass().getName().equals(UnsupportedClassVersionError.class.getName()))
-            {
-                log.error("Caught impossible Throwable", ex);
-                return false;
-            }
-            else if (ex.getClass().getName().equals(LinkageError.class.getName()))
-            {
-                log.error("Caught impossible Throwable", ex);
-                return false;
-            }
-            else if (ex instanceof Error)
-            {
-                log.fatal("Rethrowing Error:" + ex);
-                throw (Error) ex;
-            }
-            else
-            {
-                // This can't happen: We've handled all Exceptions, and
-                // Errors, so we can't get to execute this code.
-                log.error("Ilogical catch state", ex);
-                return false;
-            }
-        }
+        log.debug("Java5 AnnotationsConfigurator enabled");
+        return true;
     }
 
     /**
@@ -384,13 +340,11 @@ public class ContainerUtil
      * @param container The container to configure
      * @param configurators A list of configurators to run against the container
      */
-    public static void configure(Container container, List configurators)
+    public static void configure(Container container, List<Configurator> configurators)
     {
         // Allow all the configurators to have a go
-        for (Iterator it = configurators.iterator(); it.hasNext();)
+        for (Configurator configurator : configurators)
         {
-            Configurator configurator = (Configurator) it.next();
-
             log.debug("** Adding config from " + configurator);
             configurator.configure(container);
         }
@@ -410,7 +364,7 @@ public class ContainerUtil
         boolean foundConfig = configureFromInitParams(container, servletConfig);
 
         // The default dwr.xml file that sits by web.xml
-        boolean skip = Boolean.valueOf(servletConfig.getInitParameter(INIT_SKIP_DEFAULT)).booleanValue();
+        boolean skip = Boolean.valueOf(servletConfig.getInitParameter(INIT_SKIP_DEFAULT));
         IOException delayedIOException = null;
         if (!foundConfig && !skip)
         {
@@ -443,6 +397,7 @@ public class ContainerUtil
      * @param container The container to publish
      * @param servletConfig Source of initParams to dictate publishing and contexts to publish to
      */
+    @SuppressWarnings("unchecked")
     public static void publishContainer(Container container, ServletConfig servletConfig)
     {
         ServletContext servletContext = servletConfig.getServletContext();
@@ -453,10 +408,10 @@ public class ContainerUtil
             servletContext.setAttribute(publishName, container);
         }
 
-        List containers = (List) servletContext.getAttribute(ATTRIBUTE_CONTAINER_LIST);
+        List<Container> containers = (List<Container>) servletContext.getAttribute(ATTRIBUTE_CONTAINER_LIST);
         if (containers == null)
         {
-            containers = new ArrayList();
+            containers = new ArrayList<Container>();
         }
         containers.add(container);
         servletContext.setAttribute(ATTRIBUTE_CONTAINER_LIST, containers);
@@ -467,12 +422,13 @@ public class ContainerUtil
      * @param servletContext The context in which {@link Container}s are stored.
      * @return a list of published {@link Container}s.
      */
-    public static List getAllPublishedContainers(ServletContext servletContext)
+    @SuppressWarnings("unchecked")
+    public static List<Container> getAllPublishedContainers(ServletContext servletContext)
     {
-        List containers = (List) servletContext.getAttribute(ATTRIBUTE_CONTAINER_LIST);
+        List<Container> containers = (List<Container>) servletContext.getAttribute(ATTRIBUTE_CONTAINER_LIST);
         if (containers == null)
         {
-            containers = new ArrayList();
+            containers = new ArrayList<Container>();
         }
 
         return containers;
@@ -485,18 +441,18 @@ public class ContainerUtil
      * @param containers The list of containers to look for ServerLoadMonitors in
      * @param title What causes this (for debug purposes)
      */
-    public static void shutdownServerLoadMonitorsInContainerList(List containers, String title)
+    public static void shutdownServerLoadMonitorsInContainerList(List<Container> containers, String title)
     {
-        if (containers == null || containers.size() == 0)
+        if (containers == null || containers.isEmpty())
         {
             log.debug("No containers to shutdown for: " + title);
             return;
         }
 
         log.debug("Shutting down containers for: " + title);
-        for (Iterator it = containers.iterator(); it.hasNext();)
+        for (Iterator<Container> it = containers.iterator(); it.hasNext();)
         {
-            Container container = (Container) it.next();
+            Container container = it.next();
             ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
             monitor.shutdown();
         }
@@ -513,10 +469,10 @@ public class ContainerUtil
             // Container level debug
             log.debug("Container");
             log.debug("  Type: " + container.getClass().getName());
-            Collection beanNames = container.getBeanNames();
-            for (Iterator it = beanNames.iterator(); it.hasNext();)
+            Collection<String> beanNames = container.getBeanNames();
+            for (Iterator<String> it = beanNames.iterator(); it.hasNext();)
             {
-                String name = (String) it.next();
+                String name = it.next();
                 Object object = container.getBean(name);
 
                 if (object instanceof String)
@@ -548,10 +504,10 @@ public class ContainerUtil
             CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
             log.debug("CreatorManager");
             log.debug("  Type: " + creatorManager.getClass().getName());
-            Collection creatorNames = creatorManager.getCreatorNames();
-            for (Iterator it = creatorNames.iterator(); it.hasNext();)
+            Collection<String> creatorNames = creatorManager.getCreatorNames();
+            for (Iterator<String> it = creatorNames.iterator(); it.hasNext();)
             {
-                String creatorName = (String) it.next();
+                String creatorName = it.next();
                 Creator creator = creatorManager.getCreator(creatorName);
                 log.debug("  Creator: " + creatorName + " = " + creator + " (" + creator.getClass().getName() + ")");
             }

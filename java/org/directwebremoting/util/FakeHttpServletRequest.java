@@ -26,7 +26,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -79,17 +78,17 @@ public class FakeHttpServletRequest implements HttpServletRequest
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletRequest#getHeaders(java.lang.String)
      */
-    public Enumeration getHeaders(String name)
+    public Enumeration<String[]> getHeaders(String name)
     {
-        return new Vector().elements();
+        return Collections.enumeration(Collections.<String[]>emptySet());
     }
 
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletRequest#getHeaderNames()
      */
-    public Enumeration getHeaderNames()
+    public Enumeration<String> getHeaderNames()
     {
-        return new Vector().elements();
+        return Collections.enumeration(Collections.<String>emptySet());
     }
 
     /* (non-Javadoc)
@@ -265,7 +264,7 @@ public class FakeHttpServletRequest implements HttpServletRequest
     /* (non-Javadoc)
      * @see javax.servlet.ServletRequest#getAttributeNames()
      */
-    public Enumeration getAttributeNames()
+    public Enumeration<String> getAttributeNames()
     {
         return Collections.enumeration(attributes.keySet());
     }
@@ -313,6 +312,7 @@ public class FakeHttpServletRequest implements HttpServletRequest
             /* (non-Javadoc)
              * @see java.io.InputStream#read()
              */
+            @Override
             public int read() throws IOException
             {
                 return -1;
@@ -358,9 +358,9 @@ public class FakeHttpServletRequest implements HttpServletRequest
     /* (non-Javadoc)
      * @see javax.servlet.ServletRequest#getParameterNames()
      */
-    public Enumeration getParameterNames()
+    public Enumeration<String> getParameterNames()
     {
-        return new Vector().elements();
+        return Collections.enumeration(Collections.<String>emptySet());
     }
 
     /* (non-Javadoc)
@@ -374,9 +374,9 @@ public class FakeHttpServletRequest implements HttpServletRequest
     /* (non-Javadoc)
      * @see javax.servlet.ServletRequest#getParameterMap()
      */
-    public Map getParameterMap()
+    public Map<String, String> getParameterMap()
     {
-        return Collections.EMPTY_MAP;
+        return Collections.emptyMap();
     }
 
     /* (non-Javadoc)
@@ -477,9 +477,9 @@ public class FakeHttpServletRequest implements HttpServletRequest
     /* (non-Javadoc)
      * @see javax.servlet.ServletRequest#getLocales()
      */
-    public Enumeration getLocales()
+    public Enumeration<Locale> getLocales()
     {
-        return Collections.enumeration(Arrays.asList(new Locale[] { Locale.getDefault() }));
+        return Collections.enumeration(Arrays.asList(Locale.getDefault()));
     }
 
     /* (non-Javadoc)
@@ -529,7 +529,7 @@ public class FakeHttpServletRequest implements HttpServletRequest
     /**
      * The list of attributes
      */
-    private Map attributes = new HashMap();
+    private Map<String, Object> attributes = new HashMap<String, Object>();
 
     /**
      * The log stream

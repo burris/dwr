@@ -45,9 +45,9 @@ public class DwrWebContextFilter implements Filter
     /* (non-Javadoc)
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
-    public void init(FilterConfig aFilterConfig) throws ServletException
+    public void init(FilterConfig newFilterConfig) throws ServletException
     {
-        this.filterConfig = aFilterConfig;
+        filterConfig = newFilterConfig;
     }
 
     /* (non-Javadoc)

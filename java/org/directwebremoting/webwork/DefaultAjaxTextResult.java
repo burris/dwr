@@ -49,6 +49,7 @@ public class DefaultAjaxTextResult implements AjaxTextResult
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return "[AjaxTextResult: '" + m_text + "']";

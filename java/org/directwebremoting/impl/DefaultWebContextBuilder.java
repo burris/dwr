@@ -52,7 +52,7 @@ public class DefaultWebContextBuilder implements WebContextBuilder
      */
     public WebContext get()
     {
-        return (WebContext) user.get();
+        return user.get();
     }
 
     /* (non-Javadoc)
@@ -66,7 +66,7 @@ public class DefaultWebContextBuilder implements WebContextBuilder
     /**
      * The storage of thread based data
      */
-    private static ThreadLocal user = new ThreadLocal();
+    private static ThreadLocal<WebContext> user = new ThreadLocal<WebContext>();
 
     /**
      * The log stream

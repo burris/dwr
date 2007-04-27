@@ -16,7 +16,6 @@
 package org.directwebremoting.extend;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.directwebremoting.ScriptBuffer;
@@ -45,12 +44,11 @@ public class ScriptBufferUtil
     public static String createOutput(ScriptBuffer buffer, ConverterManager converterManager) throws MarshallException
     {
         OutboundContext context = new OutboundContext();
-        List ovs = new ArrayList();
+        List<Object> ovs = new ArrayList<Object>();
 
         // First convert everything
-        for (Iterator it = buffer.getParts().iterator(); it.hasNext();)
+        for (Object element : buffer.getParts())
         {
-            Object element = it.next();
             if (!(element instanceof StringWrapper))
             {
                 OutboundVariable ov = converterManager.convertOutbound(element, context);
@@ -65,9 +63,8 @@ public class ScriptBufferUtil
         StringBuffer output = new StringBuffer();
 
         // First we look for the declaration code
-        for (Iterator it = ovs.iterator(); it.hasNext();)
+        for (Object element : ovs)
         {
-            Object element = it.next();
             if (element instanceof OutboundVariable)
             {
                 OutboundVariable ov = (OutboundVariable) element;
@@ -76,9 +73,8 @@ public class ScriptBufferUtil
         }
 
         // Then we look for the construction code
-        for (Iterator it = ovs.iterator(); it.hasNext();)
+        for (Object element : ovs)
         {
-            Object element = it.next();
             if (element instanceof OutboundVariable)
             {
                 OutboundVariable ov = (OutboundVariable) element;
@@ -87,9 +83,8 @@ public class ScriptBufferUtil
         }
 
         // Then we output everything else
-        for (Iterator it = ovs.iterator(); it.hasNext();)
+        for (Object element : ovs)
         {
-            Object element = it.next();
             if (element instanceof StringWrapper)
             {
                 StringWrapper str = (StringWrapper) element;
@@ -102,7 +97,6 @@ public class ScriptBufferUtil
             }
         }
 
-        String exported = output.toString();
-        return exported;
+        return output.toString();
     }
 }

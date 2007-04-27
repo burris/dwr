@@ -65,7 +65,7 @@ public class DefaultCreatorManager implements CreatorManager
             return;
         }
 
-        Class clazz = LocalUtil.classForName(typeName, className, Creator.class);
+        Class<?> clazz = LocalUtil.classForName(typeName, className, Creator.class);
         if (clazz != null)
         {
             log.debug("- adding creator type: " + typeName + " = " + clazz);
@@ -76,7 +76,7 @@ public class DefaultCreatorManager implements CreatorManager
     /* (non-Javadoc)
      * @see org.directwebremoting.CreatorManager#addCreator(java.lang.String, java.lang.String, java.util.Map)
      */
-    public void addCreator(String scriptName, String typeName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
+    public void addCreator(String scriptName, String typeName, Map<String, String> params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
     {
         if (!LocalUtil.isJavaIdentifier(scriptName))
         {
@@ -84,7 +84,7 @@ public class DefaultCreatorManager implements CreatorManager
             return;
         }
 
-        Class clazz = (Class) creatorTypes.get(typeName);
+        Class<?> clazz = creatorTypes.get(typeName);
         if (clazz == null)
         {
             log.error("Missing creator: " + typeName + " (while initializing creator for: " + scriptName + ".js)");
@@ -106,7 +106,7 @@ public class DefaultCreatorManager implements CreatorManager
     public void addCreator(String scriptName, Creator creator) throws IllegalArgumentException
     {
         // Check that we don't have this one already
-        Creator other = (Creator) creators.get(scriptName);
+        Creator other = creators.get(scriptName);
         if (other != null)
         {
             throw new IllegalArgumentException(Messages.getString("DefaultCreatorManager.DuplicateName", scriptName, other.getType().getName(), creator));
@@ -115,7 +115,7 @@ public class DefaultCreatorManager implements CreatorManager
         // Check that it can at least tell us what type of thing we will be getting
         try
         {
-            Class test = creator.getType();
+            Class<?> test = creator.getType();
             if (test == null)
             {
                 log.error("Creator: '" + creator + "' for " + scriptName + ".js is returning null for type queries.");
@@ -159,7 +159,7 @@ public class DefaultCreatorManager implements CreatorManager
     /* (non-Javadoc)
      * @see org.directwebremoting.CreatorManager#getCreatorNames()
      */
-    public Collection getCreatorNames() throws SecurityException
+    public Collection<String> getCreatorNames() throws SecurityException
     {
         if (!debug)
         {
@@ -174,13 +174,13 @@ public class DefaultCreatorManager implements CreatorManager
      */
     public Creator getCreator(String scriptName) throws SecurityException
     {
-        Creator creator = (Creator) creators.get(scriptName);
+        Creator creator = creators.get(scriptName);
         if (creator == null)
         {
             StringBuffer buffer = new StringBuffer("Names of known classes are: ");
-            for (Iterator it = creators.keySet().iterator(); it.hasNext();)
+            for (Iterator<String> it = creators.keySet().iterator(); it.hasNext();)
             {
-                String key = (String) it.next();
+                String key = it.next();
                 buffer.append(key);
                 buffer.append(' ');
             }
@@ -195,7 +195,7 @@ public class DefaultCreatorManager implements CreatorManager
     /* (non-Javadoc)
      * @see org.directwebremoting.CreatorManager#setCreators(java.util.Map)
      */
-    public void setCreators(Map creators)
+    public void setCreators(Map<String, Creator> creators)
     {
         this.creators = creators;
     }
@@ -208,12 +208,12 @@ public class DefaultCreatorManager implements CreatorManager
     /**
      * The list of the available creators
      */
-    private Map creatorTypes = new HashMap();
+    private Map<String, Class<?>> creatorTypes = new HashMap<String, Class<?>>();
 
     /**
      * The list of the configured creators
      */
-    private Map creators = new HashMap();
+    private Map<String, Creator> creators = new HashMap<String, Creator>();
 
     /**
      * Are we in debug mode?
@@ -229,7 +229,7 @@ public class DefaultCreatorManager implements CreatorManager
      * The properties that we don't warn about if they don't exist.
      * @see DefaultCreatorManager#addCreator(String, String, Map)
      */
-    private static List ignore = Arrays.asList(new String[] { "creator", "class" });
+    private static List<String> ignore = Arrays.asList("creator", "class");
 
     /**
      * Do we do full-create on startup?

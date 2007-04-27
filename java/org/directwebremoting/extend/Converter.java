@@ -24,9 +24,9 @@ public interface Converter
     /**
      * If we are a compound converter that farms out part of the conversion
      * to other converters then you farm the conversion out via a configuration.
-     * @param config The confiuration object
+     * @param converterManager The confiuration object
      */
-    void setConverterManager(ConverterManager config);
+    void setConverterManager(ConverterManager converterManager);
 
     /**
      * Attempt to coerce the data from a string to an Object.
@@ -39,7 +39,7 @@ public interface Converter
      * @return The convered data, or null if the conversion was not possible
      * @throws MarshallException If the conversion failed for some reason
      */
-    Object convertInbound(Class paramType, InboundVariable data, InboundContext inctx) throws MarshallException;
+    Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException;
 
     /**
      * Return a javascript string that defines the variable named varName to

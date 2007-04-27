@@ -38,5 +38,5 @@ public interface Container
      * for debugging purposes.
      * @return A collection containing all the availble bean names.
      */
-    Collection getBeanNames();
+    Collection<String> getBeanNames();
 }

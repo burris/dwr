@@ -22,6 +22,7 @@ import javax.servlet.ServletContext;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.ServerContext;
+import org.directwebremoting.ScriptSession;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.VersionUtil;
@@ -48,7 +49,7 @@ public class DefaultServerContext implements ServerContext
     /* (non-Javadoc)
      * @see org.directwebremoting.ServerContext#getAllScriptSessions()
      */
-    public Collection getAllScriptSessions()
+    public Collection<ScriptSession> getAllScriptSessions()
     {
         return getScriptSessionManager().getAllScriptSessions();
     }
@@ -64,9 +65,9 @@ public class DefaultServerContext implements ServerContext
     /* (non-Javadoc)
      * @see org.directwebremoting.ServerContext#getScriptSessionsByPage(java.lang.String)
      */
-    public Collection getScriptSessionsByPage(String otherPage)
+    public Collection<ScriptSession> getScriptSessionsByPage(String url)
     {
-        return getScriptSessionManager().getScriptSessionsByPage(otherPage);
+        return getScriptSessionManager().getScriptSessionsByPage(url);
     }
 
     /* (non-Javadoc)

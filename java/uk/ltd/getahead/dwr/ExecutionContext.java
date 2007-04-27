@@ -35,6 +35,7 @@ import org.directwebremoting.WebContextFactory;
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @deprecated Use WebContext / WebContextFactory for better results
  */
+@Deprecated
 public class ExecutionContext implements WebContext
 {
     /**
@@ -122,7 +123,7 @@ public class ExecutionContext implements WebContext
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContext#getAllScriptSessions()
      */
-    public Collection getAllScriptSessions()
+    public Collection<ScriptSession> getAllScriptSessions()
     {
         throw new UnsupportedOperationException("Use WebContextFactory.get().getAllScriptSessions()");
     }
@@ -130,7 +131,7 @@ public class ExecutionContext implements WebContext
     /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContext#getScriptSessionsByPage(java.lang.String)
      */
-    public Collection getScriptSessionsByPage(String page)
+    public Collection<ScriptSession> getScriptSessionsByPage(String page)
     {
         throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSessionsByPage()");
     }
@@ -165,6 +166,7 @@ public class ExecutionContext implements WebContext
      * not started by DWR.
      * @deprecated Use WebContextFactory.get() for better results
      */
+    @Deprecated
     public static ExecutionContext get()
     {
         WebContext context = WebContextFactory.get();

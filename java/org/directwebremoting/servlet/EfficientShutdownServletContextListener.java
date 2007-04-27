@@ -20,6 +20,7 @@ import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.directwebremoting.Container;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.impl.ContainerUtil;
 
@@ -42,7 +43,7 @@ public class EfficientShutdownServletContextListener implements ServletContextLi
      */
     public void contextDestroyed(ServletContextEvent ev)
     {
-        List containers = ContainerUtil.getAllPublishedContainers(ev.getServletContext());
+        List<Container> containers = ContainerUtil.getAllPublishedContainers(ev.getServletContext());
         ContainerUtil.shutdownServerLoadMonitorsInContainerList(containers, "EfficientShutdownServletContextListener");
     }
 }

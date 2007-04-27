@@ -15,10 +15,8 @@
  */
 package org.directwebremoting.extend;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import org.directwebremoting.util.LocalUtil;
+import java.util.IdentityHashMap;
 
 /**
  * We need to keep track of stuff while we are converting on the way out to
@@ -29,44 +27,13 @@ import org.directwebremoting.util.LocalUtil;
 public final class OutboundContext
 {
     /**
-     * JDK14: Can use IdentityHashMap directly
-     * Since map needs to have referencial equality rather than object equality
-     * this constructor tries to use java.util.IdentityHashMap (>=1.4), and
-     * failing that falls back on wrapper objects in a HashMap.
-     */
-    public OutboundContext()
-    {
-        // We can only assign to map once, so we use this as a staging post.
-        Map assign;
-
-        try
-        {
-            assign = (Map) LocalUtil.classForName("java.util.IdentityHashMap").newInstance();
-            referenceWrappers = false;
-        }
-        catch (Exception ex)
-        {
-            assign = new HashMap();
-            referenceWrappers = true;
-        }
-
-        map = assign;
-    }
-
-    /**
      * Have we already converted an object?
      * @param object The object to check
      * @return How it was converted last time or null if we've not seen it before
      */
     public OutboundVariable get(Object object)
     {
-        Object key = object;
-        if (referenceWrappers)
-        {
-            key = new ReferenceWrapper(object);
-        }
-
-        return (OutboundVariable) map.get(key);
+        return map.get(object);
     }
 
     /**
@@ -75,13 +42,7 @@ public final class OutboundContext
      */
     public void put(Object object, OutboundVariable ss)
     {
-        Object key = object;
-        if (referenceWrappers)
-        {
-            key = new ReferenceWrapper(object);
-        }
-
-        map.put(key, ss);
+        map.put(object, ss);
     }
 
     /**
@@ -99,6 +60,7 @@ public final class OutboundContext
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return map.toString();
@@ -112,58 +74,10 @@ public final class OutboundContext
     /**
      * The map of objects to how we converted them last time
      */
-    private final Map map;
-
-    /**
-     * Tells if we are to wrap objects in the map to get referencial equality.
-     */
-    private boolean referenceWrappers;
+    private final Map<Object, OutboundVariable> map = new IdentityHashMap<Object, OutboundVariable>();
 
     /**
      * What index do we tack on the next variable name that we generate
      */
     private int nextVarIndex = 0;
-
-    /**
-     * Wrapper class that makes sure that equals() and hashCode() uses
-     * referencial equality on the wrapped object. This is used when
-     * we can't have a IdentityHashMap in map.
-     */
-    private static class ReferenceWrapper
-    {
-        /**
-         * @param object The object to wrap
-         */
-        protected ReferenceWrapper(Object object)
-        {
-            this.object = object;
-        }
-
-        /* (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
-        public int hashCode()
-        {
-            return System.identityHashCode(object);
-        }
-
-        /* (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        public boolean equals(Object obj)
-        {
-            if (!(obj instanceof ReferenceWrapper))
-            {
-                return false;
-            }
-
-            ReferenceWrapper that = (ReferenceWrapper) obj;
-            return this.object == that.object;
-        }
-
-        /**
-         * My wrapped object.
-         */
-        private Object object;
-    }
 }

@@ -48,7 +48,7 @@ public class Batch
      */
     public Batch(HttpServletRequest request, boolean crossDomainSessionSecurity, boolean allowGetForSafariButMakeForgeryEasier, String sessionCookieName) throws ServerException
     {
-        boolean isGet = request.getMethod().equals("GET");
+        boolean isGet = "GET".equals(request.getMethod());
         if (isGet)
         {
             setAllParameters(ParseUtil.parseGet(request));
@@ -75,15 +75,15 @@ public class Batch
     /**
      * @return the allParameters
      */
-    public Map getAllParameters()
+    public Map<String, String> getAllParameters()
     {
-        return new HashMap(allParameters);
+        return new HashMap<String, String>(allParameters);
     }
 
     /**
      * @param allParameters the allParameters to set
      */
-    public void setAllParameters(Map allParameters)
+    public void setAllParameters(Map<String, String> allParameters)
     {
         this.allParameters = allParameters;
     }
@@ -91,7 +91,7 @@ public class Batch
     /**
      * @return the inboundContexts
      */
-    public List getInboundContexts()
+    public List<InboundContext> getInboundContexts()
     {
         return inboundContexts;
     }
@@ -99,7 +99,7 @@ public class Batch
     /**
      * @param inboundContexts the inboundContexts to set
      */
-    public void setInboundContexts(List inboundContexts)
+    public void setInboundContexts(List<InboundContext> inboundContexts)
     {
         this.inboundContexts = inboundContexts;
     }
@@ -107,7 +107,7 @@ public class Batch
     /**
      * @return the spareParameters
      */
-    public Map getSpareParameters()
+    public Map<String, String> getSpareParameters()
     {
         return spareParameters;
     }
@@ -115,7 +115,7 @@ public class Batch
     /**
      * @param spareParameters the spareParameters to set
      */
-    public void setSpareParameters(Map spareParameters)
+    public void setSpareParameters(Map<String, String> spareParameters)
     {
         this.spareParameters = spareParameters;
     }
@@ -235,11 +235,11 @@ public class Batch
      */
     protected void parseParameters() throws ServerException
     {
-        Map paramMap = getAllParameters();
+        Map<String, String> paramMap = getAllParameters();
         calls = new Calls();
 
         // Work out how many calls are in this packet
-        String callStr = (String) paramMap.remove(ProtocolConstants.INBOUND_CALL_COUNT);
+        String callStr = paramMap.remove(ProtocolConstants.INBOUND_CALL_COUNT);
         int callCount;
         try
         {
@@ -262,19 +262,19 @@ public class Batch
             String prefix = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum + ProtocolConstants.INBOUND_CALLNUM_SUFFIX;
 
             // The special values
-            call.setCallId((String) paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_ID));
-            call.setScriptName((String) paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_SCRIPTNAME));
-            call.setMethodName((String) paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_METHODNAME));
+            call.setCallId(paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_ID));
+            call.setScriptName(paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_SCRIPTNAME));
+            call.setMethodName(paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_METHODNAME));
 
             // Look for parameters to this method
-            for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+            for (Iterator<Map.Entry<String, String>> it = paramMap.entrySet().iterator(); it.hasNext();)
             {
-                Map.Entry entry = (Map.Entry) it.next();
-                String key = (String) entry.getKey();
+                Map.Entry<String, String> entry = it.next();
+                String key = entry.getKey();
 
                 if (key.startsWith(prefix))
                 {
-                    String data = (String) entry.getValue();
+                    String data = entry.getValue();
                     String[] split = ParseUtil.splitInbound(data);
 
                     String value = split[LocalUtil.INBOUND_INDEX_VALUE];
@@ -285,16 +285,16 @@ public class Batch
             }
         }
 
-        calls.setBatchId((String) paramMap.remove(ProtocolConstants.INBOUND_KEY_BATCHID));
-        httpSessionId = (String) paramMap.remove(ProtocolConstants.INBOUND_KEY_HTTP_SESSIONID);
-        scriptSessionId = (String) paramMap.remove(ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
-        page = (String) paramMap.remove(ProtocolConstants.INBOUND_KEY_PAGE);
+        calls.setBatchId(paramMap.remove(ProtocolConstants.INBOUND_KEY_BATCHID));
+        httpSessionId = paramMap.remove(ProtocolConstants.INBOUND_KEY_HTTP_SESSIONID);
+        scriptSessionId = paramMap.remove(ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
+        page = paramMap.remove(ProtocolConstants.INBOUND_KEY_PAGE);
 
-        for (Iterator it = paramMap.entrySet().iterator(); it.hasNext();)
+        for (Iterator<Map.Entry<String, String>> it = paramMap.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
+            Map.Entry<String, String> entry = it.next();
+            String key = entry.getKey();
+            String value = entry.getValue();
             if (key.startsWith(ProtocolConstants.INBOUND_KEY_METADATA))
             {
                 spareParameters.put(key.substring(ProtocolConstants.INBOUND_KEY_METADATA.length()), value);
@@ -302,7 +302,7 @@ public class Batch
         }
     }
 
-    private List inboundContexts = new ArrayList();
+    private List<InboundContext> inboundContexts = new ArrayList<InboundContext>();
 
     private String scriptSessionId;
 
@@ -312,9 +312,9 @@ public class Batch
 
     private Calls calls;
 
-    private Map allParameters = new HashMap();
+    private Map<String, String> allParameters = new HashMap<String, String>();
 
-    private Map spareParameters = new HashMap();
+    private Map<String, String> spareParameters = new HashMap<String, String>();
 
     /**
      * The log stream

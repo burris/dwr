@@ -109,7 +109,7 @@ public class CreatorConfig extends AbstractConfig
      * @see org.directwebremoting.AjaxFilter
      * @see org.directwebremoting.extend.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter, String)
      */
-    public List getFilters()
+    public List<?> getFilters()
     {
         return filters;
     }
@@ -120,7 +120,7 @@ public class CreatorConfig extends AbstractConfig
      * @see org.directwebremoting.AjaxFilter
      * @see org.directwebremoting.extend.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter, String)
      */
-    public void setFilters(List filters)
+    public void setFilters(List<Object> filters)
     {
         this.filters = filters;
     }
@@ -164,5 +164,5 @@ public class CreatorConfig extends AbstractConfig
     /**
      * The list of filter objects for this creator.
      */
-    private List filters = new ArrayList();
+    private List<Object> filters = new ArrayList<Object>();
 }

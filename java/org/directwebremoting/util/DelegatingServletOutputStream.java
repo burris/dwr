@@ -28,11 +28,11 @@ public class DelegatingServletOutputStream extends ServletOutputStream
 {
     /**
      * Create a new DelegatingServletOutputStream.
-     * @param targetStream the target OutputStream
+     * @param proxy the target OutputStream
      */
-    public DelegatingServletOutputStream(OutputStream targetStream)
+    public DelegatingServletOutputStream(OutputStream proxy)
     {
-        this.proxy = targetStream;
+        this.proxy = proxy;
     }
 
     /**
@@ -47,6 +47,7 @@ public class DelegatingServletOutputStream extends ServletOutputStream
     /* (non-Javadoc)
      * @see java.io.OutputStream#write(int)
      */
+    @Override
     public void write(int b) throws IOException
     {
         proxy.write(b);
@@ -55,6 +56,7 @@ public class DelegatingServletOutputStream extends ServletOutputStream
     /* (non-Javadoc)
      * @see java.io.OutputStream#flush()
      */
+    @Override
     public void flush() throws IOException
     {
         super.flush();
@@ -64,6 +66,7 @@ public class DelegatingServletOutputStream extends ServletOutputStream
     /* (non-Javadoc)
      * @see java.io.OutputStream#close()
      */
+    @Override
     public void close() throws IOException
     {
         super.close();

@@ -48,6 +48,10 @@ public class DWRAction
 
     private IDWRActionProcessor m_actionProcessor;
 
+    /**
+     * @param servletContext
+     * @throws ServletException
+     */
     private DWRAction(ServletContext servletContext) throws ServletException
     {
         DispatcherUtils.initialize(servletContext);
@@ -57,26 +61,32 @@ public class DWRAction
 
     /**
      * Entry point for all action invocations.
-     *
      * @param actionDefinition the identification information for the action
      * @param params action invocation parameters
      * @param request original request
      * @param response original response
      * @param servletContext current <code>ServletContext</code>
      * @return an <code>AjaxResult</code> wrapping invocation result
-     *
      * @throws ServletException thrown if the initialization or invocation of the action fails
      */
-    public static AjaxResult execute(ActionDefinition actionDefinition, Map params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
+    public static AjaxResult execute(ActionDefinition actionDefinition, Map<String, String> params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
     {
         initialize(servletContext);
 
         return s_instance.doExecute(actionDefinition, params, request, response, servletContext);
     }
 
-    protected AjaxResult doExecute(ActionDefinition actionDefinition, Map params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
+    /**
+     * @param actionDefinition
+     * @param params
+     * @param request
+     * @param response
+     * @param servletContext
+     * @return
+     * @throws ServletException
+     */
+    protected AjaxResult doExecute(ActionDefinition actionDefinition, Map<String, String> params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
     {
-
         FakeHttpServletResponse actionResponse = new FakeHttpServletResponse();
 
         if (null != m_actionProcessor)
@@ -88,7 +98,7 @@ public class DWRAction
 
         ActionInvocation invocation = invokeAction(m_wwDispatcher, request, actionResponse, servletContext, actionDefinition, params);
 
-        AjaxResult result = null;
+        AjaxResult result;
         if (actionDefinition.isExecuteResult())
         {
             // HINT: we have output string
@@ -107,10 +117,21 @@ public class DWRAction
         return result;
     }
 
-    protected ActionInvocation invokeAction(DispatcherUtils du, HttpServletRequest request, HttpServletResponse response, ServletContext context, ActionDefinition actionDefinition, Map params) throws ServletException
+    /**
+     * @param du
+     * @param request
+     * @param response
+     * @param context
+     * @param actionDefinition
+     * @param params
+     * @return
+     * @throws ServletException
+     */
+    @SuppressWarnings("unchecked")
+    protected ActionInvocation invokeAction(DispatcherUtils du, HttpServletRequest request, HttpServletResponse response, ServletContext context, ActionDefinition actionDefinition, Map<String, String> params) throws ServletException
     {
         ActionMapping mapping = getActionMapping(actionDefinition, params);
-        Map extraContext = du.createContextMap(request, response, mapping, context);
+        Map<String, Object> extraContext = du.createContextMap(request, response, mapping, context);
 
         // If there was a previous value stack, then create a new copy and pass it in to be used by the new Action
         OgnlValueStack stack = (OgnlValueStack) request.getAttribute(ServletActionContext.WEBWORK_VALUESTACK_KEY);
@@ -158,14 +179,19 @@ public class DWRAction
         }
     }
 
-    protected void prepareContinuationAction(HttpServletRequest request, Map extraContext)
+    /**
+     * @param request
+     * @param extraContext
+     */
+    @SuppressWarnings("unchecked")
+    protected void prepareContinuationAction(HttpServletRequest request, Map<String, Object> extraContext)
     {
         String id = request.getParameter(XWorkContinuationConfig.CONTINUE_PARAM);
         if (null != id)
         {
             // remove the continue key from the params - we don't want to bother setting
             // on the value stack since we know it won't work. Besides, this breaks devMode!
-            Map params = (Map) extraContext.get(ActionContext.PARAMETERS);
+            Map<String, String> params = (Map<String, String>) extraContext.get(ActionContext.PARAMETERS);
             params.remove(XWorkContinuationConfig.CONTINUE_PARAM);
 
             // and now put the key in the context to be picked up later by XWork
@@ -173,13 +199,21 @@ public class DWRAction
         }
     }
 
-    protected ActionMapping getActionMapping(ActionDefinition actionDefinition, Map params)
+    /**
+     * @param actionDefinition
+     * @param params
+     * @return
+     */
+    protected ActionMapping getActionMapping(ActionDefinition actionDefinition, Map<String, String> params)
     {
         ActionMapping actionMapping = new ActionMapping(actionDefinition.getAction(), actionDefinition.getNamespace(), actionDefinition.getMethod(), params);
-
         return actionMapping;
     }
 
+    /**
+     * @param response
+     * @return
+     */
     protected AjaxTextResult getTextResult(FakeHttpServletResponse response)
     {
         DefaultAjaxTextResult result = new DefaultAjaxTextResult();
@@ -213,7 +247,6 @@ public class DWRAction
 
     /**
      * Performs the one time initialization of the singleton <code>DWRAction</code>.
-     *
      * @param servletContext
      * @throws ServletException thrown in case the singleton initialization fails
      */
@@ -230,7 +263,6 @@ public class DWRAction
 
     /**
      * Tries to instantiate an <code>IDWRActionProcessor</code> if defined in web.xml.
-     *
      * @param actionProcessorClassName
      * @return an instance of <code>IDWRActionProcessor</code> if the init-param is defined or <code>null</code>
      * @throws ServletException thrown if the <code>IDWRActionProcessor</code> cannot be loaded and instantiated
@@ -244,7 +276,7 @@ public class DWRAction
 
         try
         {
-            Class actionProcessorClass = LocalUtil.classForName(actionProcessorClassName);
+            Class<?> actionProcessorClass = LocalUtil.classForName(actionProcessorClassName);
 
             return (IDWRActionProcessor) actionProcessorClass.newInstance();
         }

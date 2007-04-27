@@ -75,15 +75,16 @@ public class SpringCreator extends AbstractCreator implements Creator
     /* (non-Javadoc)
      * @see org.directwebremoting.create.Creator#init(org.w3c.dom.Element)
      */
-    public void setProperties(Map params) throws IllegalArgumentException
+    @Override
+    public void setProperties(Map<String, String> params) throws IllegalArgumentException
     {
-        List locValues = new ArrayList();
+        List<String> locValues = new ArrayList<String>();
 
-        for (Iterator it = params.entrySet().iterator(); it.hasNext();)
+        for (Iterator<Map.Entry<String, String>> it = params.entrySet().iterator(); it.hasNext();)
         {
-            Map.Entry entry = (Map.Entry) it.next();
-            String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
+            Map.Entry<String, String> entry = it.next();
+            String key = entry.getKey();
+            String value = entry.getValue();
             if (key.startsWith("location"))
             {
                 log.debug("Adding configLocation: " + value + " from parameter: " + key);
@@ -91,13 +92,13 @@ public class SpringCreator extends AbstractCreator implements Creator
             }
         }
 
-        configLocation = (String[]) locValues.toArray(new String[locValues.size()]);
+        configLocation = locValues.toArray(new String[locValues.size()]);
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.Creator#getType()
      */
-    public Class getType()
+    public Class<?> getType()
     {
         if (clazz == null)
         {
@@ -186,6 +187,7 @@ public class SpringCreator extends AbstractCreator implements Creator
      * @param factory The factory to set.
      * @deprecated This method is misnamed use setOverrideBeanFactory
      */
+    @Deprecated
     public static void setXmlBeanFactory(BeanFactory factory)
     {
         SpringCreator.overrideFactory = factory;
@@ -224,7 +226,7 @@ public class SpringCreator extends AbstractCreator implements Creator
     /**
      * The cached type of bean that we are creating
      */
-    private Class clazz = null;
+    private Class<?> clazz = null;
 
     /**
      * An array of locations to search through for a beans.xml file

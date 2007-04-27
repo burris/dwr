@@ -43,7 +43,7 @@ dwr.engine.setWarningHandler = function(handler) {
  */
 dwr.engine.setTextHtmlHandler = function(handler) {
   dwr.engine._textHtmlHandler = handler;
-}
+};
 
 /**
  * Set a default timeout value for all calls. 0 (the default) turns timeouts off.
@@ -338,7 +338,7 @@ dwr.engine._parameters = null;
 
 /** Undocumented interceptors - do not use */
 dwr.engine._postSeperator = "\n";
-dwr.engine._defaultInterceptor = function(data) {return data;}
+dwr.engine._defaultInterceptor = function(data) { return data; };
 dwr.engine._urlRewriteHandler = dwr.engine._defaultInterceptor;
 dwr.engine._contentRewriteHandler = dwr.engine._defaultInterceptor;
 dwr.engine._replyRewriteHandler = dwr.engine._defaultInterceptor;
@@ -479,8 +479,8 @@ dwr.engine._createBatch = function() {
       scriptSessionId:dwr.engine._getScriptSessionId()
     },
     charsProcessed:0, paramCount:0,
-    headers:[], parameters:[],
-    isPoll:false, headers:{}, handlers:{}, preHooks:[], postHooks:[],
+    parameters:{}, headers:{},
+    isPoll:false, handlers:{}, preHooks:[], postHooks:[],
     rpcType:dwr.engine._rpcType,
     httpMethod:dwr.engine._httpMethod,
     async:dwr.engine._async,
@@ -505,7 +505,7 @@ dwr.engine._createBatch = function() {
     }
   }
   return batch;
-}
+};
 
 /** @private Take further options and merge them into */
 dwr.engine._mergeBatch = function(batch, overrides) {
@@ -541,7 +541,7 @@ dwr.engine._getJSessionId =  function() {
     }
   }
   return "";
-}
+};
 
 /** @private Check for reverse Ajax activity */
 dwr.engine._checkCometPoll = function() {
@@ -692,7 +692,7 @@ dwr.engine._sendData = function(batch) {
     // Proceed using iframe
     var idname = batch.isPoll ? "dwr-if-poll-" + batch.map.batchId : "dwr-if-" + batch.map["c0-id"];
     batch.div = document.createElement("div");
-    batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' style='width:0px;height:0px;border:0;' id='" + idname + "' name='" + idname + "'></iframe>";
+    batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' style='width:0px;height:0px;border:0;' id='" + idname + "' name='" + idname + "'><" + "/iframe>";
     document.body.appendChild(batch.div);
     batch.iframe = document.getElementById(idname);
     batch.iframe.batch = batch;
@@ -957,7 +957,7 @@ dwr.engine._callPostHooks = function(batch) {
     }
     batch.postHooks = null;
   }
-}
+};
 
 /** @private A call has finished by whatever means and we need to shut it all down. */
 dwr.engine._clearUp = function(batch) {

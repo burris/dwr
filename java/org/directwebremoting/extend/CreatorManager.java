@@ -33,21 +33,21 @@ public interface CreatorManager
 
     /**
      * In init mode, add a new type of creator
-     * @param id The name of the new creator type
+     * @param typeName The name of the new creator type
      * @param className The class that we create
      */
-    void addCreatorType(String id, String className);
+    void addCreatorType(String typeName, String className);
 
     /**
      * Add a new creator
      * @param scriptName The name of the creator to Javascript
-     * @param typename The class to use as a creator
+     * @param typeName The class to use as a creator
      * @param params The extra parameters to allow the creator to configure itself
      * @throws InstantiationException If reflection based creation fails
      * @throws IllegalAccessException If reflection based creation fails
      * @throws IllegalArgumentException If we have a duplicate name
      */
-    void addCreator(String scriptName, String typename, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
+    void addCreator(String scriptName, String typeName, Map<String, String> params) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
 
     /**
      * Add a new creator
@@ -65,7 +65,7 @@ public interface CreatorManager
      * @return Loop over all the known allowed classes
      * @throws SecurityException If we are not in debug mode
      */
-    Collection getCreatorNames() throws SecurityException;
+    Collection<String> getCreatorNames() throws SecurityException;
 
     /**
      * Find an <code>Creator</code> by name
@@ -79,5 +79,5 @@ public interface CreatorManager
      * Sets the creators for this creator manager.
      * @param creators the map of managed beans and their creator instances
      */
-    void setCreators(Map creators);
+    void setCreators(Map<String, Creator> creators);
 }

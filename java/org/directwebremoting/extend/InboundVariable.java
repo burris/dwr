@@ -140,6 +140,7 @@ public final class InboundVariable
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         forceDereference();
@@ -149,6 +150,7 @@ public final class InboundVariable
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj)
     {
         if (this == obj)
@@ -186,6 +188,7 @@ public final class InboundVariable
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode()
     {
         return value.hashCode() + type.hashCode();

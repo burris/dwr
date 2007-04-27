@@ -44,6 +44,7 @@ public class SimpleOutboundVariable extends AbstractOutboundVariable implements 
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getNotInlineDefinition()
      */
+    @Override
     protected NotInlineDefinition getNotInlineDefinition()
     {
         return new NotInlineDefinition("var " + getVariableName() + '=' + code + ';', "");
@@ -52,6 +53,7 @@ public class SimpleOutboundVariable extends AbstractOutboundVariable implements 
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getInlineDefinition()
      */
+    @Override
     protected String getInlineDefinition()
     {
         return code;
@@ -60,6 +62,7 @@ public class SimpleOutboundVariable extends AbstractOutboundVariable implements 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString()
     {
         return "Simple:" + code;

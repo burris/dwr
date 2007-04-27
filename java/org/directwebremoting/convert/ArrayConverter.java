@@ -45,22 +45,23 @@ public class ArrayConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.convert.BaseV20Converter#setConverterManager(org.directwebremoting.ConverterManager)
      */
-    public void setConverterManager(ConverterManager newConfig)
+    @Override
+    public void setConverterManager(ConverterManager converterManager)
     {
-        this.converterManager = newConfig;
+        this.converterManager = converterManager;
     }
 
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
+    public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
         if (!paramType.isArray())
         {
             throw new MarshallException(paramType);
         }
 
-        String value = iv.getValue();
+        String value = data.getValue();
         if (value.startsWith(ProtocolConstants.INBOUND_ARRAY_START))
         {
             value = value.substring(1);
@@ -73,14 +74,14 @@ public class ArrayConverter extends BaseV20Converter implements Converter
         StringTokenizer st = new StringTokenizer(value, ProtocolConstants.INBOUND_ARRAY_SEPARATOR);
         int size = st.countTokens();
 
-        Class componentType = paramType.getComponentType();
+        Class<?> componentType = paramType.getComponentType();
         //componentType = LocalUtil.getNonPrimitiveType(componentType);
         Object array = Array.newInstance(componentType, size);
 
         // We should put the new object into the working map in case it
         // is referenced later nested down in the conversion process.
-        inctx.addConverted(iv, paramType, array);
-        InboundContext incx = iv.getLookup();
+        inctx.addConverted(data, paramType, array);
+        InboundContext incx = data.getLookup();
 
         for (int i = 0; i < size; i++)
         {
@@ -113,7 +114,7 @@ public class ArrayConverter extends BaseV20Converter implements Converter
 
         // Convert all the data members
         int size = Array.getLength(data);
-        List ovs = new ArrayList();
+        List<OutboundVariable> ovs = new ArrayList<OutboundVariable>();
         for (int i = 0; i < size; i++)
         {
             OutboundVariable nested;

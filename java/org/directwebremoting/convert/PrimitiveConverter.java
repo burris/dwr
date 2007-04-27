@@ -35,9 +35,9 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
-    public Object convertInbound(Class paramType, InboundVariable iv, InboundContext inctx) throws MarshallException
+    public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        String value = iv.getValue();
+        String value = data.getValue();
         value = LocalUtil.decode(value.trim());
 
         try
@@ -57,27 +57,27 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object object, OutboundContext outctx)
+    public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        Class paramType = object.getClass();
+        Class<?> paramType = data.getClass();
 
-        if (object.equals(Boolean.TRUE))
+        if (data.equals(Boolean.TRUE))
         {
             return new SimpleOutboundVariable("true", outctx, true);
         }
-        else if (object.equals(Boolean.FALSE))
+        else if (data.equals(Boolean.FALSE))
         {
             return new SimpleOutboundVariable("false", outctx, true);
         }
         else if (paramType == Character.class)
         {
             // Treat characters as strings
-            return new SimpleOutboundVariable('\"' + JavascriptUtil.escapeJavaScript(object.toString()) + '\"', outctx, true);
+            return new SimpleOutboundVariable('\"' + JavascriptUtil.escapeJavaScript(data.toString()) + '\"', outctx, true);
         }
         else
         {
             // We just use the default toString for all numbers
-            return new SimpleOutboundVariable(object.toString(), outctx, true);
+            return new SimpleOutboundVariable(data.toString(), outctx, true);
         }
     }
 }

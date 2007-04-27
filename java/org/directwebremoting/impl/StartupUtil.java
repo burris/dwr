@@ -45,7 +45,7 @@ public class StartupUtil
      * @return A new initialized container.
      * @throws ServletException If the setup fails.
      */
-    public Container outOfContainerInit() throws ServletException
+    public static Container outOfContainerInit() throws ServletException
     {
         try
         {
@@ -82,7 +82,7 @@ public class StartupUtil
      * called.
      * @param container The container created by {@link #outOfContainerInit()}.
      */
-    public void outOfContainerDestroy(Container container)
+    public static void outOfContainerDestroy(Container container)
     {
         ServletLoggingOutput.unsetExecutionContext();
 
@@ -111,7 +111,6 @@ public class StartupUtil
      * to configure the {@link WebContextFactory}.
      * @param servletConfig The servlet configuration
      * @param servletContext The servlet context
-     * @param servlet The servlet that we are running under
      * @param container The container to save in the ServletContext
      * @return a new WebContextBuilder
      */

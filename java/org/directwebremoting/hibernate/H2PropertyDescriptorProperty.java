@@ -43,6 +43,7 @@ public class H2PropertyDescriptorProperty extends PropertyDescriptorProperty
     /* (non-Javadoc)
      * @see org.directwebremoting.impl.PropertyDescriptorProperty#getValue(java.lang.Object)
      */
+    @Override
     public Object getValue(Object bean) throws MarshallException
     {
         try

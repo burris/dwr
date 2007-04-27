@@ -56,6 +56,7 @@ public class DwrServlet extends HttpServlet
     /* (non-Javadoc)
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
      */
+    @Override
     public void init(ServletConfig servletConfig) throws ServletException
     {
         super.init(servletConfig);
@@ -103,6 +104,7 @@ public class DwrServlet extends HttpServlet
     /* (non-Javadoc)
      * @see javax.servlet.GenericServlet#destroy()
      */
+    @Override
     public void destroy()
     {
         shutdown();
@@ -127,6 +129,7 @@ public class DwrServlet extends HttpServlet
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException
     {
         doPost(req, resp);
@@ -135,6 +138,7 @@ public class DwrServlet extends HttpServlet
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
         try
@@ -164,12 +168,12 @@ public class DwrServlet extends HttpServlet
     /**
      * Our IoC container
      */
-    private DefaultContainer container;
+    private DefaultContainer container = null;
 
     /**
      * The WebContext that keeps http objects local to a thread
      */
-    private WebContextBuilder webContextBuilder;
+    private WebContextBuilder webContextBuilder = null;
 
     /**
      * The log stream
