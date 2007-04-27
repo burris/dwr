@@ -111,6 +111,8 @@
               <xsd:enumeration value="enum"/>
               <xsd:enumeration value="hibernate2"/>
               <xsd:enumeration value="hibernate3"/>
+              <xsd:enumeration value="exception"/>
+              <xsd:enumeration value="object"/>
             </xsd:restriction>  
           </xsd:simpleType>
           <xsd:simpleType>

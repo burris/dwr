@@ -41,15 +41,10 @@ public class Corporations
     }
 
     /**
-     * 
      * @return
-     * @throws InterruptedException 
      */
-    public Corporation getNextChangedCorporation() throws InterruptedException
+    public Corporation getNextChangedCorporation()
     {
-        int timeToSleep = random.nextInt(2500);
-        Thread.sleep(timeToSleep);
-
         // Who's is gonna be
         Corporation corporation = corporations.get(random.nextInt(corporations.size()));
         corporation.change();

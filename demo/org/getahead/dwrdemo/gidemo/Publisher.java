@@ -1,6 +1,7 @@
 package org.getahead.dwrdemo.gidemo;
 
 import java.util.Collection;
+import java.util.Random;
 
 import javax.servlet.ServletContext;
 
@@ -28,7 +29,21 @@ public class Publisher implements Runnable
 
         serverContext = ServerContextFactory.get(servletContext);
 
-        new Thread(this).start();
+        // A bit nasty: the call to serverContext.getScriptSessionsByPage()
+        // below could fail because the system might need to read web.xml which
+        // means it needs a ServletContext, which is only available  using
+        // WebContext, which in turn requires a DWR thread. We can cache the
+        // results simply by calling this in a DWR thread, as we are now.
+        webContext.getScriptSessionsByPage("");
+
+        synchronized (Publisher.class)
+        {
+            if (worker == null)
+            {
+                worker = new Thread(this, "Publisher");
+                worker.start();
+            }
+        }
     }
 
     /* (non-Javadoc)
@@ -38,6 +53,8 @@ public class Publisher implements Runnable
     {
         try
         {
+            log.info("Starting Publisher thread");
+
             while (!Thread.currentThread().isInterrupted())
             {
                 Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage("/dwr/gi/index.html");
@@ -45,15 +62,25 @@ public class Publisher implements Runnable
 
                 Corporation corp = corporations.getNextChangedCorporation();
                 proxy.addFunctionCall("OpenAjax.publish", "gidemo", "corporation", corp);
-            }
 
-            log.info("Publisher: Stopping server-side thread");
+                int timeToSleep = random.nextInt(2500);
+                Thread.sleep(timeToSleep);
+            }
         }
         catch (InterruptedException ex)
         {
-            ex.printStackTrace();
+            // Ignore, we expect this
+        }
+        finally
+        {
+            log.info("Stopping Publisher thread");
         }
     }
+
+    /**
+     * The thread that does the work
+     */
+    protected static Thread worker;
 
     /**
      * The set of corporations that we manage
@@ -66,16 +93,12 @@ public class Publisher implements Runnable
     private ServerContext serverContext;
 
     /**
+     * Used to generate random data
+     */
+    private Random random = new Random();
+
+    /**
      * The log stream
      */
     private static final Logger log = Logger.getLogger(Publisher.class);
-
-    /*
-        Object bean = webContext.getContainer().getBean(PageNormalizer.class.getName());
-        if (bean instanceof DefaultPageNormalizer)
-        {
-            DefaultPageNormalizer normalizer = (DefaultPageNormalizer) bean;
-            normalizer.setServletContext(servletContext);
-        }
-     */
 }

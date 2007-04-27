@@ -32,11 +32,12 @@ Reverse Ajax.</p>
 
   <div id="demoDiv">
 
-    <div style="width:100%; height:220px;">
+    <div style="width:100%; height:280px;" id="gidemo">
       <script
           type="text/javascript"
           src="JSX/js/JSX30.js"
-          jsxapppath="gidemo" jsxlt="true"> </script>
+          jsxapppath="gidemo"
+          jsxlt="true"> </script>
     </div>
 
   </div>
@@ -80,12 +81,36 @@ function objectPublished(prefix, name, handlerData, corporation) {
 
     <p>This simply takes the published data and inserts it into the matrix
     component. That's it.</p>
-    
-    <p>For the full source including the config.xml and appCanvas.xml see the
-    source in the war file. They are not expanded on here because TIBCO GI
-    comes with a GUI builder to generate them. You don't need to write them
-    by hand.</p>
-    
+
+    <p>There are a number of possible repaint strategies, including the simple
+    <code>matrix.repaintData();</code> documented above. The full source
+    contains a strategy that enables cell highlighting</p>
+
+    <p>Meanwhile, on the server the following code is running in a thread</p>
+
+<pre>
+while (!Thread.currentThread().isInterrupted())
+{
+    Collection sessions = serverContext.getScriptSessionsByPage("/dwr/gi/index.html");
+    ScriptProxy proxy = new ScriptProxy(sessions);
+
+    Corporation corp = corporations.getNextChangedCorporation();
+    proxy.addFunctionCall("OpenAjax.publish", "gidemo", "corporation", corp);
+
+    int timeToSleep = random.nextInt(2500);
+    Thread.sleep(timeToSleep);
+}
+</pre>
+
+    <p>This simply finds the people viewing this page, and creates a
+    ScriptProxy to allow us to push Javascript to these users. We then ask
+    the <code>corporations</code> object for a Stock price change, and publish
+    this to the Open Ajax Hub. The hub has not been finally released yet, but
+    we are including a beta with this demo.</p>
+
+    <p>For the full source to all the files, including the config.xml and
+    appCanvas.xml see the source in the war file.</p>
+
   </div>
 
 </div>

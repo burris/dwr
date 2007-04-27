@@ -15,6 +15,8 @@
  */
 package org.getahead.dwrdemo.gidemo;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
@@ -35,10 +37,12 @@ public class Corporation
         this.jsxid = jsxid;
         this.name = name;
 
-        last = random.nextFloat() * 100;
-        last = Math.round(last * 100) / 100;
+        float temp = random.nextFloat() * 100.0F;
+        last = new BigDecimal(Math.round(temp * 100.0F) / 100.0F);
+        last = last.setScale(2, BigDecimal.ROUND_UP);
         time = new Date();
-        change = 0.0F;
+        change = new BigDecimal(0.0F);
+        change = change.setScale(2, BigDecimal.ROUND_UP);
         max = last;
         min = last;
     }
@@ -47,15 +51,15 @@ public class Corporation
 
     private String name;
 
-    private float last;
+    private BigDecimal last;
 
     private Date time;
 
-    private float change;
+    private BigDecimal change;
 
-    private float max;
+    private BigDecimal max;
 
-    private float min;
+    private BigDecimal min;
 
     private Random random = new Random();
 
@@ -78,7 +82,7 @@ public class Corporation
     /**
      * @return the last
      */
-    public float getLast()
+    public BigDecimal getLast()
     {
         return last;
     }
@@ -86,15 +90,15 @@ public class Corporation
     /**
      * @return the time
      */
-    public Date getTime()
+    public String getTime()
     {
-        return time;
+        return FORMAT.format(time);
     }
 
     /**
      * @return the change
      */
-    public float getChange()
+    public BigDecimal getChange()
     {
         return change;
     }
@@ -102,7 +106,7 @@ public class Corporation
     /**
      * @return the max
      */
-    public float getMax()
+    public BigDecimal getMax()
     {
         return max;
     }
@@ -110,7 +114,7 @@ public class Corporation
     /**
      * @return the min
      */
-    public float getMin()
+    public BigDecimal getMin()
     {
         return min;
     }
@@ -121,26 +125,30 @@ public class Corporation
     public void change()
     {
         float newChange = (random.nextFloat() * 4) - 2;
-        newChange = Math.round(newChange * 100) / 100;
+        newChange = Math.round(newChange * 100.0F) / 100.0F;
 
-        if (last + newChange < 9)
+        if (last.floatValue() + newChange < 9)
         {
             newChange = -newChange;
         }
 
-        change = newChange;
-        last += newChange;
+        change = new BigDecimal(newChange);
+        change = change.setScale(2, BigDecimal.ROUND_UP);
 
-        if (last > max)
+        last = last.add(change);
+
+        if (last.compareTo(max) > 0)
         {
             max = last;
         }
 
-        if (last < min)
+        if (last.compareTo(min) < 0)
         {
             min = last;
         }
 
         time = new Date();
     }
+
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("hh:MM:ss");
 }

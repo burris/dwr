@@ -14,6 +14,9 @@
   <listener>
     <listener-class>org.directwebremoting.servlet.EfficientShutdownServletContextListener</listener-class>
   </listener>
+  <listener>
+    <listener-class>org.getahead.dwrdemo.gidemo.PublisherServletContextListener</listener-class>
+  </listener>
 
   <servlet>
     <servlet-name>dwr-invoker</servlet-name>

@@ -66,3 +66,6 @@ pre { background:#f4f4f4; padding:10px; }
   font-family:anonymous,courier,monospace; background:#EEE; padding: 5px;
   margin:20px 0px;
 }
+
+#gidemo table { border-collapse:separate; border-spacing:0; }
+#gidemo table, #gidemo td, #gidemo th { border:0; padding:0; }
