@@ -209,6 +209,8 @@ public class TypeHintContext
      * @see java.lang.Object#toString()
      */
     @Override
+    /* This really want to go in the second loop but see: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6297416 */
+    @SuppressWarnings("unused")
     public String toString()
     {
         if (cachedToString == null)
@@ -225,7 +227,7 @@ public class TypeHintContext
                 buffer.append(i);
             }
 
-            for (@SuppressWarnings("unused") Integer i : parameterNumberTree)
+            for (Integer i : parameterNumberTree)
             {
                 buffer.append('>');
             }
