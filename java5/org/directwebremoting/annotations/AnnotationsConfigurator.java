@@ -59,18 +59,16 @@ public class AnnotationsConfigurator implements Configurator
         if (data instanceof String)
         {
             String classesStr = (String) data;
-            String[] classNames = classesStr.split(",");
-            for (int i = 0; i < classNames.length; i++)
+            for (String element : classesStr.split(","))
             {
-                String className = classNames[i].trim();
                 try
                 {
-                    Class<?> clazz = LocalUtil.classForName(className);
+                    Class<?> clazz = LocalUtil.classForName(element.trim());
                     processClass(clazz, container);
                 }
                 catch (Exception ex)
                 {
-                    log.error("Failed to process class: " + className, ex);
+                    log.error("Failed to process class: " + element, ex);
                 }
             }
         }
@@ -157,17 +155,16 @@ public class AnnotationsConfigurator implements Configurator
         }
 
         AccessControl accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
-        Method[] methods = clazz.getMethods();
-        for (int i = 0; i < methods.length; i++)
+        for (Method method : clazz.getMethods())
         {
-            if (methods[i].getAnnotation(RemoteMethod.class) != null)
+            if (method.getAnnotation(RemoteMethod.class) != null)
             {
-                accessControl.addIncludeRule(name, methods[i].getName());
+                accessControl.addIncludeRule(name, method.getName());
 
-                Auth authAnn = methods[i].getAnnotation(Auth.class);
+                Auth authAnn = method.getAnnotation(Auth.class);
                 if (authAnn != null)
                 {
-                    accessControl.addRoleRestriction(name, methods[i].getName(), authAnn.role());
+                    accessControl.addRoleRestriction(name, method.getName(), authAnn.role());
                 }
             }
         }
@@ -176,9 +173,9 @@ public class AnnotationsConfigurator implements Configurator
         if (filtersAnn != null)
         {
             Filter[] fs = filtersAnn.value();
-            for (int i = 0; i < fs.length; i++)
+            for (Filter filter : fs)
             {
-                processFilter(fs[i], name, container);
+                processFilter(filter, name, container);
             }
         }
         // process single filter for convenience
@@ -242,12 +239,11 @@ public class AnnotationsConfigurator implements Configurator
                 }
             }
 
-            Method[] methods = clazz.getMethods();
-            for (int i = 0; i < methods.length; i++)
+            for (Method method : clazz.getMethods())
             {
-                if (methods[i].getAnnotation(RemoteProperty.class) != null)
+                if (method.getAnnotation(RemoteProperty.class) != null)
                 {
-                    String name = methods[i].getName();
+                    String name = method.getName();
                     if (name.startsWith(METHOD_PREFIX_GET) || name.startsWith(METHOD_PREFIX_IS))
                     {
                         if (name.startsWith(METHOD_PREFIX_GET))
@@ -263,6 +259,7 @@ public class AnnotationsConfigurator implements Configurator
                     }
                 }
             }
+
             if (properties.length() > 0)
             {
                 properties.deleteCharAt(0);
@@ -309,10 +306,9 @@ public class AnnotationsConfigurator implements Configurator
         Map<String, String> result = new HashMap<String, String>();
         if (params != null)
         {
-            for (int i = 0; i < params.length; i++)
+            for (Param param : params)
             {
-                Param p = params[i];
-                result.put(p.name(), p.value());
+                result.put(param.name(), param.value());
             }
         }
         return result;
