@@ -13,18 +13,13 @@
     <mkdir dir="${target.class}"/>
     <javac debug="on" includes="**/*.java" destdir="${target.class}">
       <src path="${source.java}"/>
+      <src path="${source.java5}"/>
       <classpath>
         <fileset dir="${source.jar}" includes="**/*.jar"/>
       </classpath>
     </javac>
     <javac debug="on" includes="**/*.java" destdir="${target.class}">
       <src path="${source.demo}"/>
-      <classpath>
-        <fileset dir="${source.jar}" includes="**/*.jar"/>
-      </classpath>
-    </javac>
-    <javac debug="on" includes="**/*.java" destdir="${target.class}">
-      <src path="${source.java5}"/>
       <classpath>
         <fileset dir="${source.jar}" includes="**/*.jar"/>
       </classpath>
