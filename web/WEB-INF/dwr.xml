@@ -41,11 +41,6 @@
       <param name="class" value="org.getahead.dwrdemo.clock.Clock"/>
     </create>
 
-    <!-- livehelp -->
-    <create creator="new" javascript="LiveHelp" scope="application">
-      <param name="class" value="org.getahead.dwrdemo.livehelp.LiveHelp"/>
-    </create>
-
     <!-- people -->
     <create creator="new" javascript="People" scope="script">
       <param name="class" value="org.getahead.dwrdemo.people.People"/>
