@@ -17,9 +17,10 @@ package org.directwebremoting.spring;
 
 import org.directwebremoting.create.AbstractCreator;
 import org.springframework.aop.support.AopUtils;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
@@ -31,7 +32,7 @@ import org.springframework.util.Assert;
  * @see CreatorConfig
  * @author Bram Smeets
  */
-public class BeanCreator extends AbstractCreator implements ApplicationContextAware, InitializingBean
+public class BeanCreator extends AbstractCreator implements BeanFactoryAware, InitializingBean
 {
     /**
      * Is called by the Spring container after all properties have been set. <br>
@@ -48,7 +49,7 @@ public class BeanCreator extends AbstractCreator implements ApplicationContextAw
         }
         else if (beanId != null)
         {
-            this.beanClass = applicationContext.getType(beanId);
+            this.beanClass = beanFactory.getType(beanId);
         }
         else
         {
@@ -86,7 +87,7 @@ public class BeanCreator extends AbstractCreator implements ApplicationContextAw
             if (bean == null)
             {
                 Assert.notNull(beanId, "The bean id needs to be specified");
-                bean = applicationContext.getBean(beanId);
+                bean = beanFactory.getBean(beanId);
             }
         }
 
@@ -114,16 +115,6 @@ public class BeanCreator extends AbstractCreator implements ApplicationContextAw
         this.beanClass = beanClass;
     }
 
-    /**
-     * Sets the application context. <br>
-     * This method is called by the Spring bean container to set a reference to the
-     * application context.
-     * @param applicationContext the application context
-     */
-    public void setApplicationContext(ApplicationContext applicationContext)
-    {
-        this.applicationContext = applicationContext;
-    }
 
     /**
      * Sets the id of the bean to remote using DWR. <br>
@@ -157,6 +148,17 @@ public class BeanCreator extends AbstractCreator implements ApplicationContextAw
         return config;
     }
 
+    /** 
+     * Sets the bean factory that contains this BeanCreator.
+     * @param beanFactory the beanFactory that created this BeanCreator
+     * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
+     */
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException
+    {
+        this.beanFactory = beanFactory;
+        
+    }
+    
     /**
      * The bean for this creator.
      */
@@ -173,10 +175,10 @@ public class BeanCreator extends AbstractCreator implements ApplicationContextAw
     private String beanId;
 
     /**
-     * The application context that creates this creator.
+     * The beanFactory context that creates this creator.
      */
-    private ApplicationContext applicationContext;
-
+    private BeanFactory beanFactory;
+    
     /**
      * The optional creator configuration for this creator.
      */
@@ -184,4 +186,5 @@ public class BeanCreator extends AbstractCreator implements ApplicationContextAw
 
     /** Monitor object to synchronize on during inititalization. */
     private final Object monitor = new Object();
+
 }

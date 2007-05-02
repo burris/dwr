@@ -577,19 +577,31 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             Map<String, String> params = new HashMap<String, String>();
             if ("spring".equals(creatorType))
             {
-                // TODO: duplicate of RemoteBeanDefinitionDecorator
-                creator = BeanDefinitionBuilder.rootBeanDefinition(SpringCreator.class);
-                // creator.addPropertyValue("bean", new RuntimeBeanReference(parentBeanName));
-                try
+                // TODO Refactor so that both spring creators use the same code...
+                BeanDefinitionBuilder springCreator = BeanDefinitionBuilder.rootBeanDefinition(BeanCreator.class);
+                
+                springCreator.addPropertyValue("javascript", javascript);
+                
+                NodeList children = element.getChildNodes();
+                for (int i = 0; i < children.getLength(); i++)
                 {
-                    creator.addPropertyValue("beanClass", Class.forName(definition.getBeanDefinition().getBeanClassName()));
+                    Node childNode = children.item(i);
+                    if (childNode.getNodeType() == Node.TEXT_NODE || childNode.getNodeType() == Node.COMMENT_NODE)
+                    {
+                        continue;
+                    }
+                    
+                    Element child = (Element) childNode;
+                    String paramName = child.getAttribute("name");
+                    String value = child.getAttribute("value");
+                    if ("beanName".equals(paramName) || "beanId".equals(paramName)) {
+                        springCreator.addPropertyValue("beanId", value);
+                    } else {
+                        params.put(paramName, value);    
+                    }
                 }
-                catch (ClassNotFoundException e)
-                {
-                    throw new FatalBeanException("Unable to create DWR bean creator for '" + definition.getBeanName() + "'.", e);
-                }
-                creator.addPropertyValue("javascript", javascript);
-                creatorConfig.addPropertyValue("creator", creator.getBeanDefinition());
+                
+                creatorConfig.addPropertyValue("creator", springCreator.getBeanDefinition());         
             }
             else if ("new".equals(creatorType))
             {
