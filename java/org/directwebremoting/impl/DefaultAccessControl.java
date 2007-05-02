@@ -356,4 +356,9 @@ public class DefaultAccessControl implements AccessControl
      * My package name, so we can ban DWR classes from being created or marshalled
      */
     protected static final String PACKAGE_DWR_DENY = "org.directwebremoting.";
+
+    /**
+     * My package name, so we can ban DWR classes from being created or marshalled
+     */
+    protected static final String PACKAGE_DWR_ALLOW = "org.directwebremoting.export.";
 }

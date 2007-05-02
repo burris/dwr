@@ -157,6 +157,24 @@ dwr.engine.setActiveReverseAjax = function(activeReverseAjax) {
 };
 
 /**
+ * Turn server notification of page unload on and off
+ * @param notify true or false depending on if we want to turn unload on or off
+ * @see getahead.org/dwr/browser/engine/options
+ */
+dwr.engine.setNotifyServerOnPageUnload = function(notify) {
+  if (notify == dwr.engine._isNotifyServerOnPageUnload) return;
+  if (notify) {
+    if (window.addEventListener) window.addEventListener('unload', dwr.engine._unloader, false);
+    else if (window.attachEvent) window.attachEvent('onunload', dwr.engine._unloader);
+  }
+  else {
+    if (window.removeEventListener) window.removeEventListener('unload', dwr.engine._unloader, false);
+    else if (window.detachEvent) window.detachEvent('onunload', dwr.engine._unloader);
+  }
+  dwr.engine._isNotifyServerOnPageUnload = notify;
+}
+
+/**
  * Set the preferred polling type.
  * @param newPollType One of dwr.engine.XMLHttpRequest or dwr.engine.IFrame
  * @see getahead.org/dwr/browser/engine/options
@@ -353,6 +371,35 @@ dwr.engine._propnames = [ "rpcType", "httpMethod", "async", "timeout", "errorHan
 dwr.engine._partialResponseNo = 0;
 dwr.engine._partialResponseYes = 1;
 dwr.engine._partialResponseFlush = 2;
+
+/** Are we doing page unloading? */
+dwr.engine._isNotifyServerOnPageUnload = false;
+
+/** @private If we have used reverse ajax then we try to tell the server we are gone */
+dwr.engine._unloader = function() {
+  dwr.engine._debug("calling unloader for: " + dwr.engine._getScriptSessionId());
+  var batch = {
+    map:{
+      callCount:1,
+      page:window.location.pathname + window.location.search,
+      httpSessionId:dwr.engine._getJSessionId(),
+      scriptSessionId:dwr.engine._getScriptSessionId(),
+      'c0-scriptName':'__System',
+      'c0-methodName':'pageUnloaded',
+      'c0-id':0
+    },
+    paramCount:0, isPoll:false, async:true,
+    headers:{}, preHooks:[], postHooks:[],
+    rpcType:dwr.engine.IFrame, //dwr.engine._rpcType,
+    httpMethod:dwr.engine._httpMethod,
+    timeout:dwr.engine._timeout,
+    errorHandler:null, warningHandler:null, textHtmlHandler:null,
+    path:dwr.engine._defaultPath,
+    handlers:[{ exceptionHandler:null, callback:null }]
+  };
+  dwr.engine._sendData(batch);
+  dwr.engine.setNotifyServerOnPageUnload(false);
+};
 
 /**
  * @private Send a request. Called by the Javascript interface stub
@@ -614,9 +661,14 @@ dwr.engine._processCometResponse = function(response, batch) {
 
   var exec = response.substring(firstStartTag + 13, lastEndTag);
 
-  dwr.engine._receivedBatch = batch;
-  dwr.engine._eval(exec);
-  dwr.engine._receivedBatch = null;
+  try {
+    dwr.engine._receivedBatch = batch;
+    dwr.engine._eval(exec);
+    dwr.engine._receivedBatch = null;
+  }
+  catch (ex) {
+    dwr.engine._handleError(batch, ex);
+  }
 };
 
 /** @private Actually send the block of data in the batch object. */
@@ -743,46 +795,62 @@ dwr.engine._ModeHtmlPoll = "/call/htmlpoll/";
 /** @private Work out what the URL should look like */
 dwr.engine._constructRequest = function(batch) {
   // A quick string to help people that use web log analysers
-  var request = { url:batch.path + batch.mode, body:null };
+  var urlBuffer = [];
+  urlBuffer.push(batch.path);
+  urlBuffer.push(batch.mode);
   if (batch.isPoll == true) {
-    request.url += "ReverseAjax.dwr";
+    urlBuffer.push("ReverseAjax.dwr");
   }
   else if (batch.map.callCount == 1) {
-    request.url += batch.map["c0-scriptName"] + "." + batch.map["c0-methodName"] + ".dwr";
+    urlBuffer.push(batch.map["c0-scriptName"]);
+    urlBuffer.push(".");
+    urlBuffer.push(batch.map["c0-methodName"]);
+    urlBuffer.push(".dwr");
   }
   else {
-    request.url += "Multiple." + batch.map.callCount + ".dwr";
+    urlBuffer.push("Multiple.");
+    urlBuffer.push(batch.map.callCount);
+    urlBuffer.push(".dwr");
   }
   // Play nice with url re-writing
   var sessionMatch = location.href.match(/jsessionid=([^?]+)/);
   if (sessionMatch != null) {
-    request.url += ";jsessionid=" + sessionMatch[1];
+    urlBuffer.push(";jsessionid=");
+    urlBuffer.push(sessionMatch[1]);
   }
 
+  var request = {};
   var prop;
   if (batch.httpMethod == "GET") {
     // Some browsers (Opera/Safari2) seem to fail to convert the callCount value
     // to a string in the loop below so we do it manually here.
     batch.map.callCount = "" + batch.map.callCount;
-    request.url += "?";
+    urlBuffer.push("?");
     for (prop in batch.map) {
       if (typeof batch.map[prop] != "function") {
-        request.url += encodeURIComponent(prop) + "=" + encodeURIComponent(batch.map[prop]) + "&";
+        urlBuffer.push(encodeURIComponent(prop));
+        urlBuffer.push("=");
+        urlBuffer.push(encodeURIComponent(batch.map[prop]));
+        urlBuffer.push("&");
       }
     }
-    request.url = request.url.substring(0, request.url.length - 1);
+    urlBuffer.pop(); // remove the trailing &
+    request.body = null;
   }
   else {
     // PERFORMANCE: for iframe mode this is thrown away.
-    request.body = "";
+    var bodyBuffer = [];
     for (prop in batch.map) {
       if (typeof batch.map[prop] != "function") {
-        request.body += prop + "=" + batch.map[prop] + dwr.engine._postSeperator;
+        bodyBuffer.push(prop);
+        bodyBuffer.push("=");
+        bodyBuffer.push(batch.map[prop]);
+        bodyBuffer.push(dwr.engine._postSeperator);
       }
     }
-    request.body = dwr.engine._contentRewriteHandler(request.body);
+    request.body = dwr.engine._contentRewriteHandler(bodyBuffer.join(""));
   }
-  request.url = dwr.engine._urlRewriteHandler(request.url);
+  request.url = dwr.engine._urlRewriteHandler(urlBuffer.join(""));
   return request;
 };
 
