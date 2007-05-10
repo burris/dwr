@@ -960,6 +960,7 @@ dwr.util.addOptions = function(ele, data/*, options*/) {
       return;
     }
     for (var prop in data) {
+      if (typeof data[prop] == "function") continue;
       options.data = data[prop];
       if (!arg3) {
         options.value = prop;
