@@ -512,7 +512,7 @@ dwr.util.setValue = function(ele, val, options) {
           if (dwr.util._isArray(val)) {
             node.checked = false;
             for (var j = 0; j < val.length; j++)
-              if (val[i] == node.value) node.checked = true;
+              if (val[j] == node.value) node.checked = true;
           }
           else {
             node.checked = (node.value == val);
