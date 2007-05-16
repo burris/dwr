@@ -2,12 +2,11 @@ package org.directwebremoting.webwork;
 
 /**
  * Default implementation of <code>AjaxDataResult</code>
- *
  * @author <a href='mailto:the_mindstorm[at]evolva[dot]ro'>Alexandru Popescu</a>
  */
 public class DefaultAjaxDataResult implements AjaxDataResult
 {
-    private Object m_data;
+    private Object data;
 
     /**
      * Sole constructor.
@@ -16,7 +15,7 @@ public class DefaultAjaxDataResult implements AjaxDataResult
      */
     public DefaultAjaxDataResult(Object data)
     {
-        m_data = data;
+        this.data = data;
     }
 
     /**
@@ -24,7 +23,7 @@ public class DefaultAjaxDataResult implements AjaxDataResult
      */
     public Object getData()
     {
-        return m_data;
+        return data;
     }
 
 }

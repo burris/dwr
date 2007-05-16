@@ -8,9 +8,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.util.FakeHttpServletResponse;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 
 import com.opensymphony.webwork.ServletActionContext;
 import com.opensymphony.webwork.dispatcher.DispatcherUtils;
@@ -38,15 +39,15 @@ public class DWRAction
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DWRAction.class);
+    private static final Log log = LogFactory.getLog(DWRAction.class);
 
     private static final String DWRACTIONPROCESSOR_INIT_PARAM = "dwrActionProcessor";
 
-    private static DWRAction s_instance;
+    private static DWRAction instance;
 
-    private DispatcherUtils m_wwDispatcher;
+    private DispatcherUtils wwDispatcher;
 
-    private IDWRActionProcessor m_actionProcessor;
+    private IDWRActionProcessor actionProcessor;
 
     /**
      * @param servletContext
@@ -55,8 +56,8 @@ public class DWRAction
     private DWRAction(ServletContext servletContext) throws ServletException
     {
         DispatcherUtils.initialize(servletContext);
-        m_wwDispatcher = DispatcherUtils.getInstance();
-        m_actionProcessor = loadActionProcessor(servletContext.getInitParameter(DWRACTIONPROCESSOR_INIT_PARAM));
+        wwDispatcher = DispatcherUtils.getInstance();
+        actionProcessor = loadActionProcessor(servletContext.getInitParameter(DWRACTIONPROCESSOR_INIT_PARAM));
     }
 
     /**
@@ -73,7 +74,7 @@ public class DWRAction
     {
         initialize(servletContext);
 
-        return s_instance.doExecute(actionDefinition, params, request, response, servletContext);
+        return instance.doExecute(actionDefinition, params, request, response, servletContext);
     }
 
     /**
@@ -89,14 +90,14 @@ public class DWRAction
     {
         FakeHttpServletResponse actionResponse = new FakeHttpServletResponse();
 
-        if (null != m_actionProcessor)
+        if (null != actionProcessor)
         {
-            m_actionProcessor.preProcess(request, response, actionResponse, params);
+            actionProcessor.preProcess(request, response, actionResponse, params);
         }
 
-        m_wwDispatcher.prepare(request, actionResponse);
+        wwDispatcher.prepare(request, actionResponse);
 
-        ActionInvocation invocation = invokeAction(m_wwDispatcher, request, actionResponse, servletContext, actionDefinition, params);
+        ActionInvocation invocation = invokeAction(wwDispatcher, request, actionResponse, servletContext, actionDefinition, params);
 
         AjaxResult result;
         if (actionDefinition.isExecuteResult())
@@ -109,9 +110,9 @@ public class DWRAction
             result = new DefaultAjaxDataResult(invocation.getAction());
         }
 
-        if (null != m_actionProcessor)
+        if (null != actionProcessor)
         {
-            m_actionProcessor.postProcess(request, response, actionResponse, result);
+            actionProcessor.postProcess(request, response, actionResponse, result);
         }
 
         return result;
@@ -254,9 +255,9 @@ public class DWRAction
     {
         synchronized(DWRAction.class)
         {
-            if (null == s_instance)
+            if (null == instance)
             {
-                s_instance = new DWRAction(servletContext);
+                instance = new DWRAction(servletContext);
             }
         }
     }

@@ -7,7 +7,7 @@ package org.directwebremoting.webwork;
  */
 public class DefaultAjaxTextResult implements AjaxTextResult
 {
-    private String m_text;
+    private String text;
 
     /**
      * Empty constructor.
@@ -25,7 +25,7 @@ public class DefaultAjaxTextResult implements AjaxTextResult
      */
     public DefaultAjaxTextResult(String text)
     {
-        m_text = text;
+        this.text = text;
     }
 
     /**
@@ -33,7 +33,7 @@ public class DefaultAjaxTextResult implements AjaxTextResult
      */
     public String getText()
     {
-        return m_text;
+        return this.text;
     }
 
     /**
@@ -43,7 +43,7 @@ public class DefaultAjaxTextResult implements AjaxTextResult
      */
     public void setText(String text)
     {
-        m_text = text;
+        this.text = text;
     }
 
     /**
@@ -52,7 +52,7 @@ public class DefaultAjaxTextResult implements AjaxTextResult
     @Override
     public String toString()
     {
-        return "[AjaxTextResult: '" + m_text + "']";
+        return "[AjaxTextResult: '" + this.text + "']";
     }
 
 }
