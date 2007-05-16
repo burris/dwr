@@ -5,11 +5,12 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.util.DebuggingPrintWriter;
-import org.directwebremoting.util.Logger;
 
 /**
  * A ScriptConduit that works with the parent Marshaller.
@@ -157,19 +158,5 @@ public abstract class BaseScriptConduit extends ScriptConduit
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(BaseScriptConduit.class);
-
-    /**
-     * The slab of data we send to IE to get it to stream
-     */
-    protected static final String FOUR_K_FLUSH_DATA;
-    static
-    {
-        StringBuffer buffer = new StringBuffer(409600);
-        for (int i = 0; i < 4096; i++)
-        {
-            buffer.append(" ");
-        }
-        FOUR_K_FLUSH_DATA = buffer.toString();
-    }
+    private static final Log log = LogFactory.getLog(BaseScriptConduit.class);
 }

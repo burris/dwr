@@ -112,4 +112,18 @@ public class Html4kScriptConduit extends BaseScriptConduit
      * Do we need to do the IE 4k flush thing?
      */
     protected final int partialResponse;
+
+    /**
+     * The slab of data we send to IE to get it to stream
+     */
+    protected static final String FOUR_K_FLUSH_DATA;
+    static
+    {
+        StringBuffer buffer = new StringBuffer(409600);
+        for (int i = 0; i < 4096; i++)
+        {
+            buffer.append(" ");
+        }
+        FOUR_K_FLUSH_DATA = buffer.toString();
+    }
 }
