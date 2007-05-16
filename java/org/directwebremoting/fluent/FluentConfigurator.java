@@ -3,10 +3,11 @@ package org.directwebremoting.fluent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.Container;
 import org.directwebremoting.extend.AccessControl;
@@ -18,7 +19,6 @@ import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.impl.SignatureParser;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * A {@link Configurator} that used the FluentInterface style as
@@ -304,9 +304,8 @@ public abstract class FluentConfigurator implements Configurator
                 
                 if (filters != null)
                 {
-                    for (Iterator<String> it = filters.iterator(); it.hasNext();)
+                    for (String className : filters)
                     {
-                        String className = it.next();
                         AjaxFilter filter = LocalUtil.classNewInstance(scriptName, className, AjaxFilter.class);
 
                         if (filter != null)
@@ -495,5 +494,5 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(FluentConfigurator.class);
+    private static final Log log = LogFactory.getLog(FluentConfigurator.class);
 }

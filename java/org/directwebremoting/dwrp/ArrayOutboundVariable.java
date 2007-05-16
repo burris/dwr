@@ -84,10 +84,8 @@ public class ArrayOutboundVariable extends AbstractOutboundVariable implements O
         buffer.append("[");
 
         boolean first = true;
-        for (int i = 0; i < ovs.size(); i++)
+        for (OutboundVariable ov : ovs)
         {
-            OutboundVariable ov = ovs.get(i);
-
             if (!first)
             {
                 buffer.append(',');

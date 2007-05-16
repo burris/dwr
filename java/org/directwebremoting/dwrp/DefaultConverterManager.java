@@ -19,10 +19,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.InboundContext;
@@ -33,7 +34,6 @@ import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -249,10 +249,8 @@ public class DefaultConverterManager implements ConverterManager
             String javascriptClassName = type.substring("Object_".length());
 
             // Locate a converter for this JavaScript classname
-            Iterator<Map.Entry<String, Converter>> it = converters.entrySet().iterator();
-            while (it.hasNext())
+            for (Map.Entry<String, Converter> entry : converters.entrySet())
             {
-                Map.Entry<String, Converter> entry = it.next();
                 String match = entry.getKey();
                 Converter conv = entry.getValue();
 
@@ -396,10 +394,9 @@ public class DefaultConverterManager implements ConverterManager
         }
 
         // Lookup all of the interfaces of this class for a match
-        Class<?>[] interfaces = paramType.getInterfaces();
-        for (int i = 0; i < interfaces.length; i++)
+        for (Class<?> anInterface : paramType.getInterfaces())
         {
-            converter = getConverterAssignableFrom(interfaces[i]);
+            converter = getConverterAssignableFrom(anInterface);
             if (converter != null)
             {
                 converters.put(lookup, converter);
@@ -425,7 +422,7 @@ public class DefaultConverterManager implements ConverterManager
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultConverterManager.class);
+    private static final Log log = LogFactory.getLog(DefaultConverterManager.class);
 
     /**
      * The list of the available converters

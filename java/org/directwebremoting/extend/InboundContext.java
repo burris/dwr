@@ -20,8 +20,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.dwrp.ProtocolConstants;
-import org.directwebremoting.util.Logger;
 
 /**
  * InboundContext is the context for set of inbound conversions.
@@ -158,9 +159,8 @@ public final class InboundContext
     {
         int count = 0;
         String prefix = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum + ProtocolConstants.INBOUND_CALLNUM_SUFFIX + ProtocolConstants.INBOUND_KEY_PARAM;
-        for (Iterator<String> it = variables.keySet().iterator(); it.hasNext();)
+        for (String key : variables.keySet())
         {
-            String key = it.next();
             if (key.startsWith(prefix))
             {
                 count++;
@@ -256,9 +256,8 @@ public final class InboundContext
     {
         StringBuffer buffer = new StringBuffer();
         buffer.append("InboundContext[");
-        for (Iterator<Map.Entry<String, InboundVariable>> it = variables.entrySet().iterator(); it.hasNext();)
+        for (Map.Entry<String, InboundVariable> entry : variables.entrySet())
         {
-            Map.Entry<String, InboundVariable> entry = it.next();
             buffer.append(entry.getKey());
             buffer.append('=');
             buffer.append(entry.getValue());
@@ -294,5 +293,5 @@ public final class InboundContext
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(InboundContext.class);
+    private static final Log log = LogFactory.getLog(InboundContext.class);
 }

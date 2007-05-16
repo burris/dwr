@@ -18,13 +18,14 @@ package org.directwebremoting.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
 import org.directwebremoting.WebContext;
@@ -37,16 +38,15 @@ import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.NamedConverter;
 import org.directwebremoting.extend.Property;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
 import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * In implementation of Remoter that delegates requests to a set of Modules
@@ -69,12 +69,8 @@ public class DefaultRemoter implements Remoter
         StringBuffer buffer = new StringBuffer();
 
         // Output the class definitions for the converted objects
-        Collection<String> converterMatches = converterManager.getConverterMatchStrings();
-        Iterator<String> it = converterMatches.iterator();
-        while (it.hasNext())
+        for (String match : converterManager.getConverterMatchStrings())
         {
-            String match = it.next();
-
             try
             {
                 StringBuffer paramBuffer = new StringBuffer();
@@ -90,13 +86,13 @@ public class DefaultRemoter implements Remoter
                     if (jsClassName != null && !"".equals(jsClassName))
                     {
                         // Wildcard match strings are currently not supported
-                        if (match.indexOf("*") == -1)
+                        if (!match.contains("*"))
                         {
                             paramBuffer.append('\n');
 
                             // output: if (typeof <class> != "function") { var <class> = function() {
                             paramBuffer.append("if (typeof " + jsClassName + " != \"function\") {\n");
-                            paramBuffer.append("  var " + jsClassName + " = function() {\n");
+                            paramBuffer.append("  function " + jsClassName + "() {\n");
 
                             // output: this.<property> = <init-value>;
                             Class<?> mappedType;
@@ -555,5 +551,5 @@ public class DefaultRemoter implements Remoter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultRemoter.class);
+    private static final Log log = LogFactory.getLog(DefaultRemoter.class);
 }

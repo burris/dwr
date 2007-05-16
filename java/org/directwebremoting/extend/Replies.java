@@ -16,6 +16,7 @@
 package org.directwebremoting.extend;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
  * iframe).
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Replies
+public class Replies implements Iterable<Reply>
 {
     /**
      * @param batchId The batchId to set.
@@ -75,6 +76,14 @@ public class Replies
     public String getBatchId()
     {
         return batchId;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Iterable#iterator()
+     */
+    public Iterator<Reply> iterator()
+    {
+        return replies.iterator();
     }
 
     private String batchId = null;

@@ -77,7 +77,7 @@ public class ScriptBuffer
      */
     public ScriptBuffer appendData(char c)
     {
-        parts.add(new Character(c));
+        parts.add(c);
         return this;
     }
 
@@ -88,7 +88,7 @@ public class ScriptBuffer
      */
     public ScriptBuffer appendData(double d)
     {
-        parts.add(new Double(d));
+        parts.add(d);
         return this;
     }
 
@@ -99,7 +99,7 @@ public class ScriptBuffer
      */
     public ScriptBuffer appendData(float f)
     {
-        parts.add(new Float(f));
+        parts.add(f);
         return this;
     }
 
@@ -110,7 +110,7 @@ public class ScriptBuffer
      */
     public ScriptBuffer appendData(int i)
     {
-        parts.add(new Integer(i));
+        parts.add(i);
         return this;
     }
 
@@ -121,7 +121,7 @@ public class ScriptBuffer
      */
     public ScriptBuffer appendData(long l)
     {
-        parts.add(new Long(l));
+        parts.add(l);
         return this;
     }
 
@@ -177,7 +177,7 @@ public class ScriptBuffer
             this.data = data;
         }
 
-        String data;
+        final String data;
 
         /* (non-Javadoc)
          * @see java.lang.Object#toString()
@@ -192,5 +192,5 @@ public class ScriptBuffer
     /**
      * This is where we store all the script components waiting to be serialized
      */
-    private List<Object> parts = new ArrayList<Object>();
+    private final List<Object> parts = new ArrayList<Object>();
 }

@@ -26,12 +26,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.extend.Handler;
 import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -106,27 +107,27 @@ public class FileHandler implements Handler
 
                     if (dynamic)
                     {
-                        if (line.indexOf(PARAM_SCRIPT_COOKIENAME) != -1)
+                        if (line.contains(PARAM_SCRIPT_COOKIENAME))
                         {
                             line = LocalUtil.replace(line, PARAM_SCRIPT_COOKIENAME, sessionCookieName);
                         }
 
-                        if (line.indexOf(PARAM_SCRIPT_SESSIONID) != -1)
+                        if (line.contains(PARAM_SCRIPT_SESSIONID))
                         {
                             line = LocalUtil.replace(line, PARAM_SCRIPT_SESSIONID, generator.generateId(pageIdLength));
                         }
 
-                        if (line.indexOf(PARAM_SCRIPT_ALLOWGET) != -1)
+                        if (line.contains(PARAM_SCRIPT_ALLOWGET))
                         {
                             line = LocalUtil.replace(line, PARAM_SCRIPT_ALLOWGET, String.valueOf(allowGetForSafariButMakeForgeryEasier));
                         }
 
-                        if (line.indexOf(PARAM_SCRIPT_TAG_PROTECTION) != -1)
+                        if (line.contains(PARAM_SCRIPT_TAG_PROTECTION))
                         {
                             line = LocalUtil.replace(line, PARAM_SCRIPT_TAG_PROTECTION, scriptTagProtection);
                         }
 
-                        if (line.indexOf(PARAM_DEFAULT_PATH) != -1)
+                        if (line.contains(PARAM_DEFAULT_PATH))
                         {
                             String path = request.getContextPath() + request.getServletPath();
                             if (overridePath != null)
@@ -452,5 +453,5 @@ public class FileHandler implements Handler
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(FileHandler.class);
+    private static final Log log = LogFactory.getLog(FileHandler.class);
 }

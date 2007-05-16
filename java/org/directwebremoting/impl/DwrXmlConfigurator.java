@@ -29,6 +29,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory;
@@ -41,7 +43,6 @@ import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.LogErrorHandler;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -495,10 +496,8 @@ public class DwrXmlConfigurator implements Configurator
             Class<?> dest = creator.getType();
 
             Method method = null;
-            Method[] methods = dest.getMethods();
-            for (int j = 0; j < methods.length; j++)
+            for (Method test : dest.getMethods())
             {
-                Method test = methods[j];
                 if (test.getName().equals(methodName))
                 {
                     if (method == null)
@@ -565,7 +564,7 @@ public class DwrXmlConfigurator implements Configurator
     /**
      * The log stream
      */
-    public static final Logger log = Logger.getLogger(DwrXmlConfigurator.class);
+    public static final Log log = LogFactory.getLog(DwrXmlConfigurator.class);
 
     /**
      * What AjaxFilters apply to which Ajax calls?

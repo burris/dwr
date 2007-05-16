@@ -24,12 +24,13 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -70,6 +71,12 @@ public class Batch
         {
             checkNotCsrfAttack(request, sessionCookieName);
         }
+    }
+
+    public Batch(Map<String, String> params) throws ServerException
+    {
+        setAllParameters(params);
+        parseParameters();
     }
 
     /**
@@ -211,12 +218,9 @@ public class Batch
                 // Weblogic adds creation time to the end of the incoming
                 // session cookie string (even for request.getRequestedSessionId()).
                 // Use the raw cookie instead
-                Cookie[] cookies = request.getCookies();
-                for (int i = 0; i < cookies.length; i++)
+                for (Cookie cookie : request.getCookies())
                 {
-                    Cookie cookie = cookies[i];
-                    if (cookie.getName().equals(sessionCookieName) &&
-                            cookie.getValue().equals(bodySessionId))
+                    if (cookie.getName().equals(sessionCookieName) && cookie.getValue().equals(bodySessionId))
                     {
                         return;
                     }
@@ -290,9 +294,8 @@ public class Batch
         scriptSessionId = paramMap.remove(ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         page = paramMap.remove(ProtocolConstants.INBOUND_KEY_PAGE);
 
-        for (Iterator<Map.Entry<String, String>> it = paramMap.entrySet().iterator(); it.hasNext();)
+        for (Map.Entry<String, String> entry : paramMap.entrySet())
         {
-            Map.Entry<String, String> entry = it.next();
             String key = entry.getKey();
             String value = entry.getValue();
             if (key.startsWith(ProtocolConstants.INBOUND_KEY_METADATA))
@@ -319,5 +322,5 @@ public class Batch
     /**
      * The log stream
      */
-    protected static final Logger log = Logger.getLogger(Batch.class);
+    protected static final Log log = LogFactory.getLog(Batch.class);
 }

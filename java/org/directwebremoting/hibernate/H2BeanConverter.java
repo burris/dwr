@@ -46,16 +46,14 @@ public class H2BeanConverter extends BeanConverter implements Converter
         try
         {
             BeanInfo info = Introspector.getBeanInfo(clazz);
-            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
 
             Map<String, Property> properties = new HashMap<String, Property>();
-            for (int i = 0; i < descriptors.length; i++)
+            for (PropertyDescriptor descriptor : info.getPropertyDescriptors())
             {
-                PropertyDescriptor descriptor = descriptors[i];
                 String name = descriptor.getName();
 
                 // We don't marshall getClass()
-                if (name.equals("class"))
+                if ("class".equals(name))
                 {
                     continue;
                 }
@@ -103,11 +101,11 @@ public class H2BeanConverter extends BeanConverter implements Converter
         if (method == null)
         {
             PropertyDescriptor[] props = Introspector.getBeanInfo(data.getClass()).getPropertyDescriptors();
-            for (int i = 0; i < props.length; i++)
+            for (PropertyDescriptor prop : props)
             {
-                if (props[i].getName().equalsIgnoreCase(property))
+                if (prop.getName().equalsIgnoreCase(property))
                 {
-                    method = props[i].getReadMethod();
+                    method = prop.getReadMethod();
                 }
             }
 

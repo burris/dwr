@@ -17,9 +17,7 @@ package org.directwebremoting.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -29,6 +27,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
 import org.directwebremoting.ServerContextFactory.ServerContextBuilder;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
@@ -65,7 +65,6 @@ import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.servlet.UtilHandler;
 import org.directwebremoting.servlet.WebworkUtilHandler;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.xml.sax.SAXException;
 
 /**
@@ -450,9 +449,8 @@ public class ContainerUtil
         }
 
         log.debug("Shutting down containers for: " + title);
-        for (Iterator<Container> it = containers.iterator(); it.hasNext();)
+        for (Container container : containers)
         {
-            Container container = it.next();
             ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
             monitor.shutdown();
         }
@@ -469,10 +467,8 @@ public class ContainerUtil
             // Container level debug
             log.debug("Container");
             log.debug("  Type: " + container.getClass().getName());
-            Collection<String> beanNames = container.getBeanNames();
-            for (Iterator<String> it = beanNames.iterator(); it.hasNext();)
+            for (String name : container.getBeanNames())
             {
-                String name = it.next();
                 Object object = container.getBean(name);
 
                 if (object instanceof String)
@@ -504,10 +500,8 @@ public class ContainerUtil
             CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
             log.debug("CreatorManager");
             log.debug("  Type: " + creatorManager.getClass().getName());
-            Collection<String> creatorNames = creatorManager.getCreatorNames();
-            for (Iterator<String> it = creatorNames.iterator(); it.hasNext();)
+            for (String creatorName : creatorManager.getCreatorNames())
             {
-                String creatorName = it.next();
                 Creator creator = creatorManager.getCreator(creatorName);
                 log.debug("  Creator: " + creatorName + " = " + creator + " (" + creator.getClass().getName() + ")");
             }
@@ -550,5 +544,5 @@ public class ContainerUtil
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(ContainerUtil.class);
+    private static final Log log = LogFactory.getLog(ContainerUtil.class);
 }

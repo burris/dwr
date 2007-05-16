@@ -16,7 +16,6 @@
 package org.directwebremoting.dwrp;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
@@ -188,9 +187,8 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
         StringBuffer buffer = new StringBuffer();
 
         // Make sure the nested things are declared
-        for (Iterator<OutboundVariable> it = children.iterator(); it.hasNext();)
+        for (OutboundVariable nested : children)
         {
-            OutboundVariable nested = it.next();
             buffer.append(nested.getBuildCode());
         }
 
@@ -211,9 +209,8 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
         StringBuffer buffer = new StringBuffer();
 
         // Make sure the nested things are declared
-        for (Iterator<OutboundVariable> it = children.iterator(); it.hasNext();)
+        for (OutboundVariable nested : children)
         {
-            OutboundVariable nested = it.next();
             buffer.append(nested.getDeclareCode());
         }
 
@@ -248,7 +245,7 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
     /**
      * A helper struct to pass a build code and define code together
      */
-    protected class NotInlineDefinition
+    protected static class NotInlineDefinition
     {
         protected NotInlineDefinition(String declareCode, String buildCode)
         {
@@ -259,12 +256,12 @@ public abstract class AbstractOutboundVariable implements OutboundVariable
         /**
          * The code to be executed to do basic initialization
          */
-        String declareCode;
+        final String declareCode;
 
         /**
          * The code to be executed to setup the data structure
          */
-        String buildCode;
+        final String buildCode;
     }
 
     /**

@@ -25,7 +25,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -360,14 +359,14 @@ public class FakeHttpServletResponse implements HttpServletResponse
      */
     public Cookie getCookie(String name)
     {
-        for (Iterator<Cookie> it = cookies.iterator(); it.hasNext();)
+        for (Cookie cookie : cookies)
         {
-            Cookie cookie = it.next();
             if (name.equals(cookie.getName()))
             {
                 return cookie;
             }
         }
+
         return null;
     }
 

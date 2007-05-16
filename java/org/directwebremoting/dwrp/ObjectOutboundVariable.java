@@ -15,7 +15,6 @@
  */
 package org.directwebremoting.dwrp;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.directwebremoting.extend.OutboundContext;
@@ -73,9 +72,8 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
         }
 
         StringBuffer buildCode = new StringBuffer();
-        for (Iterator<Map.Entry<String, OutboundVariable>> it = ovs.entrySet().iterator(); it.hasNext();)
+        for (Map.Entry<String, OutboundVariable> entry : ovs.entrySet())
         {
-            Map.Entry<String, OutboundVariable> entry = it.next();
             String name = entry.getKey();
             OutboundVariable nested = entry.getValue();
 
@@ -118,9 +116,8 @@ public class ObjectOutboundVariable extends AbstractOutboundVariable implements 
         buffer.append('{');
 
         boolean first = true;
-        for (Iterator<Map.Entry<String, OutboundVariable>> it = ovs.entrySet().iterator(); it.hasNext();)
+        for (Map.Entry<String, OutboundVariable> entry : ovs.entrySet())
         {
-            Map.Entry<String, OutboundVariable> entry = it.next();
             String name = entry.getKey();
             OutboundVariable nested = entry.getValue();
 

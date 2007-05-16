@@ -19,16 +19,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -178,9 +178,8 @@ public class DefaultCreatorManager implements CreatorManager
         if (creator == null)
         {
             StringBuffer buffer = new StringBuffer("Names of known classes are: ");
-            for (Iterator<String> it = creators.keySet().iterator(); it.hasNext();)
+            for (String key : creators.keySet())
             {
-                String key = it.next();
                 buffer.append(key);
                 buffer.append(' ');
             }
@@ -203,7 +202,7 @@ public class DefaultCreatorManager implements CreatorManager
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultCreatorManager.class);
+    private static final Log log = LogFactory.getLog(DefaultCreatorManager.class);
 
     /**
      * The list of the available creators

@@ -56,9 +56,9 @@ public class HitMonitor
             trimHitLog();
 
             int count = 0;
-            for (int i = 0; i < hitLog.length; i++)
+            for (long hit : hitLog)
             {
-                count += hitLog[i];
+                count += hit;
             }
 
             return count;

@@ -24,9 +24,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.AccessControl;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
@@ -38,7 +39,6 @@ import org.directwebremoting.servlet.PathConstants;
 import org.directwebremoting.servlet.UtilHandler;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -66,9 +66,8 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         buffer.append("<h2>Classes known to DWR:</h2>\n");
         buffer.append("<ul>\n");
-        for (Iterator<String> it = creatorManager.getCreatorNames().iterator(); it.hasNext();)
+        for (String name : creatorManager.getCreatorNames())
         {
-            String name = it.next();
             Creator creator = creatorManager.getCreator(name);
 
             buffer.append("<li><a href='");
@@ -263,11 +262,11 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             }
 
             // Print a warning if the method uses un-marshallable types
-            for (int j = 0; j < paramTypes.length; j++)
+            for (Class<?> paramType1 : paramTypes)
             {
-                if (!converterManager.isConvertable(paramTypes[j]))
+                if (!converterManager.isConvertable(paramType1))
                 {
-                    buffer.append("<br/><span class='warning'>(Warning: No Converter for " + paramTypes[j].getName() + ". See <a href='#missingConverter'>below</a>)</span>\n");
+                    buffer.append("<br/><span class='warning'>(Warning: No Converter for " + paramType1.getName() + ". See <a href='#missingConverter'>below</a>)</span>\n");
                 }
             }
 
@@ -508,5 +507,5 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultDebugPageGenerator.class);
+    private static final Log log = LogFactory.getLog(DefaultDebugPageGenerator.class);
 }

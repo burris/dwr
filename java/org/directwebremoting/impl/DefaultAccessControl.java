@@ -187,9 +187,8 @@ public class DefaultAccessControl implements AccessControl
      */
     protected static void assertAllowedByRoles(HttpServletRequest req, Set<String> roles) throws SecurityException
     {
-        for (Iterator<String> it = roles.iterator(); it.hasNext();)
+        for (String role : roles)
         {
-            String role = it.next();
             if ("*".equals(role) || req.isUserInRole(role))
             {
                 return;
@@ -296,7 +295,10 @@ public class DefaultAccessControl implements AccessControl
      */
     protected static void assertIsClassDwrInternal(Creator creator)
     {
-        if (creator.getType().getName().startsWith(PACKAGE_DWR_DENY))
+        String name = creator.getType().getName();
+
+        // Access to org.directwebremoting is denied except for .export
+        if (name.startsWith(PACKAGE_DWR_DENY) && !name.startsWith(PACKAGE_DWR_ALLOW))
         {
             throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedCoreDWR"));
         }

@@ -26,6 +26,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
@@ -49,7 +51,6 @@ import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.util.DebuggingPrintWriter;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -97,7 +98,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                 String key = it.next();
                 InboundVariable value = inctx.getInboundVariable(key);
                 if (key.startsWith(ProtocolConstants.INBOUND_CALLNUM_PREFIX) &&
-                    key.indexOf(ProtocolConstants.INBOUND_CALLNUM_SUFFIX + ProtocolConstants.INBOUND_KEY_ENV) != -1)
+                    key.contains(ProtocolConstants.INBOUND_CALLNUM_SUFFIX + ProtocolConstants.INBOUND_KEY_ENV))
                 {
                     buffer.append(key);
                     buffer.append('=');
@@ -187,9 +188,8 @@ public abstract class BaseCallMarshaller implements Marshaller
         Map<String, String> paramMap = batch.getSpareParameters();
         if (!paramMap.isEmpty())
         {
-            for (Iterator<Map.Entry<String, String>> it = paramMap.entrySet().iterator(); it.hasNext();)
+            for (Map.Entry<String, String> entry : paramMap.entrySet())
             {
-                Map.Entry<String, String> entry = it.next();
                 String key = entry.getKey();
                 String value = entry.getValue();
 
@@ -218,26 +218,25 @@ public abstract class BaseCallMarshaller implements Marshaller
         }
 
         Creator creator = creatorManager.getCreator(call.getScriptName());
-        Method[] methods = creator.getType().getMethods();
         List<Method> available = new ArrayList<Method>();
 
         methods:
-        for (int i = 0; i < methods.length; i++)
+        for (Method method : creator.getType().getMethods())
         {
             // Check method name and access
-            if (methods[i].getName().equals(call.getMethodName()))
+            if (method.getName().equals(call.getMethodName()))
             {
                 // Check number of parameters
-                if (methods[i].getParameterTypes().length == inctx.getParameterCount())
+                if (method.getParameterTypes().length == inctx.getParameterCount())
                 {
                     // Clear the previous conversion attempts (the param types
                     // will probably be different)
                     inctx.clearConverted();
 
                     // Check parameter types
-                    for (int j = 0; j < methods[i].getParameterTypes().length; j++)
+                    for (int j = 0; j < method.getParameterTypes().length; j++)
                     {
-                        Class<?> paramType = methods[i].getParameterTypes()[j];
+                        Class<?> paramType = method.getParameterTypes()[j];
                         if (!converterManager.isConvertable(paramType))
                         {
                             // Give up with this method and try the next
@@ -245,7 +244,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                         }
                     }
 
-                    available.add(methods[i]);
+                    available.add(method);
                 }
             }
         }
@@ -573,5 +572,5 @@ public abstract class BaseCallMarshaller implements Marshaller
     /**
      * The log stream
      */
-    protected static final Logger log = Logger.getLogger(BaseCallMarshaller.class);
+    protected static final Log log = LogFactory.getLog(BaseCallMarshaller.class);
 }

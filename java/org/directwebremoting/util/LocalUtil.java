@@ -26,7 +26,6 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -38,6 +37,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * Various utilities, mostly to make up for JDK 1.4 functionallity that is not
@@ -288,9 +290,8 @@ public final class LocalUtil
      */
     public static void setParams(Object object, Map<String, ?> params, List<String> ignore)
     {
-        for (Iterator<? extends Map.Entry<String, ?>> it = params.entrySet().iterator(); it.hasNext();)
+        for (Map.Entry<String, ?> entry : params.entrySet())
         {
-            Map.Entry<String, ?> entry = it.next();
             String key = entry.getKey();
             Object value = entry.getValue();
 
@@ -350,11 +351,8 @@ public final class LocalUtil
             }
         }
 
-        Method[] methods = real.getMethods();
-        for (int i = 0; i < methods.length; i++)
+        for (Method setter : real.getMethods())
         {
-            Method setter = methods[i];
-
             if (setter.getName().equals(setterName) && setter.getParameterTypes().length == 1)
             {
                 Class<?> propertyType = setter.getParameterTypes()[0];
@@ -926,9 +924,8 @@ public final class LocalUtil
     private static Field[] getAllFields(List<Class<?>> classes)
     {
         Set<Field> fields = new HashSet<Field>();
-        for (Iterator<Class<?>> it = classes.iterator(); it.hasNext();)
+        for (Class<?> clazz : classes)
         {
-            Class<?> clazz = it.next();
             fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         }
 
@@ -938,5 +935,5 @@ public final class LocalUtil
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(LocalUtil.class);
+    private static final Log log = LogFactory.getLog(LocalUtil.class);
 }
