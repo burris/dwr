@@ -25,9 +25,9 @@
     <init-param>
       <param-name>classes</param-name>
       <param-value>
-      org.getahead.dwrdemo.test.TestBean2Converter,
-      org.getahead.dwrdemo.test.Test,
-      org.getahead.dwrdemo.test.TestBean
+      org.directwebremoting.export.marshall.TestBean2Converter,
+      org.directwebremoting.export.marshall.Test,
+      org.directwebremoting.export.marshall.TestBean
       </param-value>
     </init-param>
     <init-param>

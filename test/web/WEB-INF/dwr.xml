@@ -7,29 +7,29 @@
 
     <!-- stress -->
     <create creator="new" javascript="Settings" scope="application">
-      <param name="class" value="org.getahead.dwrdemo.stress.Settings"/>
+      <param name="class" value="org.directwebremoting.export.stress.Settings"/>
     </create>
     <create creator="new" javascript="Stress" scope="script">
-      <param name="class" value="org.getahead.dwrdemo.stress.Stress"/>
+      <param name="class" value="org.directwebremoting.export.stress.Stress"/>
     </create>
-    <convert match="org.getahead.dwrdemo.stress.Setting" converter="bean"/>
+    <convert match="org.directwebremoting.export.stress.Setting" converter="bean"/>
 
     <!-- chat -->
     <create creator="new" javascript="Control" scope="application">
-      <param name="class" value="org.getahead.dwrdemo.arac.Control"/>
+      <param name="class" value="org.directwebremoting.export.arac.Control"/>
     </create>
-    <convert converter="bean" match="org.getahead.dwrdemo.arac.Client">
+    <convert converter="bean" match="org.directwebremoting.export.arac.Client">
       <param name="exclude" value="session"/>
     </convert>
 
     <!-- test -->
     <create creator="new" javascript="Test" scope="application">
-      <param name="class" value="org.getahead.dwrdemo.test.Test"/>
+      <param name="class" value="org.directwebremoting.export.marshall.Test"/>
     </create>
     <convert converter="bean" match="$Proxy*"/>
-    <convert converter="bean" match="org.getahead.dwrdemo.test.TestBean"/>
-    <convert converter="bean" javascript="ObjB" match="org.getahead.dwrdemo.test.ObjB"/>
-    <convert converter="object" javascript="ObjA" match="org.getahead.dwrdemo.test.ObjA">
+    <convert converter="bean" match="org.directwebremoting.export.marshall.TestBean"/>
+    <convert converter="bean" javascript="ObjB" match="org.directwebremoting.export.marshall.ObjB"/>
+    <convert converter="object" javascript="ObjA" match="org.directwebremoting.export.marshall.ObjA">
       <param name="force" value="true"/>
     </convert>
 
@@ -42,7 +42,7 @@
   <signatures>
   <![CDATA[
   import java.util.*;
-  import org.getahead.dwrdemo.test.*;
+  import org.directwebremoting.export.marshall.*;
 
   Test.testBeanSetParam(Set<TestBean>);
   Test.testBeanListParam(List<TestBean>);

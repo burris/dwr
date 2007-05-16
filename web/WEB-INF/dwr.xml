@@ -24,7 +24,7 @@
 
     <!-- anti-spam mailto generator -->
     <create creator="new" javascript="Generator" scope="application">
-      <param name="class" value="org.getahead.dwrdemo.asmg.Generator"/>
+      <param name="class" value="org.directwebremoting.export.asmg.Generator"/>
     </create>
 
     <!-- chat -->

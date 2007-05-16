@@ -15,143 +15,99 @@
  */
 package org.directwebremoting.util;
 
+import static org.junit.Assert.*;
 import org.directwebremoting.util.JavascriptUtil;
-
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * JUnit
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class JavascriptUtilTest extends TestCase
+public class JavascriptUtilTest
 {
-    /**
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.compress(String, int)'
-     */
+    @Test
     public void testCompress()
     {
-        assertEquals(JavascriptUtil.compress(" aaa \n aa \n", JavascriptUtil.COMPRESS_TRIM_LINES), "aaa\naa\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.compress("//aaa//bbbb\nxx //aaa\n", JavascriptUtil.COMPRESS_STRIP_SL_COMMENTS), "\nxx \n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.compress("a/*\n*/a\n", JavascriptUtil.COMPRESS_STRIP_ML_COMMENTS), "a \na\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.compress("a\n\na\n", JavascriptUtil.COMPRESS_STRIP_BLANKLINES), "a\na\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.compress("a\nb\n", JavascriptUtil.COMPRESS_REMOVE_NEWLINES), "a b \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.compress(" aaa \n aa \n", JavascriptUtil.COMPRESS_TRIM_LINES), "aaa\naa\n");
+        assertEquals(JavascriptUtil.compress("//aaa//bbbb\nxx //aaa\n", JavascriptUtil.COMPRESS_STRIP_SL_COMMENTS), "\nxx \n");
+        assertEquals(JavascriptUtil.compress("a/*\n*/a\n", JavascriptUtil.COMPRESS_STRIP_ML_COMMENTS), "a \na\n");
+        assertEquals(JavascriptUtil.compress("a\n\na\n", JavascriptUtil.COMPRESS_STRIP_BLANKLINES), "a\na\n");
+        assertEquals(JavascriptUtil.compress("a\nb\n", JavascriptUtil.COMPRESS_REMOVE_NEWLINES), "a b \n");
     }
 
-    /**
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.stripSpaces(String)'
-     */
+    @Test
     public void testStripSpaces()
     {
-        assertEquals(JavascriptUtil.trimLines("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.trimLines("\n"), "\n");
         assertEquals(JavascriptUtil.trimLines(null), null);
 
-        assertEquals(JavascriptUtil.trimLines("a a\n"), "a a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.trimLines("aaa\n"), "aaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.trimLines(" a a \n"), "a a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.trimLines(" aaa \n"), "aaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.trimLines("a a\n"), "a a\n");
+        assertEquals(JavascriptUtil.trimLines("aaa\n"), "aaa\n");
+        assertEquals(JavascriptUtil.trimLines(" a a \n"), "a a\n");
+        assertEquals(JavascriptUtil.trimLines(" aaa \n"), "aaa\n");
 
-        assertEquals(JavascriptUtil.trimLines(" aaa \n aa \n"), "aaa\naa\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.trimLines(" aaa \n aa \n"), "aaa\naa\n");
     }
 
-    /**
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.stripSingleLineComments(String)'
-     */
+    @Test
     public void testStripSingleLineComments()
     {
-        assertEquals(JavascriptUtil.stripSingleLineComments("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("\n"), "\n");
         assertEquals(JavascriptUtil.stripSingleLineComments(null), null);
 
-        assertEquals(JavascriptUtil.stripSingleLineComments("a\n"), "a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripSingleLineComments("/a\n"), "/a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripSingleLineComments("/a/a\n"), "/a/a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripSingleLineComments("/ /\n"), "/ /\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("a\n"), "a\n");
+        assertEquals(JavascriptUtil.stripSingleLineComments("/a\n"), "/a\n");
+        assertEquals(JavascriptUtil.stripSingleLineComments("/a/a\n"), "/a/a\n");
+        assertEquals(JavascriptUtil.stripSingleLineComments("/ /\n"), "/ /\n");
 
-        assertEquals(JavascriptUtil.stripSingleLineComments("//\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa\naaa\n"), "\naaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa//bbbb\naaa\n"), "\naaa\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa//bbbb\nxx //aaa\n"), "\nxx \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripSingleLineComments("//\n"), "\n");
+        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa\n"), "\n");
+        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa\naaa\n"), "\naaa\n");
+        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa//bbbb\naaa\n"), "\naaa\n");
+        assertEquals(JavascriptUtil.stripSingleLineComments("//aaa//bbbb\nxx //aaa\n"), "\nxx \n");
     }
 
-    /**
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.stripMultiLineComments(String)'
-     */
+    @Test
     public void testStripMultiLineComments()
     {
-        assertEquals(JavascriptUtil.stripMultiLineComments("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("\n"), "\n");
         assertEquals(JavascriptUtil.stripMultiLineComments(null), null);
 
-        assertEquals(JavascriptUtil.stripMultiLineComments("a\n"), "a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripMultiLineComments("/a\n"), "/a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripMultiLineComments("/a*a\n"), "/a*a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripMultiLineComments("/ */ *\n"), "/ */ *\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("a\n"), "a\n");
+        assertEquals(JavascriptUtil.stripMultiLineComments("/a\n"), "/a\n");
+        assertEquals(JavascriptUtil.stripMultiLineComments("/a*a\n"), "/a*a\n");
+        assertEquals(JavascriptUtil.stripMultiLineComments("/ */ *\n"), "/ */ *\n");
 
-        assertEquals(JavascriptUtil.stripMultiLineComments("/**/\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripMultiLineComments("/***/\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripMultiLineComments("/*a*/\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripMultiLineComments("a/**/a\n"), "a a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripMultiLineComments("a/*\n*/a\n"), "a \na\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripMultiLineComments("/**/\n"), " \n");
+        assertEquals(JavascriptUtil.stripMultiLineComments("/***/\n"), " \n");
+        assertEquals(JavascriptUtil.stripMultiLineComments("/*a*/\n"), " \n");
+        assertEquals(JavascriptUtil.stripMultiLineComments("a/**/a\n"), "a a\n");
+        assertEquals(JavascriptUtil.stripMultiLineComments("a/*\n*/a\n"), "a \na\n");
     }
 
-    /**.
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.stripBlankLines(String)'
-     */
+    @Test
     public void testStripBlankLines()
     {
-        assertEquals(JavascriptUtil.stripBlankLines("\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripBlankLines("\n\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines("\n"), "\n");
+        assertEquals(JavascriptUtil.stripBlankLines("\n\n"), "\n");
         assertEquals(JavascriptUtil.stripBlankLines(null), null);
 
-        assertEquals(JavascriptUtil.stripBlankLines("a\n"), "a\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripBlankLines("a\na\n"), "a\na\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripBlankLines(" \n \n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripBlankLines(" \n\t\n#\n"), "#\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines("a\n"), "a\n");
+        assertEquals(JavascriptUtil.stripBlankLines("a\na\n"), "a\na\n");
+        assertEquals(JavascriptUtil.stripBlankLines(" \n \n"), "\n");
+        assertEquals(JavascriptUtil.stripBlankLines(" \n\t\n#\n"), "#\n");
 
-        assertEquals(JavascriptUtil.stripBlankLines("\n\n\n"), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripBlankLines("a\n\na\n"), "a\na\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripBlankLines("\n\n\n"), "\n");
+        assertEquals(JavascriptUtil.stripBlankLines("a\n\na\n"), "a\na\n");
     }
 
-    /**
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.stripNewlines(String)'
-     */
+    @Test
     public void testStripNewlines()
     {
-        assertEquals(JavascriptUtil.stripNewlines(""), "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-        assertEquals(JavascriptUtil.stripNewlines("\n"), " \n"); //$NON-NLS-1$ //$NON-NLS-2$
+        assertEquals(JavascriptUtil.stripNewlines(""), "\n");
+        assertEquals(JavascriptUtil.stripNewlines("\n"), " \n");
         assertEquals(JavascriptUtil.stripNewlines(null), null);
 
-        assertEquals(JavascriptUtil.stripNewlines("a\nb\n"), "a b \n"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    /**
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.shrinkVariableNames(String)'
-     */
-    public void testShrinkVariableNames()
-    {
-
-    }
-
-    /**
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.escapeJavaScript(String)'
-     */
-    public void testEscapeJavaScript()
-    {
-
-    }
-
-    /**
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.unescapeJavaScript(String)'
-     */
-    public void testUnescapeJavaScript()
-    {
-
-    }
-
-    /**
-     * Test method for 'org.directwebremoting.util.JavascriptUtil.isReservedWord(String)'
-     */
-    public void testIsReservedWord()
-    {
-
+        assertEquals(JavascriptUtil.stripNewlines("a\nb\n"), "a b \n");
     }
 }
