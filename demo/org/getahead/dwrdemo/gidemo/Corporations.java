@@ -41,7 +41,7 @@ public class Corporations
     }
 
     /**
-     * @return
+     *
      */
     public Corporation getNextChangedCorporation()
     {

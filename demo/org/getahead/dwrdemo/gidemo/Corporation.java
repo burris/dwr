@@ -29,8 +29,6 @@ public class Corporation
     /**
      * @param jsxid
      * @param name
-     * @param last
-     * @param change
      */
     public Corporation(String jsxid, String name)
     {
