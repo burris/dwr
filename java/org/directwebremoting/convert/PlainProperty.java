@@ -17,9 +17,10 @@ package org.directwebremoting.convert;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.Property;
-import org.directwebremoting.util.Logger;
 
 /**
  * An implementation of {@link Property} that simply uses stored values.
@@ -90,5 +91,5 @@ public class PlainProperty implements Property
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(PlainProperty.class);
+    private static final Log log = LogFactory.getLog(PlainProperty.class);
 }

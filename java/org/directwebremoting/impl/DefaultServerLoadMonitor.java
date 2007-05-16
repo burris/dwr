@@ -15,10 +15,11 @@
  */
 package org.directwebremoting.impl;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.extend.WaitController;
 import org.directwebremoting.util.HitMonitor;
-import org.directwebremoting.util.Logger;
 
 /**
  * A smart implementation of ServerLoadMonitor.
@@ -327,5 +328,5 @@ public class DefaultServerLoadMonitor extends AbstractServerLoadMonitor implemen
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultServerLoadMonitor.class);
+    private static final Log log = LogFactory.getLog(DefaultServerLoadMonitor.class);
 }

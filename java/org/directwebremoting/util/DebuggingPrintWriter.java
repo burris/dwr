@@ -21,6 +21,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 /**
  * A PrintWriter that also sends its output to a log stream
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -343,5 +346,5 @@ public class DebuggingPrintWriter extends PrintWriter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DebuggingPrintWriter.class);
+    private static final Log log = LogFactory.getLog(DebuggingPrintWriter.class);
 }

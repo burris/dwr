@@ -18,6 +18,8 @@ package org.directwebremoting.convert;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
@@ -27,7 +29,6 @@ import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * An implementation of Converter for Strings.
@@ -66,5 +67,5 @@ public class URLConverter extends BaseV20Converter implements Converter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(URLConverter.class);
+    private static final Log log = LogFactory.getLog(URLConverter.class);
 }

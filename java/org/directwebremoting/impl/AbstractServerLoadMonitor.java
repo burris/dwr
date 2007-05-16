@@ -18,9 +18,10 @@ package org.directwebremoting.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.extend.WaitController;
-import org.directwebremoting.util.Logger;
 
 /**
  * A base implementation of {@link ServerLoadMonitor} that implements waiting
@@ -105,5 +106,5 @@ public abstract class AbstractServerLoadMonitor implements ServerLoadMonitor
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(AbstractServerLoadMonitor.class);
+    private static final Log log = LogFactory.getLog(AbstractServerLoadMonitor.class);
 }

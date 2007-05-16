@@ -31,6 +31,9 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 /**
  * Fake implementation of the ServletContext interface.
  * @author Rod Johnson
@@ -314,7 +317,7 @@ public class FakeServletContext implements ServletContext
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(FakeServletContext.class);
+    private static final Log log = LogFactory.getLog(FakeServletContext.class);
 
     /**
      *

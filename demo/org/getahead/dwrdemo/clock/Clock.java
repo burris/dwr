@@ -20,12 +20,13 @@ import java.util.Date;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.dwr.Util;
-import org.directwebremoting.util.Logger;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -98,5 +99,5 @@ public class Clock implements Runnable
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(Clock.class);
+    private static final Log log = LogFactory.getLog(Clock.class);
 }

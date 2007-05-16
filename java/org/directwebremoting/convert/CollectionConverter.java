@@ -26,6 +26,8 @@ import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.dwrp.ArrayOutboundVariable;
 import org.directwebremoting.dwrp.ErrorOutboundVariable;
 import org.directwebremoting.dwrp.ParseUtil;
@@ -39,7 +41,6 @@ import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -234,5 +235,5 @@ public class CollectionConverter extends BaseV20Converter implements Converter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(CollectionConverter.class);
+    private static final Log log = LogFactory.getLog(CollectionConverter.class);
 }

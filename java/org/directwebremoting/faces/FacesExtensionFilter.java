@@ -30,7 +30,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.directwebremoting.util.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * Filter integration for DWR framework. This filter was inspired by this
@@ -119,5 +120,5 @@ public class FacesExtensionFilter implements Filter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(FacesExtensionFilter.class);
+    private static final Log log = LogFactory.getLog(FacesExtensionFilter.class);
 }

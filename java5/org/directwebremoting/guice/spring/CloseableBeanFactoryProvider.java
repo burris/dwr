@@ -5,7 +5,8 @@ import com.google.inject.Provider;
 import java.io.Closeable;
 import java.io.IOException;
 
-import org.directwebremoting.util.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -59,5 +60,5 @@ class CloseableBeanFactoryProvider implements Closeable, Provider<BeanFactory>
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(CloseableBeanFactoryProvider.class);
+    private static final Log log = LogFactory.getLog(CloseableBeanFactoryProvider.class);
 }

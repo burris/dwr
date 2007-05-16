@@ -22,6 +22,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.ConverterManager;
@@ -34,7 +36,6 @@ import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.extend.WaitController;
 import org.directwebremoting.util.Continuation;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 import org.directwebremoting.util.MimeConstants;
 
@@ -524,5 +525,5 @@ public class PollHandler implements Handler
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(PollHandler.class);
+    private static final Log log = LogFactory.getLog(PollHandler.class);
 }

@@ -23,13 +23,14 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * A parser for type info in a dwr.xml signature.
@@ -438,5 +439,5 @@ public class SignatureParser
     /**
      * The log stream
      */
-    public static final Logger log = Logger.getLogger(SignatureParser.class);
+    public static final Log log = LogFactory.getLog(SignatureParser.class);
 }

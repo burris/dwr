@@ -23,12 +23,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.convert.BeanConverter;
 import org.directwebremoting.convert.PlainProperty;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.Property;
-import org.directwebremoting.util.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.proxy.HibernateProxy;
@@ -217,5 +218,5 @@ public class H3BeanConverter extends BeanConverter implements Converter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(H3BeanConverter.class);
+    private static final Log log = LogFactory.getLog(H3BeanConverter.class);
 }

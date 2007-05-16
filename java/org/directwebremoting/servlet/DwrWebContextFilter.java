@@ -25,14 +25,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
-import org.directwebremoting.util.Logger;
-import org.directwebremoting.util.ServletLoggingOutput;
 
 /**
  * A Servlet Filter that can be used with other web frameworks to allow use of
@@ -79,21 +78,11 @@ public class DwrWebContextFilter implements Filter
             try
             {
                 webContextBuilder.set((HttpServletRequest) request, (HttpServletResponse) response, servletConfig, servletContext, container);
-
-                // It is totally legitimate for a servlet to be unavailable
-                // (e.g. Spring DwrController)
-                HttpServlet servlet = (HttpServlet) servletContext.getAttribute(HttpServlet.class.getName());
-                if (servlet != null)
-                {
-                    ServletLoggingOutput.setExecutionContext(servlet);
-                }
-
                 chain.doFilter(request, response);
             }
             finally
             {
                 webContextBuilder.unset();
-                ServletLoggingOutput.unsetExecutionContext();
             }
         }
     }
@@ -108,7 +97,7 @@ public class DwrWebContextFilter implements Filter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrWebContextFilter.class);
+    private static final Log log = LogFactory.getLog(DwrWebContextFilter.class);
 
     /**
      * The filter config, that we use to get at the servlet context

@@ -19,7 +19,8 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import org.directwebremoting.util.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * A container for a set of people
@@ -164,5 +165,5 @@ public class People
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(People.class);
+    private static final Log log = LogFactory.getLog(People.class);
 }

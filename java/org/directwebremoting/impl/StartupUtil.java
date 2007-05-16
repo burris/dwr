@@ -20,6 +20,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
@@ -27,8 +29,6 @@ import org.directwebremoting.ServerContextFactory.ServerContextBuilder;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.util.FakeServletConfig;
 import org.directwebremoting.util.FakeServletContext;
-import org.directwebremoting.util.Logger;
-import org.directwebremoting.util.ServletLoggingOutput;
 import org.directwebremoting.util.VersionUtil;
 
 /**
@@ -84,8 +84,6 @@ public class StartupUtil
      */
     public static void outOfContainerDestroy(Container container)
     {
-        ServletLoggingOutput.unsetExecutionContext();
-
         WebContextBuilder webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
         if (webContextBuilder != null)
         {
@@ -146,19 +144,16 @@ public class StartupUtil
      * on commons-logging. This sets the servlet for when this is not available.
      * @param servletConfig The servlet configuration
      * @param servlet The servlet that we are running under
+     * @deprecated Since version 2.1 DWR does not use Servlet Logging
      */
+    @Deprecated
+    @SuppressWarnings("unused")
     public static void setupLogging(ServletConfig servletConfig, HttpServlet servlet)
     {
-        ServletLoggingOutput.setExecutionContext(servlet);
-        String logLevel = servletConfig.getInitParameter(ContainerUtil.INIT_LOGLEVEL);
-        if (logLevel != null)
-        {
-            ServletLoggingOutput.setLevel(logLevel);
-        }
     }
 
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(StartupUtil.class);
+    private static final Log log = LogFactory.getLog(StartupUtil.class);
 }

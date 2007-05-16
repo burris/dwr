@@ -26,11 +26,12 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ScriptConduit;
-import org.directwebremoting.util.Logger;
 
 /**
  * An implementation of ScriptSession and RealScriptSession.
@@ -469,5 +470,5 @@ public class DefaultScriptSession implements RealScriptSession
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultScriptSession.class);
+    private static final Log log = LogFactory.getLog(DefaultScriptSession.class);
 }

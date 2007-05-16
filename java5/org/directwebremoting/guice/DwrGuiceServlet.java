@@ -29,12 +29,13 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.AjaxFilterManager;
 import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.servlet.DwrServlet;
-import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.popServletContext;
@@ -290,5 +291,5 @@ public class DwrGuiceServlet extends DwrServlet
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrGuiceServlet.class);
+    private static final Log log = LogFactory.getLog(DwrGuiceServlet.class);
 }

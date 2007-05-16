@@ -25,6 +25,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.impl.ContainerMap;
@@ -32,7 +34,6 @@ import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.servlet.UrlProcessor;
 import org.directwebremoting.util.FakeServletConfig;
-import org.directwebremoting.util.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.BeanFactory;
@@ -324,5 +325,5 @@ public class DwrController extends AbstractController implements BeanNameAware, 
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrController.class);
+    private static final Log log = LogFactory.getLog(DwrController.class);
 }

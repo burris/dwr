@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.dwrp.ParseUtil;
 import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.dwrp.ObjectOutboundVariable;
@@ -34,7 +36,6 @@ import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -223,5 +224,5 @@ public class MapConverter implements Converter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(MapConverter.class);
+    private static final Log log = LogFactory.getLog(MapConverter.class);
 }

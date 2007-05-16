@@ -36,6 +36,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * For the benefit of anyone that wants to create a fake HttpServletRequest
  * that doesn't do anything other than not be null.
@@ -245,9 +248,11 @@ public class FakeHttpServletRequest implements HttpServletRequest
         return false;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromUrl()
+     * @deprecated
      */
+    @Deprecated
     public boolean isRequestedSessionIdFromUrl()
     {
         return false;
@@ -513,9 +518,11 @@ public class FakeHttpServletRequest implements HttpServletRequest
         };
     }
 
-    /* (non-Javadoc)
+    /**
      * @see javax.servlet.ServletRequest#getRealPath(java.lang.String)
+     * @deprecated
      */
+    @Deprecated
     public String getRealPath(String path)
     {
         return null;
@@ -534,5 +541,5 @@ public class FakeHttpServletRequest implements HttpServletRequest
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(FakeHttpServletRequest.class);
+    private static final Log log = LogFactory.getLog(FakeHttpServletRequest.class);
 }

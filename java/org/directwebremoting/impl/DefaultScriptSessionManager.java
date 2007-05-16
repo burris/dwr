@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ScriptSessionManager;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.ScriptSession;
 
 /**
@@ -279,5 +280,5 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultScriptSessionManager.class);
+    private static final Log log = LogFactory.getLog(DefaultScriptSessionManager.class);
 }

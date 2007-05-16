@@ -15,10 +15,11 @@
  */
 package org.directwebremoting.export;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.util.Logger;
 
 /**
  * Various functions exported by DWR to help us with various book-keeping
@@ -44,5 +45,5 @@ public class System
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(System.class);
+    private static final Log log = LogFactory.getLog(System.class);
 }

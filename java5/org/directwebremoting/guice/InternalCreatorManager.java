@@ -22,10 +22,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.impl.DefaultCreatorManager;
-import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
@@ -171,5 +172,5 @@ public class InternalCreatorManager implements CreatorManager
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(InternalCreatorManager.class);
+    private static final Log log = LogFactory.getLog(InternalCreatorManager.class);
 }

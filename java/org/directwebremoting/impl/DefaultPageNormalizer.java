@@ -24,6 +24,8 @@ import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.PageNormalizer;
@@ -31,7 +33,6 @@ import org.directwebremoting.servlet.PathConstants;
 import org.directwebremoting.util.DomUtil;
 import org.directwebremoting.util.EmptyEntityResolver;
 import org.directwebremoting.util.LogErrorHandler;
-import org.directwebremoting.util.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -255,5 +256,5 @@ public class DefaultPageNormalizer implements PageNormalizer
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultPageNormalizer.class);
+    private static final Log log = LogFactory.getLog(DefaultPageNormalizer.class);
 }

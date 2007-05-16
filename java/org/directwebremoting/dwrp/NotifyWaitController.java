@@ -1,7 +1,8 @@
 package org.directwebremoting.dwrp;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.WaitController;
-import org.directwebremoting.util.Logger;
 
 /**
  * A {@link WaitController} that works with {@link Object#wait(long)}
@@ -54,7 +55,7 @@ public class NotifyWaitController implements WaitController
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(NotifyWaitController.class);
+    private static final Log log = LogFactory.getLog(NotifyWaitController.class);
 
     /**
      * Has {@link #shutdown()} been called on this object?

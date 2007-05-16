@@ -29,10 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
 
@@ -167,5 +168,5 @@ public class DwrScopes
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrScopes.class);
+    private static final Log log = LogFactory.getLog(DwrScopes.class);
 }

@@ -22,9 +22,10 @@ import com.google.inject.Provider;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.dwrp.DefaultConverterManager;
 import org.directwebremoting.extend.*;
-import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
@@ -215,5 +216,5 @@ public class InternalConverterManager implements ConverterManager
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(InternalConverterManager.class);
+    private static final Log log = LogFactory.getLog(InternalConverterManager.class);
 }

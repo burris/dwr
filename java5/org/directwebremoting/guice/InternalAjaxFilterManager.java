@@ -23,10 +23,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.impl.DefaultAjaxFilterManager;
 import org.directwebremoting.extend.*;
-import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
 import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
@@ -127,5 +128,5 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(InternalAjaxFilterManager.class);
+    private static final Log log = LogFactory.getLog(InternalAjaxFilterManager.class);
 }

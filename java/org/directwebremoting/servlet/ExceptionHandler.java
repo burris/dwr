@@ -21,9 +21,10 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.Handler;
 import org.directwebremoting.util.Continuation;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -79,5 +80,5 @@ public class ExceptionHandler implements Handler
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(ExceptionHandler.class);
+    private static final Log log = LogFactory.getLog(ExceptionHandler.class);
 }

@@ -23,6 +23,9 @@ import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 /**
  * Various Javascript code utilities.
  * The escape classes were taken from jakarta-commons-lang which in turn borrowed
@@ -224,7 +227,7 @@ public class JavascriptUtil
                 }
 
                 // Skip @DWR comments
-                if (line.indexOf(COMMENT_RETAIN) == -1)
+                if (!line.contains(COMMENT_RETAIN))
                 {
                     int cstart = line.indexOf(COMMENT_SL_START);
                     if (cstart >= 0)
@@ -821,5 +824,5 @@ public class JavascriptUtil
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(JavascriptUtil.class);
+    private static final Log log = LogFactory.getLog(JavascriptUtil.class);
 }

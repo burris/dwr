@@ -24,10 +24,11 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
 import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.InitializingBean;
-import org.directwebremoting.util.Logger;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -158,5 +159,5 @@ public class UrlProcessor implements Handler, InitializingBean
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(UrlProcessor.class);
+    private static final Log log = LogFactory.getLog(UrlProcessor.class);
 }

@@ -17,12 +17,13 @@ package org.directwebremoting.extend;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.impl.DefaultRemoter;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.util.JavascriptUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * An abstraction of the DWREngine Javascript class for use by
@@ -283,5 +284,5 @@ public class EnginePrivate extends ScriptProxy
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(EnginePrivate.class);
+    private static final Log log = LogFactory.getLog(EnginePrivate.class);
 }

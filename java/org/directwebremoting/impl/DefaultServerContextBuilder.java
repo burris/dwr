@@ -18,10 +18,11 @@ package org.directwebremoting.impl;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory.ServerContextBuilder;
-import org.directwebremoting.util.Logger;
 
 /**
  * A ServerContextBuilder that creates DefaultServerContexts.
@@ -61,5 +62,5 @@ public class DefaultServerContextBuilder implements ServerContextBuilder
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultServerContextBuilder.class);
+    private static final Log log = LogFactory.getLog(DefaultServerContextBuilder.class);
 }

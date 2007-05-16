@@ -17,9 +17,10 @@ package org.directwebremoting.filter;
 
 import java.lang.reflect.Method;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
-import org.directwebremoting.util.Logger;
 
 /**
  * An example filter that delays responding to a query by a customizable time
@@ -83,5 +84,5 @@ public class ExtraLatencyAjaxFilter implements AjaxFilter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(ExtraLatencyAjaxFilter.class);
+    private static final Log log = LogFactory.getLog(ExtraLatencyAjaxFilter.class);
 }

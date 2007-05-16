@@ -16,18 +16,18 @@
 package org.directwebremoting.spring;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.create.AbstractCreator;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -80,11 +80,11 @@ public class SpringCreator extends AbstractCreator implements Creator
     {
         List<String> locValues = new ArrayList<String>();
 
-        for (Iterator<Map.Entry<String, String>> it = params.entrySet().iterator(); it.hasNext();)
+        for (Map.Entry<String, String> entry : params.entrySet())
         {
-            Map.Entry<String, String> entry = it.next();
             String key = entry.getKey();
             String value = entry.getValue();
+
             if (key.startsWith("location"))
             {
                 log.debug("Adding configLocation: " + value + " from parameter: " + key);
@@ -210,7 +210,7 @@ public class SpringCreator extends AbstractCreator implements Creator
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(SpringCreator.class);
+    private static final Log log = LogFactory.getLog(SpringCreator.class);
 
     /**
      * The Spring beans factory from which we get our beans.

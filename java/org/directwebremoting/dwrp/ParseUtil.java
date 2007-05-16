@@ -25,9 +25,10 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -187,9 +188,8 @@ public class ParseUtil
         Map<String, String> convertedMap = new HashMap<String, String>();
         Map<String, String[]> paramMap = req.getParameterMap();
 
-        for (Iterator<Map.Entry<String, String[]>> it = paramMap.entrySet().iterator(); it.hasNext();)
+        for (Map.Entry<String, String[]> entry : paramMap.entrySet())
         {
-            Map.Entry<String, String[]> entry = it.next();
             String key = entry.getKey();
             String[] array = entry.getValue();
 
@@ -235,5 +235,5 @@ public class ParseUtil
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(ParseUtil.class);
+    private static final Log log = LogFactory.getLog(ParseUtil.class);
 }

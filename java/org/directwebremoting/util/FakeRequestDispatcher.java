@@ -20,6 +20,9 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 /**
  * Mock implementation of the RequestDispatcher interface.
  * @author Rod Johnson
@@ -83,5 +86,5 @@ public class FakeRequestDispatcher implements RequestDispatcher
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(FakeRequestDispatcher.class);
+    private static final Log log = LogFactory.getLog(FakeRequestDispatcher.class);
 }

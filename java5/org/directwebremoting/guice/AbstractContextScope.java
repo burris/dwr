@@ -33,7 +33,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
-import org.directwebremoting.util.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 import static org.directwebremoting.guice.AbstractContextScope.State.*;
 
 /**
@@ -262,5 +264,5 @@ public abstract class AbstractContextScope<C, R>
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(AbstractContextScope.class);
+    private static final Log log = LogFactory.getLog(AbstractContextScope.class);
 }

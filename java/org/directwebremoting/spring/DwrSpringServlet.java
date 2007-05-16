@@ -26,12 +26,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.servlet.UrlProcessor;
-import org.directwebremoting.util.Logger;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.web.context.WebApplicationContext;
@@ -191,5 +192,5 @@ public class DwrSpringServlet extends HttpServlet
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrSpringServlet.class);
+    private static final Log log = LogFactory.getLog(DwrSpringServlet.class);
 }

@@ -22,9 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
 import org.directwebremoting.impl.DefaultContainer;
-import org.directwebremoting.util.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -151,5 +152,5 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(SpringContainer.class);
+    private static final Log log = LogFactory.getLog(SpringContainer.class);
 }

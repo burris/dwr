@@ -25,9 +25,10 @@ import java.util.TreeMap;
 
 import javax.servlet.Servlet;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * DefaultContainer is like a mini-IoC container for DWR.
@@ -235,5 +236,5 @@ public class DefaultContainer extends AbstractContainer implements Container
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DefaultContainer.class);
+    private static final Log log = LogFactory.getLog(DefaultContainer.class);
 }

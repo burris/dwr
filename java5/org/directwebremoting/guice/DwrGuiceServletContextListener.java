@@ -33,8 +33,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.impl.DefaultContainer;
-import org.directwebremoting.util.Logger;
 
 import static org.directwebremoting.guice.DwrGuiceUtil.popServletContext;
 import static org.directwebremoting.guice.DwrGuiceUtil.pushServletContext;
@@ -169,5 +170,5 @@ public abstract class DwrGuiceServletContextListener
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(DwrGuiceServletContextListener.class);
+    private static final Log log = LogFactory.getLog(DwrGuiceServletContextListener.class);
 }

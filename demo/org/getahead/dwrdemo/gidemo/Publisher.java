@@ -5,13 +5,14 @@ import java.util.Random;
 
 import javax.servlet.ServletContext;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.ScriptProxy;
-import org.directwebremoting.util.Logger;
 
 /**
  * A generator of random objects to push to GI
@@ -104,5 +105,5 @@ public class Publisher implements Runnable
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(Publisher.class);
+    private static final Log log = LogFactory.getLog(Publisher.class);
 }

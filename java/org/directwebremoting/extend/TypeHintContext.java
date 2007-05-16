@@ -21,7 +21,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.directwebremoting.util.Logger;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 
 /**
  * Something to hold the method, paramNo and index together as an object
@@ -208,9 +209,9 @@ public class TypeHintContext
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
-    @Override
-    /* This really want to go in the second loop but see: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6297416 */
+    // This really wants to go in the second loop but see: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6297416
     @SuppressWarnings("unused")
+    @Override
     public String toString()
     {
         if (cachedToString == null)
@@ -278,5 +279,5 @@ public class TypeHintContext
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(TypeHintContext.class);
+    private static final Log log = LogFactory.getLog(TypeHintContext.class);
 }

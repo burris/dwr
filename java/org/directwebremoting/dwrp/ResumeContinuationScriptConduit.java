@@ -1,9 +1,10 @@
 package org.directwebremoting.dwrp;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.util.Continuation;
-import org.directwebremoting.util.Logger;
 
 /**
  * Implementaion of ScriptConduit that just resumes a continuation.
@@ -41,7 +42,7 @@ public class ResumeContinuationScriptConduit extends ScriptConduit
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(ResumeContinuationScriptConduit.class);
+    private static final Log log = LogFactory.getLog(ResumeContinuationScriptConduit.class);
 
     /**
      * The Jetty continuation

@@ -15,12 +15,13 @@
  */
 package org.directwebremoting.contrib;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
 import org.directwebremoting.impl.DefaultRemoter;
-import org.directwebremoting.util.Logger;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -51,8 +52,6 @@ public class ParallelDefaultRemoter extends DefaultRemoter
         executorService.setCorePoolSize(corePoolsize);
         executorService.setMaximumPoolSize(maximumPoolsize);
         executorService.setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
-
-        log.info(executorService.getClass().getName().indexOf("edu.emory.mathcs.backport") > -1 ? "Backport of java.util.concurrent package used !" : "java.util.concurrent package used !");
     }
 
     /**
@@ -105,7 +104,7 @@ public class ParallelDefaultRemoter extends DefaultRemoter
     public Replies execute(Calls calls)
     {
         Replies replies = new Replies(calls.getBatchId());
-        Future[] future = new Future[calls.getCallCount()];
+        Future<?>[] future = new Future<?>[calls.getCallCount()];
 
         if (calls.getCallCount() == 1)
         {
@@ -163,10 +162,10 @@ public class ParallelDefaultRemoter extends DefaultRemoter
             return execute(call);
         }
 
-        private Call call;
+        private final Call call;
     }
 
-    private static final Logger log = Logger.getLogger(ParallelDefaultRemoter.class);
+    private static final Log log = LogFactory.getLog(ParallelDefaultRemoter.class);
 
     private int corePoolsize = 10;
 
@@ -176,5 +175,5 @@ public class ParallelDefaultRemoter extends DefaultRemoter
 
     private long timeout = 10000;
 
-    private ThreadPoolExecutor executorService;
+    private final ThreadPoolExecutor executorService;
 }

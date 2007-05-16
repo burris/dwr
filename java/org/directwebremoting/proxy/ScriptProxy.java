@@ -17,7 +17,6 @@ package org.directwebremoting.proxy;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.directwebremoting.ScriptBuffer;
@@ -195,9 +194,8 @@ public class ScriptProxy
      */
     public void addScript(ScriptBuffer script)
     {
-        for (Iterator<ScriptSession> it = scriptSessions.iterator(); it.hasNext();)
+        for (ScriptSession scriptSession : scriptSessions)
         {
-            ScriptSession scriptSession = it.next();
             scriptSession.addScript(script);
         }
     }

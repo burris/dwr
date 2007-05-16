@@ -17,14 +17,14 @@ package org.directwebremoting.spring;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.create.NewCreator;
 import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
-import org.directwebremoting.util.Logger;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanFactory;
@@ -129,7 +129,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
             Element child = (Element) node;
 
-            if (node.getNodeName().equals("dwr:latencyfilter"))
+            if ("dwr:latencyfilter".equals(node.getNodeName()))
             {
                 BeanDefinitionBuilder beanFilter = BeanDefinitionBuilder.rootBeanDefinition(ExtraLatencyAjaxFilter.class);
                 beanFilter.addPropertyValue("delay", child.getAttribute("delay"));
@@ -140,19 +140,19 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 filterList.add(new RuntimeBeanReference("__latencyFilter_" + javascript));
                 creatorConfig.addPropertyValue("filters", filterList);
             }
-            else if (node.getNodeName().equals("dwr:include"))
+            else if ("dwr:include".equals(node.getNodeName()))
             {
                 includes.add(child.getAttribute("method"));
             }
-            else if (node.getNodeName().equals("dwr:exclude"))
+            else if ("dwr:exclude".equals(node.getNodeName()))
             {
                 excludes.add(child.getAttribute("method"));
             }
-            else if (node.getNodeName().equals("dwr:auth"))
+            else if ("dwr:auth".equals(node.getNodeName()))
             {
                 auth.setProperty(child.getAttribute("method"), child.getAttribute("role"));
             }
-            else if (node.getNodeName().equals("dwr:convert"))
+            else if ("dwr:convert".equals(node.getNodeName()))
             {
                 Element element = (Element) node;
                 String type = element.getAttribute("type");
@@ -163,7 +163,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 parseConverterSettings(converterConfig, element);
                 lookupConverters(registry).put(className, converterConfig);
             }
-            else if (node.getNodeName().equals("dwr:filter"))
+            else if ("dwr:filter".equals(node.getNodeName()))
             {
                 Element element = (Element) node;
                 String filterClass = element.getAttribute("class");
@@ -183,7 +183,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 filterList.add(new RuntimeBeanReference("__filter_" + filterClass + "_" + javascript));
                 creatorConfig.addPropertyValue("filters", filterList);
             }
-            else if (node.getNodeName().equals("dwr:param"))
+            else if ("dwr:param".equals(node.getNodeName()))
             {
                 Element element = (Element) node;
                 String name = element.getAttribute("name");
@@ -225,25 +225,20 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             }
 
             List<Element> createElements = DomUtils.getChildElementsByTagName(element, "create");
-            Iterator<Element> iter = createElements.iterator();
-            while (iter.hasNext())
+            for (Element createElement : createElements)
             {
-                Element createElement = iter.next();
                 decorate(createElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
             List<Element> convertElements = DomUtils.getChildElementsByTagName(element, "convert");
-            iter = convertElements.iterator();
-            while (iter.hasNext())
+            for (Element convertElement : convertElements)
             {
-                Element convertElement = iter.next();
                 decorate(convertElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
             List<Element> signatureElements = DomUtils.getChildElementsByTagName(element, "signatures");
-            for (Iterator<Element> i = signatureElements.iterator(); i.hasNext();)
+            for (Element signatureElement : signatureElements)
             {
-                Element signatureElement = i.next();
                 decorate(signatureElement, new BeanDefinitionHolder(beanDefinition, DEFAULT_SPRING_CONFIGURATOR_ID), parserContext);
             }
 
@@ -315,7 +310,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 }
 
                 Element child = (Element) node;
-                if (child.getNodeName().equals("dwr:config-param"))
+                if ("dwr:config-param".equals(child.getNodeName()))
                 {
                     String paramName = child.getAttribute("name");
                     String value = child.getAttribute("value");
@@ -413,9 +408,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         }
 
         /**
-         * @param parentName
-         * @param registry
-         * @return
+         * 
          */
         private BeanDefinition findParentDefinition(String parentName, BeanDefinitionRegistry registry)
         {
@@ -484,11 +477,11 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             }
 
             Element child = (Element) node;
-            if (child.getNodeName().equals("dwr:include"))
+            if ("dwr:include".equals(child.getNodeName()))
             {
                 converterConfig.addInclude(child.getAttribute("method"));
             }
-            else if (child.getNodeName().equals("dwr:exclude"))
+            else if ("dwr:exclude".equals(child.getNodeName()))
             {
                 converterConfig.addExclude(child.getAttribute("method"));
             }
@@ -563,6 +556,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         /* (non-Javadoc)
          * @see org.springframework.beans.factory.xml.BeanDefinitionDecorator#decorate(org.w3c.dom.Node, org.springframework.beans.factory.config.BeanDefinitionHolder, org.springframework.beans.factory.xml.ParserContext)
          */
+        @SuppressWarnings("unchecked")
         public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext)
         {
             Element element = (Element) node;
@@ -638,8 +632,8 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
                 // definitions have been parsed.  
                 BeanDefinition configurator = registerSpringConfiguratorIfNecessary(parserContext.getRegistry());
                 PropertyValue registeredCreators = configurator.getPropertyValues().getPropertyValue("creatorTypes");
-                Map registeredCreatorMap = (Map) registeredCreators.getValue();
-                String creatorClass = (String) registeredCreatorMap.get(creatorType);
+                Map<String, String> registeredCreatorMap = (Map<String, String>) registeredCreators.getValue();
+                String creatorClass = registeredCreatorMap.get(creatorType);
                 if (creatorClass == null)
                 {
                     // the creator type should have been registered
@@ -702,7 +696,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
     /**
      * @param registry
-     * @return
+     * @return Get a list of the defined Creators
      */
     @SuppressWarnings("unchecked")
     protected Map<String, RuntimeBeanReference> lookupCreators(BeanDefinitionRegistry registry)
@@ -713,7 +707,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
 
     /**
      * @param registry
-     * @return
+     * @return Get a list of the defined Converters
      */
     @SuppressWarnings("unchecked")
     protected Map<String, ConverterConfig> lookupConverters(BeanDefinitionRegistry registry)
@@ -727,7 +721,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     /**
      * The log stream
      */
-    protected static final Logger log = Logger.getLogger(DwrNamespaceHandler.class);
+    protected static final Log log = LogFactory.getLog(DwrNamespaceHandler.class);
 
     /*
      * The element names

@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.Container;
 import org.directwebremoting.convert.BeanConverter;
@@ -36,7 +38,6 @@ import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * A Configurator that works off Annotations.
@@ -327,5 +328,5 @@ public class AnnotationsConfigurator implements Configurator
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(AnnotationsConfigurator.class);
+    private static final Log log = LogFactory.getLog(AnnotationsConfigurator.class);
 }

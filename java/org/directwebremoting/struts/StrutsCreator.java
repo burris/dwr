@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.config.ModuleConfig;
 import org.apache.struts.util.RequestUtils;
@@ -29,7 +31,6 @@ import org.directwebremoting.create.AbstractCreator;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.FakeHttpServletRequest;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -168,5 +169,5 @@ public class StrutsCreator extends AbstractCreator implements Creator
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(StrutsCreator.class);
+    private static final Log log = LogFactory.getLog(StrutsCreator.class);
 }

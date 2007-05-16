@@ -22,11 +22,12 @@ import javax.servlet.ServletContext;
 
 import org.apache.bsf.BSFException;
 import org.apache.bsf.BSFManager;
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -304,7 +305,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(ScriptedCreator.class);
+    private static final Log log = LogFactory.getLog(ScriptedCreator.class);
 
     /**
      * The cached type of object that we are creating.

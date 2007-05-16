@@ -23,6 +23,9 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * For the benefit of anyone that wants to create a fake HttpSession
  * that doesn't do anything other than not be null.
@@ -214,5 +217,5 @@ public class FakeHttpSession implements HttpSession
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(FakeHttpSession.class);
+    private static final Log log = LogFactory.getLog(FakeHttpSession.class);
 }

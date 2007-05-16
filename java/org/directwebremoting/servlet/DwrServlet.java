@@ -24,14 +24,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.DefaultContainer;
 import org.directwebremoting.impl.StartupUtil;
-import org.directwebremoting.util.Logger;
-import org.directwebremoting.util.ServletLoggingOutput;
 
 /**
  * This is the main servlet that handles all the requests to DWR.
@@ -66,7 +66,6 @@ public class DwrServlet extends HttpServlet
         {
             // setupLogging() only needed for servlet logging if commons-logging is unavailable
             // logStartup() just outputs some version numbers
-            StartupUtil.setupLogging(servletConfig, this);
             StartupUtil.logStartup(servletConfig);
 
             // create and setup a DefaultContainer
@@ -96,8 +95,6 @@ public class DwrServlet extends HttpServlet
             {
                 webContextBuilder.unset();
             }
-
-            ServletLoggingOutput.unsetExecutionContext();
         }
     }
 
@@ -144,7 +141,6 @@ public class DwrServlet extends HttpServlet
         try
         {
             webContextBuilder.set(request, response, getServletConfig(), getServletContext(), container);
-            ServletLoggingOutput.setExecutionContext(this);
 
             UrlProcessor processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
             processor.handle(request, response);
@@ -152,7 +148,6 @@ public class DwrServlet extends HttpServlet
         finally
         {
             webContextBuilder.unset();
-            ServletLoggingOutput.unsetExecutionContext();
         }
     }
 
@@ -178,5 +173,5 @@ public class DwrServlet extends HttpServlet
     /**
      * The log stream
      */
-    public static final Logger log = Logger.getLogger(DwrServlet.class);
+    public static final Log log = LogFactory.getLog(DwrServlet.class);
 }

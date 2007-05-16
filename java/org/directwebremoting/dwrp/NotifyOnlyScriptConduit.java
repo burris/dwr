@@ -1,8 +1,9 @@
 package org.directwebremoting.dwrp;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.extend.ScriptConduit;
-import org.directwebremoting.util.Logger;
 
 /**
  * Implementation of ScriptConduit that simply calls <code>notifyAll()</code>
@@ -51,5 +52,5 @@ public class NotifyOnlyScriptConduit extends ScriptConduit
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(NotifyOnlyScriptConduit.class);
+    private static final Log log = LogFactory.getLog(NotifyOnlyScriptConduit.class);
 }

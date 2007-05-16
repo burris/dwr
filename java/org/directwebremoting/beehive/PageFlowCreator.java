@@ -5,11 +5,12 @@ import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.create.AbstractCreator;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * Page Flow Creator
@@ -122,7 +123,7 @@ public class PageFlowCreator extends AbstractCreator implements Creator
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(PageFlowCreator.class);
+    private static final Log log = LogFactory.getLog(PageFlowCreator.class);
 
     private Class<?> instanceType = null;
 

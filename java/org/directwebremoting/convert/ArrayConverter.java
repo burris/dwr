@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.dwrp.ArrayOutboundVariable;
 import org.directwebremoting.dwrp.ErrorOutboundVariable;
 import org.directwebremoting.dwrp.ParseUtil;
@@ -32,7 +34,6 @@ import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 
 /**
  * An implementation of Converter for Arrays.
@@ -141,7 +142,7 @@ public class ArrayConverter extends BaseV20Converter implements Converter
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(ArrayConverter.class);
+    private static final Log log = LogFactory.getLog(ArrayConverter.class);
 
     /**
      * The converter manager to which we forward array members for conversion

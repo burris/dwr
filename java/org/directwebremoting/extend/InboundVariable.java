@@ -15,8 +15,9 @@
  */
 package org.directwebremoting.extend;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.dwrp.ProtocolConstants;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -222,5 +223,5 @@ public final class InboundVariable
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(InboundVariable.class);
+    private static final Log log = LogFactory.getLog(InboundVariable.class);
 }

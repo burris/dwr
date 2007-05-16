@@ -15,11 +15,13 @@
  */
 package org.directwebremoting.util;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
 
 /**
- * An ErrorHandler that writes to the Logger class
+ * An ErrorHandler that writes to the Log class
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public final class LogErrorHandler implements ErrorHandler
@@ -70,5 +72,5 @@ public final class LogErrorHandler implements ErrorHandler
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(LogErrorHandler.class);
+    private static final Log log = LogFactory.getLog(LogErrorHandler.class);
 }

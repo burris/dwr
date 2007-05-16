@@ -20,6 +20,9 @@ import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 /**
  * A wrapper around Jetty Ajax Continuations
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -164,7 +167,7 @@ public class Continuation
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(Continuation.class);
+    private static final Log log = LogFactory.getLog(Continuation.class);
 
     /**
      * The attribute under which Jetty stores it's Contuniations.

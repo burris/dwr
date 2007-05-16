@@ -20,6 +20,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 /**
  * Code to generate page ids.
  * IdGenerators are expensive to setup so it is suggested that you share
@@ -188,5 +191,5 @@ public class IdGenerator
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(IdGenerator.class);
+    private static final Log log = LogFactory.getLog(IdGenerator.class);
 }

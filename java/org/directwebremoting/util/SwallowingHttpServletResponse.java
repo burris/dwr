@@ -25,6 +25,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
+
 /**
  * Used by ExecutionContext to forward results back via javascript.
  * <p>We could like to implement {@link HttpServletResponse}, but there is a bug
@@ -91,10 +94,12 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
         return false;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see javax.servlet.http.HttpServletResponseWrapper#encodeRedirectUrl(java.lang.String)
+     * @deprecated
      */
     @Override
+    @Deprecated
     public String encodeRedirectUrl(String url)
     {
         return url;
@@ -109,10 +114,12 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
         return url;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see javax.servlet.http.HttpServletResponseWrapper#encodeUrl(java.lang.String)
+     * @deprecated
      */
     @Override
+    @Deprecated
     public String encodeUrl(String url)
     {
         return url;
@@ -443,5 +450,5 @@ public final class SwallowingHttpServletResponse extends HttpServletResponseWrap
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(SwallowingHttpServletResponse.class);
+    private static final Log log = LogFactory.getLog(SwallowingHttpServletResponse.class);
 }

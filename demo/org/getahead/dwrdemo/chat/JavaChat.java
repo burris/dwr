@@ -3,11 +3,12 @@ package org.getahead.dwrdemo.chat;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.dwr.Util;
-import org.directwebremoting.util.Logger;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -53,5 +54,5 @@ public class JavaChat
     /**
      * The log stream
      */
-    protected static final Logger log = Logger.getLogger(JavaChat.class);
+    protected static final Log log = LogFactory.getLog(JavaChat.class);
 }

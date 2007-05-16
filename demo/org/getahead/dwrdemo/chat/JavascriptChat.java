@@ -4,11 +4,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.util.Logger;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -54,5 +55,5 @@ public class JavascriptChat
     /**
      * The log stream
      */
-    protected static final Logger log = Logger.getLogger(JavascriptChat.class);
+    protected static final Log log = LogFactory.getLog(JavascriptChat.class);
 }

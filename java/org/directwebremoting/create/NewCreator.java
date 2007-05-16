@@ -15,9 +15,10 @@
  */
 package org.directwebremoting.create;
 
+import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.util.LocalUtil;
-import org.directwebremoting.util.Logger;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -92,7 +93,7 @@ public class NewCreator extends AbstractCreator implements Creator
     /**
      * The log stream
      */
-    private static final Logger log = Logger.getLogger(NewCreator.class);
+    private static final Log log = LogFactory.getLog(NewCreator.class);
 
     /**
      * The type of the class that we are creating
