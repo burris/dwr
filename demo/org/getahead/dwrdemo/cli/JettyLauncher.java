@@ -1,11 +1,8 @@
 package org.getahead.dwrdemo.cli;
 
-import org.directwebremoting.servlet.DwrServlet;
 import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ResourceHandler;
 import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
+import org.mortbay.jetty.webapp.WebAppContext;
 
 /**
  * JettyLauncher.
@@ -23,28 +20,10 @@ public class JettyLauncher
         SelectChannelConnector connector = new SelectChannelConnector();
         connector.setPort(8080);
         server.addConnector(connector);
+        server.setStopAtShutdown(true);
 
-        Context htmlContext = new Context(server, "/", Context.SESSIONS);
-        ResourceHandler htmlHandler = new ResourceHandler();
-        htmlHandler.setResourceBase("web");
-        htmlContext.setHandler(htmlHandler);
+        server.addHandler(new WebAppContext("web","/dwr"));
 
-        Context servletContext = new Context(server, "/", Context.SESSIONS);
-        ServletHolder holder = new ServletHolder(new DwrServlet());
-        holder.setInitParameter("activeReverseAjaxEnabled", "true");
-        holder.setInitParameter("debug", "true");
-        servletContext.addServlet(holder, "/dwr/*");
-        servletContext.setResourceBase("web");
-
-        try
-        {
-            JettyShutdown.addShutdownHook(server);
-            server.start();
-            server.join();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        server.addHandler(new WebAppContext("test","/dwr-test"));
     }
 }
