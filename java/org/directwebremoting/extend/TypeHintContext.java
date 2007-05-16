@@ -50,7 +50,7 @@ public class TypeHintContext
 
         Type[] types = method.getGenericParameterTypes();
 
-        if (types != null)
+        if (types != null && types.length > 0)
         {
             if (parameterNumber >= types.length)
             {
