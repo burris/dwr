@@ -172,7 +172,7 @@ dwr.engine.setNotifyServerOnPageUnload = function(notify) {
     else if (window.detachEvent) window.detachEvent('onunload', dwr.engine._unloader);
   }
   dwr.engine._isNotifyServerOnPageUnload = notify;
-}
+};
 
 /**
  * Set the preferred polling type.
@@ -584,7 +584,7 @@ dwr.engine._getJSessionId =  function() {
     var cookie = cookies[i];
     while (cookie.charAt(0) == ' ') cookie = cookie.substring(1, cookie.length);
     if (cookie.indexOf(dwr.engine._sessionCookieName + "=") == 0) {
-      return cookie.substring(11, cookie.length);
+      return cookie.substring(dwr.engine._sessionCookieName.length + 1, cookie.length);
     }
   }
   return "";
@@ -673,7 +673,8 @@ dwr.engine._processCometResponse = function(response, batch) {
 
 /** @private Actually send the block of data in the batch object. */
 dwr.engine._sendData = function(batch) {
-  batch.map.batchId = dwr.engine._nextBatchId++;
+  batch.map.batchId = dwr.engine._nextBatchId;
+  dwr.engine._nextBatchId++;
   dwr.engine._batches[batch.map.batchId] = batch;
   dwr.engine._batchesLength++;
   batch.completed = false;
@@ -744,8 +745,9 @@ dwr.engine._sendData = function(batch) {
     // Proceed using iframe
     var idname = batch.isPoll ? "dwr-if-poll-" + batch.map.batchId : "dwr-if-" + batch.map["c0-id"];
     batch.div = document.createElement("div");
-    batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' style='width:0px;height:0px;border:0;' id='" + idname + "' name='" + idname + "'><" + "/iframe>";
+    // Add the div to the document first, otherwise IE 6 will ignore onload handler.
     document.body.appendChild(batch.div);
+    batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' style='width:0px;height:0px;border:0;' id='" + idname + "' name='" + idname + "' onload='dwr.engine._iframeLoadingComplete (" + batch.map.batchId + ");'></iframe>";
     batch.iframe = document.getElementById(idname);
     batch.iframe.batch = batch;
     batch.mode = batch.isPoll ? dwr.engine._ModeHtmlPoll : dwr.engine._ModeHtmlCall;
@@ -922,9 +924,34 @@ dwr.engine._stateChange = function(batch) {
   if (toEval != null) toEval = toEval.replace(dwr.engine._scriptTagProtection, "");
   dwr.engine._eval(toEval);
   dwr.engine._receivedBatch = null;
-
+  dwr.engine._validateBatch(batch);
   dwr.engine._clearUp(batch);
 };
+
+/**
+ * @private This function is invoked when a batch reply is received.
+ * It checks that there is a response for every call in the batch. Otherwise,
+ * an error will be signaled (a call without a response indicates that the 
+ * server failed to send complete batch response). 
+ */
+dwr.engine._validateBatch = function(batch) {
+  // If some call left unreplied, report an error.
+  if (!batch.completed) {
+    for (var i = 0; i < batch.map.callCount; i++) {
+      if (batch.handlers[i] != null) {
+        dwr.engine._handleWarning(batch, { name:"dwr.engine.incompleteReply", message:"Incomplete reply from server" });
+        break;
+      }
+    }
+  }
+}
+
+/** @private Called from iframe onload, check batch using batch-id */
+dwr.engine._iframeLoadingComplete = function(batchId) {
+  // dwr.engine._checkCometPoll();
+  var batch = dwr.engine._batches[batchId];
+  if (batch) dwr.engine._validateBatch(batch);
+}
 
 /** @private Called by the server: Execute a callback */
 dwr.engine._remoteHandleCallback = function(batchId, callId, reply) {
@@ -937,6 +964,7 @@ dwr.engine._remoteHandleCallback = function(batchId, callId, reply) {
   // with DWR so we handle them differently.
   try {
     var handlers = batch.handlers[callId];
+    batch.handlers[callId] = null;
     if (!handlers) {
       dwr.engine._debug("Warning: Missing handlers. callId=" + callId, true);
     }
@@ -952,6 +980,7 @@ dwr.engine._remoteHandleException = function(batchId, callId, ex) {
   var batch = dwr.engine._batches[batchId];
   if (batch == null) { dwr.engine._debug("Warning: null batch in remoteHandleException", true); return; }
   var handlers = batch.handlers[callId];
+  batch.handlers[callId] = null;
   if (handlers == null) { dwr.engine._debug("Warning: null handlers in remoteHandleException", true); return; }
   if (ex.message == undefined) ex.message = "";
   if (typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(ex.message, ex);
