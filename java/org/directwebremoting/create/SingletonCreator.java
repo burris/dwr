@@ -44,7 +44,7 @@ public class SingletonCreator extends AbstractCreator implements Creator
         }
         catch (ClassNotFoundException ex)
         {
-            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname)); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString("Creator.ClassNotFound", classname));
         }
     }
 
