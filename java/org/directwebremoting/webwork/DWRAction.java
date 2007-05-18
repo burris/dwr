@@ -78,13 +78,7 @@ public class DWRAction
     }
 
     /**
-     * @param actionDefinition
-     * @param params
-     * @param request
-     * @param response
-     * @param servletContext
-     * @return
-     * @throws ServletException
+     * 
      */
     protected AjaxResult doExecute(ActionDefinition actionDefinition, Map<String, String> params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
     {
@@ -119,14 +113,7 @@ public class DWRAction
     }
 
     /**
-     * @param du
-     * @param request
-     * @param response
-     * @param context
-     * @param actionDefinition
-     * @param params
-     * @return
-     * @throws ServletException
+     * 
      */
     @SuppressWarnings("unchecked")
     protected ActionInvocation invokeAction(DispatcherUtils du, HttpServletRequest request, HttpServletResponse response, ServletContext context, ActionDefinition actionDefinition, Map<String, String> params) throws ServletException
@@ -181,8 +168,7 @@ public class DWRAction
     }
 
     /**
-     * @param request
-     * @param extraContext
+     * 
      */
     @SuppressWarnings("unchecked")
     protected void prepareContinuationAction(HttpServletRequest request, Map<String, Object> extraContext)
@@ -201,9 +187,7 @@ public class DWRAction
     }
 
     /**
-     * @param actionDefinition
-     * @param params
-     * @return
+     * 
      */
     protected ActionMapping getActionMapping(ActionDefinition actionDefinition, Map<String, String> params)
     {
@@ -212,8 +196,7 @@ public class DWRAction
     }
 
     /**
-     * @param response
-     * @return
+     * 
      */
     protected AjaxTextResult getTextResult(FakeHttpServletResponse response)
     {
