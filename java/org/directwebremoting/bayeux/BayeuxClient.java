@@ -90,6 +90,7 @@ public class BayeuxClient extends Client
     /* (non-Javadoc)
      * @see org.mortbay.cometd.Client#deliver(org.mortbay.cometd.Client, org.mortbay.cometd.ChannelId, java.util.Map)
      */
+    @SuppressWarnings("unchecked")
     @Override
     protected void deliver(Client from, ChannelId to, Map<String, Object> message)
     {

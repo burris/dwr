@@ -34,6 +34,7 @@ public class BayeuxScriptConduit extends ScriptConduit
     public BayeuxScriptConduit(ConverterManager converterManager)
     {
         super(ScriptConduit.RANK_PROCEDURAL);
+        this.converterManager = converterManager;
     }
 
     /* (non-Javadoc)
