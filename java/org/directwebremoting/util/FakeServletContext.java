@@ -17,6 +17,8 @@
 package org.directwebremoting.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -135,7 +137,14 @@ public class FakeServletContext implements ServletContext
      */
     public InputStream getResourceAsStream(String path)
     {
-        throw new UnsupportedOperationException();
+        try
+        {
+            return new FileInputStream(resourceBasePath + path);
+        }
+        catch (FileNotFoundException ex)
+        {
+            return null;
+        }
     }
 
     /* (non-Javadoc)
@@ -320,7 +329,7 @@ public class FakeServletContext implements ServletContext
     private static final Log log = LogFactory.getLog(FakeServletContext.class);
 
     /**
-     *
+     * The resource path to allow us to fetch resources from the disk
      */
     private final String resourceBasePath;
 

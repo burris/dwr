@@ -27,17 +27,6 @@
       <src path="${source.root}/java5"/>
       <classpath refid="classpath"/>
     </javac>
-    <mkdir dir="${target.root}/demo-classes"/>
-    <javac debug="on" includes="**/*.java" destdir="${target.root}/demo-classes">
-      <src path="${source.root}/demo"/>
-      <classpath refid="classpath"/>
-    </javac>
-    <mkdir dir="${target.root}/test-classes"/>
-    <javac debug="on" includes="**/*.java" destdir="${target.root}/test-classes">
-      <src path="${source.root}/test/java"/>
-      <src path="${source.root}/util/java"/>
-      <classpath refid="classpath"/>
-    </javac>
     <copy todir="${target.root}/classes">
       <fileset dir="${source.root}/java">
         <exclude name="**/*.java"/>
@@ -52,6 +41,25 @@
       <fileset dir="${source.root}/etc/classpath">
         <exclude name="**/log4j.properties"/>
       </fileset>
+    </copy>
+    <mkdir dir="${target.root}/demo-classes"/>
+    <javac debug="on" includes="**/*.java" destdir="${target.root}/demo-classes">
+      <src path="${source.root}/demo"/>
+      <classpath refid="classpath"/>
+    </javac>
+    <mkdir dir="${target.root}/test-classes"/>
+    <javac debug="on" includes="**/*.java" destdir="${target.root}/test-classes">
+      <src path="${source.root}/test/java"/>
+      <src path="${source.root}/util/java"/>
+      <classpath refid="classpath"/>
+    </javac>
+    <copy todir="${target.root}/test-classes">
+      <fileset dir="${source.root}/test/java">
+        <exclude name="**/*.java"/>
+        <exclude name="**/package.html"/>
+        <exclude name="**/package-info.java"/>
+      </fileset>
+      <fileset dir="${source.root}/test/resources"/>
     </copy>
   </target>
 
@@ -128,10 +136,17 @@
 
   <!--=======================================================================-->
   <target name="test" depends="compile" description="Runs the test suite">
+    <mkdir dir="${target.root}/junit"/>
+    <!-- Since we're using JUnit4, we need Ant1.7 to grok the tests -->
     <junit fork="yes" haltonfailure="yes">
-      <test name="org.directwebremoting.AllTests"/>
       <formatter type="plain" usefile="false"/>
       <classpath refid="classpath"/>
+      <batchtest todir="${target.root}/junit">
+        <fileset dir="${source.root}/test/java">
+          <include name="**/*Test*.java"/>
+          <exclude name="**/AllTests.java"/>
+        </fileset>
+      </batchtest>
     </junit>
   </target>
 
@@ -145,11 +160,9 @@
   <!--=======================================================================-->
   <target name="clean">
     <delete dir="${target.root}"/>
-    <!--
-    <delete defaultexcludes="false" verbose="true">
-      <fileset dir="." includes="**/.DS_Store"/>
+    <delete defaultexcludes="false" verbose="true" dir="${source.root}">
+      <include name="**/*.DS_Store"/>
     </delete>
-    -->
   </target>
 
   <!--=======================================================================-->

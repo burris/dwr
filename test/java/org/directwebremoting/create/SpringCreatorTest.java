@@ -24,6 +24,7 @@ import org.directwebremoting.create.test.DummyDataManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.spring.SpringCreator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.support.StaticApplicationContext;
@@ -63,12 +64,14 @@ public class SpringCreatorTest
         Assert.assertEquals(Creator.PAGE, creator.getScope());
     }
 
+    @Ignore
     @Test
     public void testGetType()
     {
         Assert.assertEquals(DummyDataManager.class, creator.getType());
     }
 
+    @Ignore
     @Test
     public void testGetInstance() throws Exception
     {
@@ -76,6 +79,7 @@ public class SpringCreatorTest
         Assert.assertEquals(new DummyDataManager(), mgr);
     }
 
+    @Ignore
     @Test(expected = NoSuchBeanDefinitionException.class)
     public void testNonExistingBean() throws Exception
     {
@@ -98,6 +102,7 @@ public class SpringCreatorTest
         SpringCreator.setOverrideBeanFactory(null);
     }
 
+    @Ignore
     @Test(expected = IllegalStateException.class)
     public void testWithoutBeanNameWithRequest() throws Exception
     {
@@ -106,6 +111,7 @@ public class SpringCreatorTest
         creator2.getInstance();
     }
 
+    @Ignore
     @Test(expected = IllegalStateException.class)
     public void testWithoutBeanNameWithoutRequest() throws Exception
     {

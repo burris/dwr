@@ -16,46 +16,27 @@
 package org.directwebremoting.export.asmg;
 
 import org.getahead.dwrdemo.asmg.Generator;
-
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class GeneratorTest extends TestCase
+public class GeneratorTest
 {
-    /*
-     * Test method for 'org.directwebremoting.export.asmg.Generator.generateAntiSpamMailto(String)'
-     */
+    @Test
     public void testGenerateAntiSpamMailto()
     {
-        assertEquals(generator.generateAntiSpamMailto("the helpdesk", "support@example.com"), result1);
-        assertEquals(generator.generateAntiSpamMailto("Fred Nowhere", "fred@nowhere.com"), result2);
+        String result1 = generator.generateAntiSpamMailto("the helpdesk", "support@example.com");
+        Assert.assertTrue(result1.contains("the helpdesk"));
+        Assert.assertFalse(result1.contains("support@example.com"));
+    }
 
-        try
-        {
-            generator.generateAntiSpamMailto("Fred Nowhere", "fred at nowhere.com");
-            fail();
-        }
-        catch (IllegalArgumentException ex)
-        {
-            // Expected
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testGenerateAntiSpamMailtoFail()
+    {
+        generator.generateAntiSpamMailto("Fred Nowhere", "fred at nowhere.com");
     }
 
     private Generator generator = new Generator();
-
-    private String result1 = "Contact us using:\n" +
-            "<script type='text/javascript'>\n" +
-            "var a = 'support@example.com';\n" +
-            "document.write(\"<a href='mail\" + \"to:\" + a + \"'>\" + a + \"</a>\");\n" +
-            "</script>\n" +
-            "<noscript>[support at example.com]</noscript>\n";
-
-    private String result2 = "Contact us using:\n" +
-            "<script type='text/javascript'>\n" +
-            "var a = 'fred@nowhere.com';\n" +
-            "document.write(\"<a href='mail\" + \"to:\" + a + \"'>\" + a + \"</a>\");\n" +
-            "</script>\n" +
-            "<noscript>[fred at nowhere.com]</noscript>\n";
 }

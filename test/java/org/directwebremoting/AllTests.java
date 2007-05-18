@@ -19,7 +19,6 @@ import org.directwebremoting.convert.AllConverterTest;
 import org.directwebremoting.convert.BeanConverterTest;
 import org.directwebremoting.convert.ConstructorConverterTest;
 import org.directwebremoting.convert.DateConverterTest;
-import org.directwebremoting.convert.ObjectConverterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -32,8 +31,7 @@ import org.junit.runners.Suite.SuiteClasses;
     AllConverterTest.class,
     BeanConverterTest.class,
     ConstructorConverterTest.class,
-    DateConverterTest.class,
-    ObjectConverterTest.class
+    DateConverterTest.class
 })
 public class AllTests
 {

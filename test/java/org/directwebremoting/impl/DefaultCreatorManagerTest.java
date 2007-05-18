@@ -17,6 +17,7 @@ package org.directwebremoting.impl;
 
 import org.directwebremoting.create.NewCreator;
 import org.directwebremoting.extend.Creator;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -27,28 +28,27 @@ public class DefaultCreatorManagerTest
 {
     private DefaultCreatorManager manager = new DefaultCreatorManager();
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void addCreatorTypeNull()
     {
+        int before = manager.creatorTypes.size();
         manager.addCreatorType(null, null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void addCreatorTypeFail()
-    {
         manager.addCreatorType(null, this.getClass().getName());
+        manager.addCreatorType(null, Creator.class.getName());
+        int after = manager.creatorTypes.size();
+        Assert.assertEquals(before, after);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = Exception.class)
     public void addCreatorTypeFail2()
     {
-        manager.addCreatorType(null, Creator.class.getName());
+        manager.addCreatorType("foo", null);
     }
 
     @Test
     public void addCreatorType()
     {
-        manager.addCreatorType(null, NewCreator.class.getName());
+        manager.addCreatorType("foo", NewCreator.class.getName());
     }
 
     @Test

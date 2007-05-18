@@ -417,26 +417,26 @@ public class DefaultConverterManager implements ConverterManager
     /**
      * Where we store real type information behind generic types
      */
-    private Map<TypeHintContext, Class<?>> extraTypeInfoMap = new HashMap<TypeHintContext, Class<?>>();
-
-    /**
-     * The log stream
-     */
-    private static final Log log = LogFactory.getLog(DefaultConverterManager.class);
+    protected Map<TypeHintContext, Class<?>> extraTypeInfoMap = new HashMap<TypeHintContext, Class<?>>();
 
     /**
      * The list of the available converters
      */
-    private Map<String, Class<?>> converterTypes = new HashMap<String, Class<?>>();
+    protected Map<String, Class<?>> converterTypes = new HashMap<String, Class<?>>();
 
     /**
      * The list of the configured converters
      */
-    private Map<String, Converter> converters = new HashMap<String, Converter>();
+    protected Map<String, Converter> converters = new HashMap<String, Converter>();
 
     /**
      * The properties that we don't warn about if they don't exist.
      * @see DefaultConverterManager#addConverter(String, String, Map)
      */
     private static List<String> ignore = Arrays.asList("converter", "match");
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(DefaultConverterManager.class);
 }

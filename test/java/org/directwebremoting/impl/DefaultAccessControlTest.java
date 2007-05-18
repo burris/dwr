@@ -48,7 +48,7 @@ public class DefaultAccessControlTest
     public void testReasonToNotDisplayDwrObject() throws Exception
     {
         NewCreator creator = new NewCreator();
-        creator.setClass("org.directwebremoting.ExecutionContext");
+        creator.setClass("org.directwebremoting.impl.DefaultRemoter");
         accessControl.assertIsDisplayable(creator, "", getMethod());
     }
 
@@ -100,6 +100,7 @@ public class DefaultAccessControlTest
         WebContextFactory.setWebContextBuilder(builder);
 
         NewCreator creator = new NewCreator();
+        creator.setClass(DefaultAccessControl.class.getName());
 
         try
         {

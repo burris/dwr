@@ -200,37 +200,6 @@ public class DefaultCreatorManager implements CreatorManager
     }
 
     /**
-     * The log stream
-     */
-    private static final Log log = LogFactory.getLog(DefaultCreatorManager.class);
-
-    /**
-     * The list of the available creators
-     */
-    private Map<String, Class<?>> creatorTypes = new HashMap<String, Class<?>>();
-
-    /**
-     * The list of the configured creators
-     */
-    private Map<String, Creator> creators = new HashMap<String, Creator>();
-
-    /**
-     * Are we in debug mode?
-     */
-    private boolean debug = false;
-
-    /**
-     * Do we do full-create on startup?
-     */
-    private boolean initApplicationScopeCreatorsAtStartup = false;
-
-    /**
-     * The properties that we don't warn about if they don't exist.
-     * @see DefaultCreatorManager#addCreator(String, String, Map)
-     */
-    private static List<String> ignore = Arrays.asList("creator", "class");
-
-    /**
      * Do we do full-create on startup?
      * @return true if we are doing full-create
      */
@@ -247,4 +216,35 @@ public class DefaultCreatorManager implements CreatorManager
     {
         this.initApplicationScopeCreatorsAtStartup = initApplicationScopeCreatorsAtStartup;
     }
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(DefaultCreatorManager.class);
+
+    /**
+     * The list of the available creators
+     */
+    protected Map<String, Class<?>> creatorTypes = new HashMap<String, Class<?>>();
+
+    /**
+     * The list of the configured creators
+     */
+    protected Map<String, Creator> creators = new HashMap<String, Creator>();
+
+    /**
+     * Are we in debug mode?
+     */
+    protected boolean debug = false;
+
+    /**
+     * Do we do full-create on startup?
+     */
+    protected boolean initApplicationScopeCreatorsAtStartup = false;
+
+    /**
+     * The properties that we don't warn about if they don't exist.
+     * @see DefaultCreatorManager#addCreator(String, String, Map)
+     */
+    protected static List<String> ignore = Arrays.asList("creator", "class");
 }

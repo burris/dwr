@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.impl;
+package org.directwebremoting.dwrp;
 
 import org.directwebremoting.convert.BeanConverter;
 import org.directwebremoting.convert.StringConverter;
-import org.directwebremoting.dwrp.DefaultConverterManager;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
-import org.directwebremoting.extend.MarshallException;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -32,29 +31,17 @@ public class DefaultConverterManagerTest
 {
     private DefaultConverterManager manager = new DefaultConverterManager();
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void addConverterTypeFail()
     {
+        int before = manager.converterTypes.size();
+
         manager.addConverterType(null, null);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void addConverterTypeFail2()
-    {
         manager.addConverterType(null, Converter.class.getName());
-    }
-
-    @Test
-    public void addConverterType()
-    {
         manager.addConverterType(null, BeanConverter.class.getName());
-    }
 
-    @Test
-    public void addConverter() throws Exception
-    {
-        manager.addConverter(null, null);
-        manager.addConverter(null, null, null);
+        int after = manager.converterTypes.size();
+        Assert.assertEquals(before, after);
     }
 
     @Test(expected = NullPointerException.class)
@@ -69,7 +56,7 @@ public class DefaultConverterManagerTest
         manager.convertInbound(null, null, new InboundContext(), null);
     }
 
-    @Test(expected = MarshallException.class)
+    @Test(expected = NullPointerException.class)
     public void convertInboundFail3() throws Exception
     {
         manager.convertInbound(String.class, null, new InboundContext(), null);

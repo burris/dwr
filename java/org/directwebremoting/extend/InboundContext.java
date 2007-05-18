@@ -205,6 +205,16 @@ public final class InboundContext
          */
         Conversion(InboundVariable inboundVariable, Class<?> type)
         {
+            if (inboundVariable == null)
+            {
+                throw new NullPointerException("InboundVariable");
+            }
+
+            if (type == null)
+            {
+                throw new NullPointerException("Class type");
+            }
+
             this.inboundVariable = inboundVariable;
             this.type = type;
         }
@@ -243,9 +253,9 @@ public final class InboundContext
             return "Conversion[" + inboundVariable + "," + type.getName() + "]";
         }
 
-        private InboundVariable inboundVariable;
+        private final InboundVariable inboundVariable;
 
-        private Class<?> type;
+        private final Class<?> type;
     }
 
     /* (non-Javadoc)

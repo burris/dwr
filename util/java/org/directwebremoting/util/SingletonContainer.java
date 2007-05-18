@@ -35,7 +35,7 @@ public class SingletonContainer
             ContainerUtil.configureFromSystemDwrXml(container);
 
             DwrXmlConfigurator local = new DwrXmlConfigurator();
-            local.setClassResourceName("/dwr.xml");
+            local.setClassResourceName("/dwr-test.xml");
             local.configure(container);
 
             ContainerUtil.configureFromInitParams(container, servletConfig);

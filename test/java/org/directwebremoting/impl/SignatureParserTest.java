@@ -54,7 +54,7 @@ public class SignatureParserTest
     public void testParse1()
     {
         //TypeHintContext thc = new TypeHintContext((Method) EasyMock.isA(Method.class), EasyMock.eq(0));
-        converterManager.setExtraTypeInfo((TypeHintContext) EasyMock.isA(TypeHintContext.class), EasyMock.eq(Integer.class));
+        converterManager.setExtraTypeInfo(EasyMock.isA(TypeHintContext.class), EasyMock.eq(Integer.class));
 
         EasyMock.replay(converterManager);
         parser.parse("import java.util.*;\n" + "  import org.directwebremoting.impl.test.SignatureTestsObject;\n"
