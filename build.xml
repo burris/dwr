@@ -139,7 +139,7 @@
     <mkdir dir="${target.root}/junit"/>
     <!-- Since we're using JUnit4, we need Ant1.7 to grok the tests -->
     <junit fork="yes" haltonfailure="yes">
-      <formatter type="plain" usefile="false"/>
+      <formatter type="xml" usefile="false"/>
       <classpath refid="classpath"/>
       <batchtest todir="${target.root}/junit">
         <fileset dir="${source.root}/test/java">
