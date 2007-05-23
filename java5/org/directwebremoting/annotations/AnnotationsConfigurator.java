@@ -51,39 +51,62 @@ public class AnnotationsConfigurator implements Configurator
      */
     public void configure(Container container)
     {
-        Object data = container.getBean("classes");
-        if (data == null)
-        {
-            return;
-        }
-
-        if (data instanceof String)
-        {
-            String classesStr = (String) data;
-            for (String element : classesStr.split(","))
-            {
-                try
-                {
-                    Class<?> clazz = LocalUtil.classForName(element.trim());
-                    processClass(clazz, container);
-                }
-                catch (Exception ex)
-                {
-                    log.error("Failed to process class: " + element, ex);
-                }
-            }
-        }
-        else
+        for (Class<?> clazz : getClasses(container))
         {
             try
             {
-                processClass(data.getClass(), container);
+                processClass(clazz, container);
             }
             catch (Exception ex)
             {
-                log.error("Failed to process class: " + data.getClass().getName(), ex);
+                log.error("Failed to process class: " + clazz.getName(), ex);
             }
         }
+    }
+
+    /**
+     * Allow subclasses to override the default way we find out which classes
+     * have DWR annotations for us to work with
+     * @param container Commonly we get configuration information from here
+     * @return A set of classes with DWR annotations
+     */
+    protected Set<Class<?>> getClasses(Container container)
+    {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+
+        Object data = container.getBean("classes");
+        if (data != null)
+        {
+            if (data instanceof String)
+            {
+                String classesStr = (String) data;
+                for (String element : classesStr.split(","))
+                {
+                    try
+                    {
+                        Class<?> clazz = LocalUtil.classForName(element.trim());
+                        classes.add(clazz);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.error("Failed to process class: " + element, ex);
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    classes.add(data.getClass());
+                }
+                catch (Exception ex)
+                {
+                    log.error("Failed to process class: " + data.getClass().getName(), ex);
+                }
+            }
+        }
+
+        return classes;
     }
 
     /**
