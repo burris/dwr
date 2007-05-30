@@ -74,8 +74,6 @@ public class DefaultConverterManager implements ConverterManager
         }
 
         Converter converter = (Converter) clazz.newInstance();
-        converter.setConverterManager(this);
-
         LocalUtil.setParams(converter, params, ignore);
 
         // add the converter for the specified match
@@ -95,6 +93,8 @@ public class DefaultConverterManager implements ConverterManager
         }
 
         log.debug("- adding converter: " + LocalUtil.getShortClassName(converter.getClass()) + " for " + match);
+
+        converter.setConverterManager(this);
         converters.put(match, converter);
     }
 
