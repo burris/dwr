@@ -77,6 +77,45 @@ import org.xml.sax.SAXException;
 public class ContainerUtil
 {
     /**
+     * A combination of {@link #createDefaultContainer(ServletConfig)} and
+     * {@link #setupDefaultContainer(DefaultContainer, ServletConfig)}.
+     * @param servletConfig The source of init parameters
+     * @return A setup implementaion of DefaultContainer
+     * @throws ServletException If the specified class could not be found or instansiated
+     */
+    public static Container createAndSetupDefaultContainer(ServletConfig servletConfig) throws ServletException
+    {
+        Container container;
+        
+        try
+        {
+            String typeName = servletConfig.getInitParameter(Container.class.getName());
+            if (typeName == null)
+            {
+                container = new DefaultContainer();
+            }
+            else
+            {
+                log.debug("Using alternate Container implementation: " + typeName);
+                Class<?> type = LocalUtil.classForName(typeName);
+                container = (DefaultContainer) type.newInstance();
+            }
+
+            if (container instanceof DefaultContainer)
+            {
+                DefaultContainer defaultContainer = (DefaultContainer) container;
+                setupDefaultContainer(defaultContainer, servletConfig);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new ServletException(ex);
+        }
+
+        return container;
+    }
+
+    /**
      * Create a {@link DefaultContainer}, allowing users to upgrade to a child
      * of DefaultContainer using an {@link ServletConfig} init parameter of
      * <code>org.directwebremoting.Container</code>. Note that while the
@@ -89,7 +128,9 @@ public class ContainerUtil
      * @return An unsetup implementaion of DefaultContainer
      * @throws ServletException If the specified class could not be found
      * @see ServletConfig#getInitParameter(String)
+     * @deprecated Use {@link #createAndSetupDefaultContainer(ServletConfig)}
      */
+    @Deprecated
     public static DefaultContainer createDefaultContainer(ServletConfig servletConfig) throws ServletException
     {
         try
@@ -119,7 +160,9 @@ public class ContainerUtil
      * @param servletConfig The source of init parameters
      * @throws InstantiationException If we can't instantiate a bean
      * @throws IllegalAccessException If we have access problems creating a bean
+     * @deprecated Use {@link #createAndSetupDefaultContainer(ServletConfig)}
      */
+    @Deprecated
     public static void setupDefaultContainer(DefaultContainer container, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
     {
         setupDefaults(container, servletConfig);

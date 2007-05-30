@@ -22,6 +22,7 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.dwrp.Batch;
 import org.directwebremoting.extend.Calls;
@@ -32,7 +33,6 @@ import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.impl.ContainerUtil;
-import org.directwebremoting.impl.DefaultContainer;
 import org.directwebremoting.impl.DwrXmlConfigurator;
 import org.directwebremoting.impl.StartupUtil;
 import org.mortbay.cometd.Bayeux;
@@ -57,8 +57,7 @@ public class BayeuxClient extends Client
             ServletConfig servletConfig = null;
             ServletContext servletContext = null;
 
-            container = ContainerUtil.createDefaultContainer(servletConfig);
-            ContainerUtil.setupDefaultContainer(container, servletConfig);
+            container = ContainerUtil.createAndSetupDefaultContainer(servletConfig);
 
             webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, container);
             StartupUtil.initServerContext(servletConfig, servletContext, container);
@@ -130,7 +129,7 @@ public class BayeuxClient extends Client
         }
     }
 
-    private DefaultContainer container;
+    private Container container;
 
     private WebContextBuilder webContextBuilder;
 

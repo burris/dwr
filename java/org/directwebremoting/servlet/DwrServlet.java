@@ -30,7 +30,6 @@ import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.impl.ContainerUtil;
-import org.directwebremoting.impl.DefaultContainer;
 import org.directwebremoting.impl.StartupUtil;
 
 /**
@@ -69,8 +68,7 @@ public class DwrServlet extends HttpServlet
             StartupUtil.logStartup(servletConfig);
 
             // create and setup a DefaultContainer
-            container = ContainerUtil.createDefaultContainer(servletConfig);
-            ContainerUtil.setupDefaultContainer(container, servletConfig);
+            container = ContainerUtil.createAndSetupDefaultContainer(servletConfig);
 
             webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, container);
             StartupUtil.initServerContext(servletConfig, servletContext, container);
@@ -163,7 +161,7 @@ public class DwrServlet extends HttpServlet
     /**
      * Our IoC container
      */
-    private DefaultContainer container = null;
+    private Container container = null;
 
     /**
      * The WebContext that keeps http objects local to a thread

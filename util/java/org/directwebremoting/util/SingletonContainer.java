@@ -3,14 +3,12 @@ package org.directwebremoting.util;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
+import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.impl.ContainerUtil;
-import org.directwebremoting.impl.DefaultContainer;
 import org.directwebremoting.impl.DwrXmlConfigurator;
 import org.directwebremoting.impl.StartupUtil;
-import org.directwebremoting.util.FakeServletConfig;
-import org.directwebremoting.util.FakeServletContext;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -25,8 +23,7 @@ public class SingletonContainer
         try
         {
             // Setup the DWR container
-            container = ContainerUtil.createDefaultContainer(servletConfig);
-            ContainerUtil.setupDefaultContainer(container, servletConfig);
+            container = ContainerUtil.createAndSetupDefaultContainer(servletConfig);
 
             webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, container);
             StartupUtil.initServerContext(servletConfig, servletContext, container);
@@ -78,7 +75,7 @@ public class SingletonContainer
     /**
      * @return the container
      */
-    public DefaultContainer getContainer()
+    public Container getContainer()
     {
         return container;
     }
@@ -107,7 +104,7 @@ public class SingletonContainer
         return webContextBuilder;
     }
 
-    private DefaultContainer container;
+    private Container container;
 
     private WebContextBuilder webContextBuilder;
 

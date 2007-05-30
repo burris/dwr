@@ -52,11 +52,9 @@ public class StartupUtil
             ServletConfig servletConfig = new FakeServletConfig("test", new FakeServletContext());
             ServletContext servletContext = servletConfig.getServletContext();
 
-            StartupUtil.setupLogging(servletConfig, null);
             StartupUtil.logStartup(servletConfig);
 
-            DefaultContainer container = ContainerUtil.createDefaultContainer(servletConfig);
-            ContainerUtil.setupDefaultContainer(container, servletConfig);
+            Container container = ContainerUtil.createAndSetupDefaultContainer(servletConfig);
 
             WebContextBuilder webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, container);
             StartupUtil.initServerContext(servletConfig, servletContext, container);
