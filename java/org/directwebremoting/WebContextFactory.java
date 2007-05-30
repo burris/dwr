@@ -42,6 +42,11 @@ public class WebContextFactory
     }
 
     /**
+     * The WebContextBuilder from which we will get WebContext objects
+     */
+    private static WebContextBuilder builder = null;
+
+    /**
      * Internal method to allow us to get the WebContextBuilder from which we
      * will get WebContext objects.
      * Do not call this method from outside of DWR.
@@ -51,11 +56,6 @@ public class WebContextFactory
     {
         WebContextFactory.builder = builder;
     }
-
-    /**
-     * The WebContextBuilder from which we will get WebContext objects
-     */
-    private static WebContextBuilder builder = null;
 
     /**
      * Class to enable us to access servlet parameters.
