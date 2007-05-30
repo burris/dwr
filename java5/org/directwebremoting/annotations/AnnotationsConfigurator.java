@@ -188,7 +188,10 @@ public class AnnotationsConfigurator implements Configurator
                 Auth authAnn = method.getAnnotation(Auth.class);
                 if (authAnn != null)
                 {
-                    accessControl.addRoleRestriction(name, method.getName(), authAnn.role());
+                    for (String role : authAnn.role())
+                    {
+                        accessControl.addRoleRestriction(name, method.getName(), role);
+                    }
                 }
             }
         }
