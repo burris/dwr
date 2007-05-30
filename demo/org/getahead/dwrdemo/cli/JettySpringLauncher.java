@@ -18,14 +18,16 @@ public class JettySpringLauncher
     /**
      * Sets up and runs server.
      * @param args
+     * @throws Exception 
      */
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
         final Server server = new Server();
 
         SelectChannelConnector connector = new SelectChannelConnector();
         connector.setPort(8080);
         server.addConnector(connector);
+        server.setStopAtShutdown(true);
 
         Context htmlContext = new Context(server, "/", Context.SESSIONS);
 
@@ -44,16 +46,8 @@ public class JettySpringLauncher
         holder.setInitParameter("debug", "true");
         servletContext.addServlet(holder, "/dwr/*");
 
-        try
-        {
-            JettyShutdown.addShutdownHook(server);
-            server.start();
-            server.join();
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        server.start();
+        server.join();
     }
 }
 /*

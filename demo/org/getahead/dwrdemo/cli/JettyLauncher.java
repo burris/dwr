@@ -11,9 +11,8 @@ public class JettyLauncher
 {
     /**
      * Sets up and runs server.
-     * @param args
      */
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
         Server server = new Server();
 
@@ -23,7 +22,9 @@ public class JettyLauncher
         server.setStopAtShutdown(true);
 
         server.addHandler(new WebAppContext("web","/dwr"));
+        server.addHandler(new WebAppContext("test/web","/dwr-test"));
 
-        server.addHandler(new WebAppContext("test","/dwr-test"));
+        server.start();
+        server.join();
     }
 }
