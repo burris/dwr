@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.export.marshall;
+package org.getahead.dwrdemo.marshall;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

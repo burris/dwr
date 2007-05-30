@@ -13,28 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.export.marshall;
+package org.getahead.dwrdemo.marshall;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ObjA
+public class ObjB
 {
-    private ObjB objB;
+    private ObjA objA;
 
     /**
-     * @return objb
+     * @return obja
      */
-    public ObjB getObjB()
+    public ObjA getObjA()
     {
-        return objB;
+        return objA;
     }
 
     /**
-     * @param objB
+     * @param objA
      */
-    public void setObjB(ObjB objB)
+    public void setObjA(ObjA objA)
     {
-        this.objB = objB;
+        this.objA = objA;
     }
 }

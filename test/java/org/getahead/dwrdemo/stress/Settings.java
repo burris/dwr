@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.directwebremoting.export.stress;
+package org.getahead.dwrdemo.stress;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

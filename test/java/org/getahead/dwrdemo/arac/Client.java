@@ -1,4 +1,4 @@
-package org.directwebremoting.export.arac;
+package org.getahead.dwrdemo.arac;
 
 import java.util.Date;
 

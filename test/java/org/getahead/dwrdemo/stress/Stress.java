@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.directwebremoting.export.stress;
+package org.getahead.dwrdemo.stress;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;

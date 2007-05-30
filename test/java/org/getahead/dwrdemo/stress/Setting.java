@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.directwebremoting.export.stress;
+package org.getahead.dwrdemo.stress;
 
 import java.util.ArrayList;
 import java.util.List;
