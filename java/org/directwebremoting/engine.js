@@ -742,23 +742,36 @@ dwr.engine._sendData = function(batch) {
     }
   }
   else if (batch.rpcType != dwr.engine.ScriptTag) {
-    // Proceed using iframe
     var idname = batch.isPoll ? "dwr-if-poll-" + batch.map.batchId : "dwr-if-" + batch.map["c0-id"];
-    batch.div = document.createElement("div");
-    // Add the div to the document first, otherwise IE 6 will ignore onload handler.
-    document.body.appendChild(batch.div);
-    batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' style='width:0px;height:0px;border:0;' id='" + idname + "' name='" + idname + "' onload='dwr.engine._iframeLoadingComplete (" + batch.map.batchId + ");'></iframe>";
-    batch.iframe = document.getElementById(idname);
+    // on IE try to use the htmlfile activex control
+    if (window.ActiveXObject) {
+      batch.htmlfile = new window.ActiveXObject("htmlfile");
+      batch.htmlfile.open();
+      batch.htmlfile.write("<html>");
+      //batch.htmlfile.write("<script>document.domain='" + document.domain + "';</script>");
+      batch.htmlfile.write("<div><iframe className='wibble' src='javascript:void(0)' id='" + idname + "' name='" + idname + "' onload='dwr.engine._iframeLoadingComplete(" + batch.map.batchId + ");'></iframe></div>");
+      batch.htmlfile.write("</html>");
+      batch.htmlfile.close();
+      batch.htmlfile.parentWindow.dwr = dwr;
+      batch.document = batch.htmlfile;
+    }
+    else {
+      batch.div = document.createElement("div");
+      // Add the div to the document first, otherwise IE 6 will ignore onload handler.
+      document.body.appendChild(batch.div);
+      batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' style='width:0px;height:0px;border:0;' id='" + idname + "' name='" + idname + "' onload='dwr.engine._iframeLoadingComplete (" + batch.map.batchId + ");'></iframe>";
+      batch.document = document;
+    }
+    batch.iframe = batch.document.getElementById(idname);
     batch.iframe.batch = batch;
     batch.mode = batch.isPoll ? dwr.engine._ModeHtmlPoll : dwr.engine._ModeHtmlCall;
     if (batch.isPoll) dwr.engine._outstandingIFrames.push(batch.iframe);
     request = dwr.engine._constructRequest(batch);
     if (batch.httpMethod == "GET") {
       batch.iframe.setAttribute("src", request.url);
-      // document.body.appendChild(batch.iframe);
     }
     else {
-      batch.form = document.createElement("form");
+      batch.form = batch.document.createElement("form");
       batch.form.setAttribute("id", "dwr-form");
       batch.form.setAttribute("action", request.url);
       batch.form.setAttribute("target", idname);
@@ -767,14 +780,14 @@ dwr.engine._sendData = function(batch) {
       for (prop in batch.map) {
         var value = batch.map[prop];
         if (typeof value != "function") {
-          var formInput = document.createElement("input");
+          var formInput = batch.document.createElement("input");
           formInput.setAttribute("type", "hidden");
           formInput.setAttribute("name", prop);
           formInput.setAttribute("value", value);
           batch.form.appendChild(formInput);
         }
       }
-      document.body.appendChild(batch.form);
+      batch.document.body.appendChild(batch.form);
       batch.form.submit();
     }
   }
