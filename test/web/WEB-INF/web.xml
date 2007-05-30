@@ -25,18 +25,26 @@
     <init-param>
       <param-name>classes</param-name>
       <param-value>
-      org.directwebremoting.export.marshall.TestBean2Converter,
-      org.directwebremoting.export.marshall.Test,
-      org.directwebremoting.export.marshall.TestBean
+      org.getahead.dwrdemo.marshall.TestBean2Converter,
+      org.getahead.dwrdemo.marshall.Test,
+      org.getahead.dwrdemo.marshall.TestBean
       </param-value>
     </init-param>
     <init-param>
-      <param-name>pollAndCometEnabled</param-name>
+      <param-name>activeReverseAjaxEnabled</param-name>
       <param-value>true</param-value>
     </init-param>
     <init-param>
       <param-name>allowImpossibleTests</param-name>
       <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>allowGetForSafariButMakeForgeryEasier</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>org.directwebremoting.Container</param-name>
+      <param-value>org.directwebremoting.testimpl.TestDefaultContainer</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
