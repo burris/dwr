@@ -8,7 +8,7 @@
   <script type='text/javascript' src='../dwr/interface/Demo.js'> </script>
   <script type="text/javascript" src="../dwr/interface/Publisher.js"> </script>
   <script type="text/javascript" src='OpenAjax.js'> </script>
-  <script type="text/javascript" src='index.js'> </script>
+  <script type="text/javascript" src='dwr-oa-gi.js'> </script>
   <link rel="stylesheet" type="text/css" href="../tabs/tabs.css" />
   <link rel="stylesheet" type="text/css" href="../generic.css" />
 </head>
@@ -21,7 +21,8 @@
 <h1>DWR and TIBCO General Interface</h1>
 
 <p>This is a simple demonstration of integrating a GI user interface with
-Reverse Ajax.</p>
+Reverse Ajax. Data is published using Reverse Ajax to the OpenAjax Hub which
+then passes the data on to GI.</p>
 
 <ul id="tabList">
   <li><a href="#" tabId="demoDiv">Demo</a></li>
@@ -57,8 +58,10 @@ Reverse Ajax.</p>
 </pre>
 
     <p>This causes GI to render the Matrix component from config.xml and the
-    component declaration: appCanvas.xml. Once these are loaded the init
-    function is called by GI.</p>
+    component declaration: appCanvas.xml. So far this is identical to the
+    simple DWR/GI example.</p>
+    
+    <p>Once these are loaded the init function is called by GI:</p>
 
 <pre>
 function giLoaded() {
@@ -93,7 +96,7 @@ function objectPublished(prefix, name, handlerData, corporation) {
 <pre>
 while (!Thread.currentThread().isInterrupted())
 {
-    Collection sessions = serverContext.getScriptSessionsByPage("/dwr/gi/index.html");
+    Collection sessions = serverContext.getScriptSessionsByPage("/dwr/gi/dwr-oa-gi.html");
     ScriptProxy proxy = new ScriptProxy(sessions);
 
     Corporation corp = corporations.getNextChangedCorporation();

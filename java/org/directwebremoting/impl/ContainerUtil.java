@@ -53,6 +53,7 @@ import org.directwebremoting.servlet.AboutHandler;
 import org.directwebremoting.servlet.AuthHandler;
 import org.directwebremoting.servlet.DwrWebContextFilter;
 import org.directwebremoting.servlet.EngineHandler;
+import org.directwebremoting.servlet.GiHandler;
 import org.directwebremoting.servlet.HtmlCallHandler;
 import org.directwebremoting.servlet.HtmlPollHandler;
 import org.directwebremoting.servlet.IndexHandler;
@@ -209,6 +210,7 @@ public class ContainerUtil
         createUrlMapping(container, "/engine.js", "engineHandlerUrl", EngineHandler.class);
         createUrlMapping(container, "/util.js", "utilHandlerUrl", UtilHandler.class);
         createUrlMapping(container, "/auth.js", "authHandlerUrl", AuthHandler.class);
+        createUrlMapping(container, "/gi.js", "giHandlerUrl", GiHandler.class);
         createUrlMapping(container, "/webwork/DWRActionUtil.js", "webworkUtilHandlerUrl", WebworkUtilHandler.class);
         createUrlMapping(container, "/about", "aboutHandlerUrl", AboutHandler.class);
         createUrlMapping(container, "/test/", "testHandlerUrl", TestHandler.class);

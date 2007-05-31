@@ -61,7 +61,7 @@ public class Publisher implements Runnable
                 String contextPath = serverContext.getContextPath();
                 if (contextPath != null)
                 {
-                    Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/index.html");
+                    Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/dwr-oa-gi.html");
                     ScriptProxy proxy = new ScriptProxy(sessions);
     
                     Corporation corp = corporations.getNextChangedCorporation();

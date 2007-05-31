@@ -41,6 +41,14 @@ public class Corporations
     }
 
     /**
+    *
+    */
+    public List<Corporation> getCorporations()
+    {
+        return corporations;
+    }
+
+    /**
      *
      */
     public Corporation getNextChangedCorporation()

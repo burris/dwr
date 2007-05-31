@@ -70,9 +70,12 @@
       </param>
     </create>
 
-    <!-- The TIBCO GI Demo -->
+    <!-- The TIBCO GI Demos -->
     <create creator="new" javascript="Publisher" scope="application">
       <param name="class" value="org.getahead.dwrdemo.gidemo.Publisher"/>
+    </create>
+    <create creator="new" javascript="Corporations" scope="application">
+      <param name="class" value="org.getahead.dwrdemo.gidemo.Corporations"/>
     </create>
     <convert converter="bean" match="org.getahead.dwrdemo.gidemo.Corporation"/>
 

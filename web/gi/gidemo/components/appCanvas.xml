@@ -15,7 +15,7 @@
       <variants jsxpagingmodel="1" jsxselectionmodel="0" jsxheaderheight="30" jsxrowheight="25"/>
       <strings jsxname="matrix" jsxbodyborder="1px solid #dfdfef"
           jsxheaderborder="1px solid #dfdfef" jsxbgcolor="#efefff"
-          jsxxml="&lt;data jsxid='jsxroot'&gt;  &lt;/data&gt;"
+          jsxxml="&lt;data jsxid='jsxroot'&gt;  &lt;/data&gt;" jsxxmlid="corporations"
           jsxsortpath="index" jsxsorttype="text" jsxsortdirection="ascending"/>
       <xslparameters jsx_rowbg1="#ffffff" jsx_rowbg2="#ffffff"/>
 
