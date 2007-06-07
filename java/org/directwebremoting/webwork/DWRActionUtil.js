@@ -80,7 +80,7 @@ dwr.webwork.execute = function(action, values, callbackObjOrName) {
     mustCall= true;
   }
   if (mustCall) {
-    DWRAction.execute(actionObj, params, callbackObj);
+    dwr.webwork.execute(actionObj, params, callbackObj);
   }
 };
 
