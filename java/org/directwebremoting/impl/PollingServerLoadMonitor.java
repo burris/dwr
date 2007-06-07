@@ -15,6 +15,8 @@
  */
 package org.directwebremoting.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.extend.ServerLoadMonitor;
 
 /**
@@ -42,8 +44,20 @@ public class PollingServerLoadMonitor extends AbstractServerLoadMonitor implemen
     /**
      * Accessor for the disconnected time.
      * @param disconnectedTime How long should clients spend disconnected
+     * @deprecated Use {@link #setDisconnectedTime(int)} instead
      */
+    @Deprecated
     public void setTimeToNextPoll(int disconnectedTime)
+    {
+        log.warn("timeToNextPoll is deprecated. Please use disconnectedTime");
+        this.disconnectedTime = disconnectedTime;
+    }
+
+    /**
+     * Accessor for the disconnected time.
+     * @param disconnectedTime How long should clients spend disconnected
+     */
+    public void setDisconnectedTime(int disconnectedTime)
     {
         this.disconnectedTime = disconnectedTime;
     }
@@ -52,4 +66,9 @@ public class PollingServerLoadMonitor extends AbstractServerLoadMonitor implemen
      * How long are we telling users to wait before they come back next
      */
     protected int disconnectedTime = 5000;
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(PollingServerLoadMonitor.class);
 }
