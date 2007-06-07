@@ -91,20 +91,19 @@ public class H3BeanConverter extends BeanConverter implements Converter
                 {
                     // We don't marshall un-initialized properties for
                     // Hibernate3
-                    String propertyName = descriptor.getName();
-                    Method method = findGetter(example, propertyName);
+                    Method method = findGetter(example, name);
 
                     if (method == null)
                     {
-                        log.warn("Failed to find property: " + propertyName);
+                        log.warn("Failed to find property: " + name);
 
-                        properties.put(name, new PlainProperty(propertyName, null));
+                        properties.put(name, new PlainProperty(name, null));
                         continue;
                     }
 
-                    if (!Hibernate.isPropertyInitialized(example, propertyName))
+                    if (!Hibernate.isPropertyInitialized(example, name))
                     {
-                        properties.put(name, new PlainProperty(propertyName, null));
+                        properties.put(name, new PlainProperty(name, null));
                         continue;
                     }
 
@@ -112,7 +111,7 @@ public class H3BeanConverter extends BeanConverter implements Converter
                     Object retval = method.invoke(example);
                     if (!Hibernate.isInitialized(retval))
                     {
-                        properties.put(name, new PlainProperty(propertyName, null));
+                        properties.put(name, new PlainProperty(name, null));
                         continue;
                     }
                 }
@@ -177,12 +176,13 @@ public class H3BeanConverter extends BeanConverter implements Converter
      */
     protected Method findGetter(Object data, String property) throws IntrospectionException
     {
-        String key = data.getClass().getName() + ":" + property;
+        Class<?> clazz = getClass(data);
+        String key = clazz.getName() + ":" + property;
 
         Method method = methods.get(key);
         if (method == null)
         {
-            PropertyDescriptor[] props = Introspector.getBeanInfo(data.getClass()).getPropertyDescriptors();
+            PropertyDescriptor[] props = Introspector.getBeanInfo(clazz).getPropertyDescriptors();
             for (PropertyDescriptor prop : props)
             {
                 if (prop.getName().equalsIgnoreCase(property))
@@ -213,7 +213,7 @@ public class H3BeanConverter extends BeanConverter implements Converter
     /**
      * The cache of method lookups that we've already done
      */
-    protected static final Map<String, Method> methods = new HashMap<String, Method>();
+    protected final Map<String, Method> methods = new HashMap<String, Method>();
 
     /**
      * The log stream
