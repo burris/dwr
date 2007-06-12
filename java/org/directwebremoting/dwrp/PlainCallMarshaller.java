@@ -42,7 +42,7 @@ public class PlainCallMarshaller extends BaseCallMarshaller
     @Override
     protected void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException
     {
-        if (allowScriptTagRemoting)
+        if (!allowScriptTagRemoting)
         {
             synchronized (out)
             {
