@@ -177,11 +177,11 @@ public class H3BeanConverter extends BeanConverter implements Converter
     protected Method findGetter(Object data, String property) throws IntrospectionException
     {
         Class<?> clazz = getClass(data);
-        String key = clazz.getName() + ":" + property;
+        // String key = clazz.getName() + ":" + property;
 
-        Method method = methods.get(key);
-        if (method == null)
-        {
+        Method method = null; // methods.get(key);
+        // if (method == null)
+        // {
             PropertyDescriptor[] props = Introspector.getBeanInfo(clazz).getPropertyDescriptors();
             for (PropertyDescriptor prop : props)
             {
@@ -191,8 +191,8 @@ public class H3BeanConverter extends BeanConverter implements Converter
                 }
             }
 
-            methods.put(key, method);
-        }
+            // methods.put(key, method);
+        // }
 
         return method;
     }
@@ -213,7 +213,7 @@ public class H3BeanConverter extends BeanConverter implements Converter
     /**
      * The cache of method lookups that we've already done
      */
-    protected final Map<String, Method> methods = new HashMap<String, Method>();
+    //protected final Map<String, Method> methods = new HashMap<String, Method>();
 
     /**
      * The log stream
