@@ -27,13 +27,13 @@ import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.util.LocalUtil;
 
 /**
- * Converter for all primitive types
+ * Converter for Enums
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class EnumConverter extends BaseV20Converter implements Converter
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
+     * @see org.directwebremoting.extend.Converter#convertInbound(java.lang.Class, org.directwebremoting.extend.InboundVariable, org.directwebremoting.extend.InboundContext)
      */
     public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
@@ -68,7 +68,7 @@ public class EnumConverter extends BaseV20Converter implements Converter
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.Converter#convertOutbound(java.lang.Object, org.directwebremoting.OutboundContext)
+     * @see org.directwebremoting.extend.Converter#convertOutbound(java.lang.Object, org.directwebremoting.extend.OutboundContext)
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
