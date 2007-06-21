@@ -62,7 +62,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="jar/jetty-6.1.1.jar" sourcepath="/library/jarlib/jetty-6.1.1/jetty-6.1.1.zip"/>
-	<classpathentry kind="lib" path="jar/jetty-util-6.1.1.jar"/>
+	<classpathentry kind="lib" path="jar/jetty-util-6.1.1.jar" sourcepath="/library/jarlib/jetty-6.1.1/jetty-6.1.1.zip"/>
 	<classpathentry kind="lib" path="jar/guice-1.0.jar"/>
 	<classpathentry kind="lib" path="jar/cometd-6.1.3.jar"/>
 	<classpathentry kind="lib" path="jar/xbean-2.2.0.jar"/>
