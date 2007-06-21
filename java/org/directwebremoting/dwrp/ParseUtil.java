@@ -162,7 +162,7 @@ public class ParseUtil
         int sep = line.indexOf(ProtocolConstants.INBOUND_DECL_SEPARATOR);
         if (sep == -1)
         {
-            log.warn("Missing separator in POST line: " + line);
+            paramMap.put(line, null);
         }
         else
         {
