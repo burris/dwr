@@ -58,6 +58,7 @@ import org.directwebremoting.servlet.HtmlCallHandler;
 import org.directwebremoting.servlet.HtmlPollHandler;
 import org.directwebremoting.servlet.IndexHandler;
 import org.directwebremoting.servlet.InterfaceHandler;
+import org.directwebremoting.servlet.MonitorHandler;
 import org.directwebremoting.servlet.PathConstants;
 import org.directwebremoting.servlet.PlainCallHandler;
 import org.directwebremoting.servlet.PlainPollHandler;
@@ -191,10 +192,12 @@ public class ContainerUtil
         container.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
         container.addParameter(PlainCallMarshaller.class.getName(), PlainCallMarshaller.class.getName());
         container.addParameter(HtmlCallMarshaller.class.getName(), HtmlCallMarshaller.class.getName());
-        container.addParameter(PlainPollHandler.class.getName(), PlainPollHandler.class.getName());
-        container.addParameter(HtmlPollHandler.class.getName(), HtmlPollHandler.class.getName());
         container.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
         container.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
+
+        // TODO: remove these once we are sure they are not needed
+        //container.addParameter(PlainPollHandler.class.getName(), PlainPollHandler.class.getName());
+        //container.addParameter(HtmlPollHandler.class.getName(), HtmlPollHandler.class.getName());
 
         if (servletConfig.getServletContext().getServerInfo().startsWith("jetty-6"))
         {
@@ -215,6 +218,7 @@ public class ContainerUtil
         createUrlMapping(container, "/about", "aboutHandlerUrl", AboutHandler.class);
         createUrlMapping(container, "/test/", "testHandlerUrl", TestHandler.class);
         createUrlMapping(container, "/interface/", "interfaceHandlerUrl", InterfaceHandler.class);
+        createUrlMapping(container, "/monitor/", "monitorHandlerUrl", MonitorHandler.class);
 
         // The Poll and Call URLs can not be changed easily because they are
         // referenced from engine.js. Maybe one day this would be a good
@@ -496,7 +500,7 @@ public class ContainerUtil
         log.debug("Shutting down containers for: " + title);
         for (Container container : containers)
         {
-            ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
+            ServerLoadMonitor monitor = container.getBean(ServerLoadMonitor.class);
             monitor.shutdown();
         }
     }
@@ -527,22 +531,22 @@ public class ContainerUtil
             }
 
             // AccessControl debugging
-            AccessControl accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
+            AccessControl accessControl = container.getBean(AccessControl.class);
             log.debug("AccessControl");
             log.debug("  Type: " + accessControl.getClass().getName());
 
             // AjaxFilterManager debugging
-            AjaxFilterManager ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
+            AjaxFilterManager ajaxFilterManager = container.getBean(AjaxFilterManager.class);
             log.debug("AjaxFilterManager");
             log.debug("  Type: " + ajaxFilterManager.getClass().getName());
 
             // ConverterManager debugging
-            ConverterManager converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+            ConverterManager converterManager = container.getBean(ConverterManager.class);
             log.debug("ConverterManager");
             log.debug("  Type: " + converterManager.getClass().getName());
 
             // CreatorManager debugging
-            CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
+            CreatorManager creatorManager = container.getBean(CreatorManager.class);
             log.debug("CreatorManager");
             log.debug("  Type: " + creatorManager.getClass().getName());
             for (String creatorName : creatorManager.getCreatorNames())
