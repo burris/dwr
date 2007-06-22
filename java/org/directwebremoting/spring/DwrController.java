@@ -245,7 +245,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
             // set up the web context and delegate to the processor
             webContextBuilder.set(request, response, servletConfig, getServletContext(), container);
 
-            UrlProcessor processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+            UrlProcessor processor = container.getBean(UrlProcessor.class);
             processor.handle(request, response);
         }
         finally

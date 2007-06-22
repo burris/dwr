@@ -376,10 +376,10 @@ public abstract class FluentConfigurator implements Configurator
      */
     public void configure(Container container)
     {
-        converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
-        ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
-        accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
-        creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
+        converterManager = container.getBean(ConverterManager.class);
+        ajaxFilterManager = container.getBean(AjaxFilterManager.class);
+        accessControl = container.getBean(AccessControl.class);
+        creatorManager = container.getBean(CreatorManager.class);
 
         configure();
 

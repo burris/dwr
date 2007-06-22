@@ -159,7 +159,7 @@ public class DwrSpringServlet extends HttpServlet
         {
             webContextBuilder.set(request, response, getServletConfig(), getServletContext(), container);
 
-            UrlProcessor processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+            UrlProcessor processor = container.getBean(UrlProcessor.class);
             processor.handle(request, response);
         }
         finally

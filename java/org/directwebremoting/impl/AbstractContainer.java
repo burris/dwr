@@ -41,4 +41,12 @@ public abstract class AbstractContainer implements Container
             }
         }
     }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.Container#getBean(java.lang.Class)
+     */
+    public <T> T getBean(Class<T> type)
+    {
+        return type.cast(getBean(type.getName()));
+    }
 }

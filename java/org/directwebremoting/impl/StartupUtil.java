@@ -82,7 +82,7 @@ public class StartupUtil
      */
     public static void outOfContainerDestroy(Container container)
     {
-        WebContextBuilder webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
+        WebContextBuilder webContextBuilder = container.getBean(WebContextBuilder.class);
         if (webContextBuilder != null)
         {
             webContextBuilder.unset();
@@ -112,7 +112,7 @@ public class StartupUtil
      */
     public static WebContextBuilder initWebContext(ServletConfig servletConfig, ServletContext servletContext, Container container)
     {
-        WebContextBuilder webContextBuilder = (WebContextBuilder) container.getBean(WebContextBuilder.class.getName());
+        WebContextBuilder webContextBuilder = container.getBean(WebContextBuilder.class);
         WebContextFactory.setWebContextBuilder(webContextBuilder);
         webContextBuilder.set(null, null, servletConfig, servletContext, container);
 
@@ -130,7 +130,7 @@ public class StartupUtil
      */
     public static ServerContextBuilder initServerContext(ServletConfig servletConfig, ServletContext servletContext, Container container)
     {
-        ServerContextBuilder serverContextBuilder = (ServerContextBuilder) container.getBean(ServerContextBuilder.class.getName());
+        ServerContextBuilder serverContextBuilder = container.getBean(ServerContextBuilder.class);
         ServerContextFactory.setServerContextBuilder(serverContextBuilder);
         serverContextBuilder.set(servletConfig, servletContext, container);
 

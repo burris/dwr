@@ -31,6 +31,13 @@ public interface Container
     Object getBean(String name);
 
     /**
+     * Get an instance of a bean of a given type
+     * @param type The type to get an instance of
+     * @return The object of the given type, or null if the object does not exist
+     */
+    <T> T getBean(Class<T> type);
+
+    /**
      * Get a list of all the available beans.
      * Implementation of this method is optional so it is valid for this method
      * to return an empty collection, but to return Objects when queried

@@ -147,10 +147,10 @@ public class DwrXmlConfigurator implements Configurator
      */
     public void configure(Container container)
     {
-        accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
-        ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
-        converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
-        creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
+        accessControl = container.getBean(AccessControl.class);
+        ajaxFilterManager = container.getBean(AjaxFilterManager.class);
+        converterManager = container.getBean(ConverterManager.class);
+        creatorManager = container.getBean(CreatorManager.class);
 
         Element root = document.getDocumentElement();
 

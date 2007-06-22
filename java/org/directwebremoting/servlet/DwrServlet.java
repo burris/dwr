@@ -117,7 +117,7 @@ public class DwrServlet extends HttpServlet
      */
     public void shutdown()
     {
-        ServerLoadMonitor monitor = (ServerLoadMonitor) container.getBean(ServerLoadMonitor.class.getName());
+        ServerLoadMonitor monitor = container.getBean(ServerLoadMonitor.class);
         monitor.shutdown();
     }
 
@@ -140,7 +140,7 @@ public class DwrServlet extends HttpServlet
         {
             webContextBuilder.set(request, response, getServletConfig(), getServletContext(), container);
 
-            UrlProcessor processor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+            UrlProcessor processor = container.getBean(UrlProcessor.class);
             processor.handle(request, response);
         }
         finally

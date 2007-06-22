@@ -44,10 +44,10 @@ public class SpringConfigurator implements Configurator
      */
     public void configure(Container container)
     {
-        AccessControl accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
-        AjaxFilterManager ajaxFilterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
-        ConverterManager converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
-        CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
+        AccessControl accessControl = container.getBean(AccessControl.class);
+        AjaxFilterManager ajaxFilterManager = container.getBean(AjaxFilterManager.class);
+        ConverterManager converterManager = container.getBean(ConverterManager.class);
+        CreatorManager creatorManager = container.getBean(CreatorManager.class);
 
         // Configure the creator types
         if (creatorTypes != null)

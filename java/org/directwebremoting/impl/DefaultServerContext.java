@@ -100,7 +100,7 @@ public class DefaultServerContext implements ServerContext
      */
     public String getContextPath()
     {
-        UrlProcessor urlProcessor = (UrlProcessor) container.getBean(UrlProcessor.class.getName());
+        UrlProcessor urlProcessor = container.getBean(UrlProcessor.class);
         return urlProcessor.getContextPath();
     }
 
@@ -112,7 +112,7 @@ public class DefaultServerContext implements ServerContext
     {
         if (sessionManager == null)
         {
-            sessionManager = (ScriptSessionManager) container.getBean(ScriptSessionManager.class.getName());
+            sessionManager = container.getBean(ScriptSessionManager.class);
         }
 
         return sessionManager;
@@ -126,7 +126,7 @@ public class DefaultServerContext implements ServerContext
     {
         if (converterManager == null)
         {
-            converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+            converterManager = container.getBean(ConverterManager.class);
         }
 
         return converterManager;

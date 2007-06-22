@@ -69,7 +69,7 @@ public class SingletonContainer
      */
     public ConverterManager getConverterManager()
     {
-        return (ConverterManager) container.getBean(ConverterManager.class.getName());
+        return container.getBean(ConverterManager.class);
     }
 
     /**

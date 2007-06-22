@@ -150,7 +150,7 @@ public class AnnotationsConfigurator implements Configurator
         Map<String, String> creatorParams = getParamsMap(createAnn.creatorParams());
         ScriptScope scope = createAnn.scope();
 
-        CreatorManager creatorManager = (CreatorManager) container.getBean(CreatorManager.class.getName());
+        CreatorManager creatorManager = container.getBean(CreatorManager.class);
         String creatorName = LocalUtil.replace(creatorClass, ".", "_");
         creatorManager.addCreatorType(creatorName, creatorClass);
 
@@ -178,7 +178,7 @@ public class AnnotationsConfigurator implements Configurator
             log.error("Failed to add class as Creator: " + clazz.getName(), ex);
         }
 
-        AccessControl accessControl = (AccessControl) container.getBean(AccessControl.class.getName());
+        AccessControl accessControl = container.getBean(AccessControl.class);
         for (Method method : clazz.getMethods())
         {
             if (method.getAnnotation(RemoteMethod.class) != null)
@@ -229,7 +229,7 @@ public class AnnotationsConfigurator implements Configurator
         if (filter != null)
         {
             LocalUtil.setParams(filter, filterParams, null);
-            AjaxFilterManager filterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
+            AjaxFilterManager filterManager = container.getBean(AjaxFilterManager.class);
             filterManager.addAjaxFilter(filter, name);
         }
     }
@@ -248,7 +248,7 @@ public class AnnotationsConfigurator implements Configurator
         String converterClass = converter.getName();
         Map<String, String> params = getParamsMap(convertAnn.params());
 
-        ConverterManager converterManager = (ConverterManager) container.getBean(ConverterManager.class.getName());
+        ConverterManager converterManager = container.getBean(ConverterManager.class);
         String converterName = LocalUtil.replace(converterClass, ".", "_");
         converterManager.addConverterType(converterName, converterClass);
 
@@ -317,7 +317,7 @@ public class AnnotationsConfigurator implements Configurator
         if (filter != null)
         {
             LocalUtil.setParams(filter, filterParams, null);
-            AjaxFilterManager filterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class.getName());
+            AjaxFilterManager filterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class);
             filterManager.addAjaxFilter(filter);
         }
     }
