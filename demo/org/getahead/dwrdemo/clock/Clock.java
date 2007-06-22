@@ -70,7 +70,6 @@ public class Clock implements Runnable
                 Util pages = new Util(sessions);
                 pages.setValue("clockDisplay", new Date().toString());
 
-                log.debug("Sent message");
                 Thread.sleep(1000);
             }
 
