@@ -67,7 +67,7 @@ public class Continuation
 
     /**
      * Resume an continuation.
-     * For Jetty this does not work like a real continuation because it restarts
+     * For Jetty: does not work like a real continuation because it restarts
      * the http request.
      * @throws Exception If reflection breaks
      */
@@ -224,5 +224,13 @@ public class Continuation
             isJetty = false;
             log.debug("No Jetty ContuniationSupport class, using standard Servlet API");
         }
+    }
+
+    /**
+     * @return True if we have detected Continuation classes
+     */
+    public static boolean isJetty()
+    {
+        return isJetty;
     }
 }
