@@ -262,8 +262,10 @@ public final class LocalUtil
     }
 
     /**
-     * URL decode a value. This method gets around the lack of a
-     * decode(String, String) method in JDK 1.3.
+     * URL decode a value.
+     * {@link URLDecoder#decode(String, String)} throws an
+     * {@link UnsupportedEncodingException}, which is silly given that the most
+     * common use case will be to pass in "UTF-8"
      * @param value The string to decode
      * @return The decoded string
      */
@@ -567,31 +569,14 @@ public final class LocalUtil
     }
 
     /**
+     * TODO: Inline this
      * Get the short class name (i.e. without the package part)
      * @param clazz the class to get the short name of
      * @return the class name of the class without the package name
      */
     public static String getShortClassName(Class<?> clazz)
     {
-        String className = clazz.getName();
-
-        char[] chars = className.toCharArray();
-        int lastDot = 0;
-        for (int i = 0; i < chars.length; i++)
-        {
-            if (chars[i] == '.')
-            {
-                lastDot = i + 1;
-            }
-            else if (chars[i] == '$')
-            {
-                chars[i] = '.';
-            }
-        }
-
-        // This might come up in scans for locale/charset issues. It's not an
-        // issue since we are talking about chars.
-        return new String(chars, lastDot, chars.length - lastDot);
+        return clazz.getSimpleName();
     }
 
     /**
