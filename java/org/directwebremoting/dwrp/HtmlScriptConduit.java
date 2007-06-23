@@ -27,7 +27,14 @@ import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.util.MimeConstants;
 
 /**
- * A ScriptConduit for use with HTML wrapped Javascript output.
+ * A ScriptConduit for use with HTML/SCRIPT wrapped Javascript output.
+ * <p>Scripts begin with an html and script tags. The scripts have been altered
+ * to include an 'execute-in-parent-context' wrapper.
+ * <p>If this conduit is used, the output should be directed to an iframe. No
+ * polling should be required.
+ * <p>This conduit works with IE 6/7 since the 4k buffer drawback (see
+ * {@link PlainScriptConduit} and {@link Html4kScriptConduit} does not prevent
+ * the execution of script elements.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class HtmlScriptConduit extends BaseScriptConduit
@@ -72,7 +79,7 @@ public class HtmlScriptConduit extends BaseScriptConduit
      * @see org.directwebremoting.dwrp.BaseScriptConduit#endStream()
      */
     @Override
-   public void endStream()
+    public void endStream()
     {
         synchronized (out)
         {
@@ -93,10 +100,11 @@ public class HtmlScriptConduit extends BaseScriptConduit
 
         synchronized (out)
         {
+            // TODO: We don't think the comments are needed because the exec is automatic
             out.println("<script type=\"text/javascript\">");
-            out.println(ProtocolConstants.SCRIPT_START_MARKER);
+            // out.println(ProtocolConstants.SCRIPT_START_MARKER);
             out.println(EnginePrivate.remoteEval(script));
-            out.println(ProtocolConstants.SCRIPT_END_MARKER);
+            // out.println(ProtocolConstants.SCRIPT_END_MARKER);
             out.println("</script>");
 
             return flush();

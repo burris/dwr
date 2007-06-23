@@ -20,7 +20,6 @@ import java.io.IOException;
 import javax.servlet.ServletOutputStream;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.util.LocalUtil;
 
 /**
  * While a Marshaller is processing a request it can register a ScriptConduit
@@ -95,7 +94,7 @@ public abstract class ScriptConduit implements Comparable<ScriptConduit>
      */
     public int compareTo(ScriptConduit that)
     {
-        int rankdiff = this.getRank() - that.getRank();
+        int rankdiff = that.getRank() - this.getRank();
         if (rankdiff != 0)
         {
             return rankdiff;
@@ -105,23 +104,47 @@ public abstract class ScriptConduit implements Comparable<ScriptConduit>
     }
 
     /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+
+        if (obj == this)
+        {
+            return true;
+        }
+
+        if (!this.getClass().equals(obj.getClass()))
+        {
+            return false;
+        }
+
+        ScriptConduit that = (ScriptConduit) obj;
+        return this.id == that.id;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        return 17 + (int) id;
+    }
+
+    /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString()
     {
-        if (classname == null)
-        {
-            classname = LocalUtil.getShortClassName(getClass());
-        }
-
-        return classname + "[id=" + id + "]";
+        return getClass().getSimpleName() + "[id=" + id + "]";
     }
-
-    /**
-     * Cached short classname for toString()
-     */
-    private static String classname = null;
 
     /**
      * The rank of this ScriptConduit

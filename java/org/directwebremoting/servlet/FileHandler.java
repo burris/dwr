@@ -28,8 +28,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.directwebremoting.Container;
 import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.extend.Handler;
+import org.directwebremoting.extend.InitializingBean;
+import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
@@ -40,7 +43,7 @@ import org.directwebremoting.util.MimeConstants;
  * EL type processing on the file. See the source for the cheat.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class FileHandler implements Handler
+public class FileHandler implements Handler, InitializingBean
 {
     /**
      * Create a new FileHandler
@@ -60,6 +63,38 @@ public class FileHandler implements Handler
      */
     public FileHandler()
     {
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.InitializingBean#afterContainerSetup(org.directwebremoting.Container)
+     */
+    public void afterContainerSetup(Container container)
+    {
+        // If we are dynamic then we might need to pre-configure some variables.
+        // TODO: Move this code into EngineHandler
+        if (dynamic)
+        {
+            boolean streaming = true;
+
+            // If the maxWaitAfterWrite time is less than half a second then we
+            // count ourselves to be not streaming, and use the simple XHR
+            // connection method.
+            if (maxWaitAfterWrite > -1 && maxWaitAfterWrite < 500)
+            {
+                streaming = false;
+            }
+
+            // If the ServerLoadMonitor says no streaming, then obviously ...
+            ServerLoadMonitor monitor = container.getBean(ServerLoadMonitor.class);
+            if (!monitor.supportsStreaming())
+            {
+                streaming = false;
+            }
+
+            // Poll using XHR (to avoid IE clicking) if we close
+            // the connection than 1sec after output happens.
+            pollWithXhr = streaming ? "false" : "true";
+        }
     }
 
     /* (non-Javadoc)
@@ -110,6 +145,11 @@ public class FileHandler implements Handler
                         if (line.contains(PARAM_SCRIPT_COOKIENAME))
                         {
                             line = LocalUtil.replace(line, PARAM_SCRIPT_COOKIENAME, sessionCookieName);
+                        }
+
+                        if (line.contains(PARAM_SCRIPT_POLLXHR))
+                        {
+                            line = LocalUtil.replace(line, PARAM_SCRIPT_POLLXHR, pollWithXhr);
                         }
 
                         if (line.contains(PARAM_SCRIPT_SESSIONID))
@@ -337,6 +377,17 @@ public class FileHandler implements Handler
     }
 
     /**
+     * Sometimes with proxies, you need to close the stream all the time to
+     * make the flush work. A value of -1 indicated that we do not do early
+     * closing after writes.
+     * @param maxWaitAfterWrite the maxWaitAfterWrite to set
+     */
+    public void setMaxWaitAfterWrite(int maxWaitAfterWrite)
+    {
+        this.maxWaitAfterWrite = maxWaitAfterWrite;
+    }
+
+    /**
      * If we need to override the default path
      */
     private String overridePath = null;
@@ -355,6 +406,14 @@ public class FileHandler implements Handler
      * Do we ignore all the Last-Modified/ETags blathering?
      */
     protected boolean ignoreLastModified = false;
+
+    /**
+     * Sometimes with proxies, you need to close the stream all the time to
+     * make the flush work. A value of -1 indicated that we do not do early
+     * closing after writes.
+     * See also: org.directwebremoting.dwrp.PollHandler.maxWaitAfterWrite
+     */
+    protected int maxWaitAfterWrite = -1;
 
     /**
      * The session cookie name
@@ -402,6 +461,12 @@ public class FileHandler implements Handler
     private boolean dynamic;
 
     /**
+     * What are we sending as the pollWithXhr setting.
+     * This is a hack. See the notes in {@link #afterContainerSetup(Container)}
+     */
+    private String pollWithXhr;
+
+    /**
      * The time on the script files
      */
     private static final long CONTAINER_START_TIME;
@@ -427,6 +492,11 @@ public class FileHandler implements Handler
      * Does engine.js do GETs for Safari
      */
     protected static final String PARAM_SCRIPT_ALLOWGET = "${allowGetForSafariButMakeForgeryEasier}";
+
+    /**
+     * Doe we force polling with XHR on IE to prevent clicking
+     */
+    protected static final String PARAM_SCRIPT_POLLXHR = "${pollWithXhr}";
 
     /**
      * The page id parameter that goes in engine.js

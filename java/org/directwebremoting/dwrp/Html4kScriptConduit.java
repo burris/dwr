@@ -27,7 +27,17 @@ import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.util.MimeConstants;
 
 /**
- * A ScriptConduit for use with HTML wrapped Javascript output.
+ * A ScriptConduit for use with HTML/PRE wrapped Javascript output.
+ * <p>Scripts begin with an html, body and pre tag followed by plain Javascript
+ * without 'execute-in-parent-context' wrapping, but with script-start and
+ * script-end markers.
+ * <p>If this conduit is used the client should direct the output to an iframe
+ * and then poll, looking for new data into the iframe. The html tags should be
+ * removed and script between script-start and script-end tags eval()ed.
+ * <p>This conduit also sends 4k of whitespace data on each flush. This causes
+ * IE to recognise new content. This would be a significant network overhead
+ * so it is important to use gzip on the connection. This complexity has caused
+ * us to turn this conduit off at the moment.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Html4kScriptConduit extends BaseScriptConduit
@@ -35,15 +45,13 @@ public class Html4kScriptConduit extends BaseScriptConduit
     /**
      * Simple ctor
      * @param response Used to flush output
-     * @param partialResponse Do we do the IE 4k flush hack
      * @param batchId The id of the batch that we are responding to
      * @param converterManager How we convert objects to script
      * @throws IOException If stream ops fail
      */
-    public Html4kScriptConduit(HttpServletResponse response, int partialResponse, String batchId, ConverterManager converterManager) throws IOException
+    public Html4kScriptConduit(HttpServletResponse response, String batchId, ConverterManager converterManager) throws IOException
     {
         super(response, batchId, converterManager);
-        this.partialResponse = partialResponse;
     }
 
     /* (non-Javadoc)
@@ -64,6 +72,7 @@ public class Html4kScriptConduit extends BaseScriptConduit
         synchronized (out)
         {
             out.println("<html><body><pre>");
+
             out.println(ProtocolConstants.SCRIPT_START_MARKER);
             out.println(EnginePrivate.remoteBeginIFrameResponse(batchId, false));
             out.println(ProtocolConstants.SCRIPT_END_MARKER);
@@ -78,10 +87,11 @@ public class Html4kScriptConduit extends BaseScriptConduit
     {
         synchronized (out)
         {
-            out.println(EnginePrivate.remoteEndIFrameResponse(batchId, false));
             out.println(ProtocolConstants.SCRIPT_START_MARKER);
-            out.println("</pre></body></html>");
+            out.println(EnginePrivate.remoteEndIFrameResponse(batchId, false));
             out.println(ProtocolConstants.SCRIPT_END_MARKER);
+
+            out.println("</pre></body></html>");
         }
     }
 
@@ -99,19 +109,10 @@ public class Html4kScriptConduit extends BaseScriptConduit
             out.println(script);
             out.println(ProtocolConstants.SCRIPT_END_MARKER);
 
-            if (partialResponse == PollHandler.PARTIAL_RESPONSE_FLUSH)
-            {
-                out.print(FOUR_K_FLUSH_DATA);
-            }
-
+            out.print(FOUR_K_FLUSH_DATA);
             return flush();
         }
     }
-
-    /**
-     * Do we need to do the IE 4k flush thing?
-     */
-    protected final int partialResponse;
 
     /**
      * The slab of data we send to IE to get it to stream

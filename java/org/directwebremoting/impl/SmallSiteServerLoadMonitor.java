@@ -24,6 +24,14 @@ import org.directwebremoting.extend.ServerLoadMonitor;
 public class SmallSiteServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor
 {
     /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ServerLoadMonitor#supportsStreaming()
+     */
+    public boolean supportsStreaming()
+    {
+        return true;
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.extend.ServerLoadMonitor#getMaxConnectedTime()
      */
     public long getConnectedTime()

@@ -23,6 +23,13 @@ package org.directwebremoting.extend;
 public interface ServerLoadMonitor
 {
     /**
+     * If the server is not going to be streaming then we need to tell browsers
+     * to just use XHR rather than anything fancier.
+     * @return true if the server will be supporting streaming
+     */
+    boolean supportsStreaming();
+
+    /**
      * Controller for poll times.
      * <p>TODO: We should probably get rid of this and leave it to PollHandler?
      * @return How long should this client wait until it next polls?

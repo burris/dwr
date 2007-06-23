@@ -78,6 +78,14 @@ import org.directwebremoting.util.HitMonitor;
 public class DefaultServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor
 {
     /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ServerLoadMonitor#supportsStreaming()
+     */
+    public boolean supportsStreaming()
+    {
+        return true;
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.extend.ServerLoadMonitor#getConnectedTime()
      */
     public long getConnectedTime()

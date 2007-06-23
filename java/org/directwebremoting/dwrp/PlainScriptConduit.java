@@ -27,6 +27,15 @@ import org.directwebremoting.util.MimeConstants;
 
 /**
  * A ScriptConduit for use with plain Javascript output.
+ * <p>Scripts are plain Javascript without 'execute-in-parent-context' wrapping,
+ * but with script-start and script-end markers.
+ * <p>If this conduit is used the client should direct the output to an iframe
+ * and then poll, looking for new data into the iframe. The html tags should be
+ * removed and script between script-start and script-end tags eval()ed.
+ * <p>This conduit is useful for Firefox. It will not work as it stands with IE
+ * 6/6 because they don't allow the browser to see data entering an iframe until
+ * it overflows a 4k buffer. See the {@link Html4kScriptConduit} for a version
+ * that works around this problem.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class PlainScriptConduit extends BaseScriptConduit

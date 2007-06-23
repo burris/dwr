@@ -1,3 +1,18 @@
+/*
+ * Copyright 2005 Joe Walker
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.directwebremoting.dwrp;
 
 import java.io.IOException;
@@ -30,7 +45,7 @@ public abstract class BaseScriptConduit extends ScriptConduit
      */
     public BaseScriptConduit(HttpServletResponse response, String batchId, ConverterManager converterManager) throws IOException
     {
-        super(RANK_FAST);
+        super(RANK_SLOW);
 
         this.response = response;
         this.batchId = batchId;
@@ -38,12 +53,12 @@ public abstract class BaseScriptConduit extends ScriptConduit
 
         response.setContentType(getOutboundMimeType());
 
-        if (log.isDebugEnabled())
+        if (false && log.isDebugEnabled())
         {
             // This might be considered evil - altering the program flow
             // depending on the log status, however DebuggingPrintWriter is
             // very thin and only about debugging
-            out = new DebuggingPrintWriter("", response.getWriter());
+            // out = new DebuggingPrintWriter("", response.getWriter());
         }
         else
         {
@@ -131,8 +146,17 @@ public abstract class BaseScriptConduit extends ScriptConduit
             // This is likely to be because the user has gone away. Maybe
             // we should do something clever like remove the script session?
             log.debug("Error writing to HTTP response:" + ex);
+            alarm.raiseAlarm();
             return false;
         }
+    }
+
+    /**
+     * @return The Alarm that goes off if something is badly broken
+     */
+    public Alarm getErrorAlarm()
+    {
+        return alarm;
     }
 
     /**
@@ -154,6 +178,11 @@ public abstract class BaseScriptConduit extends ScriptConduit
      * What is the ID of the request that we are responding to?
      */
     protected final String batchId;
+
+    /**
+     * An Alarm that goes off if something is badly broken
+     */
+    protected BasicAlarm alarm = new BasicAlarm();
 
     /**
      * The log stream

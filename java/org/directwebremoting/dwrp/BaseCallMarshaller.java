@@ -494,7 +494,7 @@ public abstract class BaseCallMarshaller implements Marshaller
          */
         protected CallScriptConduit(PrintWriter out)
         {
-            super(RANK_SLOW);
+            super(RANK_FAST);
             if (out == null)
             {
                 throw new NullPointerException("out=null");

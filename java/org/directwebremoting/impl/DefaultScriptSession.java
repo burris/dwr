@@ -232,6 +232,7 @@ public class DefaultScriptSession implements RealScriptSession
             conduits.add(conduit);
 
             // log.debug("Adding Conduit: conduit=" + conduit + " scriptsession=" + this);
+            // log.debug("-- conduits=" + conduits);
         }
     }
 
@@ -287,6 +288,7 @@ public class DefaultScriptSession implements RealScriptSession
         }
 
         // log.debug("Removing Conduit: conduit=" + conduit + " scriptsession=" + this);
+        // log.debug("-- conduits=" + conduits);
     }
 
     /* (non-Javadoc)

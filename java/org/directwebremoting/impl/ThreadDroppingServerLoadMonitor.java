@@ -15,8 +15,6 @@
  */
 package org.directwebremoting.impl;
 
-import java.util.Random;
-
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.extend.WaitController;
 import org.directwebremoting.util.HitMonitor;
@@ -29,6 +27,14 @@ import org.directwebremoting.util.HitMonitor;
  */
 public class ThreadDroppingServerLoadMonitor extends AbstractServerLoadMonitor implements ServerLoadMonitor
 {
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ServerLoadMonitor#supportsStreaming()
+     */
+    public boolean supportsStreaming()
+    {
+        return true;
+    }
+
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.ServerLoadMonitor#getConnectedTime()
      */
@@ -98,12 +104,6 @@ public class ThreadDroppingServerLoadMonitor extends AbstractServerLoadMonitor i
      * will not exist and the system will sublime from USAGE_LOW to USAGE_DIGG
      */
     protected int maxHitsPerSecond = 100;
-
-    /**
-     * We ask clients to wait a random number of millis before they come
-     * back to avoid killing the server
-     */
-    protected Random random = new Random();
 
     /**
      * The time we are currently waiting before sending a browser away and

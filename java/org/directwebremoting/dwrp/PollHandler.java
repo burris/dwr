@@ -17,26 +17,24 @@ package org.directwebremoting.dwrp;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
-import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.extend.ScriptSessionManager;
+import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.extend.ServerLoadMonitor;
-import org.directwebremoting.extend.WaitController;
 import org.directwebremoting.util.Continuation;
-import org.directwebremoting.util.Messages;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -60,281 +58,181 @@ public class PollHandler implements Handler
     /* (non-Javadoc)
      * @see org.directwebremoting.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    @SuppressWarnings("unchecked")
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        // We must parse the parameters before we setup the conduit because it's
-        // only after doing this that we know the scriptSessionId
-        WebContext webContext = WebContextFactory.get();
-
-        boolean isGet = "GET".equals(request.getMethod());
-        Map<String, String> parameters = (Map<String, String>) request.getAttribute(ATTRIBUTE_PARAMETERS);
-        if (parameters == null)
+        // If we are a restarted jetty continuation then we need to finish off
+        if (JettyContinuationSleeper.isRestart(request))
         {
-            try
-            {
-                if (isGet)
-                {
-                    parameters = ParseUtil.parseGet(request);
-                }
-                else
-                {
-                    parameters = ParseUtil.parsePost(request);
-                }
-                request.setAttribute(ATTRIBUTE_PARAMETERS, parameters);
-            }
-            catch (Exception ex)
-            {
-                // Send a batch exception to the server because the parse failed
-                String script = EnginePrivate.getRemoteHandleBatchExceptionScript(null, ex);
-                sendErrorScript(response, script);
-                return;
-            }
+            JettyContinuationSleeper.restart(request);
+            return;
         }
 
-        String batchId = extractParameter(request, parameters, ATTRIBUTE_CALL_ID, ProtocolConstants.INBOUND_KEY_BATCHID);
-        String scriptId = extractParameter(request, parameters, ATTRIBUTE_SESSION_ID, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
-        String page = extractParameter(request, parameters, ATTRIBUTE_PAGE, ProtocolConstants.INBOUND_KEY_PAGE);
-        String prString = extractParameter(request, parameters, ATTRIBUTE_PARTIAL_RESPONSE, ProtocolConstants.INBOUND_KEY_PARTIAL_RESPONSE);
-        int partialResponse = Integer.valueOf(prString);
+        // The information that we can extract from the input parameters
+        final PollBatch batch;
+        try
+        {
+            batch = new PollBatch(request, pageNormalizer);
+        }
+        catch (ServerException ex)
+        {
+            // Send a batch exception to the server because the parse failed
+            String script = EnginePrivate.getRemoteHandleBatchExceptionScript(null, ex);
+            sendErrorScript(response, script);
+            return;
+        }
 
         // We might need to complain that reverse ajax is not enabled.
         if (!activeReverseAjaxEnabled)
         {
             log.error("Polling and Comet are disabled. To enable them set the init-param activeReverseAjaxEnabled to true. See http://getahead.org/dwr/server/servlet for more.");
-            String script = EnginePrivate.getRemotePollCometDisabledScript(batchId);
+            String script = EnginePrivate.getRemotePollCometDisabledScript(batch.getBatchId());
             sendErrorScript(response, script);
             return;
         }
 
-        if (!allowGetForSafariButMakeForgeryEasier && isGet)
+        // Complain if GET is disallowed
+        if (batch.isGet() && !allowGetForSafariButMakeForgeryEasier)
         {
             // Send a batch exception to the server because the parse failed
-            String script = EnginePrivate.getRemoteHandleBatchExceptionScript(batchId, new SecurityException("GET Disallowed"));
+            String script = EnginePrivate.getRemoteHandleBatchExceptionScript(batch.getBatchId(), new SecurityException("GET Disallowed"));
             sendErrorScript(response, script);
             return;
         }
-
-        // Various bits of parseResponse need to be stashed away places
-        String normalizedPage = pageNormalizer.normalizePage(page);
-
-        webContext.setCurrentPageInformation(normalizedPage, scriptId);
-        RealScriptSession scriptSession = (RealScriptSession) webContext.getScriptSession();
-
-        long maxConnectedTime = serverLoadMonitor.getConnectedTime();
-        long endTime = System.currentTimeMillis() + maxConnectedTime;
 
         // If we are going to be doing any waiting then check for other threads
         // from the same browser that are already waiting, and send them on
         // their way
+        final long maxConnectedTime = serverLoadMonitor.getConnectedTime();
         if (maxConnectedTime > 0)
         {
-            notifyThreadsFromSameBrowser(request, scriptId);
+            // Make other threads from the same browser stop waiting and continue
+            // First we check to see if there is already a connection from the
+            // current browser to this servlet
+            Sleeper otherThread = (Sleeper) request.getSession().getAttribute(ATTRIBUTE_SLEEPER);
+            if (otherThread != null)
+            {
+                otherThread.wakeUp();
+            }
         }
 
-        ScriptConduit notifyConduit = new NotifyOnlyScriptConduit(scriptSession.getScriptLock());
+        // Create a conduit depending on the type of request (from the URL)
+        final BaseScriptConduit conduit = createScriptConduit(batch, response);
+        log.debug(conduit.getClass().getSimpleName() + " for " + batch);
 
-        // The pre-stream wait. A wait before we open any output stream
-        // Don't wait if we would wait for 0s or if there are queued scripts
-        boolean canWaitMore = true;
-        if (maxConnectedTime > 0 && !scriptSession.hasWaitingScripts())
+        // Register the conduit with a script session so messages can get out
+        final RealScriptSession scriptSession = batch.getScriptSession();
+        scriptSession.addScriptConduit(conduit);
+
+        // So we're going to go to sleep. How do we wake up?
+        final Sleeper sleeper;
+        // If this is Jetty then we can use Continuations
+        if (Continuation.isJetty())
         {
-            canWaitMore = streamWait(request, notifyConduit, scriptSession, maxConnectedTime);
+            sleeper = new JettyContinuationSleeper(request);
+        }
+        else
+        {
+            sleeper = new ThreadWaitSleeper();
         }
 
+        // There are various reasons why we want to wake up and carry on ...
+        final List<Alarm> alarms = new ArrayList<Alarm>();
+
+        // The conduit might want to say 'I give up'
+        alarms.add(conduit.getErrorAlarm());
+
+        // Set the system up to resume on output (perhaps with delay)
+        if (batch.getPartialResponse() == PartialResponse.NO || maxWaitAfterWrite != -1)
+        {
+            // add an output listener to the script session that calls the
+            // "wake me" method on whatever is putting us to sleep
+            alarms.add(new OutputAlarm(scriptSession, maxWaitAfterWrite));
+        }
+
+        // Set the system up to resume anyway after maxConnectedTime
+        alarms.add(new TimedAlarm(maxConnectedTime));
+
+        // We also need to wakeup if the server is being shut down
+        // WARNING: This code has a non-obvious side effect - The server load
+        // monitor (which hands out shutdown messages) also monitors usage by
+        // looking at the number of connected alarms.
+        alarms.add(new ShutdownAlarm(serverLoadMonitor));
+
+        // Make sure that all the alarms know what to wake
+        for (Alarm alarm : alarms)
+        {
+            alarm.setAlarmAction(sleeper);
+        }
+
+        // Allow other threads to notice more than one poll thread and to send
+        // this one on it's way
+        final HttpSession session = request.getSession();
+        session.setAttribute(ATTRIBUTE_SLEEPER, sleeper);
+
+        // We need to do something sensible when we wake up ...
+        Runnable onAwakening = new Runnable()
+        {
+            public void run()
+            {
+                // There is no point in letting other threads try to move us on
+                session.removeAttribute(ATTRIBUTE_SLEEPER);
+
+                // Cancel all the alarms
+                for (Alarm alarm : alarms)
+                {
+                    alarm.cancel();
+                }
+
+                // We can't be used as a conduit to the browser any more
+                scriptSession.removeScriptConduit(conduit);
+
+                // Tell the browser to come back at the right time
+                try
+                {
+                    int timeToNextPoll = serverLoadMonitor.getDisconnectedTime();
+                    conduit.close(timeToNextPoll);
+                }
+                catch (IOException ex)
+                {
+                    log.warn("Failed to write reconnect info to browser");
+                }
+            }
+        };
+
+        // Actually go to sleep. This *must* be the last thing in this method to
+        // cope with all the methods of affecting Threads. Jetty throws,
+        // Weblogic continues, others wait().
+        sleeper.goToSleep(onAwakening);
+    }
+
+    /**
+     * Create the correct type of ScriptConduit depending on the request.
+     * @param batch The parsed request
+     * @param response Conduits need a response to write to
+     * @return A correctly configured conduit
+     * @throws IOException If the response can't be interogated
+     */
+    private BaseScriptConduit createScriptConduit(PollBatch batch, HttpServletResponse response) throws IOException
+    {
         BaseScriptConduit conduit;
+
         if (plain)
         {
-            conduit = new PlainScriptConduit(response, batchId, converterManager);
+            conduit = new PlainScriptConduit(response, batch.getBatchId(), converterManager);
         }
         else
         {
-            //conduit = new Html4kScriptConduit(response, partialResponse, batchId, converterManager);
-            conduit = new HtmlScriptConduit(response, batchId, converterManager);
-        }
-
-        // How much longer do we wait now the stream is open?
-        long extraWait = endTime - System.currentTimeMillis();
-
-        // We might need to cut out waiting short to force proxies to flush
-        if (maxWaitAfterWrite != -1 && extraWait > maxWaitAfterWrite)
-        {
-            extraWait = maxWaitAfterWrite;
-        }
-
-        // Short-circut if we are not waiting at all
-        if (extraWait <= 0)
-        {
-            canWaitMore = false;
-        }
-
-        if (canWaitMore && partialResponse != PARTIAL_RESPONSE_NO)
-        {
-            streamWait(request, conduit, scriptSession, extraWait);
-        }
-        else
-        {
-            scriptSession.writeScripts(conduit);
-        }
-
-        int timeToNextPoll = serverLoadMonitor.getDisconnectedTime();
-
-        conduit.close(timeToNextPoll);
-    }
-
-    /**
-     * Perform a wait.
-     * @param request The HTTP request, needed to start a Jetty continuation
-     * @param conduit A conduit if there is an open stream or null if not
-     * @param scriptSession The script that we lock against
-     * @param wait How long do we wait for?
-     * @return True if the wait did not end in a shutdown request
-     * @throws IOException If an IO error occurs
-     */
-    protected boolean streamWait(HttpServletRequest request, ScriptConduit conduit, RealScriptSession scriptSession, long wait) throws IOException
-    {
-        Object lock = scriptSession.getScriptLock();
-        WaitController controller = new NotifyWaitController(lock);
-
-        try
-        {
-            serverLoadMonitor.threadWaitStarting(controller);
-            if (conduit != null)
+            if (batch.getPartialResponse() == PartialResponse.FLUSH)
             {
-                scriptSession.addScriptConduit(conduit);
+                conduit = new Html4kScriptConduit(response, batch.getBatchId(), converterManager);
             }
-
-            synchronized (lock)
+            else
             {
-                // If this is Jetty then we can use Continuations
-                Continuation continuation = new Continuation(request);
-                if (continuation.isAvailable())
-                {
-                    if (!sleepWithContinuation(scriptSession, continuation, wait))
-                    {
-                        lock.wait(wait);
-                    }
-                }
-                else
-                {
-                    lock.wait(wait);
-                }
-
-                if (conduit != null)
-                {
-                    scriptSession.removeScriptConduit(conduit);
-                }
-                serverLoadMonitor.threadWaitEnding(controller);
-            }
-        }
-        catch (InterruptedException ex)
-        {
-            log.warn("Interupted", ex);
-
-            if (conduit != null)
-            {
-                scriptSession.removeScriptConduit(conduit);
-            }
-            serverLoadMonitor.threadWaitEnding(controller);
-        }
-
-        return !controller.isShutdown();
-    }
-
-    /**
-     * Use a {@link ResumeContinuationScriptConduit} to wait
-     * @param scriptSession The session that we add the conduit to
-     * @param continuation The Jetty continuation object
-     * @param preStreamWaitTime The length of time to wait
-     * @return True if the continuation wait worked
-     */
-    protected boolean sleepWithContinuation(RealScriptSession scriptSession, Continuation continuation, long preStreamWaitTime)
-    {
-        ScriptConduit listener = null;
-
-        try
-        {
-            // create a listener
-            listener = (ScriptConduit) continuation.getObject();
-            if (listener == null)
-            {
-                listener = new ResumeContinuationScriptConduit(continuation);
-                continuation.setObject(listener);
-            }
-            scriptSession.addScriptConduit(listener);
-
-            // JETTY: throws a RuntimeException that must propogate to the container!
-            continuation.suspend(preStreamWaitTime);
-
-            scriptSession.removeScriptConduit(listener);
-        }
-        catch (Exception ex)
-        {
-            Continuation.rethrowIfContinuation(ex);
-
-            if (listener != null)
-            {
-                scriptSession.removeScriptConduit(listener);
-            }
-
-            log.warn("Exception", ex);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Make other threads from the same browser stop waiting and continue
-     * @param request The HTTP request
-     * @param scriptId The session id of the current page
-     */
-    protected void notifyThreadsFromSameBrowser(HttpServletRequest request, String scriptId)
-    {
-        // First we check to see if there is already a connection from the
-        // current browser to this servlet
-        String otherScriptSessionId = (String) request.getSession().getAttribute(ATTRIBUTE_LONGPOLL_SESSION_ID);
-        if (otherScriptSessionId != null)
-        {
-            RealScriptSession previousSession = scriptSessionManager.getScriptSession(otherScriptSessionId);
-            Object lock = previousSession.getScriptLock();
-
-            // Unlock previous script session (request will be automatically finished)
-            synchronized (lock)
-            {
-                lock.notifyAll();
+                conduit = new HtmlScriptConduit(response, batch.getBatchId(), converterManager);
             }
         }
 
-        request.getSession().setAttribute(ATTRIBUTE_LONGPOLL_SESSION_ID, scriptId);
-    }
-
-    /**
-     * Extract a parameter and ensure it is in the request.
-     * This is needed to cope with Jetty continuations that are not real
-     * continuations.
-     * @param request The HTTP request
-     * @param parameters The parameter list parsed out of the request
-     * @param attrName The name of the request attribute
-     * @param paramName The name of the parameter sent
-     * @return The found value
-     */
-    protected String extractParameter(HttpServletRequest request, Map<String, String> parameters, String attrName, String paramName)
-    {
-        String id = (String) request.getAttribute(attrName);
-
-        if (id == null)
-        {
-            id = parameters.remove(paramName);
-            request.setAttribute(attrName, id);
-        }
-
-        if (id == null)
-        {
-            throw new IllegalArgumentException(Messages.getString("PollHandler.MissingParameter", paramName));
-        }
-
-        return id;
+        return conduit;
     }
 
     /**
@@ -448,6 +346,7 @@ public class PollHandler implements Handler
      * Sometimes with proxies, you need to close the stream all the time to
      * make the flush work. A value of -1 indicated that we do not do early
      * closing after writes.
+     * See also: org.directwebremoting.servlet.FileHandler.maxWaitAfterWrite
      */
     protected int maxWaitAfterWrite = -1;
 
@@ -477,53 +376,12 @@ public class PollHandler implements Handler
     protected ScriptSessionManager scriptSessionManager = null;
 
     /**
-     * How we stash away the results of the request parse
-     */
-    public static final String ATTRIBUTE_PARAMETERS = "org.directwebremoting.dwrp.parameters";
-
-    /**
-     * How we stash away the results of the request parse
-     */
-    public static final String ATTRIBUTE_CALL_ID = "org.directwebremoting.dwrp.callId";
-
-    /**
-     * How we stash away the results of the request parse
-     */
-    public static final String ATTRIBUTE_SESSION_ID = "org.directwebremoting.dwrp.sessionId";
-
-    /**
-     * How we stash away the results of the request parse
-     */
-    public static final String ATTRIBUTE_PAGE = "org.directwebremoting.dwrp.page";
-
-    /**
-     * How we stash away the results of the request parse
-     */
-    public static final String ATTRIBUTE_PARTIAL_RESPONSE = "org.directwebremoting.dwrp.partialResponse";
-
-    /**
      * We remember people that are in a long poll so we can kick them out
      */
-    public static final String ATTRIBUTE_LONGPOLL_SESSION_ID = "org.directwebremoting.dwrp.longPollSessionId";
-
-    /**
-     * The client can not handle partial responses
-     */
-    protected static final int PARTIAL_RESPONSE_NO = 0;
-
-    /**
-     * The client can handle partial responses
-     */
-    protected static final int PARTIAL_RESPONSE_YES = 1;
-
-    /**
-     * The client can only handle partial responses with a 4k data post
-     * (can be whitespace) - we're talking IE here.
-     */
-    protected static final int PARTIAL_RESPONSE_FLUSH = 2;
+    private static final String ATTRIBUTE_SLEEPER = "org.directwebremoting.dwrp.sleeper";
 
     /**
      * The log stream
      */
-    private static final Log log = LogFactory.getLog(PollHandler.class);
+    protected static final Log log = LogFactory.getLog(PollHandler.class);
 }
