@@ -15,6 +15,10 @@
  */
 package org.directwebremoting.bayeux;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -25,85 +29,66 @@ import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.dwrp.Batch;
+import org.directwebremoting.dwrp.PlainCallMarshaller;
+import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.EnginePrivate;
+import org.directwebremoting.extend.InboundContext;
+import org.directwebremoting.extend.InboundVariable;
+import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
 import org.directwebremoting.extend.ScriptConduit;
+import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.impl.ContainerUtil;
+import org.directwebremoting.impl.DefaultContainer;
 import org.directwebremoting.impl.DwrXmlConfigurator;
 import org.directwebremoting.impl.StartupUtil;
-import org.mortbay.cometd.Bayeux;
-import org.mortbay.cometd.Channel;
-import org.mortbay.cometd.ChannelId;
-import org.mortbay.cometd.Client;
+import dojox.cometd.Bayeux;
+import dojox.cometd.Channel;
+import dojox.cometd.Client;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class BayeuxClient extends Client
+public class BayeuxClient implements dojox.cometd.Listener 
 {
     public BayeuxClient(Bayeux bayeux)
     {
-        super(bayeux, "dwr");
         this.bayeux = bayeux;
-        channel = bayeux.getChannel("/dwr", true);
-        channel.addSubscriber(this);
-
-        try
-        {
-            ServletConfig servletConfig = null;
-            ServletContext servletContext = null;
-
-            container = ContainerUtil.createAndSetupDefaultContainer(servletConfig);
-
-            webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, container);
-            StartupUtil.initServerContext(servletConfig, servletContext, container);
-            ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, null);
-
-            ContainerUtil.configureFromSystemDwrXml(container);
-
-            DwrXmlConfigurator local = new DwrXmlConfigurator();
-            local.setClassResourceName("/dwr.xml");
-            local.configure(container);
-
-            ContainerUtil.configureFromInitParams(container, servletConfig);
-
-            ContainerUtil.publishContainer(container, servletConfig);
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalStateException(ex);
-        }
-        finally
-        {
-            if (webContextBuilder != null)
-            {
-                webContextBuilder.unset();
-            }
-        }
+        this.client = bayeux.newClient("dwr", this);
+        bayeux.subscribe("/dwr", client);
     }
 
     /* (non-Javadoc)
-     * @see org.mortbay.cometd.Client#deliver(org.mortbay.cometd.Client, org.mortbay.cometd.ChannelId, java.util.Map)
+     * @see dojox.cometd.Listener#deliver(dojox.cometd.Client, java.lang.String, java.lang.Object, java.lang.String)
      */
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void deliver(Client from, ChannelId to, Map<String, Object> message)
+    public void deliver(Client fromClient, String toChannel, Object message, String msgId)
     {
+        System.err.println(">> "+message);
         try
         {
             Batch batch = new Batch((Map) message);
-            Calls calls = batch.getCalls();
-
-            ScriptConduit conduit = new BayeuxScriptConduit(converterManager);
+            Calls calls = plainCallMarshaller.marshallInbound(batch);
+            
+            System.err.println("Calls="+calls);
+            
+            for (int i=0;i<calls.getCallCount();i++)
+            {
+                Call call=calls.getCall(i);
+                Object[] params=call.getParameters();
+                System.err.println("Call["+i+"]="+call.getScriptName()+"."+call.getMethodName()+(params==null?"[]":Arrays.asList(params)));
+            }
 
             Replies replies = remoter.execute(calls);
+            
+            ScriptConduit conduit = new BayeuxScriptConduit(converterManager);
             for (Reply reply : replies)
             {
                 String batchId = calls.getBatchId();
+                System.err.println("Reply="+reply+" BatchId="+batchId);
 
                 if (reply.getThrowable() != null)
                 {
@@ -115,31 +100,63 @@ public class BayeuxClient extends Client
                 else
                 {
                     Object data = reply.getReply();
+                    System.err.println("data="+data);
                     EnginePrivate.remoteHandleCallback(conduit, batchId, reply.getCallId(), data);
                 }
             }
-
+            
             String output = conduit.toString();
-            ChannelId channelId = bayeux.getChannelId("/dwr/" + from.getId());
-            bayeux.publish(channelId, this, output, calls.getBatchId());
+            System.err.println("<< "+output);
+            bayeux.publish(client, "/dwr/"+fromClient.getId(), output, calls.getBatchId());
         }
         catch (Exception ex)
         {
             log.warn("Protocol Error", ex);
         }
+        
     }
 
-    private Container container;
+    /* (non-Javadoc)
+     * @see dojox.cometd.Listener#removed(java.lang.String, boolean)
+     */
+    public void removed(String clientId, boolean timeout)
+    {
+        // TODO Auto-generated method stub
+    }
 
-    private WebContextBuilder webContextBuilder;
+    /**
+     * @param remoter
+     */
+    public void setRemoter(Remoter remoter)
+    {
+        this.remoter=remoter;
+    }
+
+    /**
+     * @param converterManager
+     */
+    public void setConverterManager(ConverterManager converterManager)
+    {
+        this.converterManager=converterManager;
+    }
+
+    /**
+     * @param plainCallMarshaller
+     */
+    public void setPlainCallMarshaller(PlainCallMarshaller plainCallMarshaller)
+    {
+        this.plainCallMarshaller=plainCallMarshaller;
+    }
 
     private Bayeux bayeux;
 
-    private Channel channel;
+    private Client client;
 
     private Remoter remoter;
 
     private ConverterManager converterManager;
+    
+    private PlainCallMarshaller plainCallMarshaller;
 
     /**
      * The log stream

@@ -83,7 +83,16 @@ public abstract class BaseCallMarshaller implements Marshaller
 
         // Various bits of the Batch need to be stashed away places
         storeParsedRequest(request, webContext, batch);
+        return marshallInbound(batch);
+    }
 
+    /**
+     * Convert batch into calls.
+     * @param batch
+     * @return calls
+     */
+    public Calls marshallInbound(Batch batch)
+    {
         Calls calls = batch.getCalls();
 
         // Debug the environment
