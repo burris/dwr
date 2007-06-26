@@ -55,7 +55,7 @@ public class BasicAlarm implements Alarm
      */
     public void setAlarmAction(Sleeper sleeper)
     {
-        // I think the lifecycle dictates that we don't need to synchronize here
+        // I think the life-cycle dictates that we don't need to synchronize here
         // however it's probably simpler to synchronize and be sure
         synchronized (sleeperLock)
         {
@@ -66,13 +66,13 @@ public class BasicAlarm implements Alarm
     /**
      * The protection for the sleeper
      */
-    protected Object sleeperLock = new Object();
+    private Object sleeperLock = new Object();
 
     /**
      * The thread that needs to know about shutdown
      * @protectedBy(sleeperLock)
      */
-    protected Sleeper sleeper;
+    private Sleeper sleeper;
 
     /**
      * The log stream

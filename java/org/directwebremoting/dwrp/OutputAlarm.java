@@ -16,6 +16,9 @@
 package org.directwebremoting.dwrp;
 
 import java.io.IOException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +49,6 @@ public class OutputAlarm extends BasicAlarm implements Alarm
     @Override
     public void setAlarmAction(Sleeper sleeper)
     {
-        log.debug("OutputAlarm looking at a " + sleeper);
         try
         {
             scriptSession.addScriptConduit(conduit);
@@ -65,9 +67,49 @@ public class OutputAlarm extends BasicAlarm implements Alarm
     @Override
     public void cancel()
     {
-        log.debug("OutputAlarm stopping looking at a " + sleeper);
         scriptSession.removeScriptConduit(conduit);
         super.cancel();
+    }
+
+    /**
+     * @author Joe Walker [joe at getahead dot ltd dot uk]
+     */
+    protected class AlarmScriptConduit extends ScriptConduit
+    {
+        /**
+         * Create an AlarmScriptConduit
+         */
+        protected AlarmScriptConduit()
+        {
+            super(RANK_PROCEDURAL);
+        }
+
+        /* (non-Javadoc)
+         * @see org.directwebremoting.extend.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
+         */
+        @Override
+        public boolean addScript(ScriptBuffer script)
+        {
+            log.debug("Output alarm went off. Additional wait of " + maxWaitAfterWrite);
+
+            if (maxWaitAfterWrite == 0)
+            {
+                raiseAlarm();
+            }
+            else
+            {
+                Runnable runnable = new Runnable()
+                {
+                    public void run()
+                    {
+                        raiseAlarm();
+                    }
+                };
+                future = timer.schedule(runnable, maxWaitAfterWrite, TimeUnit.MILLISECONDS);
+            }
+
+            return false;
+        }
     }
 
     /**
@@ -91,47 +133,12 @@ public class OutputAlarm extends BasicAlarm implements Alarm
     protected static final Log log = LogFactory.getLog(OutputAlarm.class);
 
     /**
-     * @author Joe Walker [joe at getahead dot ltd dot uk]
+     * The future result that allows us to cancel the timer
      */
-    protected class AlarmScriptConduit extends ScriptConduit
-    {
-        /**
-         * Create an AlarmScriptConduit
-         */
-        protected AlarmScriptConduit()
-        {
-            super(RANK_PROCEDURAL);
-        }
+    protected ScheduledFuture<?> future;
 
-        /* (non-Javadoc)
-         * @see org.directwebremoting.extend.ScriptConduit#addScript(org.directwebremoting.ScriptBuffer)
-         */
-        @Override
-        public boolean addScript(ScriptBuffer script)
-        {
-            log.debug("Output alarm went off. Additional wait of " + maxWaitAfterWrite);
-
-            if (sleeper != null)
-            {
-                if (maxWaitAfterWrite > 0)
-                {
-                    try
-                    {
-                        Thread.sleep(maxWaitAfterWrite);
-                    }
-                    catch (InterruptedException ex)
-                    {
-                        ex.printStackTrace();
-                    }
-                }
-
-                if (sleeper != null)
-                {
-                    sleeper.wakeUp();
-                }
-            }
-
-            return false;
-        }
-    }
+    /**
+     * The cron system
+     */
+    protected static ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(1);
 }
