@@ -37,8 +37,7 @@ import org.directwebremoting.util.LocalUtil;
 
 /**
  * An implementation of Converter for Arrays.
- * @author Joe Walker [joe at eireneh dot com]
- * @version $Id: StringConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  * @noinspection RefusedBequest
  */
 public class ArrayConverter extends BaseV20Converter implements Converter
