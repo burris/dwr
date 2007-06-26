@@ -223,13 +223,13 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteBeginIFrameResponse(String batchId, boolean useWindowParent)
     {
-        String prefix = "";
+        String script = "dwr.engine._remoteBeginIFrameResponse(this.frameElement"+(batchId == null?"":", '" + batchId+"'") + ");";
         if (useWindowParent)
         {
-            prefix = "window.parent.";
+            script = addWindowParent(script);
         }
 
-        return prefix + "dwr.engine._remoteBeginIFrameResponse(this.frameElement"+(batchId == null?"":", '" + batchId+"'") + ");";
+        return script;
     }
 
     /**
@@ -242,13 +242,13 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteEndIFrameResponse(String batchId, boolean useWindowParent)
     {
-        String prefix = "";
+        String script = "dwr.engine._remoteEndIFrameResponse("+(batchId == null?"":"'" + batchId+"'")+");";
         if (useWindowParent)
         {
-            prefix = "window.parent.";
+            script = addWindowParent(script);
         }
 
-        return prefix + "dwr.engine._remoteEndIFrameResponse("+(batchId == null?"":"'" + batchId+"'")+");";
+        return script;
     }
 
     /**
@@ -258,7 +258,19 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteEval(String script)
     {
-        return "window.parent.dwr.engine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
+        String script2 = "dwr.engine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
+        return addWindowParent(script2);
+    }
+
+    /**
+     * A Utility to add a try/catch block to get rid of the infamous IE
+     * "Can't execute code from a freed script" errors
+     * @param script The script to wrap in a try/catch
+     * @return The wrapped script
+     */
+    private static String addWindowParent(String script)
+    {
+        return "try { window.parent." + script + " } catch(ex) { if (ex.message != 'Can\\'t execute code from a freed script') { throw ex; }}";
     }
 
     /**
