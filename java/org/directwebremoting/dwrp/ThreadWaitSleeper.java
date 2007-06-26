@@ -49,7 +49,10 @@ public class ThreadWaitSleeper implements Sleeper
      */
     public void wakeUp()
     {
-        lock.notifyAll();
+        synchronized (lock)
+        {
+            lock.notifyAll();
+        }
     }
 
     /**
