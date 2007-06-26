@@ -37,7 +37,7 @@
     </init-param>
     <init-param>
       <param-name>maxWaitAfterWrite</param-name>
-      <param-value>500</param-value>
+      <param-value>100</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
