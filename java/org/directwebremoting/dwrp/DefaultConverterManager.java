@@ -37,7 +37,7 @@ import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
 
 /**
- * A class to manage the converter types and the instansiated class name matches.
+ * A class to manage the converter types and the instantiated class name matches.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultConverterManager implements ConverterManager
