@@ -470,9 +470,6 @@ dwr.util.highlight = function(ele, options) {
 dwr.util.setValue = function(ele, val, options) {
   if (val == null) val = "";
   if (options == null) options = {};
-  if (dwr.util._shouldEscapeHtml(options) && typeof(val) == "string") {
-    val = dwr.util.escapeHtml(val);
-  }
 
   var orig = ele;
   if (typeof ele == "string") {
@@ -542,8 +539,15 @@ dwr.util.setValue = function(ele, val, options) {
     return;
   }
 
-  // Fall back to innerHTML
-  ele.innerHTML = val;
+  // Fall back to innerHTML and friends
+  if (dwr.util._shouldEscapeHtml(options) && typeof(val) == "string") {
+    if (ele.textContent) ele.textContent = val;
+    else if (ele.innerText) ele.innerText = val;
+    else ele.innerHTML = dwr.util.escapeHtml(val);
+  }
+  else {
+    ele.innerHTML = val;
+  }
 };
 
 /**
