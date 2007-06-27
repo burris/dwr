@@ -32,8 +32,7 @@ import org.directwebremoting.util.LocalUtil;
 
 /**
  * An implementation of Converter for Strings.
- * @author Joe Walker [joe at eireneh dot com]
- * @version $Id$
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class URLConverter extends BaseV20Converter implements Converter
 {

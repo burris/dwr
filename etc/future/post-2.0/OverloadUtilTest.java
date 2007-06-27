@@ -1,4 +1,3 @@
-package com.eireneh.eliza.util;
 
 import java.lang.reflect.Method;
 

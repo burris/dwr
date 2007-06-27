@@ -32,8 +32,7 @@ import org.directwebremoting.util.LocalUtil;
 
 /**
  * An implementation of Converter for Strings.
- * @author Joe Walker [joe at eireneh dot com]
- * @version $Id: URLConverter.java,v 1.5 2007/04/27 14:50:24 joe_walker Exp $
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class URIConverter extends BaseV20Converter implements Converter
 {

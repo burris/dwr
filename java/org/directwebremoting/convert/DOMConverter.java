@@ -42,8 +42,7 @@ import org.xml.sax.InputSource;
 
 /**
  * An implementation of Converter for DOM objects.
- * @author Joe Walker [joe at eireneh dot com]
- * @version $Id: StringConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DOMConverter extends BaseV20Converter implements Converter
 {

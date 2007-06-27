@@ -27,8 +27,7 @@ import org.directwebremoting.util.JavascriptUtil;
 
 /**
  * An implementation of Converter for anything with a string constructor.
- * @author Joe Walker [joe at eireneh dot com]
- * @version $Id: ConstructorConverter.java,v 1.2 2004/11/04 15:54:07 joe_walker Exp $
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class ConstructorConverter extends BaseV20Converter implements Converter
 {

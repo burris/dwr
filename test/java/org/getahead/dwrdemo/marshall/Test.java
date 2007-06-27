@@ -49,7 +49,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Methods to help unit test DWR.
- * @author Joe Walker [joe at eireneh dot com]
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Test
 {
