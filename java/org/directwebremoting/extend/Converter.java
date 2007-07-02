@@ -24,19 +24,19 @@ public interface Converter
     /**
      * If we are a compound converter that farms out part of the conversion
      * to other converters then you farm the conversion out via a configuration.
-     * @param converterManager The confiuration object
+     * @param converterManager The configuration object
      */
     void setConverterManager(ConverterManager converterManager);
 
     /**
      * Attempt to coerce the data from a string to an Object.
      * If anything goes wrong with inbound conversion then we generally throw
-     * an exception because we are converting data from the untrusted internet
+     * an exception because we are converting data from the untrusted Internet
      * so we take the assumption that anything wrong is someone hacking.
      * @param paramType The type to convert to
      * @param data The data to convert
      * @param inctx The map of data that we are working on
-     * @return The convered data, or null if the conversion was not possible
+     * @return The converted data, or null if the conversion was not possible
      * @throws MarshallException If the conversion failed for some reason
      */
     Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException;

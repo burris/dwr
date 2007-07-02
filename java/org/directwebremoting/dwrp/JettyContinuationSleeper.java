@@ -72,7 +72,7 @@ public class JettyContinuationSleeper implements Sleeper
 
         try
         {
-            // JETTY: throws a RuntimeException that must propogate to the container!
+            // JETTY: throws a RuntimeException that must propagate to the container!
             // The docs say that a value of 0 should suspend forever, but that
             // appears not to happen (at least in 6.1.1) so we suspend for BigNum
             continuation.suspend(Integer.MAX_VALUE);

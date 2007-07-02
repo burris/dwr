@@ -39,7 +39,7 @@ import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.MimeConstants;
 
 /**
- * Basically a file servlet component that does some <b>very limitted</b>
+ * Basically a file servlet component that does some <b>very limited</b>
  * EL type processing on the file. See the source for the cheat.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
@@ -205,7 +205,7 @@ public class FileHandler implements Handler, InitializingBean
     }
 
     /**
-     * Do we need to send the conent for this file
+     * Do we need to send the content for this file
      * @param req The HTTP request
      * @return true iff the ETags and If-Modified-Since headers say we have not changed
      */
@@ -219,13 +219,13 @@ public class FileHandler implements Handler, InitializingBean
         long modifiedSince = -1;
         try
         {
-            // HACK: Webfear appears to get confused sometimes
+            // HACK: Websphere appears to get confused sometimes
             modifiedSince = req.getDateHeader(HttpConstants.HEADER_IF_MODIFIED);
         }
         catch (RuntimeException ex)
         {
             // TODO: Check for "length" and re-parse
-            // Normally clients send If-Modified-Since in rfc-compliant form
+            // Normally clients send If-Modified-Since in rfc-complaint form
             // ("If-Modified-Since: Tue, 13 Mar 2007 13:11:09 GMT") some proxies
             // or browsers add length to this header so it comes like
             // ("If-Modified-Since: Tue, 13 Mar 2007 13:11:09 GMT; length=35946")
@@ -256,7 +256,7 @@ public class FileHandler implements Handler, InitializingBean
                 return true;
             }
 
-            // There are no modified setttings, carry on
+            // There are no modified settings, carry on
             return false;
         }
 
@@ -273,7 +273,7 @@ public class FileHandler implements Handler, InitializingBean
                 return true;
             }
 
-            // There are no modified setttings, carry on
+            // There are no modified settings, carry on
             return false;
         }
 
@@ -494,7 +494,7 @@ public class FileHandler implements Handler, InitializingBean
     protected static final String PARAM_SCRIPT_ALLOWGET = "${allowGetForSafariButMakeForgeryEasier}";
 
     /**
-     * Doe we force polling with XHR on IE to prevent clicking
+     * Do we force polling with XHR on IE to prevent clicking
      */
     protected static final String PARAM_SCRIPT_POLLXHR = "${pollWithXhr}";
 
