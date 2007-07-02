@@ -61,7 +61,7 @@ public class IdGenerator
      */
     public synchronized String generateId(int length)
     {
-        byte[] buffer = new byte[16];
+        byte[] buffer = new byte[length];
 
         // Render the result as a String of hexadecimal digits
         StringBuffer reply = new StringBuffer();
