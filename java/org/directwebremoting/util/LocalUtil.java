@@ -17,6 +17,7 @@ package org.directwebremoting.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -42,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
 /**
- * Various utilities, mostly to make up for JDK 1.4 functionallity that is not
+ * Various utilities, mostly to make up for JDK 1.4 functionality that is not
  * in JDK 1.3
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
@@ -59,7 +60,7 @@ public final class LocalUtil
     public static final int INBOUND_INDEX_VALUE = 1;
 
     /**
-     * Prevent instansiation
+     * Prevent instantiation
      */
     private LocalUtil()
     {
@@ -180,7 +181,7 @@ public final class LocalUtil
 
     /**
      * @param type The class to de-primitivize
-     * @return The non-privitive version of the class
+     * @return The non-primitive version of the class
      */
     public static Class<?> getNonPrimitiveType(Class<?> type)
     {
@@ -229,7 +230,7 @@ public final class LocalUtil
     }
 
     /**
-     * Add headers to prevent browers and proxies from caching this reply.
+     * Add headers to prevent browsers and proxies from caching this reply.
      * @param resp The response to add headers to
      */
     public static void addNoCacheHeaders(HttpServletResponse resp)
@@ -405,7 +406,7 @@ public final class LocalUtil
      * A very simple conversion function for all the IoC style setup and
      * reflection that we are doing.
      * @param value The value to convert
-     * @param paramType The type to convert to. Currently ony primitive types and
+     * @param paramType The type to convert to. Currently any primitive types and
      * String are supported.
      * @return The converted object.
      */
@@ -844,6 +845,28 @@ public final class LocalUtil
     }
 
     /**
+     * OutputStream closer that can cope if the output stream is null.
+     * If anything goes wrong, the errors are logged and ignored.
+     * @param out The resource to close
+     */
+    public static void close(OutputStream out)
+    {
+        if (out == null)
+        {
+            return;
+        }
+
+        try
+        {
+            out.close();
+        }
+        catch (IOException ex)
+        {
+            log.warn(ex.getMessage(), ex);
+        }
+    }
+
+    /**
      * InputStream closer that can cope if the input stream is null.
      * If anything goes wrong, the errors are logged and ignored.
      * @param in The resource to close
@@ -866,9 +889,9 @@ public final class LocalUtil
     }
 
     /**
-     * Return a List of superclasses for the given class.
+     * Return a List of super-classes for the given class.
      * @param clazz the class to look up
-     * @return the List of superclasses in order going up from this one
+     * @return the List of super-classes in order going up from this one
      */
     public static List<Class<?>> getAllSuperclasses(Class<?> clazz)
     {
@@ -888,8 +911,8 @@ public final class LocalUtil
      * Return a list of all fields (whatever access status, and on whatever
      * superclass they were defined) that can be found on this class.
      * <p>This is like a union of {@link Class#getDeclaredFields()} which
-     * ignores and superclasses, and {@link Class#getFields()} which ignored
-     * non-pubic fields
+     * ignores and super-classes, and {@link Class#getFields()} which ignored
+     * non-public fields
      * @param clazz The class to introspect
      * @return The complete list of fields
      */
