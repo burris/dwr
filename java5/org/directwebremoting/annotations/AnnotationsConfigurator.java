@@ -138,7 +138,7 @@ public class AnnotationsConfigurator implements Configurator
     }
 
     /**
-     * Process the @RemoteProxy annotaion on a given class
+     * Process the @RemoteProxy annotation on a given class
      * @param clazz The class annotated with @RemoteProxy
      * @param createAnn The annotation
      * @param container The IoC container to configure
@@ -317,7 +317,7 @@ public class AnnotationsConfigurator implements Configurator
         if (filter != null)
         {
             LocalUtil.setParams(filter, filterParams, null);
-            AjaxFilterManager filterManager = (AjaxFilterManager) container.getBean(AjaxFilterManager.class);
+            AjaxFilterManager filterManager = container.getBean(AjaxFilterManager.class);
             filterManager.addAjaxFilter(filter);
         }
     }
