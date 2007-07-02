@@ -15,6 +15,8 @@
  */
 package org.directwebremoting.dwrp;
 
+import java.io.Serializable;
+
 /**
  * A Sleeper allows the request to halt and cease execution for some time,
  * while still allowing output.
@@ -27,9 +29,12 @@ package org.directwebremoting.dwrp;
  * with the servlet engine able to detect that it should not complete the
  * request.</li>
  * </ul>
+ * <p>All implementations of Sleeper must be {@link Serializable} so we can
+ * store Sleepers in the session and therefore have other connections wake them
+ * up.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-interface Sleeper
+interface Sleeper extends Serializable
 {
     /**
      * 'halt' the current execution in some way.
