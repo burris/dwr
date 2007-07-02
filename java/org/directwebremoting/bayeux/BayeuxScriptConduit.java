@@ -24,6 +24,7 @@ import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.extend.ScriptConduit;
 
 /**
+ * @author Greg Wilkins [gregw at webtide dot com]
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class BayeuxScriptConduit extends ScriptConduit
@@ -33,7 +34,7 @@ public class BayeuxScriptConduit extends ScriptConduit
      */
     public BayeuxScriptConduit(ConverterManager converterManager)
     {
-        super(ScriptConduit.RANK_PROCEDURAL);
+        super(ScriptConduit.RANK_FAST);
         this.converterManager=converterManager;
     }
 
@@ -60,4 +61,3 @@ public class BayeuxScriptConduit extends ScriptConduit
 
     private StringBuilder builder = new StringBuilder();
 }
-

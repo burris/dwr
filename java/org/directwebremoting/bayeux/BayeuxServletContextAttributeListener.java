@@ -20,6 +20,8 @@ import java.util.List;
 import javax.servlet.ServletContextAttributeEvent;
 import javax.servlet.ServletContextAttributeListener;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.Container;
 import org.directwebremoting.dwrp.PlainCallMarshaller;
 import org.directwebremoting.extend.ConverterManager;
@@ -29,6 +31,7 @@ import org.directwebremoting.impl.ContainerUtil;
 import dojox.cometd.Bayeux;
 
 /**
+ * @author Greg Wilkins [gregw at webtide dot com]
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class BayeuxServletContextAttributeListener implements ServletContextAttributeListener
@@ -44,54 +47,67 @@ public class BayeuxServletContextAttributeListener implements ServletContextAttr
             {
                 Bayeux bayeux = (Bayeux) scab.getValue();
                 bayeuxHandler = new BayeuxClient(bayeux);
-                if (remoter!=null)
+
+                if (remoter != null)
+                {
                     bayeuxHandler.setRemoter(remoter);
-                if (converterManager!=null)
+                }
+
+                if (converterManager != null)
+                {
                     bayeuxHandler.setConverterManager(converterManager);
-                if (plainCallMarshaller!=null)
+                }
+
+                if (plainCallMarshaller != null)
+                {
                     bayeuxHandler.setPlainCallMarshaller(plainCallMarshaller);
+                }
             }
             
             if (ContainerUtil.ATTRIBUTE_CONTAINER_LIST.equals(scab.getName()))
             {
-                List<Container> containers = (List<Container>)scab.getValue();
+                List<Container> containers = (List<Container>) scab.getValue();
                 
-                System.err.println("containers="+containers);
+                log.debug("containers="+containers);
                 
                 for (Container container: containers)
                 {
-                    System.err.println("container="+container);
-                    System.err.println("beans="+container.getBeanNames());
-                    Remoter r = (Remoter)container.getBean("org.directwebremoting.extend.Remoter");
-                    if (r!=null)
+                    log.debug("container=" + container);
+                    log.debug("beans=" + container.getBeanNames());
+                    Remoter r = (Remoter) container.getBean("org.directwebremoting.extend.Remoter");
+                    if (r != null)
                     {
-                        remoter=r;
-                        if (bayeuxHandler!=null)
+                        remoter = r;
+                        if (bayeuxHandler != null)
+                        {
                             bayeuxHandler.setRemoter(remoter);
-                        System.err.println("remoter="+remoter);
+                        }
+                        log.debug("remoter=" + remoter);
                     }
-                    
-                    ConverterManager c = (ConverterManager)container.getBean("org.directwebremoting.extend.ConverterManager");
-                    if (c!=null)
+
+                    ConverterManager c = (ConverterManager) container.getBean("org.directwebremoting.extend.ConverterManager");
+                    if (c != null)
                     {
-                        converterManager=c;
-                        if (bayeuxHandler!=null)
+                        converterManager = c;
+                        if (bayeuxHandler != null)
+                        {
                             bayeuxHandler.setConverterManager(converterManager);
-                        System.err.println("converterManager="+converterManager);
+                        }
+                        log.debug("converterManager=" + converterManager);
                     }
-                    
-                    PlainCallMarshaller p = (PlainCallMarshaller)container.getBean("org.directwebremoting.dwrp.PlainCallMarshaller");
-                    if (p!=null)
+
+                    PlainCallMarshaller p = (PlainCallMarshaller) container.getBean("org.directwebremoting.dwrp.PlainCallMarshaller");
+                    if (p != null)
                     {
-                        this.plainCallMarshaller=p;
-                        if (bayeuxHandler!=null)
+                        this.plainCallMarshaller = p;
+                        if (bayeuxHandler != null)
+                        {
                             bayeuxHandler.setPlainCallMarshaller(plainCallMarshaller);
-                        System.err.println("plainCallMarshaller="+plainCallMarshaller);
+                        }
+
+                        log.debug("plainCallMarshaller=" + plainCallMarshaller);
                     }
-                    
-                    
                 }
-                
             }
         }
     }
@@ -114,4 +130,9 @@ public class BayeuxServletContextAttributeListener implements ServletContextAttr
     private Remoter remoter;
     private ConverterManager converterManager;
     private PlainCallMarshaller plainCallMarshaller;
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(BayeuxServletContextAttributeListener.class);
 }
