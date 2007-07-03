@@ -2,4 +2,43 @@
  * Copyright (c) 2001-2007, TIBCO Software Inc.
  * Use, modification, and distribution subject to terms of license.
  */
-jsx3.require("jsx3.chart.CartesianChart","jsx3.chart.BarSeries");jsx3.Class.defineClass("jsx3.chart.BCChart",jsx3.chart.CartesianChart,null,function(q,e){q.TYPE_CLUSTERED="clustered";q.TYPE_STACKED="stacked";q.TYPE_STACKED100="stacked100";q.jv={clustered:1,stacked:1,stacked100:1};e.init=function(c,g,j,m,k){this.jsxsuper(c,g,j,m,k);this.type=q.TYPE_CLUSTERED;this.seriesOverlap=0;this.categoryCoverage=0.65;};e.getType=function(){return this.type;};e.setType=function(r){if(q.jv[r])this.type=r;else throw new jsx3.IllegalArgumentException("type",r);};e.getSeriesOverlap=function(){return !isNaN(this.seriesOverlap)?this.seriesOverlap:0;};e.setSeriesOverlap=function(h){this.seriesOverlap=h;};e.getCategoryCoverage=function(){return !isNaN(this.categoryCoverage)?this.categoryCoverage:1;};e.setCategoryCoverage=function(m){this.categoryCoverage=m;};e.pC=jsx3.Method.newAbstract();e.Wh=jsx3.Method.newAbstract();e.Td=function(b,a,p,r,l,m){if(this.type==q.TYPE_STACKED||this.type==q.TYPE_STACKED100){p=0;r=1;}var Dc=a-b;var lb=Dc*m;var ic=(b+a)/2;var Wb=lb/(r-r*l+l);var nc=Wb*(p-(r-1)/2)*(1-l);var Mc=null;if(p>0&&l==0){var cb=Wb*(p-1-(r-1)/2)*(1-l);Mc=Math.round(ic+cb+Wb/2);}else{Mc=Math.round(ic+nc-Wb/2);}var U=Math.round(ic+nc+Wb/2)-1;return [Mc,U];};e.Ns=function(a){if(this.type==q.TYPE_CLUSTERED){var ec=this.getRangeForField(a,"getParallelValue");var J=this.getRangeForField(a,"getMinValue");return this.getCombinedRange([ec,J]);}else{if(this.type==q.TYPE_STACKED){return this.getStackedRangeForField(a,"getParallelValue");}else{if(this.type==q.TYPE_STACKED100){return this.getStacked100RangeForField(a,"getParallelValue");}else{jsx3.chart.LOG.error("unsupported Bar/Column Chart type: "+this.type);return null;}}}};e.We=function(p){return this.getRangeForField(p,"getNormalValue");};e.updateView=function(){this.jsxsuper();this.JJ();};e.JJ=function(){var J=this.M4();var pb=this.aO();var nc=pb.length;if(nc==0)return;var vc=this.gH();var yc=this.pC();var nb=this.Wh();if(vc==null||yc==null||nb==null)return;if(!jsx3.chart.isValueAxis(yc)){jsx3.chart.LOG.error("bad parallel axis type: "+yc.getClass());return;}var W=this.getSeriesOverlap();var _=this.getCategoryCoverage();var Bb=null;if(this.type==q.TYPE_STACKED100)Bb=this.Z6(pb,"getParallelValue");var xb=null,A=null;if(this.type==q.TYPE_STACKED||this.type==q.TYPE_STACKED100){xb=new Array(vc.length);A=new Array(vc.length);for(var Fc=0;Fc<vc.length;Fc++){xb[Fc]=A[Fc]=0;}}for(var Fc=0;Fc<nc;Fc++){var jc=pb[Fc];jc.MY();for(var Qb=0;Qb<vc.length;Qb++){var H=vc[Qb];var ab=null,hc=null;if(jsx3.chart.isValueAxis(yc)){var db=jc.getParallelValue(H);if(this.type==q.TYPE_CLUSTERED){ab=jc.getMinValue(H);if(ab==null)ab=0;hc=db;if(hc==null){continue;}}else{if(this.type==q.TYPE_STACKED||this.type==q.TYPE_STACKED100){var rb=this.type==q.TYPE_STACKED?db:100*(db/Bb[Qb]);if(rb>=0){ab=xb[Qb];hc=xb[Qb]+rb;xb[Qb]=hc;}else{ab=A[Qb]+rb;hc=A[Qb];A[Qb]=ab;}}}}var Jc=yc.getCoordinateForNoClip(ab);if(ab!=0)Jc=Jc+(yc.getHorizontal()?1:-1);var w=yc.getCoordinateForNoClip(hc);var cb=null,wc=null;if(jsx3.chart.isValueAxis(nb)){var _b=jc.getNormalValue(H);if(_b==null)continue;var xc=nb.getCoordinateForNoClip(_b);var L=jc.getNormalWidth();cb=xc-Math.ceil(L/2);wc=xc+Math.floor(L/2);}else{if(jsx3.chart.isCategoryAxis(nb)){var Q=nb.getRangeForCategory(Qb);var Ec=this.Td(Q[0],Q[1],Fc,nc,W,_);cb=Ec[0];wc=Ec[1];}}jc.ZW(H,Qb,Jc,cb,w,wc);}jc.updateView();J.appendChild(jc.l5());}};q.getVersion=function(){return jsx3.chart.q2;};});jsx3.Class.defineClass("jsx3.chart.BarChart",jsx3.chart.BCChart,null,function(f,m){m.init=function(e,i,l,k,g){this.jsxsuper(e,i,l,k,g);};m.wH=function(k){return k instanceof jsx3.chart.BarSeries;};m.getXRange=function(h){return this.Ns(h);};m.getYRange=function(o){return this.We(o);};m.pC=function(){return this.getPrimaryXAxis();};m.Wh=function(){return this.getPrimaryYAxis();};m.toString=function(){return "[BarChart '"+this.getName()+"']";};});jsx3.Class.defineClass("jsx3.chart.ColumnChart",jsx3.chart.BCChart,null,function(s,e){e.init=function(r,c,f,q,g){this.jsxsuper(r,c,f,q,g);};e.wH=function(i){return i instanceof jsx3.chart.ColumnSeries;};e.getXRange=function(o){return this.We(o);};e.getYRange=function(b){return this.Ns(b);};e.pC=function(){return this.getPrimaryYAxis();};e.Wh=function(){return this.getPrimaryXAxis();};e.toString=function(){return "[ColumnChart '"+this.getName()+"']";};});
+jsx3.require("jsx3.chart.CartesianChart","jsx3.chart.BarSeries");jsx3.Class.defineClass("jsx3.chart.BCChart",jsx3.chart.CartesianChart,null,function(d,k){d.TYPE_CLUSTERED="clustered";d.TYPE_STACKED="stacked";d.TYPE_STACKED100="stacked100";d.pL={clustered:1,stacked:1,stacked100:1};k.init=function(f,j,m,l,n){this.jsxsuper(f,j,m,l,n);this.type="clustered";this.seriesOverlap=0;this.categoryCoverage=0.65;};k.getType=function(){return this.type;};k.setType=function(j){if(d.pL[j])this.type=j;else throw new
+jsx3.IllegalArgumentException("type",j);};k.getSeriesOverlap=function(){return !isNaN(this.seriesOverlap)?this.seriesOverlap:0;};k.setSeriesOverlap=function(f){this.seriesOverlap=f;};k.getCategoryCoverage=function(){return !isNaN(this.categoryCoverage)?this.categoryCoverage:1;};k.setCategoryCoverage=function(g){this.categoryCoverage=g;};k.Yt=jsx3.Method.newAbstract();k.WX=jsx3.Method.newAbstract();k.kv=function(h,g,j,l,f,m){if(this.type=="stacked"||this.type=="stacked100"){j=0;l=1;}var
+kb=g-h;var
+Ec=kb*m;var
+ab=(h+g)/2;var
+Nc=Ec/(l-l*f+f);var
+rc=Nc*(j-(l-1)/2)*(1-f);var
+L=null;if(j>0&&f==0){var
+vc=Nc*(j-1-(l-1)/2)*(1-f);L=Math.round(ab+vc+Nc/2);}else L=Math.round(ab+rc-Nc/2);var
+u=Math.round(ab+rc+Nc/2)-1;return [L,u];};k.mF=function(a){if(this.type=="clustered"){var
+Qb=this.getRangeForField(a,"Cd");var
+Wb=this.getRangeForField(a,"getMinValue");return this.getCombinedRange([Qb,Wb]);}else if(this.type=="stacked"){return this.getStackedRangeForField(a,"Cd");}else if(this.type=="stacked100"){return this.getStacked100RangeForField(a,"Cd");}else{jsx3.chart.LOG.error("unsupported Bar/Column Chart type: "+this.type);return null;}};k.Ns=function(r){return this.getRangeForField(r,"So");};k.updateView=function(){this.jsxsuper();this.ug();};k.ug=function(){var
+rc=this.wg();var
+nb=this.Cm();var
+lb=nb.length;if(lb==0)return;var
+Ub=this.bi();var
+u=this.Yt();var
+kc=this.WX();if(Ub==null||u==null||kc==null)return;if(!jsx3.chart.isValueAxis(u)){jsx3.chart.LOG.error("bad parallel axis type: "+u.getClass());return;}var
+U=this.getSeriesOverlap();var
+K=this.getCategoryCoverage();var
+kb=null;if(this.type=="stacked100")kb=this.kk(nb,"Cd");var
+xb=null,eb=null;if(this.type=="stacked"||this.type=="stacked100"){xb=new
+Array(Ub.length);eb=new
+Array(Ub.length);for(var
+bc=0;bc<Ub.length;bc++)xb[bc]=eb[bc]=0;}for(var
+bc=0;bc<lb;bc++){var
+Lb=nb[bc];Lb.Df();for(var
+cb=0;cb<Ub.length;cb++){var
+Jb=Ub[cb];var
+fb=null,X=null;if(jsx3.chart.isValueAxis(u)){var
+Ec=Lb.Cd(Jb);if(this.type=="clustered"){fb=Lb.getMinValue(Jb);if(fb==null)fb=0;X=Ec;if(X==null)continue;}else if(this.type=="stacked"||this.type=="stacked100"){var
+Nc=this.type=="stacked"?Ec:100*(Ec/kb[cb]);if(Nc>=0){fb=xb[cb];X=xb[cb]+Nc;xb[cb]=X;}else{fb=eb[cb]+Nc;X=eb[cb];eb[cb]=fb;}}}var
+jc=u.getCoordinateForNoClip(fb);if(fb!=0)jc=jc+(u.getHorizontal()?1:-1);var
+Hb=u.getCoordinateForNoClip(X);var
+I=null,Qb=null;if(jsx3.chart.isValueAxis(kc)){var
+ab=Lb.So(Jb);if(ab==null)continue;var
+zb=kc.getCoordinateForNoClip(ab);var
+mc=Lb.an();I=zb-Math.ceil(mc/2);Qb=zb+Math.floor(mc/2);}else if(jsx3.chart.isCategoryAxis(kc)){var
+Ab=kc.getRangeForCategory(cb);var
+wb=this.kv(Ab[0],Ab[1],bc,lb,U,K);I=wb[0];Qb=wb[1];}Lb.ao(Jb,cb,jc,I,Hb,Qb);}Lb.updateView();rc.appendChild(Lb.tf());}};d.getVersion=function(){return jsx3.chart.sj;};});jsx3.Class.defineClass("jsx3.chart.BarChart",jsx3.chart.BCChart,null,function(e,n){n.init=function(l,p,s,d,a){this.jsxsuper(l,p,s,d,a);};n.zm=function(h){return h instanceof jsx3.chart.BarSeries;};n.getXRange=function(o){return this.mF(o);};n.getYRange=function(i){return this.Ns(i);};n.Yt=function(){return this.getPrimaryXAxis();};n.WX=function(){return this.getPrimaryYAxis();};n.toString=function(){return "[BarChart '"+this.getName()+"']";};});jsx3.Class.defineClass("jsx3.chart.ColumnChart",jsx3.chart.BCChart,null,function(k,m){m.init=function(d,h,s,l,a){this.jsxsuper(d,h,s,l,a);};m.zm=function(r){return r instanceof jsx3.chart.ColumnSeries;};m.getXRange=function(p){return this.Ns(p);};m.getYRange=function(s){return this.mF(s);};m.Yt=function(){return this.getPrimaryYAxis();};m.WX=function(){return this.getPrimaryXAxis();};m.toString=function(){return "[ColumnChart '"+this.getName()+"']";};});

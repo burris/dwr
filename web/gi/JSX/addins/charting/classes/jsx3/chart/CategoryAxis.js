@@ -2,4 +2,29 @@
  * Copyright (c) 2001-2007, TIBCO Software Inc.
  * Use, modification, and distribution subject to terms of license.
  */
-jsx3.require("jsx3.chart.Axis");jsx3.Class.defineClass("jsx3.chart.CategoryAxis",jsx3.chart.Axis,null,function(q,b){q.TICKS_ALIGNED="aligned";q.TICKS_BETWEEN="between";q.Tf=200;q.Di={aligned:1,between:1};b.init=function(s,h,m){this.jsxsuper(s,h,m);this.tickAlignment=q.TICKS_BETWEEN;this.categoryField=null;this.paddingLow=null;this.paddingHigh=null;this.xI("dK",0);this.xI("uI",0);};b.getTickAlignment=function(){return this.tickAlignment;};b.setTickAlignment=function(p){if(q.Di[p]){this.tickAlignment=p;}else{throw new jsx3.IllegalArgumentException("tickAlignment",p);}};b.getCategoryField=function(){return this.categoryField;};b.setCategoryField=function(n){this.categoryField=n;};b.getPaddingLow=function(){return this.paddingLow!=null?this.paddingLow:0;};b.setPaddingLow=function(a){this.paddingLow=a;};b.getPaddingHigh=function(){return this.paddingHigh!=null?this.paddingHigh:0;};b.setPaddingHigh=function(c){this.paddingHigh=c;};b.g6=function(){this.qX("Y6");var Kb=this.getChart();if(Kb==null){this.xI("dK",0);this.xI("uI",0);}else{var Cb=Kb.aX(this,true);var rb=Kb.gH();this.xI("uI",Cb.length);this.xI("dK",rb!=null?rb.length:0);}};b.RQ=function(){var wc=this.Q0("Y6");if(wc!=null)return wc;var wb=this.Q0("dK");wc=[];if(wb<1)return wc;var Ec=this.getPaddingLow();var _=this.getPaddingHigh();var ac=this.tickAlignment==q.TICKS_BETWEEN?wb+1:wb;var N=ac-1;var hc=N+Ec+_;var Jb=this.length/hc;var Fb=Ec*Jb;for(var gb=0;gb<ac&&gb<q.Tf;gb++){wc.push(Math.round(Fb+gb*Jb));}this.xI("Y6",wc);return wc;};b.w4=function(){var V=this.Q0("dK");if(this.tickAlignment==q.TICKS_BETWEEN){var cb=this.RQ();var sc=[];for(var E=0;E<V;E++){sc[E]=Math.round((cb[E]+cb[E+1])/2);}return sc;}else{return this.RQ();}};b.a1=function(d){var rb=d;var x=this.getChart();if(this.categoryField&&x!=null){var Z=x.gH();if(Z!=null){var Yb=Z[d];if(Yb!=null)rb=Yb.getAttribute([this.categoryField]);}}return rb;};b.vX=function(){return false;};b.getRangeForCategory=function(f){var Gb=this.RQ();if(this.tickAlignment==q.TICKS_BETWEEN){if(f<0||f>=Gb.length-1)return null;else return [Gb[f],Gb[f+1]];}else{if(f<0||f>=Gb.length||Gb.length<2)return null;var Dc=f==0?Gb[1]-Gb[0]:Gb[f]-Gb[f-1];return [Math.round(Gb[f]-Dc/2),Math.round(Gb[f]+Dc/2)];}};b.getPointForCategory=function(r){var F=this.RQ();if(this.tickAlignment==q.TICKS_BETWEEN){if(r<0||r>=F.length-1)return null;else return Math.round((F[r]+F[r+1])/2);}else{return F[r];}};b.toString=function(){return "[CategoryAxis '"+this.getName()+"' hor:"+this.horizontal+" pri:"+this.primary+"]";};q.getVersion=function(){return jsx3.chart.q2;};});
+jsx3.require("jsx3.chart.Axis");jsx3.Class.defineClass("jsx3.chart.CategoryAxis",jsx3.chart.Axis,null,function(c,p){c.TICKS_ALIGNED="aligned";c.TICKS_BETWEEN="between";c.MAX_TICKS=200;c.TQ={aligned:1,between:1};p.init=function(i,r,q){this.jsxsuper(i,r,q);this.tickAlignment="between";this.categoryField=null;this.paddingLow=null;this.paddingHigh=null;this.tm("MB",0);this.tm("WA",0);};p.getTickAlignment=function(){return this.tickAlignment;};p.setTickAlignment=function(l){if(c.TQ[l]){this.tickAlignment=l;}else throw new
+jsx3.IllegalArgumentException("tickAlignment",l);};p.getCategoryField=function(){return this.categoryField;};p.setCategoryField=function(m){this.categoryField=m;};p.getPaddingLow=function(){return this.paddingLow!=null?this.paddingLow:0;};p.setPaddingLow=function(h){this.paddingLow=h;};p.getPaddingHigh=function(){return this.paddingHigh!=null?this.paddingHigh:0;};p.setPaddingHigh=function(r){this.paddingHigh=r;};p.ve=function(){this.lk("Xc");var
+db=this.getChart();if(db==null){this.tm("MB",0);this.tm("WA",0);}else{var
+tc=db.Xi(this,true);var
+ic=db.bi();this.tm("WA",tc.length);this.tm("MB",ic!=null?ic.length:0);}};p.yf=function(){var
+nc=this.pk("Xc");if(nc!=null)return nc;var
+B=this.pk("MB");nc=[];if(B<1)return nc;var
+gb=this.getPaddingLow();var
+Vb=this.getPaddingHigh();var
+x=this.tickAlignment=="between"?B+1:B;var
+Lb=x-1;var
+fc=Lb+gb+Vb;var
+pc=this.length/fc;var
+C=gb*pc;for(var
+Qb=0;Qb<x&&Qb<c.MAX_TICKS;Qb++)nc.push(Math.round(C+Qb*pc));this.tm("Xc",nc);return nc;};p.Pi=function(){var
+uc=this.pk("MB");if(this.tickAlignment=="between"){var
+Ac=this.yf();var
+Xb=[];for(var
+vb=0;vb<uc;vb++)Xb[vb]=Math.round((Ac[vb]+Ac[vb+1])/2);return Xb;}else return this.yf();};p.af=function(b){var
+Pb=b;var
+z=this.getChart();if(this.categoryField&&z!=null){var
+ac=z.bi();if(ac!=null){var
+gb=ac[b];if(gb!=null)Pb=gb.getAttribute([this.categoryField]);}}return Pb;};p.Kk=function(){return false;};p.getRangeForCategory=function(j){var
+_=this.yf();if(this.tickAlignment=="between"){if(j<0||j>=_.length-1)return null;else return [_[j],_[j+1]];}else{if(j<0||j>=_.length||_.length<2)return null;var
+Xb=j==0?_[1]-_[0]:_[j]-_[j-1];return [Math.round(_[j]-Xb/2),Math.round(_[j]+Xb/2)];}};p.getPointForCategory=function(n){var
+Ab=this.yf();if(this.tickAlignment=="between"){if(n<0||n>=Ab.length-1)return null;else return Math.round((Ab[n]+Ab[n+1])/2);}else return Ab[n];};p.toString=function(){return "[CategoryAxis '"+this.getName()+"' hor:"+this.horizontal+" pri:"+this.primary+"]";};c.getVersion=function(){return jsx3.chart.sj;};});

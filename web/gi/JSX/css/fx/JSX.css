@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2007, TIBCO Software Inc.
+ * Copyright (c) 2001-2006, TIBCO Software Inc.
  * Use, modification, and distribution subject to terms of license.
  */
 
@@ -33,7 +33,7 @@ input[type="checkbox"]:focus {
 /* jsx3.gui.Image */
 #JSX img.jsx30image {
   -moz-user-select: none;
-  -moz-user-focus:ignore;
+  -moz-user-focus: ignore;
   vertical-align: top;
 }
 
@@ -95,7 +95,8 @@ input[type="checkbox"]:focus {
 /* jsx3.gui.Menu */
 .jsx30menu_1_itemlist, .jsx30menu_3_itemlist {
   position: absolute;
-  left: 2px;
+  overflow: hidden;
+  left: 0px;
   top: 0px;
   border: solid 1px #9898a5;
   border-left-color: #b8b8c5;
@@ -112,8 +113,6 @@ input[type="checkbox"]:focus {
   font-family: Verdana, sans-serif;
   font-size: 10px;
   cursor: default;
-  background-image: url(../../images/spc.gif);
-  background-repeat: repeat-x;
 }
 .jsx30menu_1_item_disabled, .jsx30menu_3_item_disabled {
   position: relative;
@@ -125,7 +124,7 @@ input[type="checkbox"]:focus {
   padding-bottom: 2px;
   white-space: nowrap;
   cursor: not-allowed;
-  -moz-opacity: 0.4;
+  -moz-opacity: 0.5;
 }
 .jsx30menu_1_item_divider, .jsx30menu_3_item_divider {
   position: relative;
@@ -140,12 +139,7 @@ input[type="checkbox"]:focus {
   width: 7px;
   height: 7px;
 }
-.jsx30menu_1_text, .jsx30menu_3_text {
-  position: relative;
-  padding-right: 18px;
-  height: 12px;
-}
-span.jsx30menu_1_kc, span.jsx30menu_3_kc {
+.jsx30menu_1_kc, .jsx30menu_3_kc {
   position: relative;
   width: 100%;
   padding: 0px;
@@ -158,9 +152,10 @@ table.jsx30menu_1_kct, table.jsx30menu_3_kct {
   padding: 0px;
   border-spacing: 0px;
   height: 12px;
+  margin-top: 2px;
 }
 table.jsx30menu_1_kct td, table.jsx30menu_3_kct td {
-  padding: 0px;
+  padding: 0px 25px 0px 0px;
   margin: 0px;
   white-space: nowrap;
   font-family: Verdana, sans-serif;
@@ -168,9 +163,22 @@ table.jsx30menu_1_kct td, table.jsx30menu_3_kct td {
   vertical-align: top;
 }
 table.jsx30menu_1_kct td.keycode, table.jsx30menu_3_kct td.keycode {
-  padding-right: 4px;
+  padding: 0px 4px 0px 5px;
   text-align: right;
   font-family: "Lucida Grande", Verdana, sans-serif;
+}
+.jsx30menu_scroll {
+  position:absolute;
+  left:1px;
+  background-color:white;
+  visibility:hidden;
+  background-position: center center;
+  background-repeat: no-repeat;
+  -moz-opacity: 0.85;
+  border: solid 1px #9898a5;
+}
+.jsx30menu_scrollpane {
+  position:absolute;
 }
 
 /* jsx3.gui.Splitter */
@@ -221,6 +229,10 @@ table.jsx30menu_1_kct td.keycode, table.jsx30menu_3_kct td.keycode {
 #JSX .jsx30tab {
   -moz-user-select: none;
   white-space: nowrap;
+  border-top: solid 0px;
+  border-right: solid 2px #9898a5;
+  border-bottom: solid 0px;
+  border-left: solid 1px #f6f6ff;
 }
 #JSX .jsx30tab_text {
   -moz-user-select: none;
@@ -229,6 +241,27 @@ table.jsx30menu_1_kct td.keycode, table.jsx30menu_3_kct td.keycode {
   white-space: nowrap;
   overflow: hidden;
   z-index: 10;
+}
+#JSX .jsx30tabbedpane {
+  overflow:hidden;
+}
+
+#JSX .jsx30tabbedpane_autoscroller_l {
+  overflow:hidden;
+  vertical-align:middle;
+  cursor:pointer;
+  font-weight:bold;
+  font-family:Arial;
+  font-size:11px;
+}
+
+#JSX .jsx30tabbedpane_autoscroller_r {
+  overflow:hidden;
+  vertical-align:middle;
+  cursor:pointer;
+  font-weight:bold;
+  font-family:Arial;
+  font-size:11px;
 }
 
 /* jsx3.gui.Interactive */
@@ -258,9 +291,10 @@ table.jsx30menu_1_kct td.keycode, table.jsx30menu_3_kct td.keycode {
   background-position: right 0px;
   background-repeat: no-repeat;
   vertical-align: top;
+  text-align: left;
 }
 .jsx30select_optionlist {
-  position: absolute;
+  position: relative;
   cursor: default;
   width: 100%;
   left: 2px;
@@ -278,8 +312,6 @@ table.jsx30menu_1_kct td.keycode, table.jsx30menu_3_kct td.keycode {
   padding-top: 3px;
   padding-left: 4px;
   cursor: default;
-  background-image: url(../../images/spc.gif);
-  background-repeat: repeat-x;
   white-space:nowrap;
 }
 IMG.jsx30select_check {
@@ -299,7 +331,7 @@ IMG.jsx30select_icon {
   vertical-align: top;
 }
 .jsx30select_option span {
-  position:relative; padding:2px 0px 0px 4px; margin: 0px; white-space:nowrap; overflow:hidden;
+  position:relative; padding:2px 0px 0px 4px; margin: 0px; white-space:nowrap;
   vertical-align: top;
 }
 .jsx30select_none {
@@ -322,14 +354,9 @@ IMG.jsx30select_icon {
   font-size: 10px;
   position: relative;
   display: -moz-inline-box;
-  text-indent: 1px;
-  height: 13px;
-  margin: 1px;
   vertical-align: top;
-  white-space: nowrap;
-  overflow: hidden;
-  padding-left: 0px;
-  padding-top: 1px;
+  left:1px;
+  top:1px;
 }
 
 /* jsx3.gui.Tree */
@@ -397,6 +424,17 @@ IMG.jsx30select_icon {
   padding: 2px;
   overflow: hidden;
   color: #888888;
+}
+#JSX div.jsx30tree_drop_icon {
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:100px;
+  height:7px;
+  overflow:hidden;
+  display:none;
+  z-index: 10;
+  background-repeat:no-repeat;
 }
 
 /* jsx3.gui.List, jsx3.gui.Grid, and jsx3.gui.Column */
@@ -588,6 +626,18 @@ IMG.jsx30select_icon {
 }
 
 /* jsx3.gui.Dialog */
+#JSX .jsx30dialog {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #c6c6c6 #a6a6a6 #a6a6a6 #c6c6c6;
+}
+#JSX .jsx30dialog_content {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #a6a6a6 #c6c6c6 #c6c6c6 #a6a6a6;
+  cursor: default;
+  z-index: 2;
+}
 #JSX div.jsx30dialog_modal {
   position: absolute;
   left: 0px;
@@ -596,6 +646,11 @@ IMG.jsx30select_icon {
   height: 100%;
   -moz-opacity: .50;
   background-color: #FFFFFF;
+}
+.jsx30dialog_mask {
+  -moz-opacity: .25;
+  background-color: #6090dd;
+  border: 1px dashed #000033;
 }
 
 /* jsx3.gui.Alerts */
@@ -752,6 +807,7 @@ div.jsx30matrix_dragicon {
   -moz-user-select: none;
   -moz-user-focus: ignore;
   -moz-user-input: disabled;
+  cursor: pointer;
 }
 #JSX span.jsx30slider div.handle_disabled {
   -moz-opacity: .50;
@@ -815,6 +871,9 @@ body.jsx30window {
   z-index: 2;
   font-family: Verdana, Arial, sans-serif;
   font-size: 10px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #9898a5 #d8d8e5 #d8d8e5 #9898a5;
 }
 span.jsx3_dp_cal {
 	width: 140px;
@@ -958,3 +1017,24 @@ body.jsx30form {
   -moz-user-focus: ignore;
   -moz-user-select: none;
 }
+
+/** jsx3.gui.IFrame */
+#JSX span.jsx30iframe {
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+#JSX iframe.jsx30iframe {
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+.jsx30env {}
+.jsx30env div { padding: 0px 0px 10px 10px; }

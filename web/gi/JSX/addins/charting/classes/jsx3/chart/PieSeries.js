@@ -2,4 +2,47 @@
  * Copyright (c) 2001-2007, TIBCO Software Inc.
  * Use, modification, and distribution subject to terms of license.
  */
-jsx3.require("jsx3.chart.Series");jsx3.Class.defineClass("jsx3.chart.PieSeries",jsx3.chart.Series,null,function(i,h){var G=jsx3.vector;i.LABEL_PLACEMENTS={top:1,right:1,bottom:1,left:1};h.init=function(s,m){this.jsxsuper(s,m);this.field=null;this.totalAngle=null;this.startAngle=null;this.colors=null;this.colorFunction=null;this.stroke=null;this.labelPlacement=jsx3.chart.QBOTTOM;this.labelOffset=10;this.setTooltipFunction("jsx3.chart.PieSeries.tooltip");};h.getTotalAngle=function(){return this.totalAngle;};h.setTotalAngle=function(q){this.totalAngle=q==null?null:Math.max(0,Math.min(360,q));};h.getStartAngle=function(){return this.startAngle;};h.setStartAngle=function(l){this.startAngle=l==null?null:Math.modpos(l,360);};h.getField=function(){return this.field;};h.setField=function(c){this.field=c;};h.getValue=function(p){if(this.field)return jsx3.chart.asNumber(p.getAttribute(this.field));return null;};h.getColors=function(){return this.colors;};h.setColors=function(g){this.colors=g;};h.getLabelPlacement=function(){return this.labelPlacement!=null?this.labelPlacement:jsx3.chart.QBOTTOM;};h.setLabelPlacement=function(o){if(i.LABEL_PLACEMENTS[o]){this.labelPlacement=o;}else{throw new jsx3.IllegalArgumentException("labelPlacement",o);}};h.getLabelOffset=function(){return this.labelOffset!=null?this.labelOffset:0;};h.setLabelOffset=function(m){this.labelOffset=Math.round(m);};h.t0=function(r,j){var Y=this.getColors();if(Y!=null&&Y.length>0)return G.Fill.valueOf(Y[j%Y.length]);var O=this.getColorFunction();if(O!=null)return O.call(null,r,j);var Bb=this.getChart();if(Bb!=null)return Bb.t0(r,j);return new G.Fill();};h._c=function(d){if(this.stroke)return G.Stroke.valueOf(this.stroke);var x=this.getChart();if(x!=null){var sc=x.getSeriesStroke();if(sc)return G.Stroke.valueOf(sc);}return null;};h.YV=function(j,k,g,o,s,r,p,l){var pb=this.Q0("mI");if(pb==null){pb=[];this.xI("mI",pb);}pb.push([j,k,g,o,s,r,p,l]);};h.TJ=function(){this.YV(null);};h.NY=function(){var uc=this.Q0("mI");if(uc!=null)uc.splice(0,uc.length);};h.updateView=function(){this.jsxsuper();var xb=this.l5();var ob=xb.getWidth();var U=xb.getHeight();var R=this.Q0("mI");if(R==null)return;var Y=this.getTooltipFunction();for(var Vb=0;Vb<R.length;Vb++){var eb=R[Vb][0];if(eb==null)continue;var M=R[Vb][1];var D=R[Vb][2];var Mb=R[Vb][3];var Sb=R[Vb][4];var Cb=R[Vb][5];var kb=R[Vb][6];var ic=R[Vb][7];var zc=new G.Shape(null,0,0,ob,U);zc.setId(this.getId()+"_s"+Vb);xb.appendChild(zc);zc.setFill(this.t0(eb,Vb));zc.setStroke(this._c(Vb));this.A3(zc,Vb,eb.getAttribute("jsxid"));var Bc=G.degreesToRadians(Sb);var Hc=G.degreesToRadians(Mb);var _b=Math.round(kb*Math.cos(Bc))+M;var fb=Math.round(-1*kb*Math.sin(Bc))+D;var Ub=Math.round(kb*Math.cos(Hc))+M;var vb=Math.round(-1*kb*Math.sin(Hc))+D;var Rb=_b==Ub&&fb==vb&&Sb-Mb>180;zc.X6(_b,fb);if(Rb||_b!=Ub||fb!=vb){zc.XZ(M,D,kb,kb,_b,fb,Ub,vb,false);}if(Cb>0){var lc=Math.round(Cb*Math.cos(Bc))+M;var Wb=Math.round(-1*Cb*Math.sin(Bc))+D;var Lb=Math.round(Cb*Math.cos(Hc))+M;var wc=Math.round(-1*Cb*Math.sin(Hc))+D;zc.Z7(Lb,wc);if(Rb||lc!=Lb||Wb!=wc){zc.XZ(M,D,Cb,Cb,Lb,wc,lc,Wb,true);}}else{if(!Rb){zc.Z7(M,D);}}zc.w9();if(Y!=null)zc.setToolTip(Y.call(null,this,eb,ic));}var Ab=this.getLabel();if(Ab!=null&&Ab.getDisplay()!=jsx3.gui.Block.DISPLAYNONE){var Pb=[0,0,ob,U];if(R.length>0){Pb=[R[0][1]-R[0][6],R[0][2]-R[0][6],R[0][1]+R[0][6],R[0][2]+R[0][6]];}var nc=Ab.getPreferredWidth();var Nc=Ab.getPreferredHeight();var Yb=0,gb=0;if(this.labelPlacement==jsx3.chart.QTOP){Yb=Math.round(ob/2-nc/2);gb=Pb[1]-this.getLabelOffset()-Nc;}else{if(this.labelPlacement==jsx3.chart.QRIGHT){Yb=Pb[2]+this.getLabelOffset();gb=Math.round(U/2-Nc/2);}else{if(this.labelPlacement==jsx3.chart.QLEFT){Yb=Pb[0]-this.getLabelOffset()-nc;gb=Math.round(U/2-Nc/2);}else{Yb=Math.round(ob/2-nc/2);gb=Pb[3]+this.getLabelOffset();}}}Ab.setDimensions(Yb,gb,nc,Nc);Ab.setText(this.getSeriesName());Ab.updateView();xb.appendChild(Ab.l5());}};i.tooltip=function(q,c,j){var yc=q.getValue(c);return yc+", "+Math.round(j*10)/10+"%";};h.toString=function(){return "[PieSeries '"+this.getName()+"']";};i.getVersion=function(){return jsx3.chart.q2;};});
+jsx3.require("jsx3.chart.Series");jsx3.Class.defineClass("jsx3.chart.PieSeries",jsx3.chart.Series,null,function(i,h){var
+G=jsx3.vector;i.LABEL_PLACEMENTS={top:1,right:1,bottom:1,left:1};h.init=function(s,m){this.jsxsuper(s,m);this.field=null;this.totalAngle=null;this.startAngle=null;this.colors=null;this.colorFunction=null;this.stroke=null;this.labelPlacement="bottom";this.labelOffset=10;this.setTooltipFunction("jsx3.chart.PieSeries.tooltip");};h.getTotalAngle=function(){return this.totalAngle;};h.setTotalAngle=function(q){this.totalAngle=q==null?null:Math.max(0,Math.min(360,q));};h.getStartAngle=function(){return this.startAngle;};h.setStartAngle=function(l){this.startAngle=l==null?null:jsx3.util.numMod(l,360);};h.getField=function(){return this.field;};h.setField=function(c){this.field=c;};h.getValue=function(p){if(this.field)return jsx3.chart.asNumber(p.getAttribute(this.field));return null;};h.getColors=function(){return this.colors;};h.setColors=function(g){this.colors=g;};h.getLabelPlacement=function(){return this.labelPlacement!=null?this.labelPlacement:"bottom";};h.setLabelPlacement=function(o){if(i.LABEL_PLACEMENTS[o]){this.labelPlacement=o;}else throw new
+jsx3.IllegalArgumentException("labelPlacement",o);};h.getLabelOffset=function(){return this.labelOffset!=null?this.labelOffset:0;};h.setLabelOffset=function(m){this.labelOffset=Math.round(m);};h.eo=function(r,j){var
+Y=this.getColors();if(Y!=null&&Y.length>0)return G.Fill.valueOf(Y[j%Y.length]);var
+O=this.getColorFunction();if(O!=null)return O.call(null,r,j);var
+Bb=this.getChart();if(Bb!=null)return Bb.eo(r,j);return new
+G.Fill();};h.a2=function(d){if(this.stroke)return G.Stroke.valueOf(this.stroke);var
+x=this.getChart();if(x!=null){var
+sc=x.getSeriesStroke();if(sc)return G.Stroke.valueOf(sc);}return null;};h.Ff=function(j,k,g,o,s,r,p,l){var
+pb=this.pk("We");if(pb==null){pb=[];this.tm("We",pb);}pb.push([j,k,g,o,s,r,p,l]);};h.Nd=function(){this.Ff(null);};h.If=function(){var
+uc=this.pk("We");if(uc!=null)uc.splice(0,uc.length);};h.updateView=function(){this.jsxsuper();var
+xb=this.tf();var
+ob=xb.getWidth();var
+U=xb.getHeight();var
+R=this.pk("We");if(R==null)return;var
+Y=this.getTooltipFunction();for(var
+vb=0;vb<R.length;vb++){var
+Db=R[vb][0];if(Db==null)continue;var
+Q=R[vb][1];var
+w=R[vb][2];var
+ib=R[vb][3];var
+J=R[vb][4];var
+hb=R[vb][5];var
+Hb=R[vb][6];var
+_b=R[vb][7];var
+Lb=new
+G.Shape(null,0,0,ob,U);Lb.setId(this.getId()+"_s"+vb);xb.appendChild(Lb);Lb.setFill(this.eo(Db,vb));Lb.setStroke(this.a2(vb));this.th(Lb,vb,Db.getAttribute("jsxid"));var
+u=G.degreesToRadians(J);var
+dc=G.degreesToRadians(ib);var
+rb=Math.round(Hb*Math.cos(u))+Q;var
+Dc=Math.round(-1*Hb*Math.sin(u))+w;var
+Fc=Math.round(Hb*Math.cos(dc))+Q;var
+lb=Math.round(-1*Hb*Math.sin(dc))+w;var
+x=rb==Fc&&Dc==lb&&J-ib>180;Lb.dl(rb,Dc);if(x||rb!=Fc||Dc!=lb)Lb.Aj(Q,w,Hb,Hb,rb,Dc,Fc,lb,false);if(hb>0){var
+yb=Math.round(hb*Math.cos(u))+Q;var
+Ic=Math.round(-1*hb*Math.sin(u))+w;var
+vc=Math.round(hb*Math.cos(dc))+Q;var
+_=Math.round(-1*hb*Math.sin(dc))+w;Lb.pj(vc,_);if(x||yb!=vc||Ic!=_)Lb.Aj(Q,w,hb,hb,vc,_,yb,Ic,true);}else if(!x)Lb.pj(Q,w);Lb.Bh();if(Y!=null)Lb.setToolTip(Y.call(null,this,Db,_b));}var
+Ec=this.getLabel();if(Ec!=null&&Ec.getDisplay()!=jsx3.gui.Block.DISPLAYNONE){var
+Nb=[0,0,ob,U];if(R.length>0)Nb=[R[0][1]-R[0][6],R[0][2]-R[0][6],R[0][1]+R[0][6],R[0][2]+R[0][6]];var
+cb=Ec.getPreferredWidth();var
+V=Ec.getPreferredHeight();var
+Nc=0,Jc=0;if(this.labelPlacement=="top"){Nc=Math.round(ob/2-cb/2);Jc=Nb[1]-this.getLabelOffset()-V;}else if(this.labelPlacement=="right"){Nc=Nb[2]+this.getLabelOffset();Jc=Math.round(U/2-V/2);}else if(this.labelPlacement=="left"){Nc=Nb[0]-this.getLabelOffset()-cb;Jc=Math.round(U/2-V/2);}else{Nc=Math.round(ob/2-cb/2);Jc=Nb[3]+this.getLabelOffset();}Ec.setDimensions(Nc,Jc,cb,V);Ec.setText(this.getSeriesName());Ec.updateView();xb.appendChild(Ec.tf());}};i.tooltip=function(q,c,j){var
+yc=q.getValue(c);return yc+", "+Math.round(j*10)/10+"%";};h.toString=function(){return "[PieSeries '"+this.getName()+"']";};i.getVersion=function(){return jsx3.chart.sj;};});

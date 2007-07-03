@@ -2,4 +2,46 @@
  * Copyright (c) 2001-2007, TIBCO Software Inc.
  * Use, modification, and distribution subject to terms of license.
  */
-jsx3.require("jsx3.chart.Series","jsx3.chart.PointRenderer");jsx3.Class.defineClass("jsx3.chart.LineSeries",jsx3.chart.Series,null,function(c,h){var Dc=jsx3.vector;c.FORM_SEGMENT="segment";c.FORM_STEP="step";c.FORM_REVSTEP="reverseStep";c.FORM_HORIZONTAL="horizontal";c.FORM_VERTICAL="vertical";c.Ae={segment:1,step:1,reverseStep:1,horizontal:1,vertical:1};c.Xg=4;c.uz=function(o){this.series=o;};c.uz.prototype.render=function(e,l,d,k,f,a){var Mb=d-e;var mc=k-l;var cc=new Dc.Group(e,l,Mb,mc);var ob=this.series.qT();var _=new Dc.Line(0,0,0,Math.round(mc/2),Mb,Math.round(mc/2));_.setStroke(ob);cc.appendChild(_);var Ob=this.series.getPointRenderer();if(Ob!=null){var zc=Math.round(Mb/4);var Lc=this.series.B9();var Gc=this.series.b8();var Xb=Ob.render(zc,zc,Mb-zc,mc-zc,Lc,Gc);cc.appendChild(Xb);}return cc;};h.init=function(f,g){this.jsxsuper(f,g);this.xField=null;this.yField=null;this.form=c.FORM_SEGMENT;this.interpolateValues=jsx3.Boolean.FALSE;this.pointRadius=null;this.pointRenderer=null;this.pointFill=null;this.pointStroke=null;this.pointGradient=null;this.setTooltipFunction("jsx3.chart.LineSeries.tooltip");};h.getXField=function(){return this.xField;};h.setXField=function(r){this.xField=r;};h.getYField=function(){return this.yField;};h.setYField=function(e){this.yField=e;};h.getForm=function(){return this.form;};h.setForm=function(b){if(c.Ae[b]){this.form=b;}else{throw new jsx3.IllegalArgumentException("form",b);}};h.getInterpolateValues=function(){return this.interpolateValues;};h.setInterpolateValues=function(a){this.interpolateValues=a;};h.getPointRadius=function(){return this.pointRadius!=null?this.pointRadius:c.Xg;};h.setPointRadius=function(j){this.pointRadius=j;};h.getPointRenderer=function(){return this.d8("pointRenderer");};h.setPointRenderer=function(f){this.uR("pointRenderer",f);};h.getPointFill=function(){return this.pointFill;};h.setPointFill=function(a){this.pointFill=a;};h.getPointStroke=function(){return this.pointStroke;};h.setPointStroke=function(e){this.pointStroke=e;};h.getPointGradient=function(){return this.pointGradient;};h.setPointGradient=function(o){this.pointGradient=o;};h.B9=function(){var Z=this.Q0("LJ");if(Z==null)this.mG();return this.Q0("LJ");};h.b8=function(){var Ib=this.Q0("PY");if(Ib==null)this.mG();return this.Q0("PY");};h.mG=function(){var Gc=this.qT();var pb=Dc.Fill.valueOf(this.getPointFill());if(pb==null&&Gc!=null)pb=new Dc.Fill(Gc.getColor());if(pb!=null)pb=jsx3.chart.addGradient(pb,this.pointGradient);var Z=Dc.Stroke.valueOf(this.getPointStroke());this.xI("LJ",pb);this.xI("PY",Z);};h.updateView=function(){this.jsxsuper();var ub=this.l5();this.shape=new Dc.Shape(null,0,0,ub.getWidth(),ub.getHeight());this.shape.setId(this.getId()+"_line");ub.appendChild(this.shape);var K=this.qT();this.shape.setStroke(K);this.A3(this.shape);this.mG();var Z=null,Cc=null;var pb=this.Xs();for(var vb=0;vb<pb.length;vb++){var L=pb[vb];if(L==null)continue;var S=null,Y=null,tb=false;if(Z!=null){S=Z[1];Y=Z[2];tb=Cc==vb-1;}this.cf(vb,tb,L[0],L[1],L[2],L[3],S,Y);Z=L;Cc=vb;}};h.cf=function(q,l,p,b,k,g,f,o){var _=this.l5();var tb=this.shape;var xc=this.getPointRenderer();if(xc!=null){var R=this.getPointRadius();var gb=this.getColorFunction();var U=gb!=null?gb.call(null,p,g):this.B9();var O=xc.render(b-R,k-R,b+R,k+R,U,this.b8());O.setId(this.getId()+"_p"+q);this.A3(O,q,p.getAttribute("jsxid"));_.appendChild(O);var yb=this.getTooltipFunction();if(yb!=null)O.setToolTip(yb.call(null,this,p));}var Lc=q==0||!l&&!this.interpolateValues;if(Lc){tb.X6(b,k);}else{if(this.form==c.FORM_SEGMENT){tb.Z7(b,k);}else{if(this.form==c.FORM_HORIZONTAL){tb.X6(f,k).Z7(b,k);}else{if(this.form==c.FORM_VERTICAL){tb.X6(b,o).Z7(b,k);}else{if(this.form==c.FORM_STEP){tb.Z7(b,o).Z7(b,k);}else{if(this.form==c.FORM_REVSTEP){tb.Z7(f,k).Z7(b,k);}else{jsx3.chart.LOG.error("bad LineSeries form: "+this.form);}}}}}}};h.Xs=function(){var ac=this.Q0("VX");if(ac==null){ac=[];this.xI("VX",ac);}return ac;};h.PM=function(m,o,n,d){this.Xs().push([m,o,n,d]);};h.AS=function(o,m,l,f){this.Xs().push(null);};h.clear=function(){var bb=this.Xs();bb.splice(0,bb.length);};h.getXValue=function(a){if(this.xField)return jsx3.chart.asNumber(a.getAttribute(this.xField));return null;};h.getYValue=function(f){if(this.yField)return jsx3.chart.asNumber(f.getAttribute(this.yField));return null;};h.getLegendRenderer=function(){return new c.uz(this);};c.tooltip=function(j,p){var Gc=j.getXValue(p);var E=j.getYValue(p);return Gc!=null?"{"+Gc+","+E+"}":E;};h.toString=function(){return "[LineSeries '"+this.getName()+"']";};c.getVersion=function(){return jsx3.chart.q2;};});
+jsx3.require("jsx3.chart.Series","jsx3.chart.PointRenderer");jsx3.Class.defineClass("jsx3.chart.LineSeries",jsx3.chart.Series,null,function(c,h){var
+Dc=jsx3.vector;c.FORM_SEGMENT="segment";c.FORM_STEP="step";c.FORM_REVSTEP="reverseStep";c.FORM_HORIZONTAL="horizontal";c.FORM_VERTICAL="vertical";c.gE={segment:1,step:1,reverseStep:1,horizontal:1,vertical:1};c.V7=4;c.k8=function(n){this.series=n;};c.k8.prototype.render=function(p,d,o,r,q,n){var
+E=o-p;var
+Nb=r-d;var
+ab=new
+Dc.Group(p,d,E,Nb);var
+P=this.series.ck();var
+_b=new
+Dc.Line(0,0,0,Math.round(Nb/2),E,Math.round(Nb/2));_b.setStroke(P);ab.appendChild(_b);var
+Fb=this.series.getPointRenderer();if(Fb!=null){var
+J=Math.round(E/4);var
+uc=this.series.rf();var
+cc=this.series.sg();var
+Jc=Fb.render(J,J,E-J,Nb-J,uc,cc);ab.appendChild(Jc);}return ab;};h.init=function(a,l){this.jsxsuper(a,l);this.xField=null;this.yField=null;this.form="segment";this.interpolateValues=jsx3.Boolean.FALSE;this.pointRadius=null;this.pointRenderer=null;this.pointFill=null;this.pointStroke=null;this.pointGradient=null;this.setTooltipFunction("jsx3.chart.LineSeries.tooltip");};h.getXField=function(){return this.xField;};h.setXField=function(l){this.xField=l;};h.getYField=function(){return this.yField;};h.setYField=function(g){this.yField=g;};h.getForm=function(){return this.form;};h.setForm=function(r){if(c.gE[r]){this.form=r;}else throw new
+jsx3.IllegalArgumentException("form",r);};h.getInterpolateValues=function(){return this.interpolateValues;};h.setInterpolateValues=function(j){this.interpolateValues=j;};h.getPointRadius=function(){return this.pointRadius!=null?this.pointRadius:c.V7;};h.setPointRadius=function(s){this.pointRadius=s;};h.getPointRenderer=function(){return this.Sm("pointRenderer");};h.setPointRenderer=function(a){this.Dd("pointRenderer",a);};h.getPointFill=function(){return this.pointFill;};h.setPointFill=function(r){this.pointFill=r;};h.getPointStroke=function(){return this.pointStroke;};h.setPointStroke=function(f){this.pointStroke=f;};h.getPointGradient=function(){return this.pointGradient;};h.setPointGradient=function(j){this.pointGradient=j;};h.rf=function(){var
+Zb=this.pk("ne");if(Zb==null)this.kX();return this.pk("ne");};h.sg=function(){var
+A=this.pk("hl");if(A==null)this.kX();return this.pk("hl");};h.kX=function(){var
+nb=this.ck();var
+lb=Dc.Fill.valueOf(this.getPointFill());if(lb==null&&nb!=null)lb=new
+Dc.Fill(nb.getColor());if(lb!=null)lb=jsx3.chart.addGradient(lb,this.pointGradient);var
+fb=Dc.Stroke.valueOf(this.getPointStroke());this.tm("ne",lb);this.tm("hl",fb);};h.updateView=function(){this.jsxsuper();var
+jc=this.tf();this.shape=new
+Dc.Shape(null,0,0,jc.getWidth(),jc.getHeight());this.shape.setId(this.getId()+"_line");jc.appendChild(this.shape);var
+v=this.ck();this.shape.setStroke(v);this.th(this.shape);this.kX();var
+x=null,cc=null;var
+z=this.Tz();for(var
+E=0;E<z.length;E++){var
+C=z[E];if(C==null)continue;var
+Db=null,ub=null,Xb=false;if(x!=null){Db=x[1];ub=x[2];Xb=cc==E-1;}this.jv(E,Xb,C[0],C[1],C[2],C[3],Db,ub);x=C;cc=E;}};h.jv=function(i,d,o,m,l,f,r,q){var
+Cb=this.tf();var
+Tb=this.shape;var
+wc=this.getPointRenderer();if(wc!=null){var
+Gb=this.getPointRadius();var
+oc=this.getColorFunction();var
+Ib=oc!=null?oc.call(null,o,f):this.rf();var
+lb=wc.render(m-Gb,l-Gb,m+Gb,l+Gb,Ib,this.sg());lb.setId(this.getId()+"_p"+i);this.th(lb,i,o.getAttribute("jsxid"));Cb.appendChild(lb);var
+db=this.getTooltipFunction();if(db!=null)lb.setToolTip(db.call(null,this,o));}var
+fb=i==0||!d&&!this.interpolateValues;if(fb){Tb.dl(m,l);}else if(this.form=="segment"){Tb.pj(m,l);}else if(this.form=="horizontal"){Tb.dl(r,l).pj(m,l);}else if(this.form=="vertical"){Tb.dl(m,q).pj(m,l);}else if(this.form=="step"){Tb.pj(m,q).pj(m,l);}else if(this.form=="reverseStep"){Tb.pj(r,l).pj(m,l);}else jsx3.chart.LOG.error("bad LineSeries form: "+this.form);};h.Tz=function(){var
+eb=this.pk("Xg");if(eb==null){eb=[];this.tm("Xg",eb);}return eb;};h.Co=function(d,e,p,n){this.Tz().push([d,e,p,n]);};h.Fm=function(e,f,a,m){this.Tz().push(null);};h.clear=function(){var
+Gb=this.Tz();Gb.splice(0,Gb.length);};h.getXValue=function(k){if(this.xField)return jsx3.chart.asNumber(k.getAttribute(this.xField));return null;};h.getYValue=function(m){if(this.yField)return jsx3.chart.asNumber(m.getAttribute(this.yField));return null;};h.getLegendRenderer=function(){return new
+c.k8(this);};c.tooltip=function(b,e){var
+u=b.getXValue(e);var
+pb=b.getYValue(e);return u!=null?"{"+u+","+pb+"}":pb;};h.toString=function(){return "[LineSeries '"+this.getName()+"']";};c.getVersion=function(){return jsx3.chart.sj;};});

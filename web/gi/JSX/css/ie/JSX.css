@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2007, TIBCO Software Inc.
+ * Copyright (c) 2001-2006, TIBCO Software Inc.
  * Use, modification, and distribution subject to terms of license.
  */
 
@@ -70,15 +70,19 @@ v\:* {
 /* jsx3.gui.Menu */
 .jsx30menu_2_itemlist {
   position: absolute;
+  overflow: hidden;
   left: 0px;
   top: 0px;
   border: solid 1px #9898a5;
   border-left-color: #b8b8c5;
   border-top-color: #b8b8c5;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)progid:DXImageTransform.Microsoft.Shadow(direction=225,color=#a8a8cf,strength=2)progid:DXImageTransform.Microsoft.Shadow(direction=135,color=#8888cf,strength=2)progid:DXImageTransform.Microsoft.Shadow(direction=180,color=#8888cf,strength=3);
+  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)
+         progid:DXImageTransform.Microsoft.Shadow(direction=90,color=#a8a8cf,strength=0);
+  /* HACK: need this shadow declaration for menu not to flood the available width ... very strange */
 }
 .jsx30menu_2_item {
   position: relative;
+  width: 100%;
   height: 16px;
   padding-left: 36px;
   padding-top: 4px;
@@ -86,11 +90,10 @@ v\:* {
   font-family: Verdana, sans-serif;
   font-size: 10px;
   cursor: default;
-  background-image: url( ../../images/spc.gif );
-  background-repeat: repeat-x;
 }
 .jsx30menu_2_item_disabled {
   position: relative;
+  width: 100%;
   font-family: Verdana, sans-serif;
   font-size: 10px;
   padding-left: 36px;
@@ -98,13 +101,18 @@ v\:* {
   padding-top: 4px;
   white-space: nowrap;
   cursor: not-allowed;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100);
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100);
 }
 .jsx30menu_2_item_divider {
   position: relative;
   height: 5px;
-  margin: 5px 6px 0px 36px;
+  padding: 5px 6px 0px 36px;
+}
+.jsx30menu_2_item_divider div {
+  height: 1px;
+  position: relative;
   border-top: solid 1px #cccccc;
+  font-size: 1px;
 }
 .jsx30menu_2_selected {
   position: absolute;
@@ -113,12 +121,7 @@ v\:* {
   width: 7px;
   height: 7px;
 }
-.jsx30menu_2_text {
-  position: relative;
-  padding-right: 6px;
-  height: 12px;
-}
-span.jsx30menu_2_kc {
+.jsx30menu_2_kc {
   position: relative;
   width: 100%;
   padding: 0px;
@@ -131,9 +134,10 @@ table.jsx30menu_2_kct {
   padding: 0px;
   border-spacing: 0px;
   height: 12px;
+  margin-top: -2px;
 }
 table.jsx30menu_2_kct td {
-  padding: 0px;
+  padding: 0px 25px 0px 0px;
   margin: 0px;
   white-space: nowrap;
   font-family: Verdana, sans-serif;
@@ -141,36 +145,39 @@ table.jsx30menu_2_kct td {
   vertical-align: top;
 }
 table.jsx30menu_2_kct td.keycode {
-  padding-right: 4px;
+  padding: 0px 4px 0px 5px;
   text-align: right;
 }
 .jsx30menu_0_itemlist {
   position: absolute;
+  overflow: hidden;
   left: 0px;
   top: 0px;
   border: solid 1px #9898a5;
   border-left-color: #b8b8c5;
   border-top-color: #b8b8c5;
-  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)progid:DXImageTransform.Microsoft.Shadow(direction=225,color=#a8a8cf,strength=2)progid:DXImageTransform.Microsoft.Shadow(direction=135,color=#8888cf,strength=2)progid:DXImageTransform.Microsoft.Shadow(direction=180,color=#8888cf,strength=3);
+  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)
+         progid:DXImageTransform.Microsoft.Shadow(direction=90,color=#a8a8cf,strength=0);
+/* HACK: need this shadow declaration for menu not to flood the available width ... very strange */
 }
 .jsx30menu_0_item {
   position: relative;
+  width: 100%;
+  font-family: Verdana, sans-serif;
   height: 20px;
+  font-size: 10px;
   padding-left: 36px;
   padding-top: 4px;
   white-space: nowrap;
-  font-family: Verdana, sans-serif;
-  font-size: 10px;
   cursor: default;
-  background-image: url( ../../images/spc.gif );
-  background-repeat: repeat-x;
 }
 .jsx30menu_0_item_disabled {
   position: relative;
+  width: 100%;
   font-family: Verdana, sans-serif;
+  height: 20px;
   font-size: 10px;
   padding-left: 36px;
-  height: 20px;
   padding-top: 4px;
   white-space: nowrap;
   cursor: not-allowed;
@@ -178,9 +185,14 @@ table.jsx30menu_2_kct td.keycode {
 }
 .jsx30menu_0_item_divider {
   position: relative;
-  height: 5px;
-  margin: 5px 6px 0px 36px;
+  height: 10px;
+  padding: 5px 6px 0px 36px;
+}
+.jsx30menu_0_item_divider div {
+  height: 1px;
+  position: relative;
   border-top: solid 1px #cccccc;
+  font-size: 1px;
 }
 .jsx30menu_0_selected {
   position: absolute;
@@ -189,12 +201,7 @@ table.jsx30menu_2_kct td.keycode {
   width: 7px;
   height: 7px;
 }
-.jsx30menu_0_text {
-  position: relative;
-  padding-right: 6px;
-  height: 15px;
-}
-span.jsx30menu_0_kc {
+.jsx30menu_0_kc {
   position: relative;
   width: 100%;
   padding: 0px;
@@ -209,7 +216,7 @@ table.jsx30menu_0_kct {
   margin: -2px 0px 0px -2px;
 }
 table.jsx30menu_0_kct td {
-  padding: 0px;
+  padding: 0px 25px 0px 0px;
   margin: 0px;
   white-space: nowrap;
   font-family: Verdana, sans-serif;
@@ -217,8 +224,23 @@ table.jsx30menu_0_kct td {
   vertical-align: top;
 }
 table.jsx30menu_0_kct td.keycode {
-  padding-right: 4px;
+  padding: 0px 4px 0px 5px;
   text-align: right;
+}
+.jsx30menu_scroll {
+  position: absolute;
+  left: 1px;
+  background-color: white;
+  visibility: hidden;
+  background-position: center center;
+  background-repeat: no-repeat;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100);
+  border: solid 1px #9898a5;
+  padding: 0px; margin: 0px;
+  font-size: 1px;
+}
+.jsx30menu_scrollpane {
+  position: absolute;
 }
 
 /* jsx3.gui.Splitter */
@@ -266,6 +288,10 @@ table.jsx30menu_0_kct td.keycode {
 /** jsx3.gui.Tab and jsx3.gui.TabbedPane */
 #JSX .jsx30tab {
   white-space: nowrap;
+  border-top: solid 0px;
+  border-right: solid 2px #9898a5;
+  border-bottom: solid 0px;
+  border-left: solid 1px #f6f6ff;
 }
 #JSX .jsx30tabbedpane_controlbox {
   white-space: nowrap;
@@ -273,7 +299,27 @@ table.jsx30menu_0_kct td.keycode {
   z-index: 10;
 }
 #JSX .jsx30tab_text {
+}
+#JSX .jsx30tabbedpane {
+  overflow:hidden;
+}
 
+#JSX .jsx30tabbedpane_autoscroller_l {
+  overflow:hidden;
+  vertical-align:middle;
+  cursor:pointer;
+  font-weight:bold;
+  font-family:Arial;
+  font-size:11px;
+}
+
+#JSX .jsx30tabbedpane_autoscroller_r {
+  overflow:hidden;
+  vertical-align:middle;
+  cursor:pointer;
+  font-weight:bold;
+  font-family:Arial;
+  font-size:11px;
 }
 
 /* jsx3.gui.Interactive */
@@ -292,7 +338,8 @@ table.jsx30menu_0_kct td.keycode {
   border: solid 1px #9898a5;
   font-family: Verdana, sans-serif;
   font-size: 10px;
-  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95, FinishOpacity=0, Style=0, StartX=0, FinishX=100, StartY=0, FinishY=100) progid:DXImageTransform.Microsoft.Shadow(direction=225,color=#a8a8cf,strength=2) progid:DXImageTransform.Microsoft.Shadow(direction=135,color=#8888cf,strength=2) progid:DXImageTransform.Microsoft.Shadow(direction=180,color=#8888cf,strength=3);
+  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)
+         progid:DXImageTransform.Microsoft.Shadow(direction=90,color=#a8a8cf,strength=0);
 }
 
 /* jsx3.gui.Select (and combo) */
@@ -303,6 +350,7 @@ table.jsx30menu_0_kct td.keycode {
   background-position: right 0px;
   background-repeat: no-repeat;
   vertical-align: top;
+  text-align:left;
 }
 .jsx30select_optionlist {
   position: absolute;
@@ -313,7 +361,8 @@ table.jsx30menu_0_kct td.keycode {
   border: solid 1px #9898a5;
   border-left-color: #b8b8c5;
   border-top-color: #b8b8c5;
-  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)progid:DXImageTransform.Microsoft.Shadow(direction=225,color=#a8a8cf,strength=2)progid:DXImageTransform.Microsoft.Shadow(direction=135,color=#8888cf,strength=2)progid:DXImageTransform.Microsoft.Shadow(direction=180,color=#8888cf,strength=3);
+  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)
+         progid:DXImageTransform.Microsoft.Shadow(direction=90,color=#a8a8cf,strength=0);
 }
 .jsx30select_option {
   position: relative;
@@ -324,8 +373,6 @@ table.jsx30menu_0_kct td.keycode {
   padding-top: 3px;
   padding-left: 4px;
   cursor: default;
-  background-image: url(../../images/spc.gif);
-  background-repeat: repeat-x;
   white-space: nowrap;
 }
 .jsx30select_check {
@@ -364,16 +411,10 @@ table.jsx30menu_0_kct td.keycode {
   background-color: transparent;
   font-family: Verdana, sans-serif;
   font-size: 10px;
-  text-indent: 1px;
-  overflow: hidden;
-  height: 13px;
-  margin: 1px;
-  vertical-align: top;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  padding-left: 0px;
-  padding-top: 1px;
+  position: relative;
+  left:1px;
 }
+
 
 /* jsx3.gui.Tree */
 #JSX .jsx30tree {
@@ -434,6 +475,17 @@ table.jsx30menu_0_kct td.keycode {
   overflow: hidden;
   text-overflow: ellipsis;
   color: #888888;
+}
+#JSX div.jsx30tree_drop_icon {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100px;
+  height: 7px;
+  overflow: hidden;
+  display: none;
+  z-index: 10;
+  background-repeat: no-repeat;
 }
 
 /* jsx3.gui.List, jsx3.gui.Grid, and jsx3.gui.Column */
@@ -618,12 +670,31 @@ table.jsx30menu_0_kct td.keycode {
 }
 
 /* jsx3.gui.Dialog */
+#JSX .jsx30dialog {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #c6c6c6 #a6a6a6 #a6a6a6 #c6c6c6;
+}
+#JSX .jsx30dialog_content {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #a6a6a6 #c6c6c6 #c6c6c6 #a6a6a6;
+  cursor: default;
+  z-index: 2;
+}
 #JSX div.jsx30dialog_modal {
   width: 100%;
   height: 100%;
   filter: alpha(opacity=50);
   background-color: #FFFFFF;
 }
+.jsx30dialog_mask {
+  filter: alpha(opacity=25);
+  background-color: #6090dd;
+  border: 1px dashed #000033;
+}
+
+/* jsx3.gui.Alerts */
 #JSX .jsx30dialog_alert {
   font-weight: normal;
   font-size: 10px;
@@ -751,6 +822,9 @@ div.jsx30matrix_dragicon
 #JSX div.jsx30matrix_scrollh
 {
 }
+#JSX .jsx30matrix_masks {
+  position: absolute; width: 1px; height: 1px; z-index: 100; left: 0px; top: 0px;
+}
 
 /* jsx3.gui.Matrix.Column */
 #JSX td.jsx30matrixcolumn {
@@ -781,6 +855,7 @@ div.jsx30matrix_dragicon
 }
 #JSX span.jsx30slider div.handle {
   filter: alpha(opacity=100);
+  cursor: pointer;
 }
 #JSX span.jsx30slider div.handle_disabled {
   filter: alpha(opacity=50);
@@ -840,6 +915,9 @@ body.jsx30window {
   z-index: 2;
   font-family: Verdana, Arial, sans-serif;
   font-size: 10px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #9898a5 #d8d8e5 #d8d8e5 #9898a5;
 }
 span.jsx3_dp_cal {
 	width: 140px;
@@ -966,3 +1044,24 @@ table.jsx3_dp_month td.today {
 }
 #JSX .jsx30colorpicker img {
 }
+
+/** jsx3.gui.IFrame */
+#JSX span.jsx30iframe {
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+#JSX iframe.jsx30iframe {
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+.jsx30env {}
+.jsx30env div { padding: 0px 0px 10px 10px; }

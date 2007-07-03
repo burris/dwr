@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2007, TIBCO Software Inc.
+ * Copyright (c) 2001-2006, TIBCO Software Inc.
  * Use, modification, and distribution subject to terms of license.
  */
 
@@ -755,20 +755,16 @@ div.jsx30matrix_dragicon
 
 /* jsx3.gui.Matrix.Column */
 #JSX td.jsx30matrixcolumn {
-  cursor:default;
 }
 #JSX div.jsx30matrixcolumn_value {
   font-family: Verdana, Arial, sans-serif;
   font-size: 10px;
   background-repeat:no-repeat;
   background-position:right center;
-  cursor:default;
 }
 #JSX td.jsx30matrixcolumn_cell {
-  cursor:default;
 }
 #JSX div.jsx30matrixcolumn_cell_value {
-  width:100%;
 }
 
 /* jsx3.gui.Slider */
