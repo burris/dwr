@@ -152,7 +152,7 @@ public class PollHandler implements Handler
         // Set the system up to resume anyway after maxConnectedTime
         alarms.add(new TimedAlarm(maxConnectedTime));
 
-        // We also need to wakeup if the server is being shut down
+        // We also need to wake-up if the server is being shut down
         // WARNING: This code has a non-obvious side effect - The server load
         // monitor (which hands out shutdown messages) also monitors usage by
         // looking at the number of connected alarms.
