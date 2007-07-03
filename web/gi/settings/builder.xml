@@ -1,0 +1,20 @@
+<!--
+  ~ Copyright (c) 2001-2007, TIBCO Software Inc.
+  ~ Use, modification, and distribution subject to terms of license.
+  -->
+
+<data jsxid="jsxroot">
+	<record jsxid="prefs" type="map">
+		<record jsxid="dom" type="map">
+			<record jsxid="showFocus" type="boolean">false</record>
+			<record jsxid="snapTo" type="boolean">true</record>
+		</record>
+		<record jsxid="builder" type="map">
+			<record jsxid="cachewarn" type="boolean">false</record>
+			<record jsxid="dereferencewarn" type="boolean">false</record>
+			<record jsxid="domfocus" type="boolean">true</record>
+			<record jsxid="snapto" type="string">10</record>
+			<record jsxid="domdeletewarn" type="boolean">false</record>
+		</record>
+	</record>
+</data>
