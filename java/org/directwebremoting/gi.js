@@ -97,6 +97,9 @@ dwr.gi._convertAttributes = function(data, name, depth) {
 /** @private Convert an object of unknown type to a JSX string */
 dwr.gi._convertElements = function(data, name, depth) {
   var reply;
+  if (data == null) {
+    return ""; // don't create an empty element for null objects
+  }
   if (typeof data == "function") {
     return ""; // ignore functions
   }
