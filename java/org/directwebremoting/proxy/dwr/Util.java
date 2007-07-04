@@ -75,7 +75,7 @@ public class Util extends ScriptProxy
      * @param elementId The HTML element to update (by id)
      * @param value The text to insert into the HTML element
      */
-    public void setValue(String elementId, String value)
+    public void setValue(String elementId, Object value)
     {
         setValue(elementId, value, false);
     }
@@ -87,7 +87,7 @@ public class Util extends ScriptProxy
      * @param value The text to insert into the HTML element
      * @param escapeHtml Should we escape HTML characters?
      */
-    public void setValue(String elementId, String value, boolean escapeHtml)
+    public void setValue(String elementId, Object value, boolean escapeHtml)
     {
         addFunctionCall("dwr.util.setValue", elementId, value, getEscapeOptions(escapeHtml));
     }

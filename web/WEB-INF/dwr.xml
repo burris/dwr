@@ -47,7 +47,7 @@
     </create>
     <convert match="org.getahead.dwrdemo.people.Person" javascript="Person" converter="bean"/>
 
-    <!-- simpletext -->
+    <!-- simple text -->
     <create creator="new" javascript="Demo">
       <param name="class" value="org.getahead.dwrdemo.simpletext.Demo"/>
     </create>
@@ -78,6 +78,11 @@
       <param name="class" value="org.getahead.dwrdemo.gidemo.Corporations"/>
     </create>
     <convert converter="bean" match="org.getahead.dwrdemo.gidemo.Corporation"/>
+
+    <!-- image generator -->
+    <create creator="new" javascript="ImageGenerator" scope="application">
+      <param name="class" value="org.getahead.dwrdemo.images.ImageGenerator"/>
+    </create>
 
     <!-- this is a bad idea for live, but can be useful in testing -->
     <convert converter="exception" match="java.lang.Exception"/>

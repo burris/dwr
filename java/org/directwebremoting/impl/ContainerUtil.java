@@ -43,6 +43,7 @@ import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.DebugPageGenerator;
+import org.directwebremoting.extend.DownloadManager;
 import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.PageNormalizer;
@@ -51,6 +52,7 @@ import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.servlet.AboutHandler;
 import org.directwebremoting.servlet.AuthHandler;
+import org.directwebremoting.servlet.DownloadHandler;
 import org.directwebremoting.servlet.DwrWebContextFilter;
 import org.directwebremoting.servlet.EngineHandler;
 import org.directwebremoting.servlet.GiHandler;
@@ -82,8 +84,8 @@ public class ContainerUtil
      * A combination of {@link #createDefaultContainer(ServletConfig)} and
      * {@link #setupDefaultContainer(DefaultContainer, ServletConfig)}.
      * @param servletConfig The source of init parameters
-     * @return A setup implementaion of DefaultContainer
-     * @throws ServletException If the specified class could not be found or instansiated
+     * @return A setup implementation of DefaultContainer
+     * @throws ServletException If the specified class could not be found or instantiated
      */
     public static Container createAndSetupDefaultContainer(ServletConfig servletConfig) throws ServletException
     {
@@ -127,7 +129,7 @@ public class ContainerUtil
      * Unlike {@link #setupDefaultContainer(DefaultContainer, ServletConfig)},
      * this method does not call any setup methods.
      * @param servletConfig The source of init parameters
-     * @return An unsetup implementaion of DefaultContainer
+     * @return An un'setup' implementation of DefaultContainer
      * @throws ServletException If the specified class could not be found
      * @see ServletConfig#getInitParameter(String)
      * @deprecated Use {@link #createAndSetupDefaultContainer(ServletConfig)}
@@ -194,6 +196,7 @@ public class ContainerUtil
         container.addParameter(HtmlCallMarshaller.class.getName(), HtmlCallMarshaller.class.getName());
         container.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
         container.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
+        container.addParameter(DownloadManager.class.getName(), InMemoryDownloadManager.class.getName());
 
         // TODO: remove these once we are sure they are not needed
         //container.addParameter(PlainPollHandler.class.getName(), PlainPollHandler.class.getName());
@@ -219,6 +222,7 @@ public class ContainerUtil
         createUrlMapping(container, "/test/", "testHandlerUrl", TestHandler.class);
         createUrlMapping(container, "/interface/", "interfaceHandlerUrl", InterfaceHandler.class);
         createUrlMapping(container, "/monitor/", "monitorHandlerUrl", MonitorHandler.class);
+        createUrlMapping(container, "/download/", "downloadHandlerUrl", DownloadHandler.class);
 
         // The Poll and Call URLs can not be changed easily because they are
         // referenced from engine.js. Maybe one day this would be a good
