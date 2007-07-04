@@ -13,15 +13,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.getahead.dwrdemo.people;
+package org.getahead.dwrdemo.ticketcenter;
+
+import java.util.Date;
 
 import org.directwebremoting.Security;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Person
+public class Call
 {
+    /**
+     * @return the callStarted
+     */
+    public Date getCallStarted()
+    {
+        return callStarted;
+    }
+
+    /**
+     * @param callStarted the callStarted to set
+     */
+    public void setCallStarted(Date callStarted)
+    {
+        this.callStarted = callStarted;
+    }
+
+    /**
+     * @return the notes
+     */
+    public String getNotes()
+    {
+        return notes;
+    }
+
+    /**
+     * @param notes the notes to set
+     */
+    public void setNotes(String notes)
+    {
+        this.notes = notes;
+    }
+
+    /**
+     * @return the supervisorAlert
+     */
+    public boolean isSupervisorAlert()
+    {
+        return supervisorAlert;
+    }
+
+    /**
+     * @param supervisorAlert the supervisorAlert to set
+     */
+    public void setSupervisorAlert(boolean supervisorAlert)
+    {
+        this.supervisorAlert = supervisorAlert;
+    }
+
+    /**
+     * @return the isHandled
+     */
+    public boolean isHandled()
+    {
+        return isHandled;
+    }
+
+    /**
+     * @param isHandled the isHandled to set
+     */
+    public void setHandled(boolean isHandled)
+    {
+        this.isHandled = isHandled;
+    }
+
     /**
      * @return the address
      */
@@ -71,22 +137,6 @@ public class Person
     }
 
     /**
-     * @return the salary
-     */
-    public float getSalary()
-    {
-        return salary;
-    }
-
-    /**
-     * @param salary the salary to set
-     */
-    public void setSalary(float salary)
-    {
-        this.salary = salary;
-    }
-
-    /**
      * @return the phoneNumber
      */
     public String getPhoneNumber()
@@ -101,6 +151,22 @@ public class Person
     {
         this.phoneNumber = phoneNumber;
     }
+
+    private Date callStarted = new Date();
+
+    private String notes = "";
+
+    private boolean supervisorAlert = false;
+
+    private boolean isHandled = false;
+
+    private String name;
+
+    private String address;
+
+    private String phoneNumber;
+
+    private int id;
 
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
@@ -123,7 +189,7 @@ public class Person
             return false;
         }
 
-        Person that = (Person) obj;
+        Call that = (Call) obj;
 
         if (this.id != that.id)
         {
@@ -150,10 +216,4 @@ public class Person
     {
         return "Person[id=" + id + ",name=" + name + "]";
     }
-
-    private String name;
-    private String address;
-    private String phoneNumber;
-    private float salary;
-    private int id;
 }

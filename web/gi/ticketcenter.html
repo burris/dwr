@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Ticket Center Demo Application</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+  <script type='text/javascript' src='../tabs/tabs.js'> </script>
+  <script type='text/javascript' src='../dwr/engine.js'> </script>
+  <script type='text/javascript' src='../dwr/gi.js'> </script>
+  <script type="text/javascript" src="../dwr/interface/CallCenter.js"> </script>
+  <script type="text/javascript" src='ticketcenter.js'> </script>
+  <link rel="stylesheet" type="text/css" href="../tabs/tabs.css" />
+  <link rel="stylesheet" type="text/css" href="../generic.css" />
+</head>
+<body onload="Tabs.init('tabList', 'tabContents');">
+<div id="page-title">[
+  <a href="http://getahead.org/dwr/">DWR Website</a> |
+  <a href="..">Web Application Index</a>
+]</div>
+
+<h1>Ticket Center Demo Application</h1>
+
+<p>This is a simple demonstration of integrating a GI user interface with
+Reverse Ajax. Data from DWR is published into GI with DWR's GI integration.</p>
+
+<ul id="tabList">
+  <li><a href="#" tabId="demoDiv">Demo</a></li>
+  <li><a href="#" tabId="explainDiv">How it works</a></li>
+</ul>
+
+<div id="tabContents">
+<div id="demoDiv">
+
+  <div style="width:800px; height:300px;" id="gidemo">
+    <script
+        type="text/javascript"
+        src="JSX/js/JSX30.js"
+        jsxapppath="JSXAPPS/ticketcenter"
+        jsxlt="true"> </script>
+  </div>
+
+</div>
+<div id="explainDiv">
+</div>
+
+</body>
+</html>
