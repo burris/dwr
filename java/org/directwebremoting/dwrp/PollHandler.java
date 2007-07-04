@@ -117,7 +117,6 @@ public class PollHandler implements Handler
 
         // Create a conduit depending on the type of request (from the URL)
         final BaseScriptConduit conduit = createScriptConduit(batch, response);
-        log.debug(conduit.getClass().getSimpleName() + " for " + batch);
 
         // Register the conduit with a script session so messages can get out
         final RealScriptSession scriptSession = batch.getScriptSession();
@@ -210,7 +209,7 @@ public class PollHandler implements Handler
      * @param batch The parsed request
      * @param response Conduits need a response to write to
      * @return A correctly configured conduit
-     * @throws IOException If the response can't be interogated
+     * @throws IOException If the response can't be interrogated
      */
     private BaseScriptConduit createScriptConduit(PollBatch batch, HttpServletResponse response) throws IOException
     {

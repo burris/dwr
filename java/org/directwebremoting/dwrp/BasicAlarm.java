@@ -15,9 +15,6 @@
  */
 package org.directwebremoting.dwrp;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * An Alarm that goes off if something is badly broken.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -29,7 +26,6 @@ public class BasicAlarm implements Alarm
      */
     public void raiseAlarm()
     {
-        log.debug("Alarm raised: " + getClass().getSimpleName());
         synchronized (sleeperLock)
         {
             if (sleeper != null)
@@ -73,9 +69,4 @@ public class BasicAlarm implements Alarm
      * @protectedBy(sleeperLock)
      */
     private Sleeper sleeper;
-
-    /**
-     * The log stream
-     */
-    private static final Log log = LogFactory.getLog(BasicAlarm.class);
 }

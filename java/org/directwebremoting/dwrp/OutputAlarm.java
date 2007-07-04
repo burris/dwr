@@ -90,7 +90,7 @@ public class OutputAlarm extends BasicAlarm implements Alarm
         @Override
         public boolean addScript(ScriptBuffer script)
         {
-            log.debug("Output alarm went off. Additional wait of " + maxWaitAfterWrite);
+            // log.debug("Output alarm went off. Additional wait of " + maxWaitAfterWrite);
 
             if (maxWaitAfterWrite == 0)
             {
