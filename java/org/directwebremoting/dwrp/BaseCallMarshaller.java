@@ -26,8 +26,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
@@ -37,19 +37,21 @@ import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
+import org.directwebremoting.extend.EnginePrivate;
+import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.Marshaller;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
 import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.extend.TypeHintContext;
+import org.directwebremoting.impl.DefaultFileUpload;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.Messages;
 
@@ -194,14 +196,22 @@ public abstract class BaseCallMarshaller implements Marshaller
         webContext.setCurrentPageInformation(normalizedPage, batch.getScriptSessionId());
 
         // Remaining parameters get put into the request for later consumption
-        Map<String, String> paramMap = batch.getSpareParameters();
+        Map<String, FormField> paramMap = batch.getSpareParameters();
         if (!paramMap.isEmpty())
         {
-            for (Map.Entry<String, String> entry : paramMap.entrySet())
+            for (Map.Entry<String, FormField> entry : paramMap.entrySet())
             {
                 String key = entry.getKey();
-                String value = entry.getValue();
-
+                FormField formField = entry.getValue();
+                Object value;
+                if (formField.isFile())
+                {
+                    value = new DefaultFileUpload(formField.getName(), formField.getMimeType(), formField.getInputStream());
+                }
+                else
+                {
+                    value = formField.getString();
+                }
                 request.setAttribute(key, value);
                 log.debug("Moved param to request: " + key + "=" + value);
             }
@@ -279,7 +289,7 @@ public abstract class BaseCallMarshaller implements Marshaller
      */
     public void marshallOutbound(Replies replies, HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        // Get the output stream and setup the mimetype
+        // Get the output stream and setup the mime type
         response.setContentType(getOutboundMimeType());
         PrintWriter out;
         if (log.isDebugEnabled())
@@ -324,7 +334,7 @@ public abstract class BaseCallMarshaller implements Marshaller
 
             try
             {
-                // The existance of a throwable indicates that something went wrong
+                // The existence of a throwable indicates that something went wrong
                 if (reply.getThrowable() != null)
                 {
                     Throwable ex = reply.getThrowable();

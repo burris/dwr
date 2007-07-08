@@ -26,7 +26,7 @@ import org.directwebremoting.dwrp.ProtocolConstants;
 
 /**
  * InboundContext is the context for set of inbound conversions.
- * Since a data set may be recurrsive parts of some data members may refer to
+ * Since a data set may be recursive parts of some data members may refer to
  * others so we need to keep track of who is converted for what.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
@@ -70,8 +70,35 @@ public final class InboundContext
     public void createInboundVariable(int callNum, String key, String type, String value)
     {
         InboundVariable cte = new InboundVariable(this, key, type, value);
+        checkInboundVariable(callNum, key, cte);
+    }
+    
+    /**
+     * Create an inbound file variable.
+     * Usually called by a query parser to setup a list of known variables.
+     * This method also checks to see if the new variable is a parameter and if
+     * it is it updates the count of parameters
+     * @param callNum The call number to work on
+     * @param key The name of the variable
+     * @param type The javascript type of the variable
+     * @param value The value of the file
+     */
+    public void createInboundVariable(int callNum, String key, String type, FormField value)
+    {
+        InboundVariable iv = new InboundVariable(this, key, type, value);
+        checkInboundVariable(callNum, key, iv);
+    }
 
-        Object old = variables.put(key, cte);
+    /**
+     * Internal method to check the variable we just created does not already
+     * exist, and to ensure that our count of inbound parameters is up to date
+     * @param callNum The number of this call
+     * @param key The name of the variable
+     * @param iv The value to check
+     */
+    private void checkInboundVariable(int callNum, String key, InboundVariable iv)
+    {
+        Object old = variables.put(key, iv);
         if (old != null)
         {
             log.warn("Duplicate variable called: " + key);

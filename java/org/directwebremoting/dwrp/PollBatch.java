@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ServerException;
@@ -42,7 +43,7 @@ public class PollBatch
         debug = request.getHeader("User-Agent");
 
         get = "GET".equals(request.getMethod());
-        Map<String, String> parameters = null;
+        Map<String, FormField> parameters = null;
         if (get)
         {
             parameters = ParseUtil.parseGet(request);
@@ -76,15 +77,15 @@ public class PollBatch
      * @param paramName The name of the parameter sent
      * @return The found value
      */
-    protected String extractParameter(Map<String, String> parameters, String paramName)
+    protected String extractParameter(Map<String, FormField> parameters, String paramName)
     {
-        String id = parameters.remove(paramName);
-        if (id == null)
+        FormField formField = parameters.remove(paramName);
+        if (formField == null)
         {
             throw new IllegalArgumentException(Messages.getString("PollHandler.MissingParameter", paramName));
         }
 
-        return id;
+        return formField.getString();
     }
 
     /**

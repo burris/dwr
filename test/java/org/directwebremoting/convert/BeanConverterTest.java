@@ -114,7 +114,7 @@ public class BeanConverterTest
     @Test(expected = Exception.class)
     public void convertInboundNullPointerException2() throws Exception
     {
-        InboundVariable var = new InboundVariable(null, null, null, null);
+        InboundVariable var = new InboundVariable(null, null, null, (String) null);
         converter.convertInbound(null, var, null);
     }
 

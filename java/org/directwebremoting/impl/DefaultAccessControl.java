@@ -282,7 +282,8 @@ public class DefaultAccessControl implements AccessControl
         {
             Class<?> paramType = method.getParameterTypes()[j];
 
-            if (paramType.getName().startsWith(PACKAGE_DWR_DENY))
+            // Access to org.directwebremoting is denied except for .io
+            if (paramType.getName().startsWith(PACKAGE_DWR_DENY) && !paramType.getName().startsWith(PACKAGE_ALLOW_CONVERT))
             {
                 throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedParamDWR"));
             }
@@ -298,7 +299,7 @@ public class DefaultAccessControl implements AccessControl
         String name = creator.getType().getName();
 
         // Access to org.directwebremoting is denied except for .export
-        if (name.startsWith(PACKAGE_DWR_DENY) && !name.startsWith(PACKAGE_DWR_ALLOW))
+        if (name.startsWith(PACKAGE_DWR_DENY) && !name.startsWith(PACKAGE_ALLOW_CREATE))
         {
             throw new SecurityException(Messages.getString("DefaultAccessControl.DeniedCoreDWR"));
         }
@@ -360,7 +361,12 @@ public class DefaultAccessControl implements AccessControl
     protected static final String PACKAGE_DWR_DENY = "org.directwebremoting.";
 
     /**
-     * My package name, so we can ban DWR classes from being created or marshalled
+     * Special dwr package name from which classes may be created
      */
-    protected static final String PACKAGE_DWR_ALLOW = "org.directwebremoting.export.";
+    protected static final String PACKAGE_ALLOW_CREATE = "org.directwebremoting.export.";
+
+    /**
+     * Special dwr package name from which classes may be converted
+     */
+    protected static final String PACKAGE_ALLOW_CONVERT = "org.directwebremoting.io.";
 }

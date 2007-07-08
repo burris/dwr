@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
+import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.util.LocalUtil;
@@ -73,7 +74,7 @@ public class Batch
         }
     }
 
-    public Batch(Map<String, String> params) throws ServerException
+    public Batch(Map<String, FormField> params) throws ServerException
     {
         setAllParameters(params);
         parseParameters();
@@ -82,15 +83,15 @@ public class Batch
     /**
      * @return the allParameters
      */
-    public Map<String, String> getAllParameters()
+    public Map<String, FormField> getAllParameters()
     {
-        return new HashMap<String, String>(allParameters);
+        return new HashMap<String, FormField>(allParameters);
     }
 
     /**
      * @param allParameters the allParameters to set
      */
-    public void setAllParameters(Map<String, String> allParameters)
+    public void setAllParameters(Map<String, FormField> allParameters)
     {
         this.allParameters = allParameters;
     }
@@ -114,7 +115,7 @@ public class Batch
     /**
      * @return the spareParameters
      */
-    public Map<String, String> getSpareParameters()
+    public Map<String, FormField> getSpareParameters()
     {
         return spareParameters;
     }
@@ -122,7 +123,7 @@ public class Batch
     /**
      * @param spareParameters the spareParameters to set
      */
-    public void setSpareParameters(Map<String, String> spareParameters)
+    public void setSpareParameters(Map<String, FormField> spareParameters)
     {
         this.spareParameters = spareParameters;
     }
@@ -239,11 +240,11 @@ public class Batch
      */
     protected void parseParameters() throws ServerException
     {
-        Map<String, String> paramMap = getAllParameters();
+        Map<String, FormField> paramMap = getAllParameters();
         calls = new Calls();
 
         // Work out how many calls are in this packet
-        String callStr = paramMap.remove(ProtocolConstants.INBOUND_CALL_COUNT);
+        String callStr = removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_CALL_COUNT);
         int callCount;
         try
         {
@@ -254,7 +255,7 @@ public class Batch
             throw new ServerException(Messages.getString("BaseCallMarshaller.BadCallCount", callStr));
         }
 
-        // Extract the ids, scriptnames and methodnames
+        // Extract the ids, script names and method names
         for (int callNum = 0; callNum < callCount; callNum++)
         {
             Call call = new Call();
@@ -266,38 +267,45 @@ public class Batch
             String prefix = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum + ProtocolConstants.INBOUND_CALLNUM_SUFFIX;
 
             // The special values
-            call.setCallId(paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_ID));
-            call.setScriptName(paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_SCRIPTNAME));
-            call.setMethodName(paramMap.remove(prefix + ProtocolConstants.INBOUND_KEY_METHODNAME));
+            call.setCallId(removeFormFieldAndGetString(paramMap, prefix + ProtocolConstants.INBOUND_KEY_ID));
+            call.setScriptName(removeFormFieldAndGetString(paramMap, prefix + ProtocolConstants.INBOUND_KEY_SCRIPTNAME));
+            call.setMethodName(removeFormFieldAndGetString(paramMap, prefix + ProtocolConstants.INBOUND_KEY_METHODNAME));
 
             // Look for parameters to this method
-            for (Iterator<Map.Entry<String, String>> it = paramMap.entrySet().iterator(); it.hasNext();)
+            for (Iterator<Map.Entry<String, FormField>> it = paramMap.entrySet().iterator(); it.hasNext();)
             {
-                Map.Entry<String, String> entry = it.next();
+                Map.Entry<String, FormField> entry = it.next();
                 String key = entry.getKey();
 
                 if (key.startsWith(prefix))
                 {
-                    String data = entry.getValue();
-                    String[] split = ParseUtil.splitInbound(data);
+                    FormField formField = entry.getValue();
+                    if (formField.isFile())
+                    {
+                        inctx.createInboundVariable(callNum, key, ProtocolConstants.TYPE_FILE, formField); 
+                    }
+                    else
+                    {
+                        String[] split = ParseUtil.splitInbound(formField.getString());
 
-                    String value = split[LocalUtil.INBOUND_INDEX_VALUE];
-                    String type = split[LocalUtil.INBOUND_INDEX_TYPE];
-                    inctx.createInboundVariable(callNum, key, type, value);
+                        String value = split[LocalUtil.INBOUND_INDEX_VALUE];
+                        String type = split[LocalUtil.INBOUND_INDEX_TYPE];
+                        inctx.createInboundVariable(callNum, key, type, value);
+                    }
                     it.remove();
                 }
             }
         }
 
-        calls.setBatchId(paramMap.remove(ProtocolConstants.INBOUND_KEY_BATCHID));
-        httpSessionId = paramMap.remove(ProtocolConstants.INBOUND_KEY_HTTP_SESSIONID);
-        scriptSessionId = paramMap.remove(ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
-        page = paramMap.remove(ProtocolConstants.INBOUND_KEY_PAGE);
+        calls.setBatchId(removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_KEY_BATCHID));
+        httpSessionId = removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_KEY_HTTP_SESSIONID);
+        scriptSessionId = removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
+        page = removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_KEY_PAGE);
 
-        for (Map.Entry<String, String> entry : paramMap.entrySet())
+        for (Map.Entry<String, FormField> entry : paramMap.entrySet())
         {
             String key = entry.getKey();
-            String value = entry.getValue();
+            FormField value = entry.getValue();
             if (key.startsWith(ProtocolConstants.INBOUND_KEY_METADATA))
             {
                 spareParameters.put(key.substring(ProtocolConstants.INBOUND_KEY_METADATA.length()), value);
@@ -305,19 +313,54 @@ public class Batch
         }
     }
 
+    /**
+     * Extract a {@link FormField} from the given map and return its string
+     * value or null if the <code>key</code> does not exist
+     * @param paramMap The map to extract values from
+     * @param key The key to lookup
+     * @return The string value of the matching FormField, or null
+     */
+    private String removeFormFieldAndGetString(Map<String, FormField> paramMap, String key)
+    {
+        FormField formField = paramMap.remove(key);
+        return key == null ? null : formField.getString();
+    }
+
+    /**
+     * There is one inbound context to keep track of the conversions that are
+     * done for each call.
+     */
     private List<InboundContext> inboundContexts = new ArrayList<InboundContext>();
 
+    /**
+     * The unique ID sent to the current page
+     */
     private String scriptSessionId;
 
+    /**
+     * The unique ID sent to the browser in the session cookie
+     */
     private String httpSessionId;
 
+    /**
+     * The page that the request was sent from
+     */
     private String page;
 
+    /**
+     * The list of calls in the batch
+     */
     private Calls calls;
 
-    private Map<String, String> allParameters = new HashMap<String, String>();
+    /**
+     * All the parameters sent by the browser
+     */
+    private Map<String, FormField> allParameters = new HashMap<String, FormField>();
 
-    private Map<String, String> spareParameters = new HashMap<String, String>();
+    /**
+     * The unused parameters
+     */
+    private Map<String, FormField> spareParameters = new HashMap<String, FormField>();
 
     /**
      * The log stream

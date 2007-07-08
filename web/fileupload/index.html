@@ -1,0 +1,332 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>File Upload Demo</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+  <script type='text/javascript' src='../tabs/tabs.js'> </script>
+  <script type='text/javascript' src='../dwr/engine.js'> </script>
+  <script type='text/javascript' src='../dwr/util.js'> </script>
+  <script type='text/javascript' src='../dwr/interface/FileUploader.js'> </script>
+  <script type="text/javascript" src='index.js'> </script>
+  <link rel="stylesheet" type="text/css" href="../tabs/tabs.css" />
+  <link rel="stylesheet" type="text/css" href="../generic.css" />
+</head>
+<body onload="dwr.util.useLoadingMessage();Tabs.init('tabList', 'tabContents');">
+<div id="page-title">[
+  <a href="http://getahead.org/dwr/">DWR Website</a> |
+  <a href="..">Web Application Index</a>
+]</div>
+
+<h1>Asynchronous FileUpload</h1>
+
+<p>This is an example of uploading files via DWR</p>
+
+<ul id="tabList">
+  <li><a href="#" tabId="demoDiv">Demo</a></li>
+  <li><a href="#" tabId="explainDiv">How it works</a></li>
+  <li><a href="#" tabId="sourceDiv">Source</a></li>
+</ul>
+
+<div id="tabContents">
+  <div id="demoDiv">
+
+    <p>Please select an image and a text file for uploading. A simple transform
+    will take the image a scale it to 200 pixels square, and emboss on it the
+    text from the uploaded file.</p>
+
+  	<table class="plain grey form">
+      <tr>
+        <th>Image:</th>
+        <td><input type="file" id="uploadImage" size="30"/></td>
+      </tr>
+      <tr>
+        <th>File:</th>
+        <td><input type="file" id="uploadFile" size="30"/></td>
+      </tr>
+      <tr>
+        <th>Color:</th>
+        <td>#<input type="text" id="color" value="FFFFFF" size="7"/></td>
+      </tr>
+      <tr>
+        <th></th>
+      	<td>
+          <button onclick="uploadFiles()">Upload</button>
+      	</td>
+      </tr>
+  	</table>
+
+    <br/>    
+    <img id="image" src="javascript:void(0);"/>
+
+  </div>
+
+  <div id="explainDiv">
+<p>DWR automatically converts files from the browser to instances of <code>org.directwebremoting.export.FileUpload</code>
+using the &quot;file&quot; converter. When you click on the Save Flat button the browser calls the <code>onclick</code>
+event which calls <code>uploadFilesFlat()</code>.</p>
+
+<pre>
+function uploadFilesFlat() {
+  var image = dwr.util.getValue('image');
+  var file = dwr.util.getValue('file');
+  
+  FileUploader.uploadFilesFlat(image, file, function(data) {
+    updateContainers(image.value, file.value);
+  });
+}
+</pre>
+<p><code>dwr.util.getValue()</code> is a utility to get the value of any element, in this case a file object.</p>
+
+<p>On the server, DWR calls the <code>FileUploader.uploadFilesFlat()</code> Java method</p>
+
+<pre>
+public void uploadFilesFlat(FileUpload image, FileUpload file) {
+  Files files = new Files();
+  files.setImage(image);
+  files.setFile(file);
+  WebContextFactory.get().getSession().setAttribute(ATTRIBUTE_UPLOADS, files);
+}
+</pre>
+
+<p>This saves the uploaded files to the session which can then be downloaded by the <code>FileServlet</code>.</p>
+
+<p>When the asynchronous call returns, <code>updateContainers()</code> is fired which updates the page with links to
+the <code>FileServlet</code>.</p>
+
+<pre>
+function updateContainers(imagename, filename) {
+  if (filename != '') {
+    var index = filename.lastIndexOf('/');
+    if (index == -1) {
+      index = filename.lastIndexOf('\\');
+      if (index != -1) {
+        filename = filename.substring(index + 1);
+      }
+    }
+  }
+  
+  var imageContainer = dwr.util.byId('image.container');
+  if (imagename != '') {
+    // put something unique in the URL so the image reloads
+    imageContainer.innerHTML = '&lt;img src="../fileupload/file?type=image&amp;unique=' + (unique ++) + '" /&gt;';
+  } else {
+    imageContainer.innerHTML = '&amp;nbsp;';
+  }
+  var fileContainer = dwr.util.byId('file.container');
+  if (filename != '') {
+    fileContainer.innerHTML = '&lt;a href="../fileupload/file?type=file"&gt;' + filename + '&lt;/a&gt;';
+  } else {
+    fileContainer.innerHTML = '&amp;nbsp;';
+  }
+}
+</pre>
+
+  </div>
+
+  <div id="sourceDiv">
+<h2>HTML source:</h2>
+<pre>
+    &lt;table&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Image&lt;/td&gt;
+        &lt;td&gt;&lt;input type="file" id="image" /&gt;&lt;/td&gt;
+        &lt;td id="image.container"&gt;&amp;nbsp;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;File&lt;/td&gt;
+        &lt;td&gt;&lt;input type="file" id="file" /&gt;&lt;/td&gt;
+        &lt;td id="file.container"&gt;&amp;nbsp;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td colspan="3"&gt;
+          &lt;button onclick="uploadFilesFlat()"&gt;Save Flat&lt;/button&gt;
+          &lt;button onclick="uploadFilesNested()"&gt;Save Nested&lt;/button&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;
+</pre>  
+
+<h2>Javascript source:</h2>
+<pre>
+var unique = 0;
+
+function uploadFilesFlat() {
+  var image = dwr.util.getValue('image');
+  var file = dwr.util.getValue('file');
+  
+  FileUploader.uploadFilesFlat(image, file, function(data) {
+    updateContainers(image.value, file.value);
+  });
+}
+
+function uploadFilesNested() {
+  var files = {
+    image: dwr.util.getValue('image'),
+    file: dwr.util.getValue('file')
+  }
+
+  FileUploader.uploadFilesNested(files, function(data) {
+    updateContainers(files.image.value, files.file.value);
+  });
+}
+
+function updateContainers(imagename, filename) {
+  if (filename != '') {
+    var index = filename.lastIndexOf('/');
+    if (index == -1) {
+      index = filename.lastIndexOf('\\');
+      if (index != -1) {
+        filename = filename.substring(index + 1);
+      }
+    }
+  }
+  
+  var imageContainer = dwr.util.byId('image.container');
+  if (imagename != '') {
+    // put something unique in the URL so the image reloads
+    imageContainer.innerHTML = '&lt;img src="../fileupload/file?type=image&amp;unique=' + (unique ++) + '" /&gt;';
+  } else {
+    imageContainer.innerHTML = '&amp;nbsp;';
+  }
+  var fileContainer = dwr.util.byId('file.container');
+  if (filename != '') {
+    fileContainer.innerHTML = '&lt;a href="../fileupload/file?type=file"&gt;' + filename + '&lt;/a&gt;';
+  } else {
+    fileContainer.innerHTML = '&amp;nbsp;';
+  }
+}
+</pre>
+
+<h2>Java source:</h2>
+<pre>
+public class Files
+{
+    public FileUpload getFile()
+    {
+        return file;
+    }
+    public void setFile(FileUpload file)
+    {
+        this.file = file;
+    }
+    public FileUpload getImage()
+    {
+        return image;
+    }
+    public void setImage(FileUpload image)
+    {
+        this.image = image;
+    }
+
+    private FileUpload image;
+    private FileUpload file;
+}
+
+public class FileUploader
+{
+    public void uploadFilesFlat(FileUpload image, FileUpload file) {
+        Files files = new Files();
+        files.setImage(image);
+        files.setFile(file);
+        WebContextFactory.get().getSession().setAttribute(ATTRIBUTE_UPLOADS, files);
+    }
+    
+    public void uploadFilesNested(Files files) {
+        WebContextFactory.get().getSession().setAttribute(ATTRIBUTE_UPLOADS, files);
+    }
+
+    public static final String ATTRIBUTE_UPLOADS = FileUploader.class.getPackage().getName() + ".company";
+}
+
+public class FileServlet extends HttpServlet
+{
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        doGet(request, response);
+    }
+    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    {
+        String type = request.getParameter("type");
+        Files files = (Files) request.getSession().getAttribute(FileUploader.ATTRIBUTE_UPLOADS);
+        FileUpload fileUpload;
+        if ("image".equals(type)) {
+            fileUpload = files.getImage();
+        } else if ("file".equals(type)) {
+            fileUpload = files.getFile();
+            String filename = fileUpload.getName();
+            int slashIndex = filename.replaceAll("\\\\", "/").lastIndexOf('/');
+            if (slashIndex &gt; 0) {
+                filename = filename.substring(slashIndex + 1);
+            }
+            response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+        } else {
+            throw new IllegalStateException("Unknown file type " + type);
+        }
+        response.setContentType(fileUpload.getContentType());
+        response.setHeader("Expires", "Sun, 13 August 1978 12:00:00 GMT");
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        response.addHeader("Cache-Control", "post-check=0, pre-check=0");
+        response.setHeader("Pragma", "no-cache");
+
+        InputStream in = fileUpload.getInputStream();
+        OutputStream out = response.getOutputStream();
+        byte[] bytes = new byte[1024];
+        int count = 0;
+        while ((count = in.read(bytes)) &gt; 0) {
+            out.write(bytes, 0, count);
+        }
+        out.flush();
+    }
+}
+</pre>
+
+<h2>dwr.xml:</h2>
+<pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE dwr PUBLIC
+  "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN"
+  "http://getahead.org/dwr/dwr20.dtd"&gt;
+&lt;dwr&gt;
+  &lt;allow&gt;
+    &lt;create creator="new" javascript="FileUploader" scope="session"&gt;
+      &lt;param name="class" value="org.getahead.dwrdemo.fileupload.FileUploader"/&gt;
+    &lt;/create&gt;
+    &lt;convert converter="bean" match="org.getahead.dwrdemo.fileupload.Files"/&gt;
+  &lt;/allow&gt;
+&lt;/dwr&gt;
+</pre>
+
+<h2>web.xml:</h2>
+<pre>
+&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+&lt;!DOCTYPE web-app PUBLIC
+    "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
+
+&lt;web-app id="dwr"&gt;
+
+  :
+  
+  &lt;servlet&gt;
+    &lt;servlet-name&gt;file&lt;/servlet-name&gt;
+    &lt;display-name&gt;File Servlet&lt;/display-name&gt;
+    &lt;description&gt;Serves files uploaded via the File Upload demo&lt;/description&gt;
+    &lt;servlet-class&gt;org.getahead.dwrdemo.fileupload.FileServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;file&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/fileupload/file&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+  
+  :
+  
+&lt;/web-app&gt;
+</pre>
+  </div>
+</div>
+
+</body>
+</html>
+  

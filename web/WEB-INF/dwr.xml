@@ -78,11 +78,21 @@
       <param name="class" value="org.getahead.dwrdemo.gidemo.Corporations"/>
     </create>
     <convert converter="bean" match="org.getahead.dwrdemo.gidemo.Corporation"/>
+    <create creator="new" javascript="CallCenter" scope="application">
+      <param name="class" value="org.getahead.dwrdemo.ticketcenter.CallCenter"/>
+    </create>
+    <convert converter="bean" match="org.getahead.dwrdemo.ticketcenter.Call"/>
 
     <!-- image generator -->
     <create creator="new" javascript="ImageGenerator" scope="application">
       <param name="class" value="org.getahead.dwrdemo.images.ImageGenerator"/>
     </create>
+
+    <!-- fileupload -->
+    <create creator="new" javascript="FileUploader" scope="session">
+      <param name="class" value="org.getahead.dwrdemo.fileupload.FileUploader"/>
+    </create>
+    <convert converter="bean" match="org.getahead.dwrdemo.fileupload.Files"/>
 
     <!-- this is a bad idea for live, but can be useful in testing -->
     <convert converter="exception" match="java.lang.Exception"/>

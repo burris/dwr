@@ -530,6 +530,11 @@ dwr.util.setValue = function(ele, val, options) {
     return;
   }
 
+  if (dwr.util._isHTMLElement(ele, "img")) {
+    ele.src = val;
+    return;
+  }
+
   // If the value to be set is a DOM object then we try importing the node
   // rather than serializing it out
   if (val.nodeType) {
@@ -693,6 +698,9 @@ dwr.util.getValue = function(ele, options) {
         return reply;
       }
       return ele.checked;
+    }
+    if (ele.type == "file") {
+      return ele;
     }
     return ele.value;
   }

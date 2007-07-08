@@ -466,11 +466,9 @@ dwr.engine._poll = function(overridePath) {
     else if (navigator.userAgent.indexOf("; MSIE")) {
       batch.rpcType = dwr.engine.IFrame;
       batch.map.partialResponse = dwr.engine._partialResponseYes;
-      // batch.rpcType = dwr.engine.XMLHttpRequest;
-      // batch.map.partialResponse = dwr.engine._partialResponseNo;
     }
     else if (navigator.userAgent.indexOf("Safari/")) {
-      batch.rpcType = dwr.engine.IFrame;
+      batch.rpcType = dwr.engine.XMLHttpRequest;
       batch.map.partialResponse = dwr.engine._partialResponseYes;
     }
     else {
@@ -685,6 +683,13 @@ dwr.engine._sendData = function(batch) {
   if (batch.timeout && batch.timeout != 0) {
     batch.interval = setInterval(function() { dwr.engine._abortRequest(batch); }, batch.timeout);
   }
+
+  if (batch.fileUpload) {  
+    batch.httpMethod = "POST";
+    batch.encType = "multipart/form-data";
+    batch.rpcType = dwr.engine.IFrame;
+  }
+  
   // Get setup for XMLHttpRequest if possible
   if (batch.rpcType == dwr.engine.XMLHttpRequest) {
     if (window.XMLHttpRequest) {
@@ -741,7 +746,7 @@ dwr.engine._sendData = function(batch) {
   else if (batch.rpcType != dwr.engine.ScriptTag) {
     var idname = batch.isPoll ? "dwr-if-poll-" + batch.map.batchId : "dwr-if-" + batch.map["c0-id"];
     // on IE try to use the htmlfile activex control
-    if (batch.isPoll && window.ActiveXObject) {
+    if (batch.isPoll && window.ActiveXObject && !batch.fileUpload) {
       batch.htmlfile = new window.ActiveXObject("htmlfile");
       batch.htmlfile.open();
       batch.htmlfile.write("<html>");
@@ -768,20 +773,39 @@ dwr.engine._sendData = function(batch) {
       batch.iframe.setAttribute("src", request.url);
     }
     else {
-      batch.form = batch.document.createElement("form");
-      batch.form.setAttribute("id", "dwr-form");
-      batch.form.setAttribute("action", request.url);
-      batch.form.setAttribute("target", idname);
-      batch.form.target = idname;
-      batch.form.setAttribute("method", batch.httpMethod);
+      // setting enctype via the DOM does not work in IE, create the form using innerHTML instead
+      var formHtml = 
+      	 "<form id='dwr-form' " + 
+      	 "action='" + request.url + "' " +
+      	 "target='" + idname + "' " +
+      	 "style='display:none;' " +
+      	 "method='" + batch.httpMethod + "'";
+      if (batch.encType) {
+      	 formHtml += " enctype='" + batch.encType + "'";
+      }
+      formHtml += "></form>";
+      var div = batch.document.createElement("div");
+      div.innerHTML = formHtml;
+	  batch.form = div.firstChild;
       for (prop in batch.map) {
         var value = batch.map[prop];
         if (typeof value != "function") {
-          var formInput = batch.document.createElement("input");
-          formInput.setAttribute("type", "hidden");
-          formInput.setAttribute("name", prop);
-          formInput.setAttribute("value", value);
-          batch.form.appendChild(formInput);
+          if (value.tagName && value.tagName.toLowerCase() == "input" && value.type && value.type.toLowerCase() == "file") {
+            // Since we can not set the value of a file object, we must post the actual file object
+            // that the user clicked browse on. We will put a clone in it's place.
+            var clone = value.cloneNode(true);
+            value.removeAttribute("id", prop);
+            value.setAttribute("name", prop);
+            value.parentNode.insertBefore(clone, value);
+            value.parentNode.removeChild(value);
+            batch.form.appendChild(value);
+          } else {
+            var formInput = batch.document.createElement("input");
+            formInput.setAttribute("type", "hidden");
+            formInput.setAttribute("name", prop);
+            formInput.setAttribute("value", value);
+            batch.form.appendChild(formInput);
+          }
         }
       }
       batch.document.body.appendChild(batch.form);
@@ -1156,6 +1180,10 @@ dwr.engine._serializeAll = function(batch, referto, data, name) {
     else if (data instanceof Number) batch.map[name] = "Number:" + data;
     else if (data instanceof Date) batch.map[name] = "Date:" + data.getTime();
     else if (data && data.join) batch.map[name] = dwr.engine._serializeArray(batch, referto, data, name);
+    else if (data && data.tagName && data.tagName.toLowerCase() == "input" && data.type && data.type.toLowerCase() == "file") {
+    	batch.fileUpload = true;
+    	batch.map[name] = data;
+    }
     else batch.map[name] = dwr.engine._serializeObject(batch, referto, data, name);
     break;
   case "function":

@@ -15,13 +15,16 @@
  */
 package org.directwebremoting.extend;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.util.Messages;
 
 /**
  * A simple struct to hold data about a single converted javascript variable.
+ * An inbound variable will have either a value or a fileValue but not both. 
+ * If file is <code>true</code> fileValue will be populated, otherwise value
+ * will be populated.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public final class InboundVariable
@@ -35,13 +38,26 @@ public final class InboundVariable
      */
     public InboundVariable(InboundContext context, String key, String type, String value)
     {
-        this.context = context;
-        this.type = type;
-        this.value = value;
-        this.key = key;
-        this.dereferenced = attemptDereference();
+        this (context, key, type, new FormField(value));
     }
 
+    /**
+     * Parsing ctor
+     * @param context How we lookup references
+     * @param key The name of the variable that this was transfered as
+     * @param type The type information from javascript
+     * @param fileValue The javascript variable converted to a FormField
+     */
+    public InboundVariable(InboundContext context, String key, String type, FormField fileValue)
+    {
+        this.context = context;
+        this.type = type;
+        this.formField = fileValue;
+        this.key = key;
+        this.file = true;
+        this.dereferenced = attemptDereference();
+    }
+    
     /**
      * Attempt to de-reference an inbound variable.
      * We try de-referencing as soon as possible (why? there is a good reason
@@ -58,19 +74,20 @@ public final class InboundVariable
         {
             while (ProtocolConstants.TYPE_REFERENCE.equals(type))
             {
-                InboundVariable cd = context.getInboundVariable(value);
+                InboundVariable cd = context.getInboundVariable(formField.getString());
                 if (cd == null)
                 {
                     return false;
                 }
 
-                type = cd.type;
-                value = cd.value;
+                type = cd.getType();
+                file = cd.isFile();
+                formField = cd.getFormField();
 
                 maxDepth++;
                 if (maxDepth > 20)
                 {
-                    throw new IllegalStateException("Max depth exceeded when dereferencing " + value);
+                    throw new IllegalStateException("Max depth exceeded when dereferencing " + formField.getString());
                 }
             }
 
@@ -78,7 +95,7 @@ public final class InboundVariable
             // name of the thing they point at
             if (key == null)
             {
-                key = value;
+                key = formField.getString();
             }
         }
 
@@ -96,7 +113,7 @@ public final class InboundVariable
             dereferenced = attemptDereference();
             if (!dereferenced)
             {
-                log.error(Messages.getString("InboundVariable.MissingVariable", value));
+                log.error(Messages.getString("InboundVariable.MissingVariable", formField.getString()));
             }
         }
     }
@@ -135,7 +152,23 @@ public final class InboundVariable
     public String getValue()
     {
         forceDereference();
-        return value;
+        return formField.getString();
+    }
+    
+    /**
+     * @return Returns the file value
+     */
+    public FormField getFormField()
+    {
+        return formField;
+    }
+    
+    /**
+     * Does this inbound variable represent a file?
+     */
+    public boolean isFile()
+    {
+        return file;
     }
 
     /* (non-Javadoc)
@@ -145,7 +178,7 @@ public final class InboundVariable
     public String toString()
     {
         forceDereference();
-        return type + ProtocolConstants.INBOUND_TYPE_SEPARATOR + value;
+        return type + ProtocolConstants.INBOUND_TYPE_SEPARATOR + formField.getString(); 
     }
 
     /* (non-Javadoc)
@@ -173,8 +206,12 @@ public final class InboundVariable
             return false;
         }
 
-        if (!this.value.equals(that.value))
+        if (!this.file == that.file) 
         {
+            return false;
+        }
+        
+        if (!this.formField.equals(that.formField)) {
             return false;
         }
 
@@ -192,7 +229,7 @@ public final class InboundVariable
     @Override
     public int hashCode()
     {
-        return value.hashCode() + type.hashCode();
+        return formField.hashCode() + type.hashCode();
     }
 
     /**
@@ -211,14 +248,19 @@ public final class InboundVariable
     private String type;
 
     /**
-     * The javascript declared variable value
+     * The javascript declared file value
      */
-    private String value;
+    private FormField formField;
 
     /**
      * Has this variable been successfully de-referenced
      */
     private boolean dereferenced;
+    
+    /**
+     * Does this inbound variable represent a file?
+     */
+    private boolean file;
 
     /**
      * The log stream

@@ -33,6 +33,11 @@ public interface ProtocolConstants
     public static final String TYPE_STRING = "string";
 
     /**
+     * The name for file types from javascript
+     */
+    public static final String TYPE_FILE = "file";
+    
+    /**
      * How many calls are there in this request?
      */
     public static final String INBOUND_CALL_COUNT = "callCount";

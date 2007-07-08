@@ -15,45 +15,33 @@
  */
 package org.directwebremoting.bayeux;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.Container;
-import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.dwrp.Batch;
 import org.directwebremoting.dwrp.PlainCallMarshaller;
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.EnginePrivate;
-import org.directwebremoting.extend.InboundContext;
-import org.directwebremoting.extend.InboundVariable;
-import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
 import org.directwebremoting.extend.ScriptConduit;
-import org.directwebremoting.extend.TypeHintContext;
-import org.directwebremoting.impl.ContainerUtil;
-import org.directwebremoting.impl.DefaultContainer;
-import org.directwebremoting.impl.DwrXmlConfigurator;
-import org.directwebremoting.impl.StartupUtil;
+
 import dojox.cometd.Bayeux;
-import dojox.cometd.Channel;
 import dojox.cometd.Client;
+import dojox.cometd.Listener;
 
 /**
+ * @author Greg Wilkins [gregw at webtide dot com]
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class BayeuxClient implements dojox.cometd.Listener 
+public class BayeuxClient implements Listener
 {
     public BayeuxClient(Bayeux bayeux)
     {
@@ -67,28 +55,36 @@ public class BayeuxClient implements dojox.cometd.Listener
      */
     public void deliver(Client fromClient, String toChannel, Object message, String msgId)
     {
-        System.err.println(">> "+message);
         try
         {
-            Batch batch = new Batch((Map) message);
-            Calls calls = plainCallMarshaller.marshallInbound(batch);
-            
-            System.err.println("Calls="+calls);
-            
-            for (int i=0;i<calls.getCallCount();i++)
+            Map<String, Object> msgParams = (Map<String, Object>) message;
+            Map<String, FormField> fileParams = new HashMap<String, FormField>(msgParams.size());
+            for (Map.Entry<String, Object> entry : msgParams.entrySet())
             {
-                Call call=calls.getCall(i);
-                Object[] params=call.getParameters();
-                System.err.println("Call["+i+"]="+call.getScriptName()+"."+call.getMethodName()+(params==null?"[]":Arrays.asList(params)));
+                String param = (String) entry.getValue();
+                FormField formField = new FormField(param);
+                fileParams.put(entry.getKey(), formField);
+            }
+
+            Batch batch = new Batch(fileParams);
+            Calls calls = plainCallMarshaller.marshallInbound(batch);
+
+            log.debug("Calls="+calls);
+
+            for (int i = 0; i < calls.getCallCount(); i++)
+            {
+                Call call = calls.getCall(i);
+                Object[] params = call.getParameters();
+                log.debug("Call[" + i + "]=" + call.getScriptName() + "." + call.getMethodName() + (params == null ? "[]" : Arrays.asList(params)));
             }
 
             Replies replies = remoter.execute(calls);
-            
+
             ScriptConduit conduit = new BayeuxScriptConduit(converterManager);
             for (Reply reply : replies)
             {
                 String batchId = calls.getBatchId();
-                System.err.println("Reply="+reply+" BatchId="+batchId);
+                log.debug("Reply="+reply+" BatchId="+batchId);
 
                 if (reply.getThrowable() != null)
                 {
@@ -100,20 +96,19 @@ public class BayeuxClient implements dojox.cometd.Listener
                 else
                 {
                     Object data = reply.getReply();
-                    System.err.println("data="+data);
+                    log.debug("data="+data);
                     EnginePrivate.remoteHandleCallback(conduit, batchId, reply.getCallId(), data);
                 }
             }
-            
+
             String output = conduit.toString();
-            System.err.println("<< "+output);
+            log.debug("<< "+output);
             bayeux.publish(client, "/dwr/"+fromClient.getId(), output, calls.getBatchId());
         }
         catch (Exception ex)
         {
             log.warn("Protocol Error", ex);
         }
-        
     }
 
     /* (non-Javadoc)
@@ -121,7 +116,6 @@ public class BayeuxClient implements dojox.cometd.Listener
      */
     public void removed(String clientId, boolean timeout)
     {
-        // TODO Auto-generated method stub
     }
 
     /**

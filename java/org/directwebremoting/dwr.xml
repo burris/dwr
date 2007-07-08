@@ -36,6 +36,8 @@
     <converter id="url" class="org.directwebremoting.convert.URLConverter"/>
     <converter id="exception" class="org.directwebremoting.convert.ExceptionConverter"/>
     <converter id="miniException" class="org.directwebremoting.convert.MinimalistExceptionConverter"/>
+    <converter id="file" class="org.directwebremoting.convert.FileConverter"/>
+    <converter id="image" class="org.directwebremoting.convert.ImageConverter"/>
   </init>
 
   <allow>
@@ -107,6 +109,10 @@
     <convert converter="servlet" match="javax.servlet.http.HttpServletRequest"/>
     <convert converter="servlet" match="javax.servlet.http.HttpServletResponse"/>
     <convert converter="servlet" match="javax.servlet.http.HttpSession"/>
+
+    <convert converter="file" match="org.directwebremoting.io.FileUpload"/>
+    <convert converter="file" match="java.io.InputStream"/>
+    <convert converter="image" match="java.awt.image.BufferedImage"/>
 
     <create creator="new" javascript="__System" scope="application">
       <param name="class" value="org.directwebremoting.export.System"/>

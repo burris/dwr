@@ -16,17 +16,24 @@
 package org.directwebremoting.dwrp;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
@@ -46,10 +53,39 @@ public class ParseUtil
      * @return The equivalent of HttpServletRequest.getParameterMap() for now
      * @throws ServerException If reading from the request body stream fails
      */
-    public static Map<String, String> parsePost(HttpServletRequest req) throws ServerException
+    public static Map<String, FormField> parsePost(HttpServletRequest req) throws ServerException
     {
-        Map<String, String> paramMap = new HashMap<String, String>();
+        Map<String, FormField> paramMap;
 
+        if (ServletFileUpload.isMultipartContent(req))
+        {
+            paramMap = parseMultipartPost(req);
+        }
+        else
+        {
+            paramMap = parseBasicPost(req);
+        }
+
+        // If there is only 1 param then this must be a broken Safari.
+        if (paramMap.size() == 1)
+        {
+            parseBrokenMacPost(paramMap);
+        }
+        
+        return paramMap;
+    }
+
+    /**
+     * The default parse case for a normal form submit
+     * @param req The http request
+     * @return a map of parsed parameters
+     * @throws ServerException
+     */
+    private static Map<String, FormField> parseBasicPost(HttpServletRequest req) throws ServerException
+    {
+        Map<String, FormField> paramMap;
+        paramMap = new HashMap<String, FormField>();
+        
         BufferedReader in = null;
         try
         {
@@ -61,16 +97,16 @@ public class ParseUtil
             // It would be more normal to do the following:
             // BufferedReader in = req.getReader();
             in = new BufferedReader(new InputStreamReader(req.getInputStream()));
-
+   
             while (true)
             {
                 String line = in.readLine();
-
+   
                 if (line == null)
                 {
                     break;
                 }
-
+   
                 if (line.indexOf('&') != -1)
                 {
                     // If there are any &s then this must be iframe post and all the
@@ -81,13 +117,13 @@ public class ParseUtil
                     {
                         String part = st.nextToken();
                         part = LocalUtil.decode(part);
-
+   
                         parsePostLine(part, paramMap);
                     }
                 }
                 else
                 {
-                    // Horay, this is a normal one!
+                    // Hooray, this is a normal one!
                     parsePostLine(line, paramMap);
                 }
             }
@@ -110,41 +146,76 @@ public class ParseUtil
                 }
             }
         }
+        return paramMap;
+    }
 
-        // If there is only 1 param then this must be a broken Safari. All
-        // the parameters have got dumped on one line split with \n
-        // See: http://bugzilla.opendarwin.org/show_bug.cgi?id=3565
-        //      https://dwr.dev.java.net/issues/show_bug.cgi?id=93
-        //      http://jira.atlassian.com/browse/JRA-8354
-        //      http://developer.apple.com/internet/safari/uamatrix.html
-        if (paramMap.size() == 1)
+    /**
+     * Parse a multipart request using commons file-upload.
+     * @param req
+     * @return A map of FileItems. Strings and files can be determined by isFormField()
+     * @throws ServerException
+     */
+    @SuppressWarnings("unchecked")
+    private static Map<String, FormField> parseMultipartPost(HttpServletRequest req) throws ServerException
+    {
+        try
         {
-            // This looks like a broken Mac where the line endings are confused
-            log.debug("Using Broken Safari POST mode");
-
-            // Iterators insist that we call hasNext() before we start
-            Iterator<String> it = paramMap.keySet().iterator();
-            if (!it.hasNext())
+            Map<String, FormField> map = new HashMap<String, FormField>();
+            List<FileItem> fileItems = SERVLET_FILE_UPLOAD.parseRequest(req);
+            for (FileItem fileItem : fileItems)
             {
-                throw new IllegalStateException("No entries in non empty map!");
+                FormField formField;
+                if (fileItem.isFormField())
+                {
+                    formField = new FormField(fileItem.getString());
+                }
+                else
+                {
+                    formField = new FormField(fileItem.getName(), fileItem.getContentType(), fileItem.get());
+                }
+                map.put(fileItem.getFieldName(), formField);
             }
+            return map;
+        }
+        catch (FileUploadException e)
+        {
+            throw new ServerException(Messages.getString("ParseUtil.InputReadFailed"), e);
+        }
+    }
 
-            // So get the first
-            String key = it.next();
-            String value = paramMap.get(key);
-            String line = key + ProtocolConstants.INBOUND_DECL_SEPARATOR + value;
+    /**
+     * All the parameters have got dumped on one line split with \n
+     * See: http://bugzilla.opendarwin.org/show_bug.cgi?id=3565
+     *      https://dwr.dev.java.net/issues/show_bug.cgi?id=93
+     *      http://jira.atlassian.com/browse/JRA-8354
+     *      http://developer.apple.com/internet/safari/uamatrix.html
+     * @param paramMap The broken parsed parameter
+     */
+    private static void parseBrokenMacPost(Map<String, FormField> paramMap)
+    {
+        // This looks like a broken Mac where the line endings are confused
+        log.debug("Using Broken Safari POST mode");
 
-            StringTokenizer st = new StringTokenizer(line, "\n");
-            while (st.hasMoreTokens())
-            {
-                String part = st.nextToken();
-                part = LocalUtil.decode(part);
-
-                parsePostLine(part, paramMap);
-            }
+        // Iterators insist that we call hasNext() before we start
+        Iterator<String> it = paramMap.keySet().iterator();
+        if (!it.hasNext())
+        {
+            throw new IllegalStateException("No entries in non empty map!");
         }
 
-        return paramMap;
+        // So get the first
+        String key = it.next();
+        String value = paramMap.get(key).getString();
+        String line = key + ProtocolConstants.INBOUND_DECL_SEPARATOR + value;
+
+        StringTokenizer st = new StringTokenizer(line, "\n");
+        while (st.hasMoreTokens())
+        {
+            String part = st.nextToken();
+            part = LocalUtil.decode(part);
+
+            parsePostLine(part, paramMap);
+        }
     }
 
     /**
@@ -152,7 +223,7 @@ public class ParseUtil
      * @param line The line to parse
      * @param paramMap The map to add parsed parameters to
      */
-    private static void parsePostLine(String line, Map<String, String> paramMap)
+    private static void parsePostLine(String line, Map<String, FormField> paramMap)
     {
         if (line.length() == 0)
         {
@@ -169,7 +240,7 @@ public class ParseUtil
             String key = line.substring(0, sep);
             String value = line.substring(sep  + ProtocolConstants.INBOUND_DECL_SEPARATOR.length());
 
-            paramMap.put(key, value);
+            paramMap.put(key, new FormField(value));
         }
     }
 
@@ -183,9 +254,9 @@ public class ParseUtil
      * @throws ServerException If the parsing fails
      */
     @SuppressWarnings("unchecked")
-    public static Map<String, String> parseGet(HttpServletRequest req) throws ServerException
+    public static Map<String, FormField> parseGet(HttpServletRequest req) throws ServerException
     {
-        Map<String, String> convertedMap = new HashMap<String, String>();
+        Map<String, FormField> convertedMap = new HashMap<String, FormField>();
         Map<String, String[]> paramMap = req.getParameterMap();
 
         for (Map.Entry<String, String[]> entry : paramMap.entrySet())
@@ -195,7 +266,7 @@ public class ParseUtil
 
             if (array.length == 1)
             {
-                convertedMap.put(key, array[0]);
+                convertedMap.put(key, new FormField(array[0]));
             }
             else
             {
@@ -231,9 +302,21 @@ public class ParseUtil
 
         return reply;
     }
-
+    
     /**
      * The log stream
      */
     private static final Log log = LogFactory.getLog(ParseUtil.class);
+    
+    /**
+     * The threshold, in bytes, below which items will be retained in memory and above which they will be stored as a file
+     */
+    private static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
+
+    /**
+     * The file upload meta data
+     */
+    private static final ServletFileUpload SERVLET_FILE_UPLOAD = new ServletFileUpload(
+        new DiskFileItemFactory(DEFAULT_SIZE_THRESHOLD, new File(System.getProperty("java.io.tmpdir")))
+    );
 }
