@@ -81,6 +81,7 @@ public class FileUploader
         image = afop.filter(image, null);
 
         // And scrawl the text on the image in 10 rows of 20 chars
+        Graphics2D g2d = image.createGraphics();
         for (int row = 0; row < 10; row++)
         {
             String output = null;
@@ -93,7 +94,6 @@ public class FileUploader
                 output = text.substring(row * 20);
             }
 
-            Graphics2D g2d = image.createGraphics();
             g2d.setFont(new Font("SansSerif", Font.PLAIN, 16));
             g2d.setColor(ColorUtil.decodeHtmlColorString(color));
             g2d.drawString(output, 5, (row + 1) * 20);

@@ -61,65 +61,92 @@
   </div>
 
   <div id="explainDiv">
-<p>DWR automatically converts files from the browser to instances of <code>org.directwebremoting.export.FileUpload</code>
-using the &quot;file&quot; converter. When you click on the Save Flat button the browser calls the <code>onclick</code>
-event which calls <code>uploadFilesFlat()</code>.</p>
+<p>DWR automatically converts files from the browser to instances of
+<code>org.directwebremoting.export.FileUpload</code> using the &quot;file&quot;
+converter. When you click on the Upload button the browser calls the
+<code>uploadFiles()</code> function, which simply gets the values from the
+3 input elements and passes them up to DWR:</p>
 
 <pre>
-function uploadFilesFlat() {
-  var image = dwr.util.getValue('image');
-  var file = dwr.util.getValue('file');
-  
-  FileUploader.uploadFilesFlat(image, file, function(data) {
-    updateContainers(image.value, file.value);
+function uploadFiles() {
+  var image = dwr.util.getValue('uploadImage');
+  var file = dwr.util.getValue('uploadFile');
+  var color = dwr.util.getValue('color');
+
+  FileUploader.uploadFiles(image, file, color, function(data) {
+    dwr.util.setValue('image', data);
   });
 }
 </pre>
-<p><code>dwr.util.getValue()</code> is a utility to get the value of any element, in this case a file object.</p>
 
-<p>On the server, DWR calls the <code>FileUploader.uploadFilesFlat()</code> Java method</p>
+<p><code>dwr.util.getValue()</code> is a utility to get the value of any
+element, in this case a file object.</p>
+
+<p>On the server, DWR calls the <code>FileUploader.uploadFiles()</code> Java
+method, which has the following signature:</p>
 
 <pre>
-public void uploadFilesFlat(FileUpload image, FileUpload file) {
-  Files files = new Files();
-  files.setImage(image);
-  files.setFile(file);
-  WebContextFactory.get().getSession().setAttribute(ATTRIBUTE_UPLOADS, files);
-}
+BufferedImage uploadFiles(FileUpload uploadImage, FileUpload uploadFile, String color)
 </pre>
 
-<p>This saves the uploaded files to the session which can then be downloaded by the <code>FileServlet</code>.</p>
-
-<p>When the asynchronous call returns, <code>updateContainers()</code> is fired which updates the page with links to
-the <code>FileServlet</code>.</p>
+<p>Omitting exception handling for brevity, we then create a BufferedImage:</p>
 
 <pre>
-function updateContainers(imagename, filename) {
-  if (filename != '') {
-    var index = filename.lastIndexOf('/');
-    if (index == -1) {
-      index = filename.lastIndexOf('\\');
-      if (index != -1) {
-        filename = filename.substring(index + 1);
-      }
+InputStream in = uploadImage.getInputStream();
+BufferedImage image = ImageIO.read(in);
+</pre>
+
+<p>And read the first few bytes from the other file:
+
+<pre>
+InputStream in = uploadFile.getInputStream();
+byte[] buffer = new byte[1024];
+int len = in.read(buffer);
+String text = new String(buffer, 0, len);
+</pre>
+
+<p>We then perform a funky transform to scale the image to 200x200:</p>
+
+<pre>
+AffineTransform atx = new AffineTransform();
+atx.scale(200d / image.getWidth(), 200d / image.getHeight());
+AffineTransformOp afop = new AffineTransformOp(atx, AffineTransformOp.TYPE_BILINEAR);
+image = afop.filter(image, null);
+</pre>
+
+<p>I don't understand it either but the
+<a href="http://www.exampledepot.com/egs/java.awt.image/CreateTxImage.html">Java
+Developers Almanac</a> helps with the cut and paste method of reuse!</p>
+
+<p>Finally we write 10 lines of 20 chars each onto the image:</p>
+
+<pre>
+Graphics2D g2d = image.createGraphics();
+for (int row = 0; row < 10; row++) {
+    String output = null;
+    if (text.length() > (row + 1) * 20) {
+        output = text.substring(row * 20, (row + 1) * 20);
     }
-  }
-  
-  var imageContainer = dwr.util.byId('image.container');
-  if (imagename != '') {
-    // put something unique in the URL so the image reloads
-    imageContainer.innerHTML = '&lt;img src="../fileupload/file?type=image&amp;unique=' + (unique ++) + '" /&gt;';
-  } else {
-    imageContainer.innerHTML = '&amp;nbsp;';
-  }
-  var fileContainer = dwr.util.byId('file.container');
-  if (filename != '') {
-    fileContainer.innerHTML = '&lt;a href="../fileupload/file?type=file"&gt;' + filename + '&lt;/a&gt;';
-  } else {
-    fileContainer.innerHTML = '&amp;nbsp;';
-  }
+    else {
+        output = text.substring(row * 20);
+    }
+
+    g2d.setFont(new Font("SansSerif", Font.PLAIN, 16));
+    g2d.setColor(ColorUtil.decodeHtmlColorString(color));
+    g2d.drawString(output, 5, (row + 1) * 20);
 }
 </pre>
+
+<p>And that's basically it. The Java code then returns the image which it
+converted by the "image" converter and passed to the callback which simply
+updates the image:</p>
+
+<pre>
+dwr.util.setValue('image', data);
+</pre>
+
+<p>The <b>really</b> good news is that 95% of this code is about image
+manipulation. The DWR part is trivially easy.</p>
 
   </div>
 
