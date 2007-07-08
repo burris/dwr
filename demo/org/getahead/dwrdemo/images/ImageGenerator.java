@@ -18,7 +18,6 @@ package org.getahead.dwrdemo.images;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.dwr.Util;
+import org.getahead.dwrdemo.util.ColorUtil;
 
 /**
  * Demonstrate DWR's {@link org.directwebremoting.convert.ImageConverter}.
@@ -49,30 +49,7 @@ public class ImageGenerator
 
         Quote quote = new Quote();
 
-        if (color.startsWith("#"))
-        {
-            color = color.substring(1);
-        }
-        if (color.endsWith(";"))
-        {
-            color = color.substring(0, color.length() - 1);
-        }
-        switch (color.length())
-        {
-        case 6:
-            int red = Integer.parseInt(color.substring(0, 2), 16);
-            int green = Integer.parseInt(color.substring(2, 4), 16);
-            int blue = Integer.parseInt(color.substring(4, 6), 16);
-            quote.color = new Color(red, green, blue);
-            break;
-        case 3:
-            break;
-        case 1:
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid color: " + color);
-        }
-
+        quote.color = ColorUtil.decodeHtmlColorString(color);
         int style = (bold ? Font.BOLD : 0) + (italic ? Font.ITALIC : 0);
         quote.font = new Font(fontName, style, size);
         quote.text = text;
@@ -110,11 +87,6 @@ public class ImageGenerator
         Collection<ScriptSession> sessions = webContext.getScriptSessionsByPage(contextPath + "/images/");
         Util util = new Util(sessions);
         util.setValue("image", bufferedImage);
-    }
-
-    public String[] getFonts()
-    {
-        return GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
     }
 
     class Quote
