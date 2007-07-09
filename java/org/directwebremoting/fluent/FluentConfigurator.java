@@ -25,7 +25,7 @@ import org.directwebremoting.util.LocalUtil;
  * <a href="http://www.martinfowler.com/bliki/FluentInterface.html">described by
  * Martin Fowler</a>.
  *
- * <p>To wire up the configuration programatically rather than having to use
+ * <p>To wire up the configuration programmatically rather than having to use
  * <code>dwr.xml</code>. In order to use this style, you'll need to:</p>
  *
  * <ul>
@@ -72,7 +72,7 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * Add a new {@link Converter} definition.
      * @param id The id referred to by the {@link #withConverter(String, String)}
-     * @param converterClassName The implementation of {@link Converter} to instansitate.
+     * @param converterClassName The implementation of {@link Converter} to instantiate.
      * @return <code>this</code> to continue the fluency
      */
     public FluentConfigurator withConverterType(String id, String converterClassName)
@@ -83,7 +83,7 @@ public abstract class FluentConfigurator implements Configurator
     }
 
     /**
-     * Use a {@link Converter} to instansiate a class
+     * Use a {@link Converter} to instantiate a class
      * @param newConverter A predefined {@link Converter} or one defined by
      * {@link #withConverterType(String, String)}.
      * @param newMatch The javascript name of this component
@@ -100,7 +100,7 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * Add a new {@link Creator} definition.
      * @param id The id referred to by the {@link #withCreator(String, String)}
-     * @param creatorClassName The implementation of {@link Creator} to instansitate.
+     * @param creatorClassName The implementation of {@link Creator} to instantiate.
      * @return <code>this</code> to continue the fluency
      */
     public FluentConfigurator withCreatorType(String id, String creatorClassName)
@@ -111,7 +111,7 @@ public abstract class FluentConfigurator implements Configurator
     }
 
     /**
-     * Use a {@link Creator} to instansiate a class
+     * Use a {@link Creator} to instantiate a class
      * @param newTypeName A predefined {@link Creator} or one defined by
      * {@link #withCreatorType(String, String)}.
      * @param newScriptName The javascript name of this component
@@ -184,7 +184,7 @@ public abstract class FluentConfigurator implements Configurator
     /**
      * Add an exclude rule to a {@link Creator}
      * This should be used during a {@link #withCreator(String, String)} call.
-     * @param methodName The method name to be dis-allowed
+     * @param methodName The method name to be disallowed
      * @return <code>this</code> to continue the fluency
      */
     public FluentConfigurator exclude(String methodName)
