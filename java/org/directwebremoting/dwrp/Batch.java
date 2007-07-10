@@ -21,11 +21,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.FormField;
@@ -43,195 +42,31 @@ public class Batch
     /**
      * Parse an inbound request into a Calls object
      * @param request The original browser's request
-     * @param crossDomainSessionSecurity Are we checking for CSRF attacks
-     * @param allowGetForSafariButMakeForgeryEasier Do we allow GET?
-     * @param sessionCookieName "JSESSIONID" unless it has been overridden
-     * @throws ServerException If reading from the request body stream fails
      */
-    public Batch(HttpServletRequest request, boolean crossDomainSessionSecurity, boolean allowGetForSafariButMakeForgeryEasier, String sessionCookieName) throws ServerException
+    public Batch(HttpServletRequest request) throws ServerException
     {
-        boolean isGet = "GET".equals(request.getMethod());
-        if (isGet)
+        get = "GET".equals(request.getMethod());
+        if (get)
         {
-            setAllParameters(ParseUtil.parseGet(request));
+            allParameters = ParseUtil.parseGet(request);
         }
         else
         {
-            setAllParameters(ParseUtil.parsePost(request));
+            allParameters = ParseUtil.parsePost(request);
         }
 
-        parseParameters();
-
-        if (!allowGetForSafariButMakeForgeryEasier && isGet)
-        {
-            log.error("GET is disallowed because it makes request forgery easier. See http://getahead.org/dwr/security/allowGetForSafariButMakeForgeryEasier for more details.");
-            throw new SecurityException("GET Disalowed");
-        }
-
-        if (crossDomainSessionSecurity)
-        {
-            checkNotCsrfAttack(request, sessionCookieName);
-        }
-    }
-
-    public Batch(Map<String, FormField> params) throws ServerException
-    {
-        setAllParameters(params);
         parseParameters();
     }
 
     /**
-     * @return the allParameters
+     * Ctor for the Bayeux client which doesn't have requests and responses
+     * @param allParameters A set of name value pairs
+     * @throws ServerException If the parameters can't be decoded
      */
-    public Map<String, FormField> getAllParameters()
-    {
-        return new HashMap<String, FormField>(allParameters);
-    }
-
-    /**
-     * @param allParameters the allParameters to set
-     */
-    public void setAllParameters(Map<String, FormField> allParameters)
+    public Batch(Map<String, FormField> allParameters) throws ServerException
     {
         this.allParameters = allParameters;
-    }
-
-    /**
-     * @return the inboundContexts
-     */
-    public List<InboundContext> getInboundContexts()
-    {
-        return inboundContexts;
-    }
-
-    /**
-     * @param inboundContexts the inboundContexts to set
-     */
-    public void setInboundContexts(List<InboundContext> inboundContexts)
-    {
-        this.inboundContexts = inboundContexts;
-    }
-
-    /**
-     * @return the spareParameters
-     */
-    public Map<String, FormField> getSpareParameters()
-    {
-        return spareParameters;
-    }
-
-    /**
-     * @param spareParameters the spareParameters to set
-     */
-    public void setSpareParameters(Map<String, FormField> spareParameters)
-    {
-        this.spareParameters = spareParameters;
-    }
-
-    /**
-     * @return the page
-     */
-    public String getPage()
-    {
-        return page;
-    }
-
-    /**
-     * @param page the page to set
-     */
-    public void setPage(String page)
-    {
-        this.page = page;
-    }
-
-    /**
-     * @return the scriptSessionId
-     */
-    public String getScriptSessionId()
-    {
-        return scriptSessionId;
-    }
-
-    /**
-     * @param scriptSessionId the scriptSessionId to set
-     */
-    public void setScriptSessionId(String scriptSessionId)
-    {
-        this.scriptSessionId = scriptSessionId;
-    }
-
-    /**
-     * @return the httpSessionId
-     */
-    public String getHttpSessionId()
-    {
-        return httpSessionId;
-    }
-
-    /**
-     * @param httpSessionId the httpSessionId to set
-     */
-    public void setHttpSessionId(String httpSessionId)
-    {
-        this.httpSessionId = httpSessionId;
-    }
-
-    /**
-     * @return the calls
-     */
-    public Calls getCalls()
-    {
-        return calls;
-    }
-
-    /**
-     * @param calls the calls to set
-     */
-    public void setCalls(Calls calls)
-    {
-        this.calls = calls;
-    }
-
-    /**
-     * Check that this request is not subject to a CSRF attack
-     * @param request The original browser's request
-     * @param sessionCookieName "JSESSIONID" unless it has been overridden
-     */
-    private void checkNotCsrfAttack(HttpServletRequest request, String sessionCookieName)
-    {
-        // A check to see that this isn't a csrf attack
-        // http://en.wikipedia.org/wiki/Cross-site_request_forgery
-        // http://www.tux.org/~peterw/csrf.txt
-        if (request.isRequestedSessionIdValid() && request.isRequestedSessionIdFromCookie())
-        {
-            String headerSessionId = request.getRequestedSessionId();
-            if (headerSessionId.length() > 0)
-            {
-                String bodySessionId = getHttpSessionId();
-
-                // Normal case; if same session cookie is supplied by DWR and
-                // in HTTP header then all is ok
-                if (headerSessionId.equals(bodySessionId))
-                {
-                    return;
-                }
-
-                // Weblogic adds creation time to the end of the incoming
-                // session cookie string (even for request.getRequestedSessionId()).
-                // Use the raw cookie instead
-                for (Cookie cookie : request.getCookies())
-                {
-                    if (cookie.getName().equals(sessionCookieName) && cookie.getValue().equals(bodySessionId))
-                    {
-                        return;
-                    }
-                }
-
-                // Otherwise error
-                log.error("A request has been denied as a potential CSRF attack.");
-                throw new SecurityException("Session Error");
-            }
-        }
+        parseParameters();
     }
 
     /**
@@ -240,11 +75,11 @@ public class Batch
      */
     protected void parseParameters() throws ServerException
     {
-        Map<String, FormField> paramMap = getAllParameters();
+        Map<String, FormField> paramMap = new HashMap<String, FormField>(allParameters);
         calls = new Calls();
 
         // Work out how many calls are in this packet
-        String callStr = removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_CALL_COUNT);
+        String callStr = extractParameter(paramMap, ProtocolConstants.INBOUND_CALL_COUNT);
         int callCount;
         try
         {
@@ -267,9 +102,9 @@ public class Batch
             String prefix = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum + ProtocolConstants.INBOUND_CALLNUM_SUFFIX;
 
             // The special values
-            call.setCallId(removeFormFieldAndGetString(paramMap, prefix + ProtocolConstants.INBOUND_KEY_ID));
-            call.setScriptName(removeFormFieldAndGetString(paramMap, prefix + ProtocolConstants.INBOUND_KEY_SCRIPTNAME));
-            call.setMethodName(removeFormFieldAndGetString(paramMap, prefix + ProtocolConstants.INBOUND_KEY_METHODNAME));
+            call.setCallId(extractParameter(paramMap, prefix + ProtocolConstants.INBOUND_KEY_ID));
+            call.setScriptName(extractParameter(paramMap, prefix + ProtocolConstants.INBOUND_KEY_SCRIPTNAME));
+            call.setMethodName(extractParameter(paramMap, prefix + ProtocolConstants.INBOUND_KEY_METHODNAME));
 
             // Look for parameters to this method
             for (Iterator<Map.Entry<String, FormField>> it = paramMap.entrySet().iterator(); it.hasNext();)
@@ -297,10 +132,10 @@ public class Batch
             }
         }
 
-        calls.setBatchId(removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_KEY_BATCHID));
-        httpSessionId = removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_KEY_HTTP_SESSIONID);
-        scriptSessionId = removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
-        page = removeFormFieldAndGetString(paramMap, ProtocolConstants.INBOUND_KEY_PAGE);
+        calls.setBatchId(extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_BATCHID));
+        httpSessionId = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_HTTP_SESSIONID);
+        scriptSessionId = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
+        page = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_PAGE);
 
         for (Map.Entry<String, FormField> entry : paramMap.entrySet())
         {
@@ -314,16 +149,88 @@ public class Batch
     }
 
     /**
-     * Extract a {@link FormField} from the given map and return its string
-     * value or null if the <code>key</code> does not exist
-     * @param paramMap The map to extract values from
-     * @param key The key to lookup
-     * @return The string value of the matching FormField, or null
+     * Extract a parameter and ensure it is in the request.
+     * This is needed to cope with Jetty continuations that are not real
+     * continuations.
+     * @param parameters The parameter list parsed out of the request
+     * @param paramName The name of the parameter sent
+     * @return The found value
      */
-    private String removeFormFieldAndGetString(Map<String, FormField> paramMap, String key)
+    protected String extractParameter(Map<String, FormField> parameters, String paramName)
     {
-        FormField formField = paramMap.remove(key);
-        return key == null ? null : formField.getString();
+        FormField formField = parameters.remove(paramName);
+        if (formField == null)
+        {
+            throw new IllegalArgumentException(Messages.getString("PollHandler.MissingParameter", paramName));
+        }
+
+        return formField.getString();
+    }
+
+    /**
+     * @return the inboundContexts
+     */
+    public List<InboundContext> getInboundContexts()
+    {
+        return inboundContexts;
+    }
+
+    /**
+     * @return the spareParameters
+     */
+    public Map<String, FormField> getSpareParameters()
+    {
+        return spareParameters;
+    }
+
+    /**
+     * @return the calls
+     */
+    public Calls getCalls()
+    {
+        return calls;
+    }
+
+    /**
+     * @return the httpSessionId
+     */
+    public String getHttpSessionId()
+    {
+        return httpSessionId;
+    }
+
+    /**
+     * @return the scriptSessionId
+     */
+    public String getScriptSessionId()
+    {
+        return scriptSessionId;
+    }
+
+    /**
+     * @return the page
+     */
+    public String getPage()
+    {
+        return page;
+    }
+
+    /**
+     * Is this request from a GET?
+     * @return true if the request is a GET request
+     */
+    public boolean isGet()
+    {
+        return get;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        return "Batch[page=" + page + ",scriptSessionId=" + scriptSessionId + "]";
     }
 
     /**
@@ -333,9 +240,9 @@ public class Batch
     private List<InboundContext> inboundContexts = new ArrayList<InboundContext>();
 
     /**
-     * The unique ID sent to the current page
+     * The list of calls in the batch
      */
-    private String scriptSessionId;
+    private Calls calls;
 
     /**
      * The unique ID sent to the browser in the session cookie
@@ -348,14 +255,19 @@ public class Batch
     private String page;
 
     /**
-     * The list of calls in the batch
+     * The unique ID sent to the current page
      */
-    private Calls calls;
+    private String scriptSessionId;
+
+    /**
+     * Is it a GET request?
+     */
+    private boolean get;
 
     /**
      * All the parameters sent by the browser
      */
-    private Map<String, FormField> allParameters = new HashMap<String, FormField>();
+    private Map<String, FormField> allParameters;
 
     /**
      * The unused parameters

@@ -180,7 +180,7 @@ dwr.engine.setNotifyServerOnPageUnload = function(notify) {
  */
 dwr.engine.defaultErrorHandler = function(message, ex) {
   dwr.engine._debug("Error: " + ex.name + ", " + ex.message, true);
-  if (message == null || message == "") alert("A server error has occured.");
+  if (message == null || message == "") alert("A server error has occurred.");
   // Ignore NS_ERROR_NOT_AVAILABLE if Mozilla is being narky
   else if (message.indexOf("0x80040111") != -1) dwr.engine._debug(message);
   else alert(message);
@@ -241,9 +241,6 @@ dwr.engine.setPollType = function() { dwr.engine._debug("Manually setting the Po
 // Only private stuff below here
 //==============================================================================
 
-/** The original page id sent from the server */
-dwr.engine._origScriptSessionId = "${scriptSessionId}";
-
 /** The session cookie name */
 dwr.engine._sessionCookieName = "${sessionCookieName}"; // JSESSIONID
 
@@ -259,16 +256,11 @@ dwr.engine._defaultPath = "${defaultPath}";
 /** Do we use XHR for reverse ajax because we are not streaming? */
 dwr.engine._pollWithXhr = "${pollWithXhr}";
 
-/** The read page id that we calculate */
+/** The page id */
 dwr.engine._scriptSessionId = null;
 
-/** The function that we use to fetch/calculate a session id */
-dwr.engine._getScriptSessionId = function() {
-  if (dwr.engine._scriptSessionId == null) {
-    dwr.engine._scriptSessionId = dwr.engine._origScriptSessionId + Math.floor(Math.random() * 1000);
-  }
-  return dwr.engine._scriptSessionId;
-};
+/** The session id */
+dwr.engine._httpSessionId = null;
 
 /** A function to call if something fails. */
 dwr.engine._errorHandler = dwr.engine.defaultErrorHandler;
@@ -297,8 +289,9 @@ dwr.engine._rpcType = dwr.engine.XMLHttpRequest;
 /** What is the default remoting method (ie GET or POST) */
 dwr.engine._httpMethod = "POST";
 
-/** Do we attempt to ensure that calls happen in the order in which they were sent? */
-dwr.engine._ordered = false;
+/** Do we attempt to ensure that calls happen in the order in which they were
+sent? This starts true until we have fetched the ids, when it is to false */
+dwr.engine._ordered = true;
 
 /** Do we make the calls async? */
 dwr.engine._async = true;
@@ -363,13 +356,10 @@ dwr.engine._isNotifyServerOnPageUnload = false;
 
 /** @private If we have used reverse ajax then we try to tell the server we are gone */
 dwr.engine._unloader = function() {
-  dwr.engine._debug("calling unloader for: " + dwr.engine._getScriptSessionId());
+  dwr.engine._debug("calling unloader for: " + dwr.engine._scriptSessionId);
   var batch = {
     map:{
       callCount:1,
-      page:window.location.pathname + window.location.search,
-      httpSessionId:dwr.engine._getJSessionId(),
-      scriptSessionId:dwr.engine._getScriptSessionId(),
       'c0-scriptName':'__System',
       'c0-methodName':'pageUnloaded',
       'c0-id':0
@@ -441,7 +431,7 @@ dwr.engine._execute = function(path, scriptName, methodName, vararg_params) {
     dwr.engine._serializeAll(batch, [], args[i], prefix + "param" + i);
   }
 
-  // Now we have finished remembering the call, we incr the call count
+  // Now we have finished remembering the call, we increment the call count
   batch.map.callCount++;
   if (singleShot) dwr.engine.endBatch();
 };
@@ -515,12 +505,7 @@ dwr.engine._pollErrorHandler = function(msg, ex) {
 /** @private Generate a new standard batch */
 dwr.engine._createBatch = function() {
   var batch = {
-    map:{
-      callCount:0,
-      page:window.location.pathname + window.location.search,
-      httpSessionId:dwr.engine._getJSessionId(),
-      scriptSessionId:dwr.engine._getScriptSessionId()
-    },
+    map:{ callCount:0 },
     charsProcessed:0, paramCount:0,
     parameters:{}, headers:{},
     isPoll:false, handlers:{}, preHooks:[], postHooks:[],
@@ -571,19 +556,6 @@ dwr.engine._mergeBatch = function(batch, overrides) {
       if (typeof data != "function") batch.map["p-" + propname] = "" + data;
     }
   }
-};
-
-/** @private What is our session id? */
-dwr.engine._getJSessionId =  function() {
-  var cookies = document.cookie.split(';');
-  for (var i = 0; i < cookies.length; i++) {
-    var cookie = cookies[i];
-    while (cookie.charAt(0) == ' ') cookie = cookie.substring(1, cookie.length);
-    if (cookie.indexOf(dwr.engine._sessionCookieName + "=") == 0) {
-      return cookie.substring(dwr.engine._sessionCookieName.length + 1, cookie.length);
-    }
-  }
-  return "";
 };
 
 /** @private Check for reverse Ajax activity */
@@ -674,6 +646,11 @@ dwr.engine._sendData = function(batch) {
   dwr.engine._batches[batch.map.batchId] = batch;
   dwr.engine._batchesLength++;
   batch.completed = false;
+
+  // security details are filled in late so previous batches have completed
+  batch.map.page = window.location.pathname + window.location.search;
+  batch.map.httpSessionId = dwr.engine._httpSessionId;
+  batch.map.scriptSessionId = dwr.engine._scriptSessionId;
 
   for (var i = 0; i < batch.preHooks.length; i++) {
     batch.preHooks[i]();
@@ -953,7 +930,7 @@ dwr.engine._stateChange = function(batch) {
 
   dwr.engine._callPostHooks(batch);
 
-  // Outside of the try/catch so errors propogate normally:
+  // Outside of the try/catch so errors propagate normally:
   dwr.engine._receivedBatch = batch;
   if (toEval != null) toEval = toEval.replace(dwr.engine._scriptTagProtection, "");
   dwr.engine._eval(toEval);
@@ -1375,3 +1352,22 @@ dwr.engine._debug = function(message, stacktrace) {
     }
   }
 };
+
+/** @private init */
+{
+  // try to find the httpSessionId
+  var cookies = document.cookie.split(';');
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    while (cookie.charAt(0) == ' ') cookie = cookie.substring(1, cookie.length);
+    if (cookie.indexOf(dwr.engine._sessionCookieName + "=") == 0) {
+      dwr.engine._httpSessionId = cookie.substring(dwr.engine._sessionCookieName.length + 1, cookie.length);
+    }
+  }
+
+  // Fetch the scriptSessionId from the server
+  dwr.engine._execute(dwr.engine._defaultPath, '__System', 'pageLoaded', function(data) {
+    dwr.engine._scriptSessionId = data;
+    dwr.engine._ordered = false;
+  });
+}

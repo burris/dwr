@@ -169,14 +169,6 @@ public class WebContextFactory
         }
 
         /* (non-Javadoc)
-         * @see org.directwebremoting.WebContext#setCurrentPageInformation(java.lang.String, java.lang.String)
-         */
-        public void setCurrentPageInformation(String page, String scriptSessionId)
-        {
-            proxy.setCurrentPageInformation(page, scriptSessionId);
-        }
-
-        /* (non-Javadoc)
          * @see org.directwebremoting.ServerContext#getContextPath()
          */
         public String getContextPath()

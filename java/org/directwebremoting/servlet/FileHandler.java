@@ -26,14 +26,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.directwebremoting.Container;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.extend.Handler;
-import org.directwebremoting.extend.InitializingBean;
-import org.directwebremoting.extend.ServerLoadMonitor;
-import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.MimeConstants;
@@ -43,73 +39,14 @@ import org.directwebremoting.util.MimeConstants;
  * EL type processing on the file. See the source for the cheat.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class FileHandler implements Handler, InitializingBean
+public class FileHandler implements Handler
 {
-    /**
-     * Create a new FileHandler
-     * @param filePath The filePath to search for, process and output
-     * @param mimeType The mime type to use for this output file
-     * @param dynamic Should the script be recalculated each time?
-     */
-    public FileHandler(String filePath, String mimeType, boolean dynamic)
-    {
-        this.filePath = filePath;
-        this.mimeType = mimeType;
-        this.dynamic = dynamic;
-    }
-
-    /**
-     * Create a new FileHandler
-     */
-    public FileHandler()
-    {
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.extend.InitializingBean#afterContainerSetup(org.directwebremoting.Container)
-     */
-    public void afterContainerSetup(Container container)
-    {
-        // If we are dynamic then we might need to pre-configure some variables.
-        // TODO: Move this code into EngineHandler
-        if (dynamic)
-        {
-            boolean streaming = true;
-
-            // If the maxWaitAfterWrite time is less than half a second then we
-            // count ourselves to be not streaming, and use the simple XHR
-            // connection method.
-            if (maxWaitAfterWrite > -1 && maxWaitAfterWrite < 500)
-            {
-                streaming = false;
-            }
-
-            // If the ServerLoadMonitor says no streaming, then obviously ...
-            ServerLoadMonitor monitor = container.getBean(ServerLoadMonitor.class);
-            if (!monitor.supportsStreaming())
-            {
-                streaming = false;
-            }
-
-            // Poll using XHR (to avoid IE clicking) if we close
-            // the connection than 1sec after output happens.
-            pollWithXhr = streaming ? "false" : "true";
-        }
-    }
-
     /* (non-Javadoc)
      * @see org.directwebremoting.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        if (dynamic)
-        {
-            response.setHeader("pragma", "public");
-            response.setHeader("Expires", "0");
-            response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-        }
-
-        if (!dynamic && isUpToDate(request))
+        if (isUpToDate(request))
         {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             return;
@@ -140,41 +77,16 @@ public class FileHandler implements Handler, InitializingBean
                         break;
                     }
 
-                    if (dynamic)
+                    Map<String, String> replace = getSearchReplacePairs();
+                    if (replace != null)
                     {
-                        if (line.contains(PARAM_SCRIPT_COOKIENAME))
+                        for (Map.Entry<String, String> entry : replace.entrySet())
                         {
-                            line = LocalUtil.replace(line, PARAM_SCRIPT_COOKIENAME, sessionCookieName);
-                        }
-
-                        if (line.contains(PARAM_SCRIPT_POLLXHR))
-                        {
-                            line = LocalUtil.replace(line, PARAM_SCRIPT_POLLXHR, pollWithXhr);
-                        }
-
-                        if (line.contains(PARAM_SCRIPT_SESSIONID))
-                        {
-                            line = LocalUtil.replace(line, PARAM_SCRIPT_SESSIONID, generator.generateId(pageIdLength));
-                        }
-
-                        if (line.contains(PARAM_SCRIPT_ALLOWGET))
-                        {
-                            line = LocalUtil.replace(line, PARAM_SCRIPT_ALLOWGET, String.valueOf(allowGetForSafariButMakeForgeryEasier));
-                        }
-
-                        if (line.contains(PARAM_SCRIPT_TAG_PROTECTION))
-                        {
-                            line = LocalUtil.replace(line, PARAM_SCRIPT_TAG_PROTECTION, scriptTagProtection);
-                        }
-
-                        if (line.contains(PARAM_DEFAULT_PATH))
-                        {
-                            String path = request.getContextPath() + request.getServletPath();
-                            if (overridePath != null)
+                            String search = entry.getKey();
+                            if (line.contains(search))
                             {
-                                path = overridePath;
+                                line = LocalUtil.replace(line, search, entry.getValue());
                             }
-                            line = LocalUtil.replace(line, PARAM_DEFAULT_PATH, path);
                         }
                     }
 
@@ -189,10 +101,7 @@ public class FileHandler implements Handler, InitializingBean
                     output = JavascriptUtil.compress(output, compressionLevel);
                 }
 
-                if (!dynamic)
-                {
-                    scriptCache.put(filePath, output);
-                }
+                scriptCache.put(filePath, output);
             }
         }
 
@@ -202,6 +111,17 @@ public class FileHandler implements Handler, InitializingBean
 
         PrintWriter out = response.getWriter();
         out.println(output);
+    }
+
+    /**
+     * Mostly when we send a file out, we don't change anything so the default
+     * set of search and replaces is empty.
+     * Engine.js can override this with strings to customize the output
+     * @return a map of search (key) and replace (value) strings
+     */
+    public Map<String, String> getSearchReplacePairs()
+    {
+        return null;
     }
 
     /**
@@ -291,14 +211,6 @@ public class FileHandler implements Handler, InitializingBean
     }
 
     /**
-     * @param allowGetForSafariButMakeForgeryEasier Do we reduce security to help Safari
-     */
-    public void setAllowGetForSafariButMakeForgeryEasier(boolean allowGetForSafariButMakeForgeryEasier)
-    {
-        this.allowGetForSafariButMakeForgeryEasier = allowGetForSafariButMakeForgeryEasier;
-    }
-
-    /**
      * @param ignoreLastModified The ignoreLastModified to set.
      */
     public void setIgnoreLastModified(boolean ignoreLastModified)
@@ -341,39 +253,12 @@ public class FileHandler implements Handler, InitializingBean
     }
 
     /**
-     * Are we expected to do the minor EL type processing?
-     * @param dynamic the dynamic to set
-     */
-    public void setDynamic(boolean dynamic)
-    {
-        this.dynamic = dynamic;
-    }
-
-    /**
      * The mime type to send the output under
      * @param mimeType the mimeType to set
      */
     public void setMimeType(String mimeType)
     {
         this.mimeType = mimeType;
-    }
-
-    /**
-     * What is the string we use for script tag hack protection
-     * @param scriptTagProtection the scriptTagProtection to set
-     */
-    public void setScriptTagProtection(String scriptTagProtection)
-    {
-        this.scriptTagProtection = scriptTagProtection;
-    }
-
-    /**
-     * If we need to override the default path
-     * @param overridePath The new override path
-     */
-    public void setOverridePath(String overridePath)
-    {
-        this.overridePath = overridePath;
     }
 
     /**
@@ -386,21 +271,6 @@ public class FileHandler implements Handler, InitializingBean
     {
         this.maxWaitAfterWrite = maxWaitAfterWrite;
     }
-
-    /**
-     * If we need to override the default path
-     */
-    private String overridePath = null;
-
-    /**
-     * By default we disable GET, but this hinders old Safaris
-     */
-    private boolean allowGetForSafariButMakeForgeryEasier = false;
-
-    /**
-     * What is the string we use for script tag hack protection
-     */
-    private String scriptTagProtection = DwrConstants.SCRIPT_TAG_PROTECTION;
 
     /**
      * Do we ignore all the Last-Modified/ETags blathering?
@@ -431,11 +301,6 @@ public class FileHandler implements Handler, InitializingBean
     private boolean scriptCompressed = false;
 
     /**
-     * The method by which we get new page ids
-     */
-    protected IdGenerator generator = new IdGenerator();
-
-    /**
      * The page id length
      */
     protected int pageIdLength = 16;
@@ -454,17 +319,6 @@ public class FileHandler implements Handler, InitializingBean
      * The mime type to send the output under
      */
     private String mimeType;
-
-    /**
-     * Are we expected to do the minor EL type processing?
-     */
-    private boolean dynamic;
-
-    /**
-     * What are we sending as the pollWithXhr setting.
-     * This is a hack. See the notes in {@link #afterContainerSetup(Container)}
-     */
-    private String pollWithXhr;
 
     /**
      * The time on the script files

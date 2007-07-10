@@ -29,7 +29,6 @@ public class WebworkUtilHandler extends FileHandler
     public WebworkUtilHandler()
     {
         setMimeType(MimeConstants.MIME_JS);
-        setDynamic(false);
     }
 
     /**

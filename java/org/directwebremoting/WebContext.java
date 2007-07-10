@@ -96,12 +96,4 @@ public interface WebContext extends ServerContext
      * @throws IllegalStateException if the response was already committed
      */
     String forwardToString(String url) throws ServletException, IOException;
-
-    /**
-     * For system use only: This method allows the system to fill in the session
-     * id and page id when they are discovered.
-     * @param page The URL of the current page
-     * @param scriptSessionId The session id passed in by the browser
-     */
-    void setCurrentPageInformation(String page, String scriptSessionId);
 }

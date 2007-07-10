@@ -28,7 +28,6 @@ public class AuthHandler extends FileHandler
     public AuthHandler()
     {
         setMimeType(MimeConstants.MIME_JS);
-        setDynamic(true);
     }
 
     /**

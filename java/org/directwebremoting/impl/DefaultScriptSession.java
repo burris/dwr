@@ -49,7 +49,7 @@ public class DefaultScriptSession implements RealScriptSession
      * @param id The new unique identifier for this session
      * @param manager The manager that created us
      */
-    protected DefaultScriptSession(String id, DefaultScriptSessionManager manager)
+    protected DefaultScriptSession(String id, DefaultScriptSessionManager manager, String page)
     {
         this.id = id;
         if (id == null)
@@ -57,6 +57,7 @@ public class DefaultScriptSession implements RealScriptSession
             throw new IllegalArgumentException("id can not be null");
         }
 
+        this.page = page;
         this.manager = manager;
         this.creationTime = System.currentTimeMillis();
         this.lastAccessedTime = creationTime;
@@ -310,6 +311,14 @@ public class DefaultScriptSession implements RealScriptSession
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ScriptSession#getPage()
+     */
+    public String getPage()
+    {
+        return page;
+    }
+
     /**
      * Called whenever a browser accesses this data using DWR
      */
@@ -462,6 +471,11 @@ public class DefaultScriptSession implements RealScriptSession
      * <p>This should not need careful synchronization since it is unchanging
      */
     protected final long creationTime;
+
+    /**
+     * The page being viewed.
+     */
+    protected final String page;
 
     /**
      * The session manager that collects sessions together

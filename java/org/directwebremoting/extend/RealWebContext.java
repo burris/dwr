@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.servlet;
+package org.directwebremoting.extend;
 
-import org.directwebremoting.util.MimeConstants;
+import org.directwebremoting.WebContext;
 
 /**
- * A Handler that supports requests for util.js
+ * An interface that extends WebContext with some functions that should not
+ * be used by end users, but could be useful to system extenders.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class UtilHandler extends FileHandler
+public interface RealWebContext extends WebContext
 {
     /**
-     * Setup the {@link FileHandler} defaults
+     * Fill in the page details from the servlet request
+     * @param page The URL of the current page
+     * @param scriptSessionId The session id passed in by the browser
+     * @param checkScriptId Are we allowed a blank script session id?
      */
-    public UtilHandler()
-    {
-        setMimeType(MimeConstants.MIME_JS);
-    }
-
-    /**
-     * The URL for this Handler.
-     * @param url The URL for this Handler.
-     */
-    public void setUtilHandlerUrl(String url)
-    {
-        setFilePath(url);
-    }
+    void checkPageInformation(String page, String scriptSessionId, boolean checkScriptId);
 }

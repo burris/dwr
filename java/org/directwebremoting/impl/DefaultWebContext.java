@@ -25,18 +25,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.Container;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.SwallowingHttpServletResponse;
 
 /**
- * A default implementation of WebContext
+ * A default implementation of WebContext.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DefaultWebContext extends DefaultServerContext implements WebContext
+public class DefaultWebContext extends DefaultServerContext implements RealWebContext
 {
     /**
      * Create a new DefaultWebContext
@@ -56,12 +59,30 @@ public class DefaultWebContext extends DefaultServerContext implements WebContex
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.WebContext#setCurrentPageInformation(java.lang.String, java.lang.String)
+     * @see org.directwebremoting.extend.RealWebContext#checkPageInformation(java.lang.String, java.lang.String, boolean)
      */
-    public void setCurrentPageInformation(String page, String scriptSessionId)
+    public void checkPageInformation(String sentPage, String sentScriptId, boolean checkScriptId)
     {
-        this.scriptSessionId = scriptSessionId;
-        this.page = page;
+        if (checkScriptId)
+        {
+            ScriptSessionManager manager = getScriptSessionManager();
+            RealScriptSession scriptSession = manager.getScriptSession(sentScriptId);
+            if (scriptSession == null)
+            {
+                log.error("Invalid ScriptSessionId: " + sentScriptId);
+                throw new SecurityException("Invalid ScriptSessionId");
+            }
+
+            String storedPage = scriptSession.getPage();
+            if (!storedPage.equals(sentPage))
+            {
+                log.error("Invalid Page: Passed page=" + sentPage + ", but page in script session=" + storedPage);
+                throw new SecurityException("Invalid Page");
+            }
+        }
+
+        this.page = sentPage;
+        this.scriptSessionId = sentScriptId;
     }
 
     /* (non-Javadoc)
@@ -155,4 +176,9 @@ public class DefaultWebContext extends DefaultServerContext implements WebContex
      * The HttpServletResponse associated with the current request
      */
     private HttpServletResponse response = null;
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(DefaultWebContext.class);
 }

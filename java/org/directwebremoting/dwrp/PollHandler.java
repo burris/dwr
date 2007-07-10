@@ -26,11 +26,13 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.extend.ServerLoadMonitor;
@@ -81,6 +83,13 @@ public class PollHandler implements Handler
             return;
         }
 
+        // Check to see that the page and script session id are valid
+        RealWebContext webContext = (RealWebContext) WebContextFactory.get();
+        String normalizedPage = pageNormalizer.normalizePage(batch.getPage());
+        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId(), true);
+
+        final RealScriptSession scriptSession = (RealScriptSession) webContext.getScriptSession();
+
         // We might need to complain that reverse ajax is not enabled.
         if (!activeReverseAjaxEnabled)
         {
@@ -119,7 +128,6 @@ public class PollHandler implements Handler
         final BaseScriptConduit conduit = createScriptConduit(batch, response);
 
         // Register the conduit with a script session so messages can get out
-        final RealScriptSession scriptSession = batch.getScriptSession();
         scriptSession.addScriptConduit(conduit);
 
         // So we're going to go to sleep. How do we wake up?

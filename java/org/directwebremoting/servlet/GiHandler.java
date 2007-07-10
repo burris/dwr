@@ -29,7 +29,6 @@ public class GiHandler extends FileHandler
     public GiHandler()
     {
         setMimeType(MimeConstants.MIME_JS);
-        setDynamic(false);
     }
 
     /**

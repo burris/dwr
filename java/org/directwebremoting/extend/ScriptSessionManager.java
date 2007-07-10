@@ -53,6 +53,13 @@ public interface ScriptSessionManager
     RealScriptSession getScriptSession(String id);
 
     /**
+     * When a new client page-loads, we create a script session id and this
+     * method allows us to control their creation
+     * @return The new script session id
+     */
+    String createScriptSession(RealWebContext webContext);
+
+    /**
      * Locate the given script session on a page
      * @param scriptSession The session to locate on a page
      * @param url The URL including 'http://', up to (but not including) '?' or '#'
@@ -64,12 +71,6 @@ public interface ScriptSessionManager
      * @return the scriptSessionTimeout
      */
     long getScriptSessionTimeout();
-
-    /**
-     * Accessor for the time (in milliseconds) when unused ScriptSessions will expire
-     * @param scriptSessionTimeout the timeout to set
-     */
-    void setScriptSessionTimeout(long scriptSessionTimeout);
 
     /**
      * The default length of time a session can go unused before it

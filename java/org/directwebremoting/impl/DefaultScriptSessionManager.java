@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.ScriptSession;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
-import org.directwebremoting.ScriptSession;
+import org.directwebremoting.util.IdGenerator;
 
 /**
  * A default implmentation of ScriptSessionManager.
@@ -54,14 +56,10 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             DefaultScriptSession scriptSession = sessionMap.get(id);
             if (scriptSession == null)
             {
-                scriptSession = new DefaultScriptSession(id, this);
-                sessionMap.put(id, scriptSession);
-            }
-            else
-            {
-                scriptSession.updateLastAccessedTime();
+                throw new SecurityException("Attempt to fix script session");
             }
 
+            scriptSession.updateLastAccessedTime();
             return scriptSession;
         }
     }
@@ -116,6 +114,26 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             reply.addAll(sessionMap.values());
             return reply;
         }
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ScriptSessionManager#createScriptSession(org.directwebremoting.extend.RealWebContext)
+     */
+    public String createScriptSession(RealWebContext webContext)
+    {
+        String id = generator.generateId(16);
+
+        String page = webContext.getCurrentPage();
+        DefaultScriptSession scriptSession = new DefaultScriptSession(id, this, page);
+
+        synchronized (sessionLock)
+        {
+            sessionMap.put(id, scriptSession);
+        }
+
+        webContext.checkPageInformation(page, id, true);
+
+        return id;
     }
 
     /**
@@ -217,7 +235,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     }
 
     /**
-     * Accessfor for the PageNormalizer.
+     * Accessor for the PageNormalizer.
      * @param pageNormalizer The new PageNormalizer
      */
     public void setPageNormalizer(PageNormalizer pageNormalizer)
@@ -232,6 +250,11 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     {
         this.scriptSessionCheckTime = scriptSessionCheckTime;
     }
+
+    /**
+     * How we create script session ids.
+     */
+    private static IdGenerator generator = new IdGenerator();
 
     /**
      * By default we check for sessions that need expiring every 30 seconds

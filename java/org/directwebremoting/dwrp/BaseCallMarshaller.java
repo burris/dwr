@@ -23,14 +23,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.export.System;
 import org.directwebremoting.extend.AccessControl;
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
@@ -45,6 +46,7 @@ import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.Marshaller;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
+import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
 import org.directwebremoting.extend.ScriptBufferUtil;
@@ -70,22 +72,83 @@ public abstract class BaseCallMarshaller implements Marshaller
      */
     public Calls marshallInbound(HttpServletRequest request, HttpServletResponse response) throws IOException, ServerException
     {
-        // We must parse the parameters before we setup the conduit because it's
-        // only after doing this that we know the scriptSessionId
+        RealWebContext webContext = (RealWebContext) WebContextFactory.get();
+        Batch batch = new Batch(request);
 
-        WebContext webContext = WebContextFactory.get();
-        Batch batch = (Batch) request.getAttribute(ATTRIBUTE_BATCH);
-        if (batch == null)
+        if (!allowGetForSafariButMakeForgeryEasier && batch.isGet())
         {
-            batch = new Batch(request, crossDomainSessionSecurity, allowGetForSafariButMakeForgeryEasier, sessionCookieName);
-
-            // Save calls for retry exception
-            request.setAttribute(ATTRIBUTE_BATCH, batch);
+            log.error("GET is disallowed because it makes request forgery easier. See http://getahead.org/dwr/security/allowGetForSafariButMakeForgeryEasier for more details.");
+            throw new SecurityException("GET Disalowed");
         }
+
+        // TODO: Maybe we should push this out into BaseCallMarshaller?
+        if (crossDomainSessionSecurity)
+        {
+            checkNotCsrfAttack(request, batch);
+        }
+
+        // Save the batch so marshallException can get at a batch id
+        request.setAttribute(ATTRIBUTE_BATCH, batch);
+
+        // Are we calling __System.pageLoaded?
+        boolean checkScriptId = true;
+        Calls calls = batch.getCalls();
+        if (calls.getCallCount() == 1)
+        {
+            Call call = calls.getCall(0);
+            if (System.isPageLoadedMethod(call.getScriptName(), call.getMethodName()))
+            {
+                checkScriptId = false;
+            }
+        }
+
+        String normalizedPage = pageNormalizer.normalizePage(batch.getPage());
+        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId(), checkScriptId);
 
         // Various bits of the Batch need to be stashed away places
         storeParsedRequest(request, webContext, batch);
         return marshallInbound(batch);
+    }
+
+    /**
+     * Check that this request is not subject to a CSRF attack
+     * @param request The original browser's request
+     */
+    private void checkNotCsrfAttack(HttpServletRequest request, Batch batch)
+    {
+        // A check to see that this isn't a csrf attack
+        // http://en.wikipedia.org/wiki/Cross-site_request_forgery
+        // http://www.tux.org/~peterw/csrf.txt
+        if (request.isRequestedSessionIdValid() && request.isRequestedSessionIdFromCookie())
+        {
+            String headerSessionId = request.getRequestedSessionId();
+            if (headerSessionId.length() > 0)
+            {
+                String bodySessionId = batch.getHttpSessionId();
+
+                // Normal case; if same session cookie is supplied by DWR and
+                // in HTTP header then all is ok
+                if (headerSessionId.equals(bodySessionId))
+                {
+                    return;
+                }
+
+                // Weblogic adds creation time to the end of the incoming
+                // session cookie string (even for request.getRequestedSessionId()).
+                // Use the raw cookie instead
+                for (Cookie cookie : request.getCookies())
+                {
+                    if (cookie.getName().equals(sessionCookieName) && cookie.getValue().equals(bodySessionId))
+                    {
+                        return;
+                    }
+                }
+
+                // Otherwise error
+                log.error("A request has been denied as a potential CSRF attack.");
+                throw new SecurityException("Session Error");
+            }
+        }
     }
 
     /**
@@ -190,11 +253,8 @@ public abstract class BaseCallMarshaller implements Marshaller
      * @param webContext We need to notify others of some of the data we find
      * @param batch The parsed data to store
      */
-    private void storeParsedRequest(HttpServletRequest request, WebContext webContext, Batch batch)
+    private void storeParsedRequest(HttpServletRequest request, RealWebContext webContext, Batch batch)
     {
-        String normalizedPage = pageNormalizer.normalizePage(batch.getPage());
-        webContext.setCurrentPageInformation(normalizedPage, batch.getScriptSessionId());
-
         // Remaining parameters get put into the request for later consumption
         Map<String, FormField> paramMap = batch.getSpareParameters();
         if (!paramMap.isEmpty())
@@ -204,6 +264,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                 String key = entry.getKey();
                 FormField formField = entry.getValue();
                 Object value;
+
                 if (formField.isFile())
                 {
                     value = new DefaultFileUpload(formField.getName(), formField.getMimeType(), formField.getInputStream());
@@ -212,6 +273,7 @@ public abstract class BaseCallMarshaller implements Marshaller
                 {
                     value = formField.getString();
                 }
+
                 request.setAttribute(key, value);
                 log.debug("Moved param to request: " + key + "=" + value);
             }
@@ -572,16 +634,6 @@ public abstract class BaseCallMarshaller implements Marshaller
      * The security manager
      */
     protected AccessControl accessControl = null;
-
-    /**
-     * How we stash away the request
-     */
-    protected static final String ATTRIBUTE_REQUEST = "org.directwebremoting.dwrp.request";
-
-    /**
-     * How we stash away the conduit
-     */
-    protected static final String ATTRIBUTE_CONDUIT = "org.directwebremoting.dwrp.conduit";
 
     /**
      * How we stash away the results of the request parse
