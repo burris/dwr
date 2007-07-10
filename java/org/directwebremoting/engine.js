@@ -259,9 +259,6 @@ dwr.engine._pollWithXhr = "${pollWithXhr}";
 /** The page id */
 dwr.engine._scriptSessionId = null;
 
-/** The session id */
-dwr.engine._httpSessionId = null;
-
 /** A function to call if something fails. */
 dwr.engine._errorHandler = dwr.engine.defaultErrorHandler;
 
@@ -353,6 +350,20 @@ dwr.engine._partialResponseFlush = 2;
 
 /** Are we doing page unloading? */
 dwr.engine._isNotifyServerOnPageUnload = false;
+
+/** @private Find the HTTP session id sent by the web server */
+dwr.engine._getHttpSessionId = function() {
+  // try to find the httpSessionId
+  var cookies = document.cookie.split(';');
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    while (cookie.charAt(0) == ' ') cookie = cookie.substring(1, cookie.length);
+    if (cookie.indexOf(dwr.engine._sessionCookieName + "=") == 0) {
+      return cookie.substring(dwr.engine._sessionCookieName.length + 1, cookie.length);
+    }
+  }
+  return "";
+};
 
 /** @private If we have used reverse ajax then we try to tell the server we are gone */
 dwr.engine._unloader = function() {
@@ -649,7 +660,7 @@ dwr.engine._sendData = function(batch) {
 
   // security details are filled in late so previous batches have completed
   batch.map.page = window.location.pathname + window.location.search;
-  batch.map.httpSessionId = dwr.engine._httpSessionId;
+  batch.map.httpSessionId = dwr.engine._getHttpSessionId();
   batch.map.scriptSessionId = dwr.engine._scriptSessionId;
 
   for (var i = 0; i < batch.preHooks.length; i++) {
@@ -1355,16 +1366,6 @@ dwr.engine._debug = function(message, stacktrace) {
 
 /** @private init */
 {
-  // try to find the httpSessionId
-  var cookies = document.cookie.split(';');
-  for (var i = 0; i < cookies.length; i++) {
-    var cookie = cookies[i];
-    while (cookie.charAt(0) == ' ') cookie = cookie.substring(1, cookie.length);
-    if (cookie.indexOf(dwr.engine._sessionCookieName + "=") == 0) {
-      dwr.engine._httpSessionId = cookie.substring(dwr.engine._sessionCookieName.length + 1, cookie.length);
-    }
-  }
-
   // Fetch the scriptSessionId from the server
   dwr.engine._execute(dwr.engine._defaultPath, '__System', 'pageLoaded', function(data) {
     dwr.engine._scriptSessionId = data;
