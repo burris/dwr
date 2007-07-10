@@ -146,7 +146,7 @@ public abstract class BaseCallMarshaller implements Marshaller
 
                 // Otherwise error
                 log.error("A request has been denied as a potential CSRF attack.");
-                throw new SecurityException("Session Error");
+                throw new SecurityException("CSRF Security Error");
             }
         }
     }
