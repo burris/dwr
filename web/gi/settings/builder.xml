@@ -32,6 +32,12 @@
     <record jsxid="jsx_ide_me_contentblock" type="map">
       <record jsxid="closed" type="boolean">false</record>
       <record jsxid="float" type="boolean">true</record>
+      <record jsxid="dialog" type="map">
+        <record jsxid="left" type="number">527</record>
+        <record jsxid="top" type="number">399</record>
+        <record jsxid="width" type="number">300</record>
+        <record jsxid="height" type="number">300</record>
+      </record>
     </record>
     <record jsxid="jsx_ide_attributes_contentblock" type="map">
       <record jsxid="closed" type="boolean">false</record>
@@ -43,25 +49,38 @@
       <record jsxid="closed" type="boolean">false</record>
       <record jsxid="float" type="boolean">true</record>
       <record jsxid="dialog" type="map">
-        <record jsxid="left" type="number">356</record>
-        <record jsxid="top" type="number">93</record>
-        <record jsxid="width" type="number">349</record>
-        <record jsxid="height" type="number">451</record>
+        <record jsxid="left" type="number">550</record>
+        <record jsxid="top" type="number">363</record>
+        <record jsxid="width" type="number">334</record>
+        <record jsxid="height" type="number">398</record>
       </record>
     </record>
     <record jsxid="jsx_ide_cache_contentblock" type="map">
       <record jsxid="closed" type="boolean">false</record>
       <record jsxid="float" type="boolean">true</record>
+      <record jsxid="dialog" type="map">
+        <record jsxid="left" type="number">169</record>
+        <record jsxid="top" type="number">364</record>
+        <record jsxid="width" type="number">300</record>
+        <record jsxid="height" type="number">300</record>
+      </record>
     </record>
     <record jsxid="jsx_ide_resources_contentblock" type="map">
       <record jsxid="closed" type="boolean">false</record>
       <record jsxid="float" type="boolean">true</record>
+      <record jsxid="dialog" type="map">
+        <record jsxid="left" type="number">159</record>
+        <record jsxid="top" type="number">457</record>
+        <record jsxid="width" type="number">300</record>
+        <record jsxid="height" type="number">300</record>
+      </record>
     </record>
   </record>
   <record jsxid="projects" type="map">
     <record jsxid="JSXAPPS/ticketcenter" type="map">
       <record jsxid="recentFiles" type="array">
-        <record jsxid="0" type="string">main.xml</record>
+        <record jsxid="0" type="string">eventList.xml</record>
+        <record jsxid="1" type="string">main.xml</record>
       </record>
       <record jsxid="openFiles" type="array">
         <record jsxid="0" type="string">main.xml</record>
@@ -73,7 +92,7 @@
       <record jsxid="jsx_ide_splitter1" type="string">80%</record>
       <record jsxid="jsx_ide_splitter2" type="string">0%</record>
       <record jsxid="jsx_ide_splitter3" type="string">100%</record>
-      <record jsxid="jsx_ide_splitter4" type="string">64.71%</record>
+      <record jsxid="jsx_ide_splitter4" type="string">66.15%</record>
       <record jsxid="jsx_ide_splitter5" type="string">41.94%</record>
     </record>
   </record>

@@ -18,6 +18,7 @@ package org.getahead.dwrdemo.ticketcenter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -288,7 +289,7 @@ public class CallCenter implements Runnable
         String contextPath = serverContext.getContextPath();
         Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/ticketcenter.html");
         ScriptProxy proxy = new ScriptProxy(sessions);
-        proxy.addFunctionCall("updateCallers", calls);
+        proxy.addFunctionCall("updateCallers", calls, new Date());
     }
 
     /**

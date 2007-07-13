@@ -1,12 +1,14 @@
 
 function giLoaded() {
   dwr.engine.setActiveReverseAjax(true);
+  deselect();
 }
 
 function giUnloaded() {
+  cancelHandling();
 }
 
-function updateCallers(callers) {
+function updateCallers(callers, now) {
   // Some tweaks so GI redraws everything without needing further explanation
   // We copy the id to jsxid, and ensure that the fields for the checkboxes are
   // 0 or 1 rather than true or false. We also check that any handled caller
@@ -15,11 +17,15 @@ function updateCallers(callers) {
   var handlingIdFound = false;
   for (var i = 0; i < callers.length; i++) {
     caller = callers[i];
+    caller.timePlain = now - caller.callStarted;
+    caller.time = 10000 * Math.round(caller.timePlain / 10000);
     caller.jsxid = caller.id;
-    caller.handled = caller.handled ? "1" : "0";
-    caller.supervisorAlert = caller.supervisorAlert ? "1" : "0";
+    caller.handled = caller.handled ? "JSXAPPS/ticketcenter/images/configure.png" : "";
+    caller.supervisorAlert = caller.supervisorAlert ? "JSXAPPS/ticketcenter/images/irkickflash.png" : "";
     callerCache[caller.id] = caller;
-    if (caller.id = handlingId) {
+    if (!caller.name) caller.name = "?";
+    if (caller.id == handlingId) {
+      caller.handled = "JSXAPPS/ticketcenter/images/next.png";
       handlingIdFound = true;
     }
   }
@@ -91,6 +97,8 @@ function beginHandling() {
         ticketcenter.getJSXByName('textName').setValue(caller.name);
         ticketcenter.getJSXByName('textAddress').setValue(caller.address);
         ticketcenter.getJSXByName('textNotes').setValue(caller.notes);
+        setFormEnabled(true);
+        ticketcenter.getJSXByName('layoutForm').setBackgroundColor("#000");
       }
     }
   });
@@ -98,14 +106,30 @@ function beginHandling() {
 
 function deselect() {
   handlingId = null;
-  ticketcenter.getJSXByName('textPhone').setValue("");
-  ticketcenter.getJSXByName('textName').setValue("");
-  ticketcenter.getJSXByName('textAddress').setValue("");
-  ticketcenter.getJSXByName('textNotes').setValue("");
+  forEach(fields, function(field) {
+    field.setValue("");
+  });
+  setFormEnabled(false);
+  ticketcenter.getJSXByName('layoutForm').setBackgroundColor("#EEE");
 }
 
 function getSelectedId() {
   var listCallers = ticketcenter.getJSXByName('listCallers');
   var selectedNode = listCallers.getSelectedNodes().get(0);
   return selectedNode.getAttribute('jsxid');
+}
+
+function setFormEnabled(enabled) {
+  forEach(elements, function(field) {
+    field.setEnabled(enabled, true);
+  });
+}
+
+var fields = [ "textPhone", "textName", "textAddress", "textNotes" ];
+var elements = [ "textPhone", "textName", "textAddress", "textPayment", "textNotes", "selectEvent", "selectPaymentType", "buttonBook", "buttonSupervisor", "buttonCancel" ];
+
+function forEach(array, action) {
+  for (var i = 0; i < array.length; i++) {
+    action(ticketcenter.getJSXByName(array[i]));
+  }  
 }
