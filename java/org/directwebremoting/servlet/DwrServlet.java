@@ -171,5 +171,5 @@ public class DwrServlet extends HttpServlet
     /**
      * The log stream
      */
-    public static final Log log = LogFactory.getLog(DwrServlet.class);
+    private static final Log log = LogFactory.getLog(DwrServlet.class);
 }
