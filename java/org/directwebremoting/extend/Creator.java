@@ -26,7 +26,7 @@ public interface Creator
     /**
      * DefaultConfiguration is done via access to the DOM Element.
      * This is not at all ideal, but it will do for the moment.
-     * @param params The map of paramters to configure the creator
+     * @param params The map of parameters to configure the creator
      * @throws IllegalArgumentException If the config data in the Element is invalid
      */
     void setProperties(Map<String, String> params) throws IllegalArgumentException;
@@ -58,7 +58,7 @@ public interface Creator
     boolean isCacheable();
 
     /**
-     * How is this creator refered to in Javascript land?
+     * How is this creator referred to in Javascript land?
      * @return A Javascript identifier
      */
     String getJavascript();
