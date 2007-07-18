@@ -30,14 +30,14 @@ public class Corporations
      */
     public Corporations()
     {
-        corporations.add(new Corporation("AAPL", "Apple"));
-        corporations.add(new Corporation("AMZN", "Amazon"));
-        corporations.add(new Corporation("EBAY", "EBay"));
-        corporations.add(new Corporation("GOOG", "Google"));
-        corporations.add(new Corporation("IBM",  "IBM"));
-        corporations.add(new Corporation("MSFT", "Microsoft"));
-        corporations.add(new Corporation("TIBX", "TIBCO"));
-        corporations.add(new Corporation("YHOO", "Yahoo"));
+        corporations.add(new Corporation("BAYC", "Bay Corporation"));
+        corporations.add(new Corporation("VIRT", "Virtualis"));
+        corporations.add(new Corporation("MGSF", "Megasoft Co."));
+        corporations.add(new Corporation("MAXI", "Maximegalon Ind."));
+        corporations.add(new Corporation("RIGL", "Rigel Cybernetics"));
+        corporations.add(new Corporation("TRTR", "Tretrigintillion"));
+        corporations.add(new Corporation("CONC", "Concor PLC"));
+        corporations.add(new Corporation("HYPS", "Hypersoft"));
     }
 
     /**
