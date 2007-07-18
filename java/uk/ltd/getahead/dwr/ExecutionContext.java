@@ -145,14 +145,6 @@ public class ExecutionContext implements WebContext
     }
 
     /* (non-Javadoc)
-     * @see uk.ltd.getahead.dwr.WebContext#setScriptSessionId(java.lang.String)
-     */
-    public void setCurrentPageInformation(String page, String scriptSessionId)
-    {
-        throw new UnsupportedOperationException("Use WebContextFactory.get().setPageAndSessionIds()");
-    }
-
-    /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContext#getCurrentPage()
      */
     public String getCurrentPage()
