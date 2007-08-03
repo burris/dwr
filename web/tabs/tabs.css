@@ -11,7 +11,7 @@
 }
 #tabList li a.linkUnselected { background:#eee; border-bottom:1px solid #eee; }
 
-#tabList li a:link, #tablist li a:visited { color:navy; }
+#tabList li a:link, #tablist li a:visited { color:navy; text-decoration:none; }
 
 /* Insert height/width here to give all the content a unified size */
 #tabContents { padding:20px; border-top:1px solid #BBCCDD; }
