@@ -258,7 +258,7 @@ public class CallCenter implements Runnable
      */
     private void addRandomKnownCall()
     {
-        if (calls.size() < 20)
+        if (calls.size() < 10)
         {
             Call call = getRandomCall();
             call.setId(getNextId());
@@ -271,7 +271,7 @@ public class CallCenter implements Runnable
      */
     private void addRandomUnknownCall()
     {
-        if (calls.size() < 20)
+        if (calls.size() < 10)
         {
             String phoneNumber = RandomData.getPhoneNumber(random.nextInt(3) != 0);
             Call call = new Call();
@@ -296,7 +296,7 @@ public class CallCenter implements Runnable
      * Create a random person
      * @return a random person
      */
-    public static Call getRandomCall()
+    private static Call getRandomCall()
     {
         Call call = new Call();
         call.setId(getNextId());

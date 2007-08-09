@@ -6,7 +6,7 @@
   <onAfterDeserialize/>
   <object type="jsx3.gui.Splitter">
     <variants jsxleft="0" jsxtop="0"/>
-    <strings jsxname="splitter" jsxsubcontainer1pct="57.5%" jsxbgcolor="#FFFFFF"/>
+    <strings jsxname="splitter" jsxsubcontainer1pct="57.01%" jsxbgcolor="#FFFFFF"/>
     <object type="jsx3.gui.Block">
       <variants jsxoverflow="1"/>
       <strings jsxname="paneLeft" jsxwidth="100%" jsxheight="100%"/>
@@ -49,18 +49,18 @@
       <dynamics jsxborder="@No jsxborder"/>
       <object type="jsx3.gui.LayoutGrid">
         <variants jsxrelativeposition="1" jsxleft="0" jsxtop="0" jsxoverflow="2"/>
-        <strings jsxname="layoutForm" jsxrows="25,25,80,25,25,80,30,*" jsxwidth="100%" jsxheight="100%"/>
+        <strings jsxname="layoutForm" jsxrows="30,30,80,30,30,80,35,*" jsxwidth="100%" jsxheight="100%"/>
         <dynamics jsxborder="@No jsxborder"/>
         <object type="jsx3.gui.Block">
           <variants jsxoverflow="2"/>
           <strings jsxname="panePhone" jsxwidth="100%" jsxheight="100%"/>
           <dynamics jsxborder="@No jsxborder"/>
           <object type="jsx3.gui.Block">
-            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="18" jsxwidth="60"/>
+            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="22" jsxwidth="65"/>
             <strings jsxname="labelPhone" jsxtext="Phone:" jsxmargin="2" jsxpadding="2" jsxtextalign="right"/>
           </object>
           <object type="jsx3.gui.TextBox">
-            <variants jsxheight="18" jsxwidth="200"/>
+            <variants jsxheight="22" jsxwidth="200"/>
             <strings jsxname="textPhone" jsxmargin="2"/>
             <dynamics jsxborder="@No jsxborder" jsxbgcolor="@Solid Medium"/>
           </object>
@@ -70,11 +70,11 @@
           <strings jsxname="paneName" jsxwidth="100%" jsxheight="100%"/>
           <dynamics jsxborder="@No jsxborder"/>
           <object type="jsx3.gui.Block">
-            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="18" jsxwidth="60"/>
+            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="22" jsxwidth="65"/>
             <strings jsxname="labelName" jsxtext="Name:" jsxtextalign="right" jsxpadding="2" jsxmargin="2"/>
           </object>
           <object type="jsx3.gui.TextBox">
-            <variants jsxheight="18" jsxwidth="200"/>
+            <variants jsxheight="22" jsxwidth="200"/>
             <strings jsxname="textName" jsxmargin="2"/>
           </object>
         </object>
@@ -83,7 +83,7 @@
           <strings jsxname="paneAddress" jsxwidth="100%" jsxheight="100%"/>
           <dynamics jsxborder="@No jsxborder"/>
           <object type="jsx3.gui.Block">
-            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="18" jsxwidth="60"/>
+            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="22" jsxwidth="65"/>
             <strings jsxname="labelAddress" jsxtext="Address:" jsxmargin="2" jsxpadding="2" jsxtextalign="right"/>
           </object>
           <object type="jsx3.gui.TextBox">
@@ -96,11 +96,11 @@
           <strings jsxname="paneEvent" jsxwidth="100%" jsxheight="100%"/>
           <dynamics jsxborder="@No jsxborder"/>
           <object type="jsx3.gui.Block">
-            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="18" jsxwidth="60" jsxleft="0" jsxtop="0"/>
+            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="22" jsxwidth="65" jsxleft="0" jsxtop="0"/>
             <strings jsxname="labelEvent" jsxtext="Event:" jsxmargin="2" jsxpadding="2" jsxtextalign="right" jsxdisplay=""/>
           </object>
           <object type="jsx3.gui.Select">
-            <variants jsxwidth="250" jsxheight="18"/>
+            <variants jsxwidth="250" jsxheight="22"/>
             <strings jsxname="selectEvent" jsxxmlurl="eventList.xml" jsxmargin="2"/>
           </object>
         </object>
@@ -109,15 +109,15 @@
           <strings jsxname="panePayment" jsxwidth="100%" jsxheight="100%"/>
           <dynamics jsxborder="@No jsxborder"/>
           <object type="jsx3.gui.Block">
-            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="18" jsxwidth="60"/>
+            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="22" jsxwidth="65"/>
             <strings jsxname="labelPayment" jsxtext="Payment:" jsxmargin="2" jsxpadding="2" jsxtextalign="right"/>
           </object>
           <object type="jsx3.gui.Select">
-            <variants jsxwidth="70" jsxheight="18" jsxtype="0"/>
+            <variants jsxwidth="90" jsxheight="22" jsxtype="0"/>
             <strings jsxname="selectPaymentType" jsxxmlurl="paymentTypes.xml" jsxmargin="2"/>
           </object>
           <object type="jsx3.gui.TextBox">
-            <variants jsxheight="18" jsxwidth="150"/>
+            <variants jsxheight="22" jsxwidth="150"/>
             <strings jsxname="textPayment" jsxmargin="2"/>
           </object>
         </object>
@@ -126,7 +126,7 @@
           <strings jsxname="paneNotes" jsxwidth="100%" jsxheight="100%"/>
           <dynamics jsxborder="@No jsxborder"/>
           <object type="jsx3.gui.Block">
-            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="18" jsxwidth="60"/>
+            <variants jsxrelativeposition="1" jsxoverflow="3" jsxheight="22" jsxwidth="65"/>
             <strings jsxname="labelNotes" jsxtext="Notes:" jsxmargin="2" jsxpadding="2" jsxtextalign="right"/>
           </object>
           <object type="jsx3.gui.TextBox">
@@ -139,17 +139,17 @@
           <strings jsxname="paneActions" jsxwidth="100%" jsxheight="100%" jsxtextalign="center"/>
           <dynamics jsxborder="@No jsxborder"/>
           <object type="jsx3.gui.Button">
-            <variants jsxindex="0" jsxheight="22"/>
+            <variants jsxindex="0" jsxheight="30"/>
             <strings jsxname="buttonBook" jsxtext="Book &lt;img src=&quot;JSXAPPS/ticketcenter/images/ok.png&quot;/&gt;" jsxmargin="4" jsxpadding="4"/>
             <events jsxexecute="completeHandling();"/>
           </object>
           <object type="jsx3.gui.Button">
-            <variants jsxindex="0" jsxheight="22"/>
+            <variants jsxindex="0" jsxheight="30"/>
             <strings jsxname="buttonSupervisor" jsxtext="Supervisor &lt;img src=&quot;JSXAPPS/ticketcenter/images/irkickflash.png&quot;/&gt;" jsxmargin="4" jsxpadding="4"/>
             <events jsxexecute="alertSupervisor();"/>
           </object>
           <object type="jsx3.gui.Button">
-            <variants jsxindex="0" jsxheight="22"/>
+            <variants jsxindex="0" jsxheight="30"/>
             <strings jsxname="buttonCancel" jsxtext="Cancel &lt;img src=&quot;JSXAPPS/ticketcenter/images/cancel.png&quot;/&gt;" jsxmargin="4" jsxpadding="4"/>
             <events jsxexecute="cancelHandling();"/>
           </object>
