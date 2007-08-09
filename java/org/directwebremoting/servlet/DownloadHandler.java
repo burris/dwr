@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.extend.DownloadManager;
+import org.directwebremoting.extend.FileGenerator;
 import org.directwebremoting.extend.Handler;
-import org.directwebremoting.extend.DownloadManager.FileGenerator;
 
 /**
  * A DownloadHandler is basically a FileServingServlet that integrates with

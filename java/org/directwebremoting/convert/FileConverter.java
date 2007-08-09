@@ -15,16 +15,27 @@
  */
 package org.directwebremoting.convert;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+
+import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.DownloadManager;
+import org.directwebremoting.extend.FileGenerator;
 import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
-import org.directwebremoting.impl.DefaultFileUpload;
+import org.directwebremoting.impl.DataUrlDownloadManager;
+import org.directwebremoting.impl.ImageIOFileGenerator;
+import org.directwebremoting.impl.InputStreamFileGenerator;
 import org.directwebremoting.io.FileUpload;
 import org.directwebremoting.util.Messages;
 
@@ -46,23 +57,96 @@ public class FileConverter extends BaseV20Converter implements Converter
             FormField formField = data.getFormField();
             if (paramType == FileUpload.class)
             {
-                return new DefaultFileUpload(formField.getName(), formField.getMimeType(), formField.getInputStream());
+                return new FileUpload(formField.getName(), formField.getMimeType(), formField.getInputStream());
             }
             else if (paramType == InputStream.class)
             {
                 return formField.getInputStream();
             }
+            else if (paramType == BufferedImage.class)
+            {
+                try
+                {
+                    return ImageIO.read(formField.getInputStream());
+                }
+                catch (IOException ex)
+                {
+                    throw new MarshallException(paramType, ex);
+                }
+            }
         }
         throw new MarshallException(paramType, Messages.getString("MarshallException.FileFailure", paramType));
     }
 
-    /**
-     * Outbound conversion is not supported for files
+    /* (non-Javadoc)
      * @see org.directwebremoting.extend.Converter#convertOutbound(java.lang.Object, org.directwebremoting.extend.OutboundContext)
      */
-    public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
+    public OutboundVariable convertOutbound(Object object, OutboundContext outboundContext) throws MarshallException
     {
-        Class<?> paramType = data == null ? null : data.getClass();
-        throw new MarshallException(paramType, Messages.getString("MarshallException.OutboundNotSupported", paramType));
+        if (object == null)
+        {
+            return new SimpleOutboundVariable("null", outboundContext, true);
+        }
+
+        try
+        {
+            FileGenerator generator;
+
+            if (object instanceof BufferedImage)
+            {
+                BufferedImage image = (BufferedImage) object;
+                generator = new ImageIOFileGenerator(image, "image/png", "png");
+            }
+            else if (object instanceof InputStream)
+            {
+                InputStream in = (InputStream) object;
+                generator = new InputStreamFileGenerator(in, "binary/octet-stream");
+            }
+            else
+            {
+                throw new MarshallException(object.getClass());
+            }
+
+            DownloadManager downloadManager;
+            if (preferDataUrlSchema && isDataUrlAvailable())
+            {
+                downloadManager = new DataUrlDownloadManager();
+            }
+            else
+            {
+                downloadManager = WebContextFactory.get().getContainer().getBean(DownloadManager.class);
+            }
+
+            String url = downloadManager.addFile(generator);
+            return new SimpleOutboundVariable(url, outboundContext, true);
+        }
+        catch (IOException ex)
+        {
+            throw new MarshallException(getClass(), ex);
+        }
     }
+
+    /**
+     * Is the data: URL allowed by the current browser.
+     * @return true if data: is allowed
+     */
+    protected boolean isDataUrlAvailable()
+    {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        return request.getHeader("user-agent").indexOf("MSIE") == -1;
+    }
+
+    /**
+     * Do we use a data: URL when we know it will work
+     * @param preferDataUrlSchema
+     */
+    public void setPreferDataUrlSchema(boolean preferDataUrlSchema)
+    {
+        this.preferDataUrlSchema = preferDataUrlSchema;
+    }
+
+    /**
+     * Do we use data: URLs when we can?
+     */
+    private boolean preferDataUrlSchema = true;
 }

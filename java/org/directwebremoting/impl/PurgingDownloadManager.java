@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.DownloadManager;
+import org.directwebremoting.extend.FileGenerator;
 import org.directwebremoting.util.IdGenerator;
 
 /**
@@ -77,7 +78,7 @@ public abstract class PurgingDownloadManager implements DownloadManager
     }
 
     /**
-     * Store a {@link DownloadManager.FileGenerator} against a given id for
+     * Store a {@link FileGenerator} against a given id for
      * later retrieval.
      * @param id The id of the given FileGenerator
      * @param generator The FileGenerator to store against the id

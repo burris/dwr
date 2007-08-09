@@ -16,26 +16,25 @@
 package org.directwebremoting.extend;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
- * A DownloadManager allows you to inject files into the system and then
- * retrieve them via a servlet at some later date.
+ * A representation of the file that we are writing out.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public interface DownloadManager
+public interface FileGenerator
 {
     /**
-     * Inject a file into the system for later download.
-     * @param generator The representation of the file to inject
-     * @return A URL for how to allow download of this data at a later time
-     * @throws IOException If there are problems reading from the {@link FileGenerator}
+     * Write the file to the give {@link OutputStream}.
+     * The system will take care of opening and closing the stream
+     * @param out The stream to write to.
+     * @throws IOException If there are creation problems
      */
-    String addFile(FileGenerator generator) throws IOException;
+    void generateFile(OutputStream out) throws IOException;
 
     /**
-     * Retrieve a file previously injected into the system with
-     * {@link #addFile(FileGenerator)}
-     * @param id The id of the {@link FileGenerator} to retrieve
+     * What is the MimeType for the given file
+     * @return a valid mime-type
      */
-    FileGenerator getFile(String id);
+    String getMimeType();
 }

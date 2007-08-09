@@ -22,20 +22,40 @@ import java.io.InputStream;
  * to expose a method with a {@link FileUpload} parameter.
  * The other is to expose a method with an {@link InputStream} parameter.
  * @author Lance Semmens [uklance at gmail dot com]
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public interface FileUpload
+public class FileUpload
 {
+    /**
+     * A ctor for the 3 things browsers tell us about the uploaded file
+     * @param name The remote source filename
+     * @param mimeType The mime type passed in by the browser
+     * @param inputStream A means by which the data can be read
+     */
+    public FileUpload(String name, String mimeType, InputStream inputStream)
+    {
+        this.name = name;
+        this.mimeType = mimeType;
+        this.inputStream = inputStream;
+    }
+
     /**
      * Returns the content type passed by the browser or null if not defined. 
      * @return The content type passed by the browser or null if not defined.
      */
-    public String getMimeType();
+    public String getMimeType()
+    {
+        return mimeType;
+    }
 
     /**
      * Returns an InputStream that can be used to retrieve the contents of the file. 
      * @return An InputStream that can be used to retrieve the contents of the file.
      */
-    public InputStream getInputStream();
+    public InputStream getInputStream()
+    {
+        return inputStream;
+    }
 
     /**
      * Returns the original filename in the client's file-system, as provided by
@@ -45,5 +65,23 @@ public interface FileUpload
      * information.
      * @return The original filename in the client's file-system.
      */
-    public String getName();
+    public String getName()
+    {
+        return name;
+    }
+
+    /**
+     * The remote source filename
+     */
+    private String name;
+
+    /**
+     * The mime type passed in by the browser
+     */
+    private String mimeType;
+
+    /**
+     * A means by which the data can be read
+     */
+    private InputStream inputStream;
 }

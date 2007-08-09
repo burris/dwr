@@ -37,7 +37,7 @@
     <converter id="exception" class="org.directwebremoting.convert.ExceptionConverter"/>
     <converter id="miniException" class="org.directwebremoting.convert.MinimalistExceptionConverter"/>
     <converter id="file" class="org.directwebremoting.convert.FileConverter"/>
-    <converter id="image" class="org.directwebremoting.convert.ImageConverter"/>
+    <converter id="context" class="org.directwebremoting.convert.ContextConverter"/>
   </init>
 
   <allow>
@@ -84,6 +84,8 @@
     <convert converter="array" match="[C"/>
     <convert converter="array" match="[L*"/>
 
+    <convert converter="context" match="org.directwebremoting.io.Context"/>
+
     <!--
     The catch for the next 2 is that we really mean java.util.Collection<String>
     and java.util.Map<String, String> but we need to do more work before this
@@ -112,7 +114,7 @@
 
     <convert converter="file" match="org.directwebremoting.io.FileUpload"/>
     <convert converter="file" match="java.io.InputStream"/>
-    <convert converter="image" match="java.awt.image.BufferedImage"/>
+    <convert converter="file" match="java.awt.image.BufferedImage"/>
 
     <create creator="new" javascript="__System" scope="application">
       <param name="class" value="org.directwebremoting.export.System"/>

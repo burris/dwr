@@ -25,6 +25,7 @@ import java.io.OutputStream;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.extend.DownloadManager;
+import org.directwebremoting.extend.FileGenerator;
 import org.directwebremoting.extend.InitializingBean;
 import org.directwebremoting.util.LocalUtil;
 
@@ -220,7 +221,7 @@ public class FileStoreDownloadManager extends PurgingDownloadManager implements 
 
     /**
      * The lock which you must hold to read or write from the list of
-     * {@link DownloadManager.FileGenerator}s.
+     * {@link FileGenerator}s.
      */
     protected Object contentsLock = new Object();
 
