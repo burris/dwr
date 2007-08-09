@@ -15,28 +15,27 @@
  */
 package org.directwebremoting.guice;
 
-import com.google.inject.Key;
-import com.google.inject.Injector;
-
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.impl.DefaultCreatorManager;
 
+import com.google.inject.Injector;
+import com.google.inject.Key;
+
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
-import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
 
 /**
  * Extends an existing creator manager with an injected list of creators
- * specified at Guice bind-time. Only to be used in conjection with {@link DwrGuiceServlet}.
+ * specified at Guice bind-time. Only to be used in conjunction with
+ * {@link DwrGuiceServlet}.
  * @author Tim Peierls [tim at peierls dot net]
  */
-public class InternalCreatorManager implements CreatorManager 
+public class InternalCreatorManager implements CreatorManager
 {
     /**
      * Retrieves an underlying creator manager from thread-local state
@@ -49,6 +48,9 @@ public class InternalCreatorManager implements CreatorManager
         addCreators();
     }
 
+    /**
+     *
+     */
     public void setDebug(boolean debug)
     {
         if (creatorManager instanceof DefaultCreatorManager)
@@ -58,41 +60,65 @@ public class InternalCreatorManager implements CreatorManager
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.CreatorManager#isDebug()
+     */
     public boolean isDebug()
     {
         return creatorManager.isDebug();
     }
 
-    public void addCreatorType(String typeName, String className)
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.CreatorManager#addCreatorType(java.lang.String, java.lang.String)
+     */
+    public void addCreatorType(String type, String className)
     {
-        creatorManager.addCreatorType(typeName, className);
+        creatorManager.addCreatorType(type, className);
     }
 
-    public void addCreator(String scriptName, String typeName, Map params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.CreatorManager#addCreator(java.lang.String, java.lang.String, java.util.Map)
+     */
+    public void addCreator(String scriptName, String type, Map<String, String> params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
     {
-        creatorManager.addCreator(scriptName, typeName, params);
+        creatorManager.addCreator(scriptName, type, params);
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.CreatorManager#addCreator(java.lang.String, org.directwebremoting.extend.Creator)
+     */
     public void addCreator(String scriptName, Creator creator) throws IllegalArgumentException
     {
         creatorManager.addCreator(scriptName, creator);
     }
 
-    public Collection getCreatorNames() throws SecurityException
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.CreatorManager#getCreatorNames()
+     */
+    public Collection<String> getCreatorNames() throws SecurityException
     {
         return creatorManager.getCreatorNames();
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.CreatorManager#getCreator(java.lang.String)
+     */
     public Creator getCreator(String scriptName) throws SecurityException
     {
         return creatorManager.getCreator(scriptName);
     }
 
-    public void setCreators(Map creators)
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.CreatorManager#setCreators(java.util.Map)
+     */
+    public void setCreators(Map<String, Creator> creators)
     {
         creatorManager.setCreators(creators);
     }
-    
+
+    /**
+     *
+     */
     public boolean isInitApplicationScopeCreatorsAtStartup()
     {
         if (creatorManager instanceof DefaultCreatorManager)
@@ -112,10 +138,8 @@ public class InternalCreatorManager implements CreatorManager
         }
     }
 
-    
     private final CreatorManager creatorManager;
 
-    
     private void addCreators()
     {
         Injector injector = getInjector();
@@ -127,7 +151,7 @@ public class InternalCreatorManager implements CreatorManager
                 String scriptName = Remoted.class.cast(key.getAnnotation()).value();
                 if (scriptName.equals(""))
                 {
-                    Class cls = (Class) key.getTypeLiteral().getType();
+                    Class<?> cls = (Class<?>) key.getTypeLiteral().getType();
                     scriptName = cls.getSimpleName();
                 }
                 addCreator(scriptName, new InternalCreator(injector, key, scriptName));
@@ -135,7 +159,6 @@ public class InternalCreatorManager implements CreatorManager
         }
     }
 
-    
     /**
      * Stores a type name in a thread-local variable for later retrieval by
      * {@code getCreatorManager}.
@@ -144,19 +167,20 @@ public class InternalCreatorManager implements CreatorManager
     {
         typeName.set(name);
     }
-    
+
     private static CreatorManager getCreatorManager()
     {
         String name = typeName.get();
         try
         {
-            Class<? extends CreatorManager> cls = 
-                (Class<? extends CreatorManager>) Class.forName(name);
+            @SuppressWarnings("unchecked")
+            Class<? extends CreatorManager> cls = (Class<? extends CreatorManager>) Class.forName(name);
             return cls.newInstance();
         }
         catch (Exception e)
         {
-            if (name != null && !"".equals(name)) {
+            if (name != null && !"".equals(name))
+            {
                 log.warn("Couldn't make CreatorManager from type: " + name);
             }
             return new DefaultCreatorManager();
@@ -167,7 +191,6 @@ public class InternalCreatorManager implements CreatorManager
      * Place to stash a type name for retrieval in same thread.
      */
     private static final ThreadLocal<String> typeName = new ThreadLocal<String>();
-
 
     /**
      * The log stream

@@ -15,11 +15,10 @@
  */
 package org.directwebremoting.guice;
 
-import com.google.inject.Key;
-
-import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import com.google.inject.Key;
 
 /**
  * A specialization of {@link AbstractContextScope} using a concurrent map
@@ -28,30 +27,33 @@ import java.util.concurrent.ConcurrentMap;
  * {@code super(C.class)} in constructors.
  * @author Tim Peierls [tim at peierls dot net]
  */
-public abstract class AbstractMapContextScope<C> 
-    extends AbstractContextScope<C, ConcurrentMap>
+public abstract class AbstractMapContextScope<C> extends AbstractContextScope<C, ConcurrentMap<?, ?>>
 {
     protected AbstractMapContextScope(Class<C> type, String scopeName)
     {
         super(type, scopeName);
     }
-    
+
+    @Override
     public abstract C get();
-    
-    
+
     //
     // ContextRegistry methods
     //
-    
-    public ConcurrentMap registryFor(C context)
-    {
-        ConcurrentMap instanceMap = map.get(context);
 
-        if (instanceMap == null) 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.guice.ContextRegistry#registryFor(java.lang.Object)
+     */
+    public ConcurrentMap<?, ?> registryFor(C context)
+    {
+        ConcurrentMap<?, ?> instanceMap = map.get(context);
+
+        if (instanceMap == null)
         {
-            ConcurrentMap emptyMap = new ConcurrentHashMap();
+            @SuppressWarnings("unchecked")
+            ConcurrentMap<?, ?> emptyMap = new ConcurrentHashMap();
             instanceMap = map.putIfAbsent(context, emptyMap);
-            if (instanceMap == null) 
+            if (instanceMap == null)
             {
                 instanceMap = emptyMap;
             }
@@ -60,35 +62,28 @@ public abstract class AbstractMapContextScope<C>
         return instanceMap;
     }
 
-    public <T> InstanceProvider<T> get(ConcurrentMap registry, Key<T> key, String keyString)
+    public <T> InstanceProvider<T> get(ConcurrentMap<Key<T>, InstanceProvider<T>> registry, Key<T> key, String keyString)
     {
         @SuppressWarnings("unchecked")
-        ConcurrentMap<Key<T>, InstanceProvider<T>> instanceMap =
-            (ConcurrentMap<Key<T>, InstanceProvider<T>>) registry;
+        ConcurrentMap<Key<T>, InstanceProvider<T>> instanceMap = registry;
         return instanceMap.get(key);
     }
-    
-    public <T> InstanceProvider<T> putIfAbsent(ConcurrentMap registry, 
-                                               Key<T> key, String keyString, 
-                                               InstanceProvider<T> creator)
-    {                                               
-        @SuppressWarnings("unchecked")
-        ConcurrentMap<Key<T>, InstanceProvider<T>> instanceMap =
-            (ConcurrentMap<Key<T>, InstanceProvider<T>>) registry;
-        
-        return instanceMap.putIfAbsent(key, creator);
-    }
-    
-    public <T> boolean remove(ConcurrentMap registry, Key<T> key, String keyString, 
-                              InstanceProvider<T> creator)
+
+    public <T> InstanceProvider<T> putIfAbsent(ConcurrentMap<Key<T>, InstanceProvider<T>> registry, Key<T> key, String keyString, InstanceProvider<T> creator)
     {
         @SuppressWarnings("unchecked")
-        ConcurrentMap<Key<T>, InstanceProvider<T>> instanceMap =
-            (ConcurrentMap<Key<T>, InstanceProvider<T>>) registry;
-        
+        ConcurrentMap<Key<T>, InstanceProvider<T>> instanceMap = registry;
+
+        return instanceMap.putIfAbsent(key, creator);
+    }
+
+    public <T> boolean remove(ConcurrentMap<Key<T>, InstanceProvider<T>> registry, Key<T> key, String keyString, InstanceProvider<T> creator)
+    {
+        @SuppressWarnings("unchecked")
+        ConcurrentMap<Key<T>, InstanceProvider<T>> instanceMap = registry;
+
         return instanceMap.remove(key, creator);
     }
 
-    private final ConcurrentMap<C, ConcurrentMap> map =
-          new ConcurrentHashMap<C, ConcurrentMap>();
+    private final ConcurrentMap<C, ConcurrentMap<?, ?>> map = new ConcurrentHashMap<C, ConcurrentMap<?, ?>>();
 }

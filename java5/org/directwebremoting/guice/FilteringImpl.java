@@ -18,14 +18,14 @@ package org.directwebremoting.guice;
 import java.lang.annotation.Annotation;
 
 
-class FilteringImpl implements Filtering 
+class FilteringImpl implements Filtering
 {
-    public FilteringImpl() 
+    public FilteringImpl()
     {
         this.value = "";
     }
 
-    public FilteringImpl(String value) 
+    public FilteringImpl(String value)
     {
         if (value == null)
         {
@@ -34,19 +34,20 @@ class FilteringImpl implements Filtering
         this.value = value;
     }
 
-    public String value() 
+    public String value()
     {
         return this.value;
     }
 
-    public Class<? extends Annotation> annotationType() 
+    public Class<? extends Annotation> annotationType()
     {
         return Filtering.class;
     }
 
-    public boolean equals(Object t) 
+    @Override
+    public boolean equals(Object t)
     {
-        if (!(t instanceof Filtering)) 
+        if (!(t instanceof Filtering))
         {
             return false;
         }
@@ -55,13 +56,15 @@ class FilteringImpl implements Filtering
         return this.value.equals(that.value());
     }
 
-    public int hashCode() 
+    @Override
+    public int hashCode()
     {
         // Annotation spec sez:
         return 127 * "value".hashCode() ^ value.hashCode();
     }
 
-    public String toString() 
+    @Override
+    public String toString()
     {
         return "@" + Filtering.class.getName() + "(value=" + value + ")";
     }

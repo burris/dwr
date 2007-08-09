@@ -17,9 +17,6 @@ package org.directwebremoting.guice;
 
 import com.google.inject.Key;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
  * A specialization of {@link AbstractContextScope} for the case when
  * the context identifier itself can serve as a string-keyed instance registry
@@ -34,22 +31,22 @@ public abstract class AbstractSimpleContextScope<C> extends AbstractContextScope
         super(type, scopeName);
     }
 
+    @Override
     public abstract C get();
-    
-    
+
     //
     // These methods are restricted to String lookup of plain Objects.
     //
 
     public abstract Object get(C registry, String keyString);
-    
+
     public abstract void put(C registry, String keyString, Object creator);
-    
-    
+
+
     //
     // ContextRegistry methods
     //
-    
+
     public C registryFor(C context)
     {
         return context;
@@ -60,13 +57,13 @@ public abstract class AbstractSimpleContextScope<C> extends AbstractContextScope
     {
         return (InstanceProvider<T>) get(registry, keyString);
     }
-    
+
     public <T> void put(C registry, Key<T> key, String keyString, InstanceProvider<T> creator)
     {
         put(registry, keyString, creator);
     }
-    
-    public <T> InstanceProvider<T> putIfAbsent(C registry, Key<T> key, String keyString, 
+
+    public <T> InstanceProvider<T> putIfAbsent(C registry, Key<T> key, String keyString,
                                                InstanceProvider<T> creator)
     {
         synchronized (registry)
@@ -83,8 +80,8 @@ public abstract class AbstractSimpleContextScope<C> extends AbstractContextScope
             }
         }
     }
-    
-    public <T> boolean remove(C registry, Key<T> key, String keyString, 
+
+    public <T> boolean remove(C registry, Key<T> key, String keyString,
                               InstanceProvider<T> creator)
     {
         synchronized (registry)

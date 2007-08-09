@@ -18,9 +18,9 @@ package org.directwebremoting.guice;
 import java.lang.annotation.Annotation;
 
 
-class InitParamImpl implements InitParam 
+class InitParamImpl implements InitParam
 {
-    public InitParamImpl(ParamName value) 
+    public InitParamImpl(ParamName value)
     {
         if (value == null)
         {
@@ -29,19 +29,20 @@ class InitParamImpl implements InitParam
         this.value = value;
     }
 
-    public ParamName value() 
+    public ParamName value()
     {
         return this.value;
     }
 
-    public Class<? extends Annotation> annotationType() 
+    public Class<? extends Annotation> annotationType()
     {
         return InitParam.class;
     }
 
-    public boolean equals(Object t) 
+    @Override
+    public boolean equals(Object t)
     {
-        if (!(t instanceof InitParam)) 
+        if (!(t instanceof InitParam))
         {
             return false;
         }
@@ -50,13 +51,15 @@ class InitParamImpl implements InitParam
         return this.value.equals(that.value());
     }
 
-    public int hashCode() 
+    @Override
+    public int hashCode()
     {
         // Annotation spec sez:
         return 127 * "value".hashCode() ^ value.hashCode();
     }
 
-    public String toString() 
+    @Override
+    public String toString()
     {
         return "@" + InitParam.class.getName() + "(value=" + value + ")";
     }

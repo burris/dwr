@@ -15,22 +15,19 @@
  */
 package org.directwebremoting.guice;
 
-import com.google.inject.Key;
+import java.util.Iterator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.AjaxFilter;
+import org.directwebremoting.extend.AjaxFilterManager;
+import org.directwebremoting.impl.DefaultAjaxFilterManager;
+
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Provider;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-import org.directwebremoting.AjaxFilter;
-import org.directwebremoting.impl.DefaultAjaxFilterManager;
-import org.directwebremoting.extend.*;
-
 import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
-import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
 
 /**
  * Extends an existing ajax filter manager with an injected list of ajax filters
@@ -38,7 +35,7 @@ import static org.directwebremoting.guice.DwrGuiceUtil.getServletContext;
  * {@link DwrGuiceServlet}.
  * @author Tim Peierls [tim at peierls dot net]
  */
-public class InternalAjaxFilterManager implements AjaxFilterManager 
+public class InternalAjaxFilterManager implements AjaxFilterManager
 {
     /**
      * Retrieves an underlying ajaxFilter manager from thread-local state
@@ -52,7 +49,7 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
 
     public Iterator<AjaxFilter> getAjaxFilters(String scriptname)
     {
-        return (Iterator<AjaxFilter>) ajaxFilterManager.getAjaxFilters(scriptname);
+        return ajaxFilterManager.getAjaxFilters(scriptname);
     }
 
     public void addAjaxFilter(AjaxFilter filter)
@@ -65,7 +62,7 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
         ajaxFilterManager.addAjaxFilter(filter, scriptname);
     }
 
-    
+
     private final AjaxFilterManager ajaxFilterManager;
 
     private void addAjaxFilters()
@@ -77,6 +74,7 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
             if (atype != null && Filtering.class.isAssignableFrom(atype))
             {
                 String scriptName = Filtering.class.cast(key.getAnnotation()).value();
+                @SuppressWarnings("unchecked")
                 Provider<AjaxFilter> provider = injector.getProvider((Key<AjaxFilter>) key);
                 if ("".equals(scriptName))
                 {
@@ -90,7 +88,7 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
         }
     }
 
-    
+
     /**
      * Stores a type name in a thread-local variable for later retrieval by
      * {@code getAjaxFilterManager}.
@@ -99,19 +97,20 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
     {
         typeName.set(name);
     }
-    
+
     private static AjaxFilterManager getAjaxFilterManager()
     {
         String name = typeName.get();
         try
         {
-            Class<? extends AjaxFilterManager> cls = 
-                (Class<? extends AjaxFilterManager>) Class.forName(name);
+            @SuppressWarnings("unchecked")
+            Class<? extends AjaxFilterManager> cls = (Class<? extends AjaxFilterManager>) Class.forName(name);
             return cls.newInstance();
         }
         catch (Exception e)
         {
-            if (name != null && !"".equals(name)) {
+            if (name != null && !"".equals(name))
+            {
                 log.warn("Couldn't make AjaxFilterManager from type: " + name);
             }
             return new DefaultAjaxFilterManager();
@@ -123,7 +122,6 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
      * Place to stash a type name for retrieval in same thread.
      */
     private static final ThreadLocal<String> typeName = new ThreadLocal<String>();
-
 
     /**
      * The log stream
