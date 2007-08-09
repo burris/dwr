@@ -49,7 +49,7 @@ public class ScriptBuffer
 
     /**
      * @param str The String to add to the script
-     * @return this. To allow sv.append(x).append(y).append(z);
+     * @return this. To allow buffer.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(java.lang.String)
      */
     public ScriptBuffer appendScript(String str)
@@ -60,7 +60,7 @@ public class ScriptBuffer
 
     /**
      * @param b The boolean to add to the script
-     * @return this. To allow sv.append(x).append(y).append(z);
+     * @return this. To allow buffer.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(boolean)
      */
     public ScriptBuffer appendData(boolean b)
@@ -72,7 +72,7 @@ public class ScriptBuffer
 
     /**
      * @param c The char to add to the script
-     * @return this. To allow sv.append(x).append(y).append(z);
+     * @return this. To allow buffer.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(char)
      */
     public ScriptBuffer appendData(char c)
@@ -83,7 +83,7 @@ public class ScriptBuffer
 
     /**
      * @param d The double to add to the script
-     * @return this. To allow sv.append(x).append(y).append(z);
+     * @return this. To allow buffer.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(double)
      */
     public ScriptBuffer appendData(double d)
@@ -94,7 +94,7 @@ public class ScriptBuffer
 
     /**
      * @param f The float to add to the script
-     * @return this. To allow sv.append(x).append(y).append(z);
+     * @return this. To allow buffer.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(float)
      */
     public ScriptBuffer appendData(float f)
@@ -105,7 +105,7 @@ public class ScriptBuffer
 
     /**
      * @param i The int to add to the script
-     * @return this. To allow sv.append(x).append(y).append(z);
+     * @return this. To allow buffer.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(int)
      */
     public ScriptBuffer appendData(int i)
@@ -116,7 +116,7 @@ public class ScriptBuffer
 
     /**
      * @param l The long to add to the script
-     * @return this. To allow sv.append(x).append(y).append(z);
+     * @return this. To allow buffer.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(long)
      */
     public ScriptBuffer appendData(long l)
@@ -127,7 +127,7 @@ public class ScriptBuffer
 
     /**
      * @param obj The Object to add to the script
-     * @return this. To allow sv.append(x).append(y).append(z);
+     * @return this. To allow buffer.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(java.lang.Object)
      */
     public ScriptBuffer appendData(Object obj)
@@ -138,7 +138,7 @@ public class ScriptBuffer
 
     /**
      * @param str The String to add to the script
-     * @return this. To allow sv.append(x).append(y).append(z);
+     * @return this. To allow buffer.append(x).append(y).append(z);
      * @see java.lang.StringBuffer#append(java.lang.String)
      */
     public ScriptBuffer appendData(String str)
