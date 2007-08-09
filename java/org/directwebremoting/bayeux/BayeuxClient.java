@@ -57,6 +57,7 @@ public class BayeuxClient implements Listener
     {
         try
         {
+            @SuppressWarnings("unchecked")
             Map<String, Object> msgParams = (Map<String, Object>) message;
             Map<String, FormField> fileParams = new HashMap<String, FormField>(msgParams.size());
             for (Map.Entry<String, Object> entry : msgParams.entrySet())

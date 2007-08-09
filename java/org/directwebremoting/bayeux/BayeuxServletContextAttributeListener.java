@@ -66,6 +66,7 @@ public class BayeuxServletContextAttributeListener implements ServletContextAttr
             
             if (ContainerUtil.ATTRIBUTE_CONTAINER_LIST.equals(scab.getName()))
             {
+                @SuppressWarnings("unchecked")
                 List<Container> containers = (List<Container>) scab.getValue();
                 
                 log.debug("containers="+containers);
