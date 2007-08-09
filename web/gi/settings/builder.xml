@@ -79,8 +79,8 @@
   <record jsxid="projects" type="map">
     <record jsxid="JSXAPPS/ticketcenter" type="map">
       <record jsxid="recentFiles" type="array">
-        <record jsxid="0" type="string">eventList.xml</record>
-        <record jsxid="1" type="string">main.xml</record>
+        <record jsxid="0" type="string">main.xml</record>
+        <record jsxid="1" type="string">eventList.xml</record>
       </record>
       <record jsxid="openFiles" type="array">
         <record jsxid="0" type="string">main.xml</record>
@@ -92,7 +92,7 @@
       <record jsxid="jsx_ide_splitter1" type="string">80%</record>
       <record jsxid="jsx_ide_splitter2" type="string">0%</record>
       <record jsxid="jsx_ide_splitter3" type="string">100%</record>
-      <record jsxid="jsx_ide_splitter4" type="string">66.15%</record>
+      <record jsxid="jsx_ide_splitter4" type="string">70.13%</record>
       <record jsxid="jsx_ide_splitter5" type="string">41.94%</record>
     </record>
   </record>
