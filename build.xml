@@ -83,6 +83,23 @@
   </target>
 
   <!--=======================================================================-->
+  <target name="dtddoc">
+    <path id="dtddocpath">
+      <fileset dir="${source.root}/etc/dtddoc" includes="**/*.jar"/>
+    </path>
+    <taskdef name="DTDDoc" classname="DTDDoc.DTDDocTask" classpathref="dtddocpath"/>
+    <mkdir dir="${target.root}/dtddoc"/>
+    <DTDDoc showHiddenTags="false"
+        showFixmeTags="false"
+        sourceDir="${source.root}/java"
+        destDir="${target.root}/dtddoc"
+        docTitle = "DTDDoc's example">
+      <include name="**/*.dtd"/>
+      <exclude name="common/*.dtd"/>
+    </DTDDoc>
+  </target>
+
+  <!--=======================================================================-->
   <target name="jar" depends="compile" description="Create output JAR file">
     <mkdir dir="${target.root}"/>
     <jar destfile="${target.root}/dwr.jar" compress="true">
