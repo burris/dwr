@@ -49,16 +49,20 @@ public class ScriptBufferUtil
         // First convert everything
         for (Object element : buffer.getParts())
         {
-            if (!(element instanceof StringWrapper))
+            if (element instanceof StringWrapper)
+            {
+                ovs.add(element);
+            }
+            else
             {
                 OutboundVariable ov = converterManager.convertOutbound(element, context);
                 ovs.add(ov);
             }
-            else
-            {
-                ovs.add(element);
-            }
         }
+
+        // At this point ovs has a 1-1 mapping from the parts to the buffer
+        // It can contain one of 2 types, an OutboundVariable that has been
+        // converted or a string (StringWrapper) that does not need conversion
 
         StringBuffer output = new StringBuffer();
 
@@ -70,6 +74,10 @@ public class ScriptBufferUtil
                 OutboundVariable ov = (OutboundVariable) element;
                 output.append(ov.getDeclareCode());
             }
+            else
+            {
+                // StringWrappers do not need declaring
+            }
         }
 
         // Then we look for the construction code
@@ -80,20 +88,24 @@ public class ScriptBufferUtil
                 OutboundVariable ov = (OutboundVariable) element;
                 output.append(ov.getBuildCode());
             }
+            else
+            {
+                // StringWrappers do not need building
+            }
         }
 
         // Then we output everything else
         for (Object element : ovs)
         {
-            if (element instanceof StringWrapper)
-            {
-                StringWrapper str = (StringWrapper) element;
-                output.append(str.toString());
-            }
-            else
+            if (element instanceof OutboundVariable)
             {
                 OutboundVariable ov = (OutboundVariable) element;
                 output.append(ov.getAssignCode());
+            }
+            else
+            {
+                StringWrapper str = (StringWrapper) element;
+                output.append(str.toString());
             }
         }
 
