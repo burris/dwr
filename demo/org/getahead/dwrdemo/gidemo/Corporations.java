@@ -41,8 +41,8 @@ public class Corporations
     }
 
     /**
-    *
-    */
+     *
+     */
     public List<Corporation> getCorporations()
     {
         return corporations;

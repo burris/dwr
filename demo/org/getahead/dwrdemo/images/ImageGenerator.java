@@ -32,7 +32,7 @@ import org.directwebremoting.proxy.dwr.Util;
 import org.getahead.dwrdemo.util.ColorUtil;
 
 /**
- * Demonstrate DWR's {@link org.directwebremoting.convert.ImageConverter}.
+ * Demonstrate DWR's {@link org.directwebremoting.convert.FileConverter}.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class ImageGenerator
@@ -63,7 +63,7 @@ public class ImageGenerator
 
     /**
      * Generate an image to demonstrate DWR's
-     * {@link org.directwebremoting.convert.ImageConverter}
+     * {@link org.directwebremoting.convert.FileConverter}
      */
     private void update()
     {
