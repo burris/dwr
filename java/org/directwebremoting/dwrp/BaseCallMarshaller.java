@@ -31,7 +31,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.export.System;
 import org.directwebremoting.extend.AccessControl;
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
@@ -96,7 +95,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         if (calls.getCallCount() == 1)
         {
             Call call = calls.getCall(0);
-            if (System.isPageLoadedMethod(call.getScriptName(), call.getMethodName()))
+            if (isPageLoadedMethod(call.getScriptName(), call.getMethodName()))
             {
                 checkScriptId = false;
             }
@@ -108,6 +107,28 @@ public abstract class BaseCallMarshaller implements Marshaller
         // Various bits of the Batch need to be stashed away places
         storeParsedRequest(request, webContext, batch);
         return marshallInbound(batch);
+    }
+
+    /**
+     * Security check: The pageLoaded may be called without a valid
+     * scriptSessionId. This helps us check that someone is calling that method.
+     * @param scriptName The object that the users wants to call a method on
+     * @param methodName The method a remote user wants to call
+     * @return true iff the method is the pageLoaded method on this class
+     */
+    private static boolean isPageLoadedMethod(String scriptName, String methodName)
+    {
+        if (!scriptName.equals("__System"))
+        {
+            return false;
+        }
+
+        if (!methodName.equals("pageLoaded"))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /**

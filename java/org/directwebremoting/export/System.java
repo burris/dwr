@@ -62,28 +62,6 @@ public class System
     }
 
     /**
-     * Security check: The pageLoaded may be called without a valid
-     * scriptSessionId. This helps us check that someone is calling that method.
-     * @param scriptName The object that the users wants to call a method on
-     * @param methodName The method a remote user wants to call
-     * @return true iff the method is the pageLoaded method on this class
-     */
-    public static boolean isPageLoadedMethod(String scriptName, String methodName)
-    {
-        if (!scriptName.equals("__System"))
-        {
-            return false;
-        }
-
-        if (!methodName.equals("pageLoaded"))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * The log stream
      */
     private static final Log log = LogFactory.getLog(System.class);
