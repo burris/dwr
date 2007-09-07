@@ -27,14 +27,14 @@ import com.google.inject.Key;
  * {@code super(C.class)} in constructors.
  * @author Tim Peierls [tim at peierls dot net]
  */
-public abstract class AbstractMapContextScope<C> extends AbstractContextScope<C, ConcurrentMap<?, ?>>
+public abstract class AbstractMapContextScope<C> extends AbstractContextScope<C, InstanceMap<?>>
 {
     protected AbstractMapContextScope(Class<C> type, String scopeName)
     {
         super(type, scopeName);
     }
 
-    @Override
+    @Override 
     public abstract C get();
 
     //
@@ -44,14 +44,13 @@ public abstract class AbstractMapContextScope<C> extends AbstractContextScope<C,
     /* (non-Javadoc)
      * @see org.directwebremoting.guice.ContextRegistry#registryFor(java.lang.Object)
      */
-    public ConcurrentMap<?, ?> registryFor(C context)
+    public InstanceMap<?> registryFor(C context)
     {
-        ConcurrentMap<?, ?> instanceMap = map.get(context);
+        InstanceMap<?> instanceMap = map.get(context);
 
         if (instanceMap == null)
         {
-            @SuppressWarnings("unchecked")
-            ConcurrentMap<?, ?> emptyMap = new ConcurrentHashMap();
+            InstanceMap<?> emptyMap = new InstanceMapImpl<Object>();
             instanceMap = map.putIfAbsent(context, emptyMap);
             if (instanceMap == null)
             {
@@ -62,28 +61,27 @@ public abstract class AbstractMapContextScope<C> extends AbstractContextScope<C,
         return instanceMap;
     }
 
-    public <T> InstanceProvider<T> get(ConcurrentMap<Key<T>, InstanceProvider<T>> registry, Key<T> key, String keyString)
+    public <T> InstanceProvider<T> get(InstanceMap<?> registry, Key<T> key, String keyString)
     {
-        @SuppressWarnings("unchecked")
-        ConcurrentMap<Key<T>, InstanceProvider<T>> instanceMap = registry;
-        return instanceMap.get(key);
+        return castToT(registry, key).get(key);
     }
 
-    public <T> InstanceProvider<T> putIfAbsent(ConcurrentMap<Key<T>, InstanceProvider<T>> registry, Key<T> key, String keyString, InstanceProvider<T> creator)
+    public <T> InstanceProvider<T> putIfAbsent(InstanceMap<?> registry, Key<T> key, String keyString, InstanceProvider<T> creator)
     {
-        @SuppressWarnings("unchecked")
-        ConcurrentMap<Key<T>, InstanceProvider<T>> instanceMap = registry;
-
-        return instanceMap.putIfAbsent(key, creator);
+        return castToT(registry, key).putIfAbsent(key, creator);
     }
 
-    public <T> boolean remove(ConcurrentMap<Key<T>, InstanceProvider<T>> registry, Key<T> key, String keyString, InstanceProvider<T> creator)
+    public <T> boolean remove(InstanceMap<?> registry, Key<T> key, String keyString, InstanceProvider<T> creator)
+    {
+        return castToT(registry, key).remove(key, creator);
+    }
+    
+    private <T> InstanceMap<T> castToT(InstanceMap<?> map, Key<T> key)
     {
         @SuppressWarnings("unchecked")
-        ConcurrentMap<Key<T>, InstanceProvider<T>> instanceMap = registry;
-
-        return instanceMap.remove(key, creator);
+        InstanceMap<T> result = (InstanceMap<T>) map;
+        return result;
     }
 
-    private final ConcurrentMap<C, ConcurrentMap<?, ?>> map = new ConcurrentHashMap<C, ConcurrentMap<?, ?>>();
+    private final ConcurrentMap<C, InstanceMap<?>> map = new ConcurrentHashMap<C, InstanceMap<?>>();
 }
