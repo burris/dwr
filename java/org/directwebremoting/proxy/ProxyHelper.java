@@ -73,4 +73,3 @@ public class ProxyHelper
      */
     private ScriptProxy scriptProxy;
 }
-

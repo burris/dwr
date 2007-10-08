@@ -20,14 +20,11 @@ import java.util.Collection;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
-import org.getahead.dwrdemo.proxy.gi.Button;
-import org.getahead.dwrdemo.proxy.gi.Form;
-import org.getahead.dwrdemo.proxy.gi.GI;
-import org.getahead.dwrdemo.proxy.gi.Server;
+import org.directwebremoting.proxy.jsx3.GI;
+import org.directwebremoting.proxy.jsx3.gui.Button;
+import org.directwebremoting.proxy.jsx3.gui.Form;
+import org.directwebremoting.proxy.jsx3.app.Server;
 
-/**
- * @author Joe Walker [joe at getahead dot ltd dot uk]
- */
 public class Test
 {
     public static void main(String[] args)
@@ -35,7 +32,7 @@ public class Test
         ServerContext sctx = ServerContextFactory.get(null);
         Collection<ScriptSession> sessions = sctx.getScriptSessionsByPage(null);
         Server server = GI.getServer(sessions, "appname");
-        Button button = server.getJsxById("button", Button.class);
-        button.setEnabled(Form.State.DISABLED, true);
+        Button button = server.getJSXById("button", Button.class);
+        button.setEnabled(Form.STATEDISABLED, true);
     }
 }

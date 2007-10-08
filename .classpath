@@ -84,6 +84,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="jar/spring-mock.jar"/>
+	<classpathentry kind="lib" path="jar/commons-io-1.3.1.jar"/>
 	<classpathentry kind="src" path="etc/classpath"/>
 	<classpathentry kind="src" path="java"/>
 	<classpathentry kind="src" path="java5"/>
@@ -91,5 +92,18 @@
 	<classpathentry kind="src" path="demo"/>
 	<classpathentry kind="src" path="test/java"/>
 	<classpathentry kind="src" path="test/resources"/>
+	<classpathentry kind="src" path="generated/gi/java"/>
+	<classpathentry kind="src" path="drapgen/java"/>
+	<classpathentry kind="src" path="drapgen/resources"/>
+	<classpathentry kind="lib" path="/library/jarlib/jms-1.1/lib/javax.jms.jar" sourcepath="/library/jarlib/jms-1.1/src/share">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/Users/joe/Workspace/library/jarlib/jms-1.1/doc/api/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/library/jarlib/jms-1.1/lib/jms.jar" sourcepath="/library/jarlib/jms-1.1/src/share">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/Users/joe/Workspace/library/jarlib/jms-1.1/doc/api/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="web/WEB-INF/classes"/>
 </classpath>
