@@ -80,10 +80,10 @@ public class Publisher implements Runnable
                     ScriptProxy proxy = new ScriptProxy(sessions);
     
                     Corporation corp = corporations.getNextChangedCorporation();
-                    proxy.addFunctionCall("OpenAjax.publish", "gidemo", "corporation", corp);
+                    proxy.addFunctionCall("OpenAjax.hub.publish", "gidemo.corp", corp);
                 }
 
-                int timeToSleep = random.nextInt(2500);
+                int timeToSleep = random.nextInt(1000);
                 Thread.sleep(timeToSleep);
             }
         }

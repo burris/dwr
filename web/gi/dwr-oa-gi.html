@@ -65,7 +65,7 @@ then passes the data on to GI.</p>
 
 <pre>
 function giLoaded() {
-  OpenAjax.subscribe("gidemo", "corporation", objectPublished);
+  OpenAjax.hub.subscribe("gidemo.corp", objectPublished);
   dwr.engine.setActiveReverseAjax(true);
 }
 </pre>
@@ -76,7 +76,7 @@ function giLoaded() {
     function looks like this:</p>
 
 <pre>
-function objectPublished(prefix, name, handlerData, corporation) {
+function objectPublished(name, corporation) {
   var matrix = giApp.getJSXByName("matrix");
   var inserted = matrix.getRecordNode(corporation.jsxid);
   matrix.insertRecord(corporation, null, inserted == null);
@@ -100,7 +100,7 @@ while (!Thread.currentThread().isInterrupted())
     ScriptProxy proxy = new ScriptProxy(sessions);
 
     Corporation corp = corporations.getNextChangedCorporation();
-    proxy.addFunctionCall("OpenAjax.publish", "gidemo", "corporation", corp);
+    proxy.addFunctionCall("OpenAjax.hub.publish", "gidemo.corp", corp);
 
     int timeToSleep = random.nextInt(2500);
     Thread.sleep(timeToSleep);

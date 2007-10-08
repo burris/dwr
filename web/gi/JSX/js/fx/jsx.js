@@ -218,7 +218,7 @@ Ab=jsx3.rU;Ab[Ab.length]=wb;jsx3.XG[b]=wb;if(jsx3.oE==null)jsx3.oE=window.setTim
 P=null;while(jsx3.rU.length>0&&(P==null||P[0]==null))P=jsx3.rU.shift();if(P){jsx3.oE=window.setTimeout(jsx3.ow,0);var
 kb=P[0];var
 Fc=P[1];var
-Kc=P[2];delete jsx3.XG[Fc];kb.apply(Kc);}else{jsx3.oE=null;jsx3.publish({subject:jsx3.QUEUE_DONE});}};jsx3.startup=function(){if(window.OpenAjax){OpenAjax.registerLibrary("gi","http://www.tibco.com/gi",jsx3.getVersion());OpenAjax.registerGlobals("gi",["gi","jsx3","jsx","tibco"]);}};jsx3.destroy=function(){if(jsx3.app&&jsx3.app.Server){var
+Kc=P[2];delete jsx3.XG[Fc];kb.apply(Kc);}else{jsx3.oE=null;jsx3.publish({subject:jsx3.QUEUE_DONE});}};jsx3.startup=function(){};jsx3.destroy=function(){if(jsx3.app&&jsx3.app.Server){var
 bb=jsx3.app.Server.allServers();for(var
 Gb=0;Gb<bb.length;Gb++)try{bb[Gb].destroy();}catch(Kc){}}if(jsx3.gui&&jsx3.gui.Event){var
 T="BEFOREUNLOAD BLUR CHANGE CLICK DOUBLECLICK ERROR FOCUS KEYDOWN KEYPRESS KEYUP LOAD MOUSEDOWN MOUSEMOVE MOUSEOUT MOUSEOVER MOUSEUP MOUSEWHEEL UNLOAD RESIZE".split(/\s+/);for(var
