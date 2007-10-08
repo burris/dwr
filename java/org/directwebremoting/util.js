@@ -17,9 +17,9 @@
 /**
  * Declare an object to which we can add real functions.
  */
-if (dwr == null) var dwr = {};
-if (dwr.util == null) dwr.util = {};
-if (DWRUtil == null) var DWRUtil = dwr.util;
+if (window['dwr'] == null) window['dwr'] = {};
+if (dwr['util'] == null) dwr['util'] = {};
+if (window['DWRUtil'] == null) window['DWRUtil'] = dwr.util;
 
 /** @private The flag we use to decide if we should escape html */
 dwr.util._escapeHtml = true;
