@@ -288,6 +288,8 @@ public class CallCenter implements Runnable
     {
         String contextPath = serverContext.getContextPath();
         Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/ticketcenter.html");
+        Collection<ScriptSession> sessions2 = serverContext.getScriptSessionsByPage(contextPath + "/gi/ticketcenter2.html");
+        sessions.addAll(sessions2);
         ScriptProxy proxy = new ScriptProxy(sessions);
         proxy.addFunctionCall("updateCallers", calls, new Date());
     }
