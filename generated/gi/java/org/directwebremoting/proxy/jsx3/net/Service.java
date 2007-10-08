@@ -1,0 +1,1169 @@
+/*
+ * Copyright 2005 Joe Walker
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.directwebremoting.proxy.jsx3.net;
+
+import java.util.Date;
+import java.lang.reflect.Constructor;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.proxy.ProxyHelper;
+
+/**
+ * @author Joe Walker [joe at getahead dot org]
+ * @author DRAPGEN - Dwr Reverse Ajax Proxy GENerator
+ */
+public class Service extends org.directwebremoting.proxy.jsx3.lang.Object
+{
+    /**
+     * All reverse ajax proxies need context to work from
+     * @param helper The store of the context for the current action
+     */
+    public Service(ProxyHelper helper)
+    {
+        super(helper);
+    }
+
+    
+    /**
+     * event type for successful response
+     */
+    public static final String ON_SUCCESS = "onSuccess";
+
+    /**
+     * event type for unsuccessful response
+     */
+    public static final String ON_ERROR = "onError";
+
+    /**
+     * Event type published when the response is still not ready after the specified timeout period.
+     */
+    public static final String ON_TIMEOUT = "onTimeout";
+
+    /**
+     * Event type published each time a rule with one or more restrictions fails during message generation. The following named properties are available on the event object:
+
+        
+          rule the rule node
+
+          message the message node
+
+          target this jsx3.net.Service instance
+
+          type the type of restriction that caused the invalidation event to be publsihed. For example, pattern.
+
+          value the value for the type. For example if type is pattern, then [A-Z]*
+     */
+    public static final String ON_INVALID = "onInvalid";
+
+    /**
+     * Event type published each time a mapping rule is used to create a node, locate a node, or map to a node.
+
+        
+          target this jsx3.net.Service instance
+
+          rule the rule node being processed
+
+          action the action being performed by the rule. For example, Create Node, Map to Cache, Invalidate Node, etc.
+
+          description a description of the 'action'. For example, this.eval(setValue(2));
+        
+
+          level the log level (e.g., 'severity' level) for the message. For example, 6 would signify a 'Trace' level event.
+     */
+    public static final String ON_PROCESS_RULE = "onProcessRule";
+
+    /*
+     * Returns a CR-LF delimited list of supported namespaces and thei related prefix (as defined by the Object, jsx3.net.Service.ns). Any nodes in a rules document (CXF) that implements one of the namespaces listed by this function, should implement the corresponding namespace prefix as also detailed here.
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getSupportedNamespaces(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /*
+     * Gets the URL for the rules file to use (a CXF document). This rules file will be used by the Service instance to generate, send, receive and process XML messages
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getRulesURL(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the URL for the rules file to use (a CXF document). This rules file will be used by the Service instance to generate, send, receive and process XML messages
+     * @param strRulesURL 
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setRulesURL(String strRulesURL)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setRulesURL(")
+              .appendData(strRulesURL)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Sets the document that will serve as the container for the message generated by doCall and/or getServiceMessage.
+This is a useful way to dynamically assemble documents by chaining multiple service instances, using the output from one service as the input to another.
+For example, when a SOAP Envelope requires both a SOAP Header as well as a SOAP Body, this method allows the Envelope to be assembled via a
+two-step process of first adding mapped content to the Body, followed by a call to add mapped content to the Header.
+Note that this method takes precedence over the static stub document url referenced in the rules file as well as
+any call to setOutboundStubURL. Use this method in conjunction with setOutboundStubPath to
+point to the specific location in the document where the generated message should be appended.
+     * @param objDocument 
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setOutboundStubDocument(org.directwebremoting.proxy.jsx3.xml.Document objDocument)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setOutboundStubDocument(")
+              .appendData(objDocument)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /*
+     * Gets URL for the base stub to use for the request message (the XML document to contain the generated document)
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getOutboundStubURL(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the URL to the document that will serve as the container for the message generated by doCall and/or getServiceMessage.
+Overrides the static setting stored in the rules file. Use this method in conjunction with setOutboundStubPath to
+point to the specific location in the document where the generated message should be appended.
+     * @param strURL URL for the document. Note that this URL will be resolved relative to the context server.
+For example, if the project directory for the context server is 'test', then the following inputs (all of which are valid) are
+equivalent: <code>jsxapp://test/xml/typical.xml</code>, <b>and</b> <code>xml/typical.xml</code>, <b>and</b> <code>JSXAPPS/test/xml/typical.xml</code>
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setOutboundStubURL(String strURL)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setOutboundStubURL(")
+              .appendData(strURL)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /*
+     * Gets the namespace for the server/project to run the service instance within. If a namespace isn't provided, the system will look for the first
+application and use its namespace. If no applications exist, the namespace will be completely ignored.
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getNamespace(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Returns the server that this service runs in, as set by the setNamespace() method.
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public org.directwebremoting.proxy.jsx3.app.Server getServer()
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getServer().");
+        try
+        {
+            Constructor<org.directwebremoting.proxy.jsx3.app.Server> ctor = org.directwebremoting.proxy.jsx3.app.Server.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.app.Server.class.getName());
+        }
+    }
+
+    
+    
+    /**
+     * Sets the namespace for the server/project to run the service instance within.
+     * @param namespace the server (preferred) or the namespace of the server.
+     * @return this object
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setNamespace(org.directwebremoting.proxy.jsx3.app.Server namespace)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setNamespace(")
+              .appendData(namespace)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Sets the namespace for the server/project to run the service instance within.
+     * @param namespace the server (preferred) or the namespace of the server.
+     * @return this object
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setNamespace(String namespace)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setNamespace(")
+              .appendData(namespace)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /*
+     * Gets XPath address for the node in the outbound stub document to which to append the generated message.
+     * @return Valid XSL path
+     *
+    @SuppressWarnings("unchecked")
+    public String getOutboundStubPath(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets XPath address for the node in the outbound stub document to which to append the generated message.
+Overrides the static setting in the rules file.
+     * @param strPath Valid XSL path. For example, <code>/SOAP-ENV:Envelope/SOAP-ENV:Body</code>
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setOutboundStubPath(String strPath)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setOutboundStubPath(")
+              .appendData(strPath)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /*
+     * Gets the URL for a "typical", XML-formatted server resonse document. This document is then used when the project is
+run in static mode (as defined by the Project Deployment Options).
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getInboundURL(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the URL for a "typical", XML-formatted server resonse document. This document is then used when the project is
+run in static mode (as defined by the Project Settings dialog). Overrides the static setting in the rules file.
+     * @param strInboundURL Alternate URL for the "typical" Service response. Note that this URL will be resolved
+relative to the context server. For example, if the project directory for the context server is 'test',
+then the following inputs (all of which are valid) are equivalent: <code>jsxapp://test/xml/typical.xml</code>,
+<b>and</b> <code>xml/typical.xml</code>, <b>and</b> <code>JSXAPPS/test/xml/typical.xml</code>
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setInboundURL(String strInboundURL)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setInboundURL(")
+              .appendData(strInboundURL)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /*
+     * Gets URL for a 'typical' XML-formatted request document to send to the server; when this is set, the mapper does not even attempt to generate a document. Instead, this document is sent directly to the server without any processing. Useful for testing requests that never change
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getOutboundURL(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the URL for a static XML-formatted request document to send to the Service. Note that when this is set, the mapper does not even
+attempt to generate a request document via the rules file. Instead, the static request document is sent directly to the remote Service
+without any processing. This is useful for requests that never change or as a means to test whether a Service is working, using a known, valid input.
+     * @param strOutboundURL Alternate URL for the static request to send. Note that this URL will be resolved relative
+to the context server. For example, if the project directory for the context server is 'test', then the following inputs
+(all of which are valid) are equivalent:  <code>jsxapp://test/xml/typical.xml</code>, <b>and</b> <code>xml/typical.xml</code>,
+<b>and</b> <code>JSXAPPS/test/xml/typical.xml</code>
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setOutboundURL(String strOutboundURL)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setOutboundURL(")
+              .appendData(strOutboundURL)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /*
+     * Gets the name of the operation to use within a multi-operation rules file. Note: Rules created via a WSDL often have multiple named operations. Rules files generated without a WSDL contain no named operations, and instead use a single transaction.
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getOperationName(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the name of the operation to use within a multi-operation rules file. Note: Rules created via a WSDL often have multiple operations
+     * @param strOperationName operation name
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setOperationName(String strOperationName)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setOperationName(")
+              .appendData(strOperationName)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Returns the rules document used by the Service instance (a CXF document)
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public org.directwebremoting.proxy.jsx3.xml.Document getRulesXML()
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getRulesXML().");
+        try
+        {
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.xml.Document.class.getName());
+        }
+    }
+
+    
+    
+    /**
+     * Returns the rules document used by the Service instance (a CXF document)
+     * @param type The expected return type
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getRulesXML(Class<T> returnType)
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getRulesXML().");
+        try
+        {
+            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+    
+    /**
+     * Dereferences the parsed rules tree (a jsx3.xml.Document instance) managed by this Service instance, forcing a reload of the document from disk the next time the rules document is requested
+     * @return reference to self
+     */
+    @SuppressWarnings("unchecked")
+    public org.directwebremoting.proxy.jsx3.net.Service resetRulesTree()
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("resetRulesTree().");
+        try
+        {
+            Constructor<org.directwebremoting.proxy.jsx3.net.Service> ctor = org.directwebremoting.proxy.jsx3.net.Service.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.net.Service.class.getName());
+        }
+    }
+
+    
+    
+    /*
+     * Gets user name to send as part of the http request (for servers requiring http authentication)
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getUserName(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the user name to send with the posting (for those sites requiring http authentication)
+     * @param strName user name
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setUserName(String strName)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setUserName(")
+              .appendData(strName)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /*
+     * Gets password to send as part of the http request (for servers requiring http authentication)
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getUserPass(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the password to send with the posting (for those sites requiring http authentication)
+     * @param strPass password for user
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setUserPass(String strPass)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setUserPass(")
+              .appendData(strPass)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Gets the jsx3.net.HttpRequest instance that performs the transaction with the remote service (the transport object for the message).
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public org.directwebremoting.proxy.jsx3.net.Request getRequest()
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getRequest().");
+        try
+        {
+            Constructor<org.directwebremoting.proxy.jsx3.net.Request> ctor = org.directwebremoting.proxy.jsx3.net.Request.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.net.Request.class.getName());
+        }
+    }
+
+    
+    
+    /**
+     * Call this method after the service has responded to get a parsed instance of the server's XML response
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public org.directwebremoting.proxy.jsx3.xml.Document getInboundDocument()
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getInboundDocument().");
+        try
+        {
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.xml.Document.class.getName());
+        }
+    }
+
+    
+    
+    /**
+     * Call this method after the service has responded to get a parsed instance of the server's XML response
+     * @param type The expected return type
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getInboundDocument(Class<T> returnType)
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getInboundDocument().");
+        try
+        {
+            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+    
+    /**
+     * Sets a parsed instance of the response document as soon as it returns from the server returned from the service; otherwise null
+     * @param objXML 
+     */
+    public void setInboundDocument(org.directwebremoting.proxy.jsx3.xml.Document objXML)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setInboundDocument(")
+              .appendData(objXML)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+    }
+    
+    /**
+     * Call this method after 'doCall' has been called to get a parsed instance of the request document--what was actually sent to the remote service
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public org.directwebremoting.proxy.jsx3.xml.Document getOutboundDocument()
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getOutboundDocument().");
+        try
+        {
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.xml.Document.class.getName());
+        }
+    }
+
+    
+    
+    /**
+     * Call this method after 'doCall' has been called to get a parsed instance of the request document--what was actually sent to the remote service
+     * @param type The expected return type
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getOutboundDocument(Class<T> returnType)
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getOutboundDocument().");
+        try
+        {
+            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+    
+    /*
+     * Gets the URL for the service endpoint where the request will be sent
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public String getEndpointURL(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the URL for the service endpoint where the request will be sent. Overrides the endpoint specified in the rules file.
+     * @param strAlternateURL 
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setEndpointURL(String strAlternateURL)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setEndpointURL(")
+              .appendData(strAlternateURL)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /*
+     * Gets the method for the request. Default is POST
+     * @return one of: GET or POST
+     *
+    @SuppressWarnings("unchecked")
+    public String getMethod(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the method for the request different than the one described in the rules file.
+     * @param METHOD one of: GET or POST
+     */
+    public void setMethod(String METHOD)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setMethod(")
+              .appendData(METHOD)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+    }
+    
+    /*
+     * Generates the request message (if applicable) and sends to the remote service.
+     * @param bCancelIfInvalid If true, the remote service will not be called if the message does not pass validation while being generated.
+     * @return true if the message passed all validation rules while being generated.
+     *
+    @SuppressWarnings("unchecked")
+    public boolean doCall(boolean bCancelIfInvalid, Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets an HTTP Request header on the request. Set before calling, doCall()
+     * @param strName name for header parameter
+     * @param strValue value for the header parameter
+     */
+    public void setRequestHeader(String strName, String strValue)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setRequestHeader(")
+              .appendData(strName)
+              .appendScript(",")
+              
+              .appendData(strValue)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+    }
+    
+    /**
+     * Specifies how long to wait for the service to respond before cancelling the call. Subscribes to the ON_TIMEOUT event
+     * @param intTimeout number of milliseconds to wait befor publishing the ON_TIMEOUT event.
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setTimeout(int intTimeout, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setTimeout(")
+              .appendData(intTimeout)
+              .appendScript(",")
+              
+              .appendData(objHandler)
+              .appendScript(",")
+              
+              .appendData(objFunction)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Specifies how long to wait for the service to respond before cancelling the call. Subscribes to the ON_TIMEOUT event
+     * @param intTimeout number of milliseconds to wait befor publishing the ON_TIMEOUT event.
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setTimeout(int intTimeout, Object objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setTimeout(")
+              .appendData(intTimeout)
+              .appendScript(",")
+              
+              .appendData(objHandler)
+              .appendScript(",")
+              
+              .appendData(objFunction)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Specifies how long to wait for the service to respond before cancelling the call. Subscribes to the ON_TIMEOUT event
+     * @param intTimeout number of milliseconds to wait befor publishing the ON_TIMEOUT event.
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setTimeout(int intTimeout, String objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setTimeout(")
+              .appendData(intTimeout)
+              .appendScript(",")
+              
+              .appendData(objHandler)
+              .appendScript(",")
+              
+              .appendData(objFunction)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Specifies how long to wait for the service to respond before cancelling the call. Subscribes to the ON_TIMEOUT event
+     * @param intTimeout number of milliseconds to wait befor publishing the ON_TIMEOUT event.
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setTimeout(int intTimeout, String objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setTimeout(")
+              .appendData(intTimeout)
+              .appendScript(",")
+              
+              .appendData(objHandler)
+              .appendScript(",")
+              
+              .appendData(objFunction)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Specifies how long to wait for the service to respond before cancelling the call. Subscribes to the ON_TIMEOUT event
+     * @param intTimeout number of milliseconds to wait befor publishing the ON_TIMEOUT event.
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setTimeout(int intTimeout, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setTimeout(")
+              .appendData(intTimeout)
+              .appendScript(",")
+              
+              .appendData(objHandler)
+              .appendScript(",")
+              
+              .appendData(objFunction)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Specifies how long to wait for the service to respond before cancelling the call. Subscribes to the ON_TIMEOUT event
+     * @param intTimeout number of milliseconds to wait befor publishing the ON_TIMEOUT event.
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     * @return reference to self
+     */
+    public org.directwebremoting.proxy.jsx3.net.Service setTimeout(int intTimeout, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setTimeout(")
+              .appendData(intTimeout)
+              .appendScript(",")
+              
+              .appendData(objHandler)
+              .appendScript(",")
+              
+              .appendData(objFunction)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
+    }
+    
+    /**
+     * Resets the rules tree to default state (with all 'skip' flags removed) from those rules that were skipped during the previous transaction
+     * @return reference to self
+     */
+    @SuppressWarnings("unchecked")
+    public org.directwebremoting.proxy.jsx3.net.Service resetRules()
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("resetRules().");
+        try
+        {
+            Constructor<org.directwebremoting.proxy.jsx3.net.Service> ctor = org.directwebremoting.proxy.jsx3.net.Service.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.net.Service.class.getName());
+        }
+    }
+
+    
+    
+    /**
+     * Gets the request message specific to the MESSAGETYPE (input, output, fault). Typically only used for input (outbound) messages, but can be used for simulating a server response for output and fault (in the case of a SOAP transaction, fault) messages
+     * @param MESSAGETYPE one of: input, output, or fault. If this value is provided, the server will generate test data for all nodes lacking a mapped or scripted value
+     * @param strShellURL relative URL to message shell to use as the starting container to put content into. Note that calling <code>setOutboundStubURL</code> or <code>setOutboundStubDocument</code> in conjunction with <code>setOutboundStubPath</code>
+are preferred to passing this parameter, since they provide much greater control. Also note that this value is stored statically in the rules document when the rules document is first created via the XML Mapping Utility.
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public org.directwebremoting.proxy.jsx3.xml.Document getServiceMessage(String MESSAGETYPE, String strShellURL)
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getServiceMessage(\"" + MESSAGETYPE + "\", \"" + strShellURL + "\").");
+        try
+        {
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.xml.Document.class.getName());
+        }
+    }
+
+    
+    
+    /**
+     * Gets the request message specific to the MESSAGETYPE (input, output, fault). Typically only used for input (outbound) messages, but can be used for simulating a server response for output and fault (in the case of a SOAP transaction, fault) messages
+     * @param MESSAGETYPE one of: input, output, or fault. If this value is provided, the server will generate test data for all nodes lacking a mapped or scripted value
+     * @param strShellURL relative URL to message shell to use as the starting container to put content into. Note that calling <code>setOutboundStubURL</code> or <code>setOutboundStubDocument</code> in conjunction with <code>setOutboundStubPath</code>
+are preferred to passing this parameter, since they provide much greater control. Also note that this value is stored statically in the rules document when the rules document is first created via the XML Mapping Utility.
+     * @param type The expected return type
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getServiceMessage(String MESSAGETYPE, String strShellURL, Class<T> returnType)
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getServiceMessage(\"" + MESSAGETYPE + "\", \"" + strShellURL + "\").");
+        try
+        {
+            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+    
+    /*
+     * Gets the HTTP response code (i.e., 200, 404, 500, etc). This will be the response code provided by the bound jsx3.net.Request instance
+used for the transport. However, if setStatus has been called on the Service instance, the value supplied by the developer will be used instead.
+     * @return 
+     *
+    @SuppressWarnings("unchecked")
+    public int getStatus(Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Sets the HTTP response code (i.e., 200, 404, 500, etc). Typically, the Service instance determines this value by querying the bound request instance
+(jsx3.net.Request) returned by the method, [service_instance].getRequest(). However, calling this method will override
+normal operation by forcing a valid/invalid state that affects methdods relying on the HTTP status
+such as doInboundMap.  This is particularly useful for SOAP services that provide alternate processing
+instructions and mappings when a Fault occurs as well as when running tests in Static mode.
+     * @param intStatus 
+     */
+    public void setStatus(int intStatus)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setStatus(")
+              .appendData(intStatus)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+    }
+    
+    /**
+     * Gets the mode (static jsx3.Boolean.FALSE or live jsx3.Boolean.TRUE).
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public Boolean getMode()
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("getMode().");
+        try
+        {
+            Constructor<Boolean> ctor = Boolean.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + Boolean.class.getName());
+        }
+    }
+
+    
+    
+    /**
+     * Sets the mode (static jsx3.Boolean.FALSE or live jsx3.Boolean.TRUE).  Overrides the default setting for the context Server
+instance within which this Service instnace is running.  (NOTE: This setting is accessible at the server level via the Project Settings dialog.)
+Setting this value to jsx3.Boolean.FALSE, forces a test document
+to be used to simulate a "typical" server response, instead of actually sending a request to a remote service.  This is useful when setting up
+test environments as well as providing "live" interactions when the remote server may not be available.
+     * @param MODE 
+     */
+    public void setMode(Boolean MODE)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setMode(")
+              .appendData(MODE)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+    }
+    
+    /**
+     * Applies all inbound mappings, using the server response document as the source for the operation. Although this method is called once automatically, it can be called at any time to reapply the mapping rules.
+Example usage:
+var oService = new jsx3.net.Service();
+oService.setInboundDocument(objSomeDocumentIManuallyWantToLoad);
+oService.doInboundMap();
+     */
+    public void doInboundMap()
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("doInboundMap(")
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+    }
+    
+    /**
+     * Compiles the CXF rules for this service instance to an equivalent XSLT document. This enables
+much faster performance than using the DOM-based iterator (default) to convert the XML response
+document into a CDF Document type. Note that this process only supports the map types
+CDF Document, CDF Record, and CDF Attribute. Only one CDF Document
+can be declared per Operation. Otherwise the compilation will fail.
+All other mapping types will be ignored and will not be converted into an XSLT equivalent.  Also note
+that the order of a set of sibling mapping rules does not proscribe proper processing by way of
+sequence.  This means that any order of sibling mapping rules will result in appropriate processing, regardless of the
+sibling node order returned from the given service.  This facilitates nested record structures in that
+attributes can first be applied to a given record before child elements (e.g., a 'record') are added.
+Stated otherwise, any rule that has a descendant rule that would created a nested 'record' node should follow
+all sibling mapping rules that would create an 'attribute' entity. Call this method immediately before/after doCall
+for best performance.
+     * @return XSLT document
+     */
+    @SuppressWarnings("unchecked")
+    public org.directwebremoting.proxy.jsx3.xml.Document compile()
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("compile().");
+        try
+        {
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.xml.Document.class.getName());
+        }
+    }
+
+    
+    
+    /**
+     * Compiles the CXF rules for this service instance to an equivalent XSLT document. This enables
+much faster performance than using the DOM-based iterator (default) to convert the XML response
+document into a CDF Document type. Note that this process only supports the map types
+CDF Document, CDF Record, and CDF Attribute. Only one CDF Document
+can be declared per Operation. Otherwise the compilation will fail.
+All other mapping types will be ignored and will not be converted into an XSLT equivalent.  Also note
+that the order of a set of sibling mapping rules does not proscribe proper processing by way of
+sequence.  This means that any order of sibling mapping rules will result in appropriate processing, regardless of the
+sibling node order returned from the given service.  This facilitates nested record structures in that
+attributes can first be applied to a given record before child elements (e.g., a 'record') are added.
+Stated otherwise, any rule that has a descendant rule that would created a nested 'record' node should follow
+all sibling mapping rules that would create an 'attribute' entity. Call this method immediately before/after doCall
+for best performance.
+     * @param type The expected return type
+     * @return XSLT document
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T compile(Class<T> returnType)
+    {
+        ProxyHelper child = getProxyHelper().getChildHelper("compile().");
+        try
+        {
+            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
+            return ctor.newInstance(child);
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+    
+    /*
+     * Publishes an event to all subscribed objects.
+     * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
+     * @return the number of listeners to which the event was broadcast
+     *
+    @SuppressWarnings("unchecked")
+    public int publish(Object objEvent, Callback callback)
+    {
+        String key = // Generate some id
+        ScriptSession session = WebContext.get().getScriptSession();
+        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
+        calbackMap.put(key, callback);
+        session.addAttribute(CALLBACK_KEY, callbackMap);
+    }
+    */
+    
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("subscribe(")
+              .appendData(strEventId)
+              .appendScript(",")
+              
+              .appendData(objHandler)
+              .appendScript(",")
+              
+              .appendData(objFunction)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+    }
+    
+    /**
+     * Unsubscribe an object or function from an event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler the value of objHandler passed to subscribe
+     */
+    public void unsubscribe(String strEventId, Object objHandler)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("unsubscribe(")
+              .appendData(strEventId)
+              .appendScript(",")
+              
+              .appendData(objHandler)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+    }
+    
+    /**
+     * Unsubscribes all subscribed objects to a type of event published by this object.
+     * @param strEventId the event type
+     */
+    public void unsubscribeAll(String strEventId)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("unsubscribeAll(")
+              .appendData(strEventId)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+    }
+    
+ }
