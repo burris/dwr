@@ -38,6 +38,13 @@ public class DownloadHandler implements Handler
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String id = request.getPathInfo();
+
+        if (!id.startsWith(downloadHandlerUrl))
+        {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Wrong prefix: " + id);
+        }
+        id = id.substring(downloadHandlerUrl.length());
+
         FileGenerator generator = downloadManager.getFile(id);
         if (generator == null)
         {
@@ -60,7 +67,21 @@ public class DownloadHandler implements Handler
     }
 
     /**
+     * The URL part which we attach to the downloads.
+     * @param downloadHandlerUrl The URL for this Handler.
+     */
+    public void setDownloadHandlerUrl(String downloadHandlerUrl)
+    {
+        this.downloadHandlerUrl = downloadHandlerUrl;
+    }
+
+    /**
      * The place we store files for later download
      */
     private DownloadManager downloadManager;
+
+    /**
+     * The URL part which we attach to the downloads.
+     */
+    protected String downloadHandlerUrl;
 }

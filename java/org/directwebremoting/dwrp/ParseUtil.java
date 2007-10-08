@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
@@ -45,6 +46,51 @@ import org.directwebremoting.util.Messages;
 public class ParseUtil
 {
     /**
+     * The javascript outbound marshaller prefixes the toString value with a
+     * colon and the original type information. This undoes that.
+     * @param data The string to be split up
+     * @return A string array containing the split data
+     */
+    public static String[] splitInbound(String data)
+    {
+        String[] reply = new String[2];
+
+        int colon = data.indexOf(ProtocolConstants.INBOUND_TYPE_SEPARATOR);
+        if (colon == -1)
+        {
+            log.error("Missing : in conversion data (" + data + ')');
+            reply[LocalUtil.INBOUND_INDEX_TYPE] = ProtocolConstants.TYPE_STRING;
+            reply[LocalUtil.INBOUND_INDEX_VALUE] = data;
+        }
+        else
+        {
+            reply[LocalUtil.INBOUND_INDEX_TYPE] = data.substring(0, colon);
+            reply[LocalUtil.INBOUND_INDEX_VALUE] = data.substring(colon + 1);
+        }
+
+        return reply;
+    }
+    
+    /**
+     * Parse an inbound request into a set of fields
+     * @param request The original browser's request
+     * @return The set of fields parsed from the request
+     * @throws ServerException
+     */
+    public Map<String, FormField> parseRequest(HttpServletRequest request) throws ServerException
+    {
+        boolean get = "GET".equals(request.getMethod());
+        if (get)
+        {
+            return parseGet(request);
+        }
+        else
+        {
+            return parsePost(request);
+        }
+    }
+
+    /**
      * Parse an HTTP POST request to fill out the scriptName, methodName and
      * paramList properties. This method should not fail unless it will not
      * be possible to return any sort of error to the user. Failure cases should
@@ -53,7 +99,7 @@ public class ParseUtil
      * @return The equivalent of HttpServletRequest.getParameterMap() for now
      * @throws ServerException If reading from the request body stream fails
      */
-    public static Map<String, FormField> parsePost(HttpServletRequest req) throws ServerException
+    private Map<String, FormField> parsePost(HttpServletRequest req) throws ServerException
     {
         Map<String, FormField> paramMap;
 
@@ -81,7 +127,7 @@ public class ParseUtil
      * @return a map of parsed parameters
      * @throws ServerException
      */
-    private static Map<String, FormField> parseBasicPost(HttpServletRequest req) throws ServerException
+    private Map<String, FormField> parseBasicPost(HttpServletRequest req) throws ServerException
     {
         Map<String, FormField> paramMap;
         paramMap = new HashMap<String, FormField>();
@@ -156,12 +202,23 @@ public class ParseUtil
      * @throws ServerException
      */
     @SuppressWarnings("unchecked")
-    private static Map<String, FormField> parseMultipartPost(HttpServletRequest req) throws ServerException
+    private Map<String, FormField> parseMultipartPost(HttpServletRequest req) throws ServerException
     {
         try
         {
             Map<String, FormField> map = new HashMap<String, FormField>();
-            List<FileItem> fileItems = SERVLET_FILE_UPLOAD.parseRequest(req);
+            File location = new File(System.getProperty("java.io.tmpdir"));
+            DiskFileItemFactory itemFactory = new DiskFileItemFactory(DEFAULT_SIZE_THRESHOLD, location);
+
+            ServletFileUpload fileUploader = new ServletFileUpload(itemFactory);
+            fileUploader.setProgressListener(new ProgressListener()
+            {
+                public void update(long bytesRead, long contentLength, int items)
+                {
+                }
+            });
+
+            List<FileItem> fileItems = fileUploader.parseRequest(req);
             for (FileItem fileItem : fileItems)
             {
                 FormField formField;
@@ -254,7 +311,7 @@ public class ParseUtil
      * @throws ServerException If the parsing fails
      */
     @SuppressWarnings("unchecked")
-    public static Map<String, FormField> parseGet(HttpServletRequest req) throws ServerException
+    private Map<String, FormField> parseGet(HttpServletRequest req) throws ServerException
     {
         Map<String, FormField> convertedMap = new HashMap<String, FormField>();
         Map<String, String[]> paramMap = req.getParameterMap();
@@ -278,32 +335,6 @@ public class ParseUtil
     }
 
     /**
-     * The javascript outbound marshaller prefixes the toString value with a
-     * colon and the original type information. This undoes that.
-     * @param data The string to be split up
-     * @return A string array containing the split data
-     */
-    public static String[] splitInbound(String data)
-    {
-        String[] reply = new String[2];
-
-        int colon = data.indexOf(ProtocolConstants.INBOUND_TYPE_SEPARATOR);
-        if (colon == -1)
-        {
-            log.error("Missing : in conversion data (" + data + ')');
-            reply[LocalUtil.INBOUND_INDEX_TYPE] = ProtocolConstants.TYPE_STRING;
-            reply[LocalUtil.INBOUND_INDEX_VALUE] = data;
-        }
-        else
-        {
-            reply[LocalUtil.INBOUND_INDEX_TYPE] = data.substring(0, colon);
-            reply[LocalUtil.INBOUND_INDEX_VALUE] = data.substring(colon + 1);
-        }
-
-        return reply;
-    }
-    
-    /**
      * The log stream
      */
     private static final Log log = LogFactory.getLog(ParseUtil.class);
@@ -312,11 +343,4 @@ public class ParseUtil
      * The threshold, in bytes, below which items will be retained in memory and above which they will be stored as a file
      */
     private static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
-
-    /**
-     * The file upload meta data
-     */
-    private static final ServletFileUpload SERVLET_FILE_UPLOAD = new ServletFileUpload(
-        new DiskFileItemFactory(DEFAULT_SIZE_THRESHOLD, new File(System.getProperty("java.io.tmpdir")))
-    );
 }

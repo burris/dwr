@@ -38,16 +38,10 @@ public class PollBatch
     public PollBatch(HttpServletRequest request, PageNormalizer pageNormalizer) throws ServerException
     {
         debug = request.getHeader("User-Agent");
-
         get = "GET".equals(request.getMethod());
-        if (get)
-        {
-            allParameters = ParseUtil.parseGet(request);
-        }
-        else
-        {
-            allParameters = ParseUtil.parsePost(request);
-        }
+
+        ParseUtil parseUtil = new ParseUtil();
+        allParameters = parseUtil.parseRequest(request);
 
         parseParameters();
     }

@@ -20,19 +20,11 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.io.FileUpload;
 import org.getahead.dwrdemo.util.ColorUtil;
 
 /**
  * A demonstration of uploading files and images
- * @author Lance Semmens [uklance at gmail dot com]
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class FileUploader
@@ -44,66 +36,68 @@ public class FileUploader
      * @param color The selected color
      * @return A mangled image based on the 2 uploaded files
      */
-    public BufferedImage uploadFiles(FileUpload uploadImage, FileUpload uploadFile, String color)
+    public BufferedImage uploadFiles(BufferedImage uploadImage, String uploadFile, String color)
     {
-        // Read the uploaded image, or create a blank if that fails
-        BufferedImage image;
-        try
-        {
-            InputStream in = uploadImage.getInputStream();
-            image = ImageIO.read(in);
-        }
-        catch (IOException ex)
-        {
-            log.warn("Failed to decode uploaded image: Using blank canvas.", ex);
-            image = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
-        }
+        uploadImage = scaleToSize(uploadImage);
+        uploadImage = grafitiTextOnImage(uploadImage, uploadFile, color);
 
-        // Read the uploaded file and treat it as text
-        String text;
-        try
-        {
-            InputStream in = uploadFile.getInputStream();
-            byte[] buffer = new byte[1024];
-            int len = in.read(buffer);
-            text = new String(buffer, 0, len);
-        }
-        catch (IOException ex)
-        {
-            log.warn("Failed to read text form uploaded file", ex);
-            text = ex.toString();
-        }
-
-        // Voodoo to scale the image to 200x200
-        AffineTransform atx = new AffineTransform();
-        atx.scale(200d / image.getWidth(), 200d / image.getHeight());
-        AffineTransformOp afop = new AffineTransformOp(atx, AffineTransformOp.TYPE_BILINEAR);
-        image = afop.filter(image, null);
-
-        // And scrawl the text on the image in 10 rows of 20 chars
-        Graphics2D g2d = image.createGraphics();
-        for (int row = 0; row < 10; row++)
-        {
-            String output = null;
-            if (text.length() > (row + 1) * 20)
-            {
-                output = text.substring(row * 20, (row + 1) * 20);
-            }
-            else
-            {
-                output = text.substring(row * 20);
-            }
-
-            g2d.setFont(new Font("SansSerif", Font.PLAIN, 16));
-            g2d.setColor(ColorUtil.decodeHtmlColorString(color));
-            g2d.drawString(output, 5, (row + 1) * 20);
-        }
-
-        return image;
+        return uploadImage;
     }
 
     /**
-     * The log stream
+     * Voodoo to scale the image to 200x200
+     * @param uploadImage The image to work on
+     * @return The altered image
      */
-    private static final Log log = LogFactory.getLog(FileUploader.class);
+    private BufferedImage scaleToSize(BufferedImage uploadImage)
+    {
+        AffineTransform atx = new AffineTransform();
+        atx.scale(200d / uploadImage.getWidth(), 200d / uploadImage.getHeight());
+        // AffineTransformOp.TYPE_BILINEAR is very slow
+        AffineTransformOp afop = new AffineTransformOp(atx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        uploadImage = afop.filter(uploadImage, null);
+        return uploadImage;
+    }
+
+    /**
+     * And scrawl the text on the image in 10 rows of 21 chars
+     * @param uploadImage The image to work on
+     * @param uploadFile The text to write on the image
+     * @param color The selected color
+     * @return The altered image
+     */
+    private BufferedImage grafitiTextOnImage(BufferedImage uploadImage, String uploadFile, String color)
+    {
+        StringBuilder buffer = new StringBuilder();
+        while (buffer.length() < 200)
+        {
+            buffer.append(" ");
+            buffer.append(uploadFile);
+        }
+
+        Graphics2D g2d = uploadImage.createGraphics();
+        for (int row = 0; row < 10; row++)
+        {
+            String output = null;
+            if (buffer.length() > (row + 1) * CHARS_PER_LINE)
+            {
+                output = buffer.substring(row * CHARS_PER_LINE, (row + 1) * CHARS_PER_LINE);
+            }
+            else
+            {
+                output = buffer.substring(row * CHARS_PER_LINE);
+            }
+
+            g2d.setFont(new Font("SansSerif", Font.BOLD, 16));
+            g2d.setColor(ColorUtil.decodeHtmlColorString(color));
+            g2d.drawString(output, 5, (row + 1) * CHARS_PER_LINE);
+        }
+
+        return uploadImage;
+    }
+
+    /**
+     * 
+     */
+    private static final int CHARS_PER_LINE = 21;
 }

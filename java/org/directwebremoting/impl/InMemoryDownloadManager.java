@@ -53,6 +53,10 @@ public class InMemoryDownloadManager extends PurgingDownloadManager implements D
         synchronized (contentsLock)
         {
             TimedFileGenerator generator = contents.remove(id);
+            if (generator == null)
+            {
+                return null;
+            }
             return generator.fileGenerator;
         }
     }

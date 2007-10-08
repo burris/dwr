@@ -86,66 +86,28 @@ element, in this case a file object.</p>
 method, which has the following signature:</p>
 
 <pre>
-BufferedImage uploadFiles(FileUpload uploadImage, FileUpload uploadFile, String color)
+BufferedImage uploadFiles(BufferedImage uploadImage, String uploadFile, String color)
 </pre>
 
-<p>Omitting exception handling for brevity, we then create a BufferedImage:</p>
+<p>Transform the image by scaling it and writing the text onto the image</p>
 
 <pre>
-InputStream in = uploadImage.getInputStream();
-BufferedImage image = ImageIO.read(in);
+uploadImage = scaleToSize(uploadImage);
+uploadImage = grafitiTextOnImage(uploadImage, uploadFile, color);
+return uploadImage;
 </pre>
 
-<p>And read the first few bytes from the other file:
-
-<pre>
-InputStream in = uploadFile.getInputStream();
-byte[] buffer = new byte[1024];
-int len = in.read(buffer);
-String text = new String(buffer, 0, len);
-</pre>
-
-<p>We then perform a funky transform to scale the image to 200x200:</p>
-
-<pre>
-AffineTransform atx = new AffineTransform();
-atx.scale(200d / image.getWidth(), 200d / image.getHeight());
-AffineTransformOp afop = new AffineTransformOp(atx, AffineTransformOp.TYPE_BILINEAR);
-image = afop.filter(image, null);
-</pre>
-
-<p>I don't understand it either but the
-<a href="http://www.exampledepot.com/egs/java.awt.image/CreateTxImage.html">Java
-Developers Almanac</a> helps with the cut and paste method of reuse!</p>
-
-<p>Finally we write 10 lines of 20 chars each onto the image:</p>
-
-<pre>
-Graphics2D g2d = image.createGraphics();
-for (int row = 0; row < 10; row++) {
-    String output = null;
-    if (text.length() > (row + 1) * 20) {
-        output = text.substring(row * 20, (row + 1) * 20);
-    }
-    else {
-        output = text.substring(row * 20);
-    }
-
-    g2d.setFont(new Font("SansSerif", Font.PLAIN, 16));
-    g2d.setColor(ColorUtil.decodeHtmlColorString(color));
-    g2d.drawString(output, 5, (row + 1) * 20);
-}
-</pre>
-
-<p>And that's basically it. The Java code then returns the image which it
-converted by the "image" converter and passed to the callback which simply
-updates the image:</p>
+<p>And that's basically it. See the full source for how to resize using an
+AffineTransform and write text onto an image, it's got nothing to do with DWR,
+so we can skip it for now. The Java code returns the image which DWR converts
+and passes it to the callback in the JavaScript which simply updates the image
+in the web page:</p>
 
 <pre>
 dwr.util.setValue('image', data);
 </pre>
 
-<p>The <b>really</b> good news is that 95% of this code is about image
+<p>The <b>really</b> good news is that 99% of this code is about image
 manipulation. The DWR part is trivially easy.</p>
 
   </div>
@@ -175,181 +137,89 @@ manipulation. The DWR part is trivially easy.</p>
 
 <h2>Javascript source:</h2>
 <pre>
-var unique = 0;
+function uploadFiles() {
+  var image = dwr.util.getValue('uploadImage');
+  var file = dwr.util.getValue('uploadFile');
+  var color = dwr.util.getValue('color');
 
-function uploadFilesFlat() {
-  var image = dwr.util.getValue('image');
-  var file = dwr.util.getValue('file');
-  
-  FileUploader.uploadFilesFlat(image, file, function(data) {
-    updateContainers(image.value, file.value);
+  FileUploader.uploadFiles(image, file, color, function(data) {
+    dwr.util.setValue('image', data);
   });
-}
-
-function uploadFilesNested() {
-  var files = {
-    image: dwr.util.getValue('image'),
-    file: dwr.util.getValue('file')
-  }
-
-  FileUploader.uploadFilesNested(files, function(data) {
-    updateContainers(files.image.value, files.file.value);
-  });
-}
-
-function updateContainers(imagename, filename) {
-  if (filename != '') {
-    var index = filename.lastIndexOf('/');
-    if (index == -1) {
-      index = filename.lastIndexOf('\\');
-      if (index != -1) {
-        filename = filename.substring(index + 1);
-      }
-    }
-  }
-  
-  var imageContainer = dwr.util.byId('image.container');
-  if (imagename != '') {
-    // put something unique in the URL so the image reloads
-    imageContainer.innerHTML = '&lt;img src="../fileupload/file?type=image&amp;unique=' + (unique ++) + '" /&gt;';
-  } else {
-    imageContainer.innerHTML = '&amp;nbsp;';
-  }
-  var fileContainer = dwr.util.byId('file.container');
-  if (filename != '') {
-    fileContainer.innerHTML = '&lt;a href="../fileupload/file?type=file"&gt;' + filename + '&lt;/a&gt;';
-  } else {
-    fileContainer.innerHTML = '&amp;nbsp;';
-  }
 }
 </pre>
 
 <h2>Java source:</h2>
 <pre>
-public class Files
-{
-    public FileUpload getFile()
-    {
-        return file;
-    }
-    public void setFile(FileUpload file)
-    {
-        this.file = file;
-    }
-    public FileUpload getImage()
-    {
-        return image;
-    }
-    public void setImage(FileUpload image)
-    {
-        this.image = image;
-    }
-
-    private FileUpload image;
-    private FileUpload file;
-}
-
+/**
+ * A demonstration of uploading files and images
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
+ */
 public class FileUploader
 {
-    public void uploadFilesFlat(FileUpload image, FileUpload file) {
-        Files files = new Files();
-        files.setImage(image);
-        files.setFile(file);
-        WebContextFactory.get().getSession().setAttribute(ATTRIBUTE_UPLOADS, files);
-    }
-    
-    public void uploadFilesNested(Files files) {
-        WebContextFactory.get().getSession().setAttribute(ATTRIBUTE_UPLOADS, files);
+    /**
+     * Take 2 uploaded files and return an image based on them
+     * @param uploadImage The uploaded image
+     * @param uploadFile The uploaded file
+     * @param color The selected color
+     * @return A mangled image based on the 2 uploaded files
+     */
+    public BufferedImage uploadFiles(BufferedImage uploadImage, String uploadFile, String color)
+    {
+        uploadImage = scaleToSize(uploadImage);
+        uploadImage = grafitiTextOnImage(uploadImage, uploadFile, color);
+
+        return uploadImage;
     }
 
-    public static final String ATTRIBUTE_UPLOADS = FileUploader.class.getPackage().getName() + ".company";
-}
-
-public class FileServlet extends HttpServlet
-{
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    /**
+     * Voodoo to scale the image to 200x200
+     * @param uploadImage The image to work on
+     * @return The altered image
+     */
+    private BufferedImage scaleToSize(BufferedImage uploadImage)
     {
-        doGet(request, response);
+        AffineTransform atx = new AffineTransform();
+        atx.scale(200d / uploadImage.getWidth(), 200d / uploadImage.getHeight());
+        AffineTransformOp afop = new AffineTransformOp(atx, AffineTransformOp.TYPE_BILINEAR);
+        uploadImage = afop.filter(uploadImage, null);
+        return uploadImage;
     }
-    
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+
+    /**
+     * And scrawl the text on the image in 10 rows of 20 chars
+     * @param uploadImage The image to work on
+     * @param uploadFile The text to write on the image
+     * @param color The selected color
+     * @return The altered image
+     */
+    private BufferedImage grafitiTextOnImage(BufferedImage uploadImage, String uploadFile, String color)
     {
-        String type = request.getParameter("type");
-        Files files = (Files) request.getSession().getAttribute(FileUploader.ATTRIBUTE_UPLOADS);
-        FileUpload fileUpload;
-        if ("image".equals(type)) {
-            fileUpload = files.getImage();
-        } else if ("file".equals(type)) {
-            fileUpload = files.getFile();
-            String filename = fileUpload.getName();
-            int slashIndex = filename.replaceAll("\\\\", "/").lastIndexOf('/');
-            if (slashIndex &gt; 0) {
-                filename = filename.substring(slashIndex + 1);
+        while (uploadFile.length() &lt; 200)
+        {
+            uploadFile += uploadFile + " ";
+        }
+
+        Graphics2D g2d = uploadImage.createGraphics();
+        for (int row = 0; row &lt; 10; row++)
+        {
+            String output = null;
+            if (uploadFile.length() &gt; (row + 1) * 20)
+            {
+                output = uploadFile.substring(row * 20, (row + 1) * 20);
             }
-            response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-        } else {
-            throw new IllegalStateException("Unknown file type " + type);
-        }
-        response.setContentType(fileUpload.getContentType());
-        response.setHeader("Expires", "Sun, 13 August 1978 12:00:00 GMT");
-        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        response.addHeader("Cache-Control", "post-check=0, pre-check=0");
-        response.setHeader("Pragma", "no-cache");
+            else
+            {
+                output = uploadFile.substring(row * 20);
+            }
 
-        InputStream in = fileUpload.getInputStream();
-        OutputStream out = response.getOutputStream();
-        byte[] bytes = new byte[1024];
-        int count = 0;
-        while ((count = in.read(bytes)) &gt; 0) {
-            out.write(bytes, 0, count);
+            g2d.setFont(new Font("SansSerif", Font.BOLD, 16));
+            g2d.setColor(ColorUtil.decodeHtmlColorString(color));
+            g2d.drawString(output, 5, (row + 1) * 20);
         }
-        out.flush();
+
+        return uploadImage;
     }
 }
-</pre>
-
-<h2>dwr.xml:</h2>
-<pre>
-&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE dwr PUBLIC
-  "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN"
-  "http://getahead.org/dwr/dwr20.dtd"&gt;
-&lt;dwr&gt;
-  &lt;allow&gt;
-    &lt;create creator="new" javascript="FileUploader" scope="session"&gt;
-      &lt;param name="class" value="org.getahead.dwrdemo.fileupload.FileUploader"/&gt;
-    &lt;/create&gt;
-    &lt;convert converter="bean" match="org.getahead.dwrdemo.fileupload.Files"/&gt;
-  &lt;/allow&gt;
-&lt;/dwr&gt;
-</pre>
-
-<h2>web.xml:</h2>
-<pre>
-&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
-&lt;!DOCTYPE web-app PUBLIC
-    "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd"&gt;
-
-&lt;web-app id="dwr"&gt;
-
-  :
-  
-  &lt;servlet&gt;
-    &lt;servlet-name&gt;file&lt;/servlet-name&gt;
-    &lt;display-name&gt;File Servlet&lt;/display-name&gt;
-    &lt;description&gt;Serves files uploaded via the File Upload demo&lt;/description&gt;
-    &lt;servlet-class&gt;org.getahead.dwrdemo.fileupload.FileServlet&lt;/servlet-class&gt;
-  &lt;/servlet&gt;
-
-  &lt;servlet-mapping&gt;
-    &lt;servlet-name&gt;file&lt;/servlet-name&gt;
-    &lt;url-pattern&gt;/fileupload/file&lt;/url-pattern&gt;
-  &lt;/servlet-mapping&gt;
-  
-  :
-  
-&lt;/web-app&gt;
 </pre>
   </div>
 </div>

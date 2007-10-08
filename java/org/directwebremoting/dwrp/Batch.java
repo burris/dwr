@@ -46,14 +46,9 @@ public class Batch
     public Batch(HttpServletRequest request) throws ServerException
     {
         get = "GET".equals(request.getMethod());
-        if (get)
-        {
-            allParameters = ParseUtil.parseGet(request);
-        }
-        else
-        {
-            allParameters = ParseUtil.parsePost(request);
-        }
+
+        ParseUtil parseUtil = new ParseUtil();
+        allParameters = parseUtil.parseRequest(request);
 
         parseParameters();
     }

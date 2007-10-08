@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContextFactory;
@@ -49,7 +51,8 @@ public abstract class PurgingDownloadManager implements DownloadManager
         String id = idGenerator.generateId(16);
         putFileGenerator(id, generator);
 
-        return "'" + WebContextFactory.get().getHttpServletRequest().getContextPath() + "/" + downloadHandlerUrl + "/" + id + "'";
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        return "'" + request.getContextPath() + request.getServletPath() + downloadHandlerUrl + id + "'";
     }
 
     /* (non-Javadoc)
