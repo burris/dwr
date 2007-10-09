@@ -20,8 +20,13 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 
 import org.getahead.dwrdemo.util.ColorUtil;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * A demonstration of uploading files and images
@@ -42,6 +47,26 @@ public class FileUploader
         uploadImage = grafitiTextOnImage(uploadImage, uploadFile, color);
 
         return uploadImage;
+    }
+
+    /**
+     * Generates a PDF file with the given text
+     * http://itext.ugent.be/itext-in-action/
+     * @return A PDF file as a byte array
+     */
+    public byte[] createPdfFile(String contents) throws Exception
+    {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        Document document = new Document();
+
+        PdfWriter.getInstance(document, buffer);
+
+        document.open();
+        document.add(new Paragraph(contents));
+        document.close();
+
+        return buffer.toByteArray();
     }
 
     /**
