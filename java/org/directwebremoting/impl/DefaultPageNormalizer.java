@@ -42,7 +42,7 @@ import org.xml.sax.InputSource;
  * The default implementation of PageNormalizer attempts to read from
  * <code>WEB-INF/web.xml</code> to find a <code>welcome-files</code> element,
  * and uses a default of removing "<code>index.html</code>" and
- * "<code>index.jsp</code>" if this proceedure fails.
+ * "<code>index.jsp</code>" if this procedure fails.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultPageNormalizer implements PageNormalizer

@@ -47,7 +47,7 @@ public class Publisher implements Runnable
 
         // A bit nasty: the call to serverContext.getScriptSessionsByPage()
         // below could fail because the system might need to read web.xml which
-        // means it needs a ServletContext, which is only available  using
+        // means it needs a ServletContext, which is only available using
         // WebContext, which in turn requires a DWR thread. We can cache the
         // results simply by calling this in a DWR thread, as we are now.
         webContext.getScriptSessionsByPage("");
