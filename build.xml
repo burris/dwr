@@ -25,10 +25,16 @@
     <javac debug="on" includes="**/*.java" destdir="${target.root}/classes">
       <src path="${source.root}/java"/>
       <src path="${source.root}/java5"/>
+      <src path="${source.root}/generated/gi/java"/>
       <classpath refid="classpath"/>
     </javac>
     <copy todir="${target.root}/classes">
       <fileset dir="${source.root}/java">
+        <exclude name="**/*.java"/>
+        <exclude name="**/package.html"/>
+        <exclude name="**/package-info.java"/>
+      </fileset>
+      <fileset dir="${source.root}/generated/gi/java">
         <exclude name="**/*.java"/>
         <exclude name="**/package.html"/>
         <exclude name="**/package-info.java"/>
