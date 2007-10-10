@@ -155,7 +155,7 @@ public class ParseUtil
    
                 if (line.indexOf('&') != -1)
                 {
-                    // If there are any &s then this must be iframe post and all the
+                    // If there are any &'s then this must be iframe post and all the
                     // parameters have got dumped on one line, split with &
                     log.debug("Using iframe POST mode");
                     StringTokenizer st = new StringTokenizer(line, "&");

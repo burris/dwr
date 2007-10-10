@@ -15,16 +15,17 @@
  */
 package org.directwebremoting.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
  * One of the 2 ways you can receive uploaded files from a DWR enabled page is
- * to expose a method with a {@link FileUpload} parameter.
+ * to expose a method with a {@link FileTransfer} parameter.
  * The other is to expose a method with an {@link InputStream} parameter.
  * @author Lance Semmens [uklance at gmail dot com]
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class FileUpload
+public class FileTransfer
 {
     /**
      * A ctor for the 3 things browsers tell us about the uploaded file
@@ -32,11 +33,24 @@ public class FileUpload
      * @param mimeType The mime type passed in by the browser
      * @param inputStream A means by which the data can be read
      */
-    public FileUpload(String name, String mimeType, InputStream inputStream)
+    public FileTransfer(String name, String mimeType, InputStream inputStream)
     {
         this.name = name;
         this.mimeType = mimeType;
         this.inputStream = inputStream;
+    }
+
+    /**
+     * A ctor for the 3 things browsers tell us about the uploaded file
+     * @param name The remote source filename
+     * @param mimeType The mime type passed in by the browser
+     * @param data The data to be transfered
+     */
+    public FileTransfer(String name, String mimeType, byte[] data)
+    {
+        this.name = name;
+        this.mimeType = mimeType;
+        this.inputStream = new ByteArrayInputStream(data);
     }
 
     /**

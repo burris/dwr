@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.getahead.dwrdemo.fileupload;
+package org.getahead.dwrdemo.files;
 
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -22,6 +22,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 
+import org.directwebremoting.io.FileTransfer;
 import org.getahead.dwrdemo.util.ColorUtil;
 
 import com.lowagie.text.Document;
@@ -32,7 +33,7 @@ import com.lowagie.text.pdf.PdfWriter;
  * A demonstration of uploading files and images
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class FileUploader
+public class UploadDownload
 {
     /**
      * Take 2 uploaded files and return an image based on them
@@ -54,19 +55,25 @@ public class FileUploader
      * http://itext.ugent.be/itext-in-action/
      * @return A PDF file as a byte array
      */
-    public byte[] createPdfFile(String contents) throws Exception
+    public FileTransfer downloadPdfFile(String contents) throws Exception
     {
+        if (contents == null || contents.length() == 0)
+        {
+            contents = "[BLANK]";
+        }
+
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
         Document document = new Document();
-
         PdfWriter.getInstance(document, buffer);
 
+        document.addCreator("DWR.war using iText");
         document.open();
         document.add(new Paragraph(contents));
         document.close();
 
-        return buffer.toByteArray();
+        byte[] data = buffer.toByteArray();
+        return new FileTransfer("ExamplePDF", "application/pdf", data);
     }
 
     /**

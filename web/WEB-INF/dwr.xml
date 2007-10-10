@@ -88,11 +88,11 @@
       <param name="class" value="org.getahead.dwrdemo.images.ImageGenerator"/>
     </create>
 
-    <!-- fileupload -->
-    <create creator="new" javascript="FileUploader" scope="session">
-      <param name="class" value="org.getahead.dwrdemo.fileupload.FileUploader"/>
+    <!-- file upload and download -->
+    <create creator="new" javascript="UploadDownload" scope="session">
+      <param name="class" value="org.getahead.dwrdemo.files.UploadDownload"/>
     </create>
-    <convert converter="bean" match="org.getahead.dwrdemo.fileupload.Files"/>
+    <convert converter="bean" match="org.getahead.dwrdemo.files.Files"/>
 
     <!-- this is a bad idea for live, but can be useful in testing -->
     <convert converter="exception" match="java.lang.Exception"/>

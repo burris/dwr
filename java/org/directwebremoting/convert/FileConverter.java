@@ -34,9 +34,10 @@ import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.impl.DataUrlDownloadManager;
+import org.directwebremoting.impl.FileTransferFileGenerator;
 import org.directwebremoting.impl.ImageIOFileGenerator;
 import org.directwebremoting.impl.InputStreamFileGenerator;
-import org.directwebremoting.io.FileUpload;
+import org.directwebremoting.io.FileTransfer;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -55,9 +56,9 @@ public class FileConverter extends BaseV20Converter implements Converter
         if (data.isFile())
         {
             FormField formField = data.getFormField();
-            if (paramType == FileUpload.class)
+            if (paramType == FileTransfer.class)
             {
-                return new FileUpload(formField.getName(), formField.getMimeType(), formField.getInputStream());
+                return new FileTransfer(formField.getName(), formField.getMimeType(), formField.getInputStream());
             }
             else if (paramType == InputStream.class)
             {
@@ -101,6 +102,11 @@ public class FileConverter extends BaseV20Converter implements Converter
             {
                 InputStream in = (InputStream) object;
                 generator = new InputStreamFileGenerator(in, "binary/octet-stream");
+            }
+            else if (object instanceof FileTransfer)
+            {
+                FileTransfer in = (FileTransfer) object;
+                generator = new FileTransferFileGenerator(in);
             }
             else
             {
@@ -148,5 +154,5 @@ public class FileConverter extends BaseV20Converter implements Converter
     /**
      * Do we use data: URLs when we can?
      */
-    private boolean preferDataUrlSchema = true;
+    private boolean preferDataUrlSchema = false;
 }

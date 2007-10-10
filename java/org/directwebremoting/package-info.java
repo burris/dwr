@@ -13,7 +13,7 @@ key classes using {@link WebContext}/{@link WebContextFactory} or
 <ul>
 <li>The JavaScript proxy classes are stored in org.directwebremoting.proxy.*</li>
 <li>The {@link FluentConfigurator} has it's own package, and</li>
-<li>The {@link FileUpload} is in org.directwebremoting.io<li>
+<li>The {@link FileTransfer} is in org.directwebremoting.io<li>
 </ul>
 
 @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -21,4 +21,4 @@ key classes using {@link WebContext}/{@link WebContextFactory} or
 package org.directwebremoting;
 
 import org.directwebremoting.fluent.FluentConfigurator;
-import org.directwebremoting.io.FileUpload;
+import org.directwebremoting.io.FileTransfer;

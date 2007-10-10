@@ -52,7 +52,7 @@ import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.extend.TypeHintContext;
-import org.directwebremoting.io.FileUpload;
+import org.directwebremoting.io.FileTransfer;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.Messages;
 
@@ -288,7 +288,7 @@ public abstract class BaseCallMarshaller implements Marshaller
 
                 if (formField.isFile())
                 {
-                    value = new FileUpload(formField.getName(), formField.getMimeType(), formField.getInputStream());
+                    value = new FileTransfer(formField.getName(), formField.getMimeType(), formField.getInputStream());
                 }
                 else
                 {

@@ -112,7 +112,7 @@
     <convert converter="servlet" match="javax.servlet.http.HttpServletResponse"/>
     <convert converter="servlet" match="javax.servlet.http.HttpSession"/>
 
-    <convert converter="file" match="org.directwebremoting.io.FileUpload"/>
+    <convert converter="file" match="org.directwebremoting.io.FileTransfer"/>
     <convert converter="file" match="java.io.InputStream"/>
     <convert converter="file" match="java.awt.image.BufferedImage"/>
 
