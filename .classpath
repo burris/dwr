@@ -105,6 +105,5 @@
 	<classpathentry kind="src" path="test/resources"/>
 	<classpathentry kind="src" path="generated/gi/java"/>
 	<classpathentry kind="src" path="drapgen/java"/>
-	<classpathentry kind="src" path="drapgen/resources"/>
 	<classpathentry kind="output" path="web/WEB-INF/classes"/>
 </classpath>
