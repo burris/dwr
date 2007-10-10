@@ -94,6 +94,11 @@
     </create>
     <convert converter="bean" match="org.getahead.dwrdemo.files.Files"/>
 
+    <!-- GI + reverse ajax -->
+    <create creator="new" javascript="Reverse" scope="application">
+      <param name="class" value="org.getahead.dwrdemo.reverse.Reverse"/>
+    </create>
+
     <!-- this is a bad idea for live, but can be useful in testing -->
     <convert converter="exception" match="java.lang.Exception"/>
     <convert converter="bean" match="java.lang.StackTraceElement"/>

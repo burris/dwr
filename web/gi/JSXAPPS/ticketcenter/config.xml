@@ -23,18 +23,12 @@
       <record jsxid="src" type="string">main.xml</record>
     </record>
     <record jsxid="1" type="map">
-      <record jsxid="id" type="string">logic_js</record>
-      <record jsxid="type" type="string">script</record>
-      <record jsxid="load" type="number">1</record>
-      <record jsxid="src" type="string">logic.js</record>
-    </record>
-    <record jsxid="2" type="map">
       <record jsxid="id" type="string">eventList_xml</record>
       <record jsxid="type" type="string">xml</record>
       <record jsxid="load" type="number">0</record>
       <record jsxid="src" type="string">eventList.xml</record>
     </record>
-    <record jsxid="3" type="map">
+    <record jsxid="2" type="map">
       <record jsxid="id" type="string">paymentTypes_xml</record>
       <record jsxid="type" type="string">xml</record>
       <record jsxid="load" type="number">0</record>

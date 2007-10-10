@@ -15,12 +15,12 @@
   <record jsxid="overflow" type="string">3</record>
   <record jsxid="eventsvers" type="number">3.1</record>
   <record jsxid="onload" type="string">giLoaded();</record>
-  <record jsxid="objectseturl" type="string">components/appCanvas.xml</record>
+  <record jsxid="objectseturl" type="string">appCanvas.xml</record>
   <record jsxid="includes" type="array">
     <record jsxid="0" type="map">
       <record jsxid="id" type="string">appCanvas_component</record>
       <record jsxid="type" type="string">component</record>
-      <record jsxid="src" type="string">components/appCanvas.xml</record>
+      <record jsxid="src" type="string">appCanvas.xml</record>
     </record>
   </record>
   <record jsxid="bodyhotkeys" type="boolean">false</record>
