@@ -17,9 +17,9 @@
 /**
  * Declare an object to which we can add real functions.
  */
-if (dwr == null) var dwr = {};
-if (dwr.engine == null) dwr.engine = {};
-if (DWREngine == null) var DWREngine = dwr.engine;
+if (window['dwr'] == null) window['dwr'] = {};
+if (dwr['engine'] == null) dwr['engine'] = {};
+if (window['DWREngine'] == null) window['DWREngine'] = dwr.util;
 
 /**
  * Set an alternative error handler from the default alert box.
@@ -585,7 +585,7 @@ dwr.engine._checkCometPoll = function() {
   if (dwr.engine._pollReq) {
     var req = dwr.engine._pollReq;
     var text = req.responseText;
-    dwr.engine._processCometResponse(text, req.batch);
+    if (text != null) dwr.engine._processCometResponse(text, req.batch);
   }
 
   // If the poll resources are still there, come back again
@@ -754,7 +754,7 @@ dwr.engine._sendData = function(batch) {
       batch.div = document.createElement("div");
       // Add the div to the document first, otherwise IE 6 will ignore onload handler.
       document.body.appendChild(batch.div);
-      batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' style='width:0px;height:0px;border:0;' id='" + idname + "' name='" + idname + "' onload='dwr.engine._iframeLoadingComplete (" + batch.map.batchId + ");'></iframe>";
+      batch.div.innerHTML = "<iframe src='javascript:void(0)' frameborder='0' style='width:0px;height:0px;border:0;' id='" + idname + "' name='" + idname + "' onload='dwr.engine._iframeLoadingComplete(" + batch.map.batchId + ");'></iframe>";
       batch.document = document;
     }
     batch.iframe = batch.document.getElementById(idname);
@@ -767,15 +767,8 @@ dwr.engine._sendData = function(batch) {
     }
     else {
       // setting enctype via the DOM does not work in IE, create the form using innerHTML instead
-      var formHtml = 
-      	 "<form id='dwr-form' " + 
-      	 "action='" + request.url + "' " +
-      	 "target='" + idname + "' " +
-      	 "style='display:none;' " +
-      	 "method='" + batch.httpMethod + "'";
-      if (batch.encType) {
-      	 formHtml += " enctype='" + batch.encType + "'";
-      }
+      var formHtml = "<form id='dwr-form' action='" + request.url + "' target='" + idname + "' style='display:none;' method='" + batch.httpMethod + "'";
+      if (batch.encType) formHtml += " enctype='" + batch.encType + "'";
       formHtml += "></form>";
       var div = batch.document.createElement("div");
       div.innerHTML = formHtml;
@@ -1370,10 +1363,8 @@ dwr.engine._debug = function(message, stacktrace) {
 };
 
 /** @private init */
-{
-  // Fetch the scriptSessionId from the server
-  dwr.engine._execute(dwr.engine._defaultPath, '__System', 'pageLoaded', function(data) {
-    dwr.engine._scriptSessionId = data;
-    dwr.engine._ordered = false;
-  });
-}
+// Fetch the scriptSessionId from the server
+dwr.engine._execute(dwr.engine._defaultPath, '__System', 'pageLoaded', function(data) {
+  dwr.engine._scriptSessionId = data;
+  dwr.engine._ordered = false;
+});
