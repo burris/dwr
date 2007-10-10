@@ -32,6 +32,7 @@
     <record jsxid="class.bless_int" jsxtext="May not call bless() on an interface: {0}."/>
     <record jsxid="class.already_imp" jsxtext="Class {0} already implements interface {1}."/>
     <record jsxid="class.nsm" jsxtext="No such method: {0}."/>
+    <record jsxid="class.mmix_bad" jsxtext="Error adding method mixin: class {0} does not define instance method {1}."/>
 
     <!-- jsx3.lang.Method -->
     <record jsxid="method.call" jsxtext="Too many arguments passed to Method.call(): {0}."/>
@@ -44,6 +45,8 @@
     <record jsxid="obj.supmx_funct" jsxtext="Illegal call to jsxsupermix() from function {0}"/>
     <record jsxid="obj.supmx_static" jsxtext="Illegal call to jsxsupermix() from static method {0}."/>
     <record jsxid="obj.supmx_none" jsxtext="No super mixin method for method {0}."/>
+    <record jsxid="obj.mix_funct" jsxtext="Illegal call to jsxmix() from function {0}"/>
+    <record jsxid="obj.mix_static" jsxtext="Illegal call to jsxmix() from static method {0}."/>
 
     <!-- jsx3.lang.Package -->
     <record jsxid="pkg.redefine" jsxtext="Package {0} redefined."/>

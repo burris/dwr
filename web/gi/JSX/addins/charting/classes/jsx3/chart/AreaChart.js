@@ -2,23 +2,24 @@
  * Copyright (c) 2001-2007, TIBCO Software Inc.
  * Use, modification, and distribution subject to terms of license.
  */
-jsx3.require("jsx3.chart.CartesianChart","jsx3.chart.AreaSeries");jsx3.Class.defineClass("jsx3.chart.AreaChart",jsx3.chart.CartesianChart,null,function(r,q){r.TYPE_OVERLAY="overlay";r.TYPE_STACKED="stacked";r.TYPE_STACKED100="stacked100";q.init=function(h,l,o,i,p){this.jsxsuper(h,l,o,i,p);this.type="overlay";};q.getType=function(){return this.type;};q.setType=function(h){if(r.ALLOWED_TYPES[h]){this.type=h;}else throw new
-jsx3.IllegalArgumentException("type",h);};q.getYRange=function(e){if(this.type=="overlay"){return this.getRangeForField(e,"getYValue");}else if(this.type=="stacked"){return this.getStackedRangeForField(e,"getYValue");}else if(this.type=="stacked100"){return this.getStacked100RangeForField(e,"getYValue");}else{jsx3.chart.LOG.error("unsupported Line Chart type: "+this.type);return null;}};q.getXRange=function(i){return this.getRangeForField(i,"getXValue");};q.updateView=function(){this.jsxsuper();this.ug();};q.ug=function(){var
-Zb=this.wg();var
-Db=this.Cm();var
-hb=this.bi();var
-Cc=this.getPrimaryXAxis();var
-L=this.getPrimaryYAxis();if(Cc==null||L==null||Db.length==0||hb==null)return;if(!jsx3.chart.isValueAxis(L)){jsx3.chart.LOG.error("bad y axis type: "+L.getClass());return;}var
-kb=null;if(this.type=="stacked100")kb=this.kk(Db,"getYValue");var
-_=null,rb=null;if(this.type=="stacked"||this.type=="stacked100"){_=new
-Array(hb.length);rb=new
-Array(hb.length);for(var
-X=0;X<hb.length;X++)_[X]=rb[X]=0;}for(var
-Bb=0;Bb<Db.length;Bb++){var
-ib=Db[Bb];ib.ui();for(var
-X=0;X<hb.length;X++){var
-bb=hb[X];var
-ac=null,D=null,Gb=null;var
-Pb=ib.getYValue(bb);var
-pc=ib.getMinValue(bb);if(Pb==null)continue;if(this.type=="stacked"||this.type=="stacked100"){if(Pb>=0){pc=_[X];Pb=_[X]+Pb;_[X]=Pb;}else{pc=rb[X];Pb=rb[X]+Pb;rb[X]=Pb;}if(this.type=="stacked100"){Pb=100*(Pb/kb[X]);pc=100*(pc/kb[X]);}}if(pc==null)pc=0;D=L.getCoordinateForNoClip(Pb);Gb=L.getCoordinateFor(pc);if(jsx3.chart.isValueAxis(Cc)){var
-uc=ib.getXValue(bb);if(uc!=null)ac=Cc.getCoordinateForNoClip(uc);}else if(jsx3.chart.isCategoryAxis(Cc))ac=Cc.getPointForCategory(X);if(ac==null)continue;ib.Co(bb,ac,D,X);ib.qp(ac,Gb);}ib.updateView();Zb.appendChild(ib.tf());}};q.ad=function(){return this.type=="stacked"||this.type=="stacked100";};q.zm=function(f){return f instanceof jsx3.chart.AreaSeries;};q.toString=function(){return "[AreaChart '"+this.getName()+"']";};r.getVersion=function(){return jsx3.chart.sj;};});
+jsx3.require("jsx3.chart.CartesianChart","jsx3.chart.AreaSeries");jsx3.Class.defineClass("jsx3.chart.AreaChart",jsx3.chart.CartesianChart,null,function(r,q){var
+ub={d:"type",a:"overlay",h:"bad y axis type: ",c:"stacked100",f:"unsupported Line Chart type: ",g:"getXValue",b:"stacked",e:"getYValue"};r.TYPE_OVERLAY=ub.a;r.TYPE_STACKED=ub.b;r.TYPE_STACKED100=ub.c;r.nT={overlay:1,stacked:1,stacked100:1};q.init=function(f,j,m,k,n){this.jsxsuper(f,j,m,k,n);this.type=ub.a;};q.getType=function(){return this.type;};q.setType=function(s){if(r.nT[s]){this.type=s;}else throw new
+jsx3.IllegalArgumentException(ub.d,s);};q.getYRange=function(a){if(this.type==ub.a){return this.getRangeForField(a,ub.e);}else if(this.type==ub.b){return this.getStackedRangeForField(a,ub.e);}else if(this.type==ub.c){return this.getStacked100RangeForField(a,ub.e);}else{jsx3.chart.LOG.error(ub.f+this.type);return null;}};q.getXRange=function(m){return this.getRangeForField(m,ub.g);};q.createVector=function(){this.jsxsuper();this.nD();};q.nD=function(){var
+Fb=this.wf();var
+jb=this.Cl();var
+Hb=this.bh();var
+Na=this.getPrimaryXAxis();var
+zb=this.getPrimaryYAxis();if(Na==null||zb==null||jb.length==0||Hb==null)return;if(!jsx3.chart.isValueAxis(zb)){jsx3.chart.LOG.error(ub.h+zb.getClass());return;}var
+ba=null;if(this.type==ub.c)ba=this.bg(jb,ub.e);var
+ka=null,rb=null;if(this.type==ub.b||this.type==ub.c){ka=new
+Array(Hb.length);rb=new
+Array(Hb.length);for(var
+W=0;W<Hb.length;W++)ka[W]=rb[W]=0;}for(var
+ea=0;ea<jb.length;ea++){var
+kb=jb[ea];kb._n();for(var
+W=0;W<Hb.length;W++){var
+Z=Hb[W];var
+I=null,nb=null,xb=null;var
+S=kb.getYValue(Z);var
+u=kb.getMinValue(Z);if(S==null)continue;if(this.type==ub.b||this.type==ub.c){if(S>=0){u=ka[W];S=ka[W]+S;ka[W]=S;}else{u=rb[W];S=rb[W]+S;rb[W]=S;}if(this.type==ub.c){S=100*(S/ba[W]);u=100*(u/ba[W]);}}if(u==null)u=0;nb=zb.getCoordinateForNoClip(S);xb=zb.getCoordinateFor(u);if(jsx3.chart.isValueAxis(Na)){var
+ab=kb.getXValue(Z);if(ab!=null)I=Na.getCoordinateForNoClip(ab);}else if(jsx3.chart.isCategoryAxis(Na))I=Na.getPointForCategory(W);if(I==null)continue;kb.fm(Z,I,nb,W);kb.Bh(I,xb);}kb.updateView();Fb.appendChild(kb.getCanvas());}};q.kg=function(){return this.type==ub.b||this.type==ub.c;};q.rl=function(h){return h instanceof jsx3.chart.AreaSeries;};r.getVersion=function(){return jsx3.chart.si;};});

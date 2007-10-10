@@ -27,7 +27,7 @@
     <record jsxid="string.terr.AU" jsxtext="澳大利亚"/>
     <record jsxid="string.terr.BR" jsxtext="巴西"/>
     <record jsxid="string.terr.CA" jsxtext="加拿大"/>
-    <record jsxid="string.terr.CH" jsxtext="瑞士"/>
+    <record jsxid="string.terr.CN" jsxtext="中国"/>
     <record jsxid="string.terr.DE" jsxtext="德国"/>
     <record jsxid="string.terr.DK" jsxtext="丹麦"/>
     <record jsxid="string.terr.ES" jsxtext="西班牙"/>
@@ -46,8 +46,9 @@
     <record jsxid="string.terr.TW" jsxtext="台湾"/>
     <record jsxid="string.terr.US" jsxtext="美国"/>
   </locale>
-<locale key="zh_CH">
-    <record jsxid="currency.code" jsxtext="CHF"/>
+<locale key="zh_CN">
+    <record eval="1" jsxid="date.firstWeekDay" jsxtext="0"/>
+    <record jsxid="currency.code" jsxtext="CNY"/>
   </locale>
 <locale key="zh_HK">
     <record eval="1" jsxid="date.firstWeekDay" jsxtext="0"/>

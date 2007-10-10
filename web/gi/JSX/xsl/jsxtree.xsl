@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
   ~ Copyright (c) 2001-2007, TIBCO Software Inc.
   ~ Use, modification, and distribution subject to terms of license.
-  --><xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" version="1.0">
+  -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" version="1.0">
 
   
 
@@ -28,8 +30,12 @@
   <xsl:param name="jsxindent">20</xsl:param>
   <xsl:param name="jsx_no_empty_indent">0</xsl:param>
   <xsl:param name="jsx_img_resolve">1</xsl:param>
+  <xsl:param name="jsxtitle"/>
+  <xsl:param name="jsxasyncmessage"/>
 
-  <xsl:param name="jsxpath"/><xsl:param name="jsxpathapps"/><xsl:param name="jsxpathprefix"/>
+  <xsl:param name="jsxpath"/>
+  <xsl:param name="jsxpathapps"/>
+  <xsl:param name="jsxpathprefix"/>
 <!-- Begin merge from jsxlib.xsl -->
 <xsl:template match="* | @*" mode="uri-resolver">
     <xsl:param name="uri" select="."/>
@@ -91,7 +97,9 @@
         <xsl:value-of disable-output-escaping="yes" select="$value"/>
       </xsl:when>
       <xsl:otherwise>
-        <span class="disable-output-escp"><xsl:value-of select="$value"/></span>
+        <span class="disable-output-escp">
+          <xsl:value-of select="$value"/>
+        </span>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -118,6 +126,9 @@
 <xsl:template match="/">
     <JSX_FF_WELLFORMED_WRAPPER>
       <xsl:choose>
+        <xsl:when test="$jsxasyncmessage and $jsxasyncmessage!=''">
+          <xsl:value-of select="$jsxasyncmessage"/>
+        </xsl:when>
         <xsl:when test="$jsxdeepfrom != 'jsxnull' and $jsxfragment != '1'">
           <xsl:apply-templates select="//*[@jsxid=$jsxdeepfrom]"/>
         </xsl:when>
@@ -142,7 +153,9 @@
     <!-- TO DO: shouldn't affect performance to resolve all of the following, but look into how very large trees perform when rendered -->
     <xsl:variable name="_jsxstyle">
       <xsl:if test="$jsxselectedimage">background-image:url(<xsl:value-of select="$jsxselectedimage"/>);</xsl:if>
-      <xsl:if test="$jsxbordercolor"><xsl:text>border-right:solid 1px </xsl:text><xsl:value-of select="$jsxbordercolor"/>;</xsl:if>
+      <xsl:if test="$jsxbordercolor">
+        <xsl:text>border-right:solid 1px </xsl:text>
+        <xsl:value-of select="$jsxbordercolor"/>;</xsl:if>
     </xsl:variable>
 
     <div class="jsx30tree_item" id="{$jsxid}_{$myjsxid}" jsxid="{@jsxid}" jsxtype="item" unselectable="on">
@@ -179,8 +192,12 @@
           <xsl:when test="@jsximg">
             <xsl:variable name="jsximg_resolved">
               <xsl:choose>
-                <xsl:when test="$jsx_img_resolve='1'"><xsl:apply-templates mode="uri-resolver" select="@jsximg"/></xsl:when>
-                <xsl:otherwise><xsl:value-of select="@jsximg"/></xsl:otherwise>
+                <xsl:when test="$jsx_img_resolve='1'">
+                  <xsl:apply-templates mode="uri-resolver" select="@jsximg"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="@jsximg"/>
+                </xsl:otherwise>
               </xsl:choose>
             </xsl:variable>
 

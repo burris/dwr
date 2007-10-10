@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
   ~ Copyright (c) 2001-2007, TIBCO Software Inc.
   ~ Use, modification, and distribution subject to terms of license.
-  --><xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" version="1.0">
+  -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" version="1.0">
 
   <!-- import standard library functions (such as image and resource url resolution) -->
   
@@ -119,7 +121,10 @@
   <xsl:param name="jsx_no_empty_indent">0</xsl:param>
 
   <xsl:param name="jsx_img_resolve">1</xsl:param>
-  
+
+  <xsl:param name="jsxtitle"/>
+  <xsl:param name="jsxasyncmessage"/>
+
   <!--
   ROOT TEMPLATE: Returns one of the following structures:
     1) A panel (TABLE) containing one or more records. (mode = panel)
@@ -128,7 +133,9 @@
     4) Count of all records that would be rendered on-screen if all records were to be painted. (mode = count)
     5) A TR element used as the auto-append row. This row has no corresponding record in the CDF, but renders none-the-less
   -->
-  <xsl:param name="jsxpath"/><xsl:param name="jsxpathapps"/><xsl:param name="jsxpathprefix"/>
+  <xsl:param name="jsxpath"/>
+  <xsl:param name="jsxpathapps"/>
+  <xsl:param name="jsxpathprefix"/>
 <!-- Begin merge from jsxlib.xsl -->
 <xsl:template match="* | @*" mode="uri-resolver">
     <xsl:param name="uri" select="."/>
@@ -190,7 +197,9 @@
         <xsl:value-of disable-output-escaping="yes" select="$value"/>
       </xsl:when>
       <xsl:otherwise>
-        <span class="disable-output-escp"><xsl:value-of select="$value"/></span>
+        <span class="disable-output-escp">
+          <xsl:value-of select="$value"/>
+        </span>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -217,9 +226,20 @@
 <xsl:template match="/">
     <JSX_FF_WELLFORMED_WRAPPER>
       <xsl:choose>
+        <xsl:when test="$jsxasyncmessage and $jsxasyncmessage!=''">
+          <table cellpadding="0" cellspacing="0" class="jsx30matrix_rowtable" id="{$jsx_id}_asyncmsg" style="{$jsx_panel_css}width:{$jsx_column_widths}px;">
+            <tr>
+              <td style="padding: 3px;">
+                <xsl:value-of select="$jsxasyncmessage"/>
+              </td>
+            </tr>
+          </table>
+        </xsl:when>
         <xsl:when test="$jsx_mode = 'cellvalue'">
           <!-- this is an update to the cell value (the actual content that will go inside the td/div) -->
-          <xsl:choose><xsl:when test="0"/></xsl:choose>
+          <xsl:choose>
+            <xsl:when test="0"/>
+          </xsl:choose>
         </xsl:when>
         <xsl:when test="$jsx_rendering_model = 'shallow'">
           <!-- all records within a positioned range, immediate children of the node with jsxid equal to $jsx_rendering_context -->
@@ -358,11 +378,13 @@
   <xsl:template match="node()" mode="entry">
     <xsl:param name="jsx_row_number"/>
     <!-- this ensures the paging range.  need to optimize while keeping ordinal position (perhaps use apply template and sum the position and the start index. TO DO TO DO!! -->
-    <xsl:choose><xsl:when test="$jsx_row_number = '-1' or ($jsx_row_number &gt; $jsx_min_exclusive and $jsx_row_number &lt; $jsx_max_exclusive)">
+    <xsl:choose>
+      <xsl:when test="$jsx_row_number = '-1' or ($jsx_row_number &gt; $jsx_min_exclusive and $jsx_row_number &lt; $jsx_max_exclusive)">
       <xsl:call-template name="row_template">
         <xsl:with-param name="jsx_row_number" select="$jsx_row_number"/>
       </xsl:call-template>
-    </xsl:when></xsl:choose>
+    </xsl:when>
+    </xsl:choose>
   </xsl:template>
 
 
@@ -395,7 +417,7 @@
     <xsl:param name="jsx_adjusted_width"/>
     <xsl:param name="jsx_descendant_index"/>
 
-    <div jsxtype="structure" style="position:relative;" unselectable="on">
+    <div jsxtype="structure" style="position:relative;">
       <!-- note that I hard-code the id of the table with a '0'. when in hierarchical mode, the table id is ignored. it is the row id that matters -->
       <table cellpadding="0" cellspacing="0" class="jsx30matrix_rowtable" id="{$jsx_id}jsx_0" style="{$jsx_panel_css}width:{$jsx_adjusted_width}px;">
         <xsl:call-template name="row_template">
@@ -403,7 +425,7 @@
           <xsl:with-param name="jsx_descendant_index" select="$jsx_descendant_index"/>
         </xsl:call-template>
       </table>
-      <div jsxcontextindex="{$jsx_descendant_index + 1}" style="display:none;" unselectable="on">
+      <div jsxcontextindex="{$jsx_descendant_index + 1}" style="display:none;">
         <!-- recurse -->
         <xsl:choose>
           <xsl:when test="record">
@@ -424,10 +446,16 @@
                     <xsl:with-param name="jsx_descendant_index" select="$jsx_descendant_index + 1"/>
                   </xsl:apply-templates>
                 </xsl:for-each>
-              </xsl:when><xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text> </xsl:text>
+              </xsl:otherwise>
             </xsl:choose>
 
-          </xsl:when><xsl:otherwise><xsl:text> </xsl:text></xsl:otherwise>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text> </xsl:text>
+          </xsl:otherwise>
         </xsl:choose>
       </div>
     </div>
@@ -448,12 +476,13 @@
     <xsl:param name="jsx_row_number">0</xsl:param>
     <xsl:param name="jsx_style" select="@jsxstyle"/>
 
-    <table cellpadding="0" cellspacing="0" class="jsx30matrix_rowtable">
-      <xsl:attribute name="style">position:relative;left:<xsl:value-of select="($jsx_descendant_index -1) * $jsx_indent"/>px;width:<xsl:value-of select="$jsx_cell_width - (($jsx_descendant_index -1) * $jsx_indent)"/>px;height:16px;</xsl:attribute>
+    <table cellpadding="0" cellspacing="0" class="jsx30matrix_rowtable" jsxindent="{($jsx_descendant_index -1) * $jsx_indent}">
+      <xsl:attribute name="style">position:relative;float:right;width:<xsl:value-of select="$jsx_cell_width - (($jsx_descendant_index -1) * $jsx_indent)"/>px;height:16px;</xsl:attribute>
       <tr style="{$jsx_style}">
         <!-- this is the toggle image (plus/minus) -->
         <td jsxtype="plusminus">
-          <xsl:attribute name="jsxtype"><xsl:choose>
+          <xsl:attribute name="jsxtype">
+            <xsl:choose>
               <xsl:when test="record and $jsx_paging_model = 4 and not(@jsxopen=1)">paged</xsl:when>
               <xsl:otherwise>plusminus</xsl:otherwise>
             </xsl:choose>
@@ -488,15 +517,21 @@
               <xsl:attribute name="style">width:16px;vertical-align:top;</xsl:attribute>
               <xsl:variable name="src1">
                 <xsl:choose>
-                  <xsl:when test="$jsx_img_resolve='1'"><xsl:apply-templates mode="uri-resolver" select="@jsximg"/></xsl:when>
-                  <xsl:otherwise><xsl:value-of select="@jsximg"/></xsl:otherwise>
+                  <xsl:when test="$jsx_img_resolve='1'">
+                    <xsl:apply-templates mode="uri-resolver" select="@jsximg"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="@jsximg"/>
+                  </xsl:otherwise>
                 </xsl:choose>
               </xsl:variable>
               <img class="jsx30matrix_plusminus" jsxtype="icon" src="{$src1}" unselectable="on"/>
             </xsl:when>
             <xsl:when test="$jsx_icon=''">
               <xsl:attribute name="style">width:1px;</xsl:attribute>
-              <span style="display:none;width:1px;height:1px;"><xsl:text> </xsl:text></span>
+              <span style="display:none;width:1px;height:1px;">
+                <xsl:text> </xsl:text>
+              </span>
             </xsl:when>
             <xsl:otherwise>
               <xsl:attribute name="style">width:16px;vertical-align:top;</xsl:attribute>
@@ -505,7 +540,7 @@
           </xsl:choose>
           <xsl:text> </xsl:text>
         </td>
-        <td jsxtype="text" style="vertical-align:top;" unselectable="on">
+        <td jsxtype="text" style="vertical-align:top;">
           <xsl:attribute name="jsxtreenode">
             <xsl:choose>
               <xsl:when test="record">branch</xsl:when>
@@ -545,8 +580,12 @@
     <!-- users can add a custom style declaration to the TR (unfortunately, in my opinion) -->
     <xsl:param name="jsx_style">
       <xsl:choose>
-        <xsl:when test="$jsx_row_number = -1"><xsl:value-of select="$jsx_autorow_style"/></xsl:when>
-        <xsl:otherwise><xsl:value-of select="@jsxstyle"/></xsl:otherwise>
+        <xsl:when test="$jsx_row_number = -1">
+          <xsl:value-of select="$jsx_autorow_style"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@jsxstyle"/>
+        </xsl:otherwise>
       </xsl:choose>
     </xsl:param>
 
@@ -554,15 +593,21 @@
     <xsl:param name="jsx_cdfkey">
       <xsl:choose>
         <xsl:when test="$jsx_row_number = -1">jsxautorow</xsl:when>
-        <xsl:otherwise><xsl:value-of select="@jsxid"/></xsl:otherwise>
+        <xsl:otherwise>
+          <xsl:value-of select="@jsxid"/>
+        </xsl:otherwise>
       </xsl:choose>
     </xsl:param>
 
     <!-- support radio groups -->
     <xsl:param name="jsx_groupname">
       <xsl:choose>
-        <xsl:when test="@jsxgroupname"><xsl:value-of select="@jsxgroupname"/></xsl:when>
-        <xsl:otherwise><xsl:value-of select="$jsx_id"/></xsl:otherwise>
+        <xsl:when test="@jsxgroupname">
+          <xsl:value-of select="@jsxgroupname"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$jsx_id"/>
+        </xsl:otherwise>
       </xsl:choose>
     </xsl:param>
 
@@ -572,14 +617,23 @@
         <xsl:when test="$jsx_rendering_model != 'hierarchical' and ($jsx_rowbg1 or $jsx_rowbg2) and $jsx_row_number != -1">
           <xsl:text>background-color:</xsl:text>
           <xsl:choose>
-            <xsl:when test="$jsx_row_number mod 2 = 0"><xsl:value-of select="$jsx_rowbg1"/></xsl:when>
-            <xsl:otherwise><xsl:value-of select="$jsx_rowbg2"/></xsl:otherwise>
-          </xsl:choose><xsl:text>;</xsl:text>
+            <xsl:when test="$jsx_row_number mod 2 = 0">
+              <xsl:value-of select="$jsx_rowbg1"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$jsx_rowbg2"/>
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:text>;</xsl:text>
         </xsl:when>
         <xsl:when test="record and ($jsx_rendering_model = 'hierarchical') and $jsx_treehead_bgcolor">
-          <xsl:text>background-color:</xsl:text><xsl:value-of select="$jsx_treehead_bgcolor"/>
-          <xsl:text>;font-weight:</xsl:text><xsl:value-of select="$jsx_treehead_fontweight"/>
-          <xsl:text>;border-right-color:</xsl:text><xsl:value-of select="$jsx_treehead_bgcolor"/><xsl:text>;</xsl:text>
+          <xsl:text>background-color:</xsl:text>
+          <xsl:value-of select="$jsx_treehead_bgcolor"/>
+          <xsl:text>;font-weight:</xsl:text>
+          <xsl:value-of select="$jsx_treehead_fontweight"/>
+          <xsl:text>;border-right-color:</xsl:text>
+          <xsl:value-of select="$jsx_treehead_bgcolor"/>
+          <xsl:text>;</xsl:text>
         </xsl:when>
       </xsl:choose>
     </xsl:param>
@@ -590,7 +644,9 @@
     <!-- the TR element -->
     <tr JSXDragId="{$jsx_cdfkey}" JSXDragType="{$jsx_drag_type}" id="{$jsx_id}_jsx_{$jsx_cdfkey}" jsxid="{$jsx_cdfkey}" jsxrownumber="{$jsx_row_number}" jsxtype="record" style="{$jsx_rowbg}{$jsx_style}">
       <xsl:if test="@jsxtip and $jsx_no_tip != '1'">
-        <xsl:attribute name="title"><xsl:value-of select="@jsxtip"/></xsl:attribute>
+        <xsl:attribute name="title">
+          <xsl:value-of select="@jsxtip"/>
+        </xsl:attribute>
       </xsl:if>
       <xsl:choose>
         <xsl:when test="$jsx_use_categories='0' or @jsxcategory='0' or (not(@jsxcategory='1') and not(record))">

@@ -15,6 +15,15 @@ v\:* {
   font-family: Verdana, Arial, sans-serif;
   font-size: 10px;
 }
+.jsx30block_drag {
+  background-color:#f6f6ff;
+  border:solid 1px #a8a8af;
+  font-family:Verdana;
+  font-size:10px;
+  padding:2px;
+  filter: alpha(opacity=70);
+  white-space:nowrap;
+}
 
 /* jsx3.gui.Image */
 #JSX img.jsx30image {
@@ -68,87 +77,83 @@ v\:* {
 }
 
 /* jsx3.gui.Menu */
-.jsx30menu_2_itemlist {
+.jsx30menu_2_list, .jsx30menu_2x_list {
+  border: solid 1px #9898a5;
+  border-left-color: #b8b8c5;
+  border-top-color: #b8b8c5;
+  filter: alpha(opacity=95);
+}
+.jsx30menu_2_list {
   position: absolute;
   overflow: hidden;
   left: 0px;
   top: 0px;
-  border: solid 1px #9898a5;
-  border-left-color: #b8b8c5;
-  border-top-color: #b8b8c5;
-  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)
-         progid:DXImageTransform.Microsoft.Shadow(direction=90,color=#a8a8cf,strength=0);
-  /* HACK: need this shadow declaration for menu not to flood the available width ... very strange */
 }
-.jsx30menu_2_item {
-  position: relative;
-  width: 100%;
+.jsx30menu_2_item, .jsx30menu_2x_item {
+  position: relative; 
   height: 16px;
-  padding-left: 36px;
   padding-top: 4px;
   white-space: nowrap;
   font-family: Verdana, sans-serif;
   font-size: 10px;
   cursor: default;
+  margin-right: -2px;
 }
-.jsx30menu_2_item_disabled {
+.jsx30menu_2_itemdis, .jsx30menu_2x_itemdis {
   position: relative;
-  width: 100%;
-  font-family: Verdana, sans-serif;
-  font-size: 10px;
-  padding-left: 36px;
   height: 16px;
   padding-top: 4px;
   white-space: nowrap;
+  font-family: Verdana, sans-serif;
+  font-size: 10px;
   cursor: not-allowed;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100);
+  filter: alpha(opacity=50);
+  margin-right: -2px;
 }
-.jsx30menu_2_item_divider {
-  position: relative;
+.jsx30menu_2_item, .jsx30menu_2_itemdis { width: 1px; }
+.jsx30menu_2x_item, .jsx30menu_2x_itemdis { width: 100%; }
+.jsx30menu_2_div, .jsx30menu_2x_div {
   height: 5px;
-  padding: 5px 6px 0px 36px;
+  padding: 5px 1px 1px 22px;
 }
-.jsx30menu_2_item_divider div {
+.jsx30menu_2_div div, .jsx30menu_2x_div div {
   height: 1px;
-  position: relative;
   border-top: solid 1px #cccccc;
   font-size: 1px;
 }
-.jsx30menu_2_selected {
+.jsx30menu_2_div { width: 1px; }
+.jsx30menu_2x_div div { width: 100%; }
+.jsx30menu_2_sel, .jsx30menu_2x_sel {
   position: absolute;
   left: 25px;
   top: 8px;
   width: 7px;
   height: 7px;
 }
-.jsx30menu_2_kc {
-  position: relative;
-  width: 100%;
-  padding: 0px;
+.jsx30menu_2_kc, .jsx30menu_2x_kc {
   height: 15px;
-  white-space: nowrap;
+  padding-left: 36px;
 }
-table.jsx30menu_2_kct {
-  position: relative;
+table.jsx30menu_2_kct, table.jsx30menu_2x_kct {
   width: 100%;
   padding: 0px;
   border-spacing: 0px;
   height: 12px;
   margin-top: -2px;
 }
-table.jsx30menu_2_kct td {
-  padding: 0px 25px 0px 0px;
+table.jsx30menu_2_kct td, table.jsx30menu_2x_kct td {
+  padding: 0px 20px 0px 0px;
   margin: 0px;
   white-space: nowrap;
   font-family: Verdana, sans-serif;
   font-size: 10px;
   vertical-align: top;
 }
-table.jsx30menu_2_kct td.keycode {
-  padding: 0px 4px 0px 5px;
+table.jsx30menu_2_kct td.keycode, table.jsx30menu_2x_kct td.keycode {
+  padding: 0px 4px 0px 10px;
   text-align: right;
 }
-.jsx30menu_0_itemlist {
+.jsx30menu_0_list {
   position: absolute;
   overflow: hidden;
   left: 0px;
@@ -156,13 +161,11 @@ table.jsx30menu_2_kct td.keycode {
   border: solid 1px #9898a5;
   border-left-color: #b8b8c5;
   border-top-color: #b8b8c5;
-  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)
-         progid:DXImageTransform.Microsoft.Shadow(direction=90,color=#a8a8cf,strength=0);
-/* HACK: need this shadow declaration for menu not to flood the available width ... very strange */
+  filter: alpha(opacity=95);
 }
 .jsx30menu_0_item {
   position: relative;
-  width: 100%;
+  width: 1px;
   font-family: Verdana, sans-serif;
   height: 20px;
   font-size: 10px;
@@ -171,9 +174,9 @@ table.jsx30menu_2_kct td.keycode {
   white-space: nowrap;
   cursor: default;
 }
-.jsx30menu_0_item_disabled {
+.jsx30menu_0_itemdis {
   position: relative;
-  width: 100%;
+  width: 1px;
   font-family: Verdana, sans-serif;
   height: 20px;
   font-size: 10px;
@@ -181,20 +184,20 @@ table.jsx30menu_2_kct td.keycode {
   padding-top: 4px;
   white-space: nowrap;
   cursor: not-allowed;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100);
+  filter: alpha(opacity=50);
 }
-.jsx30menu_0_item_divider {
+.jsx30menu_0_div {
   position: relative;
   height: 10px;
-  padding: 5px 6px 0px 36px;
+  padding: 5px 1px 1px 22px;
 }
-.jsx30menu_0_item_divider div {
+.jsx30menu_0_div div {
   height: 1px;
   position: relative;
   border-top: solid 1px #cccccc;
   font-size: 1px;
 }
-.jsx30menu_0_selected {
+.jsx30menu_0_sel {
   position: absolute;
   left: 25px;
   top: 8px;
@@ -216,7 +219,7 @@ table.jsx30menu_0_kct {
   margin: -2px 0px 0px -2px;
 }
 table.jsx30menu_0_kct td {
-  padding: 0px 25px 0px 0px;
+  padding: 0px 20px 0px 0px;
   margin: 0px;
   white-space: nowrap;
   font-family: Verdana, sans-serif;
@@ -224,22 +227,24 @@ table.jsx30menu_0_kct td {
   vertical-align: top;
 }
 table.jsx30menu_0_kct td.keycode {
-  padding: 0px 4px 0px 5px;
+  padding: 0px 4px 0px 10px;
   text-align: right;
 }
-.jsx30menu_scroll {
+
+/* jsx3.gui.Heavyweight */
+.jsx30scroller {
   position: absolute;
   left: 1px;
   background-color: white;
   visibility: hidden;
   background-position: center center;
   background-repeat: no-repeat;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100);
+  filter: alpha(opacity=85);
   border: solid 1px #9898a5;
   padding: 0px; margin: 0px;
   font-size: 1px;
 }
-.jsx30menu_scrollpane {
+.jsx30scrollpane {
   position: absolute;
 }
 
@@ -309,7 +314,7 @@ table.jsx30menu_0_kct td.keycode {
   vertical-align:middle;
   cursor:pointer;
   font-weight:bold;
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   font-size:11px;
 }
 
@@ -318,7 +323,7 @@ table.jsx30menu_0_kct td.keycode {
   vertical-align:middle;
   cursor:pointer;
   font-weight:bold;
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   font-size:11px;
 }
 
@@ -330,16 +335,14 @@ table.jsx30menu_0_kct td.keycode {
   padding: 12px;
 }
 .jsx30spyglass {
+  position: relative;
   color: #000000;
   background-color: #ffffcc;
-  width: 100%;
-  height: 100%;
   padding: 3px;
   border: solid 1px #9898a5;
   font-family: Verdana, sans-serif;
   font-size: 10px;
-  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)
-         progid:DXImageTransform.Microsoft.Shadow(direction=90,color=#a8a8cf,strength=0);
+  filter: alpha(opacity=95);
 }
 
 /* jsx3.gui.Select (and combo) */
@@ -351,30 +354,40 @@ table.jsx30menu_0_kct td.keycode {
   background-repeat: no-repeat;
   vertical-align: top;
   text-align:left;
+  background-color: #ffffff;
 }
 .jsx30select_optionlist {
-  position: absolute;
-  cursor: default;
-  width: 100%;
   left: 0px;
   top: 0px;
+  position: absolute;
+  cursor: default;
   border: solid 1px #9898a5;
   border-left-color: #b8b8c5;
   border-top-color: #b8b8c5;
-  filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=95,FinishOpacity=0,Style=0,StartX=0,FinishX=100,StartY=0,FinishY=100)
-         progid:DXImageTransform.Microsoft.Shadow(direction=90,color=#a8a8cf,strength=0);
+  background-color: #ffffff;
+  filter: alpha(opacity=95);
 }
-.jsx30select_option {
+.jsx30select_option, .jsx30select_0_option {
   position: relative;
   font-family: Verdana, sans-serif;
   font-size: 10px;
-  width: 100%;
-  height: 20px;
-  padding-top: 3px;
-  padding-left: 4px;
+  width: 1px;
+  height: 19px;
+  padding: 3px 4px 0px 4px;
   cursor: default;
   white-space: nowrap;
 }
+.jsx30select_2_option, .jsx30select_2x_option {
+  position: relative;
+  font-family: Verdana, sans-serif;
+  font-size: 10px;
+  height: 16px;
+  padding: 3px 0px 0px 0px;
+  cursor: default;
+  white-space: nowrap;
+}
+.jsx30select_2_option { width: 1px; }
+.jsx30select_2x_option { width: 100%; }
 .jsx30select_check {
   position: relative;
   width: 7px;
@@ -382,15 +395,21 @@ table.jsx30menu_0_kct td.keycode {
   margin: 4px 0px 0px 0px;
   vertical-align: top;
 }
+.jsx30select_2_option .jsx30select_check, .jsx30select_2x_option .jsx30select_check {
+  margin: 4px 0px 0px 4px;
+}
 .jsx30select_icon {
   position: relative;
   width: 16px;
   height: 16px;
-  margin: 0px 0px 0px 2px;
+  margin: -1px 0px 0px 3px;
   vertical-align: top;
 }
-.jsx30select_option span {
-  position:relative; padding:2px 0px 0px 4px; overflow:hidden; height:17px;
+.jsx30select_0_option span {
+  position:relative; padding:0px 0px 0px 4px; overflow:hidden; height:16px;
+}
+.jsx30select_2_option span, .jsx30select_2x_option span {
+  position:relative; padding:2px 4px 0px 4px; height:17px;
 }
 .jsx30select_none {
   color: #666666;
@@ -413,6 +432,51 @@ table.jsx30menu_0_kct td.keycode {
   font-size: 10px;
   position: relative;
   left:1px;
+}
+
+/* jsx3.gui.Table */
+#JSX div.jsx30table {
+  overflow:hidden;
+}
+#JSX div.jsx30table_body {
+  overflow:auto;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width:100%;
+  height:100%;
+}
+#JSX div.jsx30table_head_port {
+  overflow:hidden;
+  position:absolute;
+  left:0px;
+  top:0px;
+}
+#JSX div.jsx30table_head_pane {
+  overflow:hidden;
+  position:absolute;
+  height:100%;
+  left:0px;
+  top:0px;
+}
+#JSX table.jsx30table {
+  table-layout:fixed;
+  width:100%;
+  position:absolute;
+  left:0px;
+}
+#JSX tr.jsx30table {
+}
+#JSX td.jsx30table {
+  overflow:hidden;
+  vertical-align:top;
+}
+#JSX .jsx30table_header_cell {
+  background-repeat:no-repeat;
+  background-position:right center;
+  cursor:pointer;
+  overflow:hidden;
+  float:left;
 }
 
 
@@ -842,6 +906,7 @@ div.jsx30matrix_dragicon
 }
 #JSX div.jsx30matrixcolumn_cell_value {
   width:100%;
+  overflow:hidden;
 }
 
 /* jsx3.gui.Slider */

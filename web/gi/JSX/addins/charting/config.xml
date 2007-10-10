@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Copyright (c) 2001-2007, TIBCO Software Inc.
   ~ Use, modification, and distribution subject to terms of license.
@@ -14,20 +14,20 @@
   <record jsxid="classpath" type="string">classes/:jsx3.chart.*</record>
 
 	<record jsxid="includes" type="array">
-<record type="map">
-<record jsxid="id" type="string">vml.js</record>
-<record jsxid="type" type="string">script</record>
-<record jsxid="load" type="number">1</record>
-<record jsxid="browser" type="string">VML</record>
-<record jsxid="src" type="string">classes/vml.js</record>
-</record>
-<record type="map">
-<record jsxid="id" type="string">svg.js</record>
-<record jsxid="type" type="string">script</record>
-<record jsxid="load" type="number">1</record>
-<record jsxid="browser" type="string">SVG</record>
-<record jsxid="src" type="string">classes/svg.js</record>
-</record>		
+    <record type="map">
+      <record jsxid="id" type="string">vml.js</record>
+      <record jsxid="type" type="string">script</record>
+      <record jsxid="load" type="number">1</record>
+      <record jsxid="browser" type="string">VML</record>
+      <record jsxid="src" type="string">classes/vml.js</record>
+    </record>
+    <record type="map">
+      <record jsxid="id" type="string">svg.js</record>
+      <record jsxid="type" type="string">script</record>
+      <record jsxid="load" type="number">1</record>
+      <record jsxid="browser" type="string">SVG</record>
+      <record jsxid="src" type="string">classes/svg.js</record>
+    </record>		
 		<record jsxid="0" type="map">
 			<record jsxid="load" type="number">1</record>
 			<record jsxid="type" type="string">jss</record>
@@ -57,7 +57,9 @@
 		
 		
 		
-		
+
+    
+
     
 		
 		

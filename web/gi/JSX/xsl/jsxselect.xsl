@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
   ~ Copyright (c) 2001-2007, TIBCO Software Inc.
   ~ Use, modification, and distribution subject to terms of license.
-  --><xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" version="1.0">
+  -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="urn:schemas-microsoft-com:xslt" version="1.0">
 
   
 
@@ -19,14 +21,19 @@
   <xsl:param name="jsxsorttype">text</xsl:param>
   <xsl:param name="jsxid">_jsx</xsl:param>
   <xsl:param name="jsxtext"/>
+  <xsl:param name="jsxmode">0</xsl:param>
   <xsl:param name="jsxdisableescape">no</xsl:param>
   <xsl:param name="jsxshallowfrom"/>
   <xsl:param name="jsxcasesensitive">0</xsl:param>
   <xsl:param name="jsxnocheck">0</xsl:param>
   <xsl:param name="jsx_img_resolve">1</xsl:param>
   <xsl:param name="jsx_type">select</xsl:param> <!-- Set to "combo" for combo control XSL -->
+  <xsl:param name="jsxtitle"/>
+  <xsl:param name="jsxasyncmessage"/>
 
-  <xsl:param name="jsxpath"/><xsl:param name="jsxpathapps"/><xsl:param name="jsxpathprefix"/>
+  <xsl:param name="jsxpath"/>
+  <xsl:param name="jsxpathapps"/>
+  <xsl:param name="jsxpathprefix"/>
 <!-- Begin merge from jsxlib.xsl -->
 <xsl:template match="* | @*" mode="uri-resolver">
     <xsl:param name="uri" select="."/>
@@ -88,7 +95,9 @@
         <xsl:value-of disable-output-escaping="yes" select="$value"/>
       </xsl:when>
       <xsl:otherwise>
-        <span class="disable-output-escp"><xsl:value-of select="$value"/></span>
+        <span class="disable-output-escp">
+          <xsl:value-of select="$value"/>
+        </span>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -113,7 +122,11 @@
   </xsl:template>
 <!-- End merge from jsxlib.xsl -->
 <xsl:template match="/">
-  <JSX_FF_WELLFORMED_WRAPPER><xsl:choose>
+  <JSX_FF_WELLFORMED_WRAPPER>
+      <xsl:choose>
+    <xsl:when test="$jsxasyncmessage and $jsxasyncmessage!=''">
+      <xsl:value-of select="$jsxasyncmessage"/>
+    </xsl:when>
     <xsl:when test="$jsxshallowfrom">
       <xsl:for-each select="//*[@jsxid=$jsxshallowfrom]/record">
         <xsl:sort data-type="{$jsxsorttype}" order="{$jsxsortdirection}" select="@*[name()=$jsxsortpath]"/>
@@ -140,13 +153,14 @@
         </xsl:choose>
       </xsl:for-each>
     </xsl:otherwise>
-  </xsl:choose></JSX_FF_WELLFORMED_WRAPPER>
+  </xsl:choose>
+    </JSX_FF_WELLFORMED_WRAPPER>
   </xsl:template>
 
   <xsl:template match="record" mode="select">
     <xsl:param name="myjsxid" select="@jsxid"/>
 
-    <div class="jsx30select_option" id="{$jsxid}_{$myjsxid}" jsxid="{@jsxid}" jsxtype="Option" onblur="jsx3.gui.Select.doBlur(this);" onmouseout="jsx3.gui.Select.doBlur(this);" onmouseover="jsx3.gui.Select.doFocus(this);" tabindex="{$jsxtabindex}" title="{@jsxtip}">
+    <div class="jsx30select_{$jsxmode}_option" id="{$jsxid}_{$myjsxid}" jsxid="{@jsxid}" jsxtype="Option" tabindex="{$jsxtabindex}" title="{@jsxtip}">
       <xsl:if test="@jsxstyle">
         <xsl:attribute name="style">
           <xsl:value-of select="@jsxstyle"/>
@@ -165,8 +179,12 @@
       <xsl:if test="@jsximg and @jsximg != ''">
         <xsl:variable name="src1">
           <xsl:choose>
-            <xsl:when test="$jsx_img_resolve='1'"><xsl:apply-templates mode="uri-resolver" select="@jsximg"/></xsl:when>
-            <xsl:otherwise><xsl:value-of select="@jsximg"/></xsl:otherwise>
+            <xsl:when test="$jsx_img_resolve='1'">
+              <xsl:apply-templates mode="uri-resolver" select="@jsximg"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="@jsximg"/>
+            </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
         <img class="jsx30select_icon" src="{$src1}" unselectable="on"/>
@@ -180,12 +198,16 @@
   <xsl:template match="record" mode="combo">
     <xsl:variable name="mytext">
       <xsl:choose>
-        <xsl:when test="@jsxtext"><xsl:value-of select="@jsxtext"/></xsl:when>
-        <xsl:otherwise><xsl:value-of select="@jsxid"/></xsl:otherwise>
+        <xsl:when test="@jsxtext">
+          <xsl:value-of select="@jsxtext"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@jsxid"/>
+        </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:if test="(not($jsxcasesensitive = 1) and starts-with(translate($mytext, $lowerCase, $upperCase), translate($jsxtext, $lowerCase, $upperCase)))         or (starts-with($mytext, $jsxtext))">
-      <div class="jsx30select_option" id="{$jsxid}_{@jsxid}" jsxid="{@jsxid}" jsxtype="Option" onblur="jsx3.gui.Select.doBlur(this);" onfocus="jsx3.gui.Select.doFocus(this);" onmouseout="jsx3.gui.Select.doBlur(this);" onmouseover="this.focus(); jsx3.gui.Select.doFocus(this);" tabindex="{$jsxtabindex}" title="{@jsxtip}">
+      <div class="jsx30select_{$jsxmode}_option" id="{$jsxid}_{@jsxid}" jsxid="{@jsxid}" jsxtype="Option" tabindex="{$jsxtabindex}" title="{@jsxtip}">
         <xsl:if test="@jsxstyle">
           <xsl:attribute name="style">
             <xsl:value-of select="@jsxstyle"/>
@@ -204,8 +226,12 @@
         <xsl:if test="@jsximg and @jsximg != ''">
           <xsl:variable name="src1">
             <xsl:choose>
-              <xsl:when test="$jsx_img_resolve='1'"><xsl:apply-templates mode="uri-resolver" select="@jsximg"/></xsl:when>
-              <xsl:otherwise><xsl:value-of select="@jsximg"/></xsl:otherwise>
+              <xsl:when test="$jsx_img_resolve='1'">
+                <xsl:apply-templates mode="uri-resolver" select="@jsximg"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="@jsximg"/>
+              </xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
           <img class="jsx30select_icon" src="{$src1}" unselectable="on"/>

@@ -8,7 +8,7 @@
 	<onBeforeDeserialize/>
 	<onAfterDeserialize><![CDATA[objJSX.setMessage=function(a){this.getDescendantOfName("message").setText(a,true);};objJSX.onEnter=function(c){var
 H=this.getDescendantOfName("ok");if(H)H.doExecute(c);};objJSX.hideButton=function(){var
-oc=this.getDescendantOfName("button_block");this.getDescendantOfName("layout_horiz").setRows("100%",false);oc.getParent().removeChild(oc);};objJSX.registerHotKey("onEnter",13,false,false,false);]]></onAfterDeserialize>
+ob=this.getDescendantOfName("button_block");this.getDescendantOfName("layout_horiz").setRows("100%",false);ob.getParent().removeChild(ob);};objJSX.registerHotKey("onEnter",13,false,false,false);]]></onAfterDeserialize>
 		<object type="jsx3.gui.Dialog">
 			<dynamics jsxbgcolor="@Solid Medium"/>
 			<variants jsxheight="145" jsxmodal="1" jsxresize="0" jsxwidth="300"/>

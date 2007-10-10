@@ -23,6 +23,16 @@
     <record jsxid="jsx3.gui.Select.noMatch" jsxtext="- No Match Found -"/>
     <record jsxid="jsx3.gui.Menu.noData" jsxtext="- No Data -"/>
     <record jsxid="jsx3.gui.Matrix.seek" jsxtext="Viewing rows {0} to {1} of {2}"/>
+    <record jsxid="jsx3.app.Server.help" jsxtext="alt+F1"/>
+    <record jsxid="jsx3.app.Server.help.macosx" jsxtext="meta+/"/>
+    <record jsxid="jsx3.gui.BlockX.loading" jsxtext="Loading XSL..."/>
+    <record jsxid="jsx3.gui.BlockX.timeout" jsxtext="XSL Timeout"/>
+    <record jsxid="jsx3.gui.BlockX.error" jsxtext="XSL Error"/>
+    <record jsxid="jsx3.xml.Cacheable.loading" jsxtext="Loading {0}..."/>
+    <record jsxid="jsx3.xml.Cacheable.timeout" jsxtext="Loading {0} timed out"/>
+    <record jsxid="jsx3.xml.Cacheable.error" jsxtext="Error loading {0}"/>
+    <record jsxid="jsx3.xml.Cacheable.data" jsxtext="data"/>
+    <record jsxid="jsx3.gui.Table.noData" jsxtext="&amp;#160;"/>
     <record jsxid="format.date.long" jsxtext="MMMM d, yyyy"/>
     <record jsxid="format.time.medium" jsxtext="h:mm:ss a"/>
     <record jsxid="format.date.full" jsxtext="EEEE, MMMM d, yyyy"/>
@@ -57,7 +67,7 @@
     <record jsxid="string.terr.AU" jsxtext="Australia"/>
     <record jsxid="string.terr.BR" jsxtext="Brazil"/>
     <record jsxid="string.terr.CA" jsxtext="Canada"/>
-    <record jsxid="string.terr.CH" jsxtext="Switzerland"/>
+    <record jsxid="string.terr.CN" jsxtext="China"/>
     <record jsxid="string.terr.DE" jsxtext="Germany"/>
     <record jsxid="string.terr.DK" jsxtext="Denmark"/>
     <record jsxid="string.terr.ES" jsxtext="Spain"/>
