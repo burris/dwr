@@ -38,10 +38,11 @@ import org.w3c.dom.Node;
 public class Generate
 {
     public static final String XML_BASE = "/Applications/TIBCO/tibco-gi-3.5-pro-src/dist/gi/api/xml/";
-    public static final String GENERATED_BASE = "/Users/joe/Workspace/drapgen/src/generated/java/org/directwebremoting/proxy/";
-    public static final String TEMPLATES_BASE = "/Users/joe/Workspace/drapgen/etc/templates/";
+
+    public static final String GENERATED_BASE = "generated/gi/java/org/directwebremoting/proxy/";
+    public static final String TEMPLATES_BASE = "etc/drapgen/templates/";
     public static final String DEFAULT_TEMPLATE = "default.xslt";
-    public static final String PREPROCESSOR = "/Users/joe/Workspace/drapgen/etc/preprocess/default.xslt";
+    public static final String PREPROCESSOR = "etc/drapgen/preprocess/default.xslt";
 
     public static void main(String[] args) throws Exception
     {

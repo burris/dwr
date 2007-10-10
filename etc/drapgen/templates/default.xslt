@@ -79,8 +79,9 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
     {
         super(helper);
     }
-
     </xsl:text>
+
+    <xsl:apply-templates select="constructor[not(@noProxy) and not(@deprecated)]"/>
     <xsl:apply-templates select="field[@static and not(@noProxy) and not(@deprecated)]"/>
     <xsl:apply-templates select="method[not(@inherited) and not(@noProxy) and not(@deprecated)]"/>
     <xsl:text>
@@ -93,6 +94,22 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
      * <xsl:copy-of select="dwr:trim(text)"/>
      */
     public static final <xsl:value-of select="dwr:normalizeClassname(type/@name)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/> = <xsl:value-of select="@value"/>;
+</xsl:template>
+
+<xsl:template match="constructor">
+    /**
+     * <xsl:copy-of select="dwr:trim(text)"/>
+     <xsl:for-each select="param">
+     * @param <xsl:value-of select="@name"/><xsl:text> </xsl:text><xsl:value-of select="dwr:trim(@text)"/>
+     </xsl:for-each>
+     */
+    public <xsl:value-of select="dwr:normalizeClassname(../@shortname)"/>(<xsl:for-each select="param">
+      <xsl:value-of select="dwr:normalizeClassname(type/@name)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/>
+      <xsl:if test="position() != last()">, </xsl:if>
+    </xsl:for-each>)
+    {
+        super((ProxyHelper) null);
+    }
 </xsl:template>
 
 <xsl:template match="method">
