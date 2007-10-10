@@ -163,6 +163,7 @@ public class CallCenter implements Runnable
             }
             else
             {
+                log.debug("Call completed: " + newCall);
                 calls.remove(call);
                 update();
                 return "";
@@ -290,6 +291,7 @@ public class CallCenter implements Runnable
         Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/ticketcenter.html");
         Collection<ScriptSession> sessions2 = serverContext.getScriptSessionsByPage(contextPath + "/gi/ticketcenter2.html");
         sessions.addAll(sessions2);
+
         ScriptProxy proxy = new ScriptProxy(sessions);
         proxy.addFunctionCall("updateCallers", calls, new Date());
     }
