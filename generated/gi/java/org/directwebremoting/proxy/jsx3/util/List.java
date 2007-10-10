@@ -34,8 +34,18 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer. Creates a new list. If a is a number, the list is initialized with
+that size. If a is an array or list, the contents of a are copied into the new list.
+     * @param a 
+     * @param bLive 
+     */
+    public List(int a, boolean bLive)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * If a is already an instance of this class, this method returns a.
 If a is an array, this method returns a new List instance backed by a.

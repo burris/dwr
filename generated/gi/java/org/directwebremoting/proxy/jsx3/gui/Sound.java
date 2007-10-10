@@ -34,8 +34,17 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName the JSX name
+     * @param strURL the URL of the sound file to play
+     */
+    public Sound(String strName, String strURL)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the URL of the sound file.
      * @return the URL of the sound file to play

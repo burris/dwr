@@ -34,8 +34,17 @@ public class BubbleSeries extends org.directwebremoting.proxy.jsx3.chart.PlotSer
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     * @param seriesName the name of the Series, will be displayed in the Legend for most chart types
+     */
+    public BubbleSeries(String name, String seriesName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * The default tooltip function for this type of series.
      * @param series 

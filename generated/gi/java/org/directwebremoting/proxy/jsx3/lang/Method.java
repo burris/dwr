@@ -34,7 +34,6 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
     /*
      * Returns the name of the method. The name of the method is determined when the class is defined.

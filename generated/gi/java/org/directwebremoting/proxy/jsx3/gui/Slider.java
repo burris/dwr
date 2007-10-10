@@ -34,8 +34,19 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntLength the length of the control along the draggable axis
+     */
+    public Slider(String strName, int vntLeft, int vntTop, int vntLength)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Orientation value for a horizontal slider.
      */

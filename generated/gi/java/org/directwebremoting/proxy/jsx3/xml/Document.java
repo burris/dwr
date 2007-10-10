@@ -34,8 +34,17 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer. If an error occurs while instantiating the native browser XML document class,
+this method sets the error property of this document and returns quietly.
+     * @param objDoc the native browser document object (optional).
+     */
+    public Document(Object objDoc)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Event type published when an asynchronous load operation has completed successfully.
      */

@@ -34,7 +34,6 @@ public class Image extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
     /*
      * Returns the DHTML, used for this object's on-screen VIEW

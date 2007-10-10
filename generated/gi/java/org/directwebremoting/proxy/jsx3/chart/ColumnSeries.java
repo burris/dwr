@@ -34,8 +34,17 @@ public class ColumnSeries extends org.directwebremoting.proxy.jsx3.chart.BCSerie
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     * @param seriesName the name of the Series, will be displayed in the Legend for most chart types
+     */
+    public ColumnSeries(String name, String seriesName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

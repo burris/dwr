@@ -34,8 +34,20 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param x1 
+     * @param y1 
+     * @param x2 
+     * @param y2 
+     * @param text the text to display on the text path
+     */
+    public TextLine(int x1, int y1, int x2, int y2, String text)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the text field.
      * @return text

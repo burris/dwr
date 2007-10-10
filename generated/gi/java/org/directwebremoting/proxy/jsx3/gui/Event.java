@@ -34,7 +34,6 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
     /**
      * The browser native event type beforeunload.

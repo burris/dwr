@@ -34,8 +34,18 @@ public class Polygon extends org.directwebremoting.proxy.jsx3.vector.Shape
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param left left position (in pixels) of the object relative to its parent container
+     * @param top top position (in pixels) of the object relative to its parent container
+     * @param points the list of points comprising the polygon
+     */
+    public Polygon(int left, int top, String points)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Sets the polygon points as an array of point objects or strings.
      * @param points an array of strings or objects to stringify as "x y"

@@ -34,8 +34,16 @@ public class ChartComponent extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     */
+    public ChartComponent(String name)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Returns the chart of which this component is a part.
      * @return this if this is a chart, or the first ancestor that is a chart

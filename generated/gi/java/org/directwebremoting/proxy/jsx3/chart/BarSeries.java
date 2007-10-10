@@ -34,8 +34,17 @@ public class BarSeries extends org.directwebremoting.proxy.jsx3.chart.BCSeries
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     * @param seriesName the name of the Series, will be displayed in the Legend for most chart types
+     */
+    public BarSeries(String name, String seriesName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

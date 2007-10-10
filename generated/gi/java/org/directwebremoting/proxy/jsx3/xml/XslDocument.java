@@ -34,7 +34,6 @@ public class XslDocument extends org.directwebremoting.proxy.jsx3.xml.Document
     {
         super(helper);
     }
-
     
     /**
      * 

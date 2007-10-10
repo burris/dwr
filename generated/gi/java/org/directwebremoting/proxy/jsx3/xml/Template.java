@@ -34,8 +34,16 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param objXSL 
+     */
+    public Template(org.directwebremoting.proxy.jsx3.xml.Document objXSL)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      * @param strName 

@@ -34,8 +34,20 @@ public class Button extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft left position (in pixels) of the object relative to its parent container; not required if button is one of: jsx3.gui.Button.SYSTEMOPEN, jsx3.gui.Button.DIALOGCLOSE, jsx3.gui.Button.DIALOGALPHA, jsx3.gui.Button.DIALOGSHADE
+     * @param intTop top position (in pixels) of the object relative to its parent container; not required if button is one of: jsx3.gui.Button.SYSTEMOPEN, jsx3.gui.Button.DIALOGCLOSE, jsx3.gui.Button.DIALOGALPHA, jsx3.gui.Button.DIALOGSHADE
+     * @param intWidth width (in pixels) of the object; not required if button is one of: jsx3.gui.Button.SYSTEMOPEN, jsx3.gui.Button.DIALOGCLOSE, jsx3.gui.Button.DIALOGALPHA, jsx3.gui.Button.DIALOGSHADE
+     * @param strText text to display in the given button; if null JSXTABLEHEADERCELL.DEFAULTTEXT is used
+     */
+    public Button(String strName, int intLeft, int intTop, int intWidth, String strText)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * #e8e8f5
      */

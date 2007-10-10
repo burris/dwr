@@ -34,8 +34,19 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntWidth width in pixels
+     * @param vntHeight height in pixels
+     * @param strTitle if != null,  will be set as the text property on the child captionbar
+     */
+    public Dialog(String strName, int vntWidth, int vntHeight, String strTitle)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Enum value for the windowState property of instances of this class indicating a minimized dialog.
      */

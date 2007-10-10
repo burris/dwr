@@ -34,8 +34,20 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param strText text to display within the given tab; if null, jsx3.gui.Tab.DEFAULTTEXT is used
+     * @param vntWidth one of: 1) the width as an integer representing a fixed pixel width for the tab (e.g., 80) ; 2) the width as a percentage representing this tab's width as a percentage of how wide the entire tabbed pane should be (e.g., "25%"); 3) no value (null) to designate that this tab should be just large engough to contain the value of the parameter, @strText;
+     * @param strHexActiveColor valid css property for defining the color to use when the tab is active (i.e., red, #ff0000, etc)
+     * @param strHexInactiveColor valid css property for defining the color to use when the tab is inactive (i.e., red, #ff0000, etc)
+     */
+    public Tab(String strName, String strText, int vntWidth, String strHexActiveColor, String strHexInactiveColor)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

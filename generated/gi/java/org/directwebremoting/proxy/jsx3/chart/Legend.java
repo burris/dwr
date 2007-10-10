@@ -34,8 +34,16 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     */
+    public Legend(String name)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * the default width
      */

@@ -34,8 +34,20 @@ public class ImageButton extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName the JSX name
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth 
+     * @param vntHeight 
+     */
+    public ImageButton(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Value for the type field indicating a normal button.
      */

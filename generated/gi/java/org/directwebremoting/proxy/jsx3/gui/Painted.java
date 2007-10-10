@@ -34,8 +34,16 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     */
+    public Painted(String strName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the absolute positioning of the object's on-screen view in relation to JSXROOT (whose left/top is 0/0).
            Returns information as a JavaScript object with properties, L, T, W, H

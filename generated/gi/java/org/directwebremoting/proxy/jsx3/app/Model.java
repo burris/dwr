@@ -34,8 +34,17 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param strInstanceOf 
+     */
+    public Model(String strName, String strInstanceOf)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Persistance value fora child that is temporarily part of the DOM tree and will not be persisted.
      */

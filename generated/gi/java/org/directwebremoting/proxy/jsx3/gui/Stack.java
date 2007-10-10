@@ -34,8 +34,17 @@ public class Stack extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param strCaption if != null,  will be set as the text property (label) for the stack
+     */
+    public Stack(String strName, String strCaption)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 0 (default)
      */

@@ -34,8 +34,18 @@ public class CategoryAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     * @param horizontal whether this axis is horizontal (x), otherwise it's vertical (y)
+     * @param primary whether this axis is primary, otherwise it's secondary
+     */
+    public CategoryAxis(String name, boolean horizontal, boolean primary)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

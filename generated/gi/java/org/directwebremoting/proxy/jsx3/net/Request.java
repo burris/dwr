@@ -34,8 +34,16 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param id <span style="text-decoration:line-through;">If the call will be asynchronous, assigns a unique identifier.</span>
+     */
+    public Request(String id)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Event type published when the response has loaded.
      */

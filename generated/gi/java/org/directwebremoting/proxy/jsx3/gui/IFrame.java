@@ -34,7 +34,6 @@ public class IFrame extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
     /**
      * 

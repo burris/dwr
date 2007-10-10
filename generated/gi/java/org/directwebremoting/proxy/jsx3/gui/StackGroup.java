@@ -34,8 +34,16 @@ public class StackGroup extends org.directwebremoting.proxy.jsx3.gui.LayoutGrid
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     */
+    public StackGroup(String strName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 0 : top-over (--) layout (default)
      */

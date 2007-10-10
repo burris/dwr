@@ -34,8 +34,16 @@ public class Text extends org.directwebremoting.proxy.jsx3.html.Tag
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strText 
+     */
+    public Text(String strText)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Sdds a child to the list of this tag's children; may be vetoed by onAppendChild().
      * @param child the child to add, must not already have a parent

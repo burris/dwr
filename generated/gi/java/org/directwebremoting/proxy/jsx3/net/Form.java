@@ -34,8 +34,18 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strMethod form method, METHOD_GET (default) or METHOD_POST
+     * @param strAction the URL to submit to
+     * @param bMultipart if true the form can support file upload
+     */
+    public Form(String strMethod, String strAction, boolean bMultipart)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

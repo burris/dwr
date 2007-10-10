@@ -34,8 +34,17 @@ public class NumberFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * 
+     * @param strFormat 
+     * @param objLocale 
+     */
+    public NumberFormat(String strFormat, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Returns an integer number format appropriate for objLocale.
      * @param objLocale the locale for which to return a format. If this parameter is not provided,

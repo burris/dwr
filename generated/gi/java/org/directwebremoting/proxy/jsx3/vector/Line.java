@@ -34,8 +34,21 @@ public class Line extends org.directwebremoting.proxy.jsx3.vector.Shape
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param left left position (in pixels) of the object relative to its parent container
+     * @param top top position (in pixels) of the object relative to its parent container
+     * @param x1 the x coordinate of the starting point
+     * @param y1 the y coordinate of the starting point
+     * @param x2 the x coordinate of the ending point
+     * @param y2 the y coordinate of the ending point
+     */
+    public Line(int left, int top, int x1, int y1, int x2, int y2)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Sets all the coordinates at once.
      * @param x1 the x coordinate of the starting point

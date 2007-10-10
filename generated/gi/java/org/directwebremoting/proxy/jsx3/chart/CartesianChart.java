@@ -34,8 +34,20 @@ public class CartesianChart extends org.directwebremoting.proxy.jsx3.chart.Chart
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     * @param left left position (in pixels) of the chart relative to its parent container
+     * @param top top position (in pixels) of the chart relative to its parent container
+     * @param width width (in pixels) of the chart
+     * @param height height (in pixels) of the chart
+     */
+    public CartesianChart(String name, int left, int top, int width, int height)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the array of children GridLines instances.
      * @return gridLines

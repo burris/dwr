@@ -34,8 +34,17 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer. If an error occurs while instantiating this entity, this method sets the error
+property of this entity and returns quietly.
+     * @param objEntity the browser native entity instance to wrap.
+     */
+    public Entity(Object objEntity)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * The node type for an element node.
      */

@@ -34,8 +34,17 @@ public class Tree extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param strId this value should correspond to the jsxid for the 'record' node is the selected node for the tree
+     */
+    public Tree(String strName, String strId)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

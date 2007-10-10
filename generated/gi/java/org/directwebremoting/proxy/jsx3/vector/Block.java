@@ -34,7 +34,6 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
     /**
      * Returns the vector canvas on which this control paints itself. If no canvas has already been created, then

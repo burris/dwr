@@ -34,8 +34,15 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * Creates a new instance of this class.
+     */
+    public Cache()
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Event action.
      */

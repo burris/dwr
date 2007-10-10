@@ -34,8 +34,17 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strTagNS 
+     * @param strTagName 
+     */
+    public Tag(String strTagNS, String strTagName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Sdds a child to the list of this tag's children; may be vetoed by onAppendChild().
      * @param child the child to add, must not already have a parent

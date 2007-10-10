@@ -34,8 +34,25 @@ public class RadioButton extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
+     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
+     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
+     * @param strText the text/HTML markup to display with the radio button.
+     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
+     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
+     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
+   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
+     */
+    public RadioButton(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Value for the selected field indicating an unselected radio button.
      */

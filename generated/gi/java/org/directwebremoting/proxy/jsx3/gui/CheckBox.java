@@ -34,8 +34,22 @@ public class CheckBox extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strText text/HTML markup to display with the checkbox;
+     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
+     */
+    public CheckBox(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strText, int CHECKED)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 0: unchecked (default)
      */

@@ -34,8 +34,18 @@ public class Settings extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer. Creates a view onto the settings persisted on disk. All identical instances of this
+class are backed by the same XML source document.
+     * @param intDomain the domain of the settings to load, one of <code>jsx3.app.Settings.DOMAIN</code>...
+     * @param objInstance if in the project or addin domain, the key of the specific project or addin to load settings for
+     */
+    public Settings(int intDomain, String objInstance)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

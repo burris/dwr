@@ -34,8 +34,18 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strFormat the format pattern.
+     * @param objLocale the locale of the format. The locale affects how numbers and dates are
+  formatted. If this parameter is omitted, the system locale is used.
+     */
+    public MessageFormat(String strFormat, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Returns the locale of this message format.
      * @return 

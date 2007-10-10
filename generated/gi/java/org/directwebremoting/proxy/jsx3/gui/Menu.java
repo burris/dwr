@@ -34,8 +34,17 @@ public class Menu extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param strText text for the menu (the persistent on-screen anchor that one would click to expand the menu); if the menu is only used as a context menu, this can be left null and the display property for the menu should be set to null
+     */
+    public Menu(String strName, String strText)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * background-image:url(JSX/images/menu/bg.gif);backround-repeat:repeat-y; (default)
      */

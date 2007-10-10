@@ -34,8 +34,17 @@ public class LineSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     * @param seriesName the name of the Series, will be displayed in the Legend for most chart types
+     */
+    public LineSeries(String name, String seriesName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

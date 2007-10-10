@@ -34,8 +34,16 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     */
+    public Matrix(String strName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 50
      */
@@ -7195,8 +7203,16 @@ public class Column extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     */
+    public Column(String strName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 100
      */
@@ -7596,94 +7612,34 @@ returned HTML. This method has no effect if this object is not currently display
      * Sets the Width on the column.  Immediately updates MODEL and VIEW. Note that if a wilcard is used without Scale Width, it will be replaced
 with the value of jsx3.gui.Matrix.Column.DEFAULT_WIDTH
      * @param vntWidth Can be a valid number (pixel units are implied), a Percent, or a Wildcard.  For example: 100, 25%, *
-     * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
-     * @return this object.
+     * @return 
      */
-    @SuppressWarnings("unchecked")
-    public org.directwebremoting.proxy.jsx3.gui.Block setWidth(String vntWidth, boolean bRepaint)
+    public org.directwebremoting.proxy.jsx3.gui.Matrix.Column setWidth(String vntWidth)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setWidth(\"" + vntWidth + "\", \"" + bRepaint + "\").");
-        try
-        {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.gui.Block.class.getName());
-        }
-    }
-
-    
-    
-    /**
-     * Sets the Width on the column.  Immediately updates MODEL and VIEW. Note that if a wilcard is used without Scale Width, it will be replaced
-with the value of jsx3.gui.Matrix.Column.DEFAULT_WIDTH
-     * @param vntWidth Can be a valid number (pixel units are implied), a Percent, or a Wildcard.  For example: 100, 25%, *
-     * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
-     * @param type The expected return type
-     * @return this object.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T setWidth(String vntWidth, boolean bRepaint, Class<T> returnType)
-    {
-        ProxyHelper child = getProxyHelper().getChildHelper("setWidth(\"" + vntWidth + "\", \"" + bRepaint + "\").");
-        try
-        {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setWidth(")
+              .appendData(vntWidth)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
     }
     
     /**
      * Sets the Width on the column.  Immediately updates MODEL and VIEW. Note that if a wilcard is used without Scale Width, it will be replaced
 with the value of jsx3.gui.Matrix.Column.DEFAULT_WIDTH
      * @param vntWidth Can be a valid number (pixel units are implied), a Percent, or a Wildcard.  For example: 100, 25%, *
-     * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
-     * @return this object.
+     * @return 
      */
-    @SuppressWarnings("unchecked")
-    public org.directwebremoting.proxy.jsx3.gui.Block setWidth(int vntWidth, boolean bRepaint)
+    public org.directwebremoting.proxy.jsx3.gui.Matrix.Column setWidth(int vntWidth)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setWidth(\"" + vntWidth + "\", \"" + bRepaint + "\").");
-        try
-        {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.gui.Block.class.getName());
-        }
-    }
-
-    
-    
-    /**
-     * Sets the Width on the column.  Immediately updates MODEL and VIEW. Note that if a wilcard is used without Scale Width, it will be replaced
-with the value of jsx3.gui.Matrix.Column.DEFAULT_WIDTH
-     * @param vntWidth Can be a valid number (pixel units are implied), a Percent, or a Wildcard.  For example: 100, 25%, *
-     * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
-     * @param type The expected return type
-     * @return this object.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T setWidth(int vntWidth, boolean bRepaint, Class<T> returnType)
-    {
-        ProxyHelper child = getProxyHelper().getChildHelper("setWidth(\"" + vntWidth + "\", \"" + bRepaint + "\").");
-        try
-        {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData(getProxyHelper().getContext())
+              .appendScript("setWidth(")
+              .appendData(vntWidth)
+              .appendScript(");");
+        getProxyHelper().getScriptProxy().addScript(script);
+        return this;
     }
     
     /**
@@ -11994,7 +11950,6 @@ public class ColumnFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
     /**
      * Returns a column formatter for a string key. The key may be one of the following:

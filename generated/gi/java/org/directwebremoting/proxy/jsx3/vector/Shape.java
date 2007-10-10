@@ -34,8 +34,20 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strTagName 
+     * @param left left position (in pixels) of the object relative to its parent container
+     * @param top top position (in pixels) of the object relative to its parent container
+     * @param width width (in pixels) of the object
+     * @param height height (in pixels) of the object
+     */
+    public Shape(String strTagName, int left, int top, int width, int height)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the path field.
      * @return path

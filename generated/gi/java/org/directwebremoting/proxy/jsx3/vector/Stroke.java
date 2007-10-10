@@ -34,8 +34,18 @@ public class Stroke extends org.directwebremoting.proxy.jsx3.html.Tag
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param color the color value, as a hex String or 24-bit integer value, defaults to 0x000000
+     * @param width the width of the stroke, in pixels, defaults to 1
+     * @param alpha the opacity value, valid values are between 0 and 1, defaults to 1
+     */
+    public Stroke(int color, int width, float alpha)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the color field.
      * @return color

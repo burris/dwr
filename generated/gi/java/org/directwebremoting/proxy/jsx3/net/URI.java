@@ -34,8 +34,16 @@ public class URI extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * Instance initializer.
+     * @param strURI uri
+     */
+    public URI(String strURI)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * This method can be called with either 3 or 7 arguments. If it is called with 3 arguments, the signature is
 URI.fromParts(scheme, schemeSpecificPath, fragment).

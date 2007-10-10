@@ -34,8 +34,20 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     * @param left left position (in pixels) of the chart relative to its parent container
+     * @param top top position (in pixels) of the chart relative to its parent container
+     * @param width width (in pixels) of the chart
+     * @param height height (in pixels) of the chart
+     */
+    public PieChart(String name, int left, int top, int width, int height)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the innerRadius field, the radius as the hole in the middle of the pie as a ratio of the entire radius.
      * @return innerRadius

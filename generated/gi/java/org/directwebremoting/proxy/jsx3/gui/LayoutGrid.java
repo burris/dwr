@@ -34,8 +34,16 @@ public class LayoutGrid extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     */
+    public LayoutGrid(String strName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * 
      * @return 

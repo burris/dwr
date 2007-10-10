@@ -34,8 +34,20 @@ public class ColorPicker extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName 
+     * @param vntLeft 
+     * @param vntTop 
+     * @param vntWidth 
+     * @param vntHeight 
+     */
+    public ColorPicker(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * The default rendered width of this control if no width is specified.
      */

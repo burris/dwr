@@ -34,8 +34,18 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer. Instances of this class are immutable.
+     * @param strFormat the date format.
+     * @param objLocale the locale with which to format and parse dates. If this parameter is not
+  provided the default system locale is used.
+     */
+    public DateFormat(String strFormat, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Type for a short localized date or time format.
      */

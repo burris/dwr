@@ -34,7 +34,6 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
     /**
      * 

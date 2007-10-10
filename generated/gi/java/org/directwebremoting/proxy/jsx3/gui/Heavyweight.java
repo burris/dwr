@@ -34,8 +34,17 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strId id to identify this HW instance among all others; this id will be used by both jsx3.gui.Heavyweight (to index it in the hash) and by the browser as the HTML tag's "id" attribute. If no ID is passed, a unique ID will be assigned by the system and is available by calling, [object].getId();
+     * @param objOwner 
+     */
+    public Heavyweight(String strId, org.directwebremoting.proxy.jsx3.gui.Painted objOwner)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 32000
      */

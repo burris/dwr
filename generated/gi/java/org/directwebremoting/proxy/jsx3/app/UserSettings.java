@@ -34,8 +34,17 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param objServer the app server.
+     * @param intPersistence the persistence code, defaults to <code>PERSIST_INDEFINITE</code>.
+     */
+    public UserSettings(org.directwebremoting.proxy.jsx3.app.Server objServer, int intPersistence)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

@@ -34,8 +34,16 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName a unique name for this window.
+     */
+    public Window(String strName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Event subject: published after this window has successfully opened.
      */

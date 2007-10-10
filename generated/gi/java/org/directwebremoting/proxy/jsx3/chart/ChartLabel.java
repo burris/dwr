@@ -34,8 +34,17 @@ public class ChartLabel extends org.directwebremoting.proxy.jsx3.chart.ChartComp
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     * @param text text to display in the label
+     */
+    public ChartLabel(String name, String text)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * the default preferred width
      */

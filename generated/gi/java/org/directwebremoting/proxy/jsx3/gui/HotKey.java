@@ -34,7 +34,6 @@ public class HotKey extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
     /**
      * Event type published just after a hot key is invoked.

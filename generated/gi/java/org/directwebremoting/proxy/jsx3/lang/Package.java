@@ -34,7 +34,6 @@ public class Package extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
     /**
      * Defines a new package so that it is available for introspection.

@@ -34,8 +34,19 @@ public class Group extends org.directwebremoting.proxy.jsx3.vector.Tag
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param left left position (in pixels) of the object relative to its parent container
+     * @param top top position (in pixels) of the object relative to its parent container
+     * @param width width (in pixels) of the object
+     * @param height height (in pixels) of the object
+     */
+    public Group(int left, int top, int width, int height)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the rotation field.
      * @return rotation

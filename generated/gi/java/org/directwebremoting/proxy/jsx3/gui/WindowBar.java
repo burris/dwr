@@ -34,8 +34,17 @@ public class WindowBar extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param TYPE one of: jsx3.gui.WindowBar.TYPECAPTION, jsx3.gui.WindowBar.TYPETOOL, jsx3.gui.WindowBar.TYPEMENU, jsx3.gui.WindowBar.TYPETASK
+     */
+    public WindowBar(String strName, int TYPE)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 26 (default)
      */

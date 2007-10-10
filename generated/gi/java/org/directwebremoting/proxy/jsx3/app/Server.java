@@ -34,8 +34,19 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * Sets environment variables used by this class (the controller for the JSX architecture)
+     * @param strAppPath URL (either relative or absolute) for the application to load
+     * @param objGUI the browser element (body, div, span, td, etc) into which the GI application should load
+     * @param bPaint false if null; if true, the application VIEW will immediately be generated.
+     * @param objEnv 
+     */
+    public Server(String strAppPath, String objGUI, boolean bPaint, Object objEnv)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * The subject of an event that jsx3.app.Server publishes when an instance of this class
    is created. The target of the event object is the initialized server.

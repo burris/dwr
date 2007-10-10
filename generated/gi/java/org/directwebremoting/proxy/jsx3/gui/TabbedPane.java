@@ -34,8 +34,16 @@ public class TabbedPane extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     */
+    public TabbedPane(String strName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 50
      */

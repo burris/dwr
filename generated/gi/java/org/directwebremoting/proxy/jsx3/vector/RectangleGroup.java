@@ -34,8 +34,19 @@ public class RectangleGroup extends org.directwebremoting.proxy.jsx3.vector.Shap
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param left left position (in pixels) of the object relative to its parent container
+     * @param top top position (in pixels) of the object relative to its parent container
+     * @param width width (in pixels) of the object
+     * @param height height (in pixels) of the object
+     */
+    public RectangleGroup(int left, int top, int width, int height)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * add a rectangle to this group
      * @param x1 the x-coordinate of the left edge of the rectangle

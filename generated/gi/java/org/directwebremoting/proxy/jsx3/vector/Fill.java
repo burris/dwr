@@ -34,8 +34,17 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param color the color value, as a hex String or 24-bit integer value, defaults to 0x000000
+     * @param alpha the opacity value, valid values are between 0 and 1, defaults to 1
+     */
+    public Fill(int color, float alpha)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Returns the color field, as previously set in the constructor or with setColor().
      */

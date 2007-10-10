@@ -34,7 +34,6 @@ public class System extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
     /*
      * Returns a system property as specified by a JSS file loaded by the JSX runtime or an addin.

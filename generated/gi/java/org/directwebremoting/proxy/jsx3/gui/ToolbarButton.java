@@ -34,8 +34,19 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intType the type of button to create: <code>TYPENORMAL</code>, or <code>TYPECHECK</code>,
+  <code>TYPERADIO</code>.
+     * @param strTip the tooltip text for the button.
+     */
+    public ToolbarButton(String strName, int intType, String strTip)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * Value of the type field indicating a normal (stateless) button.
      */

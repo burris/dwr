@@ -34,8 +34,21 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strTagNS 
+     * @param strTagName 
+     * @param left left position (in pixels) of the object relative to its parent container
+     * @param top top position (in pixels) of the object relative to its parent container
+     * @param width width (in pixels) of the object
+     * @param height height (in pixels) of the object
+     */
+    public BlockTag(String strTagNS, String strTagName, int left, int top, int width, int height)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the left field.
      * @return left

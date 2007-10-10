@@ -34,8 +34,17 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param strLanguage the lowercase two letter ISO-639 language code.
+     * @param strCountry the uppercase two letter ISO-3166 country code.
+     */
+    public Locale(String strLanguage, String strCountry)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the lowercase two letter ISO-639 language code.
      * @return 

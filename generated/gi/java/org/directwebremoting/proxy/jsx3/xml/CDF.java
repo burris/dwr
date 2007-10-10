@@ -138,7 +138,6 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Document
     {
         super(helper);
     }
-
     
     /**
      * Returns this document to conform to the contract of the jsx3.xml.CDF interface.

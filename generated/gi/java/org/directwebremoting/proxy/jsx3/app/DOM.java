@@ -34,8 +34,15 @@ public class DOM extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     */
+    public DOM()
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 0
      */

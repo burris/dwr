@@ -34,8 +34,17 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         super(helper);
     }
-
     
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param ORIENTATION constant; either jsx3.gui.Splitter.ORIENTATIONH or jsx3.gui.Splitter.ORIENTATIONV; if none provided the default (horizontal layout) or vertical (stacked) layout)
+     */
+    public Splitter(String strName, int ORIENTATION)
+    {
+        super((ProxyHelper) null);
+    }
+
     /**
      * 
      */

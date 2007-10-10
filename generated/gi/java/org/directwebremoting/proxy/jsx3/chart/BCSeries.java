@@ -34,8 +34,17 @@ public class BCSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     {
         super(helper);
     }
-
     
+    /**
+     * The instance initializer.
+     * @param name the GI name of the instance
+     * @param seriesName the name of the Series, will be displayed in the Legend for most chart types
+     */
+    public BCSeries(String name, String seriesName)
+    {
+        super((ProxyHelper) null);
+    }
+
     /*
      * Returns the x-coordinate of a data point in this series for the given record.
      * @param record the <record/> node
