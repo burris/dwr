@@ -19,6 +19,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.directwebremoting.util.SharedObjects;
+
 /**
  * An Alarm that goes off after a certain length of time.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -56,7 +58,10 @@ public class TimedAlarm extends BasicAlarm implements Alarm
                 raiseAlarm();
             }
         };
-        future = timer.schedule(runnable, waitTime, TimeUnit.MILLISECONDS);
+
+        ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
+        future = executor.schedule(runnable, waitTime, TimeUnit.MILLISECONDS);
+
         super.setAlarmAction(sleeper);
     }
 
@@ -69,9 +74,4 @@ public class TimedAlarm extends BasicAlarm implements Alarm
      * How long do we wait for?
      */
     private long waitTime;
-
-    /**
-     * The cron system
-     */
-    protected static ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(1);
 }

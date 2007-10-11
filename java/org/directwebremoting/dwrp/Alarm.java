@@ -1,12 +1,12 @@
 package org.directwebremoting.dwrp;
 
 /**
- * An alarm is somthing that goes off at some point in the future.
+ * An alarm is something that goes off at some point in the future.
  * An alarm is not primed until {@link #setAlarmAction(Sleeper)} is called.
  * {@link #setAlarmAction(Sleeper)} should only be called once before
  * {@link #cancel()} is called, and the latter should only be called once.
  * The alarm should not 'go off' after {@link #cancel()} has been called,
- * however since this is a multi-threadded environment, {@link Sleeper}s
+ * however since this is a multi-threaded environment, {@link Sleeper}s
  * should protect themselves from late calls to {@link Sleeper#wakeUp()}.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */

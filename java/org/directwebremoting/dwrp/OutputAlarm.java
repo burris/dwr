@@ -26,6 +26,7 @@ import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ScriptConduit;
+import org.directwebremoting.util.SharedObjects;
 
 /**
  * An Alarm that goes off whenever output happens on a {@link ScriptSession}.
@@ -68,6 +69,7 @@ public class OutputAlarm extends BasicAlarm implements Alarm
     public void cancel()
     {
         scriptSession.removeScriptConduit(conduit);
+        future.cancel(false);
         super.cancel();
     }
 
@@ -105,7 +107,9 @@ public class OutputAlarm extends BasicAlarm implements Alarm
                         raiseAlarm();
                     }
                 };
-                future = timer.schedule(runnable, maxWaitAfterWrite, TimeUnit.MILLISECONDS);
+
+                ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
+                future = executor.schedule(runnable, maxWaitAfterWrite, TimeUnit.MILLISECONDS);
             }
 
             return false;
@@ -136,9 +140,4 @@ public class OutputAlarm extends BasicAlarm implements Alarm
      * The future result that allows us to cancel the timer
      */
     protected ScheduledFuture<?> future;
-
-    /**
-     * The cron system
-     */
-    protected static ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(1);
 }
