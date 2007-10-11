@@ -18,6 +18,12 @@
     <pathelement location="${target.root}/demo-classes"/>
   </path>
 
+  <taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
+    <classpath>
+      <fileset dir="${source.root}/etc/retroweaver" includes="**/*"/>
+    </classpath>
+  </taskdef>
+
   <!--=======================================================================-->
   <target name="compile" description="Compile the sources">
     <tstamp/>
@@ -113,6 +119,7 @@
         <exclude name="**/dwrdemo/**"/>
       </fileset>
     </jar>
+    <retroweaver inputjar="${target.root}/dwr.jar" outputjar="${target.root}/dwr-jdk14.jar" target="1.4"/>
   </target>
 
   <!--=======================================================================-->
