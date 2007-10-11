@@ -47,6 +47,7 @@ public class IdGenerator
         char[] entropy = toString().toCharArray();
         for (int i = 0; i < entropy.length; i++)
         {
+            //noinspection IntegerMultiplicationImplicitCastToLong
             long update = ((byte) entropy[i]) << ((i % 8) * 8);
             seed ^= update;
         }

@@ -174,12 +174,13 @@ public class JavascriptUtil
             return null;
         }
 
+        BufferedReader in = null;
         try
         {
             StringBuffer output = new StringBuffer();
 
             // First we strip multi line comments. I think this is important:
-            BufferedReader in = new BufferedReader(new StringReader(text));
+            in = new BufferedReader(new StringReader(text));
             while (true)
             {
                 String line = in.readLine();
@@ -199,6 +200,10 @@ public class JavascriptUtil
             log.error("IOExecption unexpected.", ex);
             throw new IllegalArgumentException("IOExecption unexpected.");
         }
+        finally
+        {
+            LocalUtil.close(in);
+        }
     }
 
     /**
@@ -213,11 +218,12 @@ public class JavascriptUtil
             return null;
         }
 
+        BufferedReader in = null;
         try
         {
             StringBuffer output = new StringBuffer();
 
-            BufferedReader in = new BufferedReader(new StringReader(text));
+            in = new BufferedReader(new StringReader(text));
             while (true)
             {
                 String line = in.readLine();
@@ -247,6 +253,10 @@ public class JavascriptUtil
             log.error("IOExecption unexpected.", ex);
             throw new IllegalArgumentException("IOExecption unexpected.");
         }
+        finally
+        {
+            LocalUtil.close(in);
+        }
     }
 
     /**
@@ -261,6 +271,7 @@ public class JavascriptUtil
             return null;
         }
 
+        BufferedReader in = null;
         try
         {
             StringBuffer output = new StringBuffer();
@@ -273,7 +284,7 @@ public class JavascriptUtil
 
             // First we strip multi line comments. I think this is important:
             boolean inMultiLine = false;
-            BufferedReader in = new BufferedReader(new StringReader(text));
+            in = new BufferedReader(new StringReader(text));
             while (true)
             {
                 String line = in.readLine();
@@ -338,6 +349,10 @@ public class JavascriptUtil
             log.error("IOExecption unexpected.", ex);
             throw new IllegalArgumentException("IOExecption unexpected.");
         }
+        finally
+        {
+            LocalUtil.close(in);
+        }
     }
 
     /**
@@ -354,11 +369,12 @@ public class JavascriptUtil
             return null;
         }
 
+        BufferedReader in = null;
         try
         {
             StringBuffer output = new StringBuffer();
 
-            BufferedReader in = new BufferedReader(new StringReader(text));
+            in = new BufferedReader(new StringReader(text));
             boolean doneOneLine = false;
             while (true)
             {
@@ -388,6 +404,10 @@ public class JavascriptUtil
             log.error("IOExecption unexpected.", ex);
             throw new IllegalArgumentException("IOExecption unexpected.");
         }
+        finally
+        {
+            LocalUtil.close(in);
+        }
     }
 
     /**
@@ -402,11 +422,12 @@ public class JavascriptUtil
             return null;
         }
 
+        BufferedReader in = null;
         try
         {
             StringBuffer output = new StringBuffer();
 
-            BufferedReader in = new BufferedReader(new StringReader(text));
+            in = new BufferedReader(new StringReader(text));
             while (true)
             {
                 String line = in.readLine();
@@ -426,6 +447,10 @@ public class JavascriptUtil
         {
             log.error("IOExecption unexpected.", ex);
             throw new IllegalArgumentException("IOExecption unexpected.");
+        }
+        finally
+        {
+            LocalUtil.close(in);
         }
     }
 

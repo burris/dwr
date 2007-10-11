@@ -68,30 +68,38 @@ public class FileHandler implements Handler
                     throw new IOException("Failed to find resource: " + resource);
                 }
 
-                BufferedReader in = new BufferedReader(new InputStreamReader(raw));
-                while (true)
+                BufferedReader in = null;
+                try
                 {
-                    String line = in.readLine();
-                    if (line == null)
+                    in = new BufferedReader(new InputStreamReader(raw));
+                    while (true)
                     {
-                        break;
-                    }
-
-                    Map<String, String> replace = getSearchReplacePairs();
-                    if (replace != null)
-                    {
-                        for (Map.Entry<String, String> entry : replace.entrySet())
+                        String line = in.readLine();
+                        if (line == null)
                         {
-                            String search = entry.getKey();
-                            if (line.contains(search))
+                            break;
+                        }
+
+                        Map<String, String> replace = getSearchReplacePairs();
+                        if (replace != null)
+                        {
+                            for (Map.Entry<String, String> entry : replace.entrySet())
                             {
-                                line = LocalUtil.replace(line, search, entry.getValue());
+                                String search = entry.getKey();
+                                if (line.contains(search))
+                                {
+                                    line = LocalUtil.replace(line, search, entry.getValue());
+                                }
                             }
                         }
-                    }
 
-                    buffer.append(line);
-                    buffer.append('\n');
+                        buffer.append(line);
+                        buffer.append('\n');
+                    }
+                }
+                finally
+                {
+                    LocalUtil.close(in);
                 }
 
                 output = buffer.toString();
