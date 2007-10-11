@@ -92,7 +92,7 @@ public class DefaultConverterManager implements ConverterManager
             log.warn("Clash of converters for " + match + ". Using " + converter.getClass().getName() + " in place of " + other.getClass().getName());
         }
 
-        log.debug("- adding converter: " + LocalUtil.getShortClassName(converter.getClass()) + " for " + match);
+        log.debug("- adding converter: " + converter.getClass().getSimpleName() + " for " + match);
 
         converter.setConverterManager(this);
         converters.put(match, converter);

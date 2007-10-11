@@ -497,7 +497,7 @@ public class AllConverterTest
         ConverterManager converterManager = singletonContainer.getConverterManager();
         InboundContext ctx = new InboundContext();
 
-        String explanation = "Convert \"" + input + "\" to " + LocalUtil.getShortClassName(convertTo);
+        String explanation = "Convert \"" + input + "\" to " + convertTo.getSimpleName();
 
         try
         {

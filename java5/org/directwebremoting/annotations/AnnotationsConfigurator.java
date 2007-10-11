@@ -165,7 +165,7 @@ public class AnnotationsConfigurator implements Configurator
         String name = createAnn.name();
         if (name == null || name.length() == 0)
         {
-            name = LocalUtil.getShortClassName(clazz);
+            name = clazz.getSimpleName();
         }
 
         try

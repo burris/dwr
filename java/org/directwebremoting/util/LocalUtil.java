@@ -16,10 +16,8 @@
 package org.directwebremoting.util;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.io.Closeable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -43,8 +41,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
 /**
- * Various utilities, mostly to make up for JDK 1.4 functionality that is not
- * in JDK 1.3
+ * Various utilities, stuff that we're still surprised isn't in the JDK, and
+ * stuff that perhaps is borderline JDK material, but isn't really pure DWR
+ * either.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public final class LocalUtil
@@ -570,17 +569,6 @@ public final class LocalUtil
     }
 
     /**
-     * TODO: Inline this
-     * Get the short class name (i.e. without the package part)
-     * @param clazz the class to get the short name of
-     * @return the class name of the class without the package name
-     */
-    public static String getShortClassName(Class<?> clazz)
-    {
-        return clazz.getSimpleName();
-    }
-
-    /**
      * Is this object property one that we can use in a JSON style or do we need
      * to get fancy. i.e does it contain only letters and numbers with an
      * initial letter.
@@ -827,51 +815,7 @@ public final class LocalUtil
      * If anything goes wrong, the errors are logged and ignored.
      * @param in The resource to close
      */
-    public static void close(InputStream in)
-    {
-        if (in == null)
-        {
-            return;
-        }
-
-        try
-        {
-            in.close();
-        }
-        catch (IOException ex)
-        {
-            log.warn(ex.getMessage(), ex);
-        }
-    }
-
-    /**
-     * OutputStream closer that can cope if the output stream is null.
-     * If anything goes wrong, the errors are logged and ignored.
-     * @param out The resource to close
-     */
-    public static void close(OutputStream out)
-    {
-        if (out == null)
-        {
-            return;
-        }
-
-        try
-        {
-            out.close();
-        }
-        catch (IOException ex)
-        {
-            log.warn(ex.getMessage(), ex);
-        }
-    }
-
-    /**
-     * InputStream closer that can cope if the input stream is null.
-     * If anything goes wrong, the errors are logged and ignored.
-     * @param in The resource to close
-     */
-    public static void close(RandomAccessFile in)
+    public static void close(Closeable in)
     {
         if (in == null)
         {

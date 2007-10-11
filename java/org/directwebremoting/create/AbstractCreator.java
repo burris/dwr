@@ -102,7 +102,7 @@ public abstract class AbstractCreator implements Creator
     @Override
     public String toString()
     {
-        return LocalUtil.getShortClassName(getClass()) + "[" + getJavascript() + "]";
+        return getClass().getSimpleName() + "[" + getJavascript() + "]";
     }
 
     /**

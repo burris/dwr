@@ -122,7 +122,7 @@ public class DefaultCreatorManager implements CreatorManager
             }
             else
             {
-                log.debug("- adding creator: " + LocalUtil.getShortClassName(creator.getClass()) + " for " + scriptName);
+                log.debug("- adding creator: " + creator.getClass().getSimpleName() + " for " + scriptName);
                 creators.put(scriptName, creator);
             }
         }
