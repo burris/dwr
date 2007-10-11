@@ -20,6 +20,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Accessor for the current WebContext.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -35,6 +38,7 @@ public class WebContextFactory
     {
         if (builder == null)
         {
+            log.warn("WebContextFactory.get() returns null when accessed from outside a DWR thread. Try ServerContext.get(), or see http://getahead.org/dwr/server/javaapi");
             return null;
         }
 
@@ -86,4 +90,9 @@ public class WebContextFactory
          */
         void unset();
     }
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(WebContextFactory.class);
 }

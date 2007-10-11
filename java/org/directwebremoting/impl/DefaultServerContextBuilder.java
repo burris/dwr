@@ -51,7 +51,18 @@ public class DefaultServerContextBuilder implements ServerContextBuilder
      */
     public ServerContext get(ServletContext context)
     {
-        return (ServerContext) context.getAttribute(ATTRIBUTE_SERVER_CONTEXT);
+        if (context == null)
+        {
+            throw new NullPointerException("context");
+        }
+
+        ServerContext reply = (ServerContext) context.getAttribute(ATTRIBUTE_SERVER_CONTEXT);
+        if (reply == null)
+        {
+            log.warn("ServerContextFactory.get(ServletContext) returns null when DWR has not been initialized in the given ServletContext");
+        }
+
+        return reply;
     }
 
     /**

@@ -18,6 +18,9 @@ package org.directwebremoting;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Accessor for the current ServerContext.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -33,6 +36,7 @@ public class ServerContextFactory
     {
         if (builder == null)
         {
+            log.warn("ServerContextBuilder is null. This probably means that DWR has not initialized properly");
             return null;
         }
 
@@ -76,4 +80,9 @@ public class ServerContextFactory
          */
         ServerContext get(ServletContext context);
     }
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(WebContextFactory.class);
 }
