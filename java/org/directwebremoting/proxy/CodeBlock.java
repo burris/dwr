@@ -34,6 +34,7 @@ public class CodeBlock
 
     /**
      * Accessor for the (read-only) code block
+     * @return The code that this block wraps
      */
     public String getCode()
     {
