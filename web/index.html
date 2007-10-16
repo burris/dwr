@@ -43,92 +43,75 @@
 <p>DWR is an Ajax remoting framework for Java to make it easy for web pages to
 interact with Java classes.</p>
 
-<p>DWR development is sponsored by <a href="http://www.tibco.com/">TIBCO</a>. We are working to enhance Ajax in the
-enterprise, and to integrate DWR with JBI and JMS.</p>
+<p>DWR development is sponsored by <a href="http://www.tibco.com/">TIBCO</a> -
+Working to enhance <a href="http://www.tibco.com/mk/gi/?CID=DWR">Ajax in the enterprise</a>.</p>
 
-<ul>
-  <li>If you are looking for a User Interface library for DWR that goes beyond
-  dwr.util, then check-out <a href="http://www.tibco.com/mk/gi/?CID=DWR">General
-  Interface</a> - an extremely versatile open source UI toolkit.</li>
-  <li>For an example of what is possible with GI, check out the
-  <a href="http://tibco.xignite.com/">X-Ignite</a> sample application.</li>
-</ul>
-
-<h2>Getting started with DWR</h2>
-
-<p>For general information about DWR see:</p>
-
-<ul>
-  <li>The <a href="http://getahead.org/dwr/">main DWR website</a>.</li>
-  <li><a href="http://getahead.org/blog/joe/">Joe Walker's blog</a>.</li>
-</ul>
-
-<p>Tutorial style examples in this WAR file:</p>
-<ul>
-  <li>
-    <a href="simpletext/index.html">Dynamic Text</a>:
-    A very simple documented example that updates a page with some text.
-  </li>
-  <li>
-    <a href="simpletext/resource.html">Resource Forwarding</a>:
-    How to dynamically include the contents of one page in another.
-  </li>
-  <li>
-    <a href="people/index.html">Editable Table</a>:
-    Another simple documented example that allows the user to edit a table of data.
-  </li>
-  <li>
-    4 TIBCO General Interface examples:
+<div id="sidebar">
+  <h2>Internet Links</h2>
+  <ul>
+    <li>The main <a href="http://getahead.org/dwr"><strong>DWR</strong> website</a>:</li>
     <ul>
-      <li>a simple <a href="gi/dwr-gi.html">GI matrix</a> loaded with data from DWR</li>
+      <li><a href="http://getahead.org/dwr/overview/dwr">Overview</a></li>
+      <li><a href="http://getahead.org/dwr/documentation">Documentation</a></li>
+      <li><a href="http://getahead.org/dwr/download">Download</a></li>
+      <li><a href="http://getahead.org/dwr/support">Support / Mailing lists</a></li>
+      <li><a href="http://getahead.org/dwr/support">DWR Development</a></li>
+      <li><a href="http://getahead.org/dwr/server">Javadoc / Generated Docs</a></li>
+    </ul>
+    <li><strong>Widgets</strong> - TIBCO <a href="http://www.tibco.com/mk/gi/?CID=DWR">General
+    Interface</a> goes beyond dwr.util in providing a long list of widgets.</li>
+    <ul>
+      <li>Open Source <a href="http://www.tibco.com/devnet/gi/product_resources35.jsp?tab=downloads#">Download</a></li>
+      <li><a href="http://tibco.xignite.com/">X-Ignite</a> sample application.</li>
+    </ul>
+    <li><strong>Blogs</strong> with regular DWR posts:</li>
+    <ul>
+      <li><a href="http://getahead.org/blog/joe/">Joe Walker</a> (DWR lead)</li>
+      <li><a href="http://tembrel.blogspot.com/">Tim Perlis</a> (Guice/DWR lead)</li>
+      <li><a href="http://internna.blogspot.com/">Jose Noheda</a> blogs about integrating DWR with other projects</li>
+    </ul>
+  </ul>
+</div>
+
+<div id="body">
+  <h2>Within DWR.WAR</h2>
+  <p>The generated <a href='dwr/'>configuration / test pages</a> show how DWR is setup.</p>
+  <p>Documented examples of how DWR works:</p>
+  <ul>
+    <li><strong>Getting Started</strong> with DWR:</li>
+    <ul>
+      <li><a href="simpletext/index.html">Dynamic Text</a>: A very simple example that updates a page with some text.</li>
+      <li><a href="simpletext/resource.html">Resource Forwarding</a>: How to dynamically include the contents of one page in another.</li>
+      <li><a href="people/index.html">Editable Table</a>: Allowing the user to edit a table of data.</li>
+    </ul>
+    <li>Using <strong>Reverse Ajax</strong> to broadcast data:</li>
+    <ul>
+      <li><a href="clock/index.html">Server-Side Clock</a>: A clock that is updated by the server using ReverseAjax. Demonstrates access from a non-http thread.</li>
+      <li><a href="chat/javascript-chat.html">JavaScript Chat</a>: A simple chat application using DWR with conventional JavaScript</li>
+      <li><a href="chat/java-chat.html">Java Chat</a>: As above except with reduced JavaScript, using server-side proxies</li>
+    </ul>
+    <li>Integration with <strong>General Interface</strong>:</li>
+    <ul>
+      <li>a simple static <a href="gi/dwr-gi.html">GI matrix</a> loaded with data from DWR</li>
       <li>a reverse ajax example using <a href="gi/dwr-oa-gi.html">the OpenAjax Hub</a></li>
       <li>a <a href="gi/ticketcenter.html">call center demo</a> that keeps agents up to date</li>
       <li>a <a href="gi/reverse.html">component example</a> manipulated with the GI Reverse Ajax API</li>
     </ul>
-  </li>
-  <li>
-    DWR can help with file and image upload and download.
-    See the <a href="files/upload.html">upload example</a> and the
-    <a href="files/download.html">download example</a>.
-  </li>
-  <li>
-    <a href="image/index.html">Image Chat</a>:
-    A chat example where peoples messages are painted on a canvas.
-  </li>
-  <li>
-    <a href="address/index.html">Fast Address Entry</a>:
-    A form fill example that helps users enter addresses.
-  </li>
-</ul>
+    <li>Other DWR <strong>features</strong>:</li>
+    <ul>
+      <li><a href="files/upload.html">File upload</a> is easy - this example shows image manipulation</li>
+      <li><a href="files/download.html">Download</a> is just as easy - this time with custom PDF generation</li>
+      <li><a href="address/index.html">Fast Address Entry</a>: A form fill example that helps users enter addresses.</li>
+    </ul>
+    <li>Stuff that needs work, or removing</li>
+    <ul>
+      <li><a href="image/index.html">Image Chat</a>: A chat example where peoples messages are painted on a canvas.</li>
+    </ul>
+  </ul>
+</div>
 
-<p>Other examples in this WAR file:</p>
-<ul>
-  <li>
-    <a href="asmg/index.html">Anti-Spam mailto: Generator</a>:
-    Generate clickable mailto: links without attracting spam.
-  </li>
-  <li>
-    <a href="clock/index.html">Server-Side Clock</a>:
-    A clock that is updated by the server using ReverseAjax. Demonstrates access
-    from a non-http thread.
-  </li>
-  <li>
-    <a href="chat/javascript-chat.html">JavaScript Chat</a>:
-    A simple chat application using DWR with conventional JavaScript
-  </li>
-  <li>
-    <a href="chat/java-chat.html">Java Chat</a>:
-    As above except with much reduced JavaScript, using server-side script proxies
-  </li>
-</ul>
 
-<p>Current Configuration:</p>
-
-<ul>
-  <li>The generated <a href='dwr/'>configuration/test pages</a>.</li>
-</ul>
-
-<hr/>
+<div id="check"> </div>
 
 <div id="start">
   <p><strong>DWR is testing installation ...</strong></p>
