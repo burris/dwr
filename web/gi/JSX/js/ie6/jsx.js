@@ -252,7 +252,7 @@ Va=jsx3.jv;Va[Va.length]=C;jsx3._P[o]=C;if(jsx3.Uo==null)jsx3.Uo=window.setTimeo
 Cb=null;while(jsx3.jv.length>0&&(Cb==null||Cb[0]==null))Cb=jsx3.jv.shift();if(Cb){jsx3.Uo=window.setTimeout(jsx3.m1,0);var
 rb=Cb[0];var
 W=Cb[1];var
-ua=Cb[2];delete jsx3._P[W];rb.apply(ua);}else{jsx3.Uo=null;jsx3.publish({subject:jsx3.QUEUE_DONE});}};jsx3.startup=function(){if(window.OpenAjax){OpenAjax.registerLibrary(ub.A,ub.B,jsx3.getVersion());OpenAjax.registerGlobals(ub.A,[ub.A,ub.C,ub.D,ub.E]);}};jsx3.destroy=function(){if(jsx3.app&&jsx3.app.Server){var
+ua=Cb[2];delete jsx3._P[W];rb.apply(ua);}else{jsx3.Uo=null;jsx3.publish({subject:jsx3.QUEUE_DONE});}};jsx3.startup=function(){};jsx3.destroy=function(){if(jsx3.app&&jsx3.app.Server){var
 ya=jsx3.app.Server.allServers();for(var
 Z=0;Z<ya.length;Z++)try{ya[Z].destroy();}catch(Kb){}}if(jsx3.gui&&jsx3.gui.Event){var
 u="BEFOREUNLOAD BLUR CHANGE CLICK DOUBLECLICK ERROR FOCUS KEYDOWN KEYPRESS KEYUP LOAD MOUSEDOWN MOUSEMOVE MOUSEOUT MOUSEOVER MOUSEUP MOUSEWHEEL UNLOAD RESIZE".split(ub.F);for(var
