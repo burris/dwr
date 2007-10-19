@@ -456,7 +456,7 @@ function testResults(data, index) {
     failreport.innerHTML = failcount;
 
     numele.style.backgroundColor = "lightpink";
-    dwr.util.setValue("t" + index + "-results", report);
+    dwr.util.setValue("t" + index + "-results", report, { escapeHtml:false });
   }
 
   checkTidyUp(index + 1);
