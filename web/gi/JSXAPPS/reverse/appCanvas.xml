@@ -42,17 +42,17 @@
         </object>
         <object type="jsx3.gui.Select">
           <variants jsxwidth="200" jsxheight="22" jsxxmlasync="1"/>
-          <strings jsxname="select" jsxxmlurl="jsx:///xml/sample.xml" jsxmargin="2" jsxpadding="2"/>
+          <strings jsxname="select" jsxxmlurl="eventList.xml" jsxmargin="2" jsxpadding="2"/>
         </object>
         <object type="jsx3.gui.Button">
           <variants jsxindex="0" jsxheight="22" jsxwidth="70"/>
           <strings jsxname="buttonSelect1" jsxtext="Select #1" jsxmargin="2" jsxpadding="2"/>
-          <events jsxexecute="Reverse.select(1);"/>
+          <events jsxexecute="Reverse.select('e1');"/>
         </object>
         <object type="jsx3.gui.Button">
           <variants jsxindex="0" jsxheight="22" jsxwidth="70"/>
           <strings jsxname="buttonSelect2" jsxtext="Select #2" jsxmargin="2" jsxpadding="2"/>
-          <events jsxexecute="Reverse.select(2);"/>
+          <events jsxexecute="Reverse.select('e2');"/>
         </object>
       </object>
       <object type="jsx3.gui.Block">
@@ -146,12 +146,12 @@
         <object type="jsx3.gui.Button">
           <variants jsxindex="0" jsxheight="22" jsxwidth="60"/>
           <strings jsxname="buttonColorRed" jsxtext="Red" jsxmargin="2" jsxpadding="2"/>
-          <events jsxexecute="Reverse.color('red');"/>
+          <events jsxexecute="Reverse.color('FF0000');"/>
         </object>
         <object type="jsx3.gui.Button">
           <variants jsxindex="0" jsxheight="22" jsxwidth="60"/>
           <strings jsxname="buttonColorWhite" jsxtext="White" jsxmargin="2" jsxpadding="2"/>
-          <events jsxexecute="Reverse.color('#FFF');"/>
+          <events jsxexecute="Reverse.color('#FFFFFF');"/>
         </object>
         <object type="jsx3.gui.Button">
           <variants jsxindex="0" jsxheight="22" jsxwidth="60"/>
