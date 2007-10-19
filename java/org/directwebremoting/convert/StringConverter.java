@@ -36,7 +36,7 @@ public class StringConverter extends BaseV20Converter implements Converter
      */
     public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        if (data.isFile())
+        if (data.getFormField().isFile())
         {
             // Data from file uploads is not URL encoded
             return data.getValue();
