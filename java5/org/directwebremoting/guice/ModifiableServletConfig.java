@@ -56,7 +56,7 @@ class ModifiableServletConfig implements ServletConfig
         Enumeration<String> enumeration = servletConfig.getInitParameterNames();
         while (enumeration.hasMoreElements())
         {
-            names.add(enumeration.nextElement().toString());
+            names.add(enumeration.nextElement());
         }
         names.addAll(overrides.keySet());
         return toEnumeration(names.iterator());

@@ -31,7 +31,7 @@ public class ColorUtil
      */
     public static Color decodeHtmlColorString(String colorString)
     {
-        Color color = null;
+        Color color;
     
         if (colorString.startsWith("#"))
         {
@@ -59,6 +59,7 @@ public class ColorUtil
             break;
         case 1:
             red = green = blue = Integer.parseInt(colorString.substring(0, 1), 16);
+            color = new Color(red, green, blue);
             break;
         default:
             throw new IllegalArgumentException("Invalid color: " + colorString);

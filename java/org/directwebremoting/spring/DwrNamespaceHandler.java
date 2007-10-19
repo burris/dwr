@@ -249,7 +249,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     /**
      *
      */
-    protected class ControllerBeanDefinitionParser implements BeanDefinitionParser
+    protected static class ControllerBeanDefinitionParser implements BeanDefinitionParser
     {
         /* (non-Javadoc)
          * @see org.springframework.beans.factory.xml.BeanDefinitionParser#parse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)

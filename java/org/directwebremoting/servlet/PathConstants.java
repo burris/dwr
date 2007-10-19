@@ -22,7 +22,7 @@ import org.directwebremoting.extend.Handler;
  * Various constants from generating output.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class PathConstants
+public interface PathConstants
 {
     /**
      * When we prime the {@link Container} with URLs for {@link Handler}s we use

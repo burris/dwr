@@ -128,10 +128,13 @@ public class DefaultPageNormalizer implements PageNormalizer
                 return null;
             }
 
-            if (buildFactory == null)
+            synchronized (DefaultPageNormalizer.class)
             {
-                buildFactory = DocumentBuilderFactory.newInstance();
-                buildFactory.setValidating(false);
+                if (buildFactory == null)
+                {
+                    buildFactory = DocumentBuilderFactory.newInstance();
+                    buildFactory.setValidating(false);
+                }
             }
 
             DocumentBuilder builder = buildFactory.newDocumentBuilder();

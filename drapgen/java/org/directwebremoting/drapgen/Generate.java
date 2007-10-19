@@ -23,11 +23,12 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.fsguide.FileSystemGuide;
 import org.directwebremoting.fsguide.Visitor;
 import org.w3c.dom.Node;
@@ -38,7 +39,6 @@ import org.w3c.dom.Node;
 public class Generate
 {
     public static final String XML_BASE = "/Applications/TIBCO/tibco-gi-3.5-pro-src/dist/gi/api/xml/";
-
     public static final String GENERATED_BASE = "generated/gi/java/org/directwebremoting/proxy/";
     public static final String TEMPLATES_BASE = "etc/drapgen/templates/";
     public static final String DEFAULT_TEMPLATE = "default.xslt";
@@ -63,7 +63,7 @@ public class Generate
                 }
             }
 
-            public boolean visitDirectory(File file)
+            public boolean visitDirectory(File directory)
             {
                 return true;
             }
@@ -108,7 +108,7 @@ public class Generate
                             Node node = implementingClass.getImplementationDeclaration(mixinFunction.right);
                             if (node == null)
                             {
-                                log.warning("- No implementation of: " + mixinFunction.left + "." + mixinFunction.right + "() refered to by " + code.getClassName());
+                                log.warn("- No implementation of: " + mixinFunction.left + "." + mixinFunction.right + "() refered to by " + code.getClassName());
                             }
                             else
                             {
@@ -164,7 +164,11 @@ public class Generate
     public static final Map<String, SourceCode> sources = new HashMap<String, SourceCode>();
 
     protected static TransformerFactory factory = TransformerFactory.newInstance();
+
     protected static DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 
-    protected static Logger log = Logger.getLogger(Generate.class.getName());
+    /**
+     * The log stream
+     */
+    protected static final Log log = LogFactory.getLog(Generate.class);
 }

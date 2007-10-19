@@ -60,6 +60,7 @@ public class PollHandler implements Handler
     /* (non-Javadoc)
      * @see org.directwebremoting.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         // If we are a restarted jetty continuation then we need to finish off
@@ -73,7 +74,7 @@ public class PollHandler implements Handler
         final PollBatch batch;
         try
         {
-            batch = new PollBatch(request, pageNormalizer);
+            batch = new PollBatch(request);
         }
         catch (ServerException ex)
         {

@@ -23,13 +23,15 @@ import java.io.File;
 public interface Visitor
 {
     /**
-     * @param file
+     * Visit a file in a hierachy
+     * @param file The file that we are currently visiting
      */
     void visitFile(File file);
 
     /**
-     * @param file
-     * @return TODO
+     * Visit a directory in a hierachy.
+     * @param directory The directory that we are currently visiting
+     * @return true to continue digging into this directory
      */
-    boolean visitDirectory(File file);
+    boolean visitDirectory(File directory);
 }

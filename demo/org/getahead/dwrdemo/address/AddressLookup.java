@@ -41,37 +41,37 @@ public class AddressLookup
         Map<String, String> reply = new HashMap<String, String>();
         String postcode = LocalUtil.replace(origpostcode, " ", "");
 
-        if (postcode.equalsIgnoreCase("LE167TR"))
+        if ("LE167TR".equalsIgnoreCase(postcode))
         {
             reply.put(LINE2, "Church Lane");
             reply.put(LINE3, "Thorpe Langton");
             reply.put(LINE4, "MARKET HARBOROUGH");
         }
-        else if (postcode.equalsIgnoreCase("NR147SL"))
+        else if ("NR147SL".equalsIgnoreCase(postcode))
         {
             reply.put(LINE2, "Rectory Lane");
             reply.put(LINE3, "Poringland");
             reply.put(LINE4, "NORWICH");
         }
-        else if (postcode.equalsIgnoreCase("B927TT"))
+        else if ("B927TT".equalsIgnoreCase(postcode))
         {
             reply.put(LINE2, "Olton Mere");
             reply.put(LINE3, "Warwick Road");
             reply.put(LINE4, "SOLIHULL");
         }
-        else if (postcode.equalsIgnoreCase("E178YT"))
+        else if ("E178YT".equalsIgnoreCase(postcode))
         {
             reply.put(LINE2, "");
             reply.put(LINE3, "PO Box 43108 ");
             reply.put(LINE4, "LONDON");
         }
-        else if (postcode.equalsIgnoreCase("SN48QS"))
+        else if ("SN48QS".equalsIgnoreCase(postcode))
         {
             reply.put(LINE2, "Binknoll");
             reply.put(LINE3, "Wootton Bassett");
             reply.put(LINE4, "SWINDON");
         }
-        else if (postcode.equalsIgnoreCase("NN57HT"))
+        else if ("NN57HT".equalsIgnoreCase(postcode))
         {
             reply.put(LINE2, "Heathville");
             reply.put(LINE3, "");

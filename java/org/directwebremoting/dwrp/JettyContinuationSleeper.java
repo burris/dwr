@@ -34,6 +34,9 @@ public class JettyContinuationSleeper implements Sleeper
     {
         continuation = new Continuation(request);
 
+        // At this point JettyContinuationSleeper is fully initialized so it is
+        // safe to allow other classes to see and use us.
+        //noinspection ThisEscapedInObjectConstruction
         request.setAttribute(ATTRIBUTE_JETTY_CONDUIT, this);
     }
 

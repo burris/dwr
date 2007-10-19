@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlbeans.XmlObject;
-import org.directwebremoting.convert.BeanConverter;
 import org.directwebremoting.dwrp.ParseUtil;
 import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.extend.InboundContext;
@@ -77,8 +76,6 @@ public class XmlBeanConverter extends BeanConverter
 
         try
         {
-            Object bean = null;
-
             if (instanceType != null)
             {
                 Class.forName(instanceType.getName());
@@ -106,7 +103,7 @@ public class XmlBeanConverter extends BeanConverter
 
             Class<?>[] emptyArglist = new Class[0];
             Method newInstance = factory.getMethod("newInstance", emptyArglist);
-            bean = newInstance.invoke(null, (Object[]) emptyArglist);
+            Object bean = newInstance.invoke(null, (Object[]) emptyArglist);
 
             if (instanceType != null)
             {
@@ -188,7 +185,7 @@ public class XmlBeanConverter extends BeanConverter
                 throw new MarshallException(paramType, "class (" + paramType.getName() + ") not assignable from XmlObject");
             }
 
-            Class<?> beanInterface = null;
+            Class<?> beanInterface;
             if (paramType.isInterface())
             {
                 beanInterface = paramType;
@@ -220,7 +217,7 @@ public class XmlBeanConverter extends BeanConverter
                     }
 
                     // We don't marshall getClass()
-                    if (name.equals("class"))
+                    if ("class".equals(name))
                     {
                         continue;
                     }

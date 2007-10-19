@@ -22,7 +22,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.fsguide.Visitor;
+import org.directwebremoting.util.LocalUtil;
 
 /**
  * 
@@ -65,7 +68,7 @@ public class DeepCopyVisitor implements Visitor
                 out.println(map(line));
             }
 
-            System.out.println("Writing to file: " + destFile.getAbsolutePath());
+            log.info("Writing to file: " + destFile.getAbsolutePath());
         }
         catch (IOException ex)
         {
@@ -73,21 +76,8 @@ public class DeepCopyVisitor implements Visitor
         }
         finally
         {
-            if (in != null)
-            {
-                try
-                {
-                    in.close();
-                }
-                catch (IOException ex)
-                {
-                }
-            }
-
-            if (out != null)
-            {
-                out.close();
-            }
+            LocalUtil.close(in);
+            LocalUtil.close(out);
         }
     }
 
@@ -99,7 +89,7 @@ public class DeepCopyVisitor implements Visitor
         File destFile = getDestFile(file);
 
         destFile.mkdirs();
-        System.out.println("Created dir:     " + destFile.getAbsolutePath());
+        log.info("Created dir:     " + destFile.getAbsolutePath());
 
         return true;
     }
@@ -137,4 +127,9 @@ public class DeepCopyVisitor implements Visitor
     private File origRoot;
 
     private File destRoot;
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(DeepCopyVisitor.class);
 }

@@ -17,6 +17,9 @@ package org.directwebremoting.fsguide.visitors;
 
 import java.io.File;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.dwrp.BaseCallMarshaller;
 import org.directwebremoting.fsguide.Visitor;
 
 /**
@@ -30,15 +33,20 @@ public class SystemOutVisitor implements Visitor
      */
     public void visitFile(File file)
     {
-        System.out.println("File: " + file.getAbsolutePath());
+        log.info("File: " + file.getAbsolutePath());
     }
 
     /* (non-Javadoc)
      * @see com.barclaycard.fsguide.Visitor#visitDirectory(java.io.File)
      */
-    public boolean visitDirectory(File file)
+    public boolean visitDirectory(File directory)
     {
-        System.out.println("Directory: " + file.getAbsolutePath());
+        log.info("Directory: " + directory.getAbsolutePath());
         return true;
     }
+
+    /**
+     * The log stream
+     */
+    protected static final Log log = LogFactory.getLog(BaseCallMarshaller.class);
 }

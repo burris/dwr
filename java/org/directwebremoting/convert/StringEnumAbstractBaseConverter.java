@@ -23,7 +23,7 @@ public class StringEnumAbstractBaseConverter extends BaseV20Converter implements
 
         try
         {
-            Method getter = paramType.getMethod("forString", new Class[] { String.class });
+            Method getter = paramType.getMethod("forString", String.class);
             Object bean = getter.invoke(paramType, value);
 
             if (bean == null)

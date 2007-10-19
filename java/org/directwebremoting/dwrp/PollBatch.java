@@ -20,7 +20,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.directwebremoting.extend.FormField;
-import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.util.Messages;
 
@@ -31,11 +30,10 @@ import org.directwebremoting.util.Messages;
 public class PollBatch
 {
     /**
-     * @param request
-     * @param pageNormalizer 
-     * @throws ServerException 
+     * @param request The request to parse to fill out this batch
+     * @throws ServerException
      */
-    public PollBatch(HttpServletRequest request, PageNormalizer pageNormalizer) throws ServerException
+    public PollBatch(HttpServletRequest request) throws ServerException
     {
         debug = request.getHeader("User-Agent");
         get = "GET".equals(request.getMethod());

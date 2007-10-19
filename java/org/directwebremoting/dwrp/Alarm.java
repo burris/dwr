@@ -10,7 +10,7 @@ package org.directwebremoting.dwrp;
  * should protect themselves from late calls to {@link Sleeper#wakeUp()}.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-interface Alarm
+public interface Alarm
 {
     /**
      * Alarms need something to do when they go off.

@@ -35,6 +35,7 @@ public class Call
     /**
      * @param callStarted the callStarted to set
      */
+    @SuppressWarnings({"AssignmentToDateFieldFromParameter"})
     public void setCallStarted(Date callStarted)
     {
         this.callStarted = callStarted;

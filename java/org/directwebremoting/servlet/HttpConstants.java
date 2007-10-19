@@ -3,9 +3,8 @@ package org.directwebremoting.servlet;
 /**
  * Various constant for dealing with HTTP traffic.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
- * @noinspection InterfaceNeverImplemented
  */
-public class HttpConstants
+public interface HttpConstants
 {
     /**
      * HTTP etag header

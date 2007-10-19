@@ -178,6 +178,7 @@ public class FakeHttpServletResponse implements HttpServletResponse
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
      */
+    @Deprecated
     public void setStatus(int status, String errorMessage)
     {
         this.status = status;
@@ -373,6 +374,7 @@ public class FakeHttpServletResponse implements HttpServletResponse
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
      */
+    @Deprecated
     public String encodeUrl(String url)
     {
         return url;
@@ -389,6 +391,7 @@ public class FakeHttpServletResponse implements HttpServletResponse
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpServletResponse#encodeRedirectUrl(java.lang.String)
      */
+    @Deprecated
     public String encodeRedirectUrl(String url)
     {
         return url;

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2006 Alexandru Popescu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.directwebremoting.webwork;
 
 import java.io.UnsupportedEncodingException;
@@ -37,19 +52,6 @@ import com.opensymphony.xwork.util.XWorkContinuationConfig;
 public class DWRAction
 {
     /**
-     * The log stream
-     */
-    private static final Log log = LogFactory.getLog(DWRAction.class);
-
-    private static final String DWRACTIONPROCESSOR_INIT_PARAM = "dwrActionProcessor";
-
-    private static DWRAction instance;
-
-    private DispatcherUtils wwDispatcher;
-
-    private IDWRActionProcessor actionProcessor;
-
-    /**
      * @param servletContext
      * @throws ServletException
      */
@@ -58,23 +60,6 @@ public class DWRAction
         DispatcherUtils.initialize(servletContext);
         wwDispatcher = DispatcherUtils.getInstance();
         actionProcessor = loadActionProcessor(servletContext.getInitParameter(DWRACTIONPROCESSOR_INIT_PARAM));
-    }
-
-    /**
-     * Entry point for all action invocations.
-     * @param actionDefinition the identification information for the action
-     * @param params action invocation parameters
-     * @param request original request
-     * @param response original response
-     * @param servletContext current <code>ServletContext</code>
-     * @return an <code>AjaxResult</code> wrapping invocation result
-     * @throws ServletException thrown if the initialization or invocation of the action fails
-     */
-    public static AjaxResult execute(ActionDefinition actionDefinition, Map<String, String> params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
-    {
-        initialize(servletContext);
-
-        return instance.doExecute(actionDefinition, params, request, response, servletContext);
     }
 
     /**
@@ -230,6 +215,23 @@ public class DWRAction
     }
 
     /**
+     * Entry point for all action invocations.
+     * @param actionDefinition the identification information for the action
+     * @param params action invocation parameters
+     * @param request original request
+     * @param response original response
+     * @param servletContext current <code>ServletContext</code>
+     * @return an <code>AjaxResult</code> wrapping invocation result
+     * @throws ServletException thrown if the initialization or invocation of the action fails
+     */
+    public static AjaxResult execute(ActionDefinition actionDefinition, Map<String, String> params, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws ServletException
+    {
+        initialize(servletContext);
+
+        return instance.doExecute(actionDefinition, params, request, response, servletContext);
+    }
+
+    /**
      * Performs the one time initialization of the singleton <code>DWRAction</code>.
      * @param servletContext
      * @throws ServletException thrown in case the singleton initialization fails
@@ -258,28 +260,25 @@ public class DWRAction
             return null;
         }
 
-        try
+        IDWRActionProcessor reply = LocalUtil.classNewInstance("DWRActionProcessor", actionProcessorClassName, IDWRActionProcessor.class);
+        if (reply == null)
         {
-            Class<?> actionProcessorClass = LocalUtil.classForName(actionProcessorClassName);
+            throw new ServletException("Cannot load DWRActionProcessor class '" + actionProcessorClassName + "'");
+        }
 
-            return (IDWRActionProcessor) actionProcessorClass.newInstance();
-        }
-        catch(ClassNotFoundException cnfe)
-        {
-            throw new ServletException("Cannot load DWRActionProcessor class '" + actionProcessorClassName + "'", cnfe);
-        }
-        catch(IllegalAccessException iae)
-        {
-            throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'. Default constructor is not visible", iae);
-        }
-        catch(InstantiationException ie)
-        {
-            throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'. No default constructor found", ie);
-        }
-        catch(Throwable cause)
-        {
-            throw new ServletException("Cannot instantiate DWRActionProcessor class '" + actionProcessorClassName + "'", cause);
-        }
+        return reply;
     }
 
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(DWRAction.class);
+
+    private static final String DWRACTIONPROCESSOR_INIT_PARAM = "dwrActionProcessor";
+
+    private static DWRAction instance;
+
+    private DispatcherUtils wwDispatcher;
+
+    private IDWRActionProcessor actionProcessor;
 }

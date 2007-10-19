@@ -75,6 +75,7 @@ package org.directwebremoting.util;
   * @since 1.0-dev
   *
   */
+@SuppressWarnings({"ALL"})
 public class Base64 {
 
     // Create constants pertaining to the chunk requirement

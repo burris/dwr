@@ -295,6 +295,7 @@ public class DefaultScriptSession implements RealScriptSession
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.RealScriptSession#getScriptLock()
      */
+    @Deprecated
     public Object getScriptLock()
     {
         return scriptLock;

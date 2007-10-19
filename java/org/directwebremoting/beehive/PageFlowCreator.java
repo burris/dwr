@@ -28,7 +28,6 @@ public class PageFlowCreator extends AbstractCreator implements Creator
      */
     public PageFlowCreator() throws ClassNotFoundException
     {
-        // noinspection EmptyCatchBlock
         try
         {
             bhFlowClass = LocalUtil.classForName("org.apache.beehive.netui.pageflow.PageFlowController");
@@ -41,7 +40,6 @@ public class PageFlowCreator extends AbstractCreator implements Creator
             // We're expecting this to fail, and notice below
         }
 
-        // noinspection EmptyCatchBlock
         try
         {
             wlFlowClass = LocalUtil.classForName("com.bea.wlw.netui.pageflow.PageFlowController");

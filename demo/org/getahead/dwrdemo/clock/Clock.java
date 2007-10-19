@@ -81,7 +81,7 @@ public class Clock implements Runnable
         }
         catch (InterruptedException ex)
         {
-            ex.printStackTrace();
+            log.warn("Interrupted", ex);
         }
     }
 

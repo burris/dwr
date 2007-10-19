@@ -46,6 +46,10 @@ public class BayeuxClient implements Listener
     public BayeuxClient(Bayeux bayeux)
     {
         this.bayeux = bayeux;
+
+        // At this point BayeuxClient is fully initialized so it is safe to
+        // allow other classes to see and use us.
+        //noinspection ThisEscapedInObjectConstruction
         this.client = bayeux.newClient("dwr", this);
         bayeux.subscribe("/dwr", client);
     }

@@ -52,24 +52,17 @@ public abstract class BaseScriptConduit extends ScriptConduit
         this.converterManager = converterManager;
 
         response.setContentType(getOutboundMimeType());
+        out = response.getWriter();
 
-        if (false && log.isDebugEnabled())
+        if (log.isDebugEnabled())
         {
             // This might be considered evil - altering the program flow
             // depending on the log status, however DebuggingPrintWriter is
             // very thin and only about debugging
-            // out = new DebuggingPrintWriter("", response.getWriter());
-        }
-        else
-        {
-            out = response.getWriter();
-        }
-
-        // Setup a debugging prefix
-        if (out instanceof DebuggingPrintWriter)
-        {
-            DebuggingPrintWriter dpw = (DebuggingPrintWriter) out;
+            DebuggingPrintWriter dpw = new DebuggingPrintWriter("", out);
             dpw.setPrefix("out(" + hashCode() + "): ");
+
+            out = dpw;
         }
 
         beginStream();
@@ -172,7 +165,7 @@ public abstract class BaseScriptConduit extends ScriptConduit
     /**
      * The PrintWriter to send output to, and that we should synchronize against
      */
-    protected final PrintWriter out;
+    protected PrintWriter out;
 
     /**
      * What is the ID of the request that we are responding to?

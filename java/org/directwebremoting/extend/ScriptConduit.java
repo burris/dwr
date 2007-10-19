@@ -92,6 +92,7 @@ public abstract class ScriptConduit implements Comparable<ScriptConduit>
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
+    @SuppressWarnings({"SubtractionInCompareTo", "NumericCastThatLosesPrecision"})
     public int compareTo(ScriptConduit that)
     {
         int rankdiff = that.getRank() - this.getRank();
@@ -131,6 +132,7 @@ public abstract class ScriptConduit implements Comparable<ScriptConduit>
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
+    @SuppressWarnings({"NumericCastThatLosesPrecision"})
     @Override
     public int hashCode()
     {

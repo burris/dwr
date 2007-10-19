@@ -49,7 +49,7 @@ public class InternalCreatorManager implements CreatorManager
     }
 
     /**
-     *
+     * @param debug Are we in debug mode?
      */
     public void setDebug(boolean debug)
     {
@@ -117,7 +117,7 @@ public class InternalCreatorManager implements CreatorManager
     }
 
     /**
-     *
+     * @return accessor for if we create the created objects at startup
      */
     public boolean isInitApplicationScopeCreatorsAtStartup()
     {
@@ -149,7 +149,7 @@ public class InternalCreatorManager implements CreatorManager
             if (atype != null && Remoted.class.isAssignableFrom(atype))
             {
                 String scriptName = Remoted.class.cast(key.getAnnotation()).value();
-                if (scriptName.equals(""))
+                if ("".equals(scriptName))
                 {
                     Class<?> cls = (Class<?>) key.getTypeLiteral().getType();
                     scriptName = cls.getSimpleName();
@@ -162,6 +162,7 @@ public class InternalCreatorManager implements CreatorManager
     /**
      * Stores a type name in a thread-local variable for later retrieval by
      * {@code getCreatorManager}.
+     * @param name The new type name
      */
     static void setTypeName(String name)
     {

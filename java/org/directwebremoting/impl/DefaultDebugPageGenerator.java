@@ -354,6 +354,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see org.directwebremoting.DebugPageGenerator#generateInterfaceUrl(java.lang.String, java.lang.String)
      */
+    @Deprecated
     public String generateInterfaceUrl(String root, String scriptName)
     {
         return root + interfaceHandlerUrl + scriptName + PathConstants.EXTENSION_JS;
@@ -362,6 +363,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see org.directwebremoting.DebugPageGenerator#generateEngineUrl(java.lang.String)
      */
+    @Deprecated
     public String generateEngineUrl(String root)
     {
         return root + engineHandlerUrl;
@@ -370,6 +372,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see org.directwebremoting.DebugPageGenerator#generateLibraryUrl(java.lang.String, java.lang.String)
      */
+    @Deprecated
     public String generateLibraryUrl(String root, String library)
     {
         return root + library;
@@ -378,6 +381,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
     /* (non-Javadoc)
      * @see org.directwebremoting.DebugPageGenerator#getAvailableLibraries()
      */
+    @Deprecated
     public Collection<String> getAvailableLibraries()
     {
         if (availableLibraries == null)

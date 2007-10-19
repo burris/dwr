@@ -38,7 +38,7 @@ public final class InboundVariable
      */
     public InboundVariable(InboundContext context, String key, String type, String value)
     {
-        this (context, key, type, new FormField(value));
+        this(context, key, type, new FormField(value));
     }
 
     /**

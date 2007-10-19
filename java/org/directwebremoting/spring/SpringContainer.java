@@ -70,7 +70,8 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
             {
                 log.debug("beans: " + beansOfType + " - " + beansOfType.size());
             }
-            if (beansOfType.size() == 0)
+
+            if (beansOfType.isEmpty())
             {
                 log.debug("adding parameter the normal way");
                 super.addParameter(askFor, valueParam);

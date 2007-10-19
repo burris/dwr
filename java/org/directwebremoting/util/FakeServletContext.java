@@ -170,6 +170,7 @@ public class FakeServletContext implements ServletContext
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#getServlet(java.lang.String)
      */
+    @Deprecated
     public Servlet getServlet(String name)
     {
         throw new UnsupportedOperationException("getServlet");
@@ -178,6 +179,7 @@ public class FakeServletContext implements ServletContext
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#getServlets()
      */
+    @Deprecated
     public Enumeration<HttpServlet> getServlets()
     {
         throw new UnsupportedOperationException("getServlets");
@@ -186,6 +188,7 @@ public class FakeServletContext implements ServletContext
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#getServletNames()
      */
+    @Deprecated
     public Enumeration<String> getServletNames()
     {
         throw new UnsupportedOperationException("getServletNames");
@@ -202,6 +205,7 @@ public class FakeServletContext implements ServletContext
     /* (non-Javadoc)
      * @see javax.servlet.ServletContext#log(java.lang.Exception, java.lang.String)
      */
+    @Deprecated
     public void log(Exception ex, String message)
     {
         log.warn(message, ex);

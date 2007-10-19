@@ -54,10 +54,10 @@ public class WebContextFactory
      * have an <code>org.directwebremoting.WebContext</code>.
      * @author Joe Walker [joe at getahead dot ltd dot uk]
      */
-    private static final class ProxyWebContext implements uk.ltd.getahead.dwr.WebContext
+    private static final class ProxyWebContext implements WebContext
     {
         /**
-         * @param proxy
+         * @param proxy The real WebContext that we proxy to
          */
         public ProxyWebContext(org.directwebremoting.WebContext proxy)
         {

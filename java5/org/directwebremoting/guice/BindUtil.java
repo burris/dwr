@@ -164,7 +164,7 @@ public class BindUtil
     // Implementation classes
     //
 
-    private static abstract class AbstractBindingProvider<T> implements BindingProvider<T>
+    private abstract static class AbstractBindingProvider<T> implements BindingProvider<T>
     {
         protected AbstractBindingProvider(Binder binder, Class<T> type, Key<?>... keys)
         {
@@ -204,7 +204,8 @@ public class BindUtil
             for (Key<?> key : keys)
             {
                 Object param = injector.getInstance(key);
-                values[i++] = param;
+                values[i] = param;
+                i++;
             }
             return values;
         }

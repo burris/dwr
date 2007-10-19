@@ -56,7 +56,7 @@ public enum PartialResponse
     /**
      * A lookup table of browser strings to enum constants
      */
-    private final static Map<String, PartialResponse> ids = new HashMap<String, PartialResponse>();
+    private static final Map<String, PartialResponse> ids = new HashMap<String, PartialResponse>();
 
     /**
      * Setup the lookup table
@@ -73,11 +73,11 @@ public enum PartialResponse
      * Convert a string from the web into a PartialResponse. The values are
      * PARTIAL_RESPONSE_NO = "0", PARTIAL_RESPONSE_YES = "1" and
      * PARTIAL_RESPONSE_FLUSH = "2"
-     * @param id The PartialResponse to look-up
+     * @param lookupid The PartialResponse to look-up
      * @return a matching PartialResponse or null if one was not found
      */
-    public static PartialResponse fromOrdinal(String id)
+    public static PartialResponse fromOrdinal(String lookupid)
     {
-        return ids.get(id);
+        return ids.get(lookupid);
     }
 }

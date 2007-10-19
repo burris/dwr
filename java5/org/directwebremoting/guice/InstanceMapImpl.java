@@ -25,8 +25,4 @@ import com.google.inject.Key;
  */
 class InstanceMapImpl<T> extends ConcurrentHashMap<Key<T>, InstanceProvider<T>> implements InstanceMap<T>
 {
-    InstanceMapImpl()
-    {
-        super();
-    }
 }

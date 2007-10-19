@@ -105,7 +105,18 @@ public class ContainerMap extends AbstractMap<String, Object> implements Map<Str
     @Override
     public boolean equals(Object o)
     {
+        if (this == o)
+        {
+            return true;
+        }
+
         init();
+
+        if (o.getClass() != this.getClass())
+        {
+            return false;
+        }
+
         return proxy.equals(o);
     }
 
@@ -182,7 +193,7 @@ public class ContainerMap extends AbstractMap<String, Object> implements Map<Str
      * @see java.util.AbstractMap#putAll(java.util.Map)
      */
     @Override
-    public void putAll(Map<? extends String, ?extends Object> t)
+    public void putAll(Map<? extends String, ?> t)
     {
         throw new UnsupportedOperationException("ContainerMaps are read only");
     }

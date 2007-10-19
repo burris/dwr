@@ -109,6 +109,7 @@ public class FakeHttpSession implements HttpSession
      * @see javax.servlet.http.HttpSession#getSessionContext()
      * @deprecated
      */
+    @SuppressWarnings({"UnnecessaryFullyQualifiedName"})
     @Deprecated
     public javax.servlet.http.HttpSessionContext getSessionContext()
     {
@@ -126,6 +127,7 @@ public class FakeHttpSession implements HttpSession
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpSession#getValue(java.lang.String)
      */
+    @Deprecated
     public Object getValue(String name)
     {
         return attributes.get(name);
@@ -142,6 +144,7 @@ public class FakeHttpSession implements HttpSession
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpSession#getValueNames()
      */
+    @Deprecated
     public String[] getValueNames()
     {
         return attributes.keySet().toArray(new String[attributes.keySet().size()]);
@@ -158,6 +161,7 @@ public class FakeHttpSession implements HttpSession
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpSession#putValue(java.lang.String, java.lang.Object)
      */
+    @Deprecated
     public void putValue(String name, Object value)
     {
         attributes.put(name, value);
@@ -174,6 +178,7 @@ public class FakeHttpSession implements HttpSession
     /* (non-Javadoc)
      * @see javax.servlet.http.HttpSession#removeValue(java.lang.String)
      */
+    @Deprecated
     public void removeValue(String name)
     {
         attributes.remove(name);

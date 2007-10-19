@@ -116,14 +116,15 @@ public abstract class BaseCallMarshaller implements Marshaller
      * @param methodName The method a remote user wants to call
      * @return true iff the method is the pageLoaded method on this class
      */
+    @SuppressWarnings({"RedundantIfStatement"})
     private static boolean isPageLoadedMethod(String scriptName, String methodName)
     {
-        if (!scriptName.equals("__System"))
+        if (!"__System".equals(scriptName))
         {
             return false;
         }
 
-        if (!methodName.equals("pageLoaded"))
+        if (!"pageLoaded".equals(methodName))
         {
             return false;
         }
@@ -134,6 +135,7 @@ public abstract class BaseCallMarshaller implements Marshaller
     /**
      * Check that this request is not subject to a CSRF attack
      * @param request The original browser's request
+     * @param batch The data that we've parsed from the request body
      */
     private void checkNotCsrfAttack(HttpServletRequest request, Batch batch)
     {
@@ -174,9 +176,10 @@ public abstract class BaseCallMarshaller implements Marshaller
 
     /**
      * Convert batch into calls.
-     * @param batch
-     * @return calls
+     * @param batch The data we've parsed from the request
+     * @return The function calls to make
      */
+    @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public Calls marshallInbound(Batch batch)
     {
         Calls calls = batch.getCalls();
