@@ -22,11 +22,6 @@
       <param name="class" value="org.getahead.dwrdemo.address.AddressLookup"/>
     </create>
 
-    <!-- anti-spam mailto generator -->
-    <create creator="new" javascript="Generator" scope="application">
-      <param name="class" value="org.getahead.dwrdemo.asmg.Generator"/>
-    </create>
-
     <!-- chat -->
     <create creator="new" javascript="JavascriptChat" scope="application">
       <param name="class" value="org.getahead.dwrdemo.chat.JavascriptChat"/>
