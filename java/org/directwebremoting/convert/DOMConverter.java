@@ -26,14 +26,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.util.LocalUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -116,7 +116,7 @@ public class DOMConverter extends BaseV20Converter implements Converter
             xml.flush();
 
             String script = EnginePrivate.xmlStringToJavascriptDom(xml.toString());
-            OutboundVariable ov = new SimpleOutboundVariable(script, outctx, false);
+            OutboundVariable ov = new NonNestedOutboundVariable(script);
 
             outctx.put(data, ov);
 

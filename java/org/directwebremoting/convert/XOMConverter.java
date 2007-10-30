@@ -22,14 +22,14 @@ import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Node;
 
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.util.LocalUtil;
 
 /**
@@ -87,7 +87,7 @@ public class XOMConverter extends BaseV20Converter implements Converter
             Node node = (Node) data;
 
             String script = EnginePrivate.xmlStringToJavascriptDom(node.toXML());
-            OutboundVariable ov = new SimpleOutboundVariable(script, outctx, false);
+            OutboundVariable ov = new NonNestedOutboundVariable(script);
 
             outctx.put(data, ov);
 

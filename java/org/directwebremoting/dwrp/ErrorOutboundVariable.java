@@ -15,61 +15,45 @@
  */
 package org.directwebremoting.dwrp;
 
-import org.directwebremoting.extend.OutboundContext;
-import org.directwebremoting.extend.OutboundVariable;
+import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
+import org.directwebremoting.util.LocalUtil;
 
 /**
  * An OutboundVariable that can not be recursive.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ErrorOutboundVariable extends AbstractOutboundVariable implements OutboundVariable
+public class ErrorOutboundVariable extends NonNestedOutboundVariable
 {
     /**
      * Default ctor that leaves blank (not null) members
-     * @param outboundContext The conversion context
      * @param errorMessage Some message for the developer to see.
-     * @param forceInline true to force inline status, false to let the system decide
      */
-    public ErrorOutboundVariable(OutboundContext outboundContext, String errorMessage, boolean forceInline)
+    public ErrorOutboundVariable(String errorMessage)
     {
-        super(outboundContext);
-        this.errorMessage = errorMessage;
+        super(sanitizeErrorMessage(errorMessage));
+    }
 
-        if (forceInline)
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.OutboundVariable#getAssignCode()
+     */
+    public static String sanitizeErrorMessage(String errorMessage)
+    {
+        boolean debug = false;
+
+        Object debugVal = WebContextFactory.get().getContainer().getBean("debug");
+        if (debugVal != null)
         {
-            forceInline(true);
+            debug = LocalUtil.simpleConvert(debugVal.toString(), Boolean.class);
+        }
+
+        if (debug)
+        {
+            return "## CONVERSION ERROR: " + errorMessage + " ##";
+        }
+        else
+        {
+            return "null";
         }
     }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getNotInlineDefinition()
-     */
-    @Override
-    protected NotInlineDefinition getNotInlineDefinition()
-    {
-        return new NotInlineDefinition("var " + getVariableName() + "=null;", "");
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.AbstractOutboundVariable#getInlineDefinition()
-     */
-    @Override
-    protected String getInlineDefinition()
-    {
-        return "null";
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
-    {
-        return "Error:null";
-    }
-
-    /**
-     * A message for the developer saying what has gone wrong.
-     */
-    private String errorMessage;
 }

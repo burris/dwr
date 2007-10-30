@@ -154,39 +154,50 @@ public class FormField
     @Override
     public boolean equals(Object obj)
     {
-        if (obj instanceof FormField)
+        if (obj == this)
         {
-            FormField that = (FormField) obj;
-            if (this.file && !that.file)
+            return true;
+        }
+
+        if (!(obj instanceof FormField))
+        {
+            return false;
+        }
+
+        FormField that = (FormField) obj;
+
+        if (this.file != that.file)
+        {
+            return false;
+        }
+
+        if (this.file)
+        {
+            if (!equals(this.mimeType, that.mimeType))
             {
                 return false;
             }
 
-            if (this.file)
+            if (!equals(this.name, that.name))
             {
-                if (!equals(this.mimeType, that.mimeType))
-                {
-                    return false;
-                }
-                if (!equals(this.name, that.name))
-                {
-                    return false;
-                }
-            }
-
-            if (bytes.length == that.bytes.length)
-            {
-                for (int i = 0; i < bytes.length; ++i)
-                {
-                    if (bytes[i] != that.bytes[i])
-                    {
-                        return false;
-                    }
-                }
-                return true;
+                return false;
             }
         }
-        return false;
+
+        if (this.bytes.length != that.bytes.length)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < this.bytes.length; ++i)
+        {
+            if (this.bytes[i] != that.bytes[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     
     private boolean equals(Object o1, Object o2)

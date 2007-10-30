@@ -41,15 +41,16 @@ public abstract class BaseScriptConduit extends ScriptConduit
      * @param response Used to flush output
      * @param batchId The id of the batch that we are responding to
      * @param converterManager How we convert objects to script
-     * @throws IOException If stream ops fail
+     * @throws IOException If stream actions fail
      */
-    public BaseScriptConduit(HttpServletResponse response, String batchId, ConverterManager converterManager) throws IOException
+    public BaseScriptConduit(HttpServletResponse response, String batchId, ConverterManager converterManager, boolean jsonOutput) throws IOException
     {
         super(RANK_SLOW);
 
         this.response = response;
         this.batchId = batchId;
         this.converterManager = converterManager;
+        this.jsonOutput = jsonOutput;
 
         response.setContentType(getOutboundMimeType());
         out = response.getWriter();
@@ -151,6 +152,11 @@ public abstract class BaseScriptConduit extends ScriptConduit
     {
         return alarm;
     }
+
+    /**
+     * Are we outputting in JSON mode?
+     */
+    protected boolean jsonOutput = false;
 
     /**
      * How we convert parameters

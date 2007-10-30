@@ -17,10 +17,10 @@ package org.directwebremoting.convert;
 
 import java.lang.reflect.Constructor;
 
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
@@ -52,6 +52,6 @@ public class ConstructorConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return new SimpleOutboundVariable('\'' + JavascriptUtil.escapeJavaScript(data.toString()) + '\'', outctx, true);
+        return new NonNestedOutboundVariable('\'' + JavascriptUtil.escapeJavaScript(data.toString()) + '\'');
     }
 }

@@ -15,14 +15,14 @@
  */
 package org.directwebremoting.convert;
 
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
-import org.directwebremoting.io.Context;
+import org.directwebremoting.proxy.Context;
 
 /**
  * An implementation of Converter for Context helper objects for ScriptProxies.
@@ -44,6 +44,6 @@ public class ContextConverter extends BaseV20Converter implements Converter
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         Context context = (Context) data;
-        return new SimpleOutboundVariable(context.getFullPath(), outctx, true);
+        return new NonNestedOutboundVariable(context.getFullPath());
     }
 }

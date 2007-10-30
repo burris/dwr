@@ -3,11 +3,11 @@ package org.directwebremoting.convert;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.util.LocalUtil;
@@ -56,6 +56,6 @@ public class StringEnumAbstractBaseConverter extends BaseV20Converter implements
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return new SimpleOutboundVariable('\'' + data.toString() + '\'', outctx, true);
+        return new NonNestedOutboundVariable('\'' + data.toString() + '\'');
     }
 }

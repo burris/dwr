@@ -32,10 +32,12 @@ public class BayeuxScriptConduit extends ScriptConduit
     /**
      * 
      */
-    public BayeuxScriptConduit(ConverterManager converterManager)
+    public BayeuxScriptConduit(ConverterManager converterManager, boolean jsonOutput)
     {
         super(ScriptConduit.RANK_FAST);
-        this.converterManager=converterManager;
+
+        this.converterManager = converterManager;
+        this.jsonOutput = jsonOutput;
     }
 
     /* (non-Javadoc)
@@ -44,7 +46,7 @@ public class BayeuxScriptConduit extends ScriptConduit
     @Override
     public boolean addScript(ScriptBuffer script) throws IOException, MarshallException
     {
-        builder.append(ScriptBufferUtil.createOutput(script, converterManager));
+        builder.append(ScriptBufferUtil.createOutput(script, converterManager, jsonOutput));
         return true;
     }
 
@@ -56,6 +58,11 @@ public class BayeuxScriptConduit extends ScriptConduit
     {
         return builder.toString();
     }
+
+    /**
+     * Are we outputting in JSON mode?
+     */
+    private boolean jsonOutput = false;
 
     private ConverterManager converterManager;
 

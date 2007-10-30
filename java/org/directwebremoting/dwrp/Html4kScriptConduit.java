@@ -35,7 +35,7 @@ import org.directwebremoting.util.MimeConstants;
  * and then poll, looking for new data into the iframe. The html tags should be
  * removed and script between script-start and script-end tags eval()ed.
  * <p>This conduit also sends 4k of whitespace data on each flush. This causes
- * IE to recognise new content. This would be a significant network overhead
+ * IE to recognize new content. This would be a significant network overhead
  * so it is important to use gzip on the connection. This complexity has caused
  * us to turn this conduit off at the moment.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -47,11 +47,11 @@ public class Html4kScriptConduit extends BaseScriptConduit
      * @param response Used to flush output
      * @param batchId The id of the batch that we are responding to
      * @param converterManager How we convert objects to script
-     * @throws IOException If stream ops fail
+     * @throws IOException If stream actions fail
      */
-    public Html4kScriptConduit(HttpServletResponse response, String batchId, ConverterManager converterManager) throws IOException
+    public Html4kScriptConduit(HttpServletResponse response, String batchId, ConverterManager converterManager, boolean jsonOutput) throws IOException
     {
-        super(response, batchId, converterManager);
+        super(response, batchId, converterManager, jsonOutput);
     }
 
     /* (non-Javadoc)
@@ -101,7 +101,7 @@ public class Html4kScriptConduit extends BaseScriptConduit
     @Override
     public boolean addScript(ScriptBuffer scriptBuffer) throws IOException, MarshallException
     {
-        String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);
+        String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager, jsonOutput);
 
         synchronized (out)
         {

@@ -49,7 +49,7 @@ public class ConstructorConverterTest
     @Test
     public void convertOutbound()
     {
-        OutboundContext ctx = new OutboundContext();
+        OutboundContext ctx = new OutboundContext(false);
 
         OutboundVariable result = converter.convertOutbound("value", ctx);
 

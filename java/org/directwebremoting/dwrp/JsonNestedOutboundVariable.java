@@ -18,26 +18,23 @@ package org.directwebremoting.dwrp;
 import org.directwebremoting.extend.OutboundVariable;
 
 /**
- * An OutboundVariable that simply refers to one defined elsewhere
+ * A helper class for people that want to implement {@link OutboundVariable}.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ReferenceOutboundVariable implements OutboundVariable
+public abstract class JsonNestedOutboundVariable implements OutboundVariable
 {
-    /**
-     * Create a new ReferenceOutboundVariable
-     * @param assignCode The name of the variable to refer to
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.OutboundVariable#prepareAssignCode()
      */
-    public ReferenceOutboundVariable(String assignCode)
+    public void prepareAssignCode()
     {
-        this.assignCode = assignCode;
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.OutboundVariable#getAssignCode()
+     * @see org.directwebremoting.extend.OutboundVariable#prepareBuildDeclareCodes()
      */
-    public String getAssignCode()
+    public void prepareBuildDeclareCodes()
     {
-        return assignCode;
     }
 
     /* (non-Javadoc)
@@ -63,18 +60,4 @@ public class ReferenceOutboundVariable implements OutboundVariable
     {
         return this;
     }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString()
-    {
-        return "ReferenceOV(" + assignCode + ")";
-    }
-
-    /**
-     * The variable that we refer to
-     */
-    private String assignCode;
 }

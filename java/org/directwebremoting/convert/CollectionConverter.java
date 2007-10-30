@@ -26,9 +26,11 @@ import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.directwebremoting.dwrp.ArrayOutboundVariable;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.dwrp.ArrayJsonOutboundVariable;
+import org.directwebremoting.dwrp.ArrayNonJsonOutboundVariable;
+import org.directwebremoting.dwrp.CollectionOutboundVariable;
 import org.directwebremoting.dwrp.ErrorOutboundVariable;
 import org.directwebremoting.dwrp.ParseUtil;
 import org.directwebremoting.dwrp.ProtocolConstants;
@@ -150,6 +152,7 @@ public class CollectionConverter extends BaseV20Converter implements Converter
                 String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
 
                 InboundVariable nested = new InboundVariable(data.getLookup(), null, splitType, splitValue);
+                nested.dereference();
 
                 Object output = converterManager.convertInbound(subtype, nested, inctx, subthc);
                 col.add(output);
@@ -195,7 +198,15 @@ public class CollectionConverter extends BaseV20Converter implements Converter
         }
 
         // Stash this bit of data to cope with recursion
-        ArrayOutboundVariable ov = new ArrayOutboundVariable(outctx);
+        CollectionOutboundVariable ov;
+        if (outctx.isJsonMode())
+        {
+            ov = new ArrayJsonOutboundVariable();
+        }
+        else
+        {
+            ov = new ArrayNonJsonOutboundVariable(outctx);
+        }
         outctx.put(data, ov);
 
         // Convert all the data members
@@ -214,14 +225,14 @@ public class CollectionConverter extends BaseV20Converter implements Converter
                 String errorMessage = "Conversion error for " + data.getClass().getName() + ".";
                 log.warn(errorMessage, ex);
 
-                nested = new ErrorOutboundVariable(outctx, errorMessage, true);
+                nested = new ErrorOutboundVariable(errorMessage);
             }
 
             ovs.add(nested);
         }
 
         // Group the list of converted objects into this OutboundVariable
-        ov.init(ovs);
+        ov.setChildren(ovs);
 
         return ov;
     }

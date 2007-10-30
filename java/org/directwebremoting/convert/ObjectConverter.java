@@ -110,7 +110,7 @@ public class ObjectConverter extends BasicObjectConverter implements Converter
     }
 
     /**
-     * Do we force accessibillity for hidden fields
+     * Do we force accessibility for hidden fields
      */
     private boolean force = false;
 }

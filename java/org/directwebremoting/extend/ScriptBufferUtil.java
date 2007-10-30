@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptBuffer.StringWrapper;
 
 /**
  * A simple utility class to extract a {@link String} from a {@link ScriptBuffer}.
@@ -43,70 +42,53 @@ public class ScriptBufferUtil
      */
     public static String createOutput(ScriptBuffer buffer, ConverterManager converterManager) throws MarshallException
     {
-        OutboundContext context = new OutboundContext();
-        List<Object> ovs = new ArrayList<Object>();
+        return createOutput(buffer, converterManager, false);
+    }
 
-        // First convert everything
-        for (Object element : buffer.getParts())
+    /**
+     * Return a string ready for output.
+     * @param buffer The source of the script data
+     * @param converterManager How we convert script variable to Javascript
+     * @param jsonOutput Are we doing strict JSON output?
+     * @return Some Javascript to be eval()ed by a browser.
+     * @throws MarshallException If an error happens during parameter marshalling
+     */
+    public static String createOutput(ScriptBuffer buffer, ConverterManager converterManager, boolean jsonOutput) throws MarshallException
+    {
+        OutboundContext context = new OutboundContext(jsonOutput);
+        List<OutboundVariable> scriptParts = new ArrayList<OutboundVariable>();
+
+        // First convert everything into OutboundVariables
+        for (Object part : buffer.getParts())
         {
-            if (element instanceof StringWrapper)
-            {
-                ovs.add(element);
-            }
-            else
-            {
-                OutboundVariable ov = converterManager.convertOutbound(element, context);
-                ovs.add(ov);
-            }
+            OutboundVariable ov = converterManager.convertOutbound(part, context);
+            scriptParts.add(ov);
         }
 
-        // At this point ovs has a 1-1 mapping from the parts to the buffer
-        // It can contain one of 2 types, an OutboundVariable that has been
-        // converted or a string (StringWrapper) that does not need conversion
-
         StringBuffer output = new StringBuffer();
+        context.prepareForOutput();
 
         // First we look for the declaration code
-        for (Object element : ovs)
+        for (OutboundVariable ov : scriptParts)
         {
-            if (element instanceof OutboundVariable)
-            {
-                OutboundVariable ov = (OutboundVariable) element;
-                output.append(ov.getDeclareCode());
-            }
-            else
-            {
-                // StringWrappers do not need declaring
-            }
+            output.append(ov.getDeclareCode());
         }
 
         // Then we look for the construction code
-        for (Object element : ovs)
+        for (OutboundVariable ov : scriptParts)
         {
-            if (element instanceof OutboundVariable)
-            {
-                OutboundVariable ov = (OutboundVariable) element;
-                output.append(ov.getBuildCode());
-            }
-            else
-            {
-                // StringWrappers do not need building
-            }
+            output.append(ov.getBuildCode());
         }
 
         // Then we output everything else
-        for (Object element : ovs)
+        for (OutboundVariable ov : scriptParts)
         {
-            if (element instanceof OutboundVariable)
+            String assignCode = ov.getAssignCode();
+            if (assignCode == null)
             {
-                OutboundVariable ov = (OutboundVariable) element;
-                output.append(ov.getAssignCode());
+                throw new NullPointerException();
             }
-            else
-            {
-                StringWrapper str = (StringWrapper) element;
-                output.append(str.toString());
-            }
+            output.append(assignCode);
         }
 
         return output.toString();

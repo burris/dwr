@@ -38,6 +38,7 @@
     <converter id="miniException" class="org.directwebremoting.convert.MinimalistExceptionConverter"/>
     <converter id="file" class="org.directwebremoting.convert.FileConverter"/>
     <converter id="context" class="org.directwebremoting.convert.ContextConverter"/>
+    <converter id="stringWrapper" class="org.directwebremoting.convert.StringWrapperConverter"/>
   </init>
 
   <allow>
@@ -85,6 +86,7 @@
     <convert converter="array" match="[L*"/>
 
     <convert converter="context" match="org.directwebremoting.io.Context"/>
+    <convert converter="stringWrapper" match="org.directwebremoting.io.StringWrapper"/>
 
     <!--
     The catch for the next 2 is that we really mean java.util.Collection<String>

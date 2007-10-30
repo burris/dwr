@@ -104,6 +104,18 @@ public class Test
 
     public ObjA testLooped(ObjA objA)
     {
+        ObjA nestedA = objA.getObjB().getObjA();
+
+        if (nestedA != objA)
+        {
+            throw new IllegalStateException("Non matching obja != obja.objb.obja");
+        }
+
+        if (nestedA.getObjB() != objA.getObjB())
+        {
+            throw new IllegalStateException("Non matching objb != objb.obja.objb");
+        }
+
         return objA;
     }
 

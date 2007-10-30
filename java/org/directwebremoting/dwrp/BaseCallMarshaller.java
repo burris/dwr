@@ -242,6 +242,23 @@ public abstract class BaseCallMarshaller implements Marshaller
             // Check this method is accessible
             accessControl.assertExecutionIsPossible(creator, call.getScriptName(), method);
 
+            // We are now sure we have the set of input lined up. They may
+            // cross-reference so we do the de-referencing all in one go.
+            try
+            {
+                inctx.dereference();
+            }
+            catch (MarshallException ex)
+            {
+                log.warn("Marshalling exception", ex);
+
+                call.setMethod(null);
+                call.setParameters(null);
+                call.setException(ex);
+
+                continue callLoop;
+            }
+
             // Convert all the parameters to the correct types
             Object[] params = new Object[method.getParameterTypes().length];
             for (int j = 0; j < method.getParameterTypes().length; j++)
@@ -585,6 +602,22 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
+     * @return Are we outputting in JSON mode?
+     */
+    public boolean isJsonOutput()
+    {
+        return jsonOutput;
+    }
+
+    /**
+     * @param jsonOutput Are we outputting in JSON mode?
+     */
+    public void setJsonOutput(boolean jsonOutput)
+    {
+        this.jsonOutput = jsonOutput;
+    }
+
+    /**
      * A ScriptConduit that works with the parent Marshaller.
      * In some ways this is nasty because it has access to essentially private parts
      * of BaseCallMarshaller, however there is nowhere sensible to store them
@@ -614,7 +647,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         @Override
         public boolean addScript(ScriptBuffer script) throws IOException, MarshallException
         {
-            sendScript(out, ScriptBufferUtil.createOutput(script, converterManager));
+            sendScript(out, ScriptBufferUtil.createOutput(script, converterManager, jsonOutput));
             return true;
         }
 
@@ -623,6 +656,11 @@ public abstract class BaseCallMarshaller implements Marshaller
          */
         private final PrintWriter out;
     }
+
+    /**
+     * Are we outputting in JSON mode?
+     */
+    protected boolean jsonOutput = false;
 
     /**
      * The session cookie name

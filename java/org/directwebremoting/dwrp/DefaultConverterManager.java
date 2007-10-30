@@ -22,14 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.NamedConverter;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.extend.TypeHintContext;
@@ -170,7 +171,7 @@ public class DefaultConverterManager implements ConverterManager
     {
         if (data == null)
         {
-            return new SimpleOutboundVariable("null", converted, true);
+            return new NonNestedOutboundVariable("null");
         }
 
         // Check to see if we have done this one already
@@ -185,8 +186,9 @@ public class DefaultConverterManager implements ConverterManager
         Converter converter = getConverter(data);
         if (converter == null)
         {
-            log.error(Messages.getString("DefaultConverterManager.MissingConverter", data.getClass().getName()));
-            return new SimpleOutboundVariable("null", converted, true);
+            String message = Messages.getString("DefaultConverterManager.MissingConverter", data.getClass().getName());
+            log.error(message);
+            return new ErrorOutboundVariable(message);
         }
 
         return converter.convertOutbound(data, converted);

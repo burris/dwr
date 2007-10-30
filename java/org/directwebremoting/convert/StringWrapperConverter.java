@@ -15,11 +15,6 @@
  */
 package org.directwebremoting.convert;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
@@ -27,30 +22,19 @@ import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
-import org.directwebremoting.util.JavascriptUtil;
-import org.directwebremoting.util.LocalUtil;
 
 /**
  * An implementation of Converter for Strings.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class URLConverter extends BaseV20Converter implements Converter
+public class StringWrapperConverter extends BaseV20Converter implements Converter
 {
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
     public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        String urlString = LocalUtil.decode(data.getValue());
-        try
-        {
-            return new URL(urlString);
-        }
-        catch (MalformedURLException ex)
-        {
-            log.warn("Failed to create URL from string '" + urlString + "'. Returning null");
-            return null;
-        }
+        throw new MarshallException(paramType, "StringWrappers are not availble during inbound marshalling");
     }
 
     /* (non-Javadoc)
@@ -58,13 +42,6 @@ public class URLConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
-        URL url = (URL) data;
-        String escaped = JavascriptUtil.escapeJavaScript(url.toExternalForm());
-        return new NonNestedOutboundVariable('\"' + escaped + '\"');
+        return new NonNestedOutboundVariable(data.toString());
     }
-
-    /**
-     * The log stream
-     */
-    private static final Log log = LogFactory.getLog(URLConverter.class);
 }

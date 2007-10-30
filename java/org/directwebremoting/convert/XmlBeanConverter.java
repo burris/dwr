@@ -154,6 +154,8 @@ public class XmlBeanConverter extends BeanConverter
                 String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
 
                 InboundVariable nested = new InboundVariable(iv.getLookup(), null, splitType, splitValue);
+                nested.dereference();
+
                 TypeHintContext incc = createTypeHintContext(inctx, property);
 
                 Object output = converterManager.convertInbound(propType, nested, inctx, incc);

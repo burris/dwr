@@ -33,6 +33,19 @@ import org.directwebremoting.dwrp.ProtocolConstants;
 public final class InboundContext
 {
     /**
+     * When we are sure we have finished parsing the input, we can begin to
+     * fix all cross-references.
+     * @throws MarshallException If cross-references don't add up
+     */
+    public void dereference() throws MarshallException
+    {
+        for (InboundVariable variable : variables.values())
+        {
+            variable.dereference();
+        }
+    }
+
+    /**
      * Someone wants to tell us about a new conversion context.
      * @param context The current conversion context
      */

@@ -42,6 +42,8 @@ public class OutputAlarm extends BasicAlarm implements Alarm
     {
         this.maxWaitAfterWrite = maxWaitAfterWrite;
         this.scriptSession = scriptSession;
+
+        conduit = new AlarmScriptConduit();
     }
 
     /* (non-Javadoc)
@@ -119,7 +121,7 @@ public class OutputAlarm extends BasicAlarm implements Alarm
     /**
      * A conduit to alert us if there is output
      */
-    protected ScriptConduit conduit = new AlarmScriptConduit();
+    protected ScriptConduit conduit = null;
 
     /**
      * How long do we wait after output happens in case there is more output

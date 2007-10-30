@@ -45,11 +45,11 @@ public class PlainScriptConduit extends BaseScriptConduit
      * @param response Used to flush output
      * @param batchId The id of the batch that we are responding to
      * @param converterManager How we convert objects to script
-     * @throws IOException If stream ops fail
+     * @throws IOException If stream actions fail
      */
-    public PlainScriptConduit(HttpServletResponse response, String batchId, ConverterManager converterManager) throws IOException
+    public PlainScriptConduit(HttpServletResponse response, String batchId, ConverterManager converterManager, boolean jsonOutput) throws IOException
     {
-        super(response, batchId, converterManager);
+        super(response, batchId, converterManager, jsonOutput);
     }
 
     /* (non-Javadoc)
@@ -83,7 +83,7 @@ public class PlainScriptConduit extends BaseScriptConduit
     @Override
     public boolean addScript(ScriptBuffer scriptBuffer) throws IOException, MarshallException
     {
-        String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager);
+        String script = ScriptBufferUtil.createOutput(scriptBuffer, converterManager, jsonOutput);
 
         synchronized (out)
         {

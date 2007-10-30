@@ -18,14 +18,16 @@ package org.directwebremoting.convert;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.dwrp.MapOutboundVariable;
+import org.directwebremoting.dwrp.ObjectJsonOutboundVariable;
+import org.directwebremoting.dwrp.ObjectNonJsonOutboundVariable;
 import org.directwebremoting.dwrp.ParseUtil;
 import org.directwebremoting.dwrp.ProtocolConstants;
-import org.directwebremoting.dwrp.ObjectOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.InboundContext;
@@ -136,15 +138,18 @@ public class MapConverter implements Converter
                 String splitIvValue = splitIv[LocalUtil.INBOUND_INDEX_VALUE];
                 String splitIvType = splitIv[LocalUtil.INBOUND_INDEX_TYPE];
                 InboundVariable valIv = new InboundVariable(incx, null, splitIvType, splitIvValue);
+                valIv.dereference();
                 Object val = converterManager.convertInbound(valType, valIv, inctx, valThc);
 
                 // Keys (unlike values) do not have type info passed with them
-                // Could we have recurrsive key? - I don't think so because keys
+                // Could we have recursive key? - I don't think so because keys
                 // must be strings in Javascript
                 String keyStr = token.substring(0, colonpos).trim();
                 //String[] keySplit = LocalUtil.splitInbound(keyStr);
                 //InboundVariable keyIv = new InboundVariable(incx, splitIv[LocalUtil.INBOUND_INDEX_TYPE], splitIv[LocalUtil.INBOUND_INDEX_VALUE]);
                 InboundVariable keyIv = new InboundVariable(incx, null, ProtocolConstants.TYPE_STRING, keyStr);
+                keyIv.dereference();
+
                 Object key = converterManager.convertInbound(keyType, keyIv, inctx, keyThc);
 
                 map.put(key, val);
@@ -176,7 +181,15 @@ public class MapConverter implements Converter
             ovs = new HashMap<String, OutboundVariable>();
         }
 
-        ObjectOutboundVariable ov = new ObjectOutboundVariable(outctx);
+        MapOutboundVariable ov;
+        if (outctx.isJsonMode())
+        {
+            ov = new ObjectJsonOutboundVariable();
+        }
+        else
+        {
+            ov = new ObjectNonJsonOutboundVariable(outctx, null);
+        }
         outctx.put(data, ov);
 
         // Loop through the map outputting any init code and collecting
@@ -196,16 +209,18 @@ public class MapConverter implements Converter
 
             String outkey = JavascriptUtil.escapeJavaScript(key.toString());
 
-            // OutboundVariable ovkey = converterManager.convertOutbound(key, outctx);
-            // buffer.append(ovkey.getInitCode());
-            // outkey = ovkey.getAssignCode();
+            /*
+            OutboundVariable ovkey = converterManager.convertOutbound(key, outctx);
+            buffer.append(ovkey.getInitCode());
+            outkey = ovkey.getAssignCode();
+            */
 
             OutboundVariable nested = converterManager.convertOutbound(value, outctx);
 
             ovs.put(outkey, nested);
         }
 
-        ov.init(ovs, null);
+        ov.setChildren(ovs);
 
         return ov;
     }

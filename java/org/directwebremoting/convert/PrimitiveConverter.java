@@ -15,11 +15,11 @@
  */
 package org.directwebremoting.convert;
 
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.util.JavascriptUtil;
@@ -63,21 +63,21 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
 
         if (data.equals(Boolean.TRUE))
         {
-            return new SimpleOutboundVariable("true", outctx, true);
+            return new NonNestedOutboundVariable("true");
         }
         else if (data.equals(Boolean.FALSE))
         {
-            return new SimpleOutboundVariable("false", outctx, true);
+            return new NonNestedOutboundVariable("false");
         }
         else if (paramType == Character.class)
         {
             // Treat characters as strings
-            return new SimpleOutboundVariable('\"' + JavascriptUtil.escapeJavaScript(data.toString()) + '\"', outctx, true);
+            return new NonNestedOutboundVariable('\"' + JavascriptUtil.escapeJavaScript(data.toString()) + '\"');
         }
         else
         {
             // We just use the default toString for all numbers
-            return new SimpleOutboundVariable(data.toString(), outctx, true);
+            return new NonNestedOutboundVariable(data.toString());
         }
     }
 }

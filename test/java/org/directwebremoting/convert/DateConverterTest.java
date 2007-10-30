@@ -42,7 +42,7 @@ public class DateConverterTest
     @Test
     public void convertOutbound() throws Exception
     {
-        OutboundVariable result = converter.convertOutbound(new Date(1104534000000L), new OutboundContext());
+        OutboundVariable result = converter.convertOutbound(new Date(1104534000000L), new OutboundContext(false));
 
         assertNotNull(result);
         assertEquals("new Date(1104534000000)", result.getAssignCode());
@@ -53,7 +53,7 @@ public class DateConverterTest
     public void convertOutboundFail() throws Exception
     {
         // try to convert a non-date object
-        converter.convertOutbound("01-01-2005", new OutboundContext());
+        converter.convertOutbound("01-01-2005", new OutboundContext(false));
     }
 
     @Test

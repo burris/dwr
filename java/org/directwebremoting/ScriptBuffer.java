@@ -18,6 +18,8 @@ package org.directwebremoting;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.directwebremoting.io.StringWrapper;
+
 /**
  * A ScriptBuffer is like a StringBuffer except that it is used to create
  * Javascript commands. There are 2 version of the <code>append()</code> method:
@@ -164,29 +166,6 @@ public class ScriptBuffer
     public List<? extends Object> getParts()
     {
         return parts;
-    }
-
-    /**
-     * A wrapper around a string to distinguish a string entered into this
-     * buffer as code and a string entered as data
-     */
-    public static class StringWrapper
-    {
-        StringWrapper(String data)
-        {
-            this.data = data;
-        }
-
-        final String data;
-
-        /* (non-Javadoc)
-         * @see java.lang.Object#toString()
-         */
-        @Override
-        public String toString()
-        {
-            return data;
-        }
     }
 
     /**

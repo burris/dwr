@@ -20,18 +20,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.dwrp.MapOutboundVariable;
+import org.directwebremoting.dwrp.ObjectJsonOutboundVariable;
+import org.directwebremoting.dwrp.ObjectNonJsonOutboundVariable;
 import org.directwebremoting.dwrp.ParseUtil;
 import org.directwebremoting.dwrp.ProtocolConstants;
-import org.directwebremoting.dwrp.ObjectOutboundVariable;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
+import org.directwebremoting.extend.JsonModeMarshallException;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.NamedConverter;
 import org.directwebremoting.extend.OutboundContext;
@@ -135,6 +138,7 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
                 String splitType = split[LocalUtil.INBOUND_INDEX_TYPE];
 
                 InboundVariable nested = new InboundVariable(data.getLookup(), null, splitType, splitValue);
+                nested.dereference();
                 TypeHintContext incc = createTypeHintContext(inctx, property);
 
                 Object output = converterManager.convertInbound(propType, nested, inctx, incc);
@@ -173,8 +177,21 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
         // Where we collect out converted children
         Map<String, OutboundVariable> ovs = new TreeMap<String, OutboundVariable>();
 
-        // We need to do this before collecing the children to save recurrsion
-        ObjectOutboundVariable ov = new ObjectOutboundVariable(outctx);
+        // We need to do this before collecting the children to save recursion
+        MapOutboundVariable ov;
+        if (outctx.isJsonMode())
+        {
+            if (javascript != null)
+            {
+                throw new JsonModeMarshallException(data.getClass(), "Can't used named Javascript objects in JSON mode");
+            }
+
+            ov = new ObjectJsonOutboundVariable();
+        }
+        else
+        {
+            ov = new ObjectNonJsonOutboundVariable(outctx, getJavascript());
+        }
         outctx.put(data, ov);
 
         try
@@ -200,7 +217,7 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
             throw new MarshallException(data.getClass(), ex);
         }
 
-        ov.init(ovs, getJavascript());
+        ov.setChildren(ovs);
 
         return ov;
     }

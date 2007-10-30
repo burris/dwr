@@ -467,8 +467,7 @@ public class AllConverterTest
         {
             try
             {
-                InboundVariable iv = new InboundVariable(ctx, null, "type", input);
-                converterManager.convertInbound(convertTo, iv, ctx, null);
+                new InboundVariable(ctx, null, "type", input);
                 Assert.fail();
             }
             catch (Exception ex)
@@ -514,7 +513,7 @@ public class AllConverterTest
     protected void assertOutboundConversion(Object input, String expected) throws MarshallException
     {
         ConverterManager converterManager = singletonContainer.getConverterManager();
-        OutboundContext ctx = new OutboundContext();
+        OutboundContext ctx = new OutboundContext(false);
 
         OutboundVariable result = converterManager.convertOutbound(input, ctx);
 

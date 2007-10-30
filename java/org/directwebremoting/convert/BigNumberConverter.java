@@ -18,11 +18,11 @@ package org.directwebremoting.convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.util.Messages;
@@ -72,9 +72,9 @@ public class BigNumberConverter extends BaseV20Converter implements Converter
     {
         if (data == null)
         {
-            return new SimpleOutboundVariable("null", outctx, true);
+            return new NonNestedOutboundVariable("null");
         }
 
-        return new SimpleOutboundVariable(data.toString(), outctx, true);
+        return new NonNestedOutboundVariable(data.toString());
     }
 }

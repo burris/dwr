@@ -85,7 +85,7 @@ public class BayeuxClient implements Listener
 
             Replies replies = remoter.execute(calls);
 
-            ScriptConduit conduit = new BayeuxScriptConduit(converterManager);
+            ScriptConduit conduit = new BayeuxScriptConduit(converterManager, JSON_OUTPUT);
             for (Reply reply : replies)
             {
                 String batchId = calls.getBatchId();
@@ -146,6 +146,11 @@ public class BayeuxClient implements Listener
     {
         this.plainCallMarshaller=plainCallMarshaller;
     }
+
+    /**
+     * We're note constraining our output to JSON at the moment
+     */
+    private static final boolean JSON_OUTPUT = false;
 
     private Bayeux bayeux;
 

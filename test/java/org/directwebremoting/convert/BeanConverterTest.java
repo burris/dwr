@@ -15,19 +15,22 @@
  */
 package org.directwebremoting.convert;
 
-import static org.junit.Assert.*;
-
 import org.directwebremoting.convert.test.MyBeanImpl;
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.extend.TypeHintContext;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Bram Smeets
@@ -171,9 +174,9 @@ public class BeanConverterTest
     @Test
     public void convertOutbound() throws Exception
     {
-        OutboundContext ctx = new OutboundContext();
+        OutboundContext ctx = new OutboundContext(false);
 
-        EasyMock.expect(manager.convertOutbound("bla", ctx)).andReturn(new SimpleOutboundVariable("", ctx, false));
+        EasyMock.expect(manager.convertOutbound("bla", ctx)).andReturn(new NonNestedOutboundVariable(""));
         EasyMock.replay(manager);
 
         MyBeanImpl bean = new MyBeanImpl();
@@ -203,11 +206,11 @@ public class BeanConverterTest
     @Test
     public void convertOutboundWithInclusions() throws Exception
     {
-        OutboundContext ctx = new OutboundContext();
+        OutboundContext ctx = new OutboundContext(false);
 
         converter.setInclude("property, getSomething");
 
-        EasyMock.expect(manager.convertOutbound("bla", ctx)).andReturn(new SimpleOutboundVariable("", ctx, false));
+        EasyMock.expect(manager.convertOutbound("bla", ctx)).andReturn(new NonNestedOutboundVariable(""));
         EasyMock.replay(manager);
 
         MyBeanImpl bean = new MyBeanImpl();
@@ -223,7 +226,7 @@ public class BeanConverterTest
     @Test
     public void convertOutboundWithExclusions() throws Exception
     {
-        OutboundContext ctx = new OutboundContext();
+        OutboundContext ctx = new OutboundContext(false);
 
         converter.setExclude("property, getSomething");
 
@@ -248,13 +251,13 @@ public class BeanConverterTest
     @Test(expected = Exception.class)
     public void convertOutboundNullPointerException2() throws Exception
     {
-        converter.convertOutbound(null, new OutboundContext());
+        converter.convertOutbound(null, new OutboundContext(false));
     }
 
     @Test
     public void convertOutboundExceptions() throws Exception
     {
-        OutboundVariable result = converter.convertOutbound(new Object(), new OutboundContext());
+        OutboundVariable result = converter.convertOutbound(new Object(), new OutboundContext(false));
         assertNotNull(result);
         assertEquals("s0", result.getAssignCode());
         //assertEquals(result.getBuildCode(), "");

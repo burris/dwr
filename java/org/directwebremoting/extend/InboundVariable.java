@@ -15,8 +15,6 @@
  */
 package org.directwebremoting.extend;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.util.Messages;
 
@@ -54,68 +52,49 @@ public final class InboundVariable
         this.type = type;
         this.formField = fileValue;
         this.key = key;
-        this.file = true;
-        this.dereferenced = attemptDereference();
     }
-    
+
     /**
      * Attempt to de-reference an inbound variable.
      * We try de-referencing as soon as possible (why? there is a good reason
      * for it, it fixes some bug, but I can't remember what right now) However
      * the referenced variable may not exist yet, so the de-referencing may
      * fail, requiring us to have another go later.
-     * @return Did the dereferencing succeed?
+     * @throws MarshallException If cross-references don't add up
      */
-    private boolean attemptDereference()
+    public void dereference() throws MarshallException
     {
         int maxDepth = 0;
 
-        if (ProtocolConstants.TYPE_REFERENCE.equals(type))
+        while (ProtocolConstants.TYPE_REFERENCE.equals(type))
         {
-            while (ProtocolConstants.TYPE_REFERENCE.equals(type))
+            InboundVariable cd = context.getInboundVariable(formField.getString());
+            if (cd == null)
             {
-                InboundVariable cd = context.getInboundVariable(formField.getString());
-                if (cd == null)
-                {
-                    return false;
-                }
-
-                type = cd.getType();
-                file = cd.isFile();
-                formField = cd.getFormField();
-
-                maxDepth++;
-                if (maxDepth > 20)
-                {
-                    throw new IllegalStateException("Max depth exceeded when dereferencing " + formField.getString());
-                }
+                throw new MarshallException(getClass(), Messages.getString("InboundVariable.MissingVariable", formField.getString()));
             }
 
-            // For references without an explicit variable name, we use the
-            // name of the thing they point at
-            if (key == null)
+            type = cd.getType();
+            formField = cd.getFormField();
+
+            // For some reason we used to leave this until the loop finished
+            // and then only set it if the key was null. I think this logic
+            // may have been broken by named objects
+            key = cd.key;
+
+            maxDepth++;
+            if (maxDepth > 20)
             {
-                key = formField.getString();
+                throw new MarshallException(getClass(), "Max depth exceeded when dereferencing " + formField.getString());
             }
         }
 
-        return true;
-    }
-
-    /**
-     * Call <code>attemptDereference()</code>, and complain if it fails.
-     * The assumption is that when we call this it really should succeed.
-     */
-    private void forceDereference()
-    {
-        if (!dereferenced)
-        {
-            dereferenced = attemptDereference();
-            if (!dereferenced)
-            {
-                log.error(Messages.getString("InboundVariable.MissingVariable", formField.getString()));
-            }
-        }
+        // For references without an explicit variable name, we use the
+        // name of the thing they point at
+        // if (key == null)
+        // {
+        //     key = formField.getString();
+        // }
     }
 
     /**
@@ -123,7 +102,6 @@ public final class InboundVariable
      */
     public InboundContext getLookup()
     {
-        forceDereference();
         return context;
     }
 
@@ -132,7 +110,6 @@ public final class InboundVariable
      */
     public String getType()
     {
-        forceDereference();
         return type;
     }
 
@@ -142,7 +119,6 @@ public final class InboundVariable
      */
     public boolean isNull()
     {
-        forceDereference();
         return type.equals(ProtocolConstants.INBOUND_NULL);
     }
 
@@ -151,24 +127,15 @@ public final class InboundVariable
      */
     public String getValue()
     {
-        forceDereference();
         return formField.getString();
     }
-    
+
     /**
      * @return Returns the file value
      */
     public FormField getFormField()
     {
         return formField;
-    }
-    
-    /**
-     * Does this inbound variable represent a file?
-     */
-    public boolean isFile()
-    {
-        return file;
     }
 
     /* (non-Javadoc)
@@ -177,7 +144,6 @@ public final class InboundVariable
     @Override
     public String toString()
     {
-        forceDereference();
         return type + ProtocolConstants.INBOUND_TYPE_SEPARATOR + formField.getString(); 
     }
 
@@ -199,19 +165,13 @@ public final class InboundVariable
 
         InboundVariable that = (InboundVariable) obj;
 
-        forceDereference();
-
         if (!this.type.equals(that.type))
         {
             return false;
         }
 
-        if (!this.file == that.file) 
+        if (!this.formField.equals(that.formField))
         {
-            return false;
-        }
-        
-        if (!this.formField.equals(that.formField)) {
             return false;
         }
 
@@ -220,7 +180,7 @@ public final class InboundVariable
             return false;
         }
 
-        return this.key.equals(that.key);
+        return true; // this.key.equals(that.key);
     }
 
     /* (non-Javadoc)
@@ -251,19 +211,4 @@ public final class InboundVariable
      * The javascript declared file value
      */
     private FormField formField;
-
-    /**
-     * Has this variable been successfully de-referenced
-     */
-    private boolean dereferenced;
-    
-    /**
-     * Does this inbound variable represent a file?
-     */
-    private boolean file;
-
-    /**
-     * The log stream
-     */
-    private static final Log log = LogFactory.getLog(InboundVariable.class);
 }

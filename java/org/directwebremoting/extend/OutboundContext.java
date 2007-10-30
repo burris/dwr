@@ -15,17 +15,26 @@
  */
 package org.directwebremoting.extend;
 
-import java.util.Map;
 import java.util.IdentityHashMap;
+import java.util.Map;
 
 /**
  * We need to keep track of stuff while we are converting on the way out to
- * prevent recurrsion.
+ * prevent recursion.
  * This class helps track the conversion process.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public final class OutboundContext
 {
+    /**
+     * Contexts need to know if they are producing JSON output
+     * @param jsonMode Are we producing JSON output?
+     */
+    public OutboundContext(boolean jsonMode)
+    {
+        this.jsonMode = jsonMode;
+    }
+
     /**
      * Have we already converted an object?
      * @param object The object to check
@@ -57,6 +66,33 @@ public final class OutboundContext
         return varName;
     }
 
+    /**
+     * Things work out if they are doubly referenced during the conversion
+     * process, and can't be sure how to create output until that phase is done.
+     * This method declares that we are done conversion, and now is a good time
+     * to calculate how to generate output
+     */
+    public void prepareForOutput()
+    {
+        for (OutboundVariable variable : map.values())
+        {
+            variable.prepareAssignCode();
+        }
+
+        for (OutboundVariable variable : map.values())
+        {
+            variable.prepareBuildDeclareCodes();
+        }
+    }
+
+    /**
+     * @return Are we in JSON mode where everything is inline?
+     */
+    public boolean isJsonMode()
+    {
+        return jsonMode;
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -80,4 +116,9 @@ public final class OutboundContext
      * What index do we tack on the next variable name that we generate
      */
     private int nextVarIndex = 0;
+    
+    /**
+     * Are we in JSON mode where everything is inline?
+     */
+    private boolean jsonMode = true;
 }

@@ -387,12 +387,13 @@ function sendBatch(start, size, rate) {
 
     test = tests[start];
     callback = function(data) { testResults(data, start); };
+    exceptionHandler = function(data) { exceptionHandler(data, start); };
     param = test.data;
 
     numele = dwr.util.byId("t" + start + "-num");
     numele.style.backgroundColor = "#ff8";
 
-    Test[test.code](param, { callback:callback });
+    Test[test.code](param, { callback:callback, exceptionHandler:exceptionHandler });
   }
   else {
     dwr.engine.beginBatch();
@@ -458,6 +459,23 @@ function testResults(data, index) {
     numele.style.backgroundColor = "lightpink";
     dwr.util.setValue("t" + index + "-results", report, { escapeHtml:false });
   }
+
+  checkTidyUp(index + 1);
+}
+
+function exceptionHandler(data, index) {
+  var test = tests[index];
+
+  var numele = dwr.util.byId("t" + index + "-num");
+
+  execreport.innerHTML = (index + 1);
+
+  var report = test.code + "<br/>Exception: " + dwr.util.toDescriptiveString(data);
+  failcount++;
+  failreport.innerHTML = failcount;
+
+  numele.style.backgroundColor = "lightpink";
+  dwr.util.setValue("t" + index + "-results", report, { escapeHtml:false });
 
   checkTidyUp(index + 1);
 }

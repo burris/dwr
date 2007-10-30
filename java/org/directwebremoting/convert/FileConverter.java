@@ -23,7 +23,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.DownloadManager;
 import org.directwebremoting.extend.FileGenerator;
@@ -31,6 +30,7 @@ import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.impl.DataUrlDownloadManager;
@@ -53,29 +53,27 @@ public class FileConverter extends BaseV20Converter implements Converter
      */
     public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        if (data.isFile())
+        FormField formField = data.getFormField();
+        if (paramType == FileTransfer.class)
         {
-            FormField formField = data.getFormField();
-            if (paramType == FileTransfer.class)
+            return new FileTransfer(formField.getName(), formField.getMimeType(), formField.getInputStream());
+        }
+        else if (paramType == InputStream.class)
+        {
+            return formField.getInputStream();
+        }
+        else if (paramType == BufferedImage.class)
+        {
+            try
             {
-                return new FileTransfer(formField.getName(), formField.getMimeType(), formField.getInputStream());
+                return ImageIO.read(formField.getInputStream());
             }
-            else if (paramType == InputStream.class)
+            catch (IOException ex)
             {
-                return formField.getInputStream();
-            }
-            else if (paramType == BufferedImage.class)
-            {
-                try
-                {
-                    return ImageIO.read(formField.getInputStream());
-                }
-                catch (IOException ex)
-                {
-                    throw new MarshallException(paramType, ex);
-                }
+                throw new MarshallException(paramType, ex);
             }
         }
+
         throw new MarshallException(paramType, Messages.getString("MarshallException.FileFailure", paramType));
     }
 
@@ -86,7 +84,7 @@ public class FileConverter extends BaseV20Converter implements Converter
     {
         if (object == null)
         {
-            return new SimpleOutboundVariable("null", outboundContext, true);
+            return new NonNestedOutboundVariable("null");
         }
 
         try
@@ -124,7 +122,7 @@ public class FileConverter extends BaseV20Converter implements Converter
             }
 
             String url = downloadManager.addFile(generator);
-            return new SimpleOutboundVariable(url, outboundContext, true);
+            return new NonNestedOutboundVariable(url);
         }
         catch (IOException ex)
         {

@@ -15,22 +15,19 @@
  */
 package org.directwebremoting.impl;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
 import org.directwebremoting.create.NewCreator;
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.AccessControl;
 import org.directwebremoting.extend.AjaxFilterManager;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.Marshaller;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.impl.test.TestCreatedObject;
@@ -40,6 +37,18 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -82,8 +91,6 @@ public class DefaultRemoterTest
      */
     public void testHandle() throws Exception
     {
-        OutboundContext ctx = new OutboundContext();
-
         request.setPathInfo("/exec/dataManager.doTest");
         request.setMethod("POST");
         request.setContent(("callCount=2\n" + "c0-id=1\nc0-scriptName=creatorName\nc0-methodName=toString\n"
@@ -98,9 +105,9 @@ public class DefaultRemoterTest
         expectLastCall().andReturn(null).times(2);
 
         expect(converterManager.convertOutbound(isA(Object.class), isA(OutboundContext.class)));
-        expectLastCall().andReturn(new SimpleOutboundVariable("", ctx, false)).times(2);
+        expectLastCall().andReturn(new NonNestedOutboundVariable("")).times(2);
 
-        // TODO: this should not be neccessary!
+        // TODO: this should not be necessary!
         ArrayList<AjaxFilter> filters = new ArrayList<AjaxFilter>();
         filters.add(new AjaxFilter()
         {

@@ -226,17 +226,17 @@ public class PollHandler implements Handler
 
         if (plain)
         {
-            conduit = new PlainScriptConduit(response, batch.getBatchId(), converterManager);
+            conduit = new PlainScriptConduit(response, batch.getBatchId(), converterManager, jsonOutput);
         }
         else
         {
             if (batch.getPartialResponse() == PartialResponse.FLUSH)
             {
-                conduit = new Html4kScriptConduit(response, batch.getBatchId(), converterManager);
+                conduit = new Html4kScriptConduit(response, batch.getBatchId(), converterManager, jsonOutput);
             }
             else
             {
-                conduit = new HtmlScriptConduit(response, batch.getBatchId(), converterManager);
+                conduit = new HtmlScriptConduit(response, batch.getBatchId(), converterManager, jsonOutput);
             }
         }
 
@@ -339,6 +339,27 @@ public class PollHandler implements Handler
     {
         this.maxWaitAfterWrite = maxWaitAfterWrite;
     }
+
+    /**
+     * @return Are we outputting in JSON mode?
+     */
+    public boolean isJsonOutput()
+    {
+        return jsonOutput;
+    }
+
+    /**
+     * @param jsonOutput Are we outputting in JSON mode?
+     */
+    public void setJsonOutput(boolean jsonOutput)
+    {
+        this.jsonOutput = jsonOutput;
+    }
+
+    /**
+     * Are we outputting in JSON mode?
+     */
+    protected boolean jsonOutput = false;
 
     /**
      * Are we doing full reverse ajax

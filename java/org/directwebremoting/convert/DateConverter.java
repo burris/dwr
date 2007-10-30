@@ -21,11 +21,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.directwebremoting.dwrp.ProtocolConstants;
-import org.directwebremoting.dwrp.SimpleOutboundVariable;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 
@@ -116,6 +116,6 @@ public class DateConverter extends BaseV20Converter implements Converter
             throw new MarshallException(data.getClass());
         }
 
-        return new SimpleOutboundVariable("new Date(" + millis + ")", outctx, true);
+        return new NonNestedOutboundVariable("new Date(" + millis + ")");
     }
 }

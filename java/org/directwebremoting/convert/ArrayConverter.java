@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
-import org.directwebremoting.dwrp.ArrayOutboundVariable;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.dwrp.ArrayJsonOutboundVariable;
+import org.directwebremoting.dwrp.ArrayNonJsonOutboundVariable;
 import org.directwebremoting.dwrp.ErrorOutboundVariable;
+import org.directwebremoting.dwrp.CollectionOutboundVariable;
 import org.directwebremoting.dwrp.ParseUtil;
 import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.extend.Converter;
@@ -91,6 +93,7 @@ public class ArrayConverter extends BaseV20Converter implements Converter
             String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
 
             InboundVariable nested = new InboundVariable(incx, null, splitType, splitValue);
+            nested.dereference();
             Object output = converterManager.convertInbound(componentType, nested, inctx, inctx.getCurrentTypeHintContext());
             Array.set(array, i, output);
         }
@@ -108,8 +111,17 @@ public class ArrayConverter extends BaseV20Converter implements Converter
             throw new MarshallException(data.getClass());
         }
 
+        CollectionOutboundVariable ov;
+
         // Stash this bit of data to cope with recursion
-        ArrayOutboundVariable ov = new ArrayOutboundVariable(outctx);
+        if (outctx.isJsonMode())
+        {
+            ov = new ArrayJsonOutboundVariable();
+        }
+        else
+        {
+            ov = new ArrayNonJsonOutboundVariable(outctx);
+        }
         outctx.put(data, ov);
 
         // Convert all the data members
@@ -127,13 +139,13 @@ public class ArrayConverter extends BaseV20Converter implements Converter
                 String errorMessage = "Conversion error for " + data.getClass().getName() + ".";
                 log.warn(errorMessage, ex);
 
-                nested = new ErrorOutboundVariable(outctx, errorMessage, true);
+                nested = new ErrorOutboundVariable(errorMessage);
             }
             ovs.add(nested);
         }
 
         // Group the list of converted objects into this OutboundVariable
-        ov.init(ovs);
+        ov.setChildren(ovs);
 
         return ov;
     }
