@@ -114,11 +114,7 @@
   <!--=======================================================================-->
   <target name="jar" depends="compile" description="Create output JAR file">
     <mkdir dir="${target.root}"/>
-    <jar destfile="${target.root}/dwr.jar" compress="true">
-      <fileset dir="${target.root}/classes">
-        <exclude name="**/dwrdemo/**"/>
-      </fileset>
-    </jar>
+    <jar destfile="${target.root}/dwr.jar" compress="true"/>
     <retroweaver inputjar="${target.root}/dwr.jar" outputjar="${target.root}/dwr-jdk14.jar" target="1.4"/>
   </target>
 
@@ -126,11 +122,8 @@
   <target name="war" depends="jar" description="Create output WAR file">
     <war destfile="${target.root}/dwr.war" webxml="${source.root}/web/WEB-INF/web.xml">
       <lib file="${target.root}/dwr.jar"/>
-      <classes dir="${target.root}/classes">
-        <include name="**/dwrdemo/**"/>
-      </classes>
-      <classes dir="${source.root}/demo">
-      </classes>
+      <classes dir="${target.root}/demo-classes"/>
+      <classes dir="${source.root}/demo"/>
       <fileset dir="${source.root}/web">
         <exclude name="**/*.iml"/>
         <exclude name="**/*.ipr"/>
