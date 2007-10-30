@@ -409,18 +409,19 @@ public final class LocalUtil
      * String are supported.
      * @return The converted object.
      */
-    public static Object simpleConvert(String value, Class<?> paramType)
+    @SuppressWarnings("unchecked")
+    public static <T> T simpleConvert(String value, Class<T> paramType)
     {
         if (paramType == String.class)
         {
-            return value;
+            return (T) value;
         }
 
         if (paramType == Character.class || paramType == Character.TYPE)
         {
             if (value.length() == 1)
             {
-                return value.charAt(0);
+                return (T) Character.valueOf(value.charAt(0));
             }
             else
             {
@@ -437,12 +438,12 @@ public final class LocalUtil
                 return null;
             }
 
-            return Boolean.valueOf(trimValue);
+            return (T) Boolean.valueOf(trimValue);
         }
 
         if (paramType == Boolean.TYPE)
         {
-            return Boolean.valueOf(trimValue);
+            return (T) Boolean.valueOf(trimValue);
         }
 
         if (paramType == Integer.class)
@@ -452,17 +453,17 @@ public final class LocalUtil
                 return null;
             }
 
-            return Integer.valueOf(trimValue);
+            return (T) Integer.valueOf(trimValue);
         }
 
         if (paramType == Integer.TYPE)
         {
             if (trimValue.length() == 0)
             {
-                return 0;
+                return (T) Integer.valueOf(0);
             }
 
-            return Integer.valueOf(trimValue);
+            return (T) Integer.valueOf(trimValue);
         }
 
         if (paramType == Short.class)
@@ -472,17 +473,17 @@ public final class LocalUtil
                 return null;
             }
 
-            return Short.valueOf(trimValue);
+            return (T) Short.valueOf(trimValue);
         }
 
         if (paramType == Short.TYPE)
         {
             if (trimValue.length() == 0)
             {
-                return (short) 0;
+                return (T) Short.valueOf((short) 0);
             }
 
-            return Short.valueOf(trimValue);
+            return (T) Short.valueOf(trimValue);
         }
 
         if (paramType == Byte.class)
@@ -492,17 +493,17 @@ public final class LocalUtil
                 return null;
             }
 
-            return Byte.valueOf(trimValue);
+            return (T) Byte.valueOf(trimValue);
         }
 
         if (paramType == Byte.TYPE)
         {
             if (trimValue.length() == 0)
             {
-                return (byte) 0;
+                return (T) Byte.valueOf((byte) 0);
             }
 
-            return Byte.valueOf(trimValue);
+            return (T) Byte.valueOf(trimValue);
         }
 
         if (paramType == Long.class)
@@ -512,17 +513,17 @@ public final class LocalUtil
                 return null;
             }
 
-            return Long.valueOf(trimValue);
+            return (T) Long.valueOf(trimValue);
         }
 
         if (paramType == Long.TYPE)
         {
             if (trimValue.length() == 0)
             {
-                return (long) 0;
+                return (T) Long.valueOf(0);
             }
 
-            return Long.valueOf(trimValue);
+            return (T) Long.valueOf(trimValue);
         }
 
         if (paramType == Float.class)
@@ -532,17 +533,17 @@ public final class LocalUtil
                 return null;
             }
 
-            return Float.valueOf(trimValue);
+            return (T) Float.valueOf(trimValue);
         }
 
         if (paramType == Float.TYPE)
         {
             if (trimValue.length() == 0)
             {
-                return 0.0F;
+                return (T) Float.valueOf(0);
             }
 
-            return Float.valueOf(trimValue);
+            return (T) Float.valueOf(trimValue);
         }
 
         if (paramType == Double.class)
@@ -552,17 +553,17 @@ public final class LocalUtil
                 return null;
             }
 
-            return Double.valueOf(trimValue);
+            return (T) Double.valueOf(trimValue);
         }
 
         if (paramType == Double.TYPE)
         {
             if (trimValue.length() == 0)
             {
-                return 0.0D;
+                return (T) Double.valueOf(0.0D);
             }
 
-            return Double.valueOf(trimValue);
+            return (T) Double.valueOf(trimValue);
         }
 
         throw new IllegalArgumentException("Unsupported conversion type: " + paramType.getName());
