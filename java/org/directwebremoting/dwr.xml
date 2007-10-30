@@ -85,7 +85,7 @@
     <convert converter="array" match="[C"/>
     <convert converter="array" match="[L*"/>
 
-    <convert converter="context" match="org.directwebremoting.io.Context"/>
+    <convert converter="context" match="org.directwebremoting.proxy.io.Context"/>
     <convert converter="stringWrapper" match="org.directwebremoting.io.StringWrapper"/>
 
     <!--

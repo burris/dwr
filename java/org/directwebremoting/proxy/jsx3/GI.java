@@ -18,9 +18,9 @@ package org.directwebremoting.proxy.jsx3;
 import java.util.Collection;
 
 import org.directwebremoting.ScriptSession;
-import org.directwebremoting.io.Context;
 import org.directwebremoting.proxy.ProxyHelper;
 import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 import org.directwebremoting.proxy.jsx3.app.Server;
 
 /**

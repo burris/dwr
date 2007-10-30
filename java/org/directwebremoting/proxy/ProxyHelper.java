@@ -15,7 +15,8 @@
  */
 package org.directwebremoting.proxy;
 
-import org.directwebremoting.io.Context;
+import org.directwebremoting.proxy.io.Context;
+
 
 /**
  * A class to help automatically generated proxy objects.
