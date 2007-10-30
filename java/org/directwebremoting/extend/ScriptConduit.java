@@ -78,7 +78,7 @@ public abstract class ScriptConduit implements Comparable<ScriptConduit>
      * <p>It is not an error to refuse to handle the script and return false, it
      * just indicates that this ScriptConduit did not accept the script.
      * If the ScriptConduit can no longer function then it should throw an
-     * exception and it will be asumed to be no longer useful.
+     * exception and it will be assumed to be no longer useful.
      * If you want to implement this method then you will probably be doing
      * something like calling {@link ServletOutputStream#print(String)} and
      * passing in the results of calling ScriptBufferUtil.createOutput().
