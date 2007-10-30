@@ -337,7 +337,8 @@ public class MonitorHandler implements Handler
                 throw new IllegalStateException("object already exists");
             }
 
-            String id = "id" + nextId++;
+            String id = "id" + nextId;
+            nextId++;
             allocated.put(object, id);
 
             return id;
