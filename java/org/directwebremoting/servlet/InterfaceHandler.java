@@ -40,6 +40,11 @@ public class InterfaceHandler implements Handler
         String scriptName = request.getPathInfo();
         scriptName = LocalUtil.replace(scriptName, interfaceHandlerUrl, "");
         scriptName = LocalUtil.replace(scriptName, PathConstants.EXTENSION_JS, "");
+        if (!LocalUtil.isJavaIdentifier(scriptName))
+        {
+            throw new SecurityException("Script names may only contain Java Identifiers");
+        }
+
         String path = request.getContextPath() + request.getServletPath();
 
         String script = remoter.generateInterfaceScript(scriptName, path);

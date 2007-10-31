@@ -131,6 +131,32 @@ public final class LocalUtil
     }
 
     /**
+     * Determines if the specified string contains only Unicode letters or
+     * digits as defined by {@link Character#isLetterOrDigit(char)}
+     * @param test The string to test
+     * @return true if the string is non-null, non-empty and contains only
+     * characters that are unicode letters or digits
+     * @see Character#isLetterOrDigit(char)
+     */
+    public static boolean isLetterOrDigit(String test)
+    {
+        if (test == null || test.length() == 0)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < test.length(); i++)
+        {
+            if (!Character.isLetterOrDigit(test.charAt(i)))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * True if c1 is java.lang.Boolean and c2 is boolean, etc.
      * @param c1 the first class to test
      * @param c2 the second class to test

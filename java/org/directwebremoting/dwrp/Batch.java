@@ -97,9 +97,26 @@ public class Batch
             String prefix = ProtocolConstants.INBOUND_CALLNUM_PREFIX + callNum + ProtocolConstants.INBOUND_CALLNUM_SUFFIX;
 
             // The special values
-            call.setCallId(extractParameter(paramMap, prefix + ProtocolConstants.INBOUND_KEY_ID));
-            call.setScriptName(extractParameter(paramMap, prefix + ProtocolConstants.INBOUND_KEY_SCRIPTNAME));
-            call.setMethodName(extractParameter(paramMap, prefix + ProtocolConstants.INBOUND_KEY_METHODNAME));
+            String callId = extractParameter(paramMap, prefix + ProtocolConstants.INBOUND_KEY_ID);
+            call.setCallId(callId);
+            if (!LocalUtil.isLetterOrDigit(callId))
+            {
+                throw new SecurityException("Call IDs may only contain Java Identifiers");
+            }
+
+            String scriptName = extractParameter(paramMap, prefix + ProtocolConstants.INBOUND_KEY_SCRIPTNAME);
+            call.setScriptName(scriptName);
+            if (!LocalUtil.isLetterOrDigit(scriptName))
+            {
+                throw new SecurityException("Script names may only contain Java Identifiers");
+            }
+
+            String methodName = extractParameter(paramMap, prefix + ProtocolConstants.INBOUND_KEY_METHODNAME);
+            call.setMethodName(methodName);
+            if (!LocalUtil.isLetterOrDigit(methodName))
+            {
+                throw new SecurityException("Method names may only contain Java Identifiers");
+            }
 
             // Look for parameters to this method
             for (Iterator<Map.Entry<String, FormField>> it = paramMap.entrySet().iterator(); it.hasNext();)
@@ -127,7 +144,13 @@ public class Batch
             }
         }
 
-        calls.setBatchId(extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_BATCHID));
+        String batchId = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_BATCHID);
+        calls.setBatchId(batchId);
+        if (!LocalUtil.isLetterOrDigit(batchId))
+        {
+            throw new SecurityException("Batch IDs may only contain Java Identifiers");
+        }
+
         httpSessionId = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_HTTP_SESSIONID);
         scriptSessionId = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         page = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_PAGE);
