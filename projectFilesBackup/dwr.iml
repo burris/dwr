@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4" relativePaths="true" type="J2EE_WEB_MODULE">
+  <component name="AppServerSpecificValidatorsManager" />
+  <component name="ModuleRootManager" />
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <exploded url="file://$MODULE_DIR$/../../target/intellij/exploded" />
+    <exclude-exploded />
+    <content url="file://$MODULE_DIR$/../..">
+      <sourceFolder url="file://$MODULE_DIR$/../../demo" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../drapgen/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../classpath" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../generated/gi/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../java5" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../test/resources" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../util/java" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="guice-1.0" level="project" />
+    <orderEntry type="library" name="dom4j-1.6.1" level="project" />
+    <orderEntry type="library" name="bsf-2.3" level="project" />
+    <orderEntry type="library" name="hibernate-2.1.7c" level="project" />
+    <orderEntry type="library" name="hibernate-3.2" level="project" />
+    <orderEntry type="library" name="jdom-1.0" level="project" />
+    <orderEntry type="library" name="jetty-6.1.1" level="project" />
+    <orderEntry type="library" name="myfaces-api" level="project" />
+    <orderEntry type="library" name="spring-2.0" level="project" />
+    <orderEntry type="library" name="struts-1.1" level="project" />
+    <orderEntry type="library" name="webwork-2.2.2" level="project" />
+    <orderEntry type="library" name="xom-1.1" level="project" />
+    <orderEntry type="library" name="backport-util-concurrent" level="project" />
+    <orderEntry type="library" name="commons-logging-1.0.4" level="project" />
+    <orderEntry type="library" name="junit-4.1" level="project" />
+    <orderEntry type="library" name="xbean-2.2.0" level="project" />
+    <orderEntry type="library" name="servlet-api-2.4" level="project" />
+    <orderEntry type="library" name="jsp-api-2.0" level="project" />
+    <orderEntryProperties />
+  </component>
+  <component name="WebModuleBuildComponent">
+    <setting name="EXPLODED_URL" value="file://$MODULE_DIR$/../../target/intellij/exploded" />
+    <setting name="EXPLODED_ENABLED" value="true" />
+    <setting name="JAR_URL" value="file://" />
+    <setting name="JAR_ENABLED" value="false" />
+    <setting name="SYNC_EXPLODED_DIR" value="true" />
+    <setting name="BUILD_MODULE_ON_FRAME_DEACTIVATION" value="false" />
+    <setting name="BUILD_EXTERNAL_DEPENDENCIES" value="false" />
+    <setting name="RUN_JASPER_VALIDATION" value="true" />
+  </component>
+  <component name="WebModuleProperties">
+    <containerElement type="library" name="bsf-2.3" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="commons-logging-1.0.4" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="dom4j-1.6.1" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="guice-1.0" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="hibernate-2.1.7c" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="hibernate-3.2" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="jdom-1.0" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="jetty-6.1.1" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="jsp-api-2.0" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+    </containerElement>
+    <containerElement type="library" name="junit-4.1" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="myfaces-api" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="servlet-api-2.4" level="project">
+      <attribute name="method" value="0" />
+      <attribute name="URI" value="&lt;N/A&gt;" />
+    </containerElement>
+    <containerElement type="library" name="spring-2.0" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="struts-1.1" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="webwork-2.2.2" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="xbean-2.2.0" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <containerElement type="library" name="xom-1.1" level="project">
+      <attribute name="method" value="1" />
+      <attribute name="URI" value="/WEB-INF/lib" />
+    </containerElement>
+    <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/../../web/WEB-INF/web.xml" optional="false" version="2.3" />
+    <webroots>
+      <root url="file://$MODULE_DIR$/../../web" relative="/" />
+      <root url="file://$MODULE_DIR$/../../web/WEB-INF" relative="/WEB-INF" />
+    </webroots>
+  </component>
+  <component name="WeblogicWebModuleProperties" />
+</module>
+
