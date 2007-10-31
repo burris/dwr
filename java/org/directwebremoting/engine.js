@@ -17,9 +17,9 @@
 /**
  * Declare an object to which we can add real functions.
  */
-if (window['dwr'] == null) window['dwr'] = {};
-if (dwr['engine'] == null) dwr['engine'] = {};
-if (window['DWREngine'] == null) window['DWREngine'] = dwr.util;
+if (typeof this['dwr'] == 'undefined') this.dwr = {};
+if (typeof dwr['engine'] == 'undefined') dwr.engine = {};
+if (typeof this['DWREngine'] == 'undefined') this.DWREngine = dwr.engine;
 
 /**
  * Set an alternative error handler from the default alert box.
@@ -464,10 +464,10 @@ dwr.engine._poll = function(overridePath) {
       batch.rpcType = dwr.engine.XMLHttpRequest;
       batch.map.partialResponse = dwr.engine._partialResponseYes;
     }
-    else if (navigator.userAgent.indexOf("; MSIE")) {
-      batch.rpcType = dwr.engine.IFrame;
-      batch.map.partialResponse = dwr.engine._partialResponseYes;
-    }
+    // else if (navigator.userAgent.indexOf("; MSIE")) {
+    //   batch.rpcType = dwr.engine.IFrame;
+    //   batch.map.partialResponse = dwr.engine._partialResponseYes;
+    // }
     else if (navigator.userAgent.indexOf("Safari/")) {
       batch.rpcType = dwr.engine.XMLHttpRequest;
       batch.map.partialResponse = dwr.engine._partialResponseYes;
@@ -742,10 +742,10 @@ dwr.engine._sendData = function(batch) {
     if (batch.isPoll && window.ActiveXObject && !batch.fileUpload) {
       batch.htmlfile = new window.ActiveXObject("htmlfile");
       batch.htmlfile.open();
-      batch.htmlfile.write("<html>");
+      batch.htmlfile.write("<" + "html>");
       //batch.htmlfile.write("<script>document.domain='" + document.domain + "';</script>");
       batch.htmlfile.write("<div><iframe className='wibble' src='javascript:void(0)' id='" + idname + "' name='" + idname + "' onload='dwr.engine._iframeLoadingComplete(" + batch.map.batchId + ");'></iframe></div>");
-      batch.htmlfile.write("</html>");
+      batch.htmlfile.write("</" + "html>");
       batch.htmlfile.close();
       batch.htmlfile.parentWindow.dwr = dwr;
       batch.document = batch.htmlfile;
@@ -1167,8 +1167,8 @@ dwr.engine._serializeAll = function(batch, referto, data, name) {
     else if (data instanceof Date) batch.map[name] = "Date:" + data.getTime();
     else if (data && data.join) batch.map[name] = dwr.engine._serializeArray(batch, referto, data, name);
     else if (data && data.tagName && data.tagName.toLowerCase() == "input" && data.type && data.type.toLowerCase() == "file") {
-    	batch.fileUpload = true;
-    	batch.map[name] = data;
+      batch.fileUpload = true;
+      batch.map[name] = data;
     }
     else batch.map[name] = dwr.engine._serializeObject(batch, referto, data, name);
     break;
@@ -1218,6 +1218,15 @@ dwr.engine._serializeObject = function(batch, referto, data, name) {
       dwr.engine._serializeAll(batch, referto, data[element], childName);
 
       reply += encodeURIComponent(element) + ":reference:" + childName + ", ";
+
+//      var childRef = dwr.engine._lookup(referto, data[element], childName);
+//      if (childRef) {
+//        reply += encodeURIComponent(element) + ":reference:" + childRef + ", ";
+//      }
+//      else {
+//        dwr.engine._serializeAll(batch, referto, data[element], childName);
+//        reply += encodeURIComponent(element) + ":reference:" + childName + ", ";
+//      }
     }
   }
 
