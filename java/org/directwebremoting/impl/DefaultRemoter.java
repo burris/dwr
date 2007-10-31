@@ -90,9 +90,9 @@ public class DefaultRemoter implements Remoter
                         {
                             paramBuffer.append('\n');
 
-                            // output: if (typeof <class> != "function") { var <class> = function() {
-                            paramBuffer.append("if (typeof " + jsClassName + " != \"function\") {\n");
-                            paramBuffer.append("  function " + jsClassName + "() {\n");
+                            // output: if (typeof this['<class>'] == 'undefined') { this.<class> = function() {
+                            paramBuffer.append("if (typeof this['" + jsClassName + "'] == 'undefined') {\n");
+                            paramBuffer.append("  " + jsClassName + " = function() {\n");
 
                             // output: this.<property> = <init-value>;
                             Class<?> mappedType;
@@ -158,8 +158,9 @@ public class DefaultRemoter implements Remoter
         String init = EnginePrivate.getEngineInitScript();
         buffer.append(init);
 
-        buffer.append("if (" + scriptName + " == null) var " + scriptName + " = {};\n");
-        buffer.append(scriptName + "._path = '" + actualPath + "';\n");
+        // output: if (typeof this['<class>'] == 'undefined') this.<class> = {};
+        buffer.append("if (typeof this['" + scriptName + "'] == 'undefined') this." + scriptName + " = {};\n\n");
+        buffer.append(scriptName + "._path = '" + actualPath + "';\n\n");
 
         Method[] methods = creator.getType().getMethods();
         for (Method method : methods)
@@ -217,7 +218,7 @@ public class DefaultRemoter implements Remoter
 
     /**
      * Generates Javascript for a given Java method
-     * @param scriptName  Name of the Javascript file, sans ".js" suffix
+     * @param scriptName  Name of the Javascript file, without ".js" suffix
      * @param method Target method
      * @return Javascript implementing the DWR call for the target method
      */
@@ -253,7 +254,7 @@ public class DefaultRemoter implements Remoter
         }
 
         buffer.append("callback);\n");
-        buffer.append("}\n");
+        buffer.append("};\n\n");
 
         return buffer.toString();
     }
@@ -427,7 +428,7 @@ public class DefaultRemoter implements Remoter
         }
         catch (InvocationTargetException ex)
         {
-            // Allow Jetty RequestRetry exception to propogate to container
+            // Allow Jetty RequestRetry exception to propagate to container
             Continuation.rethrowIfContinuation(ex);
 
             log.warn("Method execution failed: ", ex.getTargetException());
@@ -435,7 +436,7 @@ public class DefaultRemoter implements Remoter
         }
         catch (Exception ex)
         {
-            // Allow Jetty RequestRetry exception to propogate to container
+            // Allow Jetty RequestRetry exception to propagate to container
             Continuation.rethrowIfContinuation(ex);
 
             log.warn("Method execution failed: ", ex);

@@ -17,9 +17,9 @@
 /**
  * Declare an object to which we can add real functions.
  */
-if (window['dwr'] == null) window['dwr'] = {};
-if (dwr['util'] == null) dwr['util'] = {};
-if (window['DWRUtil'] == null) window['DWRUtil'] = dwr.util;
+if (typeof this['dwr'] == 'undefined') this.dwr = {};
+if (typeof dwr['util'] == 'undefined') dwr.util = {};
+if (typeof this['DWRUtil'] == 'undefined') this.DWRUtil = dwr.engine;
 
 /** @private The flag we use to decide if we should escape html */
 dwr.util._escapeHtml = true;

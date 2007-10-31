@@ -198,9 +198,8 @@ public class EnginePrivate extends ScriptProxy
     public static String getEngineInitScript()
     {
         return "// Provide a default path to dwr.engine\n" +
-               "if (dwr == null) var dwr = {};\n" +
-               "if (dwr.engine == null) dwr.engine = {};\n" +
-               "if (DWREngine == null) var DWREngine = dwr.engine;\n" +
+               "if (typeof this['dwr'] == 'undefined') this.dwr = {};\n" +
+               "if (typeof dwr['engine'] == 'undefined') dwr.engine = {};\n" +
                '\n';
     }
 

@@ -17,9 +17,8 @@
 /**
  * Declare an object to which we can add real functions.
  */
-if (dwr == null) var dwr = {};
-if (dwr.auth == null) dwr.auth = {};
-if (DWRAuthentication == null) var DWRAuthentication = dwr.auth;
+if (typeof this['dwr'] == 'undefined') this.dwr = {};
+if (typeof dwr['auth'] == 'undefined') dwr.auth = {};
 
 //
 // Application-wide stuff

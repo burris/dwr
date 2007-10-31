@@ -17,8 +17,8 @@
 /**
  * Declare an object to which we can add real functions.
  */
-if (dwr == null) { var dwr = {}; }
-if (dwr.gi == null) { dwr.gi = {}; }
+if (typeof this['dwr'] == 'undefined') this.dwr = {};
+if (typeof dwr['gi'] == 'undefined') dwr.gi = {};
 
 /**
  * Convert a javascript object into a CDF document with the given jsxid
