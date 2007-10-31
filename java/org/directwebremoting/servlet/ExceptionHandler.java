@@ -28,7 +28,7 @@ import org.directwebremoting.util.Continuation;
 import org.directwebremoting.util.MimeConstants;
 
 /**
- * Handles an exception occuring during the request disptaching.
+ * Handles an exception occurring during the request dispatching.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class ExceptionHandler implements Handler
@@ -38,7 +38,7 @@ public class ExceptionHandler implements Handler
      */
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        // Allow Jetty RequestRetry exception to propogate to container
+        // Allow Jetty RequestRetry exception to propagate to container
         Continuation.rethrowIfContinuation(cause);
 
         log.warn("Error: " + cause);
