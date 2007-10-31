@@ -48,6 +48,7 @@ public class DefaultScriptSession implements RealScriptSession
      * Simple constructor
      * @param id The new unique identifier for this session
      * @param manager The manager that created us
+     * @param page The URL of the page on which we sit
      */
     protected DefaultScriptSession(String id, DefaultScriptSessionManager manager, String page)
     {
