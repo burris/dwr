@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.lang;
 
-import java.util.Date;
-import java.lang.reflect.Constructor;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ProxyHelper;
 
@@ -34,11 +33,10 @@ public class System extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /*
      * Returns a system property as specified by a JSS file loaded by the JSX runtime or an addin.
      * @param strKey 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getProperty(String strKey, Callback callback)
@@ -50,20 +48,18 @@ public class System extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * If the locale has been explicitly set with setLocale(), that locale is returned. Otherwise the
-locale is determined by introspecting the browser. If all else fails the default locale, en_US, is returned.
+    locale is determined by introspecting the browser. If all else fails the default locale, en_US, is returned.
      */
     public void getLocale()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("getLocale(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("getLocale(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Sets the system-wide locale. This in turn affects all applications running under the JSX system.
      * @param objLocale 
@@ -71,30 +67,24 @@ locale is determined by introspecting the browser. If all else fails the default
     public void setLocale(String objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setLocale(")
-              .appendData(objLocale)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setLocale(").appendData(objLocale).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * 
      */
     public void reloadLocalizedResources()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("reloadLocalizedResources(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("reloadLocalizedResources(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * 
      * @param strKey 
      * @param strTokens 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getMessage(String strKey, Object strTokens, Callback callback)
@@ -106,7 +96,7 @@ locale is determined by introspecting the browser. If all else fails the default
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the version number of General Interface.
      * @return <code>"3.1.0"</code>, etc.
@@ -121,5 +111,5 @@ locale is determined by introspecting the browser. If all else fails the default
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
- }
+
+}

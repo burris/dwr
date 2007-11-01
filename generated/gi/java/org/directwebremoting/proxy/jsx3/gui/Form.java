@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.gui;
 
-import java.lang.reflect.Constructor;
-import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -25,7 +23,7 @@ import org.directwebremoting.proxy.ProxyHelper;
  */
 public interface Form
 {
-    
+
     /**
      * #a8a8b5 (default)
      */
@@ -65,6 +63,5 @@ public interface Form
      * Value for the required field indicating that the form field is required.
      */
     public static final int REQUIRED = 1;
-
 
 }

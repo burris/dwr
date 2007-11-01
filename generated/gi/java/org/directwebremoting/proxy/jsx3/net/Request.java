@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.net;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
+
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ProxyHelper;
 
@@ -34,7 +35,7 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * The instance initializer.
      * @param id <span style="text-decoration:line-through;">If the call will be asynchronous, assigns a unique identifier.</span>
@@ -73,11 +74,8 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /*
      * Gets the value of all the HTTP headers.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getAllResponseHeaders(Callback callback)
@@ -89,11 +87,10 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Gets the value of a specific HTTP response header.
      * @param strName the name for the response header to retrieve.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getResponseHeader(String strName, Callback callback)
@@ -105,10 +102,9 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Gets the HTTP response line status (e.g. "OK").
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getStatusText(Callback callback)
@@ -120,10 +116,9 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Gets the HTTP response code (e.g. 200, 404, 500, etc).
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public int getStatus(Callback callback)
@@ -135,10 +130,9 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Gets the content of the response as string.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getResponseText(Callback callback)
@@ -150,11 +144,10 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Gets the content of the response as an XML document. If the response is not a valid XML document,
-null is returned.
-     * @return 
+    null is returned.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getResponseXML()
@@ -171,13 +164,9 @@ null is returned.
         }
     }
 
-    
-    
     /**
      * Gets the content of the response as an XML document. If the response is not a valid XML document,
-null is returned.
-     * @param type The expected return type
-     * @return 
+    null is returned.
      */
     @SuppressWarnings("unchecked")
     public <T> T getResponseXML(Class<T> returnType)
@@ -193,10 +182,10 @@ null is returned.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /**
      * Sets the value of a specific HTTP request header. The open() method should be called before calling
-this method.
+    this method.
      * @param strName the name for the request header to send to the server with the request content.
      * @param strValue the value for the request header to send to the server with the request content.
      * @return this object.
@@ -204,17 +193,13 @@ this method.
     public org.directwebremoting.proxy.jsx3.net.Request setRequestHeader(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setRequestHeader(")
-              .appendData(strName)
-              .appendScript(",")
-              
-              .appendData(strValue)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setRequestHeader(").appendData(strName).appendScript(",")
+
+        .appendData(strValue).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
         return this;
     }
-    
+
     /**
      * Initializes the request, and specifies the method, URL, and authentication information for the request.
      * @param strMethod The HTTP method used to open the connection. Valid values include: GET, POST, or PUT.
@@ -239,8 +224,6 @@ this method.
         }
     }
 
-    
-    
     /**
      * Initializes the request, and specifies the method, URL, and authentication information for the request.
      * @param strMethod The HTTP method used to open the connection. Valid values include: GET, POST, or PUT.
@@ -265,11 +248,8 @@ this method.
         }
     }
 
-    
-    
     /*
      * Gets the URL passed when opening this request.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getURL(Callback callback)
@@ -281,13 +261,13 @@ this method.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Sends the request.
      * @param strContent The content to send for a POST request.
      * @param intTimeout the number milliseconds to wait before publishing a timeout event. This only applies
-   to asynchronous requests. If used, subscribe to the <code>jsx3.net.Request.EVENT_ON_TIMEOUT</code> event to
-   be notified of a timeout.
+    to asynchronous requests. If used, subscribe to the <code>jsx3.net.Request.EVENT_ON_TIMEOUT</code> event to
+    be notified of a timeout.
      * @return this object.
      */
     @SuppressWarnings("unchecked")
@@ -305,8 +285,6 @@ this method.
         }
     }
 
-    
-    
     /*
      * Publishes an event to all subscribed objects.
      * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
@@ -322,11 +300,11 @@ this method.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Subscribes an object or function to a type of event published by this object.
 
-As of version 3.4 a string value for objHandler is deprecated.
+    As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
      * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
      * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
@@ -334,39 +312,30 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("subscribe(")
-              .appendData(strEventId)
-              .appendScript(",")
-              
-              .appendData(objHandler)
-              .appendScript(",")
-              
-              .appendData(objFunction)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
+
+        .appendData(objHandler).appendScript(",")
+
+        .appendData(objFunction).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Unsubscribe an object or function from an event published by this object.
 
-As of version 3.4 a string value for objHandler is deprecated.
+    As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
      * @param objHandler the value of objHandler passed to subscribe
      */
     public void unsubscribe(String strEventId, Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("unsubscribe(")
-              .appendData(strEventId)
-              .appendScript(",")
-              
-              .appendData(objHandler)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
+
+        .appendData(objHandler).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Unsubscribes all subscribed objects to a type of event published by this object.
      * @param strEventId the event type
@@ -374,11 +343,8 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("unsubscribeAll(")
-              .appendData(strEventId)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
- }
+
+}

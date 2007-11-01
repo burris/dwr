@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.util;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
+
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ProxyHelper;
 
@@ -34,12 +35,12 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * The instance initializer.
      * @param strFormat the format pattern.
      * @param objLocale the locale of the format. The locale affects how numbers and dates are
-  formatted. If this parameter is omitted, the system locale is used.
+    formatted. If this parameter is omitted, the system locale is used.
      */
     public MessageFormat(String strFormat, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
@@ -48,7 +49,6 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the locale of this message format.
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale getLocale()
@@ -65,8 +65,6 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /**
      * Sets the locale of this message format.
      * @param objLocale 
@@ -74,17 +72,14 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setLocale(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setLocale(")
-              .appendData(objLocale)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setLocale(").appendData(objLocale).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * Formats a collection of objects according to this message format.
      * @param args the argument objects. Replacement tokens of the pattern of this format
-  will be replaced by these arguments.
+    will be replaced by these arguments.
      * @return the string resulting from the pattern and arguments.
      *
     @SuppressWarnings("unchecked")
@@ -97,11 +92,11 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Formats a collection of objects according to this message format.
      * @param args the argument objects. Replacement tokens of the pattern of this format
-  will be replaced by these arguments.
+    will be replaced by these arguments.
      * @return the string resulting from the pattern and arguments.
      *
     @SuppressWarnings("unchecked")
@@ -114,10 +109,9 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String toString(Callback callback)
@@ -129,5 +123,5 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
- }
+
+}

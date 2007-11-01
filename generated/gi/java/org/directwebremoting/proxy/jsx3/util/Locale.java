@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.util;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
-import org.directwebremoting.ScriptBuffer;
+
 import org.directwebremoting.proxy.ProxyHelper;
 
 /**
@@ -34,7 +34,7 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * The instance initializer.
      * @param strLanguage the lowercase two letter ISO-639 language code.
@@ -47,7 +47,6 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /*
      * Returns the lowercase two letter ISO-639 language code.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getLanguage(Callback callback)
@@ -59,10 +58,9 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the uppercase two letter ISO-3166 country code.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getCountry(Callback callback)
@@ -74,12 +72,11 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the language of this locale, localized for objLocale.
      * @param objLocale the locale in which to format the language. If this parameter is not 
-  provided, the system locale is used.
-     * @return 
+    provided, the system locale is used.
      *
     @SuppressWarnings("unchecked")
     public String getDisplayLanguage(org.directwebremoting.proxy.jsx3.util.Locale objLocale, Callback callback)
@@ -91,12 +88,11 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the country of this locale, localized for objLocale.
      * @param objLocale the locale in which to format the country. If this parameter is not 
-  provided, the system locale is used.
-     * @return 
+    provided, the system locale is used.
      *
     @SuppressWarnings("unchecked")
     public String getDisplayCountry(org.directwebremoting.proxy.jsx3.util.Locale objLocale, Callback callback)
@@ -108,12 +104,11 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the language and country of this locale, localized for objLocale.
      * @param objLocale the locale in which to format the language and country. If this parameter is not 
-  provided, the system locale is used.
-     * @return 
+    provided, the system locale is used.
      *
     @SuppressWarnings("unchecked")
     public String getDisplayName(org.directwebremoting.proxy.jsx3.util.Locale objLocale, Callback callback)
@@ -125,11 +120,10 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if obj is equal to this locale.
      * @param obj 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj, Callback callback)
@@ -141,10 +135,9 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String toString(Callback callback)
@@ -156,12 +149,11 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Returns a locale instance represented by strKey.
      * @param strKey the locale key, <code>ll_CC</code>, where <code>ll</code> is the two letter language 
-  code and <code>CC</code> is the two letter country code.
-     * @return 
+    code and <code>CC</code> is the two letter country code.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale valueOf(String strKey)
@@ -178,6 +170,4 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
- }
+}

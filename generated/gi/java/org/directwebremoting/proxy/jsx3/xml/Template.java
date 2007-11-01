@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.xml;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
+
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ProxyHelper;
 
@@ -34,7 +35,7 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * The instance initializer.
      * @param objXSL 
@@ -52,46 +53,37 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setParam(String strName, Object objValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setParam(")
-              .appendData(strName)
-              .appendScript(",")
-              
-              .appendData(objValue)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setParam(").appendData(strName).appendScript(",")
+
+        .appendData(objValue).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * 
      */
     public void reset()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("reset(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("reset(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * 
      * @param objParams JavaScript object array of name/value pairs. If this parameter is
-   not empty, the transformation will use a paramaterized stylesheet to perform the transformation.
+    not empty, the transformation will use a paramaterized stylesheet to perform the transformation.
      */
     public void setParams(Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setParams(")
-              .appendData(objParams)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setParams(").appendData(objParams).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * Performs an XSLT merge. If an error occurs while performing the transform, this method sets the error
-property of this processor and returns null.
+    property of this processor and returns null.
      * @param objXML 
      * @param bObject 
      * @return the result of the transformation
@@ -106,10 +98,10 @@ property of this processor and returns null.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Performs an XSLT merge. If an error occurs while performing the transform, this method sets the error
-property of this processor and returns null.
+    property of this processor and returns null.
      * @param objXML 
      * @return if a valid result tree is formed as a result of the transformation
      */
@@ -128,13 +120,11 @@ property of this processor and returns null.
         }
     }
 
-    
-    
     /**
      * Performs an XSLT merge. If an error occurs while performing the transform, this method sets the error
-property of this processor and returns null.
+    property of this processor and returns null.
      * @param objXML 
-     * @param type The expected return type
+     * @param returnType The expected return type
      * @return if a valid result tree is formed as a result of the transformation
      */
     @SuppressWarnings("unchecked")
@@ -151,13 +141,12 @@ property of this processor and returns null.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /*
      * Returns an error object (a plain JavaScript object) with two properties that the developer can query for:
 
-code Ð an integer error code, 0 for no error.
-description Ð a text description of the error that occurred.
-     * @return 
+    code Ð an integer error code, 0 for no error.
+    description Ð a text description of the error that occurred.
      *
     @SuppressWarnings("unchecked")
     public Object getError(Callback callback)
@@ -169,10 +158,9 @@ description Ð a text description of the error that occurred.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the last operation on this XML entity caused an error.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean hasError(Callback callback)
@@ -184,5 +172,5 @@ description Ð a text description of the error that occurred.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
- }
+
+}

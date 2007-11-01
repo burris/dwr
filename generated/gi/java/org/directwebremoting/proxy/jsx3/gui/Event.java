@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.gui;
 
-import java.util.Date;
-import java.lang.reflect.Constructor;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ProxyHelper;
 
@@ -34,7 +33,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * The browser native event type beforeunload.
      */
@@ -299,19 +298,14 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void subscribe(String strEventId, String objHandler, String objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("subscribe(")
-              .appendData(strEventId)
-              .appendScript(",")
-              
-              .appendData(objHandler)
-              .appendScript(",")
-              
-              .appendData(objFunction)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
+
+        .appendData(objHandler).appendScript(",")
+
+        .appendData(objFunction).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Unsubscribes an event handler from events of type strEventId that bubble all the way up to the browser window.
      * @param strEventId the event type, e.g. <code>jsx3.gui.Event.CLICK</code>.
@@ -320,16 +314,12 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribe(String strEventId, String objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("unsubscribe(")
-              .appendData(strEventId)
-              .appendScript(",")
-              
-              .appendData(objHandler)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
+
+        .appendData(objHandler).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Unsubscribes all event handlers from a events of type strEventId that bubble all the way up to the browser window.
      * @param strEventId the event type, e.g. <code>jsx3.gui.Event.CLICK</code>.
@@ -337,13 +327,10 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("unsubscribeAll(")
-              .appendData(strEventId)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * Returns the type of event, e.g. mousedown, click, etc.
      * @return event type
@@ -358,7 +345,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns handle to the HTML element acted upon (click, mousedown, etc).
      * @return HTML object
@@ -373,7 +360,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns handle to the HTML element that was moused over (onmouseover).
      * @return HTML object
@@ -388,7 +375,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns handle to the HTML element that was moused away from (onmouseout).
      * @return HTML object
@@ -403,7 +390,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns integer representing the key code of the key just pressed/keyed-down.
      * @return keycode
@@ -418,7 +405,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the clientX property for the event (where it occurred on-screen).
      * @return pixel position
@@ -433,7 +420,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the clientY property for the event (where it occurred on-screen).
      * @return pixel position
@@ -448,7 +435,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the actual position in the browser from the left edge for where the event occurred.
      * @return pixel position
@@ -463,7 +450,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the actual position in the browser from the top edge for where the event occurred.
      * @return pixel position
@@ -478,10 +465,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the shift key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean shiftKey(Callback callback)
@@ -493,10 +479,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true the ctrl key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean ctrlKey(Callback callback)
@@ -508,10 +493,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the alt key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean altKey(Callback callback)
@@ -523,10 +507,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the enter key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean enterKey(Callback callback)
@@ -538,10 +521,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the space bar was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean spaceKey(Callback callback)
@@ -553,10 +535,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the tab key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean tabKey(Callback callback)
@@ -568,10 +549,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the right-arrow key was pressed
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean rightArrow(Callback callback)
@@ -583,10 +563,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the left-arrow key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean leftArrow(Callback callback)
@@ -598,10 +577,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the up-arrow key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean upArrow(Callback callback)
@@ -613,10 +591,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the down-arrow key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean downArrow(Callback callback)
@@ -628,10 +605,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the delete key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean deleteKey(Callback callback)
@@ -643,10 +619,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the backspace key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean backspaceKey(Callback callback)
@@ -658,10 +633,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the insert key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean insertKey(Callback callback)
@@ -673,10 +647,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the home key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean homeKey(Callback callback)
@@ -688,10 +661,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the end key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean endKey(Callback callback)
@@ -703,10 +675,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the page-up key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean pageUpKey(Callback callback)
@@ -718,10 +689,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the page-down key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean pageDownKey(Callback callback)
@@ -733,10 +703,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the escape key was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean escapeKey(Callback callback)
@@ -748,46 +717,39 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Cancels event bubbling for the event.
      */
     public void cancelBubble()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("cancelBubble(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("cancelBubble(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Cancels the return value for the event.
      */
     public void cancelReturn()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("cancelReturn(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("cancelReturn(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Cancels the key from firing by setting the keyCode to 0 (zero) for the event.
      */
     public void cancelKey()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("cancelKey(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("cancelKey(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * Returns true if the left-mouse-button was clicked.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean leftButton(Callback callback)
@@ -799,10 +761,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if the right-mouse-button was clicked.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean rightButton(Callback callback)
@@ -814,10 +775,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns integer designating the mouse button clicked/moused-down/moused-up; 1 (left), 2 (right), and as supported.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public int button(Callback callback)
@@ -829,7 +789,7 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Sets the the return value for the event.
      * @param strReturn string message to set on the returnValue for the event
@@ -837,16 +797,12 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setReturn(String strReturn)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setReturn(")
-              .appendData(strReturn)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setReturn(").appendData(strReturn).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * Whether one of the four arrow keys was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean isArrowKey(Callback callback)
@@ -858,10 +814,9 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Whether one of the 15 function keys was pressed.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean isFunctionKey(Callback callback)
@@ -873,5 +828,5 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
- }
+
+}

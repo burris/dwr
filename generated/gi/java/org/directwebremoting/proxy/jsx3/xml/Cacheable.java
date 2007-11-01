@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.xml;
 
-import java.lang.reflect.Constructor;
-import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -25,7 +23,7 @@ import org.directwebremoting.proxy.ProxyHelper;
  */
 public interface Cacheable
 {
-    
+
     /**
      * JSX/xsl/xml.xsl
      */
@@ -33,15 +31,14 @@ public interface Cacheable
 
     /**
      * Value of the shareResources property for an object that removes its XML and XSL
-  documents from the server XML cache when it is destroyed.
+    documents from the server XML cache when it is destroyed.
      */
     public static final int CLEANUPRESOURCES = 0;
 
     /**
      * Value of the shareResources property for an object that leaves its XML and XSL
-  documents in the server XML cache when it is destroyed.
+    documents in the server XML cache when it is destroyed.
      */
     public static final int SHARERESOURCES = 1;
-
 
 }

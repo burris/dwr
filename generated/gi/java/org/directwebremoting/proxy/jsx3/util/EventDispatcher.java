@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.util;
 
-import java.lang.reflect.Constructor;
-import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -25,11 +23,10 @@ import org.directwebremoting.proxy.ProxyHelper;
  */
 public interface EventDispatcher
 {
-    
+
     /**
      * 
      */
     public static final String SUBJECT_ALL = "*";
-
 
 }

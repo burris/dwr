@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.util;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
+
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ProxyHelper;
 
@@ -34,12 +35,12 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * The instance initializer. Instances of this class are immutable.
      * @param strFormat the date format.
      * @param objLocale the locale with which to format and parse dates. If this parameter is not
-  provided the default system locale is used.
+    provided the default system locale is used.
      */
     public DateFormat(String strFormat, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
@@ -70,8 +71,7 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
      * Returns a date format localized for a particular locale.
      * @param intType <code>SHORT</code>, <code>MEDIUM</code>, <code>LONG</code>, or <code>FULL</code>
      * @param objLocale the locale for which to return a format. If this parameter is not provided,
-  the default system locale is used.
-     * @return 
+    the default system locale is used.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.DateFormat getDateInstance(int intType, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
@@ -88,14 +88,11 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /**
      * Returns a time format localized for a particular locale.
      * @param intType <code>SHORT</code>, <code>MEDIUM</code>, <code>LONG</code>, or <code>FULL</code>
      * @param objLocale the locale for which to return a format. If this parameter is not provided,
-  the default system locale is used.
-     * @return 
+    the default system locale is used.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.DateFormat getTimeInstance(int intType, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
@@ -112,15 +109,12 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /**
      * Returns a date and time format localized for a particular locale.
      * @param intDateType <code>SHORT</code>, <code>MEDIUM</code>, <code>LONG</code>, or <code>FULL</code>
      * @param intTimeType <code>SHORT</code>, <code>MEDIUM</code>, <code>LONG</code>, or <code>FULL</code>
      * @param objLocale the locale for which to return a format. If this parameter is not provided,
-  the default system locale is used.
-     * @return 
+    the default system locale is used.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.DateFormat getDateTimeInstance(int intDateType, int intTimeType, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
@@ -137,11 +131,8 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /**
      * 
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale getLocale()
@@ -158,8 +149,6 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /**
      * 
      * @param objLocale 
@@ -167,23 +156,20 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setLocale(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setLocale(")
-              .appendData(objLocale)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setLocale(").appendData(objLocale).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * Returns the timezone offset of this date format. This is the difference between GMT and the local time of this
-date format, in minutes. For example, Pacific Standard Time is -480 (-08h * 60). If the timezone offset has been
-set explicitly with setTimeZoneOffset(), that value is returned.
+    date format, in minutes. For example, Pacific Standard Time is -480 (-08h * 60). If the timezone offset has been
+    set explicitly with setTimeZoneOffset(), that value is returned.
 
-Since the timezone offset may change over the year for Daylight Savings Time, this method takes a
-Date argument, objDate. All dates are created with the timezone offset of the host
-browser's timezone, adjusted for Daylight Savings Time. Therefore, if the timezone offset of this date format
-has not been set explicitly, the timezone offset is determined from the objDate parameter, or, if
-that is not provided, from the current time.
+    Since the timezone offset may change over the year for Daylight Savings Time, this method takes a
+    Date argument, objDate. All dates are created with the timezone offset of the host
+    browser's timezone, adjusted for Daylight Savings Time. Therefore, if the timezone offset of this date format
+    has not been set explicitly, the timezone offset is determined from the objDate parameter, or, if
+    that is not provided, from the current time.
      * @param objDate the date for which to return the timezone offset.
      * @return the timezone offset in minutes.
      *
@@ -197,7 +183,7 @@ that is not provided, from the current time.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Sets the timezone offset of this date format. The default value is the value for the local time.
      * @param intMinutes the timezone offset in minutes.
@@ -205,13 +191,10 @@ that is not provided, from the current time.
     public void setTimeZoneOffset(int intMinutes)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setTimeZoneOffset(")
-              .appendData(intMinutes)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setTimeZoneOffset(").appendData(intMinutes).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * Formats a date according to this date format.
      * @param objDate the date to format.
@@ -227,7 +210,7 @@ that is not provided, from the current time.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Formats a date according to this date format.
      * @param objDate the date to format.
@@ -243,7 +226,7 @@ that is not provided, from the current time.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Formats a date according to this date format.
      * @param objDate the date to format.
@@ -259,13 +242,13 @@ that is not provided, from the current time.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Parses a string according to this date format and returns the resulting date. If strDate does
-not conform to this date format, an exception is thrown.
+    not conform to this date format, an exception is thrown.
 
-The default date for the purposes of this method is 1-Jan-1970 12:00AM, local time. If any date fields
-are omitted from this format, the date returned by this method will inherit those fields from the default date.
+    The default date for the purposes of this method is 1-Jan-1970 12:00AM, local time. If any date fields
+    are omitted from this format, the date returned by this method will inherit those fields from the default date.
      * @param strDate the string to parse.
      * @return the parsed date.
      *
@@ -279,10 +262,9 @@ are omitted from this format, the date returned by this method will inherit thos
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the format passed to the constructor.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getFormat(Callback callback)
@@ -294,10 +276,9 @@ are omitted from this format, the date returned by this method will inherit thos
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns a string representation of this date format.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String toString(Callback callback)
@@ -309,5 +290,5 @@ are omitted from this format, the date returned by this method will inherit thos
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
- }
+
+}

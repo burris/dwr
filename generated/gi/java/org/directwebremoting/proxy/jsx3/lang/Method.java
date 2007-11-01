@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.lang;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
-import org.directwebremoting.ScriptBuffer;
+
 import org.directwebremoting.proxy.ProxyHelper;
 
 /**
@@ -34,10 +34,9 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /*
      * Returns the name of the method. The name of the method is determined when the class is defined.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getName(Callback callback)
@@ -49,10 +48,9 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the number of parameters that this method takes (as declared in the JavaScript source).
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public int getArity(Callback callback)
@@ -64,10 +62,9 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the names of parameters that this method takes (as declared in the JavaScript source).
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public Object[] getParameterNames(Callback callback)
@@ -79,11 +76,10 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the name of a parameter that this method takes (as declared in the JavaScript source).
      * @param intIndex the index of the parameter name to return
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getParameterName(int intIndex, Callback callback)
@@ -95,10 +91,9 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Returns the class that defined this method.
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public Class getDeclaringClass()
@@ -115,12 +110,9 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /*
      * Returns whether the definer of this class (returned by getDeclaringClass()) is in fact
-   a package.
-     * @return 
+    a package.
      *
     @SuppressWarnings("unchecked")
     public boolean isPackageMethod(Callback callback)
@@ -132,10 +124,9 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if this method is static (is a class method).
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public boolean isStatic(Callback callback)
@@ -147,11 +138,10 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns true if this method is abstract. Abstract methods will throw an Exception if they are
-   invoked.
-     * @return 
+    invoked.
      *
     @SuppressWarnings("unchecked")
     public boolean isAbstract(Callback callback)
@@ -163,10 +153,9 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the native JavaScript function of this method.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.CodeBlock getFunction(Callback callback)
@@ -178,12 +167,11 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Calls apply on the native function.
      * @param thisArg this argument to pass to <code>Function.apply()</code>
      * @param argArray argument array to pass to <code>Function.apply()</code>
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public Object apply(Object thisArg, Object[] argArray, Callback callback)
@@ -195,11 +183,10 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Calls call on the native function.
      * @param arg arguments to pass to <code>Function.call()</code>, supports up to 11 arguments (this+10)
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public Object call(Object arg, Callback callback)
@@ -211,11 +198,10 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Creates a new abstract method.
      * @param paramNames the names of the parameters that the abtract method will take
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.CodeBlock newAbstract(String paramNames, Callback callback)
@@ -227,5 +213,5 @@ public class Method extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
- }
+
+}

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.app;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
-import org.directwebremoting.ScriptBuffer;
+
 import org.directwebremoting.proxy.ProxyHelper;
 
 /**
@@ -34,10 +34,10 @@ public class Settings extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * The instance initializer. Creates a view onto the settings persisted on disk. All identical instances of this
-class are backed by the same XML source document.
+    class are backed by the same XML source document.
      * @param intDomain the domain of the settings to load, one of <code>jsx3.app.Settings.DOMAIN</code>...
      * @param objInstance if in the project or addin domain, the key of the specific project or addin to load settings for
      */
@@ -71,11 +71,10 @@ class are backed by the same XML source document.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Returns a stored setting value as the raw XML node.
      * @param strKey the setting key.
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getNode(String strKey)
@@ -92,13 +91,9 @@ class are backed by the same XML source document.
         }
     }
 
-    
-    
     /**
      * Returns a stored setting value as the raw XML node.
      * @param strKey the setting key.
-     * @param type The expected return type
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public <T> T getNode(String strKey, Class<T> returnType)
@@ -114,5 +109,5 @@ class are backed by the same XML source document.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
- }
+
+}

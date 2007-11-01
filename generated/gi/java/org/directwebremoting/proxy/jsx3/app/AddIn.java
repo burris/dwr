@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.app;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
-import org.directwebremoting.ScriptBuffer;
+
 import org.directwebremoting.proxy.ProxyHelper;
 
 /**
@@ -34,7 +34,7 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * 
      */
@@ -42,7 +42,6 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getId(Callback callback)
@@ -54,10 +53,9 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getName(Callback callback)
@@ -69,10 +67,9 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getDescription(Callback callback)
@@ -84,10 +81,9 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getVersion(Callback callback)
@@ -99,10 +95,9 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getKey(Callback callback)
@@ -114,10 +109,9 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * 
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Settings getSettings()
@@ -134,12 +128,9 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /**
      * 
      * @param strURI 
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.URI resolveURI(String strURI)
@@ -156,12 +147,9 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /**
      * 
      * @param strURI 
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.URI resolveURI(org.directwebremoting.proxy.jsx3.net.URI strURI)
@@ -178,11 +166,8 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getUriPrefix(Callback callback)
@@ -194,12 +179,11 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * 
      * @param strURI 
      * @param bRel 
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.URI relativizeURI(String strURI, boolean bRel)
@@ -216,13 +200,10 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /**
      * 
      * @param strURI 
      * @param bRel 
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.URI relativizeURI(org.directwebremoting.proxy.jsx3.net.URI strURI, boolean bRel)
@@ -239,11 +220,8 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    
-    
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String toString(Callback callback)
@@ -255,5 +233,5 @@ public class AddIn extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
- }
+
+}

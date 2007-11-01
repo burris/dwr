@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.app;
 
-import java.util.Date;
-import java.lang.reflect.Constructor;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ProxyHelper;
 
@@ -34,7 +33,7 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * The instance initializer.
      * @param objServer the app server.
@@ -70,7 +69,7 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Sets a stored setting value.
      * @param strKey the setting key.
@@ -79,16 +78,12 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, String value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("set(")
-              .appendData(strKey)
-              .appendScript(",")
-              
-              .appendData(value)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
+
+        .appendData(value).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Sets a stored setting value.
      * @param strKey the setting key.
@@ -97,16 +92,12 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, int value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("set(")
-              .appendData(strKey)
-              .appendScript(",")
-              
-              .appendData(value)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
+
+        .appendData(value).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Sets a stored setting value.
      * @param strKey the setting key.
@@ -115,16 +106,12 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, boolean value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("set(")
-              .appendData(strKey)
-              .appendScript(",")
-              
-              .appendData(value)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
+
+        .appendData(value).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Sets a stored setting value.
      * @param strKey the setting key.
@@ -133,16 +120,12 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, Object[] value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("set(")
-              .appendData(strKey)
-              .appendScript(",")
-              
-              .appendData(value)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
+
+        .appendData(value).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Sets a stored setting value.
      * @param strKey the setting key.
@@ -151,16 +134,12 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, Object value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("set(")
-              .appendData(strKey)
-              .appendScript(",")
-              
-              .appendData(value)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
+
+        .appendData(value).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Removes a stored setting value.
      * @param strKey the key of the setting to remove.
@@ -168,36 +147,29 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void remove(String strKey)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("remove(")
-              .appendData(strKey)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("remove(").appendData(strKey).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Clears all settings of this user settings instance. This implementation deletes the cookie.
      */
     public void clear()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("clear(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("clear(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Persists the user settings. Any modifications to this user settings instance will be lost if this method 
-is not called.
+    is not called.
      */
     public void save()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("save(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("save(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
- }
+
+}

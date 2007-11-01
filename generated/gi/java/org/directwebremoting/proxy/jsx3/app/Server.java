@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.directwebremoting.proxy.jsx3.app;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
+import java.util.Date;
+
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ProxyHelper;
 
@@ -34,7 +36,7 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     {
         super(helper);
     }
-    
+
     /**
      * Sets environment variables used by this class (the controller for the JSX architecture)
      * @param strAppPath URL (either relative or absolute) for the application to load
@@ -49,14 +51,14 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * The subject of an event that jsx3.app.Server publishes when an instance of this class
-   is created. The target of the event object is the initialized server.
+    is created. The target of the event object is the initialized server.
      */
     public static final String INITED = "inited";
 
     /**
      * The subject of an event that instances of this class publish when a context help hot key is pressed
-   in the context of a DOM node that has a help ID. The event has the following fields:
-   
+    in the context of a DOM node that has a help ID. The event has the following fields:
+    
      
           target - the server publishing the event.
      
@@ -68,28 +70,27 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /*
      * Returns the value of an environment setting of this server. Valid keys correspond to deployment options and are
-(case-insensitive):
+    (case-insensitive):
 
-VERSION
-APPPATH
-ABSPATH
-CAPTION
-MODE
-SYSTEM
-NAMESPACE
-CANCELERROR
-CANCELRIGHTCLICK
-BODYHOTKEYS
-WIDTH
-HEIGHT
-LEFT
-TOP
-POSITION
-OVERFLOW
-UNICODE
-EVENTSVERS
+    VERSION
+    APPPATH
+    ABSPATH
+    CAPTION
+    MODE
+    SYSTEM
+    NAMESPACE
+    CANCELERROR
+    CANCELRIGHTCLICK
+    BODYHOTKEYS
+    WIDTH
+    HEIGHT
+    LEFT
+    TOP
+    POSITION
+    OVERFLOW
+    UNICODE
+    EVENTSVERS
      * @param strEnvKey the key of the environment value to return
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getEnv(String strEnvKey, Callback callback)
@@ -101,10 +102,9 @@ EVENTSVERS
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Returns the settings of this server/project per config.xml
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Settings getSettings()
@@ -121,13 +121,10 @@ EVENTSVERS
         }
     }
 
-    
-    
     /**
      * Returns handle to a descendant taskbar belonging to this server instance (this is where JSXDialog instances will try to minimize to if it exists); returns null if none found;
            if no taskbar is found, dialogs are not minimized, but are 'window shaded'Ñlike a Mac used to do
      * @param objJSX if null, this.JSXROOT is assumed; otherwise the object in the DOM from which to start looking for a descendant taskbar (a jsx3.gui.WindowBar instance)
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.WindowBar getTaskBar(org.directwebremoting.proxy.jsx3.app.Model objJSX)
@@ -144,40 +141,33 @@ EVENTSVERS
         }
     }
 
-    
-    
     /**
      * call to shut down a server instance and free up resources used by the server (cache,dom,etc)
      */
     public void destroy()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("destroy(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("destroy(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Paints this application and its default component into the application view port on the host HTML page. The
-system class loader calls this method once all the required resources of the application have loaded. The
-order of actions taken by this method is:
+    system class loader calls this method once all the required resources of the application have loaded. The
+    order of actions taken by this method is:
 
-  Load the default component file
-  Execute the onload script for the application
-  Paint the default component in the view port
+    Load the default component file
+    Execute the onload script for the application
+    Paint the default component in the view port
      * @param objXML the pre-loaded default component document.
      */
     public void paint(org.directwebremoting.proxy.jsx3.xml.Document objXML)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("paint(")
-              .appendData(objXML)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("paint(").appendData(objXML).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * set all four dimensions for a jsx3.Server instance, allowing the developer to adjust the width/height/left/width for the server. Must be called during/after the onload event for the server instance as it affects the VIEW for the server.  Updates the absolutely positioned element that contains JSXROOT.
      * @param left the new left value or a JavaScript array containing all four new values (in pixels)
@@ -188,22 +178,16 @@ order of actions taken by this method is:
     public void setDimensions(int left, int top, int width, int height)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setDimensions(")
-              .appendData(left)
-              .appendScript(",")
-              
-              .appendData(top)
-              .appendScript(",")
-              
-              .appendData(width)
-              .appendScript(",")
-              
-              .appendData(height)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
+
+        .appendData(top).appendScript(",")
+
+        .appendData(width).appendScript(",")
+
+        .appendData(height).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * set all four dimensions for a jsx3.Server instance, allowing the developer to adjust the width/height/left/width for the server. Must be called during/after the onload event for the server instance as it affects the VIEW for the server.  Updates the absolutely positioned element that contains JSXROOT.
      * @param left the new left value or a JavaScript array containing all four new values (in pixels)
@@ -214,51 +198,45 @@ order of actions taken by this method is:
     public void setDimensions(Object[] left, int top, int width, int height)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setDimensions(")
-              .appendData(left)
-              .appendScript(",")
-              
-              .appendData(top)
-              .appendScript(",")
-              
-              .appendData(width)
-              .appendScript(",")
-              
-              .appendData(height)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
+
+        .appendData(top).appendScript(",")
+
+        .appendData(width).appendScript(",")
+
+        .appendData(height).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Loads an external resource into this server instance. What this method does depends on the strType
-parameter.
+    parameter.
 
-  
+    
           script - Loads a JavaScript file asynchronously into the memory space of the page hosting this
       application; returns null.
-  
+    
           css - Loads a CSS file asynchronously into the memory space of the page hosting this
       application; returns null.
-  
+    
           xml or xsl - Loads an XML file synchronously into the XML cache of this
       application; returns the loaded jsx3.xml.Document instance.
-  
+    
           jss or ljss - Loads a dynamic properties file or localized properties bundle
       synchronously into this application; returns null.
-  
+    
           services - Loads and parses a mapping rules file synchronously; returns a new instance of
       jsx3.net.Service.
      * @param strSrc the path to the resource.
      * @param strId the unique identifier of the resource. A resource loaded by this method may clobber
-   a previously loaded resource of the same type and id.
+    a previously loaded resource of the same type and id.
      * @param strType the type of include, one of: <code>css</code>, <code>jss</code>, <code>xml</code>,
-   <code>xsl</code>, <code>script</code> (for JavaScript), <code>services</code> (for mapping rules),
-   or <code>ljss</code>.
+    <code>xsl</code>, <code>script</code> (for JavaScript), <code>services</code> (for mapping rules),
+    or <code>ljss</code>.
      * @param bReload if <code>true</code>, a JavaScript or CSS file is reloaded from the remote server
-   without checking the local browser cache. Other types of resources are not affected by this parameter.
+    without checking the local browser cache. Other types of resources are not affected by this parameter.
      * @return the return type depends on the <code>strType</code>
-   parameter. See the method description.
+    parameter. See the method description.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document loadInclude(String strSrc, String strId, String strType, String bReload)
@@ -275,38 +253,36 @@ parameter.
         }
     }
 
-    
-    
     /**
      * Loads an external resource into this server instance. What this method does depends on the strType
-parameter.
+    parameter.
 
-  
+    
           script - Loads a JavaScript file asynchronously into the memory space of the page hosting this
       application; returns null.
-  
+    
           css - Loads a CSS file asynchronously into the memory space of the page hosting this
       application; returns null.
-  
+    
           xml or xsl - Loads an XML file synchronously into the XML cache of this
       application; returns the loaded jsx3.xml.Document instance.
-  
+    
           jss or ljss - Loads a dynamic properties file or localized properties bundle
       synchronously into this application; returns null.
-  
+    
           services - Loads and parses a mapping rules file synchronously; returns a new instance of
       jsx3.net.Service.
      * @param strSrc the path to the resource.
      * @param strId the unique identifier of the resource. A resource loaded by this method may clobber
-   a previously loaded resource of the same type and id.
+    a previously loaded resource of the same type and id.
      * @param strType the type of include, one of: <code>css</code>, <code>jss</code>, <code>xml</code>,
-   <code>xsl</code>, <code>script</code> (for JavaScript), <code>services</code> (for mapping rules),
-   or <code>ljss</code>.
+    <code>xsl</code>, <code>script</code> (for JavaScript), <code>services</code> (for mapping rules),
+    or <code>ljss</code>.
      * @param bReload if <code>true</code>, a JavaScript or CSS file is reloaded from the remote server
-   without checking the local browser cache. Other types of resources are not affected by this parameter.
-     * @param type The expected return type
+    without checking the local browser cache. Other types of resources are not affected by this parameter.
+     * @param returnType The expected return type
      * @return the return type depends on the <code>strType</code>
-   parameter. See the method description.
+    parameter. See the method description.
      */
     @SuppressWarnings("unchecked")
     public <T> T loadInclude(String strSrc, String strId, String strType, String bReload, Class<T> returnType)
@@ -322,36 +298,36 @@ parameter.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /**
      * Loads an external resource into this server instance. What this method does depends on the strType
-parameter.
+    parameter.
 
-  
+    
           script - Loads a JavaScript file asynchronously into the memory space of the page hosting this
       application; returns null.
-  
+    
           css - Loads a CSS file asynchronously into the memory space of the page hosting this
       application; returns null.
-  
+    
           xml or xsl - Loads an XML file synchronously into the XML cache of this
       application; returns the loaded jsx3.xml.Document instance.
-  
+    
           jss or ljss - Loads a dynamic properties file or localized properties bundle
       synchronously into this application; returns null.
-  
+    
           services - Loads and parses a mapping rules file synchronously; returns a new instance of
       jsx3.net.Service.
      * @param strSrc the path to the resource.
      * @param strId the unique identifier of the resource. A resource loaded by this method may clobber
-   a previously loaded resource of the same type and id.
+    a previously loaded resource of the same type and id.
      * @param strType the type of include, one of: <code>css</code>, <code>jss</code>, <code>xml</code>,
-   <code>xsl</code>, <code>script</code> (for JavaScript), <code>services</code> (for mapping rules),
-   or <code>ljss</code>.
+    <code>xsl</code>, <code>script</code> (for JavaScript), <code>services</code> (for mapping rules),
+    or <code>ljss</code>.
      * @param bReload if <code>true</code>, a JavaScript or CSS file is reloaded from the remote server
-   without checking the local browser cache. Other types of resources are not affected by this parameter.
+    without checking the local browser cache. Other types of resources are not affected by this parameter.
      * @return the return type depends on the <code>strType</code>
-   parameter. See the method description.
+    parameter. See the method description.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document loadInclude(org.directwebremoting.proxy.jsx3.net.URI strSrc, String strId, String strType, String bReload)
@@ -368,38 +344,36 @@ parameter.
         }
     }
 
-    
-    
     /**
      * Loads an external resource into this server instance. What this method does depends on the strType
-parameter.
+    parameter.
 
-  
+    
           script - Loads a JavaScript file asynchronously into the memory space of the page hosting this
       application; returns null.
-  
+    
           css - Loads a CSS file asynchronously into the memory space of the page hosting this
       application; returns null.
-  
+    
           xml or xsl - Loads an XML file synchronously into the XML cache of this
       application; returns the loaded jsx3.xml.Document instance.
-  
+    
           jss or ljss - Loads a dynamic properties file or localized properties bundle
       synchronously into this application; returns null.
-  
+    
           services - Loads and parses a mapping rules file synchronously; returns a new instance of
       jsx3.net.Service.
      * @param strSrc the path to the resource.
      * @param strId the unique identifier of the resource. A resource loaded by this method may clobber
-   a previously loaded resource of the same type and id.
+    a previously loaded resource of the same type and id.
      * @param strType the type of include, one of: <code>css</code>, <code>jss</code>, <code>xml</code>,
-   <code>xsl</code>, <code>script</code> (for JavaScript), <code>services</code> (for mapping rules),
-   or <code>ljss</code>.
+    <code>xsl</code>, <code>script</code> (for JavaScript), <code>services</code> (for mapping rules),
+    or <code>ljss</code>.
      * @param bReload if <code>true</code>, a JavaScript or CSS file is reloaded from the remote server
-   without checking the local browser cache. Other types of resources are not affected by this parameter.
-     * @param type The expected return type
+    without checking the local browser cache. Other types of resources are not affected by this parameter.
+     * @param returnType The expected return type
      * @return the return type depends on the <code>strType</code>
-   parameter. See the method description.
+    parameter. See the method description.
      */
     @SuppressWarnings("unchecked")
     public <T> T loadInclude(org.directwebremoting.proxy.jsx3.net.URI strSrc, String strId, String strType, String bReload, Class<T> returnType)
@@ -415,7 +389,7 @@ parameter.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /**
      * Removes a loaded JavaScript or CSS resource from the browser DOM.
      * @param strId the id used when loading the resource.
@@ -423,19 +397,16 @@ parameter.
     public void unloadInclude(String strId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("unloadInclude(")
-              .appendData(strId)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("unloadInclude(").appendData(strId).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Loads an application resource. This method looks up a resource registered with this application by its id.
-The resource must be registered in the config.xml file of this application.
+    The resource must be registered in the config.xml file of this application.
      * @param strId unique identifier for the resource (its unique id as an application resource file).
      * @return the return type depends on the type of resource.
-   See the documentation for <code>loadInclude()</code> for more information.
+    See the documentation for <code>loadInclude()</code> for more information.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document loadResource(String strId)
@@ -452,15 +423,13 @@ The resource must be registered in the config.xml file of this application.
         }
     }
 
-    
-    
     /**
      * Loads an application resource. This method looks up a resource registered with this application by its id.
-The resource must be registered in the config.xml file of this application.
+    The resource must be registered in the config.xml file of this application.
      * @param strId unique identifier for the resource (its unique id as an application resource file).
-     * @param type The expected return type
+     * @param returnType The expected return type
      * @return the return type depends on the type of resource.
-   See the documentation for <code>loadInclude()</code> for more information.
+    See the documentation for <code>loadInclude()</code> for more information.
      */
     @SuppressWarnings("unchecked")
     public <T> T loadResource(String strId, Class<T> returnType)
@@ -476,7 +445,7 @@ The resource must be registered in the config.xml file of this application.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /**
      * updates a single dynamic style property; dynamic properties are used by jsx3.gui.Block objects that extend the astract class, jsx3.gui.Block;
      * @param strPropName id for this dynamic property among all properties
@@ -485,16 +454,12 @@ The resource must be registered in the config.xml file of this application.
     public void setDynamicProperty(String strPropName, String vntValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setDynamicProperty(")
-              .appendData(strPropName)
-              .appendScript(",")
-              
-              .appendData(vntValue)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setDynamicProperty(").appendData(strPropName).appendScript(",")
+
+        .appendData(vntValue).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * Returns the value of the dynamic property @strPropName
      * @param strPropName id for this dynamic property among all properties
@@ -511,7 +476,7 @@ The resource must be registered in the config.xml file of this application.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Sets a Cookie with the given name and value
      * @param name name of the cookie
@@ -525,36 +490,26 @@ The resource must be registered in the config.xml file of this application.
     public void setCookie(String name, String value, Date expires, String path, String domain, boolean secure, boolean bRaw)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setCookie(")
-              .appendData(name)
-              .appendScript(",")
-              
-              .appendData(value)
-              .appendScript(",")
-              
-              .appendData(expires)
-              .appendScript(",")
-              
-              .appendData(path)
-              .appendScript(",")
-              
-              .appendData(domain)
-              .appendScript(",")
-              
-              .appendData(secure)
-              .appendScript(",")
-              
-              .appendData(bRaw)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setCookie(").appendData(name).appendScript(",")
+
+        .appendData(value).appendScript(",")
+
+        .appendData(expires).appendScript(",")
+
+        .appendData(path).appendScript(",")
+
+        .appendData(domain).appendScript(",")
+
+        .appendData(secure).appendScript(",")
+
+        .appendData(bRaw).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * Returns the value for the Cookie with the given @name
      * @param name name of the cookie
      * @param bRaw 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getCookie(String name, boolean bRaw, Callback callback)
@@ -566,7 +521,7 @@ The resource must be registered in the config.xml file of this application.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * delete a cookie
      * @param name name of the cookie
@@ -576,22 +531,16 @@ The resource must be registered in the config.xml file of this application.
     public void deleteCookie(String name, String path, String domain)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("deleteCookie(")
-              .appendData(name)
-              .appendScript(",")
-              
-              .appendData(path)
-              .appendScript(",")
-              
-              .appendData(domain)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("deleteCookie(").appendData(name).appendScript(",")
+
+        .appendData(path).appendScript(",")
+
+        .appendData(domain).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Returns the root block for this server (JSXROOT)
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Block getRootBlock()
@@ -608,12 +557,8 @@ The resource must be registered in the config.xml file of this application.
         }
     }
 
-    
-    
     /**
      * Returns the root block for this server (JSXROOT)
-     * @param type The expected return type
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public <T> T getRootBlock(Class<T> returnType)
@@ -629,7 +574,7 @@ The resource must be registered in the config.xml file of this application.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /**
      * To implement jsx3.gui.Alerts interface.
      * @return the root block.
@@ -649,11 +594,9 @@ The resource must be registered in the config.xml file of this application.
         }
     }
 
-    
-    
     /**
      * To implement jsx3.gui.Alerts interface.
-     * @param type The expected return type
+     * @param returnType The expected return type
      * @return the root block.
      */
     @SuppressWarnings("unchecked")
@@ -670,10 +613,9 @@ The resource must be registered in the config.xml file of this application.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /**
      * Returns the body block for this server (JSXBODY)
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Block getBodyBlock()
@@ -690,12 +632,8 @@ The resource must be registered in the config.xml file of this application.
         }
     }
 
-    
-    
     /**
      * Returns the body block for this server (JSXBODY)
-     * @param type The expected return type
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public <T> T getBodyBlock(Class<T> returnType)
@@ -711,11 +649,10 @@ The resource must be registered in the config.xml file of this application.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /*
      * Returns the list of objects that are children of the body object. These are the root objects
     in a serialization file and the root nodes in the Component Hierarchy palette.
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public Object[] getRootObjects(Callback callback)
@@ -727,10 +664,9 @@ The resource must be registered in the config.xml file of this application.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Returns the XML/XSL cache for this server
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Cache getCache()
@@ -747,11 +683,8 @@ The resource must be registered in the config.xml file of this application.
         }
     }
 
-    
-    
     /**
      * Returns the DOM for this server
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.DOM getDOM()
@@ -768,8 +701,6 @@ The resource must be registered in the config.xml file of this application.
         }
     }
 
-    
-    
     /**
      * Looks up a DOM node owned by this server by id or by name.
      * @param strId either the id (_jsxid) of the object or its name (jsxname)
@@ -790,12 +721,10 @@ The resource must be registered in the config.xml file of this application.
         }
     }
 
-    
-    
     /**
      * Looks up a DOM node owned by this server by id or by name.
      * @param strId either the id (_jsxid) of the object or its name (jsxname)
-     * @param type The expected return type
+     * @param returnType The expected return type
      * @return the JSX object or null if none found
      */
     @SuppressWarnings("unchecked")
@@ -812,7 +741,7 @@ The resource must be registered in the config.xml file of this application.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /**
      * Looks up a DOM node owned by this server by name. If more than one such objects exist, only one is returned.
      * @param strId the name (jsxname) of the object
@@ -833,12 +762,10 @@ The resource must be registered in the config.xml file of this application.
         }
     }
 
-    
-    
     /**
      * Looks up a DOM node owned by this server by name. If more than one such objects exist, only one is returned.
      * @param strId the name (jsxname) of the object
-     * @param type The expected return type
+     * @param returnType The expected return type
      * @return the JSX object or null if none found
      */
     @SuppressWarnings("unchecked")
@@ -855,7 +782,7 @@ The resource must be registered in the config.xml file of this application.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /**
      * Looks up a DOM node owned by this server by id.
      * @param strId the id (_jsxid) of the object
@@ -876,12 +803,10 @@ The resource must be registered in the config.xml file of this application.
         }
     }
 
-    
-    
     /**
      * Looks up a DOM node owned by this server by id.
      * @param strId the id (_jsxid) of the object
-     * @param type The expected return type
+     * @param returnType The expected return type
      * @return the JSX object or null if none found
      */
     @SuppressWarnings("unchecked")
@@ -898,12 +823,11 @@ The resource must be registered in the config.xml file of this application.
             throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
         }
     }
-    
+
     /**
      * Creates a new jsx3.gui.Window instance for this server. A branch of the DOM of this application can be placed
-in this window in order to distribute the application across multiple browser windows.
+    in this window in order to distribute the application across multiple browser windows.
      * @param strName the unique name of the window to create
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Window createAppWindow(String strName)
@@ -920,13 +844,10 @@ in this window in order to distribute the application across multiple browser wi
         }
     }
 
-    
-    
     /**
      * Loads a new jsx3.gui.Window instance from a component file.
      * @param strSource either an XML document containing the window to load or the URL of the
-   component to load.
-     * @return 
+    component to load.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Window loadAppWindow(org.directwebremoting.proxy.jsx3.xml.Entity strSource)
@@ -943,13 +864,10 @@ in this window in order to distribute the application across multiple browser wi
         }
     }
 
-    
-    
     /**
      * Loads a new jsx3.gui.Window instance from a component file.
      * @param strSource either an XML document containing the window to load or the URL of the
-   component to load.
-     * @return 
+    component to load.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Window loadAppWindow(String strSource)
@@ -966,8 +884,6 @@ in this window in order to distribute the application across multiple browser wi
         }
     }
 
-    
-    
     /**
      * Retrieves a previously created jsx3.gui.Window instance.
      * @param strName the unique name of the window to retrieve
@@ -988,11 +904,9 @@ in this window in order to distribute the application across multiple browser wi
         }
     }
 
-    
-    
     /*
      * Returns the browser document object containing a particular JSX object. This method inspects whether the
-JSX object is a descendent of the root block of this server or one of its jsx3.gui.Window roots.
+    JSX object is a descendent of the root block of this server or one of its jsx3.gui.Window roots.
      * @param objJSX 
      * @return document object
      *
@@ -1006,10 +920,10 @@ JSX object is a descendent of the root block of this server or one of its jsx3.g
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Returns the browser DOM object where a particulat JSX object renders. This method inspects the main root of
-this server as well as all of its jsx3.gui.Window roots.
+    this server as well as all of its jsx3.gui.Window roots.
      * @param objJSX 
      * @return DOM object
      *
@@ -1023,13 +937,13 @@ this server as well as all of its jsx3.gui.Window roots.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Resolves a URI that is referenced from a file in this server. This method takes into account the changes in
-resource addressing between 3.1 and 3.2. For version 3.1, the URI is resolved as any URI in the system, using
-jsx3.resolveURI(). In version 3.2, the URI is taken as relative to the application folder. In
-particular, a relative URI will be resolved to a base of the application folder, an absolute URI will be
-unaffected.
+    resource addressing between 3.1 and 3.2. For version 3.1, the URI is resolved as any URI in the system, using
+    jsx3.resolveURI(). In version 3.2, the URI is taken as relative to the application folder. In
+    particular, a relative URI will be resolved to a base of the application folder, an absolute URI will be
+    unaffected.
      * @param strURI the URI to resolve.
      * @return the resolved URI.
      */
@@ -1048,14 +962,12 @@ unaffected.
         }
     }
 
-    
-    
     /**
      * Resolves a URI that is referenced from a file in this server. This method takes into account the changes in
-resource addressing between 3.1 and 3.2. For version 3.1, the URI is resolved as any URI in the system, using
-jsx3.resolveURI(). In version 3.2, the URI is taken as relative to the application folder. In
-particular, a relative URI will be resolved to a base of the application folder, an absolute URI will be
-unaffected.
+    resource addressing between 3.1 and 3.2. For version 3.1, the URI is resolved as any URI in the system, using
+    jsx3.resolveURI(). In version 3.2, the URI is taken as relative to the application folder. In
+    particular, a relative URI will be resolved to a base of the application folder, an absolute URI will be
+    unaffected.
      * @param strURI the URI to resolve.
      * @return the resolved URI.
      */
@@ -1074,11 +986,8 @@ unaffected.
         }
     }
 
-    
-    
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String getUriPrefix(Callback callback)
@@ -1090,7 +999,7 @@ unaffected.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * 
      * @param strURI the URI to relativize.
@@ -1112,8 +1021,6 @@ unaffected.
         }
     }
 
-    
-    
     /**
      * 
      * @param strURI the URI to relativize.
@@ -1135,13 +1042,10 @@ unaffected.
         }
     }
 
-    
-    
     /**
      * Returns the current locale of this server. If the locale has been set explicitly with setLocale(),
-that locale is returned. Otherwise, getDefaultLocale() is consulted, and finally the system-wide
-locale.
-     * @return 
+    that locale is returned. Otherwise, getDefaultLocale() is consulted, and finally the system-wide
+    locale.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale getLocale()
@@ -1158,8 +1062,6 @@ locale.
         }
     }
 
-    
-    
     /**
      * Sets the locale of this server.
      * @param objLocale 
@@ -1167,17 +1069,13 @@ locale.
     public void setLocale(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("setLocale(")
-              .appendData(objLocale)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("setLocale(").appendData(objLocale).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Returns the default locale of this server. This is configured with the default_locale configuration
-setting.
-     * @return 
+    setting.
      */
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale getDefaultLocale()
@@ -1194,39 +1092,31 @@ setting.
         }
     }
 
-    
-    
     /**
      * Reloads all resource files that are localized. This method should be called after calling
-setLocale() for the server to render properly in the new locale.
+    setLocale() for the server to render properly in the new locale.
      */
     public void reloadLocalizedResources()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("reloadLocalizedResources(")
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("reloadLocalizedResources(").appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Invokes context-sensitive help as though the user had pressed the help hot key in the context of the DOM node
-objJSX.
+    objJSX.
      * @param objJSX 
      */
     public void invokeHelp(org.directwebremoting.proxy.jsx3.app.Model objJSX)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("invokeHelp(")
-              .appendData(objJSX)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("invokeHelp(").appendData(objJSX).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /*
      * 
-     * @return 
      *
     @SuppressWarnings("unchecked")
     public String toString(Callback callback)
@@ -1238,7 +1128,7 @@ objJSX.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /*
      * Publishes an event to all subscribed objects.
      * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
@@ -1254,11 +1144,11 @@ objJSX.
         session.addAttribute(CALLBACK_KEY, callbackMap);
     }
     */
-    
+
     /**
      * Subscribes an object or function to a type of event published by this object.
 
-As of version 3.4 a string value for objHandler is deprecated.
+    As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
      * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
      * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
@@ -1266,39 +1156,30 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("subscribe(")
-              .appendData(strEventId)
-              .appendScript(",")
-              
-              .appendData(objHandler)
-              .appendScript(",")
-              
-              .appendData(objFunction)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
+
+        .appendData(objHandler).appendScript(",")
+
+        .appendData(objFunction).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Unsubscribe an object or function from an event published by this object.
 
-As of version 3.4 a string value for objHandler is deprecated.
+    As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
      * @param objHandler the value of objHandler passed to subscribe
      */
     public void unsubscribe(String strEventId, Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("unsubscribe(")
-              .appendData(strEventId)
-              .appendScript(",")
-              
-              .appendData(objHandler)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
+
+        .appendData(objHandler).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * Unsubscribes all subscribed objects to a type of event published by this object.
      * @param strEventId the event type
@@ -1306,13 +1187,10 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("unsubscribeAll(")
-              .appendData(strEventId)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * show an alert dialog
      * @param strTitle the title of the dialog
@@ -1324,25 +1202,18 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void alert(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, String strOk, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("alert(")
-              .appendData(strTitle)
-              .appendScript(",")
-              
-              .appendData(strMessage)
-              .appendScript(",")
-              
-              .appendData(fctOnOk)
-              .appendScript(",")
-              
-              .appendData(strOk)
-              .appendScript(",")
-              
-              .appendData(objParams)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("alert(").appendData(strTitle).appendScript(",")
+
+        .appendData(strMessage).appendScript(",")
+
+        .appendData(fctOnOk).appendScript(",")
+
+        .appendData(strOk).appendScript(",")
+
+        .appendData(objParams).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * configure the dialog
      * @param objDialog the dialog
@@ -1351,16 +1222,12 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void configureAlert(String objDialog, Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("configureAlert(")
-              .appendData(objDialog)
-              .appendScript(",")
-              
-              .appendData(objParams)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("configureAlert(").appendData(objDialog).appendScript(",")
+
+        .appendData(objParams).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * show a confirm alert
      * @param strTitle the title of the dialog
@@ -1374,43 +1241,32 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param strNo the text of the no button
      * @param objParams argument to configureAlert()
      */
-    public void confirm(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, org.directwebremoting.proxy.CodeBlock fctOnCancel, String strOk, String strCancel, int intBtnDefault, org.directwebremoting.proxy.CodeBlock fctOnNo, String strNo, String objParams)
+    public void confirm(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, org.directwebremoting.proxy.CodeBlock fctOnCancel, String strOk, String strCancel, int intBtnDefault, org.directwebremoting.proxy.CodeBlock fctOnNo,
+            String strNo, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("confirm(")
-              .appendData(strTitle)
-              .appendScript(",")
-              
-              .appendData(strMessage)
-              .appendScript(",")
-              
-              .appendData(fctOnOk)
-              .appendScript(",")
-              
-              .appendData(fctOnCancel)
-              .appendScript(",")
-              
-              .appendData(strOk)
-              .appendScript(",")
-              
-              .appendData(strCancel)
-              .appendScript(",")
-              
-              .appendData(intBtnDefault)
-              .appendScript(",")
-              
-              .appendData(fctOnNo)
-              .appendScript(",")
-              
-              .appendData(strNo)
-              .appendScript(",")
-              
-              .appendData(objParams)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("confirm(").appendData(strTitle).appendScript(",")
+
+        .appendData(strMessage).appendScript(",")
+
+        .appendData(fctOnOk).appendScript(",")
+
+        .appendData(fctOnCancel).appendScript(",")
+
+        .appendData(strOk).appendScript(",")
+
+        .appendData(strCancel).appendScript(",")
+
+        .appendData(intBtnDefault).appendScript(",")
+
+        .appendData(fctOnNo).appendScript(",")
+
+        .appendData(strNo).appendScript(",")
+
+        .appendData(objParams).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
+
     /**
      * show a text box input prompt
      * @param strTitle the title of the dialog
@@ -1424,29 +1280,20 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void prompt(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, org.directwebremoting.proxy.CodeBlock fctOnCancel, String strOk, String strCancel, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("prompt(")
-              .appendData(strTitle)
-              .appendScript(",")
-              
-              .appendData(strMessage)
-              .appendScript(",")
-              
-              .appendData(fctOnOk)
-              .appendScript(",")
-              
-              .appendData(fctOnCancel)
-              .appendScript(",")
-              
-              .appendData(strOk)
-              .appendScript(",")
-              
-              .appendData(strCancel)
-              .appendScript(",")
-              
-              .appendData(objParams)
-              .appendScript(");");
+        script.appendData(getProxyHelper().getContext()).appendScript("prompt(").appendData(strTitle).appendScript(",")
+
+        .appendData(strMessage).appendScript(",")
+
+        .appendData(fctOnOk).appendScript(",")
+
+        .appendData(fctOnCancel).appendScript(",")
+
+        .appendData(strOk).appendScript(",")
+
+        .appendData(strCancel).appendScript(",")
+
+        .appendData(objParams).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
-    
- }
+
+}
