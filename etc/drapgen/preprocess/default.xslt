@@ -16,14 +16,6 @@
   </xsl:template>
 
   <xsl:template match="method[param[count(type) > 1]]">
-    <!--
-    <xsl:comment>copy</xsl:comment>
-    <xsl:copy>
-      <xsl:copy-of select="@*"/>
-      <xsl:apply-templates/>
-    </xsl:copy>
-    <xsl:comment>recurse</xsl:comment>
-    -->
     <xsl:call-template name="recurseOverTypesInParam">
       <xsl:with-param name="method" select="."/>
     </xsl:call-template>

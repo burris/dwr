@@ -46,7 +46,7 @@ public class ExtensionFunctions
      */
     public static boolean isSuperClass(String className)
     {
-        return Generate.sources.get(className).isSuperClass();
+        return generate.getSources().get(className).isSuperClass();
     }
 
     /**
@@ -68,6 +68,16 @@ public class ExtensionFunctions
 
         return original;
     }
+
+    /**
+     * @param generate the generate to set
+     */
+    public static void setGenerate(Generate generate)
+    {
+        ExtensionFunctions.generate = generate;
+    }
+
+    private static Generate generate;
 
     private static final int SEARCH = 0;
     private static final int REPLACE = 1;

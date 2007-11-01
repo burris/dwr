@@ -26,12 +26,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -44,6 +46,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.util.LocalUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -62,7 +65,7 @@ public class SourceCode
 
         try
         {
-            DocumentBuilder docBuilder = Generate.builderFactory.newDocumentBuilder();
+            DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
             in = new FileInputStream(xmlFile);
             document = docBuilder.parse(in);
             this.xmlFile = xmlFile;
@@ -82,15 +85,25 @@ public class SourceCode
         {
             if (in != null)
             {
-                try
-                {
-                  in.close();
-                }
-                catch (Exception ex)
-                {
-                    /* ignore exception */
-                }
+                LocalUtil.close(in);
             }
+        }
+
+        try
+        {
+            superClasses = new ArrayList<String>();
+
+            NodeList nodelist = (NodeList) superClassFinder.evaluate(document, XPathConstants.NODESET);
+
+            for (int i = 0; i < nodelist.getLength(); i++)
+            {
+                Node node = nodelist.item(i);
+                superClasses.add(node.getNodeValue());
+            }
+        }
+        catch (XPathExpressionException ex)
+        {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -103,11 +116,12 @@ public class SourceCode
         {
             Source xmlSource = new DOMSource(document);
 
-            DocumentBuilder builder = Generate.builderFactory.newDocumentBuilder();
+            DocumentBuilder builder = builderFactory.newDocumentBuilder();
             Document newDocument = builder.newDocument();
             Result result = new DOMResult(newDocument);
 
-            xformer.transform(xmlSource, result);
+            Transformer preprocessor = preprocessTemplate.newTransformer();
+            preprocessor.transform(xmlSource, result);
             document = newDocument;
         }
         catch (TransformerException ex)
@@ -143,12 +157,13 @@ public class SourceCode
             Templates template = templatesCache.get(templateFile);
             if (template == null)
             {
-                template = Generate.factory.newTemplates(xslSource);
+                template = factory.newTemplates(xslSource);
                 templatesCache.put(templateFile, template);
             }
 
             Source xmlSource = new DOMSource(document);
-            xformer.transform(xmlSource, new StreamResult(output));
+            Transformer javaTransformer = template.newTransformer();
+            javaTransformer.transform(xmlSource, new StreamResult(output));
         }
         catch (TransformerException ex)
         {
@@ -223,24 +238,7 @@ public class SourceCode
      */
     public List<String> getSuperClasses()
     {
-        try
-        {
-            List<String> reply = new ArrayList<String>();
-
-            NodeList nodelist = (NodeList) superClassFinder.evaluate(document, XPathConstants.NODESET);
-
-            for (int i = 0; i < nodelist.getLength(); i++)
-            {
-                Node node = nodelist.item(i);
-                reply.add(node.getNodeValue());
-            }
-
-            return reply;
-        }
-        catch (XPathExpressionException ex)
-        {
-            throw new RuntimeException(ex);
-        }
+        return superClasses;
     }
 
     /**
@@ -296,14 +294,28 @@ public class SourceCode
         {
             List<Pair<String, String>> reply = new ArrayList<Pair<String, String>>();
 
+            // Find all the inherited functions, and trim the ones that are not
+            // from super-classes - leaving the mixins
             NodeList nodelist = (NodeList) mixinFunctionFinder.evaluate(document, XPathConstants.NODESET);
-
             for (int i = 0; i < nodelist.getLength(); i++)
             {
                 Node node = nodelist.item(i);
                 String name = node.getAttributes().getNamedItem("name").getNodeValue();
                 String source = node.getAttributes().getNamedItem("source").getNodeValue();
-                reply.add(new Pair<String, String>(source, name));
+
+                boolean isMixin = true;
+                for (String superClass : superClasses)
+                {
+                    if (source.equals(superClass))
+                    {
+                        isMixin = false;
+                    }
+                }
+
+                if (isMixin)
+                {
+                    reply.add(new Pair<String, String>(source, name));
+                }
             }
 
             return reply;
@@ -355,6 +367,7 @@ public class SourceCode
     private List<SourceCode> innerSources = new ArrayList<SourceCode>();
     private Document document;
     private boolean superclass = false;
+    private List<String> superClasses;
 
     private static final Map<File, Templates> templatesCache = new HashMap<File, Templates>();
 
@@ -362,7 +375,10 @@ public class SourceCode
     private static final XPathExpression superClassFinder;
     private static final XPathExpression mixinFunctionFinder;
 
-    private static final Transformer xformer;
+    private static final TransformerFactory factory = TransformerFactory.newInstance();
+    private static final Templates preprocessTemplate;
+
+    private static final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 
     /**
      * The log stream
@@ -378,8 +394,7 @@ public class SourceCode
 
             // Read the XSLT
             Source xslSource = new StreamSource(new File(Generate.PREPROCESSOR));
-            Templates template = Generate.factory.newTemplates(xslSource);
-            xformer = template.newTransformer();
+            preprocessTemplate = factory.newTemplates(xslSource);
         }
         catch (RuntimeException ex)
         {

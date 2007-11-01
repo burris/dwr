@@ -9,7 +9,12 @@
 <xsl:output method="text"/>
 
 <xsl:template match="/">
-  <xsl:text>/*
+  <xsl:apply-templates select="class[not(deprecated)]|interface[not(deprecated)]"/>
+</xsl:template>
+
+<!-- Declare JSX3 interfaces as Java interfaces -->
+<xsl:template match="interface">
+<xsl:text>/*
  * Copyright 2005 Joe Walker
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +28,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */</xsl:text>
- <xsl:apply-templates select="class[not(deprecated)]|interface[not(deprecated)]"/>
-</xsl:template>
+ */
 
-<xsl:template match="interface">
-<xsl:text>
 package org.directwebremoting.proxy.</xsl:text><xsl:value-of select="@package"/><xsl:text>;
 
 import java.lang.reflect.Constructor;
@@ -52,8 +53,24 @@ public interface </xsl:text><xsl:value-of select="@shortname"/>
 </xsl:text>
 </xsl:template>
 
+<!-- Declare JSX3 classes as Java classes -->
 <xsl:template match="class">
-<xsl:text>
+<xsl:text>/*
+ * Copyright 2005 Joe Walker
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.directwebremoting.proxy.</xsl:text><xsl:value-of select="@package"/><xsl:text>;
 
 import java.util.Date;
@@ -71,7 +88,7 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
 </xsl:if>
 <xsl:text>
 {
-    /**
+    /**<!-- A contructor for chaining from some JSX3 function -->
      * All reverse ajax proxies need context to work from
      * @param helper The store of the context for the current action
      */
@@ -89,6 +106,7 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
   </xsl:text>
 </xsl:template>
 
+<!-- Define JSX3 static fields as constants in Java -->
 <xsl:template match="field">
     /**
      * <xsl:copy-of select="dwr:trim(text)"/>
@@ -96,6 +114,7 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
     public static final <xsl:value-of select="dwr:normalizeClassname(type/@name)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/> = <xsl:value-of select="@value"/>;
 </xsl:template>
 
+<!-- Define JSX3 constructors as constructors in Java -->
 <xsl:template match="constructor">
     /**
      * <xsl:copy-of select="dwr:trim(text)"/>
@@ -112,19 +131,17 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
     }
 </xsl:template>
 
+<!-- Define JSX3 methods as methods in Java -->
 <xsl:template match="method">
   <xsl:choose>
 
-    <!--
-    The simple case when there is no return, so the generated script is fire and
-    forget.
-    -->
+    <!-- Simple case: no return, so the generated script is fire and forget -->
     <xsl:when test="not(return)">
     /**
      * <xsl:copy-of select="dwr:trim(text)"/>
      <xsl:for-each select="param">
      * @param <xsl:value-of select="@name"/><xsl:text> </xsl:text><xsl:value-of select="dwr:trim(@text)"/>
-     </xsl:for-each><xsl:if test="return">
+     </xsl:for-each><xsl:if test="return and string-length(dwr:trim(return/@text)) != 0">
      * @return <xsl:value-of select="dwr:trim(return/@text)"/></xsl:if>
      */
     public void <xsl:value-of select="@name"/>(<xsl:for-each select="param">
@@ -155,7 +172,7 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
      * <xsl:copy-of select="dwr:trim(text)"/>
      <xsl:for-each select="param">
      * @param <xsl:value-of select="@name"/><xsl:text> </xsl:text><xsl:value-of select="dwr:trim(@text)"/>
-     </xsl:for-each><xsl:if test="return">
+     </xsl:for-each><xsl:if test="return and string-length(dwr:trim(return/@text)) != 0">
      * @return <xsl:value-of select="dwr:trim(return/@text)"/></xsl:if>
      */
     public <xsl:value-of select="dwr:normalizeClassname(return/type/@name)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/>(<xsl:for-each select="param">
@@ -187,7 +204,7 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
      * <xsl:copy-of select="dwr:trim(text)"/>
      <xsl:for-each select="param">
      * @param <xsl:value-of select="@name"/><xsl:text> </xsl:text><xsl:value-of select="dwr:trim(@text)"/>
-     </xsl:for-each><xsl:if test="return">
+     </xsl:for-each><xsl:if test="return and string-length(dwr:trim(return/@text)) != 0">
      * @return <xsl:value-of select="dwr:trim(return/@text)"/></xsl:if>
      */
     @SuppressWarnings("unchecked")
@@ -220,8 +237,8 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
      * <xsl:copy-of select="dwr:trim(text)"/>
      <xsl:for-each select="param">
      * @param <xsl:value-of select="@name"/><xsl:text> </xsl:text><xsl:value-of select="dwr:trim(@text)"/>
-     </xsl:for-each><xsl:if test="return">
-     * @param type The expected return type
+     </xsl:for-each><xsl:if test="return and string-length(dwr:trim(return/@text)) != 0">
+     * @param returnType The expected return type
      * @return <xsl:value-of select="dwr:trim(return/@text)"/></xsl:if>
      */
     @SuppressWarnings("unchecked")
@@ -252,7 +269,7 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
      * <xsl:copy-of select="dwr:trim(text)"/>
      <xsl:for-each select="param">
      * @param <xsl:value-of select="@name"/><xsl:text> </xsl:text><xsl:value-of select="dwr:trim(@text)"/>
-     </xsl:for-each><xsl:if test="return">
+     </xsl:for-each><xsl:if test="return and string-length(dwr:trim(return/@text)) != 0">
      * @return <xsl:value-of select="dwr:trim(return/@text)"/></xsl:if>
      *
     @SuppressWarnings("unchecked")

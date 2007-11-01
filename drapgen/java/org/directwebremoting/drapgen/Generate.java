@@ -24,11 +24,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerFactory;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.drapgen.xslt.ExtensionFunctions;
 import org.directwebremoting.fsguide.FileSystemGuide;
 import org.directwebremoting.fsguide.Visitor;
 import org.w3c.dom.Node;
@@ -46,7 +44,13 @@ public class Generate
 
     public static void main(String[] args) throws Exception
     {
+        new Generate().generate();
+    }
+
+    public void generate() throws Exception
+    {
         // Create a list of all the classes we need to generate
+        log.info("Searching for XML files.");
         FileSystemGuide guide = new FileSystemGuide(new File(XML_BASE));
         guide.visit(new Visitor()
         {
@@ -68,6 +72,7 @@ public class Generate
                 return true;
             }
         });
+        ExtensionFunctions.setGenerate(this);
 
         // Clone the functions with multiple input parameter types for overloading
         log.info("Cloning for overloading.");
@@ -161,11 +166,15 @@ public class Generate
         }
     }
 
-    public static final Map<String, SourceCode> sources = new HashMap<String, SourceCode>();
+    /**
+     * Accessor for the list of sources
+     */
+    public Map<String, SourceCode> getSources()
+    {
+        return sources;
+    }
 
-    protected static TransformerFactory factory = TransformerFactory.newInstance();
-
-    protected static DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+    protected final Map<String, SourceCode> sources = new HashMap<String, SourceCode>();
 
     /**
      * The log stream
