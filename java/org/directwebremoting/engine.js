@@ -694,10 +694,7 @@ dwr.engine._sendData = function(batch) {
     // Proceed using XMLHttpRequest
     if (batch.async) {
       batch.req.onreadystatechange = function() {
-        if (window["dwr"] != null) dwr.engine._stateChange(batch);
-        else if (window["console"] && window.console["log"]) {
-          window.console.log("XHR state change without old page state. Dropping batch");
-        }
+        if (typeof dwr != 'undefined') dwr.engine._stateChange(batch);
       };
     }
     // If we're polling, record this for monitoring
