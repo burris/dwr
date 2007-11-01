@@ -144,7 +144,6 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         buffer.append("  </style>\n");
         buffer.append("</head>\n");
         buffer.append("<body onload='dwr.util.useLoadingMessage()'>\n");
-        buffer.append(BLANK);
 
         buffer.append("<h2>Methods For: " + scriptName + " (" + creator.getType().getName() + ")</h2>\n");
         buffer.append("<p>To use this class in your javascript you will need the following script includes:</p>\n");
@@ -161,8 +160,6 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         buffer.append("<p>Replies from DWR are shown with a yellow background if they are simple or in an alert box otherwise.<br/>\n");
         buffer.append("The inputs are evaluated as Javascript so strings must be quoted before execution.</p>\n");
 
-        buffer.append("<p>There are " + methods.length + " declared methods:</p><ul>\n");
-
         for (int i = 0; i < methods.length; i++)
         {
             Method method = methods[i];
@@ -171,12 +168,10 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             // Is it on the list of banned names
             if (JavascriptUtil.isReservedWord(methodName))
             {
-                buffer.append(BLANK);
                 buffer.append("<li style='color: #88A;'>" + methodName + "() is not available because it is a reserved word.</li>\n");
                 continue;
             }
 
-            buffer.append(BLANK);
             buffer.append("<li>\n");
             buffer.append("  " + methodName + '(');
 
@@ -192,7 +187,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
                 }
                 else
                 {
-                    String value = BLANK;
+                    String value = "";
                     if (paramType == String.class)
                     {
                         value = "\"\"";
@@ -222,7 +217,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
                     buffer.append("    <input class='itext' type='text' size='10' value='" + value + "' id='p" + i + j + "' title='Will be converted to: " + paramType.getName() + "'/>");
                 }
 
-                buffer.append(j == paramTypes.length - 1 ? BLANK : ", \n");
+                buffer.append(j == paramTypes.length - 1 ? "" : ", \n");
             }
             buffer.append("  );\n");
 
@@ -292,7 +287,6 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
             buffer.append("</li>\n");
         }
 
-        buffer.append(BLANK);
         buffer.append("</ul>\n");
 
         buffer.append("<h2>Other Links</h2>\n");
@@ -502,11 +496,6 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
      * 2 dots
      */
     private static final String PATH_UP = "..";
-
-    /**
-     * Empty string
-     */
-    public static final String BLANK = "";
 
     /**
      * The log stream
