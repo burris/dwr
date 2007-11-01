@@ -42,6 +42,8 @@ public class ExceptionHandler implements Handler
         Continuation.rethrowIfContinuation(cause);
 
         log.warn("Error: " + cause);
+        log.debug("Debug for stack trace:", cause);
+
         if (cause instanceof SecurityException && log.isDebugEnabled())
         {
             log.debug("- User Agent: " + request.getHeader(HttpConstants.HEADER_USER_AGENT));
