@@ -163,7 +163,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
 
     /**
      * @return Returns the script.
-     * @throws InstantiationException
+     * @throws InstantiationException If we can't read from the requested script
      */
     public String getScript() throws InstantiationException
     {
@@ -297,8 +297,7 @@ public class ScriptedCreator extends AbstractCreator implements Creator
         }
         catch (Exception ex)
         {
-            log.error("Error executing script", ex);
-            throw new InstantiationException(Messages.getString("Creator.IllegalAccess"));
+            throw new InstantiationException(Messages.getString("ScriptedCreator.IllegalAccess", ex.getMessage()));
         }
     }
 
