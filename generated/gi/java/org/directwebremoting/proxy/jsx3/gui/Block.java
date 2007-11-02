@@ -1635,22 +1635,6 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
         return this;
     }
 
-    /*
-     * Returns the DHTML, used for this object's on-screen VIEW
-     * @param strData Text/HTML markup that will replace value of getText() during paint&#8212;typically passed by subclass, JSXBlockX after it performs an XML/XSL merge to acquire its data; for memory management purposes, the data is not set via setText() and, instead, is passed as a temporary input parameter, as the object's MODEL would contain the text for no reason
-     * @return DHTML
-     *
-    @SuppressWarnings("unchecked")
-    public String paint(String strData, Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
     /**
      * displays a "blocking mask" inside the block to stop user interactions with content within the block. Applies only to Blocks. Use only on blocks with no padding (padding:0px)
      * @param strMessage text/message to display in the blocking mask to tell the user it is disabled
@@ -2057,68 +2041,6 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
         .appendData(intLeft).appendScript(",")
 
         .appendData(intTop).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
-    }
-
-    /*
-     * Publishes an event to all subscribed objects.
-     * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
-     * @return the number of listeners to which the event was broadcast
-     *
-    @SuppressWarnings("unchecked")
-    public int publish(Object objEvent, Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-    As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(",")
-
-        .appendData(objFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Unsubscribe an object or function from an event published by this object.
-
-    As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler the value of objHandler passed to subscribe
-     */
-    public void unsubscribe(String strEventId, Object objHandler)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Unsubscribes all subscribed objects to a type of event published by this object.
-     * @param strEventId the event type
-     */
-    public void unsubscribeAll(String strEventId)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
         getProxyHelper().getScriptProxy().addScript(script);
     }
 

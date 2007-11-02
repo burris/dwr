@@ -637,22 +637,6 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     }
 
     /*
-     * Tests the equivalency of two jsx3.xml.Entity instances as they wrap and can therefore point to the same native entity, causing a standard "==" comparison to fail
-     * @param objEntity jsx3.xml.Entity object
-     * @return true or false
-     *
-    @SuppressWarnings("unchecked")
-    public boolean equals(org.directwebremoting.proxy.jsx3.xml.Entity objEntity, Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
-    /*
      * Returns one of: jsx3.xml.Entity.TYPEELEMENT, jsx3.xml.Entity.TYPEATTRIBUTE, jsx3.xml.Entity.TYPETEXT, jsx3.xml.Entity.TYPECDATA
      *
     @SuppressWarnings("unchecked")
@@ -909,21 +893,6 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
      *
     @SuppressWarnings("unchecked")
     public String getPrefix(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
-    /*
-     * Returns the XML (as String) for this node and any descendants. For an attribute this would be the
-         attribute name and value (i.e., name="value")
-     *
-    @SuppressWarnings("unchecked")
-    public String toString(Callback callback)
     {
         String key = // Generate some id
         ScriptSession session = WebContext.get().getScriptSession();

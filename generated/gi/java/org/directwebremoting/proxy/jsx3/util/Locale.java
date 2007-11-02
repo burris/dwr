@@ -121,35 +121,6 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
     }
     */
 
-    /*
-     * Returns true if obj is equal to this locale.
-     * @param obj 
-     *
-    @SuppressWarnings("unchecked")
-    public boolean equals(Object obj, Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
-    /*
-     * 
-     *
-    @SuppressWarnings("unchecked")
-    public String toString(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
     /**
      * Returns a locale instance represented by strKey.
      * @param strKey the locale key, <code>ll_CC</code>, where <code>ll</code> is the two letter language 

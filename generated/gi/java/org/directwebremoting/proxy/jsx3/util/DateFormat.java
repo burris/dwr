@@ -277,18 +277,4 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     }
     */
 
-    /*
-     * Returns a string representation of this date format.
-     *
-    @SuppressWarnings("unchecked")
-    public String toString(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
 }

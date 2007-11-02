@@ -159,20 +159,6 @@ public class HotKey extends org.directwebremoting.proxy.jsx3.lang.Object
     }
 
     /*
-     * 
-     *
-    @SuppressWarnings("unchecked")
-    public String toString(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
-    /*
      * Converts the string representation of a keyboard key to an integer keycode. This keycode will match the keycode
     value of a jsx3.gui.Event of type keydown. 
 

@@ -1116,20 +1116,6 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     }
 
     /*
-     * 
-     *
-    @SuppressWarnings("unchecked")
-    public String toString(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
-    /*
      * Publishes an event to all subscribed objects.
      * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
      * @return the number of listeners to which the event was broadcast

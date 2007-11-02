@@ -408,20 +408,6 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
         getProxyHelper().getScriptProxy().addScript(script);
     }
 
-    /*
-     * 
-     *
-    @SuppressWarnings("unchecked")
-    public String toString(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
     /**
      * Returns the first child tag of type type.
      * @param type the fully-qualified class name or the class constructor function.

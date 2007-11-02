@@ -135,45 +135,6 @@ public interface CDF
         }
 
         /**
-         * Returns this document to conform to the contract of the jsx3.xml.CDF interface.
-         * @return this object.
-         */
-        @SuppressWarnings("unchecked")
-        public org.directwebremoting.proxy.jsx3.xml.Document getXML()
-        {
-            ProxyHelper child = getProxyHelper().getChildHelper("getXML().");
-            try
-            {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
-            }
-            catch (Exception ex)
-            {
-                throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.xml.Document.class.getName());
-            }
-        }
-
-        /**
-         * Returns this document to conform to the contract of the jsx3.xml.CDF interface.
-         * @param returnType The expected return type
-         * @return this object.
-         */
-        @SuppressWarnings("unchecked")
-        public <T> T getXML(Class<T> returnType)
-        {
-            ProxyHelper child = getProxyHelper().getChildHelper("getXML().");
-            try
-            {
-                Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
-            }
-            catch (Exception ex)
-            {
-                throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-            }
-        }
-
-        /**
          * No-op.
          * @param strRecordId the <code>jsxid</code> attribute of the data record to redraw.
          * @param intAction <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code>.
@@ -722,68 +683,6 @@ public interface CDF
             {
                 throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.xml.CDF.class.getName());
             }
-        }
-
-        /*
-         * Publishes an event to all subscribed objects.
-         * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
-         * @return the number of listeners to which the event was broadcast
-         *
-        @SuppressWarnings("unchecked")
-        public int publish(Object objEvent, Callback callback)
-        {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
-        }
-        */
-
-        /**
-         * Subscribes an object or function to a type of event published by this object.
-
-        As of version 3.4 a string value for objHandler is deprecated.
-         * @param strEventId the event type(s).
-         * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-         * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-         */
-        public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-        {
-            ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
-
-            .appendData(objHandler).appendScript(",")
-
-            .appendData(objFunction).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
-        }
-
-        /**
-         * Unsubscribe an object or function from an event published by this object.
-
-        As of version 3.4 a string value for objHandler is deprecated.
-         * @param strEventId the event type(s).
-         * @param objHandler the value of objHandler passed to subscribe
-         */
-        public void unsubscribe(String strEventId, Object objHandler)
-        {
-            ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
-
-            .appendData(objHandler).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
-        }
-
-        /**
-         * Unsubscribes all subscribed objects to a type of event published by this object.
-         * @param strEventId the event type
-         */
-        public void unsubscribeAll(String strEventId)
-        {
-            ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
         }
 
     }

@@ -243,25 +243,6 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     */
 
     /**
-     * Returns a copy of this list.
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public org.directwebremoting.proxy.jsx3.util.List clone()
-    {
-        ProxyHelper child = getProxyHelper().getChildHelper("clone().");
-        try
-        {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + org.directwebremoting.proxy.jsx3.util.List.class.getName());
-        }
-    }
-
-    /**
      * 
      * @param objElm 
      * @param intAt 
@@ -337,22 +318,6 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
      *
     @SuppressWarnings("unchecked")
     public Object[] toArray(boolean bLive, Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
-
-    /*
-     * Returns true if this list and l have the same length and this.get(n) = l.get(n)
-    for all n.
-     * @param l 
-     *
-    @SuppressWarnings("unchecked")
-    public boolean equals(Object l, Callback callback)
     {
         String key = // Generate some id
         ScriptSession session = WebContext.get().getScriptSession();
