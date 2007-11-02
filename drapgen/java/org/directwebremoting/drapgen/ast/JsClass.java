@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.drapgen;
+package org.directwebremoting.drapgen.ast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,20 +46,22 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.drapgen.Generate;
 import org.directwebremoting.util.LocalUtil;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class SourceCode
+public class JsClass
 {
     /**
      * @param xmlFile The GI doc description file to read
      */
-    public SourceCode(File xmlFile)
+    public JsClass(File xmlFile)
     {
         FileInputStream in = null;
 
@@ -208,7 +210,7 @@ public class SourceCode
                 out = new FileWriter(javaFile);
                 out.append(outerCode);
 
-                for (SourceCode innerSource : innerSources)
+                for (JsClass innerSource : innerSources)
                 {
                     String innerCode = innerSource.output.toString();
                     innerCode = innerCode.replaceAll("import .*;", "");
@@ -276,11 +278,11 @@ public class SourceCode
 
     /**
      * Add this given class to this class as an inner class
-     * @param sourceCode The class to add an an inner class
+     * @param clazz The class to add an an inner class
      */
-    public void absorbClass(SourceCode sourceCode)
+    public void absorbClass(JsClass clazz)
     {
-        innerSources.add(sourceCode);
+        innerSources.add(clazz);
     }
 
     /**
@@ -288,33 +290,31 @@ public class SourceCode
      *   <method id="method:setEnabled" idfk="method:setEnabled" inherited="1" name="setEnabled" source="jsx3.gui.Form"/>
      * @return A list of pairs: name|source
      */
-    public List<Pair<String, String>> getMixinFunctions()
+    public List<JsMethod> getMixinFunctions()
     {
         try
         {
-            List<Pair<String, String>> reply = new ArrayList<Pair<String, String>>();
+            List<JsMethod> reply = new ArrayList<JsMethod>();
 
             // Find all the inherited functions, and trim the ones that are not
             // from super-classes - leaving the mixins
             NodeList nodelist = (NodeList) mixinFunctionFinder.evaluate(document, XPathConstants.NODESET);
             for (int i = 0; i < nodelist.getLength(); i++)
             {
-                Node node = nodelist.item(i);
-                String name = node.getAttributes().getNamedItem("name").getNodeValue();
-                String source = node.getAttributes().getNamedItem("source").getNodeValue();
+                JsMethod method = new JsMethod((Element) nodelist.item(i), getClassName());
 
-                boolean isMixin = true;
+                boolean isFunctionFromMixin = true;
                 for (String superClass : superClasses)
                 {
-                    if (source.equals(superClass))
+                    if (method.getDeclarationClassName().equals(superClass))
                     {
-                        isMixin = false;
+                        isFunctionFromMixin = false;
                     }
                 }
 
-                if (isMixin)
+                if (isFunctionFromMixin)
                 {
-                    reply.add(new Pair<String, String>(source, name));
+                    reply.add(method);
                 }
             }
 
@@ -332,12 +332,99 @@ public class SourceCode
      * @param name A method name to find in the input document
      * @return the node that matches the given name
      */
-    public Node getImplementationDeclaration(String name)
+    public JsMethod getImplementationDeclaration(String name)
     {
         try
         {
             XPathExpression implementationFinder = xpath.compile("//method[@name='" + name + "']");
-            return (Node) implementationFinder.evaluate(document, XPathConstants.NODE);
+            return new JsMethod((Element) implementationFinder.evaluate(document, XPathConstants.NODE), getClassName());
+        }
+        catch (XPathExpressionException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * 
+     */
+    public void trimDuplicateMethods(JsClassloader classloader)
+    {
+        // Get a list of super classes
+        List<JsClass> parents = new ArrayList<JsClass>();
+        for (String superClassName : superClasses)
+        {
+            JsClass parent = classloader.getClassByName(superClassName);
+            if (parent == null)
+            {
+                throw new IllegalStateException("Unknown superclass: " + superClassName);
+            }
+            parents.add(parent);
+        }
+
+        // Get a list of method signatures
+        List<JsMethod> functions = getImplementedMethods();
+
+        // Loop over signatures, checking for methods in super-classes
+        for (JsMethod function : functions)
+        {
+            for (JsClass parent : parents)
+            {
+                List<JsMethod> parentMethods = parent.getImplementedMethods();
+                for (JsMethod parentMethod : parentMethods)
+                {
+                    if (function.equals(parentMethod))
+                    {
+                        removeMethod(function);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param method
+     */
+    private void removeMethod(JsMethod method)
+    {
+        Element element = method.getElement();
+
+        Node parent = element.getParentNode();
+        if (parent == null)
+        {
+            log.info("null parent for: " + method);
+        }
+        else
+        {
+            parent.removeChild(element);
+        }
+    }
+
+    /**
+     *
+     */
+    private List<JsMethod> getImplementedMethods()
+    {
+        try
+        {
+            List<JsMethod> reply = new ArrayList<JsMethod>();
+    
+            // Find all the inherited functions, and trim the ones that are not
+            // from super-classes - leaving the mixins
+            NodeList nodelist = (NodeList) functionFinder.evaluate(document, XPathConstants.NODESET);
+            for (int i = 0; i < nodelist.getLength(); i++)
+            {
+                Element element = (Element) nodelist.item(i);
+                if (element.getParentNode() == null)
+                {
+                    log.debug("node without parent: " + element);
+                }
+
+                JsMethod method = new JsMethod(element, getClassName());
+                reply.add(method);
+            }
+    
+            return reply;
         }
         catch (XPathExpressionException ex)
         {
@@ -347,15 +434,17 @@ public class SourceCode
 
     /**
      * Replace a stub with an implementation
-     * @param name A method name to replace in the input document
-     * @param element The element to replace the declaration with
+     * @param newMethod The element to replace the declaration with
+     * @param oldMethod A method name to replace in the input document
      */
-    public void replaceImplementation(String name, Node element)
+    public void replaceImplementation(JsMethod newMethod, JsMethod oldMethod)
     {
-        Node oldChild = getImplementationDeclaration(name);
-        Node cloned = element.cloneNode(true);
-        Node newChild = document.adoptNode(cloned);
-        oldChild.getParentNode().replaceChild(newChild, oldChild);
+        Element oldChild = oldMethod.getElement();
+        Element newChild = newMethod.getElement();
+
+        Node replacement = document.importNode(newChild, true);
+
+        oldChild.getParentNode().replaceChild(replacement, oldChild);
     }
 
     private String className;
@@ -364,7 +453,7 @@ public class SourceCode
     private File javaFile;
     private File javaParentDir;
     private StringWriter output;
-    private List<SourceCode> innerSources = new ArrayList<SourceCode>();
+    private List<JsClass> innerSources = new ArrayList<JsClass>();
     private Document document;
     private boolean superclass = false;
     private List<String> superClasses;
@@ -374,6 +463,7 @@ public class SourceCode
     private static final XPath xpath = XPathFactory.newInstance().newXPath();
     private static final XPathExpression superClassFinder;
     private static final XPathExpression mixinFunctionFinder;
+    private static final XPathExpression functionFinder;
 
     private static final TransformerFactory factory = TransformerFactory.newInstance();
     private static final Templates preprocessTemplate;
@@ -383,7 +473,7 @@ public class SourceCode
     /**
      * The log stream
      */
-    private static final Log log = LogFactory.getLog(SourceCode.class);
+    private static final Log log = LogFactory.getLog(JsClass.class);
 
     static
     {
@@ -391,6 +481,7 @@ public class SourceCode
         {
             superClassFinder = xpath.compile("//superclass/@name");
             mixinFunctionFinder = xpath.compile("//method[@inherited='1']");
+            functionFinder = xpath.compile("//method[not(@inherited)]");
 
             // Read the XSLT
             Source xslSource = new StreamSource(new File(Generate.PREPROCESSOR));

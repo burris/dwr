@@ -16,20 +16,20 @@
 package org.directwebremoting.drapgen;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.drapgen.ast.JsClass;
+import org.directwebremoting.drapgen.ast.JsClassloader;
+import org.directwebremoting.drapgen.ast.JsMethod;
 import org.directwebremoting.drapgen.xslt.ExtensionFunctions;
 import org.directwebremoting.fsguide.FileSystemGuide;
 import org.directwebremoting.fsguide.Visitor;
-import org.w3c.dom.Node;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -49,6 +49,8 @@ public class Generate
 
     public void generate() throws Exception
     {
+        final JsClassloader registry = new JsClassloader();
+
         // Create a list of all the classes we need to generate
         log.info("Searching for XML files.");
         FileSystemGuide guide = new FileSystemGuide(new File(XML_BASE));
@@ -58,8 +60,8 @@ public class Generate
             {
                 if (file.getAbsolutePath().endsWith(".xml"))
                 {
-                    SourceCode code = new SourceCode(file);
-                    sources.put(code.getClassName(), code);
+                    JsClass code = new JsClass(file);
+                    registry.add(code);
                 }
                 else
                 {
@@ -72,30 +74,30 @@ public class Generate
                 return true;
             }
         });
-        ExtensionFunctions.setGenerate(this);
+        ExtensionFunctions.setJsClassloader(registry);
 
         // Clone the functions with multiple input parameter types for overloading
         log.info("Cloning for overloading.");
-        for (SourceCode code : sources.values())
+        for (JsClass code : registry.getClasses())
         {
             code.cloneForOverloading();
         }
         
         // Work out which classes are super-classes and mixins
         log.info("Calculating super classes.");
-        for (SourceCode code : sources.values())
+        for (JsClass code : registry.getClasses())
         {
             List<String> parents = code.getSuperClasses();
             for (String parent : parents)
             {
-                sources.get(parent).setSuperClass(true);
+                registry.getClassByName(parent).setSuperClass(true);
             }
         }
 
         // Copying mixin functions because Java does not do MI
         log.info("Copying mixin functions.");
         ExecutorService exec = Executors.newFixedThreadPool(2);
-        for (final SourceCode code : sources.values())
+        for (final JsClass code : registry.getClasses())
         {
             exec.execute(new Runnable()
             {
@@ -103,22 +105,22 @@ public class Generate
                 {
                     // Search the XML for lines like this from Button.xml:
                     //   <implements direct="1" id="implements:0" loaded="1" name="jsx3.gui.Form"/>
-                    List<Pair<String, String>> mixinFunctions = code.getMixinFunctions();
-                    for (Pair<String, String> mixinFunction : mixinFunctions)
+                    List<JsMethod> functions = code.getMixinFunctions();
+                    for (JsMethod function : functions)
                     {
                         // replace the method element with the corresponding element from Form.
-                        if (!"jsx3.lang.Object".equals(mixinFunction.left))
+                        if (!"jsx3.lang.Object".equals(function.getDeclarationClassName()))
                         {
-                            SourceCode implementingClass = sources.get(mixinFunction.left);
-                            Node node = implementingClass.getImplementationDeclaration(mixinFunction.right);
+                            JsClass implementingClass = registry.getClassByName(function.getDeclarationClassName());
+                            JsMethod node = implementingClass.getImplementationDeclaration(function.getName());
                             if (node == null)
                             {
-                                log.warn("- No implementation of: " + mixinFunction.left + "." + mixinFunction.right + "() refered to by " + code.getClassName());
+                                log.warn("- No implementation of: " + function.getDeclarationClassName() + "." + function.getName() + "() refered to by " + code.getClassName());
                             }
                             else
                             {
                                 // log.info("- Promoting: " + mixinFunction.left + "." + mixinFunction.right + "() into " + code.getClassName());
-                                code.replaceImplementation(mixinFunction.right, node);
+                                code.replaceImplementation(node, function);
                             }
                         }
                     }
@@ -129,52 +131,48 @@ public class Generate
         exec.shutdown();
         exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 
+        // Remove functions implemented by parent
+        log.info("Trimming methods with identical implementation in parent.");
+        for (JsClass code : registry.getClasses())
+        {
+            code.trimDuplicateMethods(registry);
+        }
+
         // Transform them all
-        log.info("Transforming " + sources.size() + " classes.");
-        for (SourceCode code : sources.values())
+        log.info("Transforming " + registry.getClasses().size() + " classes.");
+        for (JsClass code : registry.getClasses())
         {
             code.transform();
         }
 
         // Merge Inner Classes
         log.info("Merging Inner Classes");
-        for (Iterator<Map.Entry<String, SourceCode>> it = sources.entrySet().iterator(); it.hasNext();)
+        for (Iterator<JsClass> it = registry.getClasses().iterator(); it.hasNext();)
         {
-            Map.Entry<String, SourceCode> entry = it.next();
-            String className = entry.getKey();
+            JsClass code = it.next();
             String parentName = "";
 
-            int lastDot = className.lastIndexOf('.');
+            int lastDot = code.getClassName().lastIndexOf('.');
             if (lastDot > 0)
             {
-                parentName = className.substring(0, lastDot);
+                parentName = code.getClassName().substring(0, lastDot);
             }
 
-            SourceCode parent = sources.get(parentName);
+            JsClass parent = registry.getClassByName(parentName);
             if (parent != null)
             {
                 it.remove();
-                parent.absorbClass(entry.getValue());
+                parent.absorbClass(code);
             }
         }
 
         // Write them to disk
-        log.info("Writing " + sources.size() + " classes.");
-        for (SourceCode code : sources.values())
+        log.info("Writing " + registry.getClasses().size() + " classes.");
+        for (JsClass code : registry.getClasses())
         {
             code.write();
         }
     }
-
-    /**
-     * Accessor for the list of sources
-     */
-    public Map<String, SourceCode> getSources()
-    {
-        return sources;
-    }
-
-    protected final Map<String, SourceCode> sources = new HashMap<String, SourceCode>();
 
     /**
      * The log stream

@@ -18,7 +18,7 @@ package org.directwebremoting.drapgen.xslt;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.directwebremoting.drapgen.Generate;
+import org.directwebremoting.drapgen.ast.JsClassloader;
 
 /**
  * Functions to make up for the inadequacies of XSTL
@@ -46,7 +46,7 @@ public class ExtensionFunctions
      */
     public static boolean isSuperClass(String className)
     {
-        return generate.getSources().get(className).isSuperClass();
+        return registry.getClassByName(className).isSuperClass();
     }
 
     /**
@@ -70,14 +70,14 @@ public class ExtensionFunctions
     }
 
     /**
-     * @param generate the generate to set
+     * @param registry the generate to set
      */
-    public static void setGenerate(Generate generate)
+    public static void setJsClassloader(JsClassloader registry)
     {
-        ExtensionFunctions.generate = generate;
+        ExtensionFunctions.registry = registry;
     }
 
-    private static Generate generate;
+    private static JsClassloader registry;
 
     private static final int SEARCH = 0;
     private static final int REPLACE = 1;
