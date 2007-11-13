@@ -114,7 +114,9 @@
   <!--=======================================================================-->
   <target name="jar" depends="compile" description="Create output JAR file">
     <mkdir dir="${target.root}"/>
-    <jar destfile="${target.root}/dwr.jar" compress="true"/>
+    <jar destfile="${target.root}/dwr.jar" compress="true">
+      <fileset dir="${target.root}/classes"/>
+    </jar>
     <retroweaver inputjar="${target.root}/dwr.jar" outputjar="${target.root}/dwr-jdk14.jar" target="1.4"/>
   </target>
 
