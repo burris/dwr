@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Slider(ProxyHelper helper)
+    public Slider(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -45,7 +48,10 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public Slider(String strName, int vntLeft, int vntTop, int vntLength)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Slider", strName, vntLeft, vntTop, vntLength);
+        setInitScript(script);
     }
 
     /**
@@ -58,20 +64,20 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public static final int VERTICAL = 1;
 
-    /*
+    /**
      * Returns the value of this slider.
-     * @return between 0 and 100.
-     *
+     * @param callback between 0 and 100.
+     */
     @SuppressWarnings("unchecked")
-    public int getValue(Callback callback)
+    public void getValue(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValue");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the value of this slider and repositions the handle.
@@ -81,40 +87,40 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Slider setValue(int fpValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setValue(").appendData(fpValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setValue", fpValue);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Sets the validation state for this slider and returns the validation state.
-     * @return <code>jsx3.gui.Form.STATEVALID</code>.
-     *
+     * @param callback <code>jsx3.gui.Form.STATEVALID</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int doValidate(Callback callback)
+    public void doValidate(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Returns the value of the length field, the size of the dimension along this slider axis.
-     * @return the length field
-     *
-    @SuppressWarnings("unchecked")
-    public int getLength(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = doValidate");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the value of the length field, the size of the dimension along this slider axis.
+     * @param callback the length field
+     */
+    @SuppressWarnings("unchecked")
+    public void getLength(Callback<Integer> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLength");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the length of this slider.
@@ -125,10 +131,8 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Slider setLength(int vntLength, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLength(").appendData(vntLength).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLength", vntLength, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -141,27 +145,25 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Slider setLength(String vntLength, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLength(").appendData(vntLength).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLength", vntLength, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the orientation of this slider.
-     * @return <code>HORIZONTAL</code> or <code>VERTICAL</code>.
-     *
+     * @param callback <code>HORIZONTAL</code> or <code>VERTICAL</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getOrientation(Callback callback)
+    public void getOrientation(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getOrientation");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the orientation of this slider.
@@ -171,25 +173,25 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Slider setOrientation(int intValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setOrientation(").appendData(intValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setOrientation", intValue);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns whether the track is painted.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getPaintTrack(Callback callback)
+    public void getPaintTrack(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPaintTrack");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether the track is painted.
@@ -199,25 +201,25 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Slider setPaintTrack(int bValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPaintTrack(").appendData(bValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPaintTrack", bValue);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns whether clicking the track moves the handle to that point.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getTrackClickable(Callback callback)
+    public void getTrackClickable(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTrackClickable");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether clicking the track moves the handle to that point.
@@ -227,24 +229,24 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Slider setTrackClickable(int bValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTrackClickable(").appendData(bValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTrackClickable", bValue);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the URL of the image to use for the handle.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getHandleImage(Callback callback)
+    public void getHandleImage(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHandleImage");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the URL of the image to use for the handle. If no URL is set, a default image is used.
@@ -254,12 +256,12 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Slider setHandleImage(String strUrl)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHandleImage(").appendData(strUrl).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHandleImage", strUrl);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Constrains a possible slider value to a legal value. This implementation ensures that the resulting value is
     within the legal range of [0,100].Override this method on an instance of jsx3.gui.Slider to
     create a "notched" slider. The following code creates a slider that allows its handle to be in a location
@@ -269,18 +271,18 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     return Math.max(0, Math.min(100, jsx3.util.numRound(fpValue, 10)));
     }
      * @param fpValue the value to validate, usually corresponds to a value along that slider that the handle is being dragged.
-     * @return the validated value, usually the nearest value to <code>fpValue</code> that is legal for this slider.
-     *
+     * @param callback the validated value, usually the nearest value to <code>fpValue</code> that is legal for this slider.
+     */
     @SuppressWarnings("unchecked")
-    public int constrainValue(int fpValue, Callback callback)
+    public void constrainValue(int fpValue, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = constrainValue", fpValue);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Binds the given key sequence to a callback function. Any object that has a key binding (specified with
@@ -301,11 +303,11 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.HotKey doKeyBinding(org.directwebremoting.proxy.CodeBlock fctCallback, String strKeys)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").");
+        String extension = "doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -320,11 +322,11 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form doReset()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doReset().");
+        String extension = "doReset().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -332,98 +334,98 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Returns the background color of this control when it is disabled.
-     * @return valid CSS property value, (i.e., red, #ff0000)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ff0000)
+     */
     @SuppressWarnings("unchecked")
-    public String getDisabledBackgroundColor(Callback callback)
+    public void getDisabledBackgroundColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisabledBackgroundColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the font color to use when this control is disabled.
-     * @return valid CSS property value, (i.e., red, #ff0000)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ff0000)
+     */
     @SuppressWarnings("unchecked")
-    public String getDisabledColor(Callback callback)
+    public void getDisabledColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisabledColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the state for the form field control. If no enabled state is set, this method returns
     STATEENABLED.
-     * @return <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
-     *
+     * @param callback <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getEnabled(Callback callback)
+    public void getEnabled(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEnabled");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the key binding that when keyed will fire the execute event for this control.
-     * @return plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
-     *
+     * @param callback plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
+     */
     @SuppressWarnings("unchecked")
-    public String getKeyBinding(Callback callback)
+    public void getKeyBinding(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getKeyBinding");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether or not this control is required. If the required property has never been set, this method returns
     OPTIONAL.
-     * @return <code>REQUIRED</code> or <code>OPTIONAL</code>.
-     *
+     * @param callback <code>REQUIRED</code> or <code>OPTIONAL</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getRequired(Callback callback)
+    public void getRequired(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRequired");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the validation state of this control. If the validationState property has never been set, this method returns
     STATEVALID.
-     * @return <code>STATEINVALID</code> or <code>STATEVALID</code>.
-     *
+     * @param callback <code>STATEINVALID</code> or <code>STATEVALID</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getValidationState(Callback callback)
+    public void getValidationState(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValidationState");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the background color of this form control when it is disabled.
@@ -433,11 +435,11 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setDisabledBackgroundColor(String strColor)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setDisabledBackgroundColor(\"" + strColor + "\").");
+        String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -453,11 +455,11 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setDisabledColor(String strColor)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setDisabledColor(\"" + strColor + "\").");
+        String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -474,10 +476,8 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setEnabled(").appendData(intEnabled).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setEnabled", intEnabled, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -489,11 +489,11 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setKeyBinding(String strSequence)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setKeyBinding(\"" + strSequence + "\").");
+        String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -509,11 +509,11 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setRequired(int required)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setRequired(\"" + required + "\").");
+        String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -529,11 +529,11 @@ public class Slider extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setValidationState(int intState)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setValidationState(\"" + intState + "\").");
+        String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

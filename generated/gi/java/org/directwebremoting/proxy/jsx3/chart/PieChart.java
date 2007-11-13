@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public PieChart(ProxyHelper helper)
+    public PieChart(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -46,23 +49,26 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
      */
     public PieChart(String name, int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new PieChart", name, left, top, width, height);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the innerRadius field, the radius as the hole in the middle of the pie as a ratio of the entire radius.
-     * @return innerRadius
-     *
+     * @param callback innerRadius
+     */
     @SuppressWarnings("unchecked")
-    public float getInnerRadius(Callback callback)
+    public void getInnerRadius(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getInnerRadius");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the innerRadius field.
@@ -71,24 +77,24 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     public void setInnerRadius(float innerRadius)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setInnerRadius(").appendData(innerRadius).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setInnerRadius", innerRadius);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the seriesPadding field, the amount of padding between rings in a doughnut chart as a ratio of the width of a ring.
-     * @return seriesPadding
-     *
+     * @param callback seriesPadding
+     */
     @SuppressWarnings("unchecked")
-    public float getSeriesPadding(Callback callback)
+    public void getSeriesPadding(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSeriesPadding");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the seriesPadding field.
@@ -97,24 +103,24 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     public void setSeriesPadding(float seriesPadding)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSeriesPadding(").appendData(seriesPadding).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSeriesPadding", seriesPadding);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the totalAngle field, the total angle used for each series; may be overridden on a series-by-series basis by jsx3.chart.PieSeries.totalAngle.
-     * @return totalAngle
-     *
+     * @param callback totalAngle
+     */
     @SuppressWarnings("unchecked")
-    public int getTotalAngle(Callback callback)
+    public void getTotalAngle(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTotalAngle");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the totalAngle field.
@@ -123,24 +129,24 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     public void setTotalAngle(int totalAngle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTotalAngle(").appendData(totalAngle).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTotalAngle", totalAngle);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the startAngle field, the start angle of the first slice in each series; 0 points upwards and increasing values go clockwise; may be overridden on a series-by-series basis by jsx3.chart.PieSeries.startAngle.
-     * @return startAngle
-     *
+     * @param callback startAngle
+     */
     @SuppressWarnings("unchecked")
-    public int getStartAngle(Callback callback)
+    public void getStartAngle(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStartAngle");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the startAngle field.
@@ -149,24 +155,24 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     public void setStartAngle(int startAngle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setStartAngle(").appendData(startAngle).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setStartAngle", startAngle);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the categoryField field, the attribute of a record that contains the category name value; necessary because there is no CategoryAxis to define this in a radial chart.
-     * @return categoryField
-     *
+     * @param callback categoryField
+     */
     @SuppressWarnings("unchecked")
-    public String getCategoryField(Callback callback)
+    public void getCategoryField(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCategoryField");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the categoryField field.
@@ -175,24 +181,24 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     public void setCategoryField(String categoryField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setCategoryField(").appendData(categoryField).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setCategoryField", categoryField);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the colors field, an array of string representations of a vector fill, to color in the slices of all the data series; may be overridden by jsx3.chart.PieSeries.colors for an individual series..
-     * @return colors
-     *
+     * @param callback colors
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getColors(Callback callback)
+    public void getColors(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getColors");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the colors field.
@@ -201,24 +207,24 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     public void setColors(Object[] colors)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColors(").appendData(colors).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColors", colors);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the colorFunction field, a function that defines how to color in the slices of each data series in this chart, with the signature function(record, index) : jsx3.vector.Fill; may be overridden by jsx3.chart.PieSeries.colorFunction for an individual series..
-     * @return colorFunction
-     *
+     * @param callback colorFunction
+     */
     @SuppressWarnings("unchecked")
-    public org.directwebremoting.proxy.CodeBlock getColorFunction(Callback callback)
+    public void getColorFunction(Callback<org.directwebremoting.proxy.CodeBlock> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getColorFunction");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the colorFunction field.
@@ -227,24 +233,24 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     public void setColorFunction(String colorFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColorFunction(").appendData(colorFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColorFunction", colorFunction);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the seriesStroke field, string representation of a VectorStroke to outline the slices of all the series with; may be overridden by jsx3.chart.PieSeries.stroke for an individual series..
-     * @return seriesStroke
-     *
+     * @param callback seriesStroke
+     */
     @SuppressWarnings("unchecked")
-    public String getSeriesStroke(Callback callback)
+    public void getSeriesStroke(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSeriesStroke");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the seriesStroke field.
@@ -253,8 +259,8 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     public void setSeriesStroke(String seriesStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSeriesStroke(").appendData(seriesStroke).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSeriesStroke", seriesStroke);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -265,11 +271,11 @@ public class PieChart extends org.directwebremoting.proxy.jsx3.chart.RadialChart
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Fill defaultColoring(org.directwebremoting.proxy.jsx3.xml.Entity record, int index)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("defaultColoring(\"" + record + "\", \"" + index + "\").");
+        String extension = "defaultColoring(\"" + record + "\", \"" + index + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Fill> ctor = org.directwebremoting.proxy.jsx3.vector.Fill.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Fill> ctor = org.directwebremoting.proxy.jsx3.vector.Fill.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

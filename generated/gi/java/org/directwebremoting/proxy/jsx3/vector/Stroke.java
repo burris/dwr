@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class Stroke extends org.directwebremoting.proxy.jsx3.html.Tag
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Stroke(ProxyHelper helper)
+    public Stroke(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,37 +45,40 @@ public class Stroke extends org.directwebremoting.proxy.jsx3.html.Tag
      */
     public Stroke(int color, int width, float alpha)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Stroke", color, width, alpha);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the color field.
-     * @return color
-     *
+     * @param callback color
+     */
     @SuppressWarnings("unchecked")
-    public int getColor(Callback callback)
+    public void getColor(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Returns the color field, as a CSS hex string.
-     *
-    @SuppressWarnings("unchecked")
-    public String getColorHtml(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the color field, as a CSS hex string.
+     */
+    @SuppressWarnings("unchecked")
+    public void getColorHtml(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getColorHtml");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the color field.
@@ -81,8 +87,8 @@ public class Stroke extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setColor(int color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColor(").appendData(color).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColor", color);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -92,24 +98,24 @@ public class Stroke extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setColor(String color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColor(").appendData(color).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColor", color);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the width field.
-     * @return width
-     *
+     * @param callback width
+     */
     @SuppressWarnings("unchecked")
-    public int getWidth(Callback callback)
+    public void getWidth(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getWidth");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the width field.
@@ -118,24 +124,24 @@ public class Stroke extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setWidth(int width)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setWidth(").appendData(width).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setWidth", width);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the alpha field.
-     * @return alpha
-     *
+     * @param callback alpha
+     */
     @SuppressWarnings("unchecked")
-    public float getAlpha(Callback callback)
+    public void getAlpha(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAlpha");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the alpha field.
@@ -144,24 +150,24 @@ public class Stroke extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setAlpha(float alpha)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAlpha(").appendData(alpha).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAlpha", alpha);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * parses a VectorStroke from a string representation, that format is "color width alpha"
      * @param v the string representation
-     * @return null if v is empty, v if v is already a VectorStroke, or otherwise a new VectorStroke created by parsing the string according to the format specified above
-     *
+     * @param callback null if v is empty, v if v is already a VectorStroke, or otherwise a new VectorStroke created by parsing the string according to the format specified above
+     */
     @SuppressWarnings("unchecked")
-    public VectorStroke valueOf(String v, Callback callback)
+    public void valueOf(String v, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = valueOf", v);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Event(ProxyHelper helper)
+    public Event(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -298,12 +301,8 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void subscribe(String strEventId, String objHandler, String objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(",")
-
-        .appendData(objFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -314,10 +313,8 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribe(String strEventId, String objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -327,396 +324,396 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribeAll", strEventId);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the type of event, e.g. mousedown, click, etc.
-     * @return event type
-     *
+     * @param callback event type
+     */
     @SuppressWarnings("unchecked")
-    public String getType(Callback callback)
+    public void getType(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getType");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns handle to the HTML element acted upon (click, mousedown, etc).
-     * @return HTML object
-     *
+     * @param callback HTML object
+     */
     @SuppressWarnings("unchecked")
-    public String srcElement(Callback callback)
+    public void srcElement(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = srcElement");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns handle to the HTML element that was moused over (onmouseover).
-     * @return HTML object
-     *
+     * @param callback HTML object
+     */
     @SuppressWarnings("unchecked")
-    public String toElement(Callback callback)
+    public void toElement(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = toElement");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns handle to the HTML element that was moused away from (onmouseout).
-     * @return HTML object
-     *
+     * @param callback HTML object
+     */
     @SuppressWarnings("unchecked")
-    public String fromElement(Callback callback)
+    public void fromElement(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = fromElement");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns integer representing the key code of the key just pressed/keyed-down.
-     * @return keycode
-     *
+     * @param callback keycode
+     */
     @SuppressWarnings("unchecked")
-    public int keyCode(Callback callback)
+    public void keyCode(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = keyCode");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the clientX property for the event (where it occurred on-screen).
-     * @return pixel position
-     *
+     * @param callback pixel position
+     */
     @SuppressWarnings("unchecked")
-    public int clientX(Callback callback)
+    public void clientX(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = clientX");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the clientY property for the event (where it occurred on-screen).
-     * @return pixel position
-     *
+     * @param callback pixel position
+     */
     @SuppressWarnings("unchecked")
-    public int clientY(Callback callback)
+    public void clientY(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = clientY");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the actual position in the browser from the left edge for where the event occurred.
-     * @return pixel position
-     *
+     * @param callback pixel position
+     */
     @SuppressWarnings("unchecked")
-    public int getTrueX(Callback callback)
+    public void getTrueX(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTrueX");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the actual position in the browser from the top edge for where the event occurred.
-     * @return pixel position
-     *
+     * @param callback pixel position
+     */
     @SuppressWarnings("unchecked")
-    public int getTrueY(Callback callback)
+    public void getTrueY(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTrueY");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the shift key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean shiftKey(Callback callback)
+    public void shiftKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = shiftKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true the ctrl key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean ctrlKey(Callback callback)
+    public void ctrlKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = ctrlKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the alt key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean altKey(Callback callback)
+    public void altKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = altKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the enter key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean enterKey(Callback callback)
+    public void enterKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = enterKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the space bar was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean spaceKey(Callback callback)
+    public void spaceKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = spaceKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the tab key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean tabKey(Callback callback)
+    public void tabKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = tabKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the right-arrow key was pressed
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean rightArrow(Callback callback)
+    public void rightArrow(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = rightArrow");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the left-arrow key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean leftArrow(Callback callback)
+    public void leftArrow(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = leftArrow");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the up-arrow key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean upArrow(Callback callback)
+    public void upArrow(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = upArrow");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the down-arrow key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean downArrow(Callback callback)
+    public void downArrow(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = downArrow");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the delete key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean deleteKey(Callback callback)
+    public void deleteKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = deleteKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the backspace key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean backspaceKey(Callback callback)
+    public void backspaceKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = backspaceKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the insert key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean insertKey(Callback callback)
+    public void insertKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = insertKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the home key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean homeKey(Callback callback)
+    public void homeKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = homeKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the end key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean endKey(Callback callback)
+    public void endKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = endKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the page-up key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean pageUpKey(Callback callback)
+    public void pageUpKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = pageUpKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the page-down key was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean pageDownKey(Callback callback)
+    public void pageDownKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
-     * Returns true if the escape key was pressed.
-     *
-    @SuppressWarnings("unchecked")
-    public boolean escapeKey(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = pageDownKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns true if the escape key was pressed.
+     */
+    @SuppressWarnings("unchecked")
+    public void escapeKey(Callback<Boolean> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = escapeKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Cancels event bubbling for the event.
@@ -724,8 +721,8 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void cancelBubble()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("cancelBubble(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("cancelBubble");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -734,8 +731,8 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void cancelReturn()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("cancelReturn(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("cancelReturn");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -744,51 +741,51 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void cancelKey()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("cancelKey(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("cancelKey");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns true if the left-mouse-button was clicked.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean leftButton(Callback callback)
+    public void leftButton(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = leftButton");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if the right-mouse-button was clicked.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean rightButton(Callback callback)
+    public void rightButton(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
-     * Returns integer designating the mouse button clicked/moused-down/moused-up; 1 (left), 2 (right), and as supported.
-     *
-    @SuppressWarnings("unchecked")
-    public int button(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = rightButton");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns integer designating the mouse button clicked/moused-down/moused-up; 1 (left), 2 (right), and as supported.
+     */
+    @SuppressWarnings("unchecked")
+    public void button(Callback<Integer> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = button");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the the return value for the event.
@@ -797,36 +794,36 @@ public class Event extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setReturn(String strReturn)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setReturn(").appendData(strReturn).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setReturn", strReturn);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Whether one of the four arrow keys was pressed.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean isArrowKey(Callback callback)
+    public void isArrowKey(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
-     * Whether one of the 15 function keys was pressed.
-     *
-    @SuppressWarnings("unchecked")
-    public boolean isFunctionKey(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isArrowKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Whether one of the 15 function keys was pressed.
+     */
+    @SuppressWarnings("unchecked")
+    public void isFunctionKey(Callback<Boolean> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isFunctionKey");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
 }

@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Painted(ProxyHelper helper)
+    public Painted(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,27 +45,30 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
      */
     public Painted(String strName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Painted", strName);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the absolute positioning of the object's on-screen view in relation to JSXROOT (whose left/top is 0/0).
            Returns information as a JavaScript object with properties, L, T, W, H
            of @objRoot is null, the on-screen view for JSXROOT is used as the object reference
      * @param objRoot object reference to IE DOM object (i.e., div, span, etc); if null is passed, the first div child of JSXROOT's on-screen representation will be used
      * @param objGUI object reference to item to get absolute position for&#8212;as opposed to this instance (useful for determining placement of html objects contained by JSX objects, but not part of the actual JSX DOM)
-     * @return JScript object with properties: L, T, W, H (corresponding to left, top width, height)
-     *
+     * @param callback JScript object with properties: L, T, W, H (corresponding to left, top width, height)
+     */
     @SuppressWarnings("unchecked")
-    public Object getAbsolutePosition(String objRoot, String objGUI, Callback callback)
+    public void getAbsolutePosition(String objRoot, String objGUI, Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAbsolutePosition", objRoot, objGUI);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * assigns a dynamic property to one of this object's properties
@@ -74,28 +80,26 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     public org.directwebremoting.proxy.jsx3.gui.Painted setDynamicProperty(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDynamicProperty(").appendData(strName).appendScript(",")
-
-        .appendData(strValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDynamicProperty", strName, strValue);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the value of the dynamic property @strPropName; if not found, returns null
      * @param strName property on this GUI object that will now use a dynamic property (e.g., 'jsxleft','jsxtop','jsxheight',etc.);
-     * @return value of the property
-     *
+     * @param callback value of the property
+     */
     @SuppressWarnings("unchecked")
-    public String getDynamicProperty(String strName, Callback callback)
+    public void getDynamicProperty(String strName, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDynamicProperty", strName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets a property on the object that when the object is rendered on-screen, the HTML tag will be assigned the given name/value pair as a tag attribute
@@ -106,42 +110,40 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     public org.directwebremoting.proxy.jsx3.gui.Painted setAttribute(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAttribute(").appendData(strName).appendScript(",")
-
-        .appendData(strValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAttribute", strName, strValue);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns value for the custom attribute with the given name; returns null if no attribute found
      * @param strName the name of the property/attribute
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getAttribute(String strName, Callback callback)
+    public void getAttribute(String strName, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAttribute", strName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns handle to the JavaScript Object Array containing all events for the JSX GUI object;
            NOTE: This object will contain zero or more JavaScript Objects with the following Properties: script, type, system
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object getAttributes(Callback callback)
+    public void getAttributes(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAttributes");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * removes the specific custom property bound to this object; returns a reference to self (this) to facilitate method chaining
@@ -151,11 +153,11 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Painted removeAttribute(String strName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeAttribute(\"" + strName + "\").");
+        String extension = "removeAttribute(\"" + strName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Painted> ctor = org.directwebremoting.proxy.jsx3.gui.Painted.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Painted> ctor = org.directwebremoting.proxy.jsx3.gui.Painted.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -172,11 +174,11 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     @SuppressWarnings("unchecked")
     public <T> T removeAttribute(String strName, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeAttribute(\"" + strName + "\").");
+        String extension = "removeAttribute(\"" + strName + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -191,11 +193,11 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Painted removeAttributes()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeAttributes().");
+        String extension = "removeAttributes().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Painted> ctor = org.directwebremoting.proxy.jsx3.gui.Painted.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Painted> ctor = org.directwebremoting.proxy.jsx3.gui.Painted.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -211,11 +213,11 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     @SuppressWarnings("unchecked")
     public <T> T removeAttributes(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeAttributes().");
+        String extension = "removeAttributes().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -223,84 +225,84 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
         }
     }
 
-    /*
+    /**
      * gives focus to the on-screen VIEW for the element; returns a handle to the html/dhtml element as exposed by the native browser
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String focus(Callback callback)
+    public void focus(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = focus");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns handle/reference to the JSX GUI Object's on-screen counterpart—basically a handle to a DHTML object such as a DIV, SPAN, etc
      * @param objGUI either the HTML document containing the rendered object or an HTML element in that document.
     This argument is optional but improves the efficiency of this method if provided.
-     * @return IE DHTML object
-     *
+     * @param callback IE DHTML object
+     */
     @SuppressWarnings("unchecked")
-    public String getRendered(Object objGUI, Callback callback)
+    public void getRendered(Object objGUI, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRendered", objGUI);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns handle/reference to the JSX GUI Object's on-screen counterpart—basically a handle to a DHTML object such as a DIV, SPAN, etc
      * @param objGUI either the HTML document containing the rendered object or an HTML element in that document.
     This argument is optional but improves the efficiency of this method if provided.
-     * @return IE DHTML object
-     *
+     * @param callback IE DHTML object
+     */
     @SuppressWarnings("unchecked")
-    public String getRendered(org.directwebremoting.proxy.jsx3.gui.Event objGUI, Callback callback)
+    public void getRendered(org.directwebremoting.proxy.jsx3.gui.Event objGUI, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRendered", objGUI);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Updates the view of this object by calling paint() and replacing the current view with the
     returned HTML. This method has no effect if this object is not currently displayed.
-     * @return the result of calling <code>paint()</code> or <code>null</code> if this object is not displayed.
-     *
+     * @param callback the result of calling <code>paint()</code> or <code>null</code> if this object is not displayed.
+     */
     @SuppressWarnings("unchecked")
-    public String repaint(Callback callback)
+    public void repaint(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns the DHTML, used for this object's on-screen VIEW
-     * @return DHTML
-     *
-    @SuppressWarnings("unchecked")
-    public String paint(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = repaint");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the DHTML, used for this object's on-screen VIEW
+     * @param callback DHTML
+     */
+    @SuppressWarnings("unchecked")
+    public void paint(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = paint");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * A hook that subclasses of Painted may override in order to perform additional manipulation of the HTML DOM
@@ -315,8 +317,8 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     public void onAfterPaint(String objGUI)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("onAfterPaint(").appendData(objGUI).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("onAfterPaint", objGUI);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -332,31 +334,25 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     public void paintChild(org.directwebremoting.proxy.jsx3.gui.Painted objChild, boolean bGroup, String objGUI, boolean bCascadeOnly)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("paintChild(").appendData(objChild).appendScript(",")
-
-        .appendData(bGroup).appendScript(",")
-
-        .appendData(objGUI).appendScript(",")
-
-        .appendData(bCascadeOnly).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("paintChild", objChild, bGroup, objGUI, bCascadeOnly);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Iterates through children and returns concatenation of paint() method for all children.
      * @param c the children to paint. If not provided <code>this.getChildren()</code> is used.
-     * @return DHTML
-     *
+     * @param callback DHTML
+     */
     @SuppressWarnings("unchecked")
-    public String paintChildren(Object[] c, Callback callback)
+    public void paintChildren(Object[] c, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = paintChildren", c);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Removes the box model abstraction for a given object and its descendants. This effectively resets the box profiler, so dimensions can be recalculated as if the object was just broought into the visual DOM.
@@ -365,8 +361,8 @@ public class Painted extends org.directwebremoting.proxy.jsx3.app.Model
     public void recalcBox(Object[] properties)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("recalcBox(").appendData(properties).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("recalcBox", properties);
+        getScriptProxy().addScript(script);
     }
 
 }

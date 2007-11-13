@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public ToolbarButton(ProxyHelper helper)
+    public ToolbarButton(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -45,7 +48,10 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public ToolbarButton(String strName, int intType, String strTip)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new ToolbarButton", strName, intType, strTip);
+        setInitScript(script);
     }
 
     /**
@@ -75,19 +81,19 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public static final int STATEON = 1;
 
-    /*
+    /**
      * Returns the URL of the image to use when this button is disabled.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getDisabledImage(Callback callback)
+    public void getDisabledImage(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisabledImage");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the URL of the image to use when this button is disabled. If no disabled image is set the normal image is
@@ -98,40 +104,40 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.ToolbarButton setDisabledImage(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDisabledImage(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDisabledImage", strURL);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Validates this button based on the type of button and whether this control is required. Normal buttons are always
     valid because they have no state. Radio and check buttons are valid if they are on or if they are not required.
-     * @return <code>jsx3.gui.Form.STATEVALID</code> or <code>jsx3.gui.Form.STATEINVALID</code>.
-     *
+     * @param callback <code>jsx3.gui.Form.STATEVALID</code> or <code>jsx3.gui.Form.STATEINVALID</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int doValidate(Callback callback)
+    public void doValidate(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Returns the URL of the image to use to render this button.
-     *
-    @SuppressWarnings("unchecked")
-    public String getImage(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = doValidate");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the URL of the image to use to render this button.
+     */
+    @SuppressWarnings("unchecked")
+    public void getImage(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getImage");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the URL of the image to use to render this button. The URL is resolved by the URI resolver of this button
@@ -142,25 +148,25 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.ToolbarButton setImage(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setImage(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setImage", strURL);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the type of this button.
-     * @return <code>TYPENORMAL</code>, or <code>TYPECHECK</code>, or <code>TYPERADIO</code>.
-     *
+     * @param callback <code>TYPENORMAL</code>, or <code>TYPECHECK</code>, or <code>TYPERADIO</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getType(Callback callback)
+    public void getType(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getType");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the type of this button.
@@ -170,8 +176,8 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.ToolbarButton setType(int TYPE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setType(").appendData(TYPE).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setType", TYPE);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -187,24 +193,24 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     public void doExecute(org.directwebremoting.proxy.jsx3.gui.Event objEvent)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("doExecute(").appendData(objEvent).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("doExecute", objEvent);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the name of the group to which this radio button belongs. This method returns null if this
     button is not a radio button.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getGroupName(Callback callback)
+    public void getGroupName(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getGroupName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the name of the group to which this radio button belongs. This method only applies to radio buttons.
@@ -214,25 +220,25 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.ToolbarButton setGroupName(String strGroupName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setGroupName(").appendData(strGroupName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setGroupName", strGroupName);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns whether this toolbar button renders a visual divider on its left side.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getDivider(Callback callback)
+    public void getDivider(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDivider");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether this toolbar button renders a visual divider on its left side. The divider is useful for
@@ -244,28 +250,26 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.ToolbarButton setDivider(int intDivider, boolean bRecalc)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDivider(").appendData(intDivider).appendScript(",")
-
-        .appendData(bRecalc).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDivider", intDivider, bRecalc);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the state of this button. A normal button always returns STATEOFF. Radio and check
     buttons may return STATEOFF or STATEON.
-     * @return <code>STATEON</code> or <code>STATEOFF</code>.
-     *
+     * @param callback <code>STATEON</code> or <code>STATEOFF</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getState(Callback callback)
+    public void getState(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getState");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the state of this button. This method effects both the model and the view immediately. This method invokes
@@ -276,8 +280,8 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.ToolbarButton setState(int intState)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setState(").appendData(intState).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setState", intState);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -300,11 +304,11 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.HotKey doKeyBinding(org.directwebremoting.proxy.CodeBlock fctCallback, String strKeys)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").");
+        String extension = "doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -319,11 +323,11 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form doReset()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doReset().");
+        String extension = "doReset().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -331,112 +335,112 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Returns the background color of this control when it is disabled.
-     * @return valid CSS property value, (i.e., red, #ff0000)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ff0000)
+     */
     @SuppressWarnings("unchecked")
-    public String getDisabledBackgroundColor(Callback callback)
+    public void getDisabledBackgroundColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisabledBackgroundColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the font color to use when this control is disabled.
-     * @return valid CSS property value, (i.e., red, #ff0000)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ff0000)
+     */
     @SuppressWarnings("unchecked")
-    public String getDisabledColor(Callback callback)
+    public void getDisabledColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisabledColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the state for the form field control. If no enabled state is set, this method returns
     STATEENABLED.
-     * @return <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
-     *
+     * @param callback <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getEnabled(Callback callback)
+    public void getEnabled(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEnabled");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the key binding that when keyed will fire the execute event for this control.
-     * @return plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
-     *
+     * @param callback plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
+     */
     @SuppressWarnings("unchecked")
-    public String getKeyBinding(Callback callback)
+    public void getKeyBinding(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getKeyBinding");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether or not this control is required. If the required property has never been set, this method returns
     OPTIONAL.
-     * @return <code>REQUIRED</code> or <code>OPTIONAL</code>.
-     *
+     * @param callback <code>REQUIRED</code> or <code>OPTIONAL</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getRequired(Callback callback)
+    public void getRequired(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRequired");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the validation state of this control. If the validationState property has never been set, this method returns
     STATEVALID.
-     * @return <code>STATEINVALID</code> or <code>STATEVALID</code>.
-     *
+     * @param callback <code>STATEINVALID</code> or <code>STATEVALID</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getValidationState(Callback callback)
+    public void getValidationState(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Returns the value of this control.
-     *
-    @SuppressWarnings("unchecked")
-    public int getValue(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValidationState");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the value of this control.
+     */
+    @SuppressWarnings("unchecked")
+    public void getValue(Callback<Integer> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValue");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the background color of this form control when it is disabled.
@@ -446,11 +450,11 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setDisabledBackgroundColor(String strColor)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setDisabledBackgroundColor(\"" + strColor + "\").");
+        String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -466,11 +470,11 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setDisabledColor(String strColor)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setDisabledColor(\"" + strColor + "\").");
+        String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -487,10 +491,8 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setEnabled(").appendData(intEnabled).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setEnabled", intEnabled, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -502,11 +504,11 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setKeyBinding(String strSequence)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setKeyBinding(\"" + strSequence + "\").");
+        String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -522,11 +524,11 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setRequired(int required)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setRequired(\"" + required + "\").");
+        String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -542,11 +544,11 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setValidationState(int intState)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setValidationState(\"" + intState + "\").");
+        String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -562,11 +564,11 @@ public class ToolbarButton extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setValue(int vntValue)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setValue(\"" + vntValue + "\").");
+        String extension = "setValue(\"" + vntValue + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

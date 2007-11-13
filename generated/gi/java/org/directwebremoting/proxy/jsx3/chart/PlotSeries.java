@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class PlotSeries extends org.directwebremoting.proxy.jsx3.chart.Series
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public PlotSeries(ProxyHelper helper)
+    public PlotSeries(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,53 +46,56 @@ public class PlotSeries extends org.directwebremoting.proxy.jsx3.chart.Series
      */
     public PlotSeries(String name, String seriesName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new PlotSeries", name, seriesName);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the x-coordinate of a data point in this series for the given record.
      * @param record the <record/> node
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getXValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback callback)
+    public void getXValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXValue", record);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the y-coordinate of a data point in this series for the given record.
      * @param record the <record/> node
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getYValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback callback)
+    public void getYValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Returns the xField field.
-     * @return xField
-     *
-    @SuppressWarnings("unchecked")
-    public String getXField(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getYValue", record);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the xField field.
+     * @param callback xField
+     */
+    @SuppressWarnings("unchecked")
+    public void getXField(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXField");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the xField field.
@@ -98,24 +104,24 @@ public class PlotSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setXField(String xField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setXField(").appendData(xField).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setXField", xField);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the yField field.
-     * @return yField
-     *
+     * @param callback yField
+     */
     @SuppressWarnings("unchecked")
-    public String getYField(Callback callback)
+    public void getYField(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getYField");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the yField field.
@@ -124,8 +130,8 @@ public class PlotSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setYField(String yField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setYField(").appendData(yField).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setYField", yField);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -135,11 +141,11 @@ public class PlotSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.PointRenderer getRenderer()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getRenderer().");
+        String extension = "getRenderer().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.PointRenderer> ctor = org.directwebremoting.proxy.jsx3.chart.PointRenderer.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.PointRenderer> ctor = org.directwebremoting.proxy.jsx3.chart.PointRenderer.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -154,8 +160,8 @@ public class PlotSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setRenderer(String renderer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRenderer(").appendData(renderer).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRenderer", renderer);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -165,11 +171,11 @@ public class PlotSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.PointRenderer getLegendRenderer()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLegendRenderer().");
+        String extension = "getLegendRenderer().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.PointRenderer> ctor = org.directwebremoting.proxy.jsx3.chart.PointRenderer.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.PointRenderer> ctor = org.directwebremoting.proxy.jsx3.chart.PointRenderer.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

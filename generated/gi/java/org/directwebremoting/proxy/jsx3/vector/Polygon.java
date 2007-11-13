@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +27,12 @@ public class Polygon extends org.directwebremoting.proxy.jsx3.vector.Shape
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Polygon(ProxyHelper helper)
+    public Polygon(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,7 +43,10 @@ public class Polygon extends org.directwebremoting.proxy.jsx3.vector.Shape
      */
     public Polygon(int left, int top, String points)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Polygon", left, top, points);
+        setInitScript(script);
     }
 
     /**
@@ -52,8 +56,8 @@ public class Polygon extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setPoints(Object[] points)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPoints(").appendData(points).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPoints", points);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -63,8 +67,8 @@ public class Polygon extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setPointsAsNumberArray(Object[] points)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPointsAsNumberArray(").appendData(points).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPointsAsNumberArray", points);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -74,8 +78,8 @@ public class Polygon extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setPointsAsString(String points)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPointsAsString(").appendData(points).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPointsAsString", points);
+        getScriptProxy().addScript(script);
     }
 
 }

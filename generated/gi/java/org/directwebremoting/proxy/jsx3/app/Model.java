@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.app;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Model(ProxyHelper helper)
+    public Model(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +46,10 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Model(String strName, String strInstanceOf)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Model", strName, strInstanceOf);
+        setInitScript(script);
     }
 
     /**
@@ -127,11 +133,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getChild(int vntIndexOrName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getChild(\"" + vntIndexOrName + "\").");
+        String extension = "getChild(\"" + vntIndexOrName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -150,11 +156,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getChild(int vntIndexOrName, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getChild(\"" + vntIndexOrName + "\").");
+        String extension = "getChild(\"" + vntIndexOrName + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -172,11 +178,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getChild(String vntIndexOrName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getChild(\"" + vntIndexOrName + "\").");
+        String extension = "getChild(\"" + vntIndexOrName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -195,11 +201,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getChild(String vntIndexOrName, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getChild(\"" + vntIndexOrName + "\").");
+        String extension = "getChild(\"" + vntIndexOrName + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -213,11 +219,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getFirstChild()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChild().");
+        String extension = "getFirstChild().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -227,15 +233,16 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the first child.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getFirstChild(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChild().");
+        String extension = "getFirstChild().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -249,11 +256,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getLastChild()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLastChild().");
+        String extension = "getLastChild().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -263,15 +270,16 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the last child.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getLastChild(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLastChild().");
+        String extension = "getLastChild().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -285,11 +293,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getNextSibling()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getNextSibling().");
+        String extension = "getNextSibling().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -299,15 +307,16 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the next sibling.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getNextSibling(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getNextSibling().");
+        String extension = "getNextSibling().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -321,11 +330,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getPreviousSibling()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPreviousSibling().");
+        String extension = "getPreviousSibling().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -335,15 +344,16 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the previous sibling.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getPreviousSibling(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPreviousSibling().");
+        String extension = "getPreviousSibling().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -351,36 +361,36 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns an array containing all the child DOM nodes of this object. The return value is the original array rather
     than a copy and should not be modified.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getChildren(Callback callback)
+    public void getChildren(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
-     * Returns the persistence bit for this model object.
-     * @return one of <code>PERSISTNONE</code>, <code>PERSISTEMBED</code>, <code>PERSISTREF</code>,
-    <code>PERSISTREFASYNC</code>.
-     *
-    @SuppressWarnings("unchecked")
-    public int getPersistence(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getChildren");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the persistence bit for this model object.
+     * @param callback one of <code>PERSISTNONE</code>, <code>PERSISTEMBED</code>, <code>PERSISTREF</code>,
+    <code>PERSISTREFASYNC</code>.
+     */
+    @SuppressWarnings("unchecked")
+    public void getPersistence(Callback<Integer> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPersistence");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the persistence bit for this model object.
@@ -391,8 +401,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.app.Model setPersistence(int intPersist)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPersistence(").appendData(intPersist).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPersistence", intPersist);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -411,14 +421,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.app.Model setChild(org.directwebremoting.proxy.jsx3.app.Model objChild, int intPersist, String strSourceURL, String strNS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setChild(").appendData(objChild).appendScript(",")
-
-        .appendData(intPersist).appendScript(",")
-
-        .appendData(strSourceURL).appendScript(",")
-
-        .appendData(strNS).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setChild", objChild, intPersist, strSourceURL, strNS);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -437,49 +441,43 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.app.Model setChild(org.directwebremoting.proxy.jsx3.app.Model objChild, int intPersist, org.directwebremoting.proxy.jsx3.net.URI strSourceURL, String strNS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setChild(").appendData(objChild).appendScript(",")
-
-        .appendData(intPersist).appendScript(",")
-
-        .appendData(strSourceURL).appendScript(",")
-
-        .appendData(strNS).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setChild", objChild, intPersist, strSourceURL, strNS);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Hook that allows for a prospective parent DOM node to veto the adoption of a child.
      * @param objChild 
-     * @return true to allow the set, false to veto
-     *
+     * @param callback true to allow the set, false to veto
+     */
     @SuppressWarnings("unchecked")
-    public boolean onSetChild(Object objChild, Callback callback)
+    public void onSetChild(Object objChild, Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = onSetChild", objChild);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Hook that allows for a prospective child DOM node to veto its adoption by a parent. This method is only called if
     the prospective parent has not already vetoed the adoption in the onSetChild() method.
      * @param objParent 
-     * @return true to allow the set, false to veto
-     *
+     * @param callback true to allow the set, false to veto
+     */
     @SuppressWarnings("unchecked")
-    public boolean onSetParent(Object objParent, Callback callback)
+    public void onSetParent(Object objParent, Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = onSetParent", objParent);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Hook that notifies this model object that one of its children has been removed. This hook exists simply to allow
@@ -501,10 +499,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void onRemoveChild(org.directwebremoting.proxy.jsx3.app.Model objChild, int intIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("onRemoveChild(").appendData(objChild).appendScript(",")
-
-        .appendData(intIndex).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("onRemoveChild", objChild, intIndex);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -527,10 +523,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void onRemoveChild(Object[] objChild, int intIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("onRemoveChild(").appendData(objChild).appendScript(",")
-
-        .appendData(intIndex).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("onRemoveChild", objChild, intIndex);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -544,11 +538,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model removeChild(int vntItem)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeChild(\"" + vntItem + "\").");
+        String extension = "removeChild(\"" + vntItem + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -568,11 +562,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T removeChild(int vntItem, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeChild(\"" + vntItem + "\").");
+        String extension = "removeChild(\"" + vntItem + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -591,11 +585,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model removeChild(org.directwebremoting.proxy.jsx3.app.Model vntItem)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeChild(\"" + vntItem + "\").");
+        String extension = "removeChild(\"" + vntItem + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -615,11 +609,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T removeChild(org.directwebremoting.proxy.jsx3.app.Model vntItem, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeChild(\"" + vntItem + "\").");
+        String extension = "removeChild(\"" + vntItem + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -636,11 +630,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model removeChildren(Object[] arrChildren)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeChildren(\"" + arrChildren + "\").");
+        String extension = "removeChildren(\"" + arrChildren + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -658,11 +652,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T removeChildren(Object[] arrChildren, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeChildren(\"" + arrChildren + "\").");
+        String extension = "removeChildren(\"" + arrChildren + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -678,11 +672,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Server getServer()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getServer().");
+        String extension = "getServer().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Server> ctor = org.directwebremoting.proxy.jsx3.app.Server.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Server> ctor = org.directwebremoting.proxy.jsx3.app.Server.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -705,32 +699,28 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void adoptChild(org.directwebremoting.proxy.jsx3.app.Model objChild, boolean bRepaint, boolean bForce)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("adoptChild(").appendData(objChild).appendScript(",")
-
-        .appendData(bRepaint).appendScript(",")
-
-        .appendData(bForce).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("adoptChild", objChild, bRepaint, bForce);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Assigns objMoveChild as the previousSibling of objPrecedeChild
      * @param objMoveChild the one being moved. Can belong to this object, another object, or can be a GUI fragment
      * @param objPrecedeChild the one to insert before
      * @param bRepaint if <code>false</code> the repaint will be suppressed (useful for multiple obejct updates
     that would lead to unnecessary updates to the VIEW)
-     * @return true if successful
-     *
+     * @param callback true if successful
+     */
     @SuppressWarnings("unchecked")
-    public boolean insertBefore(org.directwebremoting.proxy.jsx3.app.Model objMoveChild, org.directwebremoting.proxy.jsx3.app.Model objPrecedeChild, boolean bRepaint, Callback callback)
+    public void insertBefore(org.directwebremoting.proxy.jsx3.app.Model objMoveChild, org.directwebremoting.proxy.jsx3.app.Model objPrecedeChild, boolean bRepaint, Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = insertBefore", objMoveChild, objPrecedeChild, bRepaint);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Called when the server owning this DOM node changes.
@@ -740,10 +730,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void onChangeServer(org.directwebremoting.proxy.jsx3.app.Server objNewServer, org.directwebremoting.proxy.jsx3.app.Server objOldServer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("onChangeServer(").appendData(objNewServer).appendScript(",")
-
-        .appendData(objOldServer).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("onChangeServer", objNewServer, objOldServer);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -758,11 +746,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model doClone(int intPersist, int intMode)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doClone(\"" + intPersist + "\", \"" + intMode + "\").");
+        String extension = "doClone(\"" + intPersist + "\", \"" + intMode + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -783,11 +771,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T doClone(int intPersist, int intMode, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doClone(\"" + intPersist + "\", \"" + intMode + "\").");
+        String extension = "doClone(\"" + intPersist + "\", \"" + intMode + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -805,11 +793,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getDescendantOfName(String strName, boolean bDepthFirst, boolean bChildOnly)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getDescendantOfName(\"" + strName + "\", \"" + bDepthFirst + "\", \"" + bChildOnly + "\").");
+        String extension = "getDescendantOfName(\"" + strName + "\", \"" + bDepthFirst + "\", \"" + bChildOnly + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -828,11 +816,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getDescendantOfName(String strName, boolean bDepthFirst, boolean bChildOnly, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getDescendantOfName(\"" + strName + "\", \"" + bDepthFirst + "\", \"" + bChildOnly + "\").");
+        String extension = "getDescendantOfName(\"" + strName + "\", \"" + bDepthFirst + "\", \"" + bChildOnly + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -851,11 +839,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getFirstChildOfType(String strType, boolean bExact)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").");
+        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -875,11 +863,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getFirstChildOfType(String strType, boolean bExact, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").");
+        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -898,11 +886,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getFirstChildOfType(org.directwebremoting.proxy.CodeBlock strType, boolean bExact)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").");
+        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -922,11 +910,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getFirstChildOfType(org.directwebremoting.proxy.CodeBlock strType, boolean bExact, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").");
+        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -945,11 +933,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getFirstChildOfType(Class strType, boolean bExact)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").");
+        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -969,11 +957,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getFirstChildOfType(Class strType, boolean bExact, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").");
+        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -981,59 +969,59 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Finds all descendants of the given type.
      * @param strType the fully-qualified class name, class constructor function,
     or <code>jsx3.Class</code> instance.
      * @param bShallow if <code>true</code>, only search direct children, not all descendants.
-     * @return an array of matching descendants
-     *
+     * @param callback an array of matching descendants
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getDescendantsOfType(String strType, boolean bShallow, Callback callback)
+    public void getDescendantsOfType(String strType, boolean bShallow, Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
-     * Finds all descendants of the given type.
-     * @param strType the fully-qualified class name, class constructor function,
-    or <code>jsx3.Class</code> instance.
-     * @param bShallow if <code>true</code>, only search direct children, not all descendants.
-     * @return an array of matching descendants
-     *
-    @SuppressWarnings("unchecked")
-    public Object[] getDescendantsOfType(org.directwebremoting.proxy.CodeBlock strType, boolean bShallow, Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDescendantsOfType", strType, bShallow);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
-    /*
+    /**
      * Finds all descendants of the given type.
      * @param strType the fully-qualified class name, class constructor function,
     or <code>jsx3.Class</code> instance.
      * @param bShallow if <code>true</code>, only search direct children, not all descendants.
-     * @return an array of matching descendants
-     *
+     * @param callback an array of matching descendants
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getDescendantsOfType(Class strType, boolean bShallow, Callback callback)
+    public void getDescendantsOfType(org.directwebremoting.proxy.CodeBlock strType, boolean bShallow, Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDescendantsOfType", strType, bShallow);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Finds all descendants of the given type.
+     * @param strType the fully-qualified class name, class constructor function,
+    or <code>jsx3.Class</code> instance.
+     * @param bShallow if <code>true</code>, only search direct children, not all descendants.
+     * @param callback an array of matching descendants
+     */
+    @SuppressWarnings("unchecked")
+    public void getDescendantsOfType(Class strType, boolean bShallow, Callback<Object[]> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDescendantsOfType", strType, bShallow);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Finds all DOM nodes descending from this DOM node that pass the given test function. Results are guaranteed to be
@@ -1049,11 +1037,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model findDescendants(org.directwebremoting.proxy.CodeBlock fctTest, boolean bDepthFirst, boolean bMultiple, boolean bShallow, boolean bIncludeSelf)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("findDescendants(\"" + fctTest + "\", \"" + bDepthFirst + "\", \"" + bMultiple + "\", \"" + bShallow + "\", \"" + bIncludeSelf + "\").");
+        String extension = "findDescendants(\"" + fctTest + "\", \"" + bDepthFirst + "\", \"" + bMultiple + "\", \"" + bShallow + "\", \"" + bIncludeSelf + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1076,11 +1064,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T findDescendants(org.directwebremoting.proxy.CodeBlock fctTest, boolean bDepthFirst, boolean bMultiple, boolean bShallow, boolean bIncludeSelf, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("findDescendants(\"" + fctTest + "\", \"" + bDepthFirst + "\", \"" + bMultiple + "\", \"" + bShallow + "\", \"" + bIncludeSelf + "\").");
+        String extension = "findDescendants(\"" + fctTest + "\", \"" + bDepthFirst + "\", \"" + bMultiple + "\", \"" + bShallow + "\", \"" + bIncludeSelf + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1101,53 +1089,53 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void onDestroy(org.directwebremoting.proxy.jsx3.app.Model objParent)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("onDestroy(").appendData(objParent).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("onDestroy", objParent);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the custom JSX-generated id for the object (i.e., _jsx2384098324509823049).
-     * @return JSX id
-     *
+     * @param callback JSX id
+     */
     @SuppressWarnings("unchecked")
-    public String getId(Callback callback)
+    public void getId(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getId");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the zero-based index for this DOM node in relation to its siblings.
-     * @return the index or <code>-1</code> if this object does not have a parent.
-     *
+     * @param callback the index or <code>-1</code> if this object does not have a parent.
+     */
     @SuppressWarnings("unchecked")
-    public int getChildIndex(Callback callback)
+    public void getChildIndex(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Returns the custom developer-defined name of this object.
-     *
-    @SuppressWarnings("unchecked")
-    public String getName(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getChildIndex");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the custom developer-defined name of this object.
+     */
+    @SuppressWarnings("unchecked")
+    public void getName(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the custom developer-defined name of this object.
@@ -1156,23 +1144,23 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setName(String strName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setName(").appendData(strName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setName", strName);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the help ID of this object.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getHelpId(Callback callback)
+    public void getHelpId(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHelpId");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the help ID of this object.
@@ -1181,26 +1169,26 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setHelpId(String strId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHelpId(").appendData(strId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHelpId", strId);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the load type of this DOM node and the descending branch. The load type determines how this DOM branch
     deserializes and paints in relation to its parent DOM node.
-     * @return <code>LT_NORMAL</code>, <code>LT_SLEEP_PAINT</code>, <code>LT_SLEEP_DESER</code>,
+     * @param callback <code>LT_NORMAL</code>, <code>LT_SLEEP_PAINT</code>, <code>LT_SLEEP_DESER</code>,
     <code>LT_SLEEP_PD</code>, <code>LT_SHOW_PAINT</code>, or <code>LT_SHOW_DESER</code>.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getLoadType(Callback callback)
+    public void getLoadType(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLoadType");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the load type of this DOM node and the descending branch.
@@ -1210,8 +1198,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setLoadType(int intLoadType)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLoadType(").appendData(intLoadType).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLoadType", intLoadType);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1220,11 +1208,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getParent()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getParent().");
+        String extension = "getParent().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1234,15 +1222,16 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the parent DOM node of this object.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getParent(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getParent().");
+        String extension = "getParent().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1259,11 +1248,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getAncestorOfType(String strType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAncestorOfType(\"" + strType + "\").");
+        String extension = "getAncestorOfType(\"" + strType + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1281,11 +1270,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getAncestorOfType(String strType, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAncestorOfType(\"" + strType + "\").");
+        String extension = "getAncestorOfType(\"" + strType + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1302,11 +1291,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getAncestorOfType(org.directwebremoting.proxy.CodeBlock strType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAncestorOfType(\"" + strType + "\").");
+        String extension = "getAncestorOfType(\"" + strType + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1324,11 +1313,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getAncestorOfType(org.directwebremoting.proxy.CodeBlock strType, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAncestorOfType(\"" + strType + "\").");
+        String extension = "getAncestorOfType(\"" + strType + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1345,11 +1334,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getAncestorOfType(Class strType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAncestorOfType(\"" + strType + "\").");
+        String extension = "getAncestorOfType(\"" + strType + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1367,11 +1356,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getAncestorOfType(Class strType, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAncestorOfType(\"" + strType + "\").");
+        String extension = "getAncestorOfType(\"" + strType + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1387,11 +1376,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getAncestorOfName(String strName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAncestorOfName(\"" + strName + "\").");
+        String extension = "getAncestorOfName(\"" + strName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1408,11 +1397,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getAncestorOfName(String strName, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAncestorOfName(\"" + strName + "\").");
+        String extension = "getAncestorOfName(\"" + strName + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1429,11 +1418,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model findAncestor(org.directwebremoting.proxy.CodeBlock fctTest, boolean bIncludeSelf)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("findAncestor(\"" + fctTest + "\", \"" + bIncludeSelf + "\").");
+        String extension = "findAncestor(\"" + fctTest + "\", \"" + bIncludeSelf + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1446,15 +1435,16 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
      * @param fctTest test function, takes a single <code>jsx3.app.Model</code> parameter and returns
     <code>true</code> if the node matches.
      * @param bIncludeSelf if <code>true</code>, include this object in the search
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T findAncestor(org.directwebremoting.proxy.CodeBlock fctTest, boolean bIncludeSelf, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("findAncestor(\"" + fctTest + "\", \"" + bIncludeSelf + "\").");
+        String extension = "findAncestor(\"" + fctTest + "\", \"" + bIncludeSelf + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1462,23 +1452,23 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns this object serialized as XML by calling toString() on the result of toXMLDoc()
     called on this object.
      * @param objProperties name-value pairs that affect the serialization. See
     <code>toXMLDoc()</code> for a description.
-     * @return this object serialized as an XML string.
-     *
+     * @param callback this object serialized as an XML string.
+     */
     @SuppressWarnings("unchecked")
-    public String toXML(Object objProperties, Callback callback)
+    public void toXML(Object objProperties, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = toXML", objProperties);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Serializes this object as an XML document.
@@ -1501,11 +1491,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document toXMLDoc(Object objProperties)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("toXMLDoc(\"" + objProperties + "\").");
+        String extension = "toXMLDoc(\"" + objProperties + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1535,11 +1525,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T toXMLDoc(Object objProperties, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("toXMLDoc(\"" + objProperties + "\").");
+        String extension = "toXMLDoc(\"" + objProperties + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1547,21 +1537,21 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns the namespace that distinguishes this object's server (owner) from other server instances. The namespace
     is set when this object is bound to a DOM tree.
-     * @return the namespace of the server that owns this object instance.
-     *
+     * @param callback the namespace of the server that owns this object instance.
+     */
     @SuppressWarnings("unchecked")
-    public String getNS(Callback callback)
+    public void getNS(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getNS");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns the URI resolver for this DOM node. This method returns the server of this object unless this node
@@ -1570,11 +1560,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.URIResolver getUriResolver()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getUriResolver().");
+        String extension = "getUriResolver().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.URIResolver> ctor = org.directwebremoting.proxy.jsx3.net.URIResolver.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.URIResolver> ctor = org.directwebremoting.proxy.jsx3.net.URIResolver.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1596,11 +1586,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model load(String strURL, boolean bRepaint, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("load(\"" + strURL + "\", \"" + bRepaint + "\", \"" + objResolver + "\").");
+        String extension = "load(\"" + strURL + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1623,11 +1613,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T load(String strURL, boolean bRepaint, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("load(\"" + strURL + "\", \"" + bRepaint + "\", \"" + objResolver + "\").");
+        String extension = "load(\"" + strURL + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1649,11 +1639,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model load(org.directwebremoting.proxy.jsx3.net.URI strURL, boolean bRepaint, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("load(\"" + strURL + "\", \"" + bRepaint + "\", \"" + objResolver + "\").");
+        String extension = "load(\"" + strURL + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1676,11 +1666,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T load(org.directwebremoting.proxy.jsx3.net.URI strURL, boolean bRepaint, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("load(\"" + strURL + "\", \"" + bRepaint + "\", \"" + objResolver + "\").");
+        String extension = "load(\"" + strURL + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1700,11 +1690,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model loadXML(String strXML, boolean bRepaint, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").");
+        String extension = "loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1725,11 +1715,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T loadXML(String strXML, boolean bRepaint, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").");
+        String extension = "loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1749,11 +1739,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model loadXML(org.directwebremoting.proxy.jsx3.xml.Document strXML, boolean bRepaint, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").");
+        String extension = "loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1774,11 +1764,11 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T loadXML(org.directwebremoting.proxy.jsx3.xml.Document strXML, boolean bRepaint, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").");
+        String extension = "loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1803,14 +1793,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void loadAndCache(String strURL, boolean bRepaint, org.directwebremoting.proxy.jsx3.app.Cache objCache, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("loadAndCache(").appendData(strURL).appendScript(",")
-
-        .appendData(bRepaint).appendScript(",")
-
-        .appendData(objCache).appendScript(",")
-
-        .appendData(objResolver).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("loadAndCache", strURL, bRepaint, objCache, objResolver);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1830,31 +1814,25 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void loadAndCache(org.directwebremoting.proxy.jsx3.net.URI strURL, boolean bRepaint, org.directwebremoting.proxy.jsx3.app.Cache objCache, org.directwebremoting.proxy.jsx3.net.URIResolver objResolver)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("loadAndCache(").appendData(strURL).appendScript(",")
-
-        .appendData(bRepaint).appendScript(",")
-
-        .appendData(objCache).appendScript(",")
-
-        .appendData(objResolver).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("loadAndCache", strURL, bRepaint, objCache, objResolver);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns one of the meta data values stored at the top of the serialization file that this object was loaded from.
      * @param strKey the name of the meta data field, one of the keys in <code>META_FIELDS</code>.
-     * @return the meta data value or empty string.
-     *
+     * @param callback the meta data value or empty string.
+     */
     @SuppressWarnings("unchecked")
-    public String getMetaValue(String strKey, Callback callback)
+    public void getMetaValue(String strKey, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMetaValue", strKey);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * setS one of the meta data values stored at the top of a component's serialization file.
@@ -1864,10 +1842,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setMetaValue(String strKey, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMetaValue(").appendData(strKey).appendScript(",")
-
-        .appendData(strValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMetaValue", strKey, strValue);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1881,10 +1857,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void onBeforeAssemble(org.directwebremoting.proxy.jsx3.app.Model objParent, org.directwebremoting.proxy.jsx3.app.Server objServer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("onBeforeAssemble(").appendData(objParent).appendScript(",")
-
-        .appendData(objServer).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("onBeforeAssemble", objParent, objServer);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1898,10 +1872,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void onAfterAssemble(org.directwebremoting.proxy.jsx3.app.Model objParent, org.directwebremoting.proxy.jsx3.app.Server objServer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("onAfterAssemble(").appendData(objParent).appendScript(",")
-
-        .appendData(objServer).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("onAfterAssemble", objParent, objServer);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1918,25 +1890,25 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void onAfterAttach()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("onAfterAttach(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("onAfterAttach");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Publishes an event to all subscribed objects.
      * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
-     * @return the number of listeners to which the event was broadcast
-     *
+     * @param callback the number of listeners to which the event was broadcast
+     */
     @SuppressWarnings("unchecked")
-    public int publish(Object objEvent, Callback callback)
+    public void publish(Object objEvent, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = publish", objEvent);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Subscribes an object or function to a type of event published by this object.
@@ -1949,12 +1921,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(",")
-
-        .appendData(objFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1967,10 +1935,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribe(String strEventId, Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1980,8 +1946,8 @@ public class Model extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribeAll", strEventId);
+        getScriptProxy().addScript(script);
     }
 
 }

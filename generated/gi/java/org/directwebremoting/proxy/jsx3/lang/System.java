@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.lang;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,27 +29,28 @@ public class System extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public System(ProxyHelper helper)
+    public System(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
-    /*
+    /**
      * Returns a system property as specified by a JSS file loaded by the JSX runtime or an addin.
      * @param strKey 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getProperty(String strKey, Callback callback)
+    public void getProperty(String strKey, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getProperty", strKey);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * If the locale has been explicitly set with setLocale(), that locale is returned. Otherwise the
@@ -56,8 +59,8 @@ public class System extends org.directwebremoting.proxy.jsx3.lang.Object
     public void getLocale()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getLocale(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getLocale");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -67,8 +70,8 @@ public class System extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setLocale(String objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLocale(").appendData(objLocale).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLocale", objLocale);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -77,39 +80,39 @@ public class System extends org.directwebremoting.proxy.jsx3.lang.Object
     public void reloadLocalizedResources()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("reloadLocalizedResources(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("reloadLocalizedResources");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * 
      * @param strKey 
      * @param strTokens 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getMessage(String strKey, Object strTokens, Callback callback)
+    public void getMessage(String strKey, Object strTokens, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns the version number of General Interface.
-     * @return <code>"3.1.0"</code>, etc.
-     *
-    @SuppressWarnings("unchecked")
-    public String getVersion(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMessage", strKey, strTokens);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the version number of General Interface.
+     * @param callback <code>"3.1.0"</code>, etc.
+     */
+    @SuppressWarnings("unchecked")
+    public void getVersion(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getVersion");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
 }

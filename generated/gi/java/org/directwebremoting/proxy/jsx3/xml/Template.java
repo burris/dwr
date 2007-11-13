@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.xml;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Template(ProxyHelper helper)
+    public Template(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,7 +45,10 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Template(org.directwebremoting.proxy.jsx3.xml.Document objXSL)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Template", objXSL);
+        setInitScript(script);
     }
 
     /**
@@ -53,10 +59,8 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setParam(String strName, Object objValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setParam(").appendData(strName).appendScript(",")
-
-        .appendData(objValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setParam", strName, objValue);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -65,8 +69,8 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
     public void reset()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("reset(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("reset");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -77,27 +81,27 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setParams(Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setParams(").appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setParams", objParams);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Performs an XSLT merge. If an error occurs while performing the transform, this method sets the error
     property of this processor and returns null.
      * @param objXML 
      * @param bObject 
-     * @return the result of the transformation
-     *
+     * @param callback the result of the transformation
+     */
     @SuppressWarnings("unchecked")
-    public String transform(org.directwebremoting.proxy.jsx3.xml.Entity objXML, boolean bObject, Callback callback)
+    public void transform(org.directwebremoting.proxy.jsx3.xml.Entity objXML, boolean bObject, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = transform", objXML, bObject);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Performs an XSLT merge. If an error occurs while performing the transform, this method sets the error
@@ -108,11 +112,11 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document transformToObject(org.directwebremoting.proxy.jsx3.xml.Entity objXML)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("transformToObject(\"" + objXML + "\").");
+        String extension = "transformToObject(\"" + objXML + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -130,11 +134,11 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T transformToObject(org.directwebremoting.proxy.jsx3.xml.Entity objXML, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("transformToObject(\"" + objXML + "\").");
+        String extension = "transformToObject(\"" + objXML + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -142,35 +146,35 @@ public class Template extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns an error object (a plain JavaScript object) with two properties that the developer can query for:
 
     code Ð an integer error code, 0 for no error.
     description Ð a text description of the error that occurred.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object getError(Callback callback)
+    public void getError(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
-     * Returns true if the last operation on this XML entity caused an error.
-     *
-    @SuppressWarnings("unchecked")
-    public boolean hasError(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getError");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns true if the last operation on this XML entity caused an error.
+     */
+    @SuppressWarnings("unchecked")
+    public void hasError(Callback<Boolean> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = hasError");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
 }

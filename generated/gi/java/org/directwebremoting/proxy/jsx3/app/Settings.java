@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.app;
 
 import java.lang.reflect.Constructor;
 
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -28,11 +31,12 @@ public class Settings extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Settings(ProxyHelper helper)
+    public Settings(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +47,10 @@ public class Settings extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Settings(int intDomain, String objInstance)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Settings", intDomain, objInstance);
+        setInitScript(script);
     }
 
     /**
@@ -56,21 +63,21 @@ public class Settings extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public static final int DOMAIN_ADDIN = 3;
 
-    /*
+    /**
      * Returns a stored setting value.
      * @param strKey the setting key.
-     * @return the stored value.
-     *
+     * @param callback the stored value.
+     */
     @SuppressWarnings("unchecked")
-    public String get(String strKey, Callback callback)
+    public void get(String strKey, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = get", strKey);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns a stored setting value as the raw XML node.
@@ -79,11 +86,11 @@ public class Settings extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getNode(String strKey)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getNode(\"" + strKey + "\").");
+        String extension = "getNode(\"" + strKey + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -94,15 +101,16 @@ public class Settings extends org.directwebremoting.proxy.jsx3.lang.Object
     /**
      * Returns a stored setting value as the raw XML node.
      * @param strKey the setting key.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getNode(String strKey, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getNode(\"" + strKey + "\").");
+        String extension = "getNode(\"" + strKey + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

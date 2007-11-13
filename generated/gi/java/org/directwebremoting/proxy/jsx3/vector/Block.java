@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Block(ProxyHelper helper)
+    public Block(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,11 +46,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Tag getCanvas()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getCanvas().");
+        String extension = "getCanvas().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Tag> ctor = org.directwebremoting.proxy.jsx3.vector.Tag.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Tag> ctor = org.directwebremoting.proxy.jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -58,15 +61,16 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
     /**
      * Returns the vector canvas on which this control paints itself. If no canvas has already been created, then
     createVector() is called to create it.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getCanvas(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getCanvas().");
+        String extension = "getCanvas().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -92,11 +96,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Tag createVector()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("createVector().");
+        String extension = "createVector().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Tag> ctor = org.directwebremoting.proxy.jsx3.vector.Tag.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Tag> ctor = org.directwebremoting.proxy.jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -118,15 +122,16 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
 
     This method should do the work of creating and updating the vector tree to the state when it is ready to be
     rendered on screen, but without calling updateVector() directly.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T createVector(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("createVector().");
+        String extension = "createVector().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -134,7 +139,7 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Updates the pre-existing vector tree of this control on, for example, a resize or repaint event. Methods
     overriding this method should return true if the update is successful or false to
     force the vector tree to be completely recreated with createVector().
@@ -147,19 +152,19 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
     return true;
     };
      * @param objVector the root of the vector render tree.
-     * @return <code>true</code> if the tree could be updated inline or <code>false</code> if it must be
+     * @param callback <code>true</code> if the tree could be updated inline or <code>false</code> if it must be
     recreated by calling <code>createVector()</code>.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean updateVector(org.directwebremoting.proxy.jsx3.vector.Tag objVector, Callback callback)
+    public void updateVector(org.directwebremoting.proxy.jsx3.vector.Tag objVector, Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = updateVector", objVector);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Instantiates and returns a new instance of jsx3.vector.Canvas. The implementation of
@@ -169,11 +174,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Tag createCanvas()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("createCanvas().");
+        String extension = "createCanvas().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Tag> ctor = org.directwebremoting.proxy.jsx3.vector.Tag.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Tag> ctor = org.directwebremoting.proxy.jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -185,15 +190,16 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
      * Instantiates and returns a new instance of jsx3.vector.Canvas. The implementation of
     createVector() in this class calls this method to create the base vector tag. This method may be
     overridden to provide a base tag of another type that Canvas.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T createCanvas(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("createCanvas().");
+        String extension = "createCanvas().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -213,12 +219,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Block
     public void paintEventHandler(String strEvtType, String strMethod, org.directwebremoting.proxy.jsx3.vector.Tag objElm)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("paintEventHandler(").appendData(strEvtType).appendScript(",")
-
-        .appendData(strMethod).appendScript(",")
-
-        .appendData(objElm).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("paintEventHandler", strEvtType, strMethod, objElm);
+        getScriptProxy().addScript(script);
     }
 
 }

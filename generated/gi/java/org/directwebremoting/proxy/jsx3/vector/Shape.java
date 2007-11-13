@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Shape(ProxyHelper helper)
+    public Shape(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -46,23 +49,26 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
      */
     public Shape(String strTagName, int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Shape", strTagName, left, top, width, height);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the path field.
-     * @return path
-     *
+     * @param callback path
+     */
     @SuppressWarnings("unchecked")
-    public String getPath(Callback callback)
+    public void getPath(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPath");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the path field.
@@ -71,8 +77,8 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     public void setPath(String path)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPath(").appendData(path).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPath", path);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -85,11 +91,11 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Shape pathMoveTo(int x, int y, boolean bRel)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("pathMoveTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").");
+        String extension = "pathMoveTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Shape> ctor = org.directwebremoting.proxy.jsx3.vector.Shape.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Shape> ctor = org.directwebremoting.proxy.jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -108,11 +114,11 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     @SuppressWarnings("unchecked")
     public <T> T pathMoveTo(int x, int y, boolean bRel, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("pathMoveTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").");
+        String extension = "pathMoveTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -130,11 +136,11 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Shape pathLineTo(int x, int y, boolean bRel)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("pathLineTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").");
+        String extension = "pathLineTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Shape> ctor = org.directwebremoting.proxy.jsx3.vector.Shape.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Shape> ctor = org.directwebremoting.proxy.jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -153,11 +159,11 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     @SuppressWarnings("unchecked")
     public <T> T pathLineTo(int x, int y, boolean bRel, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("pathLineTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").");
+        String extension = "pathLineTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -181,11 +187,11 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Shape pathArcTo(int cx, int cy, int rx, int ry, int x1, int y1, int x2, int y2, boolean bCW)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("pathArcTo(\"" + cx + "\", \"" + cy + "\", \"" + rx + "\", \"" + ry + "\", \"" + x1 + "\", \"" + y1 + "\", \"" + x2 + "\", \"" + y2 + "\", \"" + bCW + "\").");
+        String extension = "pathArcTo(\"" + cx + "\", \"" + cy + "\", \"" + rx + "\", \"" + ry + "\", \"" + x1 + "\", \"" + y1 + "\", \"" + x2 + "\", \"" + y2 + "\", \"" + bCW + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Shape> ctor = org.directwebremoting.proxy.jsx3.vector.Shape.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Shape> ctor = org.directwebremoting.proxy.jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -210,11 +216,11 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     @SuppressWarnings("unchecked")
     public <T> T pathArcTo(int cx, int cy, int rx, int ry, int x1, int y1, int x2, int y2, boolean bCW, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("pathArcTo(\"" + cx + "\", \"" + cy + "\", \"" + rx + "\", \"" + ry + "\", \"" + x1 + "\", \"" + y1 + "\", \"" + x2 + "\", \"" + y2 + "\", \"" + bCW + "\").");
+        String extension = "pathArcTo(\"" + cx + "\", \"" + cy + "\", \"" + rx + "\", \"" + ry + "\", \"" + x1 + "\", \"" + y1 + "\", \"" + x2 + "\", \"" + y2 + "\", \"" + bCW + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -229,11 +235,11 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Shape pathClose()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("pathClose().");
+        String extension = "pathClose().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Shape> ctor = org.directwebremoting.proxy.jsx3.vector.Shape.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Shape> ctor = org.directwebremoting.proxy.jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -249,11 +255,11 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     @SuppressWarnings("unchecked")
     public <T> T pathClose(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("pathClose().");
+        String extension = "pathClose().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -268,8 +274,8 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     public void setFill(org.directwebremoting.proxy.jsx3.vector.Fill fill)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFill(").appendData(fill).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFill", fill);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -279,8 +285,8 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     public void setStroke(org.directwebremoting.proxy.jsx3.vector.Stroke stroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setStroke(").appendData(stroke).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setStroke", stroke);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -289,8 +295,8 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     public void getFill()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getFill(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getFill");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -299,8 +305,8 @@ public class Shape extends org.directwebremoting.proxy.jsx3.vector.Tag
     public void getStroke()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getStroke(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getStroke");
+        getScriptProxy().addScript(script);
     }
 
 }

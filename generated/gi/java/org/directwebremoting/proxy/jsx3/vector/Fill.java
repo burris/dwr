@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Fill(ProxyHelper helper)
+    public Fill(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +46,10 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
      */
     public Fill(int color, float alpha)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Fill", color, alpha);
+        setInitScript(script);
     }
 
     /**
@@ -52,23 +58,23 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void getColor()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getColor(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getColor");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the color field, as a CSS hex string.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getColorHtml(Callback callback)
+    public void getColorHtml(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getColorHtml");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the color field.
@@ -77,8 +83,8 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setColor(String color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColor(").appendData(color).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColor", color);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -88,24 +94,24 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setColor(int color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColor(").appendData(color).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColor", color);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the alpha field, as previously set in the constructor or with setAlpha().
-     * @return alpha
-     *
+     * @param callback alpha
+     */
     @SuppressWarnings("unchecked")
-    public float getAlpha(Callback callback)
+    public void getAlpha(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAlpha");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the alpha field, valid values are between 0 (transparent) and 1 (opaque)..
@@ -114,24 +120,24 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setAlpha(float alpha)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAlpha(").appendData(alpha).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAlpha", alpha);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the type field, as set with setType().
-     * @return type
-     *
+     * @param callback type
+     */
     @SuppressWarnings("unchecked")
-    public String getType(Callback callback)
+    public void getType(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getType");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the type field, valid values are enumerated in the VML specification, though only 'solid', 'gradient', and 'gradientradial' are truly supported by this class.
@@ -140,8 +146,8 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setType(String type)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setType(").appendData(type).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setType", type);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -150,8 +156,8 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void getColor2()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getColor2(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getColor2");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -160,8 +166,8 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void getColor2Html()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getColor2Html(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getColor2Html");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -171,8 +177,8 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setColor2(String color2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColor2(").appendData(color2).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColor2", color2);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -182,24 +188,24 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setColor2(int color2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColor2(").appendData(color2).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColor2", color2);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the alpha2 field, as set with setAlpha2().
-     * @return alpha2
-     *
+     * @param callback alpha2
+     */
     @SuppressWarnings("unchecked")
-    public float getAlpha2(Callback callback)
+    public void getAlpha2(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAlpha2");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the alpha2 field, valid values are between 0 (transparent) and 1 (opaque)..
@@ -208,24 +214,24 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setAlpha2(float alpha2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAlpha2(").appendData(alpha2).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAlpha2", alpha2);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the angle field (the angle along which the gradient goes), as set with setAngle().
-     * @return angle
-     *
+     * @param callback angle
+     */
     @SuppressWarnings("unchecked")
-    public int getAngle(Callback callback)
+    public void getAngle(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAngle");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the angle field, valid values are between 0 and 360. 0 is the vector pointing rightward.
@@ -234,24 +240,24 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setAngle(int angle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAngle(").appendData(angle).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAngle", angle);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the colors field, as set with setColors().
-     * @return colors
-     *
+     * @param callback colors
+     */
     @SuppressWarnings("unchecked")
-    public String getColors(Callback callback)
+    public void getColors(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getColors");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the colors field, see the documentation for <fill> in the VML documentation.
@@ -260,8 +266,8 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setColors(String colors)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColors(").appendData(colors).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColors", colors);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -274,11 +280,11 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Fill valueOf(String v)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("valueOf(\"" + v + "\").");
+        String extension = "valueOf(\"" + v + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Fill> ctor = org.directwebremoting.proxy.jsx3.vector.Fill.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Fill> ctor = org.directwebremoting.proxy.jsx3.vector.Fill.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -296,11 +302,11 @@ public class Fill extends org.directwebremoting.proxy.jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.vector.Fill valueOf(org.directwebremoting.proxy.jsx3.vector.Fill v)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("valueOf(\"" + v + "\").");
+        String extension = "valueOf(\"" + v + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.vector.Fill> ctor = org.directwebremoting.proxy.jsx3.vector.Fill.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.vector.Fill> ctor = org.directwebremoting.proxy.jsx3.vector.Fill.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

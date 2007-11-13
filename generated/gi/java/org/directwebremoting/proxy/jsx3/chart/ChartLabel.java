@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class ChartLabel extends org.directwebremoting.proxy.jsx3.chart.ChartComp
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public ChartLabel(ProxyHelper helper)
+    public ChartLabel(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -41,7 +44,10 @@ public class ChartLabel extends org.directwebremoting.proxy.jsx3.chart.ChartComp
      */
     public ChartLabel(String name, String text)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new ChartLabel", name, text);
+        setInitScript(script);
     }
 
     /**
@@ -64,20 +70,20 @@ public class ChartLabel extends org.directwebremoting.proxy.jsx3.chart.ChartComp
      */
     public static final int ROTATION_CCW = 270;
 
-    /*
+    /**
      * Returns the preferredWidth field.
-     * @return preferredWidth
-     *
+     * @param callback preferredWidth
+     */
     @SuppressWarnings("unchecked")
-    public int getPreferredWidth(Callback callback)
+    public void getPreferredWidth(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPreferredWidth");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the preferredWidth field.
@@ -86,24 +92,24 @@ public class ChartLabel extends org.directwebremoting.proxy.jsx3.chart.ChartComp
     public void setPreferredWidth(int preferredWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPreferredWidth(").appendData(preferredWidth).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPreferredWidth", preferredWidth);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the preferredHeight field.
-     * @return preferredHeight
-     *
+     * @param callback preferredHeight
+     */
     @SuppressWarnings("unchecked")
-    public int getPreferredHeight(Callback callback)
+    public void getPreferredHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPreferredHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the preferredHeight field.
@@ -112,24 +118,24 @@ public class ChartLabel extends org.directwebremoting.proxy.jsx3.chart.ChartComp
     public void setPreferredHeight(int preferredHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPreferredHeight(").appendData(preferredHeight).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPreferredHeight", preferredHeight);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the alpha field, the opacity of the background fill.
-     * @return alpha
-     *
+     * @param callback alpha
+     */
     @SuppressWarnings("unchecked")
-    public float getAlpha(Callback callback)
+    public void getAlpha(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAlpha");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the alpha field.
@@ -138,24 +144,24 @@ public class ChartLabel extends org.directwebremoting.proxy.jsx3.chart.ChartComp
     public void setAlpha(float alpha)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAlpha(").appendData(alpha).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAlpha", alpha);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the borderStroke field, string representation of the VectorStroke used to outline the background.
-     * @return borderStroke
-     *
+     * @param callback borderStroke
+     */
     @SuppressWarnings("unchecked")
-    public String getBorderStroke(Callback callback)
+    public void getBorderStroke(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBorderStroke");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the borderStroke field.
@@ -164,24 +170,24 @@ public class ChartLabel extends org.directwebremoting.proxy.jsx3.chart.ChartComp
     public void setBorderStroke(String borderStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBorderStroke(").appendData(borderStroke).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBorderStroke", borderStroke);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the labelRotation field.
-     * @return labelRotation
-     *
+     * @param callback labelRotation
+     */
     @SuppressWarnings("unchecked")
-    public int getLabelRotation(Callback callback)
+    public void getLabelRotation(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLabelRotation");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the labelRotation field.
@@ -190,22 +196,22 @@ public class ChartLabel extends org.directwebremoting.proxy.jsx3.chart.ChartComp
     public void setLabelRotation(int labelRotation)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelRotation(").appendData(labelRotation).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelRotation", labelRotation);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * whether this label is display at 90 or -90 degrees
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean isRotated(Callback callback)
+    public void isRotated(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isRotated");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class Tag extends org.directwebremoting.proxy.jsx3.html.BlockTag
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Tag(ProxyHelper helper)
+    public Tag(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,7 +47,10 @@ public class Tag extends org.directwebremoting.proxy.jsx3.html.BlockTag
      */
     public Tag(String strTagName, int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Tag", strTagName, left, top, width, height);
+        setInitScript(script);
     }
 
     /**
@@ -53,8 +59,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.html.BlockTag
     public void getToolTip()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getToolTip(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getToolTip");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -64,24 +70,24 @@ public class Tag extends org.directwebremoting.proxy.jsx3.html.BlockTag
     public void setToolTip(String title)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setToolTip(").appendData(title).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setToolTip", title);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the rotation field.
-     * @return rotation
-     *
+     * @param callback rotation
+     */
     @SuppressWarnings("unchecked")
-    public int getRotation(Callback callback)
+    public void getRotation(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRotation");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the rotation field, an angle between 0 and 360.
@@ -90,8 +96,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.html.BlockTag
     public void setRotation(int rotation)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRotation(").appendData(rotation).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRotation", rotation);
+        getScriptProxy().addScript(script);
     }
 
 }

@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Matrix(ProxyHelper helper)
+    public Matrix(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,7 +45,10 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public Matrix(String strName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Matrix", strName);
+        setInitScript(script);
     }
 
     /**
@@ -215,8 +221,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void resetMask()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("resetMask(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("resetMask");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -226,8 +232,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void repaintData()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("repaintData(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("repaintData");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -236,8 +242,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void repaintHead()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("repaintHead(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("repaintHead");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -247,23 +253,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void doSort(String intSortDir)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("doSort(").appendData(intSortDir).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("doSort", intSortDir);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the name of the CDF attribute to sort on. If no value is set an empty string is returned by default.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getSortPath(Callback callback)
+    public void getSortPath(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSortPath");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the name of the CDF attribute to sort on. The records in the data source of this matrix are sorted
@@ -273,25 +279,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setSortPath(String strAttr)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSortPath(").appendData(strAttr).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSortPath", strAttr);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the data type to be used for sorting this list. This value is either the one explicitly set with
     setSortType() or the data type of the current sort.
-     * @return <code>jsx3.gui.Matrix.Column.TYPE_TEXT</code> or <code>jsx3.gui.Matrix.Column.TYPE_NUMBER</code>
-     *
+     * @param callback <code>jsx3.gui.Matrix.Column.TYPE_TEXT</code> or <code>jsx3.gui.Matrix.Column.TYPE_NUMBER</code>
+     */
     @SuppressWarnings("unchecked")
-    public String getSortType(Callback callback)
+    public void getSortType(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSortType");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the data type for the list. This explicit value will override any column data type if set. If it is not set
@@ -301,24 +307,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setSortType(String DATATYPE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSortType(").appendData(DATATYPE).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSortType", DATATYPE);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the direction (jsx3.gui.Matrix.SORT_ASCENDING or jsx3.gui.Matrix.SORT_DESCENDING) for the sorted column; if no direction specified, ascending is returned
-     * @return one of: jsx3.gui.Matrix.SORT_ASCENDING or jsx3.gui.Matrix.SORT_DESCENDING
-     *
+     * @param callback one of: jsx3.gui.Matrix.SORT_ASCENDING or jsx3.gui.Matrix.SORT_DESCENDING
+     */
     @SuppressWarnings("unchecked")
-    public String getSortDirection(Callback callback)
+    public void getSortDirection(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSortDirection");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the direction (ascending or descending) for the sorted column.
@@ -327,23 +333,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setSortDirection(String intSortDir)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSortDirection(").appendData(intSortDir).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSortDirection", intSortDir);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether the list will render with sortable columns. If null or jsx3.Boolean.TRUE, the instance is sortable.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getCanSort(Callback callback)
+    public void getCanSort(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanSort");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether the list will render with sortable columns.
@@ -352,25 +358,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setCanSort(int SORT)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setCanSort(").appendData(SORT).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setCanSort", SORT);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether the column children can be reordered via user interaction. If no value is supplied
     the isntance will allow child columns to be reordered.
-     * @return one of: jsx3.Boolean.TRUE or jsx3.Boolean.FALSE
-     *
+     * @param callback one of: jsx3.Boolean.TRUE or jsx3.Boolean.FALSE
+     */
     @SuppressWarnings("unchecked")
-    public int getCanReorder(Callback callback)
+    public void getCanReorder(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanReorder");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether the columns in the list can be re-ordered via user interaction with the VIEW
@@ -379,8 +385,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setCanReorder(int REORDER)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setCanReorder(").appendData(REORDER).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setCanReorder", REORDER);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -392,8 +398,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void focusRowById(String strCdfId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("focusRowById(").appendData(strCdfId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("focusRowById", strCdfId);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -405,10 +411,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void focusCellById(String strCdfId, String strAttName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("focusCellById(").appendData(strCdfId).appendScript(",")
-
-        .appendData(strAttName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("focusCellById", strCdfId, strAttName);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -420,26 +424,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void focusCellByIndex(String strCdfId, int intCellIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("focusCellByIndex(").appendData(strCdfId).appendScript(",")
-
-        .appendData(intCellIndex).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("focusCellByIndex", strCdfId, intCellIndex);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the CSS string to apply to a Row/Cell when it has focus
      * @param strDefault The default value to use if null (Matrix.FOCUS_STYLE)
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getFocusStyle(String strDefault, Callback callback)
+    public void getFocusStyle(String strDefault, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFocusStyle", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS string to apply to a Row/Cell when it has focus. NOTE: Passing
@@ -450,8 +452,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setFocusStyle(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFocusStyle(").appendData(strCSS).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFocusStyle", strCSS);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -464,8 +466,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void resetFocusContext(String strId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("resetFocusContext(").appendData(strId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("resetFocusContext", strId);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -475,24 +477,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void executeRecord(String strRecordId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("executeRecord(").appendData(strRecordId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("executeRecord", strRecordId);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the CSS string to apply to a Row/Cell when it has focus
      * @param strDefault The default value to use if null (Matrix.SELECTION_BG)
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getSelectionBG(String strDefault, Callback callback)
+    public void getSelectionBG(String strDefault, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSelectionBG", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the URL for the image to use (as the repeating background image) to denote selection.
@@ -501,8 +503,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setSelectionBG(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSelectionBG(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSelectionBG", strURL);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -511,11 +513,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.List getSelectedNodes()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getSelectedNodes().");
+        String extension = "getSelectedNodes().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -523,20 +525,20 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Returns the jsxid(s) for the selected record(s). Equivalent to this.getValue() except that the return value is always an Array.
-     * @return JavaScript array of stings
-     *
+     * @param callback JavaScript array of stings
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getSelectedIds(Callback callback)
+    public void getSelectedIds(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSelectedIds");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Selects a CDF record of this list. The item will be highlighted in the view and the CDF data will be updated
@@ -546,8 +548,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void selectRecord(String strRecordId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("selectRecord(").appendData(strRecordId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("selectRecord", strRecordId);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -557,8 +559,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void deselectRecord(String strRecordId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("deselectRecord(").appendData(strRecordId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("deselectRecord", strRecordId);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -567,24 +569,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void deselectAllRecords()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("deselectAllRecords(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("deselectAllRecords");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns an object array of name/value pairs representing the current auto row session. When the session is committed, this
     object will be converted into a CDF Record for the instance.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object getAutoRowSession(Callback callback)
+    public void getAutoRowSession(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAutoRowSession");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Commits any active autorow session.
@@ -594,10 +596,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void commitAutoRowSession(org.directwebremoting.proxy.jsx3.gui.Event objEvent, int intCellIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("commitAutoRowSession(").appendData(objEvent).appendScript(",")
-
-        .appendData(intCellIndex).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("commitAutoRowSession", objEvent, intCellIndex);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -608,10 +608,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void toggleItem(String strRecordId, boolean bOpen)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("toggleItem(").appendData(strRecordId).appendScript(",")
-
-        .appendData(bOpen).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("toggleItem", strRecordId, bOpen);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -621,23 +619,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void revealRecord(String strRecordId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("revealRecord(").appendData(strRecordId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("revealRecord", strRecordId);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether or not this column can be resized by the user. If not set, the column will be assumed resizable
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getResizable(Callback callback)
+    public void getResizable(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getResizable");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether or not this column can be resized by the user. If not set, the column will be assumed resizable. Note that if the parent Matrix
@@ -647,24 +645,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setResizable(int RESIZE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setResizable(").appendData(RESIZE).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setResizable", RESIZE);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether or not an 'auto append' row will be rendered, allowing the user to automatically add new rows to the instance.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getAutoRow(Callback callback)
+    public void getAutoRow(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAutoRow");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether or not an 'auto append' row will be rendered, allowing the user to automatically add new rows to the instance. Note
@@ -676,26 +674,26 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setAutoRow(int intBoolean)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAutoRow(").appendData(intBoolean).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAutoRow", intBoolean);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the HTML element that represents the intersection of the row identified
     by strCdfId and the first column mapped to the named CDF attribute, strAttName.
      * @param strCdfId jsxid property for CDF record
      * @param strAttName attribute name on the CDF record. For example, <code>jsxtext</code>
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getContentElement(String strCdfId, String strAttName, Callback callback)
+    public void getContentElement(String strCdfId, String strAttName, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getContentElement", strCdfId, strAttName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Removes the XML source document stored under the XML ID of this object from the server cache.
@@ -705,8 +703,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void resetXmlCacheData(org.directwebremoting.proxy.jsx3.app.Server objServer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("resetXmlCacheData(").appendData(objServer).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("resetXmlCacheData", objServer);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -719,11 +717,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Cacheable setXMLId(String strXMLId)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setXMLId(\"" + strXMLId + "\").");
+        String extension = "setXMLId(\"" + strXMLId + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -740,11 +738,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Cacheable setXMLString(String strXML)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setXMLString(\"" + strXML + "\").");
+        String extension = "setXMLString(\"" + strXML + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -762,11 +760,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Cacheable setXMLURL(String strXMLURL)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setXMLURL(\"" + strXMLURL + "\").");
+        String extension = "setXMLURL(\"" + strXMLURL + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -774,34 +772,34 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Returns an array of all jsxid attributes in the source CDF in the order they would appear if painted on-screen
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getSortedIds(Callback callback)
+    public void getSortedIds(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSortedIds");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the selection model. If no selection type is specified, the instance will employ single row selection (SELECTION_ROW)
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getSelectionModel(String strDefault, Callback callback)
+    public void getSelectionModel(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSelectionModel", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the selection model
@@ -810,24 +808,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setSelectionModel(int intType)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSelectionModel(").appendData(intType).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSelectionModel", intType);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the row height
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getRowHeight(String strDefault, Callback callback)
+    public void getRowHeight(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRowHeight", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the on-screen row height. If row height is null, the default row height will be used (Matrix.DEFAULT_ROW_HEIGHT).
@@ -841,26 +839,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setRowHeight(int intHeight, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRowHeight(").appendData(intHeight).appendScript(",")
-
-        .appendData(bSuppressRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRowHeight", intHeight, bSuppressRepaint);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the number of rows each panel should contain.  If null, the default value will be used: jsx3.gui.Matrix.DEFAULT_ROWS_PER_PANEL
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getRowsPerPanel(String strDefault, Callback callback)
+    public void getRowsPerPanel(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRowsPerPanel", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the number of rows each panel should contain.
@@ -870,27 +866,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setRowsPerPanel(int intCount, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRowsPerPanel(").appendData(intCount).appendScript(",")
-
-        .appendData(bSuppressRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRowsPerPanel", intCount, bSuppressRepaint);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Sets the number of panels that are allowed in the queue waiting to be painted. If null, the default value will be used: jsx3.gui.Matrix.DEFAULT_PANEL_QUEUE_SIZE
     Note that this is different from the number of painted panels allowed on screen (e.g., getPanelPoolSize()).
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getPanelQueueSize(String strDefault, Callback callback)
+    public void getPanelQueueSize(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPanelQueueSize", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the number of panels that are allowed in the queue waiting to be painted. Can be tuned up or down to optimize performance given the amount of data, connection speed, etc
@@ -899,24 +893,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setPanelQueueSize(int intCount)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPanelQueueSize(").appendData(intCount).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPanelQueueSize", intCount);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the the number of milliseconds to wait before checking for inactive panels to garbage collect.  If null, the default value will be used: jsx3.gui.Matrix.DEFAULT_REAPER_INTERVAL
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getReaperInterval(String strDefault, Callback callback)
+    public void getReaperInterval(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getReaperInterval", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the the number of milliseconds to wait before checking for inactive panels to garbage collect.
@@ -925,26 +919,26 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setReaperInterval(int intInterval)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setReaperInterval(").appendData(intInterval).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setReaperInterval", intInterval);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the number panels (a panel contains a collection of rows--getRowsPerPanel()) that should be part of the pool.  If a panel count greater
     than this value exists, the panels furthest away (as calculated by the scroll position) from the active panel will be destroyed. If this value is null,
     the value defined by the constant, Matrix.DEFAULT_PANEL_POOL_COUNT, will be used.
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getPanelPoolSize(String strDefault, Callback callback)
+    public void getPanelPoolSize(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPanelPoolSize", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the number panels (a panel contains a collection of rows--getRowsPerPanel()) that should be part of the pool.
@@ -953,11 +947,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setPanelPoolSize(int intCount)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPanelPoolSize(").appendData(intCount).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPanelPoolSize", intCount);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns how data should be painted on-screen.  If no value is specified, Matrix.PAGING_OFF will be applied. Note that the rendering model limits the available paging models:
 
         Matrix.PAGING_OFF: Paint everthing to screen at once (container and data) (rendering model: all)
@@ -970,17 +964,17 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         
     Matrix.PAGING_STEPPED: Paint root nodes and any open descendants. Paint others as they are toggled open. (rendering model: hierarchical)
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getPagingModel(String strDefault, Callback callback)
+    public void getPagingModel(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPagingModel", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets how data should be painted on-screen.  If no value is specified, Matrix.PAGING_OFF will be applied.
@@ -989,25 +983,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setPagingModel(int intModel)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPagingModel(").appendData(intModel).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPagingModel", intModel);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the height of the header row in pixels. If this value is not set (null), the list will render with
     the default value of jsx3.gui.Matrix.DEFAULT_HEADER_HEIGHT.
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getHeaderHeight(String strDefault, Callback callback)
+    public void getHeaderHeight(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHeaderHeight", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the height of the header row in pixels. Set to zero (0) to hide the header row and only render the body rows.
@@ -1020,26 +1014,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setHeaderHeight(int intHeight, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHeaderHeight(").appendData(intHeight).appendScript(",")
-
-        .appendData(bSuppressRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHeaderHeight", intHeight, bSuppressRepaint);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the info label to display when scrolling a paged instance, in order to show the scroll position.
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getScrollInfoLabel(String strDefault, Callback callback)
+    public void getScrollInfoLabel(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getScrollInfoLabel", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the standard info label to display when scrolling to show the scroll position.  If no label is supplied
@@ -1053,24 +1045,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setScrollInfoLabel(String strLabel)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setScrollInfoLabel(").appendData(strLabel).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setScrollInfoLabel", strLabel);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the horizontal scroll position of the list.
-     * @return a non-negative number
-     *
+     * @param callback a non-negative number
+     */
     @SuppressWarnings("unchecked")
-    public int getScrollLeft(Callback callback)
+    public void getScrollLeft(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getScrollLeft");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the horizontal scroll position.
@@ -1079,24 +1071,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setScrollLeft(int intScrollLeft)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setScrollLeft(").appendData(intScrollLeft).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setScrollLeft", intScrollLeft);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the vertical scroll position.
-     * @return a non-negative number
-     *
+     * @param callback a non-negative number
+     */
     @SuppressWarnings("unchecked")
-    public int getScrollTop(Callback callback)
+    public void getScrollTop(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getScrollTop");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the vertical scroll position.
@@ -1106,10 +1098,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setScrollTop(int intScrollTop, String objGUI)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setScrollTop(").appendData(intScrollTop).appendScript(",")
-
-        .appendData(objGUI).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setScrollTop", intScrollTop, objGUI);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1121,26 +1111,26 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void synchronizeVScroller()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("synchronizeVScroller(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("synchronizeVScroller");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether or not the column widths should be adjusted (decremented) such that all columns fit within the viewport.
     If null or jsx3.Boolean.FALSE, scale width will not be used and the column widths will render
     fully, displaying a horizontal scrollbar when necessary. In such a case, all wildcard columns (e.g., *) will be resolved to the value,
     jsx3.gui.Matrix.Column.DEFAULT_WIDTH.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getScaleWidth(Callback callback)
+    public void getScaleWidth(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getScaleWidth");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether or not the column widths should be adjusted such that all columns visually display within the viewport.
@@ -1151,23 +1141,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setScaleWidth(int intBoolean)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setScaleWidth(").appendData(intBoolean).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setScaleWidth", intBoolean);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns CSS property value(s) for a border (border: solid 1px #000000)
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getHeaderBorder(Callback callback)
+    public void getHeaderBorder(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHeaderBorder");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets CSS property value(s) for a border on the header row (border: solid 1px #000000). Updates both model and view.
@@ -1176,23 +1166,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setHeaderBorder(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHeaderBorder(").appendData(strCSS).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHeaderBorder", strCSS);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns CSS property value(s) for a border (border: solid 1px #000000)
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getBodyBorder(Callback callback)
+    public void getBodyBorder(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBodyBorder");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets CSS property value(s) for a border (border: solid 1px #000000). Updates MODEL and VIEW (unless repaint is suppressed).
@@ -1206,11 +1196,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Block setBodyBorder(String strCSS, boolean bSuppressRepaint)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setBodyBorder(\"" + strCSS + "\", \"" + bSuppressRepaint + "\").");
+        String extension = "setBodyBorder(\"" + strCSS + "\", \"" + bSuppressRepaint + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1231,11 +1221,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T setBodyBorder(String strCSS, boolean bSuppressRepaint, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setBodyBorder(\"" + strCSS + "\", \"" + bSuppressRepaint + "\").");
+        String extension = "setBodyBorder(\"" + strCSS + "\", \"" + bSuppressRepaint + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1243,51 +1233,51 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Returns an array of selected values (or empty array) if the selection model is Matrix.SELECTION_MULTI_ROW. Returns a string (or null)
     for the other selection models
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getValue(Callback callback)
+    public void getValue(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValue");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * 
-     * @return <code>jsx3.gui.Form.STATEINVALID</code> or <code>jsx3.gui.Form.STATEVALID</code>.
-     *
+     * @param callback <code>jsx3.gui.Form.STATEINVALID</code> or <code>jsx3.gui.Form.STATEVALID</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int doValidate(Callback callback)
+    public void doValidate(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = doValidate");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the rendering model (how rows will be painted on-screen). If not set, the instance will render deep, meaning all descendants
     of the rendering context will be painted on-screen.
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getRenderingModel(String strDefault, Callback callback)
+    public void getRenderingModel(String strDefault, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRenderingModel", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the rendering model (how rows will be painted on-screen).
@@ -1297,27 +1287,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setRenderingModel(String MODEL, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRenderingModel(").appendData(MODEL).appendScript(",")
-
-        .appendData(bSuppressRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRenderingModel", MODEL, bSuppressRepaint);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the jsxid of the CDF record that will serve as the origin when rendering the data on-screen. If not set, the
     id, jsxroot, (which is the id for the root node, <data>) will be used.
      * @param strDefault The default value to use if null
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getRenderingContext(String strDefault, Callback callback)
+    public void getRenderingContext(String strDefault, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRenderingContext", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the jsxid of the CDF record that will serve as the origin when rendering the data on-screen.
@@ -1327,27 +1315,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setRenderingContext(String strJsxId, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRenderingContext(").appendData(strJsxId).appendScript(",")
-
-        .appendData(bSuppressRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRenderingContext", strJsxId, bSuppressRepaint);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether or not to supress display of the horizontal scrollbar. When not set, the scrollbar will display as needed.
      * @param strDefault The default value to use if null
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getSuppressHScroller(String strDefault, Callback callback)
+    public void getSuppressHScroller(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSuppressHScroller", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether or not to supress display of the horizontal scrollbar. Updates both model and view
@@ -1356,25 +1342,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setSuppressHScroller(int intTrueFalse)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSuppressHScroller(").appendData(intTrueFalse).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSuppressHScroller", intTrueFalse);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether or not to supress display of the vertical scrollbar. When not set, the scrollbar will display as needed.
      * @param strDefault The default value to use if null
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getSuppressVScroller(String strDefault, Callback callback)
+    public void getSuppressVScroller(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSuppressVScroller", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether or not to supress display of the vertical scrollbar. Updates both model and view.
@@ -1387,29 +1373,27 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setSuppressVScroller(int intTrueFalse, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSuppressVScroller(").appendData(intTrueFalse).appendScript(",")
-
-        .appendData(bSuppressRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSuppressVScroller", intTrueFalse, bSuppressRepaint);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the zero-based index of the on-screen column(s), to the left of which will be fixed and cannot be reordered.  For example, if this value
     is set to 1, the first column can never be reordered and will always remain the first column.  If this value is set to 2,
     the first two columns will be fixed.  Setting this value to 0 is effectively the same as setting it to null
      * @param strDefault The default value to use if null
-     * @return positive integer
-     *
+     * @param callback positive integer
+     */
     @SuppressWarnings("unchecked")
-    public int getFixedColumnIndex(String strDefault, Callback callback)
+    public void getFixedColumnIndex(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFixedColumnIndex", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the zero-based index of the on-screen column(s), to the left of which will be fixed and cannot be reordered.
@@ -1418,25 +1402,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setFixedColumnIndex(int intIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFixedColumnIndex(").appendData(intIndex).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFixedColumnIndex", intIndex);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether or not to render the navigation controls that are applied to the first column when rendering model is hierarchical.  When not set the navigators are rendered.
      * @param strDefault The default value to use if null
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getRenderNavigators(String strDefault, Callback callback)
+    public void getRenderNavigators(String strDefault, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRenderNavigators", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether or not to render the navigation controls on the first column when being rendered in hierarchical mode.
@@ -1449,27 +1433,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setRenderNavigators(int intTrueFalse, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRenderNavigators(").appendData(intTrueFalse).appendScript(",")
-
-        .appendData(bSuppressRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRenderNavigators", intTrueFalse, bSuppressRepaint);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the icon to use for those CDF records that do not explicitly specify an icon via the jsximg attribute
      * @param strDefault The default value to use if null
-     * @return URL for icon to use. If null, <code>jsx3.gui.Matrix.ICON</code> will be applied when rendered.
-     *
+     * @param callback URL for icon to use. If null, <code>jsx3.gui.Matrix.ICON</code> will be applied when rendered.
+     */
     @SuppressWarnings("unchecked")
-    public String getIcon(String strDefault, Callback callback)
+    public void getIcon(String strDefault, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getIcon", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the icon to use for those CDF records that do not explicitly specify an icon via the jsximg attribute
@@ -1478,25 +1460,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setIcon(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setIcon(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setIcon", strURL);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the icon to use when the given tree node is in an open state.
      * @param strDefault The default value to use if null
-     * @return URL for icon. If null, <code>jsx3.gui.Matrix.ICON_MINUS</code> will be applied when rendered.
-     *
+     * @param callback URL for icon. If null, <code>jsx3.gui.Matrix.ICON_MINUS</code> will be applied when rendered.
+     */
     @SuppressWarnings("unchecked")
-    public String getIconMinus(String strDefault, Callback callback)
+    public void getIconMinus(String strDefault, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getIconMinus", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the icon to use when the given tree node is in an open state.
@@ -1505,25 +1487,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setIconMinus(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setIconMinus(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setIconMinus", strURL);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the icon to use when the given tree node is in a closed state.
      * @param strDefault The default value to use if null
-     * @return URL for icon to use. If null, <code>jsx3.gui.Matrix.ICON_PLUS</code> will be applied when rendered.
-     *
+     * @param callback URL for icon to use. If null, <code>jsx3.gui.Matrix.ICON_PLUS</code> will be applied when rendered.
+     */
     @SuppressWarnings("unchecked")
-    public String getIconPlus(String strDefault, Callback callback)
+    public void getIconPlus(String strDefault, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getIconPlus", strDefault);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the icon to use when the given tree node is in a closed state.
@@ -1532,8 +1514,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setIconPlus(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setIconPlus(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setIconPlus", strURL);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1546,11 +1528,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity deleteRecord(String strRecordId, boolean bRedraw)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("deleteRecord(\"" + strRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "deleteRecord(\"" + strRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1569,11 +1551,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T deleteRecord(String strRecordId, boolean bRedraw, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("deleteRecord(\"" + strRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "deleteRecord(\"" + strRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1595,11 +1577,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.CDF insertRecordProperty(String strRecordId, String strPropName, String strPropValue, boolean bRedraw)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("insertRecordProperty(\"" + strRecordId + "\", \"" + strPropName + "\", \"" + strPropValue + "\", \"" + bRedraw + "\").");
+        String extension = "insertRecordProperty(\"" + strRecordId + "\", \"" + strPropName + "\", \"" + strPropValue + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.CDF> ctor = org.directwebremoting.proxy.jsx3.xml.CDF.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.CDF> ctor = org.directwebremoting.proxy.jsx3.xml.CDF.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1618,12 +1600,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void redrawCell(String strRecordId, org.directwebremoting.proxy.jsx3.gui.Matrix.Column objColumn, boolean bSuppressTriggers)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("redrawCell(").appendData(strRecordId).appendScript(",")
-
-        .appendData(objColumn).appendScript(",")
-
-        .appendData(bSuppressTriggers).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("redrawCell", strRecordId, objColumn, bSuppressTriggers);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1636,10 +1614,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void redrawMappedCells(String strRecordId, String strAttName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("redrawMappedCells(").appendData(strRecordId).appendScript(",")
-
-        .appendData(strAttName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("redrawMappedCells", strRecordId, strAttName);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1651,12 +1627,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void redrawRecord(String strRecordId, int intAction, boolean bRecurse)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("redrawRecord(").appendData(strRecordId).appendScript(",")
-
-        .appendData(intAction).appendScript(",")
-
-        .appendData(bRecurse).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("redrawRecord", strRecordId, intAction, bRecurse);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1667,8 +1639,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Matrix setValue(String strId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setValue(").appendData(strId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setValue", strId);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -1680,8 +1652,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Matrix setValue(Object[] strId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setValue(").appendData(strId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setValue", strId);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -1704,11 +1676,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.HotKey doKeyBinding(org.directwebremoting.proxy.CodeBlock fctCallback, String strKeys)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").");
+        String extension = "doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1723,11 +1695,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form doReset()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doReset().");
+        String extension = "doReset().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1735,98 +1707,98 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Returns the background color of this control when it is disabled.
-     * @return valid CSS property value, (i.e., red, #ff0000)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ff0000)
+     */
     @SuppressWarnings("unchecked")
-    public String getDisabledBackgroundColor(Callback callback)
+    public void getDisabledBackgroundColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisabledBackgroundColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the font color to use when this control is disabled.
-     * @return valid CSS property value, (i.e., red, #ff0000)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ff0000)
+     */
     @SuppressWarnings("unchecked")
-    public String getDisabledColor(Callback callback)
+    public void getDisabledColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisabledColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the state for the form field control. If no enabled state is set, this method returns
     STATEENABLED.
-     * @return <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
-     *
+     * @param callback <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getEnabled(Callback callback)
+    public void getEnabled(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEnabled");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the key binding that when keyed will fire the execute event for this control.
-     * @return plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
-     *
+     * @param callback plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
+     */
     @SuppressWarnings("unchecked")
-    public String getKeyBinding(Callback callback)
+    public void getKeyBinding(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getKeyBinding");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether or not this control is required. If the required property has never been set, this method returns
     OPTIONAL.
-     * @return <code>REQUIRED</code> or <code>OPTIONAL</code>.
-     *
+     * @param callback <code>REQUIRED</code> or <code>OPTIONAL</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getRequired(Callback callback)
+    public void getRequired(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRequired");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the validation state of this control. If the validationState property has never been set, this method returns
     STATEVALID.
-     * @return <code>STATEINVALID</code> or <code>STATEVALID</code>.
-     *
+     * @param callback <code>STATEINVALID</code> or <code>STATEVALID</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getValidationState(Callback callback)
+    public void getValidationState(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValidationState");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the background color of this form control when it is disabled.
@@ -1836,11 +1808,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setDisabledBackgroundColor(String strColor)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setDisabledBackgroundColor(\"" + strColor + "\").");
+        String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1856,11 +1828,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setDisabledColor(String strColor)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setDisabledColor(\"" + strColor + "\").");
+        String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1877,10 +1849,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setEnabled(").appendData(intEnabled).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setEnabled", intEnabled, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1892,11 +1862,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setKeyBinding(String strSequence)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setKeyBinding(\"" + strSequence + "\").");
+        String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1912,11 +1882,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setRequired(int required)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setRequired(\"" + required + "\").");
+        String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1932,11 +1902,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setValidationState(int intState)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setValidationState(\"" + intState + "\").");
+        String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1951,25 +1921,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void clearXmlData()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("clearXmlData(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("clearXmlData");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether this object removes its XML and XSL source documents from the cache of its server when it
     is destroyed.
-     * @return <code>CLEANUPRESOURCES</code> or <code>SHARERESOURCES</code>.
-     *
+     * @param callback <code>CLEANUPRESOURCES</code> or <code>SHARERESOURCES</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getShareResources(Callback callback)
+    public void getShareResources(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getShareResources");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns the XML source document of this object. The XML document is determined by the following steps:
@@ -1991,11 +1961,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getXML()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getXML().");
+        String extension = "getXML().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2019,15 +1989,16 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     If creating the document resulted in an error (XML parsing error, file not found error, etc) the offending
     document is returned immediately.
     Otherwise, setSourceXML is called on this object, passing in the created document.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getXML(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getXML().");
+        String extension = "getXML().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2035,120 +2006,120 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Returns the XML ID of this object.
-     * @return the XML ID.
-     *
+     * @param callback the XML ID.
+     */
     @SuppressWarnings("unchecked")
-    public String getXMLId(Callback callback)
+    public void getXMLId(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXMLId");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the XML string of this object.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getXMLString(Callback callback)
+    public void getXMLString(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXMLString");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the list of XML transformers of this object.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getXMLTransformers(Callback callback)
+    public void getXMLTransformers(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXMLTransformers");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the XML URL of this object.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getXMLURL(Callback callback)
+    public void getXMLURL(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXMLURL");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the XSL ID of this object.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getXSLId(Callback callback)
+    public void getXSLId(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXSLId");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns a map containing all the parameters to pass to the XSL stylesheet during transformation.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object getXSLParams(Callback callback)
+    public void getXSLParams(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXSLParams");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether the XML data source of this object is loaded asynchronously.
-     * @return <code>0</code> or <code>1</code>.
-     *
+     * @param callback <code>0</code> or <code>1</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getXmlAsync(Callback callback)
+    public void getXmlAsync(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Returns whether this object is bound to the XML document stored in the data cache.
-     * @return <code>0</code> or <code>1</code>.
-     *
-    @SuppressWarnings("unchecked")
-    public int getXmlBind(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXmlAsync");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns whether this object is bound to the XML document stored in the data cache.
+     * @param callback <code>0</code> or <code>1</code>.
+     */
+    @SuppressWarnings("unchecked")
+    public void getXmlBind(Callback<Integer> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXmlBind");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * This method is called in two situations:
@@ -2165,8 +2136,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void onXmlBinding(Object objEvent)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("onXmlBinding(").appendData(objEvent).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("onXmlBinding", objEvent);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -2177,11 +2148,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Cacheable removeXSLParam(String strName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeXSLParam(\"" + strName + "\").");
+        String extension = "removeXSLParam(\"" + strName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2196,11 +2167,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Cacheable removeXSLParams()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeXSLParams().");
+        String extension = "removeXSLParams().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2216,8 +2187,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void resetCacheData(org.directwebremoting.proxy.jsx3.app.Server objServer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("resetCacheData(").appendData(objServer).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("resetCacheData", objServer);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -2230,11 +2201,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Cacheable setShareResources(int intShare)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setShareResources(\"" + intShare + "\").");
+        String extension = "setShareResources(\"" + intShare + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2261,11 +2232,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document setSourceXML(org.directwebremoting.proxy.jsx3.xml.Document objDoc, org.directwebremoting.proxy.jsx3.app.Cache objCache)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setSourceXML(\"" + objDoc + "\", \"" + objCache + "\").");
+        String extension = "setSourceXML(\"" + objDoc + "\", \"" + objCache + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2293,11 +2264,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T setSourceXML(org.directwebremoting.proxy.jsx3.xml.Document objDoc, org.directwebremoting.proxy.jsx3.app.Cache objCache, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setSourceXML(\"" + objDoc + "\", \"" + objCache + "\").");
+        String extension = "setSourceXML(\"" + objDoc + "\", \"" + objCache + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2319,8 +2290,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setXMLTransformers(Object[] arrTrans)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setXMLTransformers(").appendData(arrTrans).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setXMLTransformers", arrTrans);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -2333,11 +2304,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Cacheable setXSLParam(String strName, String strValue)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setXSLParam(\"" + strName + "\", \"" + strValue + "\").");
+        String extension = "setXSLParam(\"" + strName + "\", \"" + strValue + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2354,11 +2325,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Cacheable setXmlAsync(boolean bAsync)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setXmlAsync(\"" + bAsync + "\").");
+        String extension = "setXmlAsync(\"" + bAsync + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Cacheable> ctor = org.directwebremoting.proxy.jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2366,23 +2337,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Sets whether this object is bound to the XML document stored in the data cache. If this object is bound to the
     cache, then the onXmlBinding() method of this object is called any time the document stored in
     the cache under the XML Id of this object changes.
-     * @param bBind 
-     * @return <code>0</code> or <code>1</code>.
-     *
+     * @param bBind need to run jsx build
+     * @param callback <code>0</code> or <code>1</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int setXmlBind( bBind, Callback callback)
+    public void setXmlBind(boolean bBind, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = setXmlBind", bBind);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Transfers a CDF record from another object to this object. If no XML data source exists
@@ -2411,11 +2382,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity adoptRecord(String strSourceId, String strRecordId, String strParentRecordId, boolean bRedraw)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2451,11 +2422,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T adoptRecord(String strSourceId, String strRecordId, String strParentRecordId, boolean bRedraw, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2488,11 +2459,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity adoptRecordBefore(String strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2526,11 +2497,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T adoptRecordBefore(String strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2550,12 +2521,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void convertProperties(java.util.Properties objProps, Object[] arrProps, boolean bUnion)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("convertProperties(").appendData(objProps).appendScript(",")
-
-        .appendData(arrProps).appendScript(",")
-
-        .appendData(bUnion).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("convertProperties", objProps, arrProps, bUnion);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -2568,15 +2535,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void deleteRecordProperty(String strRecordId, String strPropName, boolean bRedraw)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("deleteRecordProperty(").appendData(strRecordId).appendScript(",")
-
-        .appendData(strPropName).appendScript(",")
-
-        .appendData(bRedraw).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("deleteRecordProperty", strRecordId, strPropName, bRedraw);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns an object containing the attributes of a particular CDF record as property/value pairs. The object returned by this
     method is a copy of the underlying data. Therefore, updates to this object will not affect the underlying data.
 
@@ -2585,18 +2548,18 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     objCDF.getRecord(strId).propName;
     objCDF.getRecordNode(strId).getAttribute("propName");
      * @param strRecordId the <code>jsxid</code> attribute of the data record to return.
-     * @return the object representation of a CDF node or <code>null</code> if no such record found.
-     *
+     * @param callback the object representation of a CDF node or <code>null</code> if no such record found.
+     */
     @SuppressWarnings("unchecked")
-    public Object getRecord(String strRecordId, Callback callback)
+    public void getRecord(String strRecordId, Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRecord", strRecordId);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns a record from the XML data source of this object. This returned value is a handle to the record and
@@ -2610,11 +2573,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getRecordNode(String strRecordId)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getRecordNode(\"" + strRecordId + "\").");
+        String extension = "getRecordNode(\"" + strRecordId + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2635,11 +2598,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T getRecordNode(String strRecordId, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getRecordNode(\"" + strRecordId + "\").");
+        String extension = "getRecordNode(\"" + strRecordId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2671,11 +2634,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity insertRecord(Object objRecord, String strParentRecordId, boolean bRedraw)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("insertRecord(\"" + objRecord + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "insertRecord(\"" + objRecord + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2708,11 +2671,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T insertRecord(Object objRecord, String strParentRecordId, boolean bRedraw, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("insertRecord(\"" + objRecord + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "insertRecord(\"" + objRecord + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2741,11 +2704,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity insertRecordBefore(Object objRecord, String strSiblingRecordId, boolean bRedraw)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("insertRecordBefore(\"" + objRecord + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "insertRecordBefore(\"" + objRecord + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2775,11 +2738,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T insertRecordBefore(Object objRecord, String strSiblingRecordId, boolean bRedraw, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("insertRecordBefore(\"" + objRecord + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").");
+        String extension = "insertRecordBefore(\"" + objRecord + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2803,12 +2766,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     public void insertRecordNode(org.directwebremoting.proxy.jsx3.xml.Entity objRecordNode, String strParentRecordId, boolean bRedraw)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("insertRecordNode(").appendData(objRecordNode).appendScript(",")
-
-        .appendData(strParentRecordId).appendScript(",")
-
-        .appendData(bRedraw).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("insertRecordNode", objRecordNode, strParentRecordId, bRedraw);
+        getScriptProxy().addScript(script);
     }
 
     /*
@@ -2860,11 +2819,12 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         /**
          * All reverse ajax proxies need context to work from
-         * @param helper The store of the context for the current action
+         * @param scriptProxy The place we are writing scripts to
+         * @param context The script that got us to where we are now
          */
-        public Column(ProxyHelper helper)
+        public Column(Context context, String extension, ScriptProxy scriptProxy)
         {
-            super(helper);
+            super(context, extension, scriptProxy);
         }
 
         /**
@@ -2873,7 +2833,10 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
          */
         public Column(String strName)
         {
-            super((ProxyHelper) null);
+            super((Context) null, (String) null, (ScriptProxy) null);
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("new Column", strName);
+            setInitScript(script);
         }
 
         /**
@@ -2896,20 +2859,20 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
          */
         public static final String DEFAULT_VALIGN = "top";
 
-        /*
+        /**
          * Gets the user-defined XSL template (xsl:template) that will override the defualt template defined by Column.TEMPLATES.default.
          * @param strDefault xsl:template
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getValueTemplate(String strDefault, Callback callback)
+        public void getValueTemplate(String strDefault, Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getValueTemplate", strDefault);
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the user-defined XSL template (xsl:template) that will override the defualt template defined by Column.DEFAULT_VALUE_TEMPLATE.
@@ -2922,8 +2885,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setValueTemplate(String TEMPLATE)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setValueTemplate(").appendData(TEMPLATE).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setValueTemplate", TEMPLATE);
+            getScriptProxy().addScript(script);
         }
 
         /**
@@ -2932,11 +2895,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         @SuppressWarnings("unchecked")
         public Boolean getResizable()
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("getResizable().");
+            String extension = "getResizable().";
             try
             {
-                Constructor<Boolean> ctor = Boolean.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<Boolean> ctor = Boolean.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -2952,25 +2915,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setResizable(Boolean RESIZE)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setResizable(").appendData(RESIZE).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setResizable", RESIZE);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns one or more named attributes. When one of these attributes is updated by another column's edit mask iterface,
         this column will called to repaint to reflect the updated value
-         * @return Comma-delimited attribute list
-         *
+         * @param callback Comma-delimited attribute list
+         */
         @SuppressWarnings("unchecked")
-        public String getTriggers(Callback callback)
+        public void getTriggers(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getTriggers");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets one or more named attributes. When one of these attributes is updated by another column's edit mask iterface,
@@ -2980,24 +2943,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setTriggers(String strTriggers)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setTriggers(").appendData(strTriggers).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setTriggers", strTriggers);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the selection path for this column of data. Returns 'jsxid' if no path specified
-         * @return selection path
-         *
+         * @param callback selection path
+         */
         @SuppressWarnings("unchecked")
-        public String getPath(Callback callback)
+        public void getPath(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getPath");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the selection path for this column of data.
@@ -3009,27 +2972,25 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setPath(String strPath, boolean bSuppressRepaint)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setPath(").appendData(strPath).appendScript(",")
-
-            .appendData(bSuppressRepaint).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setPath", strPath, bSuppressRepaint);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the CDF attribute to use to sort on this column. If the sort path has not been set explicitly, this method
         returns the value of this.getPath(). The data source of the matrix containing this column is
         sorted on this attribute when the matrix is sorted on this column.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getSortPath(Callback callback)
+        public void getSortPath(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getSortPath");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the CDF attribute to use to sort on this column.
@@ -3038,24 +2999,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setSortPath(String strPath)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setSortPath(").appendData(strPath).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setSortPath", strPath);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the data type for this column of data (affects sorting if this column is used for sorting the data); valid types include: jsx3.gui.Matrix.Column.TYPE_TEXT and jsx3.gui.Matrix.Column.TYPE_NUMBER
-         * @return data type for this column's data
-         *
+         * @param callback data type for this column's data
+         */
         @SuppressWarnings("unchecked")
-        public String getDataType(Callback callback)
+        public void getDataType(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getDataType");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the data type for this column of data (affects sorting if this column is used for sorting the data); returns ref to self
@@ -3064,24 +3025,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setDataType(String DATATYPE)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setDataType(").appendData(DATATYPE).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setDataType", DATATYPE);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the data type for this column of data (affects sorting if this column is used for sorting the data).
-         * @return one of: jsx3.gui.Matrix.Column.TYPE_TEXT, jsx3.gui.Matrix.Column.TYPE_NUMBER
-         *
+         * @param callback one of: jsx3.gui.Matrix.Column.TYPE_TEXT, jsx3.gui.Matrix.Column.TYPE_NUMBER
+         */
         @SuppressWarnings("unchecked")
-        public String getSortDataType(Callback callback)
+        public void getSortDataType(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getSortDataType");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the data type for this column of data (affects sorting if this column is used for sorting the data); returns ref to self
@@ -3090,8 +3051,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setSortDataType(String DATATYPE)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setSortDataType(").appendData(DATATYPE).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setSortDataType", DATATYPE);
+            getScriptProxy().addScript(script);
         }
 
         /**
@@ -3101,11 +3062,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         @SuppressWarnings("unchecked")
         public Boolean getCanSort()
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("getCanSort().");
+            String extension = "getCanSort().";
             try
             {
-                Constructor<Boolean> ctor = Boolean.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<Boolean> ctor = Boolean.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -3120,8 +3081,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCanSort(Boolean SORT)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCanSort(").appendData(SORT).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCanSort", SORT);
+            getScriptProxy().addScript(script);
         }
 
         /**
@@ -3139,8 +3100,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setFormatHandler(String handler)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setFormatHandler(").appendData(handler).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setFormatHandler", handler);
+            getScriptProxy().addScript(script);
         }
 
         /**
@@ -3158,8 +3119,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setFormatHandler(org.directwebremoting.proxy.CodeBlock handler)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setFormatHandler(").appendData(handler).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setFormatHandler", handler);
+            getScriptProxy().addScript(script);
         }
 
         /**
@@ -3177,57 +3138,57 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setFormatHandler(org.directwebremoting.proxy.jsx3.gui.Matrix.ColumnFormat handler)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setFormatHandler(").appendData(handler).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setFormatHandler", handler);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Gets the named object that will handle the reformatting of a given column's data cells. This object should
         implment the interface, jsx3.gui.Matrix.ColumnFormat, or adhere to its APIs.
         Can also return the function literal
-         * @return named object or function literal
-         *
+         * @param callback named object or function literal
+         */
         @SuppressWarnings("unchecked")
-        public String getFormatHandler(Callback callback)
+        public void getFormatHandler(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
-        }
-        */
+            String key = CallbackHelper.saveCallback(callback, String.class);
 
-        /*
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getFormatHandler");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
+        }
+
+        /**
          * Returns the zero-based index for ths column in relation to its siblings.  This is different from getChildIndex in that
         it corresponds to the position of this column as rendered on-screen, meaning if a child of a lesser index is not
         displayed (e.g., display = none), the value returned from this method will be less than what would be returned by getChildIndex.
         Returns null if this object is not displayed.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public int getDisplayIndex(Callback callback)
+        public void getDisplayIndex(Callback<Integer> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
-        }
-        */
+            String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-        /*
-         * Returns CSS property value for the data cell background-color.
-         *
-        @SuppressWarnings("unchecked")
-        public String getCellBackgroundColor(Callback callback)
-        {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getDisplayIndex");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
+
+        /**
+         * Returns CSS property value for the data cell background-color.
+         */
+        @SuppressWarnings("unchecked")
+        public void getCellBackgroundColor(Callback<String> callback)
+        {
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellBackgroundColor");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
+        }
 
         /**
          * Sets CSS property value for the data cell background-color. Call repaint on the parent instance to update the view.
@@ -3236,23 +3197,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellBackgroundColor(String strColor)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellBackgroundColor(").appendData(strColor).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellBackgroundColor", strColor);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns CSS property value for the data cell border.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getCellBorder(Callback callback)
+        public void getCellBorder(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellBorder");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets CSS property value(s) for a border for the data cells. Updates MODEL and VIEW (unless repaint is suppressed).
@@ -3265,25 +3226,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellBorder(String strCSS, boolean bSuppressRepaint)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellBorder(").appendData(strCSS).appendScript(",")
-
-            .appendData(bSuppressRepaint).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellBorder", strCSS, bSuppressRepaint);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns CSS property value for the data cell color.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getCellColor(Callback callback)
+        public void getCellColor(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellColor");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets CSS property value for the data cell color. Call repaint on the parent instance to update the view.
@@ -3292,23 +3251,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellColor(String strColor)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellColor(").appendData(strColor).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellColor", strColor);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns CSS property value for the data cell cursor.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getCellCursor(Callback callback)
+        public void getCellCursor(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellCursor");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets CSS property value for the data cell cursor. Call repaint on the parent instance to update the view.
@@ -3317,23 +3276,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellCursor(String strCursor)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellCursor(").appendData(strCursor).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellCursor", strCursor);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the CSS property value for the data cell font-family.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getCellFontName(Callback callback)
+        public void getCellFontName(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellFontName");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the CSS property value for the data cell font-family. Call repaint on the parent instance to update the view.
@@ -3342,23 +3301,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellFontName(String strFontName)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellFontName(").appendData(strFontName).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellFontName", strFontName);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the CSS property value for the data cell font-size.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public int getCellFontSize(Callback callback)
+        public void getCellFontSize(Callback<Integer> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellFontSize");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the CSS property value for the data cell font-size. Call repaint on the parent instance to update the view.
@@ -3367,23 +3326,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellFontSize(int intPixelSize)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellFontSize(").appendData(intPixelSize).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellFontSize", intPixelSize);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the CSS property value for the data cell font-weight.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getCellFontWeight(Callback callback)
+        public void getCellFontWeight(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellFontWeight");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the CSS property value for the data cell font-weight. Call repaint on the parent instance to update the view.
@@ -3392,23 +3351,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellFontWeight(String FONTWEIGHT)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellFontWeight(").appendData(FONTWEIGHT).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellFontWeight", FONTWEIGHT);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the CSS property value for the data cell padding.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getCellPadding(Callback callback)
+        public void getCellPadding(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellPadding");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the CSS property value for the data cell padding. Updates MODEL and VIEW (unless repaint is suppressed).
@@ -3421,25 +3380,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellPadding(String strCSS, boolean bSuppressRepaint)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellPadding(").appendData(strCSS).appendScript(",")
-
-            .appendData(bSuppressRepaint).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellPadding", strCSS, bSuppressRepaint);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the CSS property value for the data cell text-align.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getCellTextAlign(Callback callback)
+        public void getCellTextAlign(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellTextAlign");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the CSS property value for the data cell text-align. Call repaint on the parent instance to update the view.
@@ -3448,23 +3405,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellTextAlign(String ALIGN)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellTextAlign(").appendData(ALIGN).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellTextAlign", ALIGN);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the CSS property value for the data cell vertical-align. If no value is provided, the data cells render top-aligned.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getCellVAlign(Callback callback)
+        public void getCellVAlign(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellVAlign");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets  the CSS property value for the data cell vertical-align. Call repaint on the parent instance to update the view.
@@ -3473,24 +3430,24 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellVAlign(String VALIGN)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellVAlign(").appendData(VALIGN).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellVAlign", VALIGN);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns whether or not the data cellc will support text-wrapping. If no value is specified, the text will not wrap
          * @param strDefault The default value to use if null
-         *
+         */
         @SuppressWarnings("unchecked")
-        public int getCellWrap(String strDefault, Callback callback)
+        public void getCellWrap(String strDefault, Callback<Integer> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getCellWrap", strDefault);
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets whether or not the data cellc will support text-wrapping. If no value is
@@ -3500,8 +3457,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setCellWrap(int WRAP)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setCellWrap(").appendData(WRAP).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setCellWrap", WRAP);
+            getScriptProxy().addScript(script);
         }
 
         /**
@@ -3511,11 +3468,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         @SuppressWarnings("unchecked")
         public Boolean getWrap(String strDefault)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("getWrap(\"" + strDefault + "\").");
+            String extension = "getWrap(\"" + strDefault + "\").";
             try
             {
-                Constructor<Boolean> ctor = Boolean.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<Boolean> ctor = Boolean.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -3530,23 +3487,23 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setWrap(Boolean WRAP)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setWrap(").appendData(WRAP).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setWrap", WRAP);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns the CSS property value for the header cell vertical-align. If no value is provided, the header cell render top-aligned.
-         *
+         */
         @SuppressWarnings("unchecked")
-        public String getVAlign(Callback callback)
+        public void getVAlign(Callback<String> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, String.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getVAlign");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Sets the CSS property value for the header cell vertical-align. Repaints the header to immediately reflect this change.
@@ -3555,8 +3512,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void setVAlign(String VALIGN)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("setVAlign(").appendData(VALIGN).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("setVAlign", VALIGN);
+            getScriptProxy().addScript(script);
         }
 
     }
@@ -3585,11 +3542,12 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
     {
         /**
          * All reverse ajax proxies need context to work from
-         * @param helper The store of the context for the current action
+         * @param scriptProxy The place we are writing scripts to
+         * @param context The script that got us to where we are now
          */
-        public ColumnFormat(ProxyHelper helper)
+        public ColumnFormat(Context context, String extension, ScriptProxy scriptProxy)
         {
-            super(helper);
+            super(context, extension, scriptProxy);
         }
 
         /**
@@ -3618,11 +3576,11 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.gui.Matrix.ColumnFormat getInstance(String strKey, org.directwebremoting.proxy.jsx3.gui.Matrix.Column objColumn)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("getInstance(\"" + strKey + "\", \"" + objColumn + "\").");
+            String extension = "getInstance(\"" + strKey + "\", \"" + objColumn + "\").";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.gui.Matrix.ColumnFormat> ctor = org.directwebremoting.proxy.jsx3.gui.Matrix.ColumnFormat.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.gui.Matrix.ColumnFormat> ctor = org.directwebremoting.proxy.jsx3.gui.Matrix.ColumnFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -3630,21 +3588,21 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
             }
         }
 
-        /*
+        /**
          * Classes that implement this interface must provide this method to allow for browser-specific or similar type 'switch'. If
         false is returned, the formatter will not even attempt to iterate
-         * @return true if the formatter should be called to iterate and format
-         *
+         * @param callback true if the formatter should be called to iterate and format
+         */
         @SuppressWarnings("unchecked")
-        public boolean validate(Callback callback)
+        public void validate(Callback<Boolean> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = validate");
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Formats the Matrix cell, a native DIV element.
@@ -3658,18 +3616,8 @@ public class Matrix extends org.directwebremoting.proxy.jsx3.gui.Block
         public void format(String objDiv, String strCDFKey, org.directwebremoting.proxy.jsx3.gui.Matrix objMatrix, org.directwebremoting.proxy.jsx3.gui.Matrix.Column objMatrixColumn, int intRowNumber, org.directwebremoting.proxy.jsx3.app.Server objServer)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("format(").appendData(objDiv).appendScript(",")
-
-            .appendData(strCDFKey).appendScript(",")
-
-            .appendData(objMatrix).appendScript(",")
-
-            .appendData(objMatrixColumn).appendScript(",")
-
-            .appendData(intRowNumber).appendScript(",")
-
-            .appendData(objServer).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("format", objDiv, strCDFKey, objMatrix, objMatrixColumn, intRowNumber, objServer);
+            getScriptProxy().addScript(script);
         }
 
     }

@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -26,11 +27,12 @@ public class Oval extends org.directwebremoting.proxy.jsx3.vector.Shape
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Oval(ProxyHelper helper)
+    public Oval(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,7 +44,10 @@ public class Oval extends org.directwebremoting.proxy.jsx3.vector.Shape
      */
     public Oval(int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Oval", left, top, width, height);
+        setInitScript(script);
     }
 
 }

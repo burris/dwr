@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 import java.util.Date;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -30,11 +32,12 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public TimePicker(ProxyHelper helper)
+    public TimePicker(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -46,55 +49,58 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public TimePicker(String strName, int intLeft, int intTop, int intHeight)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns whether this time picker shows the second input field.
-     * @return 0 or 1.
-     *
+     * @param callback 0 or 1.
+     */
     @SuppressWarnings("unchecked")
-    public int getShowSeconds(Callback callback)
+    public void getShowSeconds(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getShowSeconds");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether this time picker shows the millisecond input field. The millisecond input field will only
     display if both this and showSeconds are true.
-     * @return 0 or 1.
-     *
+     * @param callback 0 or 1.
+     */
     @SuppressWarnings("unchecked")
-    public int getShowMillis(Callback callback)
+    public void getShowMillis(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getShowMillis");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether this time picker displays with a 24-hour clock. The default value depends on the default
     locale.
-     * @return 0 or 1.
-     *
+     * @param callback 0 or 1.
+     */
     @SuppressWarnings("unchecked")
-    public int is24Hour(Callback callback)
+    public void is24Hour(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = is24Hour");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether this time picker shows the second input field.
@@ -103,8 +109,8 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setShowSeconds(boolean bShow)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setShowSeconds(").appendData(bShow).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setShowSeconds", bShow);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -114,8 +120,8 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setShowMillis(boolean bShow)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setShowMillis(").appendData(bShow).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setShowMillis", bShow);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -125,23 +131,23 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     public void set24Hour(boolean b24Hour)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("set24Hour(").appendData(b24Hour).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("set24Hour", b24Hour);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the hour (0-23) of the time value of this time picker.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getHours(Callback callback)
+    public void getHours(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHours");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the hour value of this time picker. This method updates the view immediately.
@@ -150,23 +156,23 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setHours(int intHours)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHours(").appendData(intHours).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHours", intHours);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the minute (0-60) of the time value of this time picker.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getMinutes(Callback callback)
+    public void getMinutes(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMinutes");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the minute value of this time picker. This method updates the view immediately.
@@ -175,23 +181,23 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setMinutes(int intMinutes)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMinutes(").appendData(intMinutes).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMinutes", intMinutes);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the second (0-60) of the time value of this time picker.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getSeconds(Callback callback)
+    public void getSeconds(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSeconds");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the second value of this time picker. This method updates the view immediately.
@@ -200,23 +206,23 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setSeconds(int intSeconds)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSeconds(").appendData(intSeconds).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSeconds", intSeconds);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the millisecond (0-999) of the time value of this time picker.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getMilliseconds(Callback callback)
+    public void getMilliseconds(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMilliseconds");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the millisecond value of this time picker. This method updates the view immediately.
@@ -225,26 +231,26 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setMilliseconds(int intMillis)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMilliseconds(").appendData(intMillis).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMilliseconds", intMillis);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns a date with the time of day set to the value of this time picker. This method either returns the
     objDate parameter with the time of day set in local time or, if objDate is not provided,
     it returns a new date (the current day) with the time of day set.
      * @param objDate the date on which to set the time of day. This parameter is optional.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Date getDate(Date objDate, Callback callback)
+    public void getDate(Date objDate, Callback<Date> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Date.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDate", objDate);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the value of this time picker in local time. This method updates the view immediately.
@@ -254,8 +260,8 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setDate(Date objDate)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDate(").appendData(objDate).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDate", objDate);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -277,11 +283,11 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.HotKey doKeyBinding(org.directwebremoting.proxy.CodeBlock fctCallback, String strKeys)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").");
+        String extension = "doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -296,11 +302,11 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form doReset()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("doReset().");
+        String extension = "doReset().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -308,127 +314,127 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Abstract method that must be implemented by any class that implements the Form interface.
-     * @return <code>STATEINVALID</code> or <code>STATEVALID</code>.
-     *
+     * @param callback <code>STATEINVALID</code> or <code>STATEVALID</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int doValidate(Callback callback)
+    public void doValidate(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = doValidate");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the background color of this control when it is disabled.
-     * @return valid CSS property value, (i.e., red, #ff0000)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ff0000)
+     */
     @SuppressWarnings("unchecked")
-    public String getDisabledBackgroundColor(Callback callback)
+    public void getDisabledBackgroundColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisabledBackgroundColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the font color to use when this control is disabled.
-     * @return valid CSS property value, (i.e., red, #ff0000)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ff0000)
+     */
     @SuppressWarnings("unchecked")
-    public String getDisabledColor(Callback callback)
+    public void getDisabledColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisabledColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the state for the form field control. If no enabled state is set, this method returns
     STATEENABLED.
-     * @return <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
-     *
+     * @param callback <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getEnabled(Callback callback)
+    public void getEnabled(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEnabled");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the key binding that when keyed will fire the execute event for this control.
-     * @return plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
-     *
+     * @param callback plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
+     */
     @SuppressWarnings("unchecked")
-    public String getKeyBinding(Callback callback)
+    public void getKeyBinding(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getKeyBinding");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether or not this control is required. If the required property has never been set, this method returns
     OPTIONAL.
-     * @return <code>REQUIRED</code> or <code>OPTIONAL</code>.
-     *
+     * @param callback <code>REQUIRED</code> or <code>OPTIONAL</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getRequired(Callback callback)
+    public void getRequired(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRequired");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the validation state of this control. If the validationState property has never been set, this method returns
     STATEVALID.
-     * @return <code>STATEINVALID</code> or <code>STATEVALID</code>.
-     *
+     * @param callback <code>STATEINVALID</code> or <code>STATEVALID</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int getValidationState(Callback callback)
+    public void getValidationState(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Returns the value of this control.
-     *
-    @SuppressWarnings("unchecked")
-    public int getValue(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValidationState");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the value of this control.
+     */
+    @SuppressWarnings("unchecked")
+    public void getValue(Callback<Integer> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValue");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the background color of this form control when it is disabled.
@@ -438,11 +444,11 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setDisabledBackgroundColor(String strColor)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setDisabledBackgroundColor(\"" + strColor + "\").");
+        String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -458,11 +464,11 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setDisabledColor(String strColor)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setDisabledColor(\"" + strColor + "\").");
+        String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -479,10 +485,8 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setEnabled(").appendData(intEnabled).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setEnabled", intEnabled, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -494,11 +498,11 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setKeyBinding(String strSequence)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setKeyBinding(\"" + strSequence + "\").");
+        String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -514,11 +518,11 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setRequired(int required)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setRequired(\"" + required + "\").");
+        String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -534,11 +538,11 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setValidationState(int intState)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setValidationState(\"" + intState + "\").");
+        String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -554,11 +558,11 @@ public class TimePicker extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Form setValue(int vntValue)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setValue(\"" + vntValue + "\").");
+        String extension = "setValue(\"" + vntValue + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Form> ctor = org.directwebremoting.proxy.jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

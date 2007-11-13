@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.xml;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Entity(ProxyHelper helper)
+    public Entity(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +46,10 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Entity(Object objEntity)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Entity", objEntity);
+        setInitScript(script);
     }
 
     /**
@@ -83,11 +89,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity createNode(int intType, String strNodeName, String strNS)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("createNode(\"" + intType + "\", \"" + strNodeName + "\", \"" + strNS + "\").");
+        String extension = "createNode(\"" + intType + "\", \"" + strNodeName + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -108,11 +114,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T createNode(int intType, String strNodeName, String strNS, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("createNode(\"" + intType + "\", \"" + strNodeName + "\", \"" + strNS + "\").");
+        String extension = "createNode(\"" + intType + "\", \"" + strNodeName + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -129,11 +135,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity cloneNode(boolean bDeep)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("cloneNode(\"" + bDeep + "\").");
+        String extension = "cloneNode(\"" + bDeep + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -151,11 +157,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T cloneNode(boolean bDeep, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("cloneNode(\"" + bDeep + "\").");
+        String extension = "cloneNode(\"" + bDeep + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -172,11 +178,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity appendChild(org.directwebremoting.proxy.jsx3.xml.Entity objEntity)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("appendChild(\"" + objEntity + "\").");
+        String extension = "appendChild(\"" + objEntity + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -194,11 +200,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T appendChild(org.directwebremoting.proxy.jsx3.xml.Entity objEntity, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("appendChild(\"" + objEntity + "\").");
+        String extension = "appendChild(\"" + objEntity + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -215,11 +221,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity insertBefore(org.directwebremoting.proxy.jsx3.xml.Entity objEntityNew, org.directwebremoting.proxy.jsx3.xml.Entity objEntityRef)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("insertBefore(\"" + objEntityNew + "\", \"" + objEntityRef + "\").");
+        String extension = "insertBefore(\"" + objEntityNew + "\", \"" + objEntityRef + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -237,11 +243,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T insertBefore(org.directwebremoting.proxy.jsx3.xml.Entity objEntityNew, org.directwebremoting.proxy.jsx3.xml.Entity objEntityRef, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("insertBefore(\"" + objEntityNew + "\", \"" + objEntityRef + "\").");
+        String extension = "insertBefore(\"" + objEntityNew + "\", \"" + objEntityRef + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -258,11 +264,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity replaceNode(org.directwebremoting.proxy.jsx3.xml.Entity objEntityNew, org.directwebremoting.proxy.jsx3.xml.Entity objEntityOld)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("replaceNode(\"" + objEntityNew + "\", \"" + objEntityOld + "\").");
+        String extension = "replaceNode(\"" + objEntityNew + "\", \"" + objEntityOld + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -280,11 +286,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T replaceNode(org.directwebremoting.proxy.jsx3.xml.Entity objEntityNew, org.directwebremoting.proxy.jsx3.xml.Entity objEntityOld, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("replaceNode(\"" + objEntityNew + "\", \"" + objEntityOld + "\").");
+        String extension = "replaceNode(\"" + objEntityNew + "\", \"" + objEntityOld + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -301,28 +307,26 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.xml.Entity setAttribute(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAttribute(").appendData(strName).appendScript(",")
-
-        .appendData(strValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAttribute", strName, strValue);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the value for the named attribute strName.
      * @param strName the name of the attribute.
-     * @return the attribute value or <code>undefined</code> if the attribute does not exist.
-     *
+     * @param callback the attribute value or <code>undefined</code> if the attribute does not exist.
+     */
     @SuppressWarnings("unchecked")
-    public String getAttribute(String strName, Callback callback)
+    public void getAttribute(String strName, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAttribute", strName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns an object reference (a jsx3.xml.Entity instance) to the child attribute with the name, @strName.
@@ -333,11 +337,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getAttributeNode(String strName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAttributeNode(\"" + strName + "\").");
+        String extension = "getAttributeNode(\"" + strName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -355,11 +359,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getAttributeNode(String strName, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAttributeNode(\"" + strName + "\").");
+        String extension = "getAttributeNode(\"" + strName + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -375,8 +379,8 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.xml.Entity setAttributeNode(org.directwebremoting.proxy.jsx3.xml.Entity objAtt)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAttributeNode(").appendData(objAtt).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAttributeNode", objAtt);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -386,11 +390,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.List getAttributes()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAttributes().");
+        String extension = "getAttributes().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -398,20 +402,20 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns the names of all the attributes of this node. Iterating over the attribute names is more performant than
     using the getAttributes() method.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getAttributeNames(Callback callback)
+    public void getAttributeNames(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAttributeNames");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns reference to the document element (root) wrapped in jsx3.xml.Entity instance
@@ -420,11 +424,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getRootNode()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getRootNode().");
+        String extension = "getRootNode().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -440,11 +444,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getRootNode(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getRootNode().");
+        String extension = "getRootNode().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -459,11 +463,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getParent()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getParent().");
+        String extension = "getParent().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -479,11 +483,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getParent(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getParent().");
+        String extension = "getParent().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -501,11 +505,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Iterator getChildIterator(boolean bIncludeText)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getChildIterator(\"" + bIncludeText + "\").");
+        String extension = "getChildIterator(\"" + bIncludeText + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Iterator> ctor = org.directwebremoting.proxy.jsx3.util.Iterator.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Iterator> ctor = org.directwebremoting.proxy.jsx3.util.Iterator.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -521,11 +525,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.List getChildNodes(boolean bIncludeText)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getChildNodes(\"" + bIncludeText + "\").");
+        String extension = "getChildNodes(\"" + bIncludeText + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -541,11 +545,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity removeChild(org.directwebremoting.proxy.jsx3.xml.Entity objChildEntity)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeChild(\"" + objChildEntity + "\").");
+        String extension = "removeChild(\"" + objChildEntity + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -562,11 +566,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T removeChild(org.directwebremoting.proxy.jsx3.xml.Entity objChildEntity, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeChild(\"" + objChildEntity + "\").");
+        String extension = "removeChild(\"" + objChildEntity + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -580,8 +584,8 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     public void removeChildren()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("removeChildren(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("removeChildren");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -591,8 +595,8 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     public void removeAttribute(String strAttName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("removeAttribute(").appendData(strAttName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("removeAttribute", strAttName);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -603,11 +607,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity removeAttributeNode(org.directwebremoting.proxy.jsx3.xml.Entity objAtt)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeAttributeNode(\"" + objAtt + "\").");
+        String extension = "removeAttributeNode(\"" + objAtt + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -624,11 +628,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T removeAttributeNode(org.directwebremoting.proxy.jsx3.xml.Entity objAtt, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeAttributeNode(\"" + objAtt + "\").");
+        String extension = "removeAttributeNode(\"" + objAtt + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -636,47 +640,47 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns one of: jsx3.xml.Entity.TYPEELEMENT, jsx3.xml.Entity.TYPEATTRIBUTE, jsx3.xml.Entity.TYPETEXT, jsx3.xml.Entity.TYPECDATA
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getNodeType(Callback callback)
+    public void getNodeType(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getNodeType");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the name of the node as string (assuming this jsx3.xml.Entity instance is of type jsx3.xml.Entity.TYPEELEMENT or jsx3.xml.Entity.TYPEATTRIBUTE). The other TYPES return "#cdata-section" and "#text" respectively
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getNodeName(Callback callback)
+    public void getNodeName(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns the value (as string) for URI (universal resource identifier) of the namespace for the given node; returns an empty string if no namespace exists
-     *
-    @SuppressWarnings("unchecked")
-    public String getNamespaceURI(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getNodeName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the value (as string) for URI (universal resource identifier) of the namespace for the given node; returns an empty string if no namespace exists
+     */
+    @SuppressWarnings("unchecked")
+    public void getNamespaceURI(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getNamespaceURI");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Returns a single node selected by an XPath query executed on this node, or null if none is selected.
@@ -690,11 +694,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity selectSingleNode(String strQuery, String strNS)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("selectSingleNode(\"" + strQuery + "\", \"" + strNS + "\").");
+        String extension = "selectSingleNode(\"" + strQuery + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -715,11 +719,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T selectSingleNode(String strQuery, String strNS, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("selectSingleNode(\"" + strQuery + "\", \"" + strNS + "\").");
+        String extension = "selectSingleNode(\"" + strQuery + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -739,11 +743,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity selectSingleNode(String strQuery, Object strNS)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("selectSingleNode(\"" + strQuery + "\", \"" + strNS + "\").");
+        String extension = "selectSingleNode(\"" + strQuery + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -764,11 +768,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T selectSingleNode(String strQuery, Object strNS, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("selectSingleNode(\"" + strQuery + "\", \"" + strNS + "\").");
+        String extension = "selectSingleNode(\"" + strQuery + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -787,11 +791,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.List selectNodes(String strQuery, String strNS)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("selectNodes(\"" + strQuery + "\", \"" + strNS + "\").");
+        String extension = "selectNodes(\"" + strQuery + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -810,11 +814,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.List selectNodes(String strQuery, Object strNS)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("selectNodes(\"" + strQuery + "\", \"" + strNS + "\").");
+        String extension = "selectNodes(\"" + strQuery + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -835,11 +839,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Iterator selectNodeIterator(String strQuery, String strNS)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("selectNodeIterator(\"" + strQuery + "\", \"" + strNS + "\").");
+        String extension = "selectNodeIterator(\"" + strQuery + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Iterator> ctor = org.directwebremoting.proxy.jsx3.util.Iterator.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Iterator> ctor = org.directwebremoting.proxy.jsx3.util.Iterator.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -860,11 +864,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Iterator selectNodeIterator(String strQuery, Object strNS)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("selectNodeIterator(\"" + strQuery + "\", \"" + strNS + "\").");
+        String extension = "selectNodeIterator(\"" + strQuery + "\", \"" + strNS + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Iterator> ctor = org.directwebremoting.proxy.jsx3.util.Iterator.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Iterator> ctor = org.directwebremoting.proxy.jsx3.util.Iterator.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -872,49 +876,49 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns the right-hand side of a namespace qualified name. For example, "Price" will be returned for the
     element <USD:Price>
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getBaseName(Callback callback)
+    public void getBaseName(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBaseName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the left-hand side of a namespace qualified name. For example, "USD" will be returned for the
     element <USD:Price>
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getPrefix(Callback callback)
+    public void getPrefix(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Contains the text content of the node, including the concatenated text contained by all descendant entities
-     *
-    @SuppressWarnings("unchecked")
-    public String getValue(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPrefix");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Contains the text content of the node, including the concatenated text contained by all descendant entities
+     */
+    @SuppressWarnings("unchecked")
+    public void getValue(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValue");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * sets the text value for this entity; returns a handle to this jsx3.xml.Entity instance
@@ -924,24 +928,24 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.xml.Entity setValue(String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setValue(").appendData(strValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setValue", strValue);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the native browser XML node wrapped by this entity.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object getNative(Callback callback)
+    public void getNative(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getNative");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns the first child element of type jsx3.xml.Entity.TYPEELEMENT; requires that this object also be of TYPEELEMENT; returns null if both conditions are not met
@@ -950,11 +954,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getFirstChild()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChild().");
+        String extension = "getFirstChild().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -970,11 +974,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getFirstChild(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChild().");
+        String extension = "getFirstChild().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -989,11 +993,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getLastChild()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLastChild().");
+        String extension = "getLastChild().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1009,11 +1013,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getLastChild(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLastChild().");
+        String extension = "getLastChild().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1028,11 +1032,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getPreviousSibling()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPreviousSibling().");
+        String extension = "getPreviousSibling().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1048,11 +1052,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getPreviousSibling(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPreviousSibling().");
+        String extension = "getPreviousSibling().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1067,11 +1071,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity getNextSibling()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getNextSibling().");
+        String extension = "getNextSibling().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1087,11 +1091,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getNextSibling(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getNextSibling().");
+        String extension = "getNextSibling().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1099,56 +1103,56 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * performs an XSLT transformation, using @objEntityFilter as the XSLT filter for the transformation; returns
          results of the transformation as a string (of text/html/xml/etc)
      * @param objEntityFilter jsx3.xml.Entity instance containing the XSLT document to transform 'this' jsx3.xml.Entity instance with
      * @param objParams JavaScript object array of name/value pairs; if passed, the transformation will use a
          paramaterized stylesheet to perform the transformation
      * @param bObject if <code>true</code> this method returns a document instead of a string.
-     * @return the result of the transformation
-     *
+     * @param callback the result of the transformation
+     */
     @SuppressWarnings("unchecked")
-    public String transformNode(org.directwebremoting.proxy.jsx3.xml.Entity objEntityFilter, Object objParams, boolean bObject, Callback callback)
+    public void transformNode(org.directwebremoting.proxy.jsx3.xml.Entity objEntityFilter, Object objParams, boolean bObject, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = transformNode", objEntityFilter, objParams, bObject);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns an error object (a plain JavaScript object) with two properties that the developer can query for:
 
     code Ð an integer error code, 0 for no error.
     description Ð a text description of the error that occurred.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object getError(Callback callback)
+    public void getError(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
-     * Returns true if the last operation on this XML entity caused an error.
-     *
-    @SuppressWarnings("unchecked")
-    public boolean hasError(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getError");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns true if the last operation on this XML entity caused an error.
+     */
+    @SuppressWarnings("unchecked")
+    public void hasError(Callback<Boolean> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = hasError");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Returns the document that owns this entity.
@@ -1156,11 +1160,11 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getOwnerDocument()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOwnerDocument().");
+        String extension = "getOwnerDocument().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1170,15 +1174,16 @@ public class Entity extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the document that owns this entity.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getOwnerDocument(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOwnerDocument().");
+        String extension = "getOwnerDocument().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

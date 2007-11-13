@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.util;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public List(ProxyHelper helper)
+    public List(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,7 +47,10 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public List(int a, boolean bLive)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new List", a, bLive);
+        setInitScript(script);
     }
 
     /**
@@ -55,11 +61,11 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.List wrap(Object[] a)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("wrap(\"" + a + "\").");
+        String extension = "wrap(\"" + a + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -75,11 +81,11 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.List wrap(org.directwebremoting.proxy.jsx3.util.List a)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("wrap(\"" + a + "\").");
+        String extension = "wrap(\"" + a + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -87,34 +93,34 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int size(Callback callback)
+    public void size(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = size");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * 
      * @param intIndex 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object get(int intIndex, Callback callback)
+    public void get(int intIndex, Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = get", intIndex);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * 
@@ -124,10 +130,8 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(int intIndex, Object objElm)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(intIndex).appendScript(",")
-
-        .appendData(objElm).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("set", intIndex, objElm);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -136,11 +140,11 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Iterator iterator()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("iterator().");
+        String extension = "iterator().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Iterator> ctor = org.directwebremoting.proxy.jsx3.util.Iterator.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Iterator> ctor = org.directwebremoting.proxy.jsx3.util.Iterator.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -154,93 +158,93 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     public void clear()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("clear(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("clear");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the index of the first occurrence of objElm in this list. Comparisons are performed with
     strict equals (===).
      * @param objElm the item to find
      * @param intStartAt 
-     * @return the index of the found object or <code>-1</code> if not found.
-     *
+     * @param callback the index of the found object or <code>-1</code> if not found.
+     */
     @SuppressWarnings("unchecked")
-    public int indexOf(Object objElm, int intStartAt, Callback callback)
+    public void indexOf(Object objElm, int intStartAt, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = indexOf", objElm, intStartAt);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the index of the last occurrence of objElm in this list. Comparisons are performed with
     strict equals (===).
      * @param objElm the item to find
      * @param intStartAt 
-     * @return the index of the found object or -1 if not found
-     *
+     * @param callback the index of the found object or -1 if not found
+     */
     @SuppressWarnings("unchecked")
-    public int lastIndexOf(Object objElm, int intStartAt, Callback callback)
+    public void lastIndexOf(Object objElm, int intStartAt, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = lastIndexOf", objElm, intStartAt);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * 
      * @param objElm the item to find
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean contains(Object objElm, Callback callback)
+    public void contains(Object objElm, Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = contains", objElm);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Removes the first occurrence of objElm in this list.
      * @param objElm the object to remove
-     * @return the removed object or null if no object was removed
-     *
+     * @param callback the removed object or null if no object was removed
+     */
     @SuppressWarnings("unchecked")
-    public  remove(Object objElm, Callback callback)
+    public void remove(Object objElm, Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = remove", objElm);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Removes a single or a range of elements from this list.
      * @param intStart 
      * @param intEnd 
-     * @return the removed object or null if no object was removed
-     *
+     * @param callback the removed object or null if no object was removed
+     */
     @SuppressWarnings("unchecked")
-    public Object removeAt(int intStart, int intEnd, Callback callback)
+    public void removeAt(int intStart, int intEnd, Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = removeAt", intStart, intEnd);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * 
@@ -250,10 +254,8 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     public void add(Object objElm, int intAt)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("add(").appendData(objElm).appendScript(",")
-
-        .appendData(intAt).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("add", objElm, intAt);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -264,10 +266,8 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     public void addAll(Object[] a, int intAt)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("addAll(").appendData(a).appendScript(",")
-
-        .appendData(intAt).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("addAll", a, intAt);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -278,28 +278,26 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     public void addAll(org.directwebremoting.proxy.jsx3.util.List a, int intAt)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("addAll(").appendData(a).appendScript(",")
-
-        .appendData(intAt).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("addAll", a, intAt);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns a section of this list as another list. The returned section is a copy of this list and is not affected
     by subsequent changes to this list.
      * @param intStart 
      * @param intEnd 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public List slice(int intStart, int intEnd, Callback callback)
+    public void slice(int intStart, int intEnd, Callback<List> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, List.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = slice", intStart, intEnd);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sorts this list.
@@ -308,24 +306,24 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     public void sort(org.directwebremoting.proxy.CodeBlock fctComparator)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("sort(").appendData(fctComparator).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("sort", fctComparator);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns a copy of this list as an array.
      * @param bLive if true, then the returned array is the actual backing array of this list.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object[] toArray(boolean bLive, Callback callback)
+    public void toArray(boolean bLive, Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = toArray", bLive);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Creates a new list with the filtered contents of this list. The fctFilter parameter defines
@@ -337,11 +335,11 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.List filter(org.directwebremoting.proxy.CodeBlock fctFilter)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("filter(\"" + fctFilter + "\").");
+        String extension = "filter(\"" + fctFilter + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -381,11 +379,11 @@ public class List extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.List map(org.directwebremoting.proxy.CodeBlock fctMapper, boolean bExpand, boolean bObject)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("map(\"" + fctMapper + "\", \"" + bExpand + "\", \"" + bObject + "\").");
+        String extension = "map(\"" + fctMapper + "\", \"" + bExpand + "\", \"" + bObject + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.List> ctor = org.directwebremoting.proxy.jsx3.util.List.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

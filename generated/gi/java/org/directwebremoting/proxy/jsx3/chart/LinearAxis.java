@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class LinearAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public LinearAxis(ProxyHelper helper)
+    public LinearAxis(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,7 +45,10 @@ public class LinearAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
      */
     public LinearAxis(String name, boolean horizontal, boolean primary)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new LinearAxis", name, horizontal, primary);
+        setInitScript(script);
     }
 
     /**
@@ -55,20 +61,20 @@ public class LinearAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
      */
     public static final int MAX_INTERVALS = 11;
 
-    /*
+    /**
      * Returns the autoAdjust field, whether to adjust the max/min/interval to the range of the data.
-     * @return autoAdjust
-     *
+     * @param callback autoAdjust
+     */
     @SuppressWarnings("unchecked")
-    public boolean getAutoAdjust(Callback callback)
+    public void getAutoAdjust(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAutoAdjust");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the autoAdjust field.
@@ -77,24 +83,24 @@ public class LinearAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setAutoAdjust(boolean autoAdjust)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAutoAdjust(").appendData(autoAdjust).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAutoAdjust", autoAdjust);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the baseAtZero field, whether to set either the min or max value of this axis to 0 if applicable and if autoAdjust is true.
-     * @return baseAtZero
-     *
+     * @param callback baseAtZero
+     */
     @SuppressWarnings("unchecked")
-    public boolean getBaseAtZero(Callback callback)
+    public void getBaseAtZero(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBaseAtZero");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the baseAtZero field.
@@ -103,24 +109,24 @@ public class LinearAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setBaseAtZero(boolean baseAtZero)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBaseAtZero(").appendData(baseAtZero).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBaseAtZero", baseAtZero);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the min field, the minimum value displayed by this axis, overrides autoAdjust.
-     * @return min
-     *
+     * @param callback min
+     */
     @SuppressWarnings("unchecked")
-    public int getMin(Callback callback)
+    public void getMin(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMin");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the min field.
@@ -129,24 +135,24 @@ public class LinearAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setMin(int min)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMin(").appendData(min).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMin", min);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the max field, the maximum value displayed by this axis, overrides autoAdjust.
-     * @return max
-     *
+     * @param callback max
+     */
     @SuppressWarnings("unchecked")
-    public int getMax(Callback callback)
+    public void getMax(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMax");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the max field.
@@ -155,24 +161,24 @@ public class LinearAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setMax(int max)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMax(").appendData(max).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMax", max);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the interval field, the interval between major ticks, overrides autoAdjust.
-     * @return interval
-     *
+     * @param callback interval
+     */
     @SuppressWarnings("unchecked")
-    public int getInterval(Callback callback)
+    public void getInterval(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getInterval");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the interval field.
@@ -181,25 +187,25 @@ public class LinearAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setInterval(int interval)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setInterval(").appendData(interval).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setInterval", interval);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * convert a number value to a coordinate between 0 and this.length, if the value is outside of the range of the axis, return the closest value in the range
      * @param value a value displayed along the axis
-     * @return coordinate along the axis
-     *
+     * @param callback coordinate along the axis
+     */
     @SuppressWarnings("unchecked")
-    public int getCoordinateFor(int value, Callback callback)
+    public void getCoordinateFor(int value, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCoordinateFor", value);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * same as getCoordinateFor(), but does not clip to bounds of the axis
@@ -208,8 +214,8 @@ public class LinearAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void getCoordinateForNoClip(int value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getCoordinateForNoClip(").appendData(value).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getCoordinateForNoClip", value);
+        getScriptProxy().addScript(script);
     }
 
 }

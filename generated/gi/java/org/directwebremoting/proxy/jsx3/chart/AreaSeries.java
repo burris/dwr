@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public AreaSeries(ProxyHelper helper)
+    public AreaSeries(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +46,10 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
      */
     public AreaSeries(String name, String seriesName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new AreaSeries", name, seriesName);
+        setInitScript(script);
     }
 
     /**
@@ -61,20 +67,20 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
      */
     public static final String FORM_REVSTEP = "reverseStep";
 
-    /*
+    /**
      * Returns the xField field.
-     * @return xField
-     *
+     * @param callback xField
+     */
     @SuppressWarnings("unchecked")
-    public String getXField(Callback callback)
+    public void getXField(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXField");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the xField field.
@@ -83,24 +89,24 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setXField(String xField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setXField(").appendData(xField).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setXField", xField);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the yField field.
-     * @return yField
-     *
+     * @param callback yField
+     */
     @SuppressWarnings("unchecked")
-    public String getYField(Callback callback)
+    public void getYField(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getYField");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the yField field.
@@ -109,24 +115,24 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setYField(String yField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setYField(").appendData(yField).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setYField", yField);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the minField field.
-     * @return minField
-     *
+     * @param callback minField
+     */
     @SuppressWarnings("unchecked")
-    public String getMinField(Callback callback)
+    public void getMinField(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMinField");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the minField field.
@@ -135,24 +141,24 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setMinField(String minField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMinField(").appendData(minField).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMinField", minField);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the form field.
-     * @return form
-     *
+     * @param callback form
+     */
     @SuppressWarnings("unchecked")
-    public String getForm(Callback callback)
+    public void getForm(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getForm");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the form field, checks for valid value.
@@ -161,24 +167,24 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setForm(String form)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setForm(").appendData(form).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setForm", form);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the pointRadius field.
-     * @return pointRadius
-     *
+     * @param callback pointRadius
+     */
     @SuppressWarnings("unchecked")
-    public int getPointRadius(Callback callback)
+    public void getPointRadius(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPointRadius");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the pointRadius field.
@@ -187,8 +193,8 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setPointRadius(int pointRadius)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPointRadius(").appendData(pointRadius).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPointRadius", pointRadius);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -198,11 +204,11 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.PointRenderer getPointRenderer()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPointRenderer().");
+        String extension = "getPointRenderer().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.PointRenderer> ctor = org.directwebremoting.proxy.jsx3.chart.PointRenderer.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.PointRenderer> ctor = org.directwebremoting.proxy.jsx3.chart.PointRenderer.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -217,24 +223,24 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setPointRenderer(String pointRenderer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPointRenderer(").appendData(pointRenderer).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPointRenderer", pointRenderer);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the pointFill field.
-     * @return pointFill
-     *
+     * @param callback pointFill
+     */
     @SuppressWarnings("unchecked")
-    public String getPointFill(Callback callback)
+    public void getPointFill(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPointFill");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the pointFill field, string representation of vector fill.
@@ -243,24 +249,24 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setPointFill(String pointFill)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPointFill(").appendData(pointFill).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPointFill", pointFill);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the pointStroke field.
-     * @return pointStroke
-     *
+     * @param callback pointStroke
+     */
     @SuppressWarnings("unchecked")
-    public String getPointStroke(Callback callback)
+    public void getPointStroke(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPointStroke");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the pointStroke field, string representation of VectorStroke.
@@ -269,24 +275,24 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setPointStroke(String pointStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPointStroke(").appendData(pointStroke).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPointStroke", pointStroke);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the pointGradient field.
-     * @return pointGradient
-     *
+     * @param callback pointGradient
+     */
     @SuppressWarnings("unchecked")
-    public String getPointGradient(Callback callback)
+    public void getPointGradient(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPointGradient");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the pointGradient field, string representation of vector fill gradient.
@@ -295,69 +301,69 @@ public class AreaSeries extends org.directwebremoting.proxy.jsx3.chart.Series
     public void setPointGradient(String pointGradient)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPointGradient(").appendData(pointGradient).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPointGradient", pointGradient);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the x-coordinate of a data point in this series for the given record.
      * @param record the <record/> node
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getXValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback callback)
+    public void getXValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXValue", record);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the y-coordinate of a data point in this series for the given record.
      * @param record the <record/> node
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getYValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback callback)
+    public void getYValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getYValue", record);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the minimum y-coordinate of a data point in this series for the given record.
      * @param record the <record/> node
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getMinValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback callback)
+    public void getMinValue(org.directwebremoting.proxy.jsx3.xml.Entity record, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMinValue", record);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * The default tooltip function for this type of series.
      * @param series 
      * @param record 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String tooltip(org.directwebremoting.proxy.jsx3.chart.Series series, org.directwebremoting.proxy.jsx3.xml.Entity record, Callback callback)
+    public void tooltip(org.directwebremoting.proxy.jsx3.chart.Series series, org.directwebremoting.proxy.jsx3.xml.Entity record, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = tooltip", series, record);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

@@ -22,7 +22,9 @@ import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.jsx3.GI;
+import org.directwebremoting.proxy.jsx3.app.Model;
 import org.directwebremoting.proxy.jsx3.app.Server;
+import org.directwebremoting.proxy.jsx3.gui.Block;
 import org.directwebremoting.proxy.jsx3.gui.Button;
 import org.directwebremoting.proxy.jsx3.gui.ColorPicker;
 import org.directwebremoting.proxy.jsx3.gui.DatePicker;
@@ -84,6 +86,12 @@ public class Reverse
     public void color(String color)
     {
         getServer().getJSX("colorPicker", ColorPicker.class).setValue(color);
+    }
+
+    public void create()
+    {
+        Button button = new Button("createCreated", 0, 0, 300, "Created Button");
+        getServer().getJSX("blockCreate", Block.class).setChild(button, Model.PERSISTNONE, (String) null, null);
     }
 
     /**

@@ -24,8 +24,8 @@ import org.directwebremoting.ScriptSession;
 
 /**
  * Class to help people send scripts to collections of browsers.
- * ScriptProxy also is the base class for the Java implementations of Util
- * and Scriptaculous.Effect.
+ * ScriptProxy also is the base class for the Java implementations of GI, Util
+ * and Script.aculo.us.Effect.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class ScriptProxy
@@ -143,7 +143,7 @@ public class ScriptProxy
      * @param param1 The first parameter to the above function
      * @param param2 The second parameter to the above function
      * @param param3 The third parameter to the above function
-     * @param param4 The fouth parameter to the above function
+     * @param param4 The fourth parameter to the above function
      */
     public void addFunctionCall(String funcName, Object param1, Object param2, Object param3, Object param4)
     {
@@ -184,6 +184,69 @@ public class ScriptProxy
               .appendData(param4)
               .appendScript(",")
               .appendData(param5)
+              .appendScript(");");
+        addScript(script);
+    }
+
+    /**
+     * Call a named function with one parameter.
+     * @param funcName The name of the function to call
+     * @param param1 The first parameter to the above function
+     * @param param2 The second parameter to the above function
+     * @param param3 The third parameter to the above function
+     * @param param4 The fourth parameter to the above function
+     * @param param5 The fifth parameter to the above function
+     * @param param6 The sixth parameter to the above function
+     */
+    public void addFunctionCall(String funcName, Object param1, Object param2, Object param3, Object param4, Object param5, Object param6)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript(funcName)
+              .appendScript("(")
+              .appendData(param1)
+              .appendScript(",")
+              .appendData(param2)
+              .appendScript(",")
+              .appendData(param3)
+              .appendScript(",")
+              .appendData(param4)
+              .appendScript(",")
+              .appendData(param5)
+              .appendScript(",")
+              .appendData(param6)
+              .appendScript(");");
+        addScript(script);
+    }
+
+    /**
+     * Call a named function with one parameter.
+     * @param funcName The name of the function to call
+     * @param param1 The first parameter to the above function
+     * @param param2 The second parameter to the above function
+     * @param param3 The third parameter to the above function
+     * @param param4 The fourth parameter to the above function
+     * @param param5 The fifth parameter to the above function
+     * @param param6 The sixth parameter to the above function
+     * @param param7 The seventh parameter to the above function
+     */
+    public void addFunctionCall(String funcName, Object param1, Object param2, Object param3, Object param4, Object param5, Object param6, Object param7)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript(funcName)
+              .appendScript("(")
+              .appendData(param1)
+              .appendScript(",")
+              .appendData(param2)
+              .appendScript(",")
+              .appendData(param3)
+              .appendScript(",")
+              .appendData(param4)
+              .appendScript(",")
+              .appendData(param5)
+              .appendScript(",")
+              .appendData(param6)
+              .appendScript(",")
+              .appendData(param7)
               .appendScript(");");
         addScript(script);
     }

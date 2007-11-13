@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.xml;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Document(ProxyHelper helper)
+    public Document(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +46,10 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
      */
     public Document(Object objDoc)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Document", objDoc);
+        setInitScript(script);
     }
 
     /**
@@ -86,11 +92,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document load(String strURL, int intTimeout)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("load(\"" + strURL + "\", \"" + intTimeout + "\").");
+        String extension = "load(\"" + strURL + "\", \"" + intTimeout + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -114,11 +120,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public <T> T load(String strURL, int intTimeout, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("load(\"" + strURL + "\", \"" + intTimeout + "\").");
+        String extension = "load(\"" + strURL + "\", \"" + intTimeout + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -141,11 +147,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document load(org.directwebremoting.proxy.jsx3.net.URI strURL, int intTimeout)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("load(\"" + strURL + "\", \"" + intTimeout + "\").");
+        String extension = "load(\"" + strURL + "\", \"" + intTimeout + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -169,11 +175,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public <T> T load(org.directwebremoting.proxy.jsx3.net.URI strURL, int intTimeout, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("load(\"" + strURL + "\", \"" + intTimeout + "\").");
+        String extension = "load(\"" + strURL + "\", \"" + intTimeout + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -196,11 +202,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document loadXML(String strXML)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadXML(\"" + strXML + "\").");
+        String extension = "loadXML(\"" + strXML + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -224,11 +230,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public <T> T loadXML(String strXML, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadXML(\"" + strXML + "\").");
+        String extension = "loadXML(\"" + strXML + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -236,33 +242,33 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
         }
     }
 
-    /*
+    /**
      * 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getSourceURL(Callback callback)
+    public void getSourceURL(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns whether or not the parser should validate the XML content during the initial parse. The default setting is false;
-     *
-    @SuppressWarnings("unchecked")
-    public boolean getValidateOnParse(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSourceURL");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns whether or not the parser should validate the XML content during the initial parse. The default setting is false;
+     */
+    @SuppressWarnings("unchecked")
+    public void getValidateOnParse(Callback<Boolean> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getValidateOnParse");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets whether or not the parser should validate the XML content during the initial parse.
@@ -271,23 +277,23 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void setValidateOnParse(boolean bValidate)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setValidateOnParse(").appendData(bValidate).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setValidateOnParse", bValidate);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether or not the parser should resolve externally referenced entities. The default setting is false;
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean getResolveExternals(Callback callback)
+    public void getResolveExternals(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getResolveExternals");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether or not the parser should resolve externally referenced entities.
@@ -296,51 +302,51 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void setResolveExternals(boolean bResolve)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setResolveExternals(").appendData(bResolve).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setResolveExternals", bResolve);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getXmlVersion(Callback callback)
+    public void getXmlVersion(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * 
-     *
-    @SuppressWarnings("unchecked")
-    public String getXmlEncoding(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXmlVersion");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
-    /*
+    /**
      * 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean getXmlStandalone(Callback callback)
+    public void getXmlEncoding(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXmlEncoding");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    public void getXmlStandalone(Callback<Boolean> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXmlStandalone");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Creates a new node that is an exact clone of this node; returns the newly cloned node wrapped in a jsx3.xml.Entity instance
@@ -349,11 +355,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document cloneDocument()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("cloneDocument().");
+        String extension = "cloneDocument().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -369,11 +375,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public <T> T cloneDocument(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("cloneDocument().");
+        String extension = "cloneDocument().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -390,12 +396,8 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void serialize(boolean strVersion, boolean strEncoding, boolean bStandalone)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("serialize(").appendData(strVersion).appendScript(",")
-
-        .appendData(strEncoding).appendScript(",")
-
-        .appendData(bStandalone).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("serialize", strVersion, strEncoding, bStandalone);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -407,12 +409,8 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void serialize(boolean strVersion, String strEncoding, boolean bStandalone)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("serialize(").appendData(strVersion).appendScript(",")
-
-        .appendData(strEncoding).appendScript(",")
-
-        .appendData(bStandalone).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("serialize", strVersion, strEncoding, bStandalone);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -424,12 +422,8 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void serialize(String strVersion, boolean strEncoding, boolean bStandalone)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("serialize(").appendData(strVersion).appendScript(",")
-
-        .appendData(strEncoding).appendScript(",")
-
-        .appendData(bStandalone).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("serialize", strVersion, strEncoding, bStandalone);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -441,12 +435,8 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void serialize(String strVersion, String strEncoding, boolean bStandalone)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("serialize(").appendData(strVersion).appendScript(",")
-
-        .appendData(strEncoding).appendScript(",")
-
-        .appendData(bStandalone).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("serialize", strVersion, strEncoding, bStandalone);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -462,11 +452,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Entity createDocumentElement(String strNodeName, String strNSURI)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("createDocumentElement(\"" + strNodeName + "\", \"" + strNSURI + "\").");
+        String extension = "createDocumentElement(\"" + strNodeName + "\", \"" + strNSURI + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -488,11 +478,11 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     @SuppressWarnings("unchecked")
     public <T> T createDocumentElement(String strNodeName, String strNSURI, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("createDocumentElement(\"" + strNodeName + "\", \"" + strNSURI + "\").");
+        String extension = "createDocumentElement(\"" + strNodeName + "\", \"" + strNSURI + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -512,10 +502,8 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void createProcessingInstruction(String strTarget, String strData)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("createProcessingInstruction(").appendData(strTarget).appendScript(",")
-
-        .appendData(strData).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("createProcessingInstruction", strTarget, strData);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -528,25 +516,25 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public org.directwebremoting.proxy.jsx3.xml.Document setAsync(boolean bAsync)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAsync(").appendData(bAsync).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAsync", bAsync);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns whether this document loads asynchronously.
      * @param strName 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean getAsync( strName, Callback callback)
+    public void getAsync(Object strName, Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAsync", strName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the selection language to use for selection queries (i.e., selectSingleNode/selectNodes); The default is XSLPattern;
@@ -556,24 +544,24 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public org.directwebremoting.proxy.jsx3.xml.Document setSelectionLanguage(String strLanguage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSelectionLanguage(").appendData(strLanguage).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSelectionLanguage", strLanguage);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Gets the selection language to use for selection queries (i.e., selectSingleNode/selectNodes); The default is XSLPattern;
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getSelectionLanguage(Callback callback)
+    public void getSelectionLanguage(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSelectionLanguage");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets a list of namespace prefixes and their associated URIs. This allows any code to generically prefix name-space qualified nodes and still get the correct selection result
@@ -584,8 +572,8 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public org.directwebremoting.proxy.jsx3.xml.Document setSelectionNamespaces(Object declaration)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSelectionNamespaces(").appendData(declaration).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSelectionNamespaces", declaration);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -598,27 +586,27 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public org.directwebremoting.proxy.jsx3.xml.Document setSelectionNamespaces(String declaration)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSelectionNamespaces(").appendData(declaration).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSelectionNamespaces", declaration);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Gets a list of namespace prefixes and their associated URIs. This allows any code to generically prefix name-space qualified nodes and still get the correct selection result
      * @param strName 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getSelectionNamespaces( strName, Callback callback)
+    public void getSelectionNamespaces(Object strName, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSelectionNamespaces", strName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * The Firefox implementation of the XSLT specification does not implement a searchable namespace axis. To overcome this limitation,
     this method can be called to create a searchable equivalent that is part of the attribute axis. After XML content has been loaded, call this method before
     calling any other methods on the Document instance in order to ensure proper functioning of subsequent calls. The document
@@ -635,22 +623,22 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     objMap[jsx3.xml.Document.SEARCHABLE_NAMESPACE] +  ":xsd]/attribute::" +
     objMap[jsx3.xml.Document.SEARCHABLE_NAMESPACE] + ":xsd";
     var objNode = someNode.selectSingleNode(myXpathQuery,objMap);
-     * @return prefix used to represent the xmlns.  By default the return will be <b>jsx_xmlns</b>. However, if this prefix is
+     * @param callback prefix used to represent the xmlns.  By default the return will be <b>jsx_xmlns</b>. However, if this prefix is
     already being used by the document instance (i.e., <code>xmlns:jsx_xmlns="?"</code>), the prefix will be
     incremented as follows: jsx_xmlns0, jsx_xmlns1, jsx_xmlns2, etc, until a unique prefix is found.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String createNamespaceAxis(Callback callback)
+    public void createNamespaceAxis(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = createNamespaceAxis");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns a map of all implemented namespaces in the following format: {some_uri:"jsx1",some_other_uri,"jsx2",another_uri:"jsx3"}.
 
     The returned object map can then be used to resolve the qualified name (QName) for the nodes in a given query via a reverse lookup.
@@ -668,47 +656,47 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     //alert the return
     alert(objNode);
      * @param objMap Optional. should follow the format <code>{prefix1:1,prefix2:1}</code>. If passed, the returned Object will resolve to any matched prefix, while using arbitrary sequential prefixes (jsx1, jsx2, etc) for all other uris.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object getDeclaredNamespaces(Object objMap, Callback callback)
+    public void getDeclaredNamespaces(Object objMap, Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDeclaredNamespaces", objMap);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the native XML parser
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object getNativeDocument(Callback callback)
+    public void getNativeDocument(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getNativeDocument");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Publishes an event to all subscribed objects.
      * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
-     * @return the number of listeners to which the event was broadcast
-     *
+     * @param callback the number of listeners to which the event was broadcast
+     */
     @SuppressWarnings("unchecked")
-    public int publish(Object objEvent, Callback callback)
+    public void publish(Object objEvent, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = publish", objEvent);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Subscribes an object or function to a type of event published by this object.
@@ -721,12 +709,8 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(",")
-
-        .appendData(objFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -739,10 +723,8 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void unsubscribe(String strEventId, Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -752,8 +734,8 @@ public class Document extends org.directwebremoting.proxy.jsx3.xml.Entity
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribeAll", strEventId);
+        getScriptProxy().addScript(script);
     }
 
 }

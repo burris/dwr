@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -26,11 +27,12 @@ public class RadialChart extends org.directwebremoting.proxy.jsx3.chart.Chart
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public RadialChart(ProxyHelper helper)
+    public RadialChart(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +45,10 @@ public class RadialChart extends org.directwebremoting.proxy.jsx3.chart.Chart
      */
     public RadialChart(String name, int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new RadialChart", name, left, top, width, height);
+        setInitScript(script);
     }
 
 }

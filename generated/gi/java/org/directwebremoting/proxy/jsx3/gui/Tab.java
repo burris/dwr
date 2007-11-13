@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Tab(ProxyHelper helper)
+    public Tab(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -46,7 +49,10 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public Tab(String strName, String strText, int vntWidth, String strHexActiveColor, String strHexInactiveColor)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Tab", strName, strText, vntWidth, strHexActiveColor, strHexInactiveColor);
+        setInitScript(script);
     }
 
     /**
@@ -89,20 +95,20 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public static final int STATEENABLED = 1;
 
-    /*
+    /**
      * Returns background image that will underlay each tab to provide an outset-type border. Default: jsx3.gui.Tab.DEFAULTBEVELIMAGE
-     * @return valid url (typically relative) to point to an image that can be used as a bacground image for the tab
-     *
+     * @param callback valid url (typically relative) to point to an image that can be used as a bacground image for the tab
+     */
     @SuppressWarnings("unchecked")
-    public String getBevel(Callback callback)
+    public void getBevel(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBevel");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets background image that will underlay each tab to provide an outset-type border; if this value is not set or null is passed, the default background image for the jsx3.gui.Tab class will be use the contant value, jsx3.gui.Tab.DEFAULTBEVELIMAGE;
@@ -112,8 +118,8 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Tab setBevel(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBevel(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBevel", strURL);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -123,24 +129,24 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
     public void doShow()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("doShow(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("doShow");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns valid CSS property value, (e.g., red, #ffffff) when tab is active. Default: jsx3.gui.Tab.DEFAULTACTIVECOLOR
-     * @return valid CSS property value, (e.g., red, #ffffff)
-     *
+     * @param callback valid CSS property value, (e.g., red, #ffffff)
+     */
     @SuppressWarnings("unchecked")
-    public String getActiveColor(Callback callback)
+    public void getActiveColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getActiveColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets valid CSS property value, (e.g., red, #ffffff) when tab is active;
@@ -150,25 +156,25 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Tab setActiveColor(String strActiveColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setActiveColor(").appendData(strActiveColor).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setActiveColor", strActiveColor);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns valid CSS property value, (e.g., red, #ffffff) when tab is inactive (not selected tab in the group). Default: jsx3.gui.Tab.DEFAULTINACTIVECOLOR
-     * @return valid CSS property value, (e.g., red, #ffffff)
-     *
+     * @param callback valid CSS property value, (e.g., red, #ffffff)
+     */
     @SuppressWarnings("unchecked")
-    public String getInactiveColor(Callback callback)
+    public void getInactiveColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getInactiveColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets valid CSS property value, (e.g., red, #ffffff) when tab is inactive (not selected tab in the group);
@@ -178,25 +184,25 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Tab setInactiveColor(String strInactiveColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setInactiveColor(").appendData(strInactiveColor).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setInactiveColor", strInactiveColor);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the state for the tab control. Default: jsx3.gui.Tab.STATEENABLED
-     * @return one of: jsx3.gui.Tab.STATEDISABLED, jsx3.gui.Tab.STATEENABLED
-     *
+     * @param callback one of: jsx3.gui.Tab.STATEDISABLED, jsx3.gui.Tab.STATEENABLED
+     */
     @SuppressWarnings("unchecked")
-    public int getEnabled(Callback callback)
+    public void getEnabled(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEnabled");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the enabled state for the tab control; returns reference to self to facilitate method chaining
@@ -206,8 +212,8 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Tab setEnabled(int STATE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setEnabled(").appendData(STATE).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setEnabled", STATE);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -218,11 +224,11 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getContentChild()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getContentChild().");
+        String extension = "getContentChild().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -233,15 +239,16 @@ public class Tab extends org.directwebremoting.proxy.jsx3.gui.Block
     /**
      * Returns the child of this tab that will be painted as the content of this tab. This implementation returns the
     first child of this stack.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getContentChild(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getContentChild().");
+        String extension = "getContentChild().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

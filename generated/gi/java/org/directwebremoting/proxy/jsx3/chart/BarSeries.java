@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class BarSeries extends org.directwebremoting.proxy.jsx3.chart.BCSeries
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public BarSeries(ProxyHelper helper)
+    public BarSeries(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -41,7 +44,10 @@ public class BarSeries extends org.directwebremoting.proxy.jsx3.chart.BCSeries
      */
     public BarSeries(String name, String seriesName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new BarSeries", name, seriesName);
+        setInitScript(script);
     }
 
     /**
@@ -49,20 +55,20 @@ public class BarSeries extends org.directwebremoting.proxy.jsx3.chart.BCSeries
      */
     public static final int DEFAULT_BARHEIGHT = 10;
 
-    /*
+    /**
      * Returns the barHeight field.
-     * @return barHeight
-     *
+     * @param callback barHeight
+     */
     @SuppressWarnings("unchecked")
-    public int getBarHeight(Callback callback)
+    public void getBarHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBarHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the barHeight field.
@@ -71,24 +77,24 @@ public class BarSeries extends org.directwebremoting.proxy.jsx3.chart.BCSeries
     public void setBarHeight(int barHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBarHeight(").appendData(barHeight).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBarHeight", barHeight);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * The default tooltip function for this type of series.
      * @param series 
      * @param record 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String tooltip(org.directwebremoting.proxy.jsx3.chart.Series series, org.directwebremoting.proxy.jsx3.xml.Entity record, Callback callback)
+    public void tooltip(org.directwebremoting.proxy.jsx3.chart.Series series, org.directwebremoting.proxy.jsx3.xml.Entity record, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = tooltip", series, record);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

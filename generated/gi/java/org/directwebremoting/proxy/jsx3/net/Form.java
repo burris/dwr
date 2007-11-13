@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.net;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Form(ProxyHelper helper)
+    public Form(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,7 +47,10 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Form(String strMethod, String strAction, boolean bMultipart)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Form", strMethod, strAction, bMultipart);
+        setInitScript(script);
     }
 
     /**
@@ -84,11 +90,11 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.Form newFromFragment(String strFragment)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("newFromFragment(\"" + strFragment + "\").");
+        String extension = "newFromFragment(\"" + strFragment + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.Form> ctor = org.directwebremoting.proxy.jsx3.net.Form.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.Form> ctor = org.directwebremoting.proxy.jsx3.net.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -96,20 +102,20 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns the method of this form.
-     * @return <code>METHOD_GET</code> or <code>METHOD_POST</code>.
-     *
+     * @param callback <code>METHOD_GET</code> or <code>METHOD_POST</code>.
+     */
     @SuppressWarnings("unchecked")
-    public String getMethod(Callback callback)
+    public void getMethod(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMethod");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the method of this form.
@@ -118,24 +124,24 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setMethod(String method)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMethod(").appendData(method).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMethod", method);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the action of this form, the URL that this form is submitted to.
-     * @return action
-     *
+     * @param callback action
+     */
     @SuppressWarnings("unchecked")
-    public String getAction(Callback callback)
+    public void getAction(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAction");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the action of this form.
@@ -144,23 +150,23 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setAction(String action)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAction(").appendData(action).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAction", action);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether this form is multipart. Only multipart forms may upload files.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean getMultipart(Callback callback)
+    public void getMultipart(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMultipart");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether this form is multipart.
@@ -169,39 +175,39 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setMultipart(boolean multipart)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMultipart(").appendData(multipart).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMultipart", multipart);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the value of a field in this form.
      * @param strName the name of the form field to query.
-     * @return the field value or <code>null</code> if no such field exists.
-     *
+     * @param callback the field value or <code>null</code> if no such field exists.
+     */
     @SuppressWarnings("unchecked")
-    public String getField(String strName, Callback callback)
+    public void getField(String strName, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns the names of all fields in this form.
-     *
-    @SuppressWarnings("unchecked")
-    public Object[] getFields(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getField", strName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the names of all fields in this form.
+     */
+    @SuppressWarnings("unchecked")
+    public void getFields(Callback<Object[]> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFields");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the value of a field in this form.
@@ -213,12 +219,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setField(String strName, String strValue, boolean bConcat)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setField(").appendData(strName).appendScript(",")
-
-        .appendData(strValue).appendScript(",")
-
-        .appendData(bConcat).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setField", strName, strValue, bConcat);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -228,8 +230,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void removeField(String strName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("removeField(").appendData(strName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("removeField", strName);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -239,8 +241,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void addFileUploadField(String strName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("addFileUploadField(").appendData(strName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("addFileUploadField", strName);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -251,8 +253,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void promptForFile(String strFieldName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("promptForFile(").appendData(strFieldName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("promptForFile", strFieldName);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -261,8 +263,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void abort()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("abort(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("abort");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -273,25 +275,23 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void send(int intPollInterval, int intTimeout)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("send(").appendData(intPollInterval).appendScript(",")
-
-        .appendData(intTimeout).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("send", intPollInterval, intTimeout);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the content of the response as a string.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getResponseText(Callback callback)
+    public void getResponseText(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getResponseText");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns the content of the response as an XML document.
@@ -299,11 +299,11 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getResponseXML()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getResponseXML().");
+        String extension = "getResponseXML().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -313,15 +313,16 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the content of the response as an XML document.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getResponseXML(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getResponseXML().");
+        String extension = "getResponseXML().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -336,8 +337,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void destroy()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("destroy(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("destroy");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -351,14 +352,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void reveal(int l, int t, int w, int h)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("reveal(").appendData(l).appendScript(",")
-
-        .appendData(t).appendScript(",")
-
-        .appendData(w).appendScript(",")
-
-        .appendData(h).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("reveal", l, t, w, h);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -367,25 +362,25 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void conceal()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("conceal(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("conceal");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Publishes an event to all subscribed objects.
      * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
-     * @return the number of listeners to which the event was broadcast
-     *
+     * @param callback the number of listeners to which the event was broadcast
+     */
     @SuppressWarnings("unchecked")
-    public int publish(Object objEvent, Callback callback)
+    public void publish(Object objEvent, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = publish", objEvent);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Subscribes an object or function to a type of event published by this object.
@@ -398,12 +393,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(",")
-
-        .appendData(objFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -416,10 +407,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribe(String strEventId, Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -429,8 +418,8 @@ public class Form extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribeAll", strEventId);
+        getScriptProxy().addScript(script);
     }
 
 }

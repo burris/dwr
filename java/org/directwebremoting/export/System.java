@@ -20,8 +20,10 @@ import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.CallbackHelper;
 import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
+import org.directwebremoting.io.RawData;
 
 /**
  * Various functions exported by DWR to help us with various book-keeping
@@ -59,6 +61,23 @@ public class System
 
         log.debug("scriptSession.invalidate(): " + scriptSession.getId());
         scriptSession.invalidate();
+    }
+
+    /**
+     * Used by reverse ajax proxies to send data back to the server
+     * @param key The unique id under which a callback is registered
+     * @param data The data to decode and pass to the callback
+     */
+    public void activateCallback(String key, RawData data)
+    {
+        try
+        {
+            CallbackHelper.executeCallback(key, data);
+        }
+        catch (Exception ex)
+        {
+            log.error("Failed to marshall data from callback", ex);
+        }
     }
 
     /**

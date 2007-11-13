@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.util;
 
 import java.lang.reflect.Constructor;
 
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -28,11 +31,12 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Locale(ProxyHelper helper)
+    public Locale(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,84 +46,87 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Locale(String strLanguage, String strCountry)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Locale", strLanguage, strCountry);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the lowercase two letter ISO-639 language code.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getLanguage(Callback callback)
+    public void getLanguage(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLanguage");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the uppercase two letter ISO-3166 country code.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getCountry(Callback callback)
+    public void getCountry(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCountry");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the language of this locale, localized for objLocale.
      * @param objLocale the locale in which to format the language. If this parameter is not 
     provided, the system locale is used.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getDisplayLanguage(org.directwebremoting.proxy.jsx3.util.Locale objLocale, Callback callback)
+    public void getDisplayLanguage(org.directwebremoting.proxy.jsx3.util.Locale objLocale, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisplayLanguage", objLocale);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the country of this locale, localized for objLocale.
      * @param objLocale the locale in which to format the country. If this parameter is not 
     provided, the system locale is used.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getDisplayCountry(org.directwebremoting.proxy.jsx3.util.Locale objLocale, Callback callback)
+    public void getDisplayCountry(org.directwebremoting.proxy.jsx3.util.Locale objLocale, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisplayCountry", objLocale);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the language and country of this locale, localized for objLocale.
      * @param objLocale the locale in which to format the language and country. If this parameter is not 
     provided, the system locale is used.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getDisplayName(org.directwebremoting.proxy.jsx3.util.Locale objLocale, Callback callback)
+    public void getDisplayName(org.directwebremoting.proxy.jsx3.util.Locale objLocale, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisplayName", objLocale);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns a locale instance represented by strKey.
@@ -129,11 +136,11 @@ public class Locale extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale valueOf(String strKey)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("valueOf(\"" + strKey + "\").");
+        String extension = "valueOf(\"" + strKey + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

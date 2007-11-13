@@ -39,6 +39,7 @@
     <converter id="file" class="org.directwebremoting.convert.FileConverter"/>
     <converter id="context" class="org.directwebremoting.convert.ContextConverter"/>
     <converter id="stringWrapper" class="org.directwebremoting.convert.StringWrapperConverter"/>
+    <converter id="raw" class="org.directwebremoting.convert.RawConverter"/>
   </init>
 
   <allow>
@@ -87,6 +88,7 @@
 
     <convert converter="context" match="org.directwebremoting.proxy.io.Context"/>
     <convert converter="stringWrapper" match="org.directwebremoting.io.StringWrapper"/>
+    <convert converter="raw" match="org.directwebremoting.io.RawData"/>
 
     <!--
     The catch for the next 2 is that we really mean java.util.Collection<String>

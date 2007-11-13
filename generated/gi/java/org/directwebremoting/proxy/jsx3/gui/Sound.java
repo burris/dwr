@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Sound(ProxyHelper helper)
+    public Sound(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,23 +46,26 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
      */
     public Sound(String strName, String strURL)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Sound", strName, strURL);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the URL of the sound file.
-     * @return the URL of the sound file to play
-     *
+     * @param callback the URL of the sound file to play
+     */
     @SuppressWarnings("unchecked")
-    public String getURL(Callback callback)
+    public void getURL(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getURL");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the URL of the sound file.
@@ -69,25 +75,25 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Sound setURL(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setURL(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setURL", strURL);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the volume that the sound plays at.
-     * @return the volume to play the sound at, [0,100]
-     *
+     * @param callback the volume to play the sound at, [0,100]
+     */
     @SuppressWarnings("unchecked")
-    public int getVolume(Callback callback)
+    public void getVolume(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getVolume");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the volume of this sound. The change takes effect immediately.
@@ -97,8 +103,8 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Sound setVolume(int intVolume)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setVolume(").appendData(intVolume).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setVolume", intVolume);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -108,8 +114,8 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void play()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("play(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("play");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -119,8 +125,8 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void pause()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("pause(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("pause");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -129,39 +135,39 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void rewind()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("rewind(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("rewind");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the length of the sound in seconds.
-     * @return the length in seconds or <code>NaN</code> if the length can not be determined
-     *
+     * @param callback the length in seconds or <code>NaN</code> if the length can not be determined
+     */
     @SuppressWarnings("unchecked")
-    public float getLength(Callback callback)
+    public void getLength(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Float.class);
 
-    /*
-     * Returns the current position (elapsed time) of the sound in seconds.
-     * @return the current position in seconds or <code>NaN</code> if the position can not be determined
-     *
-    @SuppressWarnings("unchecked")
-    public float getPosition(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLength");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the current position (elapsed time) of the sound in seconds.
+     * @param callback the current position in seconds or <code>NaN</code> if the position can not be determined
+     */
+    @SuppressWarnings("unchecked")
+    public void getPosition(Callback<Float> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPosition");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the current position (elapsed time) of the sound in seconds.
@@ -170,25 +176,25 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setPosition(float position)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPosition(").appendData(position).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPosition", position);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the full name and version number of the audio plugin used to play this sound.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getPluginVersion(Callback callback)
+    public void getPluginVersion(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPluginVersion");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Publishes a model event. This method both evaluates any registered event script for the given event type
     and publishes the event through the EventDispatcher interface. This method ensures that any
     registered event script is executed in isolation to prevent most side effects.
@@ -196,143 +202,143 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
      * @param objContext JavaScript object array with name/value pairs that provide a local
     variable stack for the execution of the event script. This argument is also passed as the <code>context</code>
     property of the event object that is published through the <code>EventDispatcher</code> interface.
-     * @return the result of evaluating the event script or <code>null</code> if not event script is registered
-     *
+     * @param callback the result of evaluating the event script or <code>null</code> if not event script is registered
+     */
     @SuppressWarnings("unchecked")
-    public Object doEvent(String strType, Object objContext, Callback callback)
+    public void doEvent(String strType, Object objContext, Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = doEvent", strType, objContext);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether is object supports programmatic drag, meanining it will allow any contained item to be
     dragged and dropped on another container supporting drop.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getCanDrag(Callback callback)
+    public void getCanDrag(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanDrag");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether this object can be the target of a drop event.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getCanDrop(Callback callback)
+    public void getCanDrop(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanDrop");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether is object can be moved around the screen (this is not the same as drag/drop).
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getCanMove(Callback callback)
+    public void getCanMove(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanMove");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether is object can be spyglassed.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getCanSpy(Callback callback)
+    public void getCanSpy(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanSpy");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the event script registered for the given event type. This script could have been set by the
     setEvent() method or during component deserialization.
      * @param strType the event type, one of the model event types defined as static fields in this class
-     * @return the JavaScript event script
-     *
+     * @param callback the JavaScript event script
+     */
     @SuppressWarnings("unchecked")
-    public String getEvent(String strType, Callback callback)
+    public void getEvent(String strType, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEvent", strType);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the associative array containing all the registered event script of this object. This method returns
     the instance field itself and not a copy.
-     * @return an associative array mapping event type to event script
-     *
+     * @param callback an associative array mapping event type to event script
+     */
     @SuppressWarnings("unchecked")
-    public Object getEvents(Callback callback)
+    public void getEvents(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEvents");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the name of the jsx3.gui.Menu instance to display (as a context menu) when a user
     clicks on this object with the right button.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getMenu(Callback callback)
+    public void getMenu(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMenu");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if there is a event script registered for the given event type.
      * @param strType the event type, one of the model event types defined as static fields in this class
-     * @return the JavaScript event script
-     *
+     * @param callback the JavaScript event script
+     */
     @SuppressWarnings("unchecked")
-    public String hasEvent(String strType, Callback callback)
+    public void hasEvent(String strType, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = hasEvent", strType);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
@@ -361,11 +367,11 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.HotKey registerHotKey(String vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").");
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -381,11 +387,11 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive removeEvent(String strType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeEvent(\"" + strType + "\").");
+        String extension = "removeEvent(\"" + strType + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -400,11 +406,11 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive removeEvents()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeEvents().");
+        String extension = "removeEvents().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -421,11 +427,11 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setCanDrag(int bDrag)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setCanDrag(\"" + bDrag + "\").");
+        String extension = "setCanDrag(\"" + bDrag + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -442,11 +448,11 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setCanDrop(int bDrop)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setCanDrop(\"" + bDrop + "\").");
+        String extension = "setCanDrop(\"" + bDrop + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -463,11 +469,11 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setCanMove(int bMovable)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setCanMove(\"" + bMovable + "\").");
+        String extension = "setCanMove(\"" + bMovable + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -484,11 +490,11 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setCanSpy(int bSpy)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setCanSpy(\"" + bSpy + "\").");
+        String extension = "setCanSpy(\"" + bSpy + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -514,11 +520,11 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setEvent(String strScript, String strType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setEvent(\"" + strScript + "\", \"" + strType + "\").");
+        String extension = "setEvent(\"" + strScript + "\", \"" + strType + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -535,11 +541,11 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setMenu(String strMenu)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setMenu(\"" + strMenu + "\").");
+        String extension = "setMenu(\"" + strMenu + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -554,8 +560,8 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setSpyStyles(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSpyStyles(").appendData(strCSS).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSpyStyles", strCSS);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -568,12 +574,8 @@ public class Sound extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void showSpy(String strHTML, int intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("showSpy(").appendData(strHTML).appendScript(",")
-
-        .appendData(intLeft).appendScript(",")
-
-        .appendData(intTop).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("showSpy", strHTML, intLeft, intTop);
+        getScriptProxy().addScript(script);
     }
 
 }

@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Window(ProxyHelper helper)
+    public Window(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,7 +45,10 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
      */
     public Window(String strName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Window", strName);
+        setInitScript(script);
     }
 
     /**
@@ -70,38 +76,38 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
      */
     public static final String PARENT_DID_CLOSE = "pclose";
 
-    /*
+    /**
      * Opens the browser window of this window instance. Depending on security settings and popup blockers, 
     this method may or may not actually open a window. The only safe way to determine whether the window 
     successfully opened is to register for the DID_OPEN event.
-     * @return <code>true</code> if the window successfully opened (probably).
-     *
+     * @param callback <code>true</code> if the window successfully opened (probably).
+     */
     @SuppressWarnings("unchecked")
-    public boolean open(Callback callback)
+    public void open(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
-     * Closes the browser window of this window instance.
-     * @return <code>true</code> if the window successfully closed or <code>false</code> if it didn't close
-    because of JavaScript security constraints or user interaction.
-     *
-    @SuppressWarnings("unchecked")
-    public boolean close(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = open");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Closes the browser window of this window instance.
+     * @param callback <code>true</code> if the window successfully closed or <code>false</code> if it didn't close
+    because of JavaScript security constraints or user interaction.
+     */
+    @SuppressWarnings("unchecked")
+    public void close(Callback<Boolean> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = close");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Focuses the browser window of this window instance.
@@ -109,39 +115,39 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     public void focus()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("focus(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("focus");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether the browser window of this window instance is open.
-     * @return <code>true</code> if the window is open.
-     *
+     * @param callback <code>true</code> if the window is open.
+     */
     @SuppressWarnings("unchecked")
-    public boolean isOpen(Callback callback)
+    public void isOpen(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
-     * Returns whether the parent application window of this window instance is open.
-     * @return <code>true</code> if the parent window is open.
-     *
-    @SuppressWarnings("unchecked")
-    public boolean isParentOpen(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isOpen");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns whether the parent application window of this window instance is open.
+     * @param callback <code>true</code> if the parent window is open.
+     */
+    @SuppressWarnings("unchecked")
+    public void isParentOpen(Callback<Boolean> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isParentOpen");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Moves the browser window of this window instance to a position on the screen. The arguments specify the 
@@ -153,10 +159,8 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     public void moveTo(int intOffsetLeft, int intOffsetTop)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("moveTo(").appendData(intOffsetLeft).appendScript(",")
-
-        .appendData(intOffsetTop).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("moveTo", intOffsetLeft, intOffsetTop);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -165,41 +169,41 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     public void constrainToScreen()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("constrainToScreen(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("constrainToScreen");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the current x-coordinate screen position of this browser window relative to the parent application window.
     If the parent window is no longer open, this method returns the position relative to the upper-left
     corner of the screen.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getOffsetLeft(Callback callback)
+    public void getOffsetLeft(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getOffsetLeft");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the current y-coordinate screen position of this browser window relative to the parent application window.
     If the parent window is no longer open, this method returns the position relative to the upper-left
     corner of the screen.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getOffsetTop(Callback callback)
+    public void getOffsetTop(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getOffsetTop");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns the first DOM child of this window object. If no child exists, this method creates a root block, adds it
@@ -208,11 +212,11 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Block getRootBlock()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getRootBlock().");
+        String extension = "getRootBlock().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -223,15 +227,16 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     /**
      * Returns the first DOM child of this window object. If no child exists, this method creates a root block, adds it
     to the DOM, and returns it. A window will only render its first DOM child.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getRootBlock(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getRootBlock().");
+        String extension = "getRootBlock().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -239,34 +244,34 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
         }
     }
 
-    /*
+    /**
      * Repaints the root block of this window.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String repaint(Callback callback)
+    public void repaint(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = repaint");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the inner (visible) width of this window. This does not include the border and padding that the
     browser may render around the window content.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getWidth(Callback callback)
+    public void getWidth(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getWidth");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the inner (visible) width of this window. If the window is currently open, the window will be resized
@@ -276,24 +281,24 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     public void setWidth(int intWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setWidth(").appendData(intWidth).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setWidth", intWidth);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the inner (visible) height of this window. This does not include the border and padding that the
     browser may render around the window content.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getHeight(Callback callback)
+    public void getHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the inner (visible) height of this window. If the window is currently open, the window will be resized
@@ -303,26 +308,26 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     public void setHeight(int intHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHeight(").appendData(intHeight).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHeight", intHeight);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether this window is resizable via user interaction. The value returned by this method will reflect
     the last value passed to setResizable() and therefore may not truly reflect the current state of the
     browser window.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int isResizable(Callback callback)
+    public void isResizable(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isResizable");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether this window is resizable via user interaction. This method will not affect a currently-open window.
@@ -331,26 +336,26 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     public void setResizable(boolean bResizable)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setResizable(").appendData(bResizable).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setResizable", bResizable);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether this window will show scroll bars if the content outgrows the window. The value returned by
     this method will reflect the last value passed to setScrollable() and therefore may not truly
     reflect the current state of the browser window.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int isScrollable(Callback callback)
+    public void isScrollable(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isScrollable");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether this window will show scroll bars if the content outgrows the window. This method will not affect a
@@ -360,27 +365,27 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     public void setScrollable(boolean bScrollable)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setScrollable(").appendData(bScrollable).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setScrollable", bScrollable);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether this window is "dependent." Dependent windows close automatically when their parents close. If
     a window is not dependent, it will stay open after the parent window closes. Note that the parent window contains
     all the JavaScript code and so it is very likely that interacting with a window after the parent has closed
     will raise errors.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
+     */
     @SuppressWarnings("unchecked")
-    public int isDependent(Callback callback)
+    public void isDependent(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isDependent");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether this window is "dependent." This method not affect a currently-open window.
@@ -389,23 +394,23 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     public void setDependent(boolean bDependent)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDependent(").appendData(bDependent).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDependent", bDependent);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the title of this window.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getTitle(Callback callback)
+    public void getTitle(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTitle");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the title of the window. The title is displayed in the title bar of the browser window. If the window is
@@ -415,8 +420,8 @@ public class Window extends org.directwebremoting.proxy.jsx3.app.Model
     public void setTitle(String strTitle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTitle(").appendData(strTitle).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTitle", strTitle);
+        getScriptProxy().addScript(script);
     }
 
 }

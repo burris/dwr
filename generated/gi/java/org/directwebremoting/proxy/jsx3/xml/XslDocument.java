@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.xml;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +29,12 @@ public class XslDocument extends org.directwebremoting.proxy.jsx3.xml.Document
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public XslDocument(ProxyHelper helper)
+    public XslDocument(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,10 +45,8 @@ public class XslDocument extends org.directwebremoting.proxy.jsx3.xml.Document
     public void setParam(String strName, Object objValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setParam(").appendData(strName).appendScript(",")
-
-        .appendData(objValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setParam", strName, objValue);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -57,8 +56,8 @@ public class XslDocument extends org.directwebremoting.proxy.jsx3.xml.Document
     public void setParams(Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setParams(").appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setParams", objParams);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -67,8 +66,8 @@ public class XslDocument extends org.directwebremoting.proxy.jsx3.xml.Document
     public void reset()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("reset(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("reset");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -78,8 +77,8 @@ public class XslDocument extends org.directwebremoting.proxy.jsx3.xml.Document
     public void transform(org.directwebremoting.proxy.jsx3.xml.Entity objXML)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("transform(").appendData(objXML).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("transform", objXML);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -89,8 +88,8 @@ public class XslDocument extends org.directwebremoting.proxy.jsx3.xml.Document
     public void transformToObject(org.directwebremoting.proxy.jsx3.xml.Entity objXML)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("transformToObject(").appendData(objXML).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("transformToObject", objXML);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -100,11 +99,11 @@ public class XslDocument extends org.directwebremoting.proxy.jsx3.xml.Document
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.XslDocument wrap(org.directwebremoting.proxy.jsx3.xml.Document objXML)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("wrap(\"" + objXML + "\").");
+        String extension = "wrap(\"" + objXML + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.XslDocument> ctor = org.directwebremoting.proxy.jsx3.xml.XslDocument.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.XslDocument> ctor = org.directwebremoting.proxy.jsx3.xml.XslDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

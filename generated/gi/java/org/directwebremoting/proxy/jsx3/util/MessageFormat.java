@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.util;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public MessageFormat(ProxyHelper helper)
+    public MessageFormat(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,7 +47,10 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public MessageFormat(String strFormat, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new MessageFormat", strFormat, objLocale);
+        setInitScript(script);
     }
 
     /**
@@ -53,11 +59,11 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale getLocale()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLocale().");
+        String extension = "getLocale().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -72,42 +78,42 @@ public class MessageFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setLocale(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLocale(").appendData(objLocale).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLocale", objLocale);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Formats a collection of objects according to this message format.
      * @param args the argument objects. Replacement tokens of the pattern of this format
     will be replaced by these arguments.
-     * @return the string resulting from the pattern and arguments.
-     *
+     * @param callback the string resulting from the pattern and arguments.
+     */
     @SuppressWarnings("unchecked")
-    public String format(Object args, Callback callback)
+    public void format(Object args, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = format", args);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Formats a collection of objects according to this message format.
      * @param args the argument objects. Replacement tokens of the pattern of this format
     will be replaced by these arguments.
-     * @return the string resulting from the pattern and arguments.
-     *
+     * @param callback the string resulting from the pattern and arguments.
+     */
     @SuppressWarnings("unchecked")
-    public String format(Object[] args, Callback callback)
+    public void format(Object[] args, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = format", args);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

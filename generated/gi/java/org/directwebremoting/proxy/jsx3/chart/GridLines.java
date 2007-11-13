@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public GridLines(ProxyHelper helper)
+    public GridLines(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -46,23 +49,26 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
      */
     public GridLines(String name, int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new GridLines", name, left, top, width, height);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the horizontalAbove field, whether to draw the horizontal lines and fills above the vertical ones.
-     * @return horizontalAbove
-     *
+     * @param callback horizontalAbove
+     */
     @SuppressWarnings("unchecked")
-    public boolean getHorizontalAbove(Callback callback)
+    public void getHorizontalAbove(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHorizontalAbove");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the horizontalAbove field.
@@ -71,24 +77,24 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     public void setHorizontalAbove(boolean horizontalAbove)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHorizontalAbove(").appendData(horizontalAbove).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHorizontalAbove", horizontalAbove);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the inForeground field, whether to draw this legend on top of the data series (or below).
-     * @return inForeground
-     *
+     * @param callback inForeground
+     */
     @SuppressWarnings("unchecked")
-    public boolean getInForeground(Callback callback)
+    public void getInForeground(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getInForeground");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the inForeground field.
@@ -97,24 +103,24 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     public void setInForeground(boolean inForeground)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setInForeground(").appendData(inForeground).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setInForeground", inForeground);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the borderStroke field, string representation of the stroke used to outline the grid lines.
-     * @return borderStroke
-     *
+     * @param callback borderStroke
+     */
     @SuppressWarnings("unchecked")
-    public String getBorderStroke(Callback callback)
+    public void getBorderStroke(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBorderStroke");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the borderStroke field.
@@ -123,24 +129,24 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     public void setBorderStroke(String borderStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBorderStroke(").appendData(borderStroke).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBorderStroke", borderStroke);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the fillV field, array of string representations of vector fills used to fill in areas between vertical major ticks; if the length of the array is greater than one, the areas alternate through the list of fills.
-     * @return fillV
-     *
+     * @param callback fillV
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getFillV(Callback callback)
+    public void getFillV(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFillV");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the fillV field.
@@ -149,24 +155,24 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     public void setFillV(Object[] fillV)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFillV(").appendData(fillV).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFillV", fillV);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the strokeMajorV field, array of string representations of VectorStroke's used to draw the vertical major ticks; if the length of the array is greater than one, the ticks alternate through the list of strokes.
-     * @return strokeMajorV
-     *
+     * @param callback strokeMajorV
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getStrokeMajorV(Callback callback)
+    public void getStrokeMajorV(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStrokeMajorV");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the strokeMajorV field.
@@ -175,24 +181,24 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     public void setStrokeMajorV(Object[] strokeMajorV)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setStrokeMajorV(").appendData(strokeMajorV).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setStrokeMajorV", strokeMajorV);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the strokeMinorV field, array of string representations of VectorStroke's used to draw the vertical minor ticks; if the length of the array is greater than one, the ticks alternate through the list of strokes.
-     * @return strokeMinorV
-     *
+     * @param callback strokeMinorV
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getStrokeMinorV(Callback callback)
+    public void getStrokeMinorV(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStrokeMinorV");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the strokeMinorV field.
@@ -201,24 +207,24 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     public void setStrokeMinorV(Object[] strokeMinorV)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setStrokeMinorV(").appendData(strokeMinorV).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setStrokeMinorV", strokeMinorV);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the fillH field, array of string representations of vector fills used to fill in areas between horizontal major ticks; if the length of the array is greater than one, the areas alternate through the list of fills.
-     * @return fillH
-     *
+     * @param callback fillH
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getFillH(Callback callback)
+    public void getFillH(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFillH");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the fillH field.
@@ -227,24 +233,24 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     public void setFillH(Object[] fillH)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFillH(").appendData(fillH).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFillH", fillH);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the strokeMajorH field, array of string representations of VectorStroke's used to draw the horizontal major ticks; if the length of the array is greater than one, the ticks alternate through the list of strokes.
-     * @return strokeMajorH
-     *
+     * @param callback strokeMajorH
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getStrokeMajorH(Callback callback)
+    public void getStrokeMajorH(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStrokeMajorH");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the strokeMajorH field.
@@ -253,24 +259,24 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     public void setStrokeMajorH(Object[] strokeMajorH)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setStrokeMajorH(").appendData(strokeMajorH).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setStrokeMajorH", strokeMajorH);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the strokeMinorH field, array of string representations of VectorStroke's used to draw the horizontal minor ticks; if the length of the array is greater than one, the ticks alternate through the list of strokes.
-     * @return strokeMinorH
-     *
+     * @param callback strokeMinorH
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getStrokeMinorH(Callback callback)
+    public void getStrokeMinorH(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStrokeMinorH");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the strokeMinorH field.
@@ -279,8 +285,8 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     public void setStrokeMinorH(Object[] strokeMinorH)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setStrokeMinorH(").appendData(strokeMinorH).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setStrokeMinorH", strokeMinorH);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -289,11 +295,11 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.Axis getXAxis()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getXAxis().");
+        String extension = "getXAxis().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -303,15 +309,16 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
 
     /**
      * Returns the x (horizontal) axis used to determine where to draw tick lines.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getXAxis(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getXAxis().");
+        String extension = "getXAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -325,11 +332,11 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.Axis getYAxis()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getYAxis().");
+        String extension = "getYAxis().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -339,15 +346,16 @@ public class GridLines extends org.directwebremoting.proxy.jsx3.chart.ChartCompo
 
     /**
      * Returns the y (vertical) axis used to determine where to draw tick lines.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getYAxis(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getYAxis().");
+        String extension = "getYAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

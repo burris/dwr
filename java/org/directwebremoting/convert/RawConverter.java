@@ -19,23 +19,25 @@ import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
-import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
-import org.directwebremoting.proxy.io.Context;
+import org.directwebremoting.io.RawData;
 
 /**
- * An implementation of Converter for Context helper objects for ScriptProxies.
+ * A Converter that does nothing.
+ * This converter is useful when the type is not known at call time, but can be
+ * derived with internal knowledge, so the output can be passed manually to the
+ * converter manager.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ContextConverter extends BaseV20Converter implements Converter
+public class RawConverter extends BaseV20Converter implements Converter
 {
     /* (non-Javadoc)
      * @see org.directwebremoting.Converter#convertInbound(java.lang.Class, org.directwebremoting.InboundVariable, org.directwebremoting.InboundContext)
      */
     public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        throw new SecurityException("Contexts can not be converted");
+        return new RawData(data, inctx);
     }
 
     /* (non-Javadoc)
@@ -43,7 +45,6 @@ public class ContextConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
-        Context context = (Context) data;
-        return new NonNestedOutboundVariable(context.internalFullPath(this));
+        throw new MarshallException(RawData.class, "RawData is not availble during inbound marshalling");
     }
 }

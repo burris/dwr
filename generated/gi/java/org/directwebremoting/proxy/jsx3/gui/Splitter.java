@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Splitter(ProxyHelper helper)
+    public Splitter(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -41,7 +44,10 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public Splitter(String strName, int ORIENTATION)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Splitter", strName, ORIENTATION);
+        setInitScript(script);
     }
 
     /**
@@ -54,19 +60,19 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public static final int ORIENTATIONV = 1;
 
-    /*
+    /**
      * Returns a valid percentage (e.g., 100.00%  23.567%) that will be applied to the on-screen element as its CSS width/height percentage
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getSubcontainer1Pct(Callback callback)
+    public void getSubcontainer1Pct(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSubcontainer1Pct");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets a valid percentage (e.g., 100.00%  23.567%) that will be applied to the on-screen element as its CSS width/height percentage
@@ -77,26 +83,24 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Splitter setSubcontainer1Pct(String strSubcontainerPct, boolean bView)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSubcontainer1Pct(").appendData(strSubcontainerPct).appendScript(",")
-
-        .appendData(bView).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSubcontainer1Pct", strSubcontainerPct, bView);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns a valid integer representing the minimum size in pixels for the container; the default minimum is 1
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getSubcontainer1Min(Callback callback)
+    public void getSubcontainer1Min(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSubcontainer1Min");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the minimum size in pixels for the container; the default minimum is 1;
@@ -107,24 +111,24 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Splitter setSubcontainer1Min(int intMin)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSubcontainer1Min(").appendData(intMin).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSubcontainer1Min", intMin);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns a valid integer representing the minimum size in pixels for the container; the default minimum is 8
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getSubcontainer2Min(Callback callback)
+    public void getSubcontainer2Min(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSubcontainer2Min");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the minimum size in pixels for the container; the default minimum is 8;
@@ -135,24 +139,24 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Splitter setSubcontainer2Min(int intMin)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSubcontainer2Min(").appendData(intMin).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSubcontainer2Min", intMin);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * *Returns whether the splitter layout is top-over (--) or side-by-side (|).
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getOrientation(Callback callback)
+    public void getOrientation(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getOrientation");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns whether the splitter layout is top-over (--) or side-by-side (|);
@@ -163,24 +167,24 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Splitter setOrientation(int ORIENTATION)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setOrientation(").appendData(ORIENTATION).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setOrientation", ORIENTATION);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the URL for the image to use for the splitter handle when the splitter is rendered top over bottom (--).  When not set, Splitter.VSPLITIMAGE will be used when painted on-screen.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getVSplitImage(Callback callback)
+    public void getVSplitImage(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getVSplitImage");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the URL for the image to use for the splitter handle when the splitter is rendered top over bottom (--).
@@ -190,24 +194,24 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Splitter setVSplitImage(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setVSplitImage(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setVSplitImage", strURL);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the URL for the image to use for the splitter handle when the splitter is rendered side by side ( | ). When not set, Splitter.HSPLITIMAGE will be used when painted on-screen.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getHSplitImage(Callback callback)
+    public void getHSplitImage(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHSplitImage");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the URL for the image to use for the splitter handle when the splitter is rendered side by side ( | ).
@@ -217,8 +221,8 @@ public class Splitter extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Splitter setHSplitImage(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHSplitImage(").appendData(strURL).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHSplitImage", strURL);
+        getScriptProxy().addScript(script);
         return this;
     }
 

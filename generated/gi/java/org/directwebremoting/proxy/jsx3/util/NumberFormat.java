@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.util;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class NumberFormat extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public NumberFormat(ProxyHelper helper)
+    public NumberFormat(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +46,10 @@ public class NumberFormat extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public NumberFormat(String strFormat, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new NumberFormat", strFormat, objLocale);
+        setInitScript(script);
     }
 
     /**
@@ -54,11 +60,11 @@ public class NumberFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.NumberFormat getIntegerInstance(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getIntegerInstance(\"" + objLocale + "\").");
+        String extension = "getIntegerInstance(\"" + objLocale + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.NumberFormat> ctor = org.directwebremoting.proxy.jsx3.util.NumberFormat.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.NumberFormat> ctor = org.directwebremoting.proxy.jsx3.util.NumberFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -74,11 +80,11 @@ public class NumberFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.NumberFormat getNumberInstance(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getNumberInstance(\"" + objLocale + "\").");
+        String extension = "getNumberInstance(\"" + objLocale + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.NumberFormat> ctor = org.directwebremoting.proxy.jsx3.util.NumberFormat.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.NumberFormat> ctor = org.directwebremoting.proxy.jsx3.util.NumberFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -94,11 +100,11 @@ public class NumberFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.NumberFormat getCurrencyInstance(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getCurrencyInstance(\"" + objLocale + "\").");
+        String extension = "getCurrencyInstance(\"" + objLocale + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.NumberFormat> ctor = org.directwebremoting.proxy.jsx3.util.NumberFormat.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.NumberFormat> ctor = org.directwebremoting.proxy.jsx3.util.NumberFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -114,11 +120,11 @@ public class NumberFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.NumberFormat getPercentInstance(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPercentInstance(\"" + objLocale + "\").");
+        String extension = "getPercentInstance(\"" + objLocale + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.NumberFormat> ctor = org.directwebremoting.proxy.jsx3.util.NumberFormat.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.NumberFormat> ctor = org.directwebremoting.proxy.jsx3.util.NumberFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -132,11 +138,11 @@ public class NumberFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale getLocale()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLocale().");
+        String extension = "getLocale().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -151,53 +157,53 @@ public class NumberFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setLocale(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLocale(").appendData(objLocale).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLocale", objLocale);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * 
      * @param number 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String format(String number, Callback callback)
+    public void format(String number, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * 
-     * @param number 
-     *
-    @SuppressWarnings("unchecked")
-    public String format(Object number, Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = format", number);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
-    /*
+    /**
      * 
      * @param number 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String format(int number, Callback callback)
+    public void format(Object number, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = format", number);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * 
+     * @param number 
+     */
+    @SuppressWarnings("unchecked")
+    public void format(int number, Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = format", number);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
 }

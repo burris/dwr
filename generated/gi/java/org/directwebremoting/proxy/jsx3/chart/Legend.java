@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Legend(ProxyHelper helper)
+    public Legend(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,7 +45,10 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
      */
     public Legend(String name)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Legend", name);
+        setInitScript(script);
     }
 
     /**
@@ -55,20 +61,20 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
      */
     public static final int DEFAULT_HEIGHT = 100;
 
-    /*
+    /**
      * Returns the boxHeight field, the diameter of the box that shows the fill of each series or category.
-     * @return boxHeight
-     *
+     * @param callback boxHeight
+     */
     @SuppressWarnings("unchecked")
-    public int getBoxHeight(Callback callback)
+    public void getBoxHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBoxHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the boxHeight field.
@@ -77,24 +83,24 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     public void setBoxHeight(int boxHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBoxHeight(").appendData(boxHeight).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBoxHeight", boxHeight);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the lineHeight field, the vertical space taken for each legend entry.
-     * @return lineHeight
-     *
+     * @param callback lineHeight
+     */
     @SuppressWarnings("unchecked")
-    public int getLineHeight(Callback callback)
+    public void getLineHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLineHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the lineHeight field.
@@ -103,24 +109,24 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     public void setLineHeight(int lineHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLineHeight(").appendData(lineHeight).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLineHeight", lineHeight);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the labelClass field, the CSS class name applied to the name of each series or category.
-     * @return labelClass
-     *
+     * @param callback labelClass
+     */
     @SuppressWarnings("unchecked")
-    public String getLabelClass(Callback callback)
+    public void getLabelClass(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLabelClass");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the labelClass field.
@@ -129,24 +135,24 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     public void setLabelClass(String labelClass)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelClass(").appendData(labelClass).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelClass", labelClass);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the labelStyle field, a CSS style attribute applied to the name of each series or category, ie "font-family: Arial; font-size: 10px;".
-     * @return labelStyle
-     *
+     * @param callback labelStyle
+     */
     @SuppressWarnings("unchecked")
-    public String getLabelStyle(Callback callback)
+    public void getLabelStyle(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLabelStyle");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the labelStyle field.
@@ -155,24 +161,24 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     public void setLabelStyle(String labelStyle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelStyle(").appendData(labelStyle).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelStyle", labelStyle);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the backgroundFill field, a string representation of the vector fill used to color in the background of the legend.
-     * @return backgroundFill
-     *
+     * @param callback backgroundFill
+     */
     @SuppressWarnings("unchecked")
-    public String getBackgroundFill(Callback callback)
+    public void getBackgroundFill(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBackgroundFill");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the backgroundFill field.
@@ -181,24 +187,24 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     public void setBackgroundFill(String backgroundFill)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBackgroundFill(").appendData(backgroundFill).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBackgroundFill", backgroundFill);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the backgroundStroke field, a string representation of the VectorStroke used to outline the legend.
-     * @return backgroundStroke
-     *
+     * @param callback backgroundStroke
+     */
     @SuppressWarnings("unchecked")
-    public String getBackgroundStroke(Callback callback)
+    public void getBackgroundStroke(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBackgroundStroke");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the backgroundStroke field.
@@ -207,24 +213,24 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     public void setBackgroundStroke(String backgroundStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBackgroundStroke(").appendData(backgroundStroke).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBackgroundStroke", backgroundStroke);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the preferredWidth field, the width that this component would like to have, though its true size is dictated by the container component.
-     * @return preferredWidth
-     *
+     * @param callback preferredWidth
+     */
     @SuppressWarnings("unchecked")
-    public int getPreferredWidth(Callback callback)
+    public void getPreferredWidth(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPreferredWidth");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the preferredWidth field.
@@ -233,24 +239,24 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     public void setPreferredWidth(int preferredWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPreferredWidth(").appendData(preferredWidth).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPreferredWidth", preferredWidth);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the preferredHeight field, the height that this component would like to have, though its true size is dictated by the container component.
-     * @return preferredHeight
-     *
+     * @param callback preferredHeight
+     */
     @SuppressWarnings("unchecked")
-    public int getPreferredHeight(Callback callback)
+    public void getPreferredHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPreferredHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the preferredHeight field.
@@ -259,8 +265,8 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     public void setPreferredHeight(int preferredHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPreferredHeight(").appendData(preferredHeight).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPreferredHeight", preferredHeight);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -269,11 +275,11 @@ public class Legend extends org.directwebremoting.proxy.jsx3.chart.ChartComponen
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.ChartLabel getLegendTitle()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLegendTitle().");
+        String extension = "getLegendTitle().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.ChartLabel> ctor = org.directwebremoting.proxy.jsx3.chart.ChartLabel.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.ChartLabel> ctor = org.directwebremoting.proxy.jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

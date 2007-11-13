@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class TabbedPane extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public TabbedPane(ProxyHelper helper)
+    public TabbedPane(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -40,7 +43,10 @@ public class TabbedPane extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public TabbedPane(String strName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TabbedPane", strName);
+        setInitScript(script);
     }
 
     /**
@@ -63,19 +69,19 @@ public class TabbedPane extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public static final int DEFAULTTABHEIGHT = 20;
 
-    /*
+    /**
      * Returns the zero-based child index of the active child tab.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getSelectedIndex(Callback callback)
+    public void getSelectedIndex(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSelectedIndex");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the active tab of this tabbed pane. Pass either the zero-based child index of the tab to activate or
@@ -87,10 +93,8 @@ public class TabbedPane extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.TabbedPane setSelectedIndex(int intIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSelectedIndex(").appendData(intIndex).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSelectedIndex", intIndex, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -104,27 +108,25 @@ public class TabbedPane extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.TabbedPane setSelectedIndex(org.directwebremoting.proxy.jsx3.gui.Tab intIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSelectedIndex(").appendData(intIndex).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSelectedIndex", intIndex, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the CSS height property (in pixels) for child tabs
-     * @return height (in pixels)
-     *
+     * @param callback height (in pixels)
+     */
     @SuppressWarnings("unchecked")
-    public int getTabHeight(Callback callback)
+    public void getTabHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTabHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS height property for the object (in pixels) for child tabs;
@@ -135,8 +137,8 @@ public class TabbedPane extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.TabbedPane setTabHeight(int intTabHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTabHeight(").appendData(intTabHeight).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTabHeight", intTabHeight);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -146,8 +148,8 @@ public class TabbedPane extends org.directwebremoting.proxy.jsx3.gui.Block
     public void getShowTabs()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getShowTabs(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getShowTabs");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -157,8 +159,8 @@ public class TabbedPane extends org.directwebremoting.proxy.jsx3.gui.Block
     public void setShowTabs(int intShowTabs)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setShowTabs(").appendData(intShowTabs).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setShowTabs", intShowTabs);
+        getScriptProxy().addScript(script);
     }
 
 }

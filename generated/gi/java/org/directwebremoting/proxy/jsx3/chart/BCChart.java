@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class BCChart extends org.directwebremoting.proxy.jsx3.chart.CartesianCha
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public BCChart(ProxyHelper helper)
+    public BCChart(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,7 +47,10 @@ public class BCChart extends org.directwebremoting.proxy.jsx3.chart.CartesianCha
      */
     public BCChart(String name, int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new BCChart", name, left, top, width, height);
+        setInitScript(script);
     }
 
     /**
@@ -62,20 +68,20 @@ public class BCChart extends org.directwebremoting.proxy.jsx3.chart.CartesianCha
      */
     public static final String TYPE_STACKED100 = "stacked100";
 
-    /*
+    /**
      * Returns the type field, corresponds to the variation of chart, one of {'clustered','stacked','stacked100'}.
-     * @return type
-     *
+     * @param callback type
+     */
     @SuppressWarnings("unchecked")
-    public String getType(Callback callback)
+    public void getType(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getType");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the type field.
@@ -84,24 +90,24 @@ public class BCChart extends org.directwebremoting.proxy.jsx3.chart.CartesianCha
     public void setType(String type)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setType(").appendData(type).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setType", type);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the seriesOverlap field, the ratio of a column width/row height that a column/row overlaps with the adjacent column/row.
-     * @return seriesOverlap
-     *
+     * @param callback seriesOverlap
+     */
     @SuppressWarnings("unchecked")
-    public float getSeriesOverlap(Callback callback)
+    public void getSeriesOverlap(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSeriesOverlap");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the seriesOverlap field.
@@ -110,24 +116,24 @@ public class BCChart extends org.directwebremoting.proxy.jsx3.chart.CartesianCha
     public void setSeriesOverlap(float seriesOverlap)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSeriesOverlap(").appendData(seriesOverlap).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSeriesOverlap", seriesOverlap);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the categoryCoverage field, the ratio of the range of a category that is covered by bars/columns.
-     * @return categoryCoverage
-     *
+     * @param callback categoryCoverage
+     */
     @SuppressWarnings("unchecked")
-    public float getCategoryCoverage(Callback callback)
+    public void getCategoryCoverage(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCategoryCoverage");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the categoryCoverage field.
@@ -136,8 +142,8 @@ public class BCChart extends org.directwebremoting.proxy.jsx3.chart.CartesianCha
     public void setCategoryCoverage(float categoryCoverage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setCategoryCoverage(").appendData(categoryCoverage).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setCategoryCoverage", categoryCoverage);
+        getScriptProxy().addScript(script);
     }
 
 }

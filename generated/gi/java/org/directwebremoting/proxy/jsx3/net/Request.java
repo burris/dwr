@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.net;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Request(ProxyHelper helper)
+    public Request(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,7 +45,10 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Request(String id)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Request", id);
+        setInitScript(script);
     }
 
     /**
@@ -62,11 +68,11 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.Request abort()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("abort().");
+        String extension = "abort().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.Request> ctor = org.directwebremoting.proxy.jsx3.net.Request.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.Request> ctor = org.directwebremoting.proxy.jsx3.net.Request.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -74,76 +80,76 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Gets the value of all the HTTP headers.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getAllResponseHeaders(Callback callback)
+    public void getAllResponseHeaders(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAllResponseHeaders");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Gets the value of a specific HTTP response header.
      * @param strName the name for the response header to retrieve.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getResponseHeader(String strName, Callback callback)
+    public void getResponseHeader(String strName, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getResponseHeader", strName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Gets the HTTP response line status (e.g. "OK").
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getStatusText(Callback callback)
+    public void getStatusText(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStatusText");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Gets the HTTP response code (e.g. 200, 404, 500, etc).
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getStatus(Callback callback)
+    public void getStatus(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Gets the content of the response as string.
-     *
-    @SuppressWarnings("unchecked")
-    public String getResponseText(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStatus");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Gets the content of the response as string.
+     */
+    @SuppressWarnings("unchecked")
+    public void getResponseText(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getResponseText");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Gets the content of the response as an XML document. If the response is not a valid XML document,
@@ -152,11 +158,11 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getResponseXML()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getResponseXML().");
+        String extension = "getResponseXML().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -167,15 +173,16 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     /**
      * Gets the content of the response as an XML document. If the response is not a valid XML document,
     null is returned.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getResponseXML(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getResponseXML().");
+        String extension = "getResponseXML().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -193,10 +200,8 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.net.Request setRequestHeader(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRequestHeader(").appendData(strName).appendScript(",")
-
-        .appendData(strValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRequestHeader", strName, strValue);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -212,11 +217,11 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.Request open(String strMethod, String strURL, boolean bAsync, String strUser, String strPass)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("open(\"" + strMethod + "\", \"" + strURL + "\", \"" + bAsync + "\", \"" + strUser + "\", \"" + strPass + "\").");
+        String extension = "open(\"" + strMethod + "\", \"" + strURL + "\", \"" + bAsync + "\", \"" + strUser + "\", \"" + strPass + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.Request> ctor = org.directwebremoting.proxy.jsx3.net.Request.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.Request> ctor = org.directwebremoting.proxy.jsx3.net.Request.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -236,11 +241,11 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.Request open(String strMethod, org.directwebremoting.proxy.jsx3.net.URI strURL, boolean bAsync, String strUser, String strPass)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("open(\"" + strMethod + "\", \"" + strURL + "\", \"" + bAsync + "\", \"" + strUser + "\", \"" + strPass + "\").");
+        String extension = "open(\"" + strMethod + "\", \"" + strURL + "\", \"" + bAsync + "\", \"" + strUser + "\", \"" + strPass + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.Request> ctor = org.directwebremoting.proxy.jsx3.net.Request.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.Request> ctor = org.directwebremoting.proxy.jsx3.net.Request.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -248,19 +253,19 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Gets the URL passed when opening this request.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getURL(Callback callback)
+    public void getURL(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getURL");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sends the request.
@@ -273,11 +278,11 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.Request send(String strContent, int intTimeout)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("send(\"" + strContent + "\", \"" + intTimeout + "\").");
+        String extension = "send(\"" + strContent + "\", \"" + intTimeout + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.Request> ctor = org.directwebremoting.proxy.jsx3.net.Request.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.Request> ctor = org.directwebremoting.proxy.jsx3.net.Request.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -285,21 +290,21 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Publishes an event to all subscribed objects.
      * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
-     * @return the number of listeners to which the event was broadcast
-     *
+     * @param callback the number of listeners to which the event was broadcast
+     */
     @SuppressWarnings("unchecked")
-    public int publish(Object objEvent, Callback callback)
+    public void publish(Object objEvent, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = publish", objEvent);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Subscribes an object or function to a type of event published by this object.
@@ -312,12 +317,8 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(",")
-
-        .appendData(objFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -330,10 +331,8 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribe(String strEventId, Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -343,8 +342,8 @@ public class Request extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribeAll", strEventId);
+        getScriptProxy().addScript(script);
     }
 
 }

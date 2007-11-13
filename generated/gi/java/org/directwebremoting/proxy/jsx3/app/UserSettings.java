@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.app;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public UserSettings(ProxyHelper helper)
+    public UserSettings(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -41,7 +44,10 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public UserSettings(org.directwebremoting.proxy.jsx3.app.Server objServer, int intPersistence)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new UserSettings", objServer, intPersistence);
+        setInitScript(script);
     }
 
     /**
@@ -54,21 +60,21 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public static final int PERSIST_INDEFINITE = 2;
 
-    /*
+    /**
      * Returns a stored setting value.
      * @param strKey the setting key.
-     * @return the stored value.
-     *
+     * @param callback the stored value.
+     */
     @SuppressWarnings("unchecked")
-    public String get(String strKey, Callback callback)
+    public void get(String strKey, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = get", strKey);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets a stored setting value.
@@ -78,10 +84,8 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, String value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
-
-        .appendData(value).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("set", strKey, value);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -92,10 +96,8 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, int value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
-
-        .appendData(value).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("set", strKey, value);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -106,10 +108,8 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, boolean value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
-
-        .appendData(value).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("set", strKey, value);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -120,10 +120,8 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, Object[] value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
-
-        .appendData(value).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("set", strKey, value);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -134,10 +132,8 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void set(String strKey, Object value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("set(").appendData(strKey).appendScript(",")
-
-        .appendData(value).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("set", strKey, value);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -147,8 +143,8 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void remove(String strKey)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("remove(").appendData(strKey).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("remove", strKey);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -157,8 +153,8 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void clear()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("clear(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("clear");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -168,8 +164,8 @@ public class UserSettings extends org.directwebremoting.proxy.jsx3.lang.Object
     public void save()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("save(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("save");
+        getScriptProxy().addScript(script);
     }
 
 }

@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Block(ProxyHelper helper)
+    public Block(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -47,7 +50,10 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
      */
     public Block(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strHTML)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
     }
 
     /**
@@ -155,20 +161,20 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
      */
     public static final String SPACE = null;
 
-    /*
+    /**
      * Returns valid CSS property value, (e.g., red, #ffffff, rgb(255,0,0))
-     * @return valid CSS property value, (e.g., red, #ffffff, rgb(255,0,0))
-     *
+     * @param callback valid CSS property value, (e.g., red, #ffffff, rgb(255,0,0))
+     */
     @SuppressWarnings("unchecked")
-    public String getBackgroundColor(Callback callback)
+    public void getBackgroundColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBackgroundColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets valid CSS property value, (e.g., red, #ffffff, rgb(255,0,0));
@@ -180,27 +186,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setBackgroundColor(String strColor, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBackgroundColor(").appendData(strColor).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBackgroundColor", strColor, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns valid CSS property value for the background such as:  background-image:url(x.gif);  or background-image:url(x.gif);background-repeat:no-repeat;
-     * @return valid CSS property for the background such as:  background-image:url(x.gif);  or background-image:url(x.gif);background-repeat:no-repeat;
-     *
+     * @param callback valid CSS property for the background such as:  background-image:url(x.gif);  or background-image:url(x.gif);background-repeat:no-repeat;
+     */
     @SuppressWarnings("unchecked")
-    public String getBackground(Callback callback)
+    public void getBackground(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBackground");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets valid CSS property value for the background such as:  background-image:url(x.gif);  or background-image:url(x.gif);background-repeat:no-repeat;
@@ -211,24 +215,24 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setBackground(String strBG)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBackground(").appendData(strBG).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBackground", strBG);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns CSS property value(s) for a border (border: solid 1px #000000)
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getBorder(Callback callback)
+    public void getBorder(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBorder");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets CSS property value(s) for a border (border: solid 1px #000000). Properties can be strung
@@ -240,27 +244,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setBorder(String strCSS, boolean bRecalc)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBorder(").appendData(strCSS).appendScript(",")
-
-        .appendData(bRecalc).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBorder", strCSS, bRecalc);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns valid CSS property value, (e.g., red, #ffffff, rgb(255,0,0))
-     * @return valid CSS property value, (e.g., red, #ffffff, rgb(255,0,0))
-     *
+     * @param callback valid CSS property value, (e.g., red, #ffffff, rgb(255,0,0))
+     */
     @SuppressWarnings("unchecked")
-    public String getColor(Callback callback)
+    public void getColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets valid CSS property value, (e.g., red, #ffffff, rgb(255,0,0));
@@ -272,27 +274,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setColor(String strColor, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColor(").appendData(strColor).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColor", strColor, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns valid CSS property value, (e.g., default,wait,col-resize); if no value or an empty string, null is returned
-     * @return valid CSS property value, (e.g., default,wait,col-resize)
-     *
+     * @param callback valid CSS property value, (e.g., default,wait,col-resize)
+     */
     @SuppressWarnings("unchecked")
-    public String getCursor(Callback callback)
+    public void getCursor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCursor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets valid CSS property value, (e.g., default,wait,col-resize)
@@ -303,27 +303,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setCursor(String strCursor, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setCursor(").appendData(strCursor).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setCursor", strCursor, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns CSS text to override the standard instance properties on the painted object.
-     * @return CSS text
-     *
+     * @param callback CSS text
+     */
     @SuppressWarnings("unchecked")
-    public String getCSSOverride(Callback callback)
+    public void getCSSOverride(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCSSOverride");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets CSS text to override the standard instance properties on the painted object. Convenience method for extending this object. CSS properties affecting layout, including border-width, padding, margin, width, and height
@@ -336,24 +334,24 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setCSSOverride(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setCSSOverride(").appendData(strCSS).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setCSSOverride", strCSS);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the named CSS rule(s) to apply to the painted object.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getClassName(Callback callback)
+    public void getClassName(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getClassName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the named CSS rule(s) to apply to the painted object. Rules that specify border-width, padding, margin, width, and height are strongly discouraged.
@@ -366,24 +364,24 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setClassName(String strClassName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setClassName(").appendData(strClassName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setClassName", strClassName);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the CSS display for the object; one of jsx3.gui.Block.DISPLAYNONE (display:none;) and jsx3.gui.Block.DISPLAYBLOCK (display:;)
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getDisplay(Callback callback)
+    public void getDisplay(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisplay");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the display for the object. Note that although the framework uses CSS to apply this setting, the actual values that get set are determined by the system.
@@ -395,27 +393,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setDisplay(String intDisplay, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDisplay(").appendData(intDisplay).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDisplay", intDisplay, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the CSS font-family for the object
-     * @return valid CSS font-family property value
-     *
+     * @param callback valid CSS font-family property value
+     */
     @SuppressWarnings("unchecked")
-    public String getFontName(Callback callback)
+    public void getFontName(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFontName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS font-family for the object;
@@ -426,25 +422,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setFontName(String strFontName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFontName(").appendData(strFontName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFontName", strFontName);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the CSS font-size for the object
-     * @return font-size (in pixels)
-     *
+     * @param callback font-size (in pixels)
+     */
     @SuppressWarnings("unchecked")
-    public int getFontSize(Callback callback)
+    public void getFontSize(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFontSize");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS font-size for the object;
@@ -455,25 +451,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setFontSize(int intPixelSize)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFontSize(").appendData(intPixelSize).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFontSize", intPixelSize);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the CSS font-weight for the object ("bold" or "normal")
-     * @return [jsx3.gui.Block.FONTBOLD. jsx3.gui.Block.FONTNORMAL]
-     *
+     * @param callback [jsx3.gui.Block.FONTBOLD. jsx3.gui.Block.FONTNORMAL]
+     */
     @SuppressWarnings("unchecked")
-    public String getFontWeight(Callback callback)
+    public void getFontWeight(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFontWeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS font-weight for the object ("bold" or "normal");
@@ -484,25 +480,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setFontWeight(String FONTWEIGHT)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFontWeight(").appendData(FONTWEIGHT).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFontWeight", FONTWEIGHT);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the height property of this object.
-     * @return height.
-     *
+     * @param callback height.
+     */
     @SuppressWarnings("unchecked")
-    public int getHeight(Callback callback)
+    public void getHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the height property of this object.
@@ -513,10 +509,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setHeight(int vntHeight, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHeight(").appendData(vntHeight).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHeight", vntHeight, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -529,26 +523,24 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setHeight(String vntHeight, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHeight(").appendData(vntHeight).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHeight", vntHeight, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns IE tab index for setting the tabIndex property for the on-screen DHTML for the object
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getIndex(Callback callback)
+    public void getIndex(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getIndex");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets IE tab index for setting the tabIndex property for the on-screen DHTML for the object;
@@ -560,27 +552,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setIndex(int intIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setIndex(").appendData(intIndex).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setIndex", intIndex, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the left property of this object.
-     * @return left.
-     *
+     * @param callback left.
+     */
     @SuppressWarnings("unchecked")
-    public int getLeft(Callback callback)
+    public void getLeft(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLeft");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the left property of this object. The left property specifies the horizontal offset of this object
@@ -592,10 +582,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setLeft(int vntLeft, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLeft(").appendData(vntLeft).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLeft", vntLeft, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -609,10 +597,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setLeft(String vntLeft, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLeft(").appendData(vntLeft).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLeft", vntLeft, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -629,16 +615,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(int left, int top, int width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -654,16 +632,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(int left, int top, int width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -679,16 +649,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(int left, int top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -704,16 +666,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(int left, int top, String width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -729,16 +683,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(int left, String top, int width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -754,16 +700,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(int left, String top, int width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -779,16 +717,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(int left, String top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -804,16 +734,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(int left, String top, String width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -829,16 +751,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(String left, int top, int width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -854,16 +768,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(String left, int top, int width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -879,16 +785,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(String left, int top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -904,16 +802,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(String left, int top, String width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -929,16 +819,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(String left, String top, int width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -954,16 +836,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(String left, String top, int width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -979,16 +853,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(String left, String top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1004,16 +870,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(String left, String top, String width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1029,16 +887,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(Object[] left, int top, int width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1054,16 +904,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(Object[] left, int top, int width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1079,16 +921,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(Object[] left, int top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1104,16 +938,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(Object[] left, int top, String width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1129,16 +955,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(Object[] left, String top, int width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1154,16 +972,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(Object[] left, String top, int width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1179,16 +989,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(Object[] left, String top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1204,46 +1006,38 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setDimensions(Object[] left, String top, String width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the dimensions in an array of four int values
-     * @return [left,top,width,height]
-     *
+     * @param callback [left,top,width,height]
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getDimensions(Callback callback)
+    public void getDimensions(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
-     * Returns CSS property value(s) for a margin (margin:4px;)
-     *
-    @SuppressWarnings("unchecked")
-    public String getMargin(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDimensions");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns CSS property value(s) for a margin (margin:4px;)
+     */
+    @SuppressWarnings("unchecked")
+    public void getMargin(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMargin");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets CSS property value for margin.
@@ -1257,27 +1051,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setMargin(String strCSS, boolean bRecalc)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMargin(").appendData(strCSS).appendScript(",")
-
-        .appendData(bRecalc).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMargin", strCSS, bRecalc);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the overflow property for the object, that defines how its on-screen view will behave when its contents are larger than its specified width and/or height
-     * @return [jsx3.gui.Block.OVERFLOWSCROLL, jsx3.gui.Block.OVERFLOWHIDDEN, jsx3.gui.Block.OVERFLOWEXPAND]
-     *
+     * @param callback [jsx3.gui.Block.OVERFLOWSCROLL, jsx3.gui.Block.OVERFLOWHIDDEN, jsx3.gui.Block.OVERFLOWEXPAND]
+     */
     @SuppressWarnings("unchecked")
-    public int getOverflow(Callback callback)
+    public void getOverflow(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getOverflow");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the overflow property for the object, that defines how its on-screen view will behave when its contents are larger than its specified width and/or height;
@@ -1288,24 +1080,24 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setOverflow(int OVERFLOW)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setOverflow(").appendData(OVERFLOW).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setOverflow", OVERFLOW);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns CSS property value(s) for a padding (padding:4px;)
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getPadding(Callback callback)
+    public void getPadding(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPadding");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS property value for padding an object.
@@ -1319,26 +1111,24 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setPadding(String strCSS, boolean bRecalc)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPadding(").appendData(strCSS).appendScript(",")
-
-        .appendData(bRecalc).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPadding", strCSS, bRecalc);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns if the instance is relatively positioned on-screen; returns one of: jsx3.gui.Block.ABSOLUTE jsx3.gui.Block.RELATIVE
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getRelativePosition(Callback callback)
+    public void getRelativePosition(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRelativePosition");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets if the jsx3.gui.Block instance is relatively positioned on-screen;
@@ -1350,28 +1140,26 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setRelativePosition(int intRelative, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRelativePosition(").appendData(intRelative).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRelativePosition", intRelative, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns HTML tag name to use when rendering the object on-screen (span is the default); if the property is null,
          jsx3.gui.Block.DEFAULTTAGNAME is used;
-     * @return valid HTML tag name
-     *
+     * @param callback valid HTML tag name
+     */
     @SuppressWarnings("unchecked")
-    public String getTagName(Callback callback)
+    public void getTagName(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTagName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets HTML tag name to use when rendering the object on-screen (jsx3.gui.Block.DEFAULTTAGNAME is the default);
@@ -1382,27 +1170,27 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setTagName(String strTagName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTagName(").appendData(strTagName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTagName", strTagName);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the text/HTML for the control to be displayed on-screen; returns an empty string if null; since the text
     is rendered on-screen as browser-native HTML, the equivalent of an empty tag (e.g., <span\>) would be an
     enclosing tag with an empty string (no content): <span></span>.  To return null would be equivalent to
     <span>null</span>, which is not the same as <span/>
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getText(Callback callback)
+    public void getText(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getText");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the text/HTML for the control to be displayed on-screen;
@@ -1413,27 +1201,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setText(String strText, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setText(").appendData(strText).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setText", strText, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the CSS text-align property for the object; if no property value exists, jsx3.gui.Block.ALIGNLEFT is returned by default
-     * @return one of: jsx3.gui.Block.ALIGNLEFT, jsx3.gui.Block.ALIGNRIGHT, jsx3.gui.Block.ALIGNCENTER
-     *
+     * @param callback one of: jsx3.gui.Block.ALIGNLEFT, jsx3.gui.Block.ALIGNRIGHT, jsx3.gui.Block.ALIGNCENTER
+     */
     @SuppressWarnings("unchecked")
-    public String getTextAlign(Callback callback)
+    public void getTextAlign(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTextAlign");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS text-align property for the object;
@@ -1443,24 +1229,24 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setTextAlign(String ALIGN)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTextAlign(").appendData(ALIGN).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTextAlign", ALIGN);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the tooltip text to display when the object is hovered over.  Returns an empty string if null.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getTip(Callback callback)
+    public void getTip(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTip");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the tooltip text to display when the object is hovered over. Updates Model and View.
@@ -1471,25 +1257,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setTip(String strTip)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTip(").appendData(strTip).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTip", strTip);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the top property of this object.
-     * @return top.
-     *
+     * @param callback top.
+     */
     @SuppressWarnings("unchecked")
-    public int getTop(Callback callback)
+    public void getTop(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTop");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the top property of this object. The top property specifies the vertical offset of this object
@@ -1501,10 +1287,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setTop(int vntTop, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTop(").appendData(vntTop).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTop", vntTop, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -1518,27 +1302,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setTop(String vntTop, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTop(").appendData(vntTop).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTop", vntTop, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the visibility property for the object
-     * @return [jsx3.gui.Block.VISIBILITYVISIBLE, jsx3.gui.Block.VISIBILITYHIDDEN]
-     *
+     * @param callback [jsx3.gui.Block.VISIBILITYVISIBLE, jsx3.gui.Block.VISIBILITYHIDDEN]
+     */
     @SuppressWarnings("unchecked")
-    public String getVisibility(Callback callback)
+    public void getVisibility(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getVisibility");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS visibility property the object
@@ -1549,27 +1331,25 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setVisibility(String VISIBILITY, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setVisibility(").appendData(VISIBILITY).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setVisibility", VISIBILITY, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the width property of this object.
-     * @return width.
-     *
+     * @param callback width.
+     */
     @SuppressWarnings("unchecked")
-    public int getWidth(Callback callback)
+    public void getWidth(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getWidth");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the width property of this object.
@@ -1581,10 +1361,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setWidth(int vntWidth, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setWidth(").appendData(vntWidth).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setWidth", vntWidth, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -1598,26 +1376,24 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setWidth(String vntWidth, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setWidth(").appendData(vntWidth).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setWidth", vntWidth, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the CSS z-index property
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getZIndex(Callback callback)
+    public void getZIndex(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getZIndex");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS z-index for the object
@@ -1628,10 +1404,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public org.directwebremoting.proxy.jsx3.gui.Block setZIndex(int intZIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setZIndex(").appendData(intZIndex).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setZIndex", intZIndex, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -1642,8 +1416,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void showMask(String strMessage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("showMask(").appendData(strMessage).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("showMask", strMessage);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1652,11 +1426,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void hideMask()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("hideMask(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("hideMask");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Publishes a model event. This method both evaluates any registered event script for the given event type
     and publishes the event through the EventDispatcher interface. This method ensures that any
     registered event script is executed in isolation to prevent most side effects.
@@ -1664,143 +1438,143 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
      * @param objContext JavaScript object array with name/value pairs that provide a local
     variable stack for the execution of the event script. This argument is also passed as the <code>context</code>
     property of the event object that is published through the <code>EventDispatcher</code> interface.
-     * @return the result of evaluating the event script or <code>null</code> if not event script is registered
-     *
+     * @param callback the result of evaluating the event script or <code>null</code> if not event script is registered
+     */
     @SuppressWarnings("unchecked")
-    public Object doEvent(String strType, Object objContext, Callback callback)
+    public void doEvent(String strType, Object objContext, Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = doEvent", strType, objContext);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether is object supports programmatic drag, meanining it will allow any contained item to be
     dragged and dropped on another container supporting drop.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getCanDrag(Callback callback)
+    public void getCanDrag(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanDrag");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether this object can be the target of a drop event.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getCanDrop(Callback callback)
+    public void getCanDrop(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanDrop");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether is object can be moved around the screen (this is not the same as drag/drop).
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getCanMove(Callback callback)
+    public void getCanMove(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanMove");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns whether is object can be spyglassed.
-     * @return <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
-     *
+     * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
+     */
     @SuppressWarnings("unchecked")
-    public int getCanSpy(Callback callback)
+    public void getCanSpy(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCanSpy");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the event script registered for the given event type. This script could have been set by the
     setEvent() method or during component deserialization.
      * @param strType the event type, one of the model event types defined as static fields in this class
-     * @return the JavaScript event script
-     *
+     * @param callback the JavaScript event script
+     */
     @SuppressWarnings("unchecked")
-    public String getEvent(String strType, Callback callback)
+    public void getEvent(String strType, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEvent", strType);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the associative array containing all the registered event script of this object. This method returns
     the instance field itself and not a copy.
-     * @return an associative array mapping event type to event script
-     *
+     * @param callback an associative array mapping event type to event script
+     */
     @SuppressWarnings("unchecked")
-    public Object getEvents(Callback callback)
+    public void getEvents(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEvents");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the name of the jsx3.gui.Menu instance to display (as a context menu) when a user
     clicks on this object with the right button.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getMenu(Callback callback)
+    public void getMenu(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMenu");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns true if there is a event script registered for the given event type.
      * @param strType the event type, one of the model event types defined as static fields in this class
-     * @return the JavaScript event script
-     *
+     * @param callback the JavaScript event script
+     */
     @SuppressWarnings("unchecked")
-    public String hasEvent(String strType, Callback callback)
+    public void hasEvent(String strType, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = hasEvent", strType);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
@@ -1829,11 +1603,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.HotKey registerHotKey(String vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").");
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.HotKey> ctor = org.directwebremoting.proxy.jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1849,11 +1623,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive removeEvent(String strType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeEvent(\"" + strType + "\").");
+        String extension = "removeEvent(\"" + strType + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1868,11 +1642,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive removeEvents()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("removeEvents().");
+        String extension = "removeEvents().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1889,11 +1663,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setCanDrag(int bDrag)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setCanDrag(\"" + bDrag + "\").");
+        String extension = "setCanDrag(\"" + bDrag + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1910,11 +1684,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setCanDrop(int bDrop)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setCanDrop(\"" + bDrop + "\").");
+        String extension = "setCanDrop(\"" + bDrop + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1931,11 +1705,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setCanMove(int bMovable)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setCanMove(\"" + bMovable + "\").");
+        String extension = "setCanMove(\"" + bMovable + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1952,11 +1726,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setCanSpy(int bSpy)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setCanSpy(\"" + bSpy + "\").");
+        String extension = "setCanSpy(\"" + bSpy + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1982,11 +1756,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setEvent(String strScript, String strType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setEvent(\"" + strScript + "\", \"" + strType + "\").");
+        String extension = "setEvent(\"" + strScript + "\", \"" + strType + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2003,11 +1777,11 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Interactive setMenu(String strMenu)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("setMenu(\"" + strMenu + "\").");
+        String extension = "setMenu(\"" + strMenu + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Interactive> ctor = org.directwebremoting.proxy.jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -2022,8 +1796,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void setSpyStyles(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setSpyStyles(").appendData(strCSS).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setSpyStyles", strCSS);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -2036,12 +1810,8 @@ public class Block extends org.directwebremoting.proxy.jsx3.gui.Painted
     public void showSpy(String strHTML, int intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("showSpy(").appendData(strHTML).appendScript(",")
-
-        .appendData(intLeft).appendScript(",")
-
-        .appendData(intTop).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("showSpy", strHTML, intLeft, intTop);
+        getScriptProxy().addScript(script);
     }
 
 }

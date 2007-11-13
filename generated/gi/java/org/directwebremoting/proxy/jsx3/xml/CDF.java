@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.xml;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -127,11 +129,12 @@ public interface CDF
     {
         /**
          * All reverse ajax proxies need context to work from
-         * @param helper The store of the context for the current action
+         * @param scriptProxy The place we are writing scripts to
+         * @param context The script that got us to where we are now
          */
-        public Document(ProxyHelper helper)
+        public Document(Context context, String extension, ScriptProxy scriptProxy)
         {
-            super(helper);
+            super(context, extension, scriptProxy);
         }
 
         /**
@@ -142,10 +145,8 @@ public interface CDF
         public void redrawRecord(String strRecordId, int intAction)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("redrawRecord(").appendData(strRecordId).appendScript(",")
-
-            .appendData(intAction).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("redrawRecord", strRecordId, intAction);
+            getScriptProxy().addScript(script);
         }
 
         /**
@@ -156,11 +157,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.xml.CDF.Document newDocument()
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("newDocument().");
+            String extension = "newDocument().";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.CDF.Document> ctor = org.directwebremoting.proxy.jsx3.xml.CDF.Document.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.xml.CDF.Document> ctor = org.directwebremoting.proxy.jsx3.xml.CDF.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -175,11 +176,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.xml.CDF.Document wrap(org.directwebremoting.proxy.jsx3.xml.Document objXML)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("wrap(\"" + objXML + "\").");
+            String extension = "wrap(\"" + objXML + "\").";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.CDF.Document> ctor = org.directwebremoting.proxy.jsx3.xml.CDF.Document.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.xml.CDF.Document> ctor = org.directwebremoting.proxy.jsx3.xml.CDF.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -214,11 +215,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.xml.Entity adoptRecord(String strSourceId, String strRecordId, String strParentRecordId, boolean bRedraw)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -254,11 +255,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public <T> T adoptRecord(String strSourceId, String strRecordId, String strParentRecordId, boolean bRedraw, Class<T> returnType)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -291,11 +292,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.xml.Entity adoptRecordBefore(String strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -329,11 +330,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public <T> T adoptRecordBefore(String strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw, Class<T> returnType)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -353,12 +354,8 @@ public interface CDF
         public void convertProperties(java.util.Properties objProps, Object[] arrProps, boolean bUnion)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("convertProperties(").appendData(objProps).appendScript(",")
-
-            .appendData(arrProps).appendScript(",")
-
-            .appendData(bUnion).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("convertProperties", objProps, arrProps, bUnion);
+            getScriptProxy().addScript(script);
         }
 
         /**
@@ -371,11 +368,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.xml.Entity deleteRecord(String strRecordId, boolean bRedraw)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("deleteRecord(\"" + strRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "deleteRecord(\"" + strRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -394,11 +391,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public <T> T deleteRecord(String strRecordId, boolean bRedraw, Class<T> returnType)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("deleteRecord(\"" + strRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "deleteRecord(\"" + strRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -416,15 +413,11 @@ public interface CDF
         public void deleteRecordProperty(String strRecordId, String strPropName, boolean bRedraw)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("deleteRecordProperty(").appendData(strRecordId).appendScript(",")
-
-            .appendData(strPropName).appendScript(",")
-
-            .appendData(bRedraw).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("deleteRecordProperty", strRecordId, strPropName, bRedraw);
+            getScriptProxy().addScript(script);
         }
 
-        /*
+        /**
          * Returns an object containing the attributes of a particular CDF record as property/value pairs. The object returned by this
         method is a copy of the underlying data. Therefore, updates to this object will not affect the underlying data.
 
@@ -433,18 +426,18 @@ public interface CDF
         objCDF.getRecord(strId).propName;
         objCDF.getRecordNode(strId).getAttribute("propName");
          * @param strRecordId the <code>jsxid</code> attribute of the data record to return.
-         * @return the object representation of a CDF node or <code>null</code> if no such record found.
-         *
+         * @param callback the object representation of a CDF node or <code>null</code> if no such record found.
+         */
         @SuppressWarnings("unchecked")
-        public Object getRecord(String strRecordId, Callback callback)
+        public void getRecord(String strRecordId, Callback<Object> callback)
         {
-            String key = // Generate some id
-            ScriptSession session = WebContext.get().getScriptSession();
-            Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-            calbackMap.put(key, callback);
-            session.addAttribute(CALLBACK_KEY, callbackMap);
+            String key = CallbackHelper.saveCallback(callback, Object.class);
+
+            ScriptBuffer script = new ScriptBuffer();
+            script.appendCall("var reply = getRecord", strRecordId);
+            script.appendCall("__System.activateCallback", key, "reply");
+            getScriptProxy().addScript(script);
         }
-        */
 
         /**
          * Returns a record from the XML data source of this object. This returned value is a handle to the record and
@@ -458,11 +451,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.xml.Entity getRecordNode(String strRecordId)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("getRecordNode(\"" + strRecordId + "\").");
+            String extension = "getRecordNode(\"" + strRecordId + "\").";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -483,11 +476,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public <T> T getRecordNode(String strRecordId, Class<T> returnType)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("getRecordNode(\"" + strRecordId + "\").");
+            String extension = "getRecordNode(\"" + strRecordId + "\").";
             try
             {
-                Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -519,11 +512,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.xml.Entity insertRecord(Object objRecord, String strParentRecordId, boolean bRedraw)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("insertRecord(\"" + objRecord + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "insertRecord(\"" + objRecord + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -556,11 +549,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public <T> T insertRecord(Object objRecord, String strParentRecordId, boolean bRedraw, Class<T> returnType)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("insertRecord(\"" + objRecord + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "insertRecord(\"" + objRecord + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -589,11 +582,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.xml.Entity insertRecordBefore(Object objRecord, String strSiblingRecordId, boolean bRedraw)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("insertRecordBefore(\"" + objRecord + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "insertRecordBefore(\"" + objRecord + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.xml.Entity> ctor = org.directwebremoting.proxy.jsx3.xml.Entity.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -623,11 +616,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public <T> T insertRecordBefore(Object objRecord, String strSiblingRecordId, boolean bRedraw, Class<T> returnType)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("insertRecordBefore(\"" + objRecord + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").");
+            String extension = "insertRecordBefore(\"" + objRecord + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {
@@ -651,12 +644,8 @@ public interface CDF
         public void insertRecordNode(org.directwebremoting.proxy.jsx3.xml.Entity objRecordNode, String strParentRecordId, boolean bRedraw)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendData(getProxyHelper().getContext()).appendScript("insertRecordNode(").appendData(objRecordNode).appendScript(",")
-
-            .appendData(strParentRecordId).appendScript(",")
-
-            .appendData(bRedraw).appendScript(");");
-            getProxyHelper().getScriptProxy().addScript(script);
+            script.appendCall("insertRecordNode", objRecordNode, strParentRecordId, bRedraw);
+            getScriptProxy().addScript(script);
         }
 
         /**
@@ -673,11 +662,11 @@ public interface CDF
         @SuppressWarnings("unchecked")
         public org.directwebremoting.proxy.jsx3.xml.CDF insertRecordProperty(String strRecordId, String strPropName, String strPropValue, boolean bRedraw)
         {
-            ProxyHelper child = getProxyHelper().getChildHelper("insertRecordProperty(\"" + strRecordId + "\", \"" + strPropName + "\", \"" + strPropValue + "\", \"" + bRedraw + "\").");
+            String extension = "insertRecordProperty(\"" + strRecordId + "\", \"" + strPropName + "\", \"" + strPropValue + "\", \"" + bRedraw + "\").";
             try
             {
-                Constructor<org.directwebremoting.proxy.jsx3.xml.CDF> ctor = org.directwebremoting.proxy.jsx3.xml.CDF.class.getConstructor(ProxyHelper.class);
-                return ctor.newInstance(child);
+                Constructor<org.directwebremoting.proxy.jsx3.xml.CDF> ctor = org.directwebremoting.proxy.jsx3.xml.CDF.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+                return ctor.newInstance(this, extension, getScriptProxy());
             }
             catch (Exception ex)
             {

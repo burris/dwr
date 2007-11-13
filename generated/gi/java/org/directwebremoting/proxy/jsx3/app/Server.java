@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.app;
 
 import java.lang.reflect.Constructor;
 import java.util.Date;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -30,11 +32,12 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Server(ProxyHelper helper)
+    public Server(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -46,7 +49,10 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Server(String strAppPath, String objGUI, boolean bPaint, Object objEnv)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Server", strAppPath, objGUI, bPaint, objEnv);
+        setInitScript(script);
     }
 
     /**
@@ -68,7 +74,7 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public static final String HELP = "help";
 
-    /*
+    /**
      * Returns the value of an environment setting of this server. Valid keys correspond to deployment options and are
     (case-insensitive):
 
@@ -91,17 +97,17 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     UNICODE
     EVENTSVERS
      * @param strEnvKey the key of the environment value to return
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getEnv(String strEnvKey, Callback callback)
+    public void getEnv(String strEnvKey, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getEnv", strEnvKey);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns the settings of this server/project per config.xml
@@ -109,11 +115,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Settings getSettings()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getSettings().");
+        String extension = "getSettings().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Settings> ctor = org.directwebremoting.proxy.jsx3.app.Settings.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Settings> ctor = org.directwebremoting.proxy.jsx3.app.Settings.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -129,11 +135,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.WindowBar getTaskBar(org.directwebremoting.proxy.jsx3.app.Model objJSX)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getTaskBar(\"" + objJSX + "\").");
+        String extension = "getTaskBar(\"" + objJSX + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.WindowBar> ctor = org.directwebremoting.proxy.jsx3.gui.WindowBar.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.WindowBar> ctor = org.directwebremoting.proxy.jsx3.gui.WindowBar.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -147,8 +153,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void destroy()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("destroy(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("destroy");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -164,8 +170,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void paint(org.directwebremoting.proxy.jsx3.xml.Document objXML)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("paint(").appendData(objXML).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("paint", objXML);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -178,14 +184,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setDimensions(int left, int top, int width, int height)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -198,14 +198,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setDimensions(Object[] left, int top, int width, int height)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -241,11 +235,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document loadInclude(String strSrc, String strId, String strType, String bReload)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadInclude(\"" + strSrc + "\", \"" + strId + "\", \"" + strType + "\", \"" + bReload + "\").");
+        String extension = "loadInclude(\"" + strSrc + "\", \"" + strId + "\", \"" + strType + "\", \"" + bReload + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -287,11 +281,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T loadInclude(String strSrc, String strId, String strType, String bReload, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadInclude(\"" + strSrc + "\", \"" + strId + "\", \"" + strType + "\", \"" + bReload + "\").");
+        String extension = "loadInclude(\"" + strSrc + "\", \"" + strId + "\", \"" + strType + "\", \"" + bReload + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -332,11 +326,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document loadInclude(org.directwebremoting.proxy.jsx3.net.URI strSrc, String strId, String strType, String bReload)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadInclude(\"" + strSrc + "\", \"" + strId + "\", \"" + strType + "\", \"" + bReload + "\").");
+        String extension = "loadInclude(\"" + strSrc + "\", \"" + strId + "\", \"" + strType + "\", \"" + bReload + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -378,11 +372,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T loadInclude(org.directwebremoting.proxy.jsx3.net.URI strSrc, String strId, String strType, String bReload, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadInclude(\"" + strSrc + "\", \"" + strId + "\", \"" + strType + "\", \"" + bReload + "\").");
+        String extension = "loadInclude(\"" + strSrc + "\", \"" + strId + "\", \"" + strType + "\", \"" + bReload + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -397,8 +391,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unloadInclude(String strId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unloadInclude(").appendData(strId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unloadInclude", strId);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -411,11 +405,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document loadResource(String strId)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadResource(\"" + strId + "\").");
+        String extension = "loadResource(\"" + strId + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -434,11 +428,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T loadResource(String strId, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadResource(\"" + strId + "\").");
+        String extension = "loadResource(\"" + strId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -454,28 +448,26 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setDynamicProperty(String strPropName, String vntValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDynamicProperty(").appendData(strPropName).appendScript(",")
-
-        .appendData(vntValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDynamicProperty", strPropName, vntValue);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the value of the dynamic property @strPropName
      * @param strPropName id for this dynamic property among all properties
      * @param strToken if present tokens such as {0}, {1}, {n} will be replaced with the nth element of this vararg array
-     * @return value of the property
-     *
+     * @param callback value of the property
+     */
     @SuppressWarnings("unchecked")
-    public String getDynamicProperty(String strPropName, String strToken, Callback callback)
+    public void getDynamicProperty(String strPropName, String strToken, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDynamicProperty", strPropName, strToken);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets a Cookie with the given name and value
@@ -490,37 +482,25 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setCookie(String name, String value, Date expires, String path, String domain, boolean secure, boolean bRaw)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setCookie(").appendData(name).appendScript(",")
-
-        .appendData(value).appendScript(",")
-
-        .appendData(expires).appendScript(",")
-
-        .appendData(path).appendScript(",")
-
-        .appendData(domain).appendScript(",")
-
-        .appendData(secure).appendScript(",")
-
-        .appendData(bRaw).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setCookie", name, value, expires, path, domain, secure, bRaw);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the value for the Cookie with the given @name
      * @param name name of the cookie
      * @param bRaw 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getCookie(String name, boolean bRaw, Callback callback)
+    public void getCookie(String name, boolean bRaw, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCookie", name, bRaw);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * delete a cookie
@@ -531,12 +511,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void deleteCookie(String name, String path, String domain)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("deleteCookie(").appendData(name).appendScript(",")
-
-        .appendData(path).appendScript(",")
-
-        .appendData(domain).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("deleteCookie", name, path, domain);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -545,11 +521,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Block getRootBlock()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getRootBlock().");
+        String extension = "getRootBlock().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -559,15 +535,16 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the root block for this server (JSXROOT)
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getRootBlock(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getRootBlock().");
+        String extension = "getRootBlock().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -582,11 +559,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getAlertsParent()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAlertsParent().");
+        String extension = "getAlertsParent().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -602,11 +579,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getAlertsParent(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAlertsParent().");
+        String extension = "getAlertsParent().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -620,11 +597,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Block getBodyBlock()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getBodyBlock().");
+        String extension = "getBodyBlock().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -634,15 +611,16 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
 
     /**
      * Returns the body block for this server (JSXBODY)
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getBodyBlock(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getBodyBlock().");
+        String extension = "getBodyBlock().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -650,20 +628,20 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns the list of objects that are children of the body object. These are the root objects
     in a serialization file and the root nodes in the Component Hierarchy palette.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getRootObjects(Callback callback)
+    public void getRootObjects(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRootObjects");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns the XML/XSL cache for this server
@@ -671,11 +649,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Cache getCache()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getCache().");
+        String extension = "getCache().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Cache> ctor = org.directwebremoting.proxy.jsx3.app.Cache.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Cache> ctor = org.directwebremoting.proxy.jsx3.app.Cache.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -689,11 +667,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.DOM getDOM()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getDOM().");
+        String extension = "getDOM().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.DOM> ctor = org.directwebremoting.proxy.jsx3.app.DOM.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.DOM> ctor = org.directwebremoting.proxy.jsx3.app.DOM.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -709,11 +687,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getJSX(String strId)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getJSX(\"" + strId + "\").");
+        String extension = "getJSX(\"" + strId + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -730,11 +708,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getJSX(String strId, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getJSX(\"" + strId + "\").");
+        String extension = "getJSX(\"" + strId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -750,11 +728,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getJSXByName(String strId)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getJSXByName(\"" + strId + "\").");
+        String extension = "getJSXByName(\"" + strId + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -771,11 +749,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getJSXByName(String strId, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getJSXByName(\"" + strId + "\").");
+        String extension = "getJSXByName(\"" + strId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -791,11 +769,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getJSXById(String strId)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getJSXById(\"" + strId + "\").");
+        String extension = "getJSXById(\"" + strId + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -812,11 +790,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getJSXById(String strId, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getJSXById(\"" + strId + "\").");
+        String extension = "getJSXById(\"" + strId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -832,11 +810,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Window createAppWindow(String strName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("createAppWindow(\"" + strName + "\").");
+        String extension = "createAppWindow(\"" + strName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Window> ctor = org.directwebremoting.proxy.jsx3.gui.Window.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Window> ctor = org.directwebremoting.proxy.jsx3.gui.Window.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -852,11 +830,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Window loadAppWindow(org.directwebremoting.proxy.jsx3.xml.Entity strSource)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadAppWindow(\"" + strSource + "\").");
+        String extension = "loadAppWindow(\"" + strSource + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Window> ctor = org.directwebremoting.proxy.jsx3.gui.Window.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Window> ctor = org.directwebremoting.proxy.jsx3.gui.Window.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -872,11 +850,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Window loadAppWindow(String strSource)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("loadAppWindow(\"" + strSource + "\").");
+        String extension = "loadAppWindow(\"" + strSource + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Window> ctor = org.directwebremoting.proxy.jsx3.gui.Window.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Window> ctor = org.directwebremoting.proxy.jsx3.gui.Window.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -892,11 +870,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Window getAppWindow(String strName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAppWindow(\"" + strName + "\").");
+        String extension = "getAppWindow(\"" + strName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Window> ctor = org.directwebremoting.proxy.jsx3.gui.Window.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Window> ctor = org.directwebremoting.proxy.jsx3.gui.Window.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -904,39 +882,39 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns the browser document object containing a particular JSX object. This method inspects whether the
     JSX object is a descendent of the root block of this server or one of its jsx3.gui.Window roots.
      * @param objJSX 
-     * @return document object
-     *
+     * @param callback document object
+     */
     @SuppressWarnings("unchecked")
-    public HTMLDocument getDocumentOf(org.directwebremoting.proxy.jsx3.app.Model objJSX, Callback callback)
+    public void getDocumentOf(org.directwebremoting.proxy.jsx3.app.Model objJSX, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDocumentOf", objJSX);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the browser DOM object where a particulat JSX object renders. This method inspects the main root of
     this server as well as all of its jsx3.gui.Window roots.
      * @param objJSX 
-     * @return DOM object
-     *
+     * @param callback DOM object
+     */
     @SuppressWarnings("unchecked")
-    public String getRenderedOf(org.directwebremoting.proxy.jsx3.app.Model objJSX, Callback callback)
+    public void getRenderedOf(org.directwebremoting.proxy.jsx3.app.Model objJSX, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRenderedOf", objJSX);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Resolves a URI that is referenced from a file in this server. This method takes into account the changes in
@@ -950,11 +928,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.URI resolveURI(String strURI)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("resolveURI(\"" + strURI + "\").");
+        String extension = "resolveURI(\"" + strURI + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.URI> ctor = org.directwebremoting.proxy.jsx3.net.URI.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.URI> ctor = org.directwebremoting.proxy.jsx3.net.URI.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -974,11 +952,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.URI resolveURI(org.directwebremoting.proxy.jsx3.net.URI strURI)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("resolveURI(\"" + strURI + "\").");
+        String extension = "resolveURI(\"" + strURI + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.URI> ctor = org.directwebremoting.proxy.jsx3.net.URI.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.URI> ctor = org.directwebremoting.proxy.jsx3.net.URI.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -986,19 +964,19 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getUriPrefix(Callback callback)
+    public void getUriPrefix(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getUriPrefix");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * 
@@ -1009,11 +987,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.URI relativizeURI(String strURI, boolean bRel)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("relativizeURI(\"" + strURI + "\", \"" + bRel + "\").");
+        String extension = "relativizeURI(\"" + strURI + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.URI> ctor = org.directwebremoting.proxy.jsx3.net.URI.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.URI> ctor = org.directwebremoting.proxy.jsx3.net.URI.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1030,11 +1008,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.net.URI relativizeURI(org.directwebremoting.proxy.jsx3.net.URI strURI, boolean bRel)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("relativizeURI(\"" + strURI + "\", \"" + bRel + "\").");
+        String extension = "relativizeURI(\"" + strURI + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.net.URI> ctor = org.directwebremoting.proxy.jsx3.net.URI.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.net.URI> ctor = org.directwebremoting.proxy.jsx3.net.URI.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1050,11 +1028,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale getLocale()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLocale().");
+        String extension = "getLocale().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1069,8 +1047,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setLocale(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLocale(").appendData(objLocale).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLocale", objLocale);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1080,11 +1058,11 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale getDefaultLocale()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getDefaultLocale().");
+        String extension = "getDefaultLocale().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -1099,8 +1077,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void reloadLocalizedResources()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("reloadLocalizedResources(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("reloadLocalizedResources");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1111,25 +1089,25 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void invokeHelp(org.directwebremoting.proxy.jsx3.app.Model objJSX)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("invokeHelp(").appendData(objJSX).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("invokeHelp", objJSX);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Publishes an event to all subscribed objects.
      * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
-     * @return the number of listeners to which the event was broadcast
-     *
+     * @param callback the number of listeners to which the event was broadcast
+     */
     @SuppressWarnings("unchecked")
-    public int publish(Object objEvent, Callback callback)
+    public void publish(Object objEvent, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = publish", objEvent);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Subscribes an object or function to a type of event published by this object.
@@ -1142,12 +1120,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(",")
-
-        .appendData(objFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1160,10 +1134,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribe(String strEventId, Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1173,8 +1145,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribeAll", strEventId);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1188,16 +1160,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void alert(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, String strOk, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("alert(").appendData(strTitle).appendScript(",")
-
-        .appendData(strMessage).appendScript(",")
-
-        .appendData(fctOnOk).appendScript(",")
-
-        .appendData(strOk).appendScript(",")
-
-        .appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("alert", strTitle, strMessage, fctOnOk, strOk, objParams);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1208,10 +1172,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void configureAlert(String objDialog, Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("configureAlert(").appendData(objDialog).appendScript(",")
-
-        .appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("configureAlert", objDialog, objParams);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1231,26 +1193,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
             String strNo, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("confirm(").appendData(strTitle).appendScript(",")
-
-        .appendData(strMessage).appendScript(",")
-
-        .appendData(fctOnOk).appendScript(",")
-
-        .appendData(fctOnCancel).appendScript(",")
-
-        .appendData(strOk).appendScript(",")
-
-        .appendData(strCancel).appendScript(",")
-
-        .appendData(intBtnDefault).appendScript(",")
-
-        .appendData(fctOnNo).appendScript(",")
-
-        .appendData(strNo).appendScript(",")
-
-        .appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("confirm", strTitle, strMessage, fctOnOk, fctOnCancel, strOk, strCancel, intBtnDefault, fctOnNo, strNo, objParams);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1266,20 +1210,8 @@ public class Server extends org.directwebremoting.proxy.jsx3.lang.Object
     public void prompt(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, org.directwebremoting.proxy.CodeBlock fctOnCancel, String strOk, String strCancel, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("prompt(").appendData(strTitle).appendScript(",")
-
-        .appendData(strMessage).appendScript(",")
-
-        .appendData(fctOnOk).appendScript(",")
-
-        .appendData(fctOnCancel).appendScript(",")
-
-        .appendData(strOk).appendScript(",")
-
-        .appendData(strCancel).appendScript(",")
-
-        .appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("prompt", strTitle, strMessage, fctOnOk, fctOnCancel, strOk, strCancel, objParams);
+        getScriptProxy().addScript(script);
     }
 
 }

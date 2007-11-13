@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Stack extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Stack(ProxyHelper helper)
+    public Stack(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +46,10 @@ public class Stack extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public Stack(String strName, String strCaption)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Stack", strName, strCaption);
+        setInitScript(script);
     }
 
     /**
@@ -82,8 +88,8 @@ public class Stack extends org.directwebremoting.proxy.jsx3.gui.Block
     public void doShow()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("doShow(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("doShow");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -93,11 +99,11 @@ public class Stack extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.app.Model getContentChild()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getContentChild().");
+        String extension = "getContentChild().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.app.Model> ctor = org.directwebremoting.proxy.jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -108,15 +114,16 @@ public class Stack extends org.directwebremoting.proxy.jsx3.gui.Block
     /**
      * Returns the child of this stack that will be painted as the content of this stack. This implementation
     returns the first child that is not a menu or a toolbar button.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getContentChild(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getContentChild().");
+        String extension = "getContentChild().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -124,20 +131,20 @@ public class Stack extends org.directwebremoting.proxy.jsx3.gui.Block
         }
     }
 
-    /*
+    /**
      * Returns valid CSS property value, (i.e., red, #ffffff) when caption bar for stack is moused over. Default: jsx3.gui.Stack.ACTIVECOLOR
-     * @return valid CSS property value, (i.e., red, #ffffff)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ffffff)
+     */
     @SuppressWarnings("unchecked")
-    public String getActiveColor(Callback callback)
+    public void getActiveColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getActiveColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets valid CSS property value, (i.e., red, #ffffff) when caption bar for stack is moused over;
@@ -148,25 +155,25 @@ public class Stack extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Stack setActiveColor(String strActiveColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setActiveColor(").appendData(strActiveColor).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setActiveColor", strActiveColor);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns valid CSS property value, (i.e., red, #ffffff) when caption bar for stack is moused out. Default: jsx3.gui.Stack.INACTIVECOLOR
-     * @return valid CSS property value, (i.e., red, #ffffff)
-     *
+     * @param callback valid CSS property value, (i.e., red, #ffffff)
+     */
     @SuppressWarnings("unchecked")
-    public String getInactiveColor(Callback callback)
+    public void getInactiveColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getInactiveColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets valid CSS property value, (i.e., red, #ffffff) when caption bar for stack is moused out;
@@ -177,23 +184,23 @@ public class Stack extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Stack setInactiveColor(String strInactiveColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setInactiveColor(").appendData(strInactiveColor).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setInactiveColor", strInactiveColor);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns whether or not this stack is the active (expanded) stack
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean isFront(Callback callback)
+    public void isFront(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isFront");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class Line extends org.directwebremoting.proxy.jsx3.vector.Shape
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Line(ProxyHelper helper)
+    public Line(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -45,7 +48,10 @@ public class Line extends org.directwebremoting.proxy.jsx3.vector.Shape
      */
     public Line(int left, int top, int x1, int y1, int x2, int y2)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Line", left, top, x1, y1, x2, y2);
+        setInitScript(script);
     }
 
     /**
@@ -58,30 +64,24 @@ public class Line extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setPoints(int x1, int y1, int x2, int y2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPoints(").appendData(x1).appendScript(",")
-
-        .appendData(y1).appendScript(",")
-
-        .appendData(x2).appendScript(",")
-
-        .appendData(y2).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPoints", x1, y1, x2, y2);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the x1 field.
-     * @return x1
-     *
+     * @param callback x1
+     */
     @SuppressWarnings("unchecked")
-    public int getX1(Callback callback)
+    public void getX1(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getX1");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the x1 field.
@@ -90,24 +90,24 @@ public class Line extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setX1(int x1)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setX1(").appendData(x1).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setX1", x1);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the y1 field.
-     * @return y1
-     *
+     * @param callback y1
+     */
     @SuppressWarnings("unchecked")
-    public int getY1(Callback callback)
+    public void getY1(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getY1");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the y1 field.
@@ -116,24 +116,24 @@ public class Line extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setY1(int y1)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setY1(").appendData(y1).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setY1", y1);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the x2 field.
-     * @return x2
-     *
+     * @param callback x2
+     */
     @SuppressWarnings("unchecked")
-    public int getX2(Callback callback)
+    public void getX2(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getX2");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the x2 field.
@@ -142,24 +142,24 @@ public class Line extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setX2(int x2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setX2(").appendData(x2).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setX2", x2);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the y2 field.
-     * @return y2
-     *
+     * @param callback y2
+     */
     @SuppressWarnings("unchecked")
-    public int getY2(Callback callback)
+    public void getY2(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getY2");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the y2 field.
@@ -168,8 +168,8 @@ public class Line extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setY2(int y2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setY2(").appendData(y2).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setY2", y2);
+        getScriptProxy().addScript(script);
     }
 
 }

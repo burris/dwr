@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.html;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public BlockTag(ProxyHelper helper)
+    public BlockTag(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -45,23 +48,26 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
      */
     public BlockTag(String strTagNS, String strTagName, int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new BlockTag", strTagNS, strTagName, left, top, width, height);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the left field.
-     * @return left
-     *
+     * @param callback left
+     */
     @SuppressWarnings("unchecked")
-    public int getLeft(Callback callback)
+    public void getLeft(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLeft");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the left field.
@@ -70,24 +76,24 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setLeft(int left)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLeft(").appendData(left).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLeft", left);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the top field.
-     * @return top
-     *
+     * @param callback top
+     */
     @SuppressWarnings("unchecked")
-    public int getTop(Callback callback)
+    public void getTop(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTop");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the top field.
@@ -96,24 +102,24 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setTop(int top)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTop(").appendData(top).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTop", top);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the width field.
-     * @return width
-     *
+     * @param callback width
+     */
     @SuppressWarnings("unchecked")
-    public int getWidth(Callback callback)
+    public void getWidth(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getWidth");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the width field.
@@ -122,24 +128,24 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setWidth(int width)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setWidth(").appendData(width).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setWidth", width);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the height field.
-     * @return height
-     *
+     * @param callback height
+     */
     @SuppressWarnings("unchecked")
-    public int getHeight(Callback callback)
+    public void getHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the height field.
@@ -148,24 +154,24 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setHeight(int height)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHeight(").appendData(height).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHeight", height);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the margin field, as set by setMargin().
-     * @return margin
-     *
+     * @param callback margin
+     */
     @SuppressWarnings("unchecked")
-    public String getMargin(Callback callback)
+    public void getMargin(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMargin");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the margin field, can be a single value or four values separated by space that correspond to top, right, bottom, and left.
@@ -174,24 +180,24 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setMargin(String margin)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMargin(").appendData(margin).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMargin", margin);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the padding field, as set by setPadding().
-     * @return padding
-     *
+     * @param callback padding
+     */
     @SuppressWarnings("unchecked")
-    public String getPadding(Callback callback)
+    public void getPadding(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPadding");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the padding field, can be a single value or four values separated by space that correspond to top, right, bottom, and left.
@@ -200,24 +206,24 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setPadding(String padding)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPadding(").appendData(padding).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPadding", padding);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the position field.
-     * @return position
-     *
+     * @param callback position
+     */
     @SuppressWarnings("unchecked")
-    public String getPosition(Callback callback)
+    public void getPosition(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPosition");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the position field, can be 'absolute' or 'relative'.
@@ -226,24 +232,24 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setPosition(String position)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPosition(").appendData(position).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPosition", position);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the zIndex field.
-     * @return zIndex
-     *
+     * @param callback zIndex
+     */
     @SuppressWarnings("unchecked")
-    public int getZIndex(Callback callback)
+    public void getZIndex(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getZIndex");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the zIndex field.
@@ -252,24 +258,24 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setZIndex(int zIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setZIndex(").appendData(zIndex).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setZIndex", zIndex);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the bgcolor field.
-     * @return bgcolor
-     *
+     * @param callback bgcolor
+     */
     @SuppressWarnings("unchecked")
-    public String getBackgroundColor(Callback callback)
+    public void getBackgroundColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBackgroundColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the bgcolor field.
@@ -278,54 +284,54 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setBackgroundColor(String bgcolor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBackgroundColor(").appendData(bgcolor).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBackgroundColor", bgcolor);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * parses the margin field into an array of four int values
-     * @return [top,right,bottom,left]
-     *
+     * @param callback [top,right,bottom,left]
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getMarginDimensions(Callback callback)
+    public void getMarginDimensions(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMarginDimensions");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * parses the padding field into an array of four int values
-     * @return [top,right,bottom,left]
-     *
+     * @param callback [top,right,bottom,left]
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getPaddingDimensions(Callback callback)
+    public void getPaddingDimensions(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
-     * Returns the dimensions in an array of four int values
-     * @return [left,top,width,height]
-     *
-    @SuppressWarnings("unchecked")
-    public Object[] getDimensions(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPaddingDimensions");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the dimensions in an array of four int values
+     * @param callback [left,top,width,height]
+     */
+    @SuppressWarnings("unchecked")
+    public void getDimensions(Callback<Object[]> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDimensions");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets all four dimensions at once.
@@ -337,14 +343,8 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setDimensions(int left, int top, int width, int height)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -357,14 +357,8 @@ public class BlockTag extends org.directwebremoting.proxy.jsx3.html.Tag
     public void setDimensions(Object[] left, int top, int width, int height)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDimensions(").appendData(left).appendScript(",")
-
-        .appendData(top).appendScript(",")
-
-        .appendData(width).appendScript(",")
-
-        .appendData(height).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDimensions", left, top, width, height);
+        getScriptProxy().addScript(script);
     }
 
 }

@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import java.lang.reflect.Constructor;
 
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -28,11 +31,12 @@ public class CartesianChart extends org.directwebremoting.proxy.jsx3.chart.Chart
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public CartesianChart(ProxyHelper helper)
+    public CartesianChart(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -45,23 +49,26 @@ public class CartesianChart extends org.directwebremoting.proxy.jsx3.chart.Chart
      */
     public CartesianChart(String name, int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new CartesianChart", name, left, top, width, height);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the array of children GridLines instances.
-     * @return gridLines
-     *
+     * @param callback gridLines
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getGridLines(Callback callback)
+    public void getGridLines(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getGridLines");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns the primary x axis, if any.
@@ -70,11 +77,11 @@ public class CartesianChart extends org.directwebremoting.proxy.jsx3.chart.Chart
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.Axis getPrimaryXAxis()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPrimaryXAxis().");
+        String extension = "getPrimaryXAxis().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -90,11 +97,11 @@ public class CartesianChart extends org.directwebremoting.proxy.jsx3.chart.Chart
     @SuppressWarnings("unchecked")
     public <T> T getPrimaryXAxis(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPrimaryXAxis().");
+        String extension = "getPrimaryXAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -109,11 +116,11 @@ public class CartesianChart extends org.directwebremoting.proxy.jsx3.chart.Chart
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.Axis getPrimaryYAxis()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPrimaryYAxis().");
+        String extension = "getPrimaryYAxis().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -129,11 +136,11 @@ public class CartesianChart extends org.directwebremoting.proxy.jsx3.chart.Chart
     @SuppressWarnings("unchecked")
     public <T> T getPrimaryYAxis(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getPrimaryYAxis().");
+        String extension = "getPrimaryYAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -141,52 +148,52 @@ public class CartesianChart extends org.directwebremoting.proxy.jsx3.chart.Chart
         }
     }
 
-    /*
+    /**
      * Returns the range for axis, delegates to getXRange() or getYRange().
      * @param axis 
-     * @return [min,max] or null if no range can be found
-     *
+     * @param callback [min,max] or null if no range can be found
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getRangeForAxis(org.directwebremoting.proxy.jsx3.chart.Axis axis, Callback callback)
+    public void getRangeForAxis(org.directwebremoting.proxy.jsx3.chart.Axis axis, Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRangeForAxis", axis);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the range of x values in the data provider, subclasses must implement.
      * @param series the series to consider
-     * @return [min,max] or null if no range can be found
-     *
+     * @param callback [min,max] or null if no range can be found
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getXRange(Object[] series, Callback callback)
+    public void getXRange(Object[] series, Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getXRange", series);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the range of y values in the data provider, subclasses must implement.
      * @param series the series to consider
-     * @return [min,max] or null if no range can be found
-     *
+     * @param callback [min,max] or null if no range can be found
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getYRange(Object[] series, Callback callback)
+    public void getYRange(Object[] series, Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getYRange", series);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.app;
 
 import java.lang.reflect.Constructor;
+import java.util.Date;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +32,12 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Cache(ProxyHelper helper)
+    public Cache(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -41,7 +45,10 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Cache()
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Cache");
+        setInitScript(script);
     }
 
     /**
@@ -77,11 +84,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document clearById(String strId)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("clearById(\"" + strId + "\").");
+        String extension = "clearById(\"" + strId + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -98,11 +105,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T clearById(String strId, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("clearById(\"" + strId + "\").");
+        String extension = "clearById(\"" + strId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -110,37 +117,37 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Removes all documents placed in this cache before intTimestamp.
      * @param intTimestamp epoch seconds or a date object.
-     * @return the ids of the removed documents.
-     *
+     * @param callback the ids of the removed documents.
+     */
     @SuppressWarnings("unchecked")
-    public Object[] clearByTimestamp(int intTimestamp, Callback callback)
+    public void clearByTimestamp(int intTimestamp, Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = clearByTimestamp", intTimestamp);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Removes all documents placed in this cache before intTimestamp.
      * @param intTimestamp epoch seconds or a date object.
-     * @return the ids of the removed documents.
-     *
+     * @param callback the ids of the removed documents.
+     */
     @SuppressWarnings("unchecked")
-    public Object[] clearByTimestamp(Date intTimestamp, Callback callback)
+    public void clearByTimestamp(Date intTimestamp, Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = clearByTimestamp", intTimestamp);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns the document stored in this cache under id strId.
@@ -150,11 +157,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getDocument(String strId)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getDocument(\"" + strId + "\").");
+        String extension = "getDocument(\"" + strId + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -171,11 +178,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getDocument(String strId, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getDocument(\"" + strId + "\").");
+        String extension = "getDocument(\"" + strId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -196,11 +203,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getOrOpenDocument(String strURL, String strId, Class objClass)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -222,11 +229,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getOrOpenDocument(String strURL, String strId, Class objClass, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -247,11 +254,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getOrOpenDocument(org.directwebremoting.proxy.jsx3.net.URI strURL, String strId, Class objClass)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -273,11 +280,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getOrOpenDocument(org.directwebremoting.proxy.jsx3.net.URI strURL, String strId, Class objClass, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -297,11 +304,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document openDocument(String strURL, String strId, Class objClass)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -322,11 +329,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T openDocument(String strURL, String strId, Class objClass, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -346,11 +353,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document openDocument(org.directwebremoting.proxy.jsx3.net.URI strURL, String strId, Class objClass)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -371,11 +378,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T openDocument(org.directwebremoting.proxy.jsx3.net.URI strURL, String strId, Class objClass, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -396,11 +403,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getOrOpenAsync(String strURL, String strId, Class objClass)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -422,11 +429,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getOrOpenAsync(String strURL, String strId, Class objClass, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -447,11 +454,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.xml.Document getOrOpenAsync(org.directwebremoting.proxy.jsx3.net.URI strURL, String strId, Class objClass)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.xml.Document> ctor = org.directwebremoting.proxy.jsx3.xml.Document.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -473,11 +480,11 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getOrOpenAsync(org.directwebremoting.proxy.jsx3.net.URI strURL, String strId, Class objClass, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").");
+        String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -494,42 +501,40 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setDocument(String strId, org.directwebremoting.proxy.jsx3.xml.Document objDocument)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDocument(").appendData(strId).appendScript(",")
-
-        .appendData(objDocument).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDocument", strId, objDocument);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the timestamp from when the document stored under id strId was stored in this cache.
      * @param strId the id under which the document is stored.
-     * @return the timestamp as an integer (epoch seconds) or <code>null</code> if no such document exists
+     * @param callback the timestamp as an integer (epoch seconds) or <code>null</code> if no such document exists
     in this cache.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getTimestamp(String strId, Callback callback)
+    public void getTimestamp(String strId, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
 
-    /*
-     * Returns a list of all the keys in this cache instance.
-     *
-    @SuppressWarnings("unchecked")
-    public Object[] keys(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTimestamp", strId);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns a list of all the keys in this cache instance.
+     */
+    @SuppressWarnings("unchecked")
+    public void keys(Callback<Object[]> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = keys");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Removes all references to documents contained in this cache. This cache is no longer usable after calling this
@@ -538,25 +543,25 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     public void destroy()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("destroy(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("destroy");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Publishes an event to all subscribed objects.
      * @param objEvent the event, should have at least a field 'subject' that is the event id, another common field is 'target' (target will default to this instance)
-     * @return the number of listeners to which the event was broadcast
-     *
+     * @param callback the number of listeners to which the event was broadcast
+     */
     @SuppressWarnings("unchecked")
-    public int publish(Object objEvent, Callback callback)
+    public void publish(Object objEvent, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = publish", objEvent);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Subscribes an object or function to a type of event published by this object.
@@ -569,12 +574,8 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     public void subscribe(String strEventId, Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("subscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(",")
-
-        .appendData(objFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -587,10 +588,8 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribe(String strEventId, Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribe(").appendData(strEventId).appendScript(",")
-
-        .appendData(objHandler).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -600,8 +599,8 @@ public class Cache extends org.directwebremoting.proxy.jsx3.lang.Object
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("unsubscribeAll(").appendData(strEventId).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("unsubscribeAll", strEventId);
+        getScriptProxy().addScript(script);
     }
 
 }

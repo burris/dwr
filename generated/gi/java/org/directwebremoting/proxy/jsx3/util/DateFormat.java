@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.util;
 
 import java.lang.reflect.Constructor;
+import java.util.Date;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +32,12 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public DateFormat(ProxyHelper helper)
+    public DateFormat(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,7 +48,10 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public DateFormat(String strFormat, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new DateFormat", strFormat, objLocale);
+        setInitScript(script);
     }
 
     /**
@@ -76,11 +83,11 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.DateFormat getDateInstance(int intType, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getDateInstance(\"" + intType + "\", \"" + objLocale + "\").");
+        String extension = "getDateInstance(\"" + intType + "\", \"" + objLocale + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.DateFormat> ctor = org.directwebremoting.proxy.jsx3.util.DateFormat.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.DateFormat> ctor = org.directwebremoting.proxy.jsx3.util.DateFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -97,11 +104,11 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.DateFormat getTimeInstance(int intType, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getTimeInstance(\"" + intType + "\", \"" + objLocale + "\").");
+        String extension = "getTimeInstance(\"" + intType + "\", \"" + objLocale + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.DateFormat> ctor = org.directwebremoting.proxy.jsx3.util.DateFormat.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.DateFormat> ctor = org.directwebremoting.proxy.jsx3.util.DateFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -119,11 +126,11 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.DateFormat getDateTimeInstance(int intDateType, int intTimeType, org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getDateTimeInstance(\"" + intDateType + "\", \"" + intTimeType + "\", \"" + objLocale + "\").");
+        String extension = "getDateTimeInstance(\"" + intDateType + "\", \"" + intTimeType + "\", \"" + objLocale + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.DateFormat> ctor = org.directwebremoting.proxy.jsx3.util.DateFormat.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.DateFormat> ctor = org.directwebremoting.proxy.jsx3.util.DateFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -137,11 +144,11 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.util.Locale getLocale()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getLocale().");
+        String extension = "getLocale().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.util.Locale> ctor = org.directwebremoting.proxy.jsx3.util.Locale.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -156,11 +163,11 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setLocale(org.directwebremoting.proxy.jsx3.util.Locale objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLocale(").appendData(objLocale).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLocale", objLocale);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the timezone offset of this date format. This is the difference between GMT and the local time of this
     date format, in minutes. For example, Pacific Standard Time is -480 (-08h * 60). If the timezone offset has been
     set explicitly with setTimeZoneOffset(), that value is returned.
@@ -171,18 +178,18 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     has not been set explicitly, the timezone offset is determined from the objDate parameter, or, if
     that is not provided, from the current time.
      * @param objDate the date for which to return the timezone offset.
-     * @return the timezone offset in minutes.
-     *
+     * @param callback the timezone offset in minutes.
+     */
     @SuppressWarnings("unchecked")
-    public int getTimeZoneOffset(Date objDate, Callback callback)
+    public void getTimeZoneOffset(Date objDate, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTimeZoneOffset", objDate);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the timezone offset of this date format. The default value is the value for the local time.
@@ -191,90 +198,90 @@ public class DateFormat extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setTimeZoneOffset(int intMinutes)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTimeZoneOffset(").appendData(intMinutes).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTimeZoneOffset", intMinutes);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Formats a date according to this date format.
      * @param objDate the date to format.
-     * @return the formatted date.
-     *
+     * @param callback the formatted date.
+     */
     @SuppressWarnings("unchecked")
-    public String format(int objDate, Callback callback)
+    public void format(int objDate, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = format", objDate);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Formats a date according to this date format.
      * @param objDate the date to format.
-     * @return the formatted date.
-     *
+     * @param callback the formatted date.
+     */
     @SuppressWarnings("unchecked")
-    public String format(Object objDate, Callback callback)
+    public void format(Object objDate, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = format", objDate);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Formats a date according to this date format.
      * @param objDate the date to format.
-     * @return the formatted date.
-     *
+     * @param callback the formatted date.
+     */
     @SuppressWarnings("unchecked")
-    public String format(Date objDate, Callback callback)
+    public void format(Date objDate, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = format", objDate);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Parses a string according to this date format and returns the resulting date. If strDate does
     not conform to this date format, an exception is thrown.
 
     The default date for the purposes of this method is 1-Jan-1970 12:00AM, local time. If any date fields
     are omitted from this format, the date returned by this method will inherit those fields from the default date.
      * @param strDate the string to parse.
-     * @return the parsed date.
-     *
+     * @param callback the parsed date.
+     */
     @SuppressWarnings("unchecked")
-    public Date parse(String strDate, Callback callback)
+    public void parse(String strDate, Callback<Date> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Date.class);
 
-    /*
-     * Returns the format passed to the constructor.
-     *
-    @SuppressWarnings("unchecked")
-    public String getFormat(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = parse", strDate);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the format passed to the constructor.
+     */
+    @SuppressWarnings("unchecked")
+    public void getFormat(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFormat");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
 }

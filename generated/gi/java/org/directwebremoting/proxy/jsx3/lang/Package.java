@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.lang;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Package extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Package(ProxyHelper helper)
+    public Package(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -58,10 +61,8 @@ public class Package extends org.directwebremoting.proxy.jsx3.lang.Object
     public void definePackage(String strName, org.directwebremoting.proxy.CodeBlock fctBody)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("definePackage(").appendData(strName).appendScript(",")
-
-        .appendData(fctBody).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("definePackage", strName, fctBody);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -72,11 +73,11 @@ public class Package extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.lang.Package forName(String strName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("forName(\"" + strName + "\").");
+        String extension = "forName(\"" + strName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.lang.Package> ctor = org.directwebremoting.proxy.jsx3.lang.Package.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.lang.Package> ctor = org.directwebremoting.proxy.jsx3.lang.Package.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -84,77 +85,77 @@ public class Package extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns a list of all defined packages.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getPackages(Callback callback)
+    public void getPackages(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPackages");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the fully-qualified name of this class.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getName(Callback callback)
+    public void getName(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the namespace of this package. The namespace is the JavaScript object, descending from
     window, that references this package by its property jsxpackage.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object getNamespace(Callback callback)
+    public void getNamespace(Callback<Object> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getNamespace");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns an array of all the classes defined in this package.
-     *
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getClasses(Callback callback)
+    public void getClasses(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
-     * Returns the array of static methods defined for this package.
-     * @return an array of jsx3.Method instances
-     *
-    @SuppressWarnings("unchecked")
-    public Object[] getStaticMethods(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getClasses");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the array of static methods defined for this package.
+     * @param callback an array of jsx3.Method instances
+     */
+    @SuppressWarnings("unchecked")
+    public void getStaticMethods(Callback<Object[]> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStaticMethods");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Returns the static method defined in this package with name strMethodName.
@@ -164,11 +165,11 @@ public class Package extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.lang.Method getStaticMethod(String strMethodName)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getStaticMethod(\"" + strMethodName + "\").");
+        String extension = "getStaticMethod(\"" + strMethodName + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.lang.Method> ctor = org.directwebremoting.proxy.jsx3.lang.Method.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.lang.Method> ctor = org.directwebremoting.proxy.jsx3.lang.Method.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -176,19 +177,19 @@ public class Package extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns the array of static fields defined for this package.
-     * @return an array of String names
-     *
+     * @param callback an array of String names
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getStaticFieldNames(Callback callback)
+    public void getStaticFieldNames(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStaticFieldNames");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

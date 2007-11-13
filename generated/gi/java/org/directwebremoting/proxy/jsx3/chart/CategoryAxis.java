@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class CategoryAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public CategoryAxis(ProxyHelper helper)
+    public CategoryAxis(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,7 +45,10 @@ public class CategoryAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
      */
     public CategoryAxis(String name, boolean horizontal, boolean primary)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new CategoryAxis", name, horizontal, primary);
+        setInitScript(script);
     }
 
     /**
@@ -55,20 +61,20 @@ public class CategoryAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
      */
     public static final String TICKS_BETWEEN = "between";
 
-    /*
+    /**
      * Returns the tickAlignment field, if 'between' then the midpoint of the category is between two major ticks, otherwise if 'aligned' then the midpoint of the category is aligned with a major tick.
-     * @return tickAlignment, one of {'aligned','between'}
-     *
+     * @param callback tickAlignment, one of {'aligned','between'}
+     */
     @SuppressWarnings("unchecked")
-    public String getTickAlignment(Callback callback)
+    public void getTickAlignment(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTickAlignment");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the tickAlignment field.
@@ -77,24 +83,24 @@ public class CategoryAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setTickAlignment(String tickAlignment)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTickAlignment(").appendData(tickAlignment).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTickAlignment", tickAlignment);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the categoryField field, the attribute of records from the data provider that contains the category name (this value can still be transformed by Axis's 'labelFunction' field).
-     * @return categoryField
-     *
+     * @param callback categoryField
+     */
     @SuppressWarnings("unchecked")
-    public String getCategoryField(Callback callback)
+    public void getCategoryField(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCategoryField");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the categoryField field.
@@ -103,24 +109,24 @@ public class CategoryAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setCategoryField(String categoryField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setCategoryField(").appendData(categoryField).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setCategoryField", categoryField);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the paddingLow field, the number of category widths to pad the beginning of the axis with.
-     * @return paddingLow
-     *
+     * @param callback paddingLow
+     */
     @SuppressWarnings("unchecked")
-    public float getPaddingLow(Callback callback)
+    public void getPaddingLow(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPaddingLow");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the paddingLow field.
@@ -129,24 +135,24 @@ public class CategoryAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setPaddingLow(float paddingLow)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPaddingLow(").appendData(paddingLow).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPaddingLow", paddingLow);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the paddingHigh field, the number of category widths to pad the end of the axis with.
-     * @return paddingHigh
-     *
+     * @param callback paddingHigh
+     */
     @SuppressWarnings("unchecked")
-    public float getPaddingHigh(Callback callback)
+    public void getPaddingHigh(Callback<Float> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Float.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPaddingHigh");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the paddingHigh field.
@@ -155,8 +161,8 @@ public class CategoryAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setPaddingHigh(float paddingHigh)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setPaddingHigh(").appendData(paddingHigh).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setPaddingHigh", paddingHigh);
+        getScriptProxy().addScript(script);
     }
 
 }

@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Axis(ProxyHelper helper)
+    public Axis(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,7 +47,10 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
      */
     public Axis(String name, boolean horizontal, boolean primary)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Axis", name, horizontal, primary);
+        setInitScript(script);
     }
 
     /**
@@ -82,51 +88,51 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
      */
     public static final String LABEL_AXIS = "axis";
 
-    /*
+    /**
      * formats labels as a percent, ie "50%"
      * @param v 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String percent(int v, Callback callback)
+    public void percent(int v, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = percent", v);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * formats labels in scientific notation, ie "5e2"
      * @param v 
      * @param signif 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String scientific(int v, int signif, Callback callback)
+    public void scientific(int v, int signif, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns the horizontal field, whether this is an x axis, otherwise it is a y axis.
-     * @return horizontal
-     *
-    @SuppressWarnings("unchecked")
-    public boolean getHorizontal(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = scientific", v, signif);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the horizontal field, whether this is an x axis, otherwise it is a y axis.
+     * @param callback horizontal
+     */
+    @SuppressWarnings("unchecked")
+    public void getHorizontal(Callback<Boolean> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHorizontal");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the horizontal field.
@@ -135,24 +141,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setHorizontal(boolean horizontal)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHorizontal(").appendData(horizontal).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHorizontal", horizontal);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the showAxis field, whether to show the line along the axis.
-     * @return showAxis
-     *
+     * @param callback showAxis
+     */
     @SuppressWarnings("unchecked")
-    public boolean getShowAxis(Callback callback)
+    public void getShowAxis(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getShowAxis");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the showAxis field.
@@ -161,24 +167,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setShowAxis(boolean showAxis)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setShowAxis(").appendData(showAxis).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setShowAxis", showAxis);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the labelFunction field.
-     * @return labelFunction
-     *
+     * @param callback labelFunction
+     */
     @SuppressWarnings("unchecked")
-    public org.directwebremoting.proxy.CodeBlock getLabelFunction(Callback callback)
+    public void getLabelFunction(Callback<org.directwebremoting.proxy.CodeBlock> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLabelFunction");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the labelFunction field, allows for formatting and transformation of a major tick label; should eval to a function with the signature function(object) : string.
@@ -187,24 +193,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setLabelFunction(String labelFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelFunction(").appendData(labelFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelFunction", labelFunction);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the axisStroke field, string representation of the VectorStroke used to draw the line of the axis.
-     * @return axisStroke
-     *
+     * @param callback axisStroke
+     */
     @SuppressWarnings("unchecked")
-    public String getAxisStroke(Callback callback)
+    public void getAxisStroke(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAxisStroke");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the axisStroke field.
@@ -213,24 +219,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setAxisStroke(String axisStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAxisStroke(").appendData(axisStroke).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAxisStroke", axisStroke);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the showLabels field, whether to show major tick labels.
-     * @return showLabels
-     *
+     * @param callback showLabels
+     */
     @SuppressWarnings("unchecked")
-    public boolean getShowLabels(Callback callback)
+    public void getShowLabels(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getShowLabels");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the showLabels field.
@@ -239,24 +245,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setShowLabels(boolean showLabels)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setShowLabels(").appendData(showLabels).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setShowLabels", showLabels);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the labelGap field, the pixel gap between the tick lines and the labels.
-     * @return labelGap
-     *
+     * @param callback labelGap
+     */
     @SuppressWarnings("unchecked")
-    public int getLabelGap(Callback callback)
+    public void getLabelGap(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLabelGap");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the labelGap field.
@@ -265,8 +271,8 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setLabelGap(int labelGap)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelGap(").appendData(labelGap).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelGap", labelGap);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -276,24 +282,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setLabelPlacement(String labelPlacement)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelPlacement(").appendData(labelPlacement).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelPlacement", labelPlacement);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the tickLength field, the length in pixels of the major tick (if tickPlacement is "cross" the length will actually be twice this.
-     * @return tickLength
-     *
+     * @param callback tickLength
+     */
     @SuppressWarnings("unchecked")
-    public int getTickLength(Callback callback)
+    public void getTickLength(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTickLength");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the tickLength field.
@@ -302,24 +308,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setTickLength(int tickLength)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTickLength(").appendData(tickLength).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTickLength", tickLength);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the tickPlacement field, where to place the major ticks.
-     * @return tickPlacement, one of {'none','inside','outside','cross'}
-     *
+     * @param callback tickPlacement, one of {'none','inside','outside','cross'}
+     */
     @SuppressWarnings("unchecked")
-    public String getTickPlacement(Callback callback)
+    public void getTickPlacement(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTickPlacement");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the tickPlacement field.
@@ -328,24 +334,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setTickPlacement(String tickPlacement)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTickPlacement(").appendData(tickPlacement).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTickPlacement", tickPlacement);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the tickStroke field, string representation of VectorStroke used to draw major ticks.
-     * @return tickStroke
-     *
+     * @param callback tickStroke
+     */
     @SuppressWarnings("unchecked")
-    public String getTickStroke(Callback callback)
+    public void getTickStroke(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTickStroke");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the tickStroke field.
@@ -354,24 +360,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setTickStroke(String tickStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTickStroke(").appendData(tickStroke).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTickStroke", tickStroke);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the minorTickDivisions field, number of minor tick divisions between major ticks; the number of minor ticks drawn will be this number minus 1.
-     * @return minorTickDivisions
-     *
+     * @param callback minorTickDivisions
+     */
     @SuppressWarnings("unchecked")
-    public int getMinorTickDivisions(Callback callback)
+    public void getMinorTickDivisions(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMinorTickDivisions");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the minorTickDivisions field.
@@ -380,24 +386,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setMinorTickDivisions(int minorTickDivisions)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMinorTickDivisions(").appendData(minorTickDivisions).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMinorTickDivisions", minorTickDivisions);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the minorTickLength field, the length in pixels of the minor tick (if tickPlacement is "cross" the length will actually be twice this.
-     * @return minorTickLength
-     *
+     * @param callback minorTickLength
+     */
     @SuppressWarnings("unchecked")
-    public int getMinorTickLength(Callback callback)
+    public void getMinorTickLength(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMinorTickLength");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the minorTickLength field.
@@ -406,24 +412,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setMinorTickLength(int minorTickLength)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMinorTickLength(").appendData(minorTickLength).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMinorTickLength", minorTickLength);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the minorTickPlacement field, where to place the minor ticks.
-     * @return minorTickPlacement, one of {'none','inside','outside','cross'}
-     *
+     * @param callback minorTickPlacement, one of {'none','inside','outside','cross'}
+     */
     @SuppressWarnings("unchecked")
-    public String getMinorTickPlacement(Callback callback)
+    public void getMinorTickPlacement(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMinorTickPlacement");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the minorTickPlacement field.
@@ -432,24 +438,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setMinorTickPlacement(String minorTickPlacement)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMinorTickPlacement(").appendData(minorTickPlacement).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMinorTickPlacement", minorTickPlacement);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the minorTickStroke field, string representation of VectorStroke used to draw minor ticks.
-     * @return minorTickStroke
-     *
+     * @param callback minorTickStroke
+     */
     @SuppressWarnings("unchecked")
-    public String getMinorTickStroke(Callback callback)
+    public void getMinorTickStroke(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMinorTickStroke");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the minorTickStroke field.
@@ -458,24 +464,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setMinorTickStroke(String minorTickStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMinorTickStroke(").appendData(minorTickStroke).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMinorTickStroke", minorTickStroke);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the labelClass field, the CSS class used to render major tick labels.
-     * @return labelClass
-     *
+     * @param callback labelClass
+     */
     @SuppressWarnings("unchecked")
-    public String getLabelClass(Callback callback)
+    public void getLabelClass(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLabelClass");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the labelClass field.
@@ -484,24 +490,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setLabelClass(String labelClass)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelClass(").appendData(labelClass).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelClass", labelClass);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the labelStyle field, the CSS style attribute used to render major tick labels.
-     * @return labelStyle
-     *
+     * @param callback labelStyle
+     */
     @SuppressWarnings("unchecked")
-    public String getLabelStyle(Callback callback)
+    public void getLabelStyle(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLabelStyle");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the labelStyle field.
@@ -510,24 +516,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setLabelStyle(String labelStyle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelStyle(").appendData(labelStyle).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelStyle", labelStyle);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the labelColor field, the RGB color value of the label font; note that this is the only way to set the color of the text, using a CSS style attribute will have no effect.
-     * @return labelColor
-     *
+     * @param callback labelColor
+     */
     @SuppressWarnings("unchecked")
-    public String getLabelColor(Callback callback)
+    public void getLabelColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getLabelColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the labelColor field.
@@ -536,8 +542,8 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setLabelColor(String labelColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelColor(").appendData(labelColor).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelColor", labelColor);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -547,24 +553,24 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setLabelColor(int labelColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setLabelColor(").appendData(labelColor).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setLabelColor", labelColor);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the display width, the maximum amount of space perpendicular to the axis and outside of the data area that the ticks and labels may occupy (doesn't include area given to axis title).
-     * @return displayWidth
-     *
+     * @param callback displayWidth
+     */
     @SuppressWarnings("unchecked")
-    public int getDisplayWidth(Callback callback)
+    public void getDisplayWidth(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDisplayWidth");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the displayWidth field.
@@ -573,8 +579,8 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     public void setDisplayWidth(int displayWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDisplayWidth(").appendData(displayWidth).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDisplayWidth", displayWidth);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -583,11 +589,11 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.ChartLabel getAxisTitle()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAxisTitle().");
+        String extension = "getAxisTitle().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.ChartLabel> ctor = org.directwebremoting.proxy.jsx3.chart.ChartLabel.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.ChartLabel> ctor = org.directwebremoting.proxy.jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -601,11 +607,11 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.Axis getOpposingAxis()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOpposingAxis().");
+        String extension = "getOpposingAxis().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.Axis> ctor = org.directwebremoting.proxy.jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -615,15 +621,16 @@ public class Axis extends org.directwebremoting.proxy.jsx3.chart.ChartComponent
 
     /**
      * Returns the opposing axis.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getOpposingAxis(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getOpposingAxis().");
+        String extension = "getOpposingAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

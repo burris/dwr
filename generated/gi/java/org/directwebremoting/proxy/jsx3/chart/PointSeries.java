@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class PointSeries extends org.directwebremoting.proxy.jsx3.chart.PlotSeri
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public PointSeries(ProxyHelper helper)
+    public PointSeries(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -41,7 +44,10 @@ public class PointSeries extends org.directwebremoting.proxy.jsx3.chart.PlotSeri
      */
     public PointSeries(String name, String seriesName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new PointSeries", name, seriesName);
+        setInitScript(script);
     }
 
     /**
@@ -49,20 +55,20 @@ public class PointSeries extends org.directwebremoting.proxy.jsx3.chart.PlotSeri
      */
     public static final int DEFAULT_MAGNITUDE = 4;
 
-    /*
+    /**
      * Returns the magnitude field, the magnitude value to use for each data point in this series.
-     * @return magnitude
-     *
+     * @param callback magnitude
+     */
     @SuppressWarnings("unchecked")
-    public int getMagnitude(Callback callback)
+    public void getMagnitude(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMagnitude");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the magnitude field.
@@ -71,24 +77,24 @@ public class PointSeries extends org.directwebremoting.proxy.jsx3.chart.PlotSeri
     public void setMagnitude(int magnitude)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMagnitude(").appendData(magnitude).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMagnitude", magnitude);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * The default tooltip function for this type of series.
      * @param series 
      * @param record 
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String tooltip(org.directwebremoting.proxy.jsx3.chart.Series series, org.directwebremoting.proxy.jsx3.xml.Entity record, Callback callback)
+    public void tooltip(org.directwebremoting.proxy.jsx3.chart.Series series, org.directwebremoting.proxy.jsx3.xml.Entity record, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = tooltip", series, record);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

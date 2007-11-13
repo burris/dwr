@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import java.lang.reflect.Constructor;
 
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -28,11 +29,12 @@ public class ChartComponent extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public ChartComponent(ProxyHelper helper)
+    public ChartComponent(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -41,7 +43,10 @@ public class ChartComponent extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public ChartComponent(String name)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new ChartComponent", name);
+        setInitScript(script);
     }
 
     /**
@@ -51,11 +56,11 @@ public class ChartComponent extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.chart.Chart getChart()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getChart().");
+        String extension = "getChart().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.chart.Chart> ctor = org.directwebremoting.proxy.jsx3.chart.Chart.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.chart.Chart> ctor = org.directwebremoting.proxy.jsx3.chart.Chart.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -71,11 +76,11 @@ public class ChartComponent extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T getChart(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getChart().");
+        String extension = "getChart().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

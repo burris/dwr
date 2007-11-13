@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.html;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Tag(ProxyHelper helper)
+    public Tag(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +46,10 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Tag(String strTagNS, String strTagName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Tag", strTagNS, strTagName);
+        setInitScript(script);
     }
 
     /**
@@ -53,8 +59,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void appendChild(org.directwebremoting.proxy.jsx3.html.Tag child)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("appendChild(").appendData(child).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("appendChild", child);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -64,8 +70,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void removeChild(org.directwebremoting.proxy.jsx3.html.Tag child)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("removeChild(").appendData(child).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("removeChild", child);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -76,10 +82,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void replaceChild(org.directwebremoting.proxy.jsx3.html.Tag child, org.directwebremoting.proxy.jsx3.html.Tag oldChild)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("replaceChild(").appendData(child).appendScript(",")
-
-        .appendData(oldChild).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("replaceChild", child, oldChild);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -88,8 +92,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void removeChildren()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("removeChildren(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("removeChildren");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -99,11 +103,11 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.html.Tag getParent()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getParent().");
+        String extension = "getParent().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.html.Tag> ctor = org.directwebremoting.proxy.jsx3.html.Tag.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.html.Tag> ctor = org.directwebremoting.proxy.jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -119,11 +123,11 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public <T> T getParent(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getParent().");
+        String extension = "getParent().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -131,35 +135,35 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns the children tags.
-     * @return children
-     *
+     * @param callback children
+     */
     @SuppressWarnings("unchecked")
-    public Object[] getChildren(Callback callback)
+    public void getChildren(Callback<Object[]> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Object[].class);
 
-    /*
-     * Returns the id field.
-     * @return id
-     *
-    @SuppressWarnings("unchecked")
-    public String getId(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getChildren");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the id field.
+     * @param callback id
+     */
+    @SuppressWarnings("unchecked")
+    public void getId(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getId");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the id field.
@@ -168,24 +172,24 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setId(String id)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setId(").appendData(id).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setId", id);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the cssClass field.
-     * @return cssClass
-     *
+     * @param callback cssClass
+     */
     @SuppressWarnings("unchecked")
-    public String getClassName(Callback callback)
+    public void getClassName(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getClassName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the cssClass field, the HTML 'class' attribute.
@@ -194,8 +198,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setClassName(String cssClass)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setClassName(").appendData(cssClass).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setClassName", cssClass);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -205,8 +209,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setExtraStyles(String extraStyles)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setExtraStyles(").appendData(extraStyles).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setExtraStyles", extraStyles);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -215,41 +219,41 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void release()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("release(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("release");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Called before appending a child.
      * @param child 
-     * @return <code>true</code> to allow the append, <code>false</code> to veto.
-     *
+     * @param callback <code>true</code> to allow the append, <code>false</code> to veto.
+     */
     @SuppressWarnings("unchecked")
-    public boolean onAppendChild(org.directwebremoting.proxy.jsx3.html.Tag child, Callback callback)
+    public void onAppendChild(org.directwebremoting.proxy.jsx3.html.Tag child, Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = onAppendChild", child);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Called before removing a child.
      * @param child 
-     * @return <code>true</code> to allow the removal, <code>false</code> to veto.
-     *
+     * @param callback <code>true</code> to allow the removal, <code>false</code> to veto.
+     */
     @SuppressWarnings("unchecked")
-    public boolean onRemoveChild(org.directwebremoting.proxy.jsx3.html.Tag child, Callback callback)
+    public void onRemoveChild(org.directwebremoting.proxy.jsx3.html.Tag child, Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = onRemoveChild", child);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets an attribute of this HTML element. This method may be called with a variable number of arguments, which are
@@ -260,27 +264,25 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setProperty(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setProperty(").appendData(strName).appendScript(",")
-
-        .appendData(strValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setProperty", strName, strValue);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns an attribute of this HTML element.
      * @param strName the name of the attribute.
-     * @return the value of the attribute.
-     *
+     * @param callback the value of the attribute.
+     */
     @SuppressWarnings("unchecked")
-    public String getProperty(String strName, Callback callback)
+    public void getProperty(String strName, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getProperty", strName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Removes any number of properties from this HTML element.
@@ -289,8 +291,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void removeProperty(String strName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("removeProperty(").appendData(strName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("removeProperty", strName);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -302,27 +304,25 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void setStyle(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setStyle(").appendData(strName).appendScript(",")
-
-        .appendData(strValue).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setStyle", strName, strValue);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns a style of this HTML element.
      * @param strName the name of the style.
-     * @return the value of the style.
-     *
+     * @param callback the value of the style.
+     */
     @SuppressWarnings("unchecked")
-    public String getStyle(String strName, Callback callback)
+    public void getStyle(String strName, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getStyle", strName);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Removes any number of styles from this HTML element.
@@ -331,71 +331,71 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void removeStyle(String strName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("removeStyle(").appendData(strName).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("removeStyle", strName);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the name of this HTML element, such as "table" or "div".
-     * @return the tag name
-     *
+     * @param callback the tag name
+     */
     @SuppressWarnings("unchecked")
-    public String getTagName(Callback callback)
+    public void getTagName(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTagName");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the namespace of this HTML element.
-     * @return the tag name
-     *
+     * @param callback the tag name
+     */
     @SuppressWarnings("unchecked")
-    public String getTagNS(Callback callback)
+    public void getTagNS(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTagNS");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Serializes this HTML element to an HTML string using various overridable methods in this class.
     This method is only available in the VML version of this class.
-     * @return this tag serialized to HTML.
-     *
+     * @param callback this tag serialized to HTML.
+     */
     @SuppressWarnings("unchecked")
-    public String paint(Callback callback)
+    public void paint(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = paint");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Prepares this HTML element for insertion into the live browser DOM and returns the underlying native HTML element.
     This method is only available in the SVG version of this class.
-     * @return the native browser html element.
-     *
+     * @param callback the native browser html element.
+     */
     @SuppressWarnings("unchecked")
-    public String paintDom(Callback callback)
+    public void paintDom(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = paintDom");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * This method is called on each HTML tag before it is painted to screen. Methods in subclasses of this class that
@@ -404,8 +404,8 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     public void paintUpdate()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("paintUpdate(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("paintUpdate");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -415,11 +415,11 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.html.Tag getFirstChildOfType(String type)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + type + "\").");
+        String extension = "getFirstChildOfType(\"" + type + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.html.Tag> ctor = org.directwebremoting.proxy.jsx3.html.Tag.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.html.Tag> ctor = org.directwebremoting.proxy.jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -430,15 +430,16 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     /**
      * Returns the first child tag of type type.
      * @param type the fully-qualified class name or the class constructor function.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getFirstChildOfType(String type, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + type + "\").");
+        String extension = "getFirstChildOfType(\"" + type + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -453,11 +454,11 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.html.Tag getFirstChildOfType(org.directwebremoting.proxy.CodeBlock type)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + type + "\").");
+        String extension = "getFirstChildOfType(\"" + type + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.html.Tag> ctor = org.directwebremoting.proxy.jsx3.html.Tag.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.html.Tag> ctor = org.directwebremoting.proxy.jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -468,15 +469,16 @@ public class Tag extends org.directwebremoting.proxy.jsx3.lang.Object
     /**
      * Returns the first child tag of type type.
      * @param type the fully-qualified class name or the class constructor function.
+     * @param returnType The expected return type
      */
     @SuppressWarnings("unchecked")
     public <T> T getFirstChildOfType(org.directwebremoting.proxy.CodeBlock type, Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getFirstChildOfType(\"" + type + "\").");
+        String extension = "getFirstChildOfType(\"" + type + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {

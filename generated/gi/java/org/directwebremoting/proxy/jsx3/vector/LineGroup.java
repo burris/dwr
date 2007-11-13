@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +27,12 @@ public class LineGroup extends org.directwebremoting.proxy.jsx3.vector.Shape
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public LineGroup(ProxyHelper helper)
+    public LineGroup(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +44,10 @@ public class LineGroup extends org.directwebremoting.proxy.jsx3.vector.Shape
      */
     public LineGroup(int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new LineGroup", left, top, width, height);
+        setInitScript(script);
     }
 
     /**
@@ -56,14 +60,8 @@ public class LineGroup extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void addLine(int x1, int y1, int x2, int y2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("addLine(").appendData(x1).appendScript(",")
-
-        .appendData(y1).appendScript(",")
-
-        .appendData(x2).appendScript(",")
-
-        .appendData(y2).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("addLine", x1, y1, x2, y2);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -76,14 +74,8 @@ public class LineGroup extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void addRelativeLine(int x1, int y1, int dx, int dy)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("addRelativeLine(").appendData(x1).appendScript(",")
-
-        .appendData(y1).appendScript(",")
-
-        .appendData(dx).appendScript(",")
-
-        .appendData(dy).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("addRelativeLine", x1, y1, dx, dy);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -92,8 +84,8 @@ public class LineGroup extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void clearLines()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("clearLines(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("clearLines");
+        getScriptProxy().addScript(script);
     }
 
 }

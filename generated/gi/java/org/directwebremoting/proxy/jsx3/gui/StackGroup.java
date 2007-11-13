@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class StackGroup extends org.directwebremoting.proxy.jsx3.gui.LayoutGrid
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public StackGroup(ProxyHelper helper)
+    public StackGroup(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -40,7 +43,10 @@ public class StackGroup extends org.directwebremoting.proxy.jsx3.gui.LayoutGrid
      */
     public StackGroup(String strName)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new StackGroup", strName);
+        setInitScript(script);
     }
 
     /**
@@ -58,20 +64,20 @@ public class StackGroup extends org.directwebremoting.proxy.jsx3.gui.LayoutGrid
      */
     public static final int DEFAULTBARSIZE = 27;
 
-    /*
+    /**
      * Returns the size of the handle common to all child stack instances (in pixels). Default: jsx3.gui.StackGroup.DEFAULTBARSIZE
-     * @return size in pixels
-     *
+     * @param callback size in pixels
+     */
     @SuppressWarnings("unchecked")
-    public int getBarSize(Callback callback)
+    public void getBarSize(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBarSize");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the size of the handle for the child stack instances;
@@ -82,23 +88,23 @@ public class StackGroup extends org.directwebremoting.proxy.jsx3.gui.LayoutGrid
     public org.directwebremoting.proxy.jsx3.gui.StackGroup setBarSize(int intBarSize)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBarSize(").appendData(intBarSize).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBarSize", intBarSize);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns zero-based index for the tab that is active per its placement in the child JScript array
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getSelectedIndex(Callback callback)
+    public void getSelectedIndex(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getSelectedIndex");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
 }

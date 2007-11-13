@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class PlotChart extends org.directwebremoting.proxy.jsx3.chart.CartesianC
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public PlotChart(ProxyHelper helper)
+    public PlotChart(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,7 +47,10 @@ public class PlotChart extends org.directwebremoting.proxy.jsx3.chart.CartesianC
      */
     public PlotChart(String name, int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new PlotChart", name, left, top, width, height);
+        setInitScript(script);
     }
 
     /**
@@ -67,20 +73,20 @@ public class PlotChart extends org.directwebremoting.proxy.jsx3.chart.CartesianC
      */
     public static final int DEFAULT_MAX_POINT_RADIUS = 30;
 
-    /*
+    /**
      * Returns the maxPointRadius field, limit the radius of points on this chart to this value.
-     * @return maxPointRadius
-     *
+     * @param callback maxPointRadius
+     */
     @SuppressWarnings("unchecked")
-    public int getMaxPointRadius(Callback callback)
+    public void getMaxPointRadius(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMaxPointRadius");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the maxPointRadius field.
@@ -89,24 +95,24 @@ public class PlotChart extends org.directwebremoting.proxy.jsx3.chart.CartesianC
     public void setMaxPointRadius(int maxPointRadius)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMaxPointRadius(").appendData(maxPointRadius).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMaxPointRadius", maxPointRadius);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the magnitudeMethod field; the magnitude method defines how the magnitude value of a record in a bubble series is converted to a radius for the rendered point; a value of "radius" means that the magnitude will equal the radius of the point, "diameter" means that the magnitude will equal the diameter (2 * radius), and "area" means that the area of the point will be proportional to the magnitude.
-     * @return magnitudeMethod, one of {"radius","diameter","area"}
-     *
+     * @param callback magnitudeMethod, one of {"radius","diameter","area"}
+     */
     @SuppressWarnings("unchecked")
-    public String getMagnitudeMethod(Callback callback)
+    public void getMagnitudeMethod(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMagnitudeMethod");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the magnitudeMethod field, one of {"radius","diameter","area"}.
@@ -115,8 +121,8 @@ public class PlotChart extends org.directwebremoting.proxy.jsx3.chart.CartesianC
     public void setMagnitudeMethod(String magnitudeMethod)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMagnitudeMethod(").appendData(magnitudeMethod).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMagnitudeMethod", magnitudeMethod);
+        getScriptProxy().addScript(script);
     }
 
 }

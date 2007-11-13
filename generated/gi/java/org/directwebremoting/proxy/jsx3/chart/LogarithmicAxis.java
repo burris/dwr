@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.chart;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public LogarithmicAxis(ProxyHelper helper)
+    public LogarithmicAxis(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -42,23 +45,26 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
      */
     public LogarithmicAxis(String name, boolean horizontal, boolean primary)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new LogarithmicAxis", name, horizontal, primary);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the autoAdjust field.
-     * @return autoAdjust
-     *
+     * @param callback autoAdjust
+     */
     @SuppressWarnings("unchecked")
-    public boolean getAutoAdjust(Callback callback)
+    public void getAutoAdjust(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getAutoAdjust");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the autoAdjust field.
@@ -67,24 +73,24 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setAutoAdjust(boolean autoAdjust)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setAutoAdjust(").appendData(autoAdjust).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setAutoAdjust", autoAdjust);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the baseAtZero field, whether or not to set the minimum value to base^0, otherwise will choose an appropriate value for the data range.
-     * @return baseAtZero
-     *
+     * @param callback baseAtZero
+     */
     @SuppressWarnings("unchecked")
-    public boolean getBaseAtZero(Callback callback)
+    public void getBaseAtZero(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBaseAtZero");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the baseAtZero field.
@@ -93,24 +99,24 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setBaseAtZero(boolean baseAtZero)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBaseAtZero(").appendData(baseAtZero).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBaseAtZero", baseAtZero);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the showNegativeValues field.
-     * @return showNegativeValues
-     *
+     * @param callback showNegativeValues
+     */
     @SuppressWarnings("unchecked")
-    public boolean getShowNegativeValues(Callback callback)
+    public void getShowNegativeValues(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getShowNegativeValues");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the showNegativeValues field.
@@ -119,24 +125,24 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setShowNegativeValues(boolean showNegativeValues)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setShowNegativeValues(").appendData(showNegativeValues).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setShowNegativeValues", showNegativeValues);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the minExponent field, the range of values displayed will begin at base^minExpronent.
-     * @return minExponent
-     *
+     * @param callback minExponent
+     */
     @SuppressWarnings("unchecked")
-    public int getMinExponent(Callback callback)
+    public void getMinExponent(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMinExponent");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the minExponent field.
@@ -145,24 +151,24 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setMinExponent(int minExponent)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMinExponent(").appendData(minExponent).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMinExponent", minExponent);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the maxExponent field, the range of values displayed will end at base^maxExponent.
-     * @return maxExponent
-     *
+     * @param callback maxExponent
+     */
     @SuppressWarnings("unchecked")
-    public int getMaxExponent(Callback callback)
+    public void getMaxExponent(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMaxExponent");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the maxExponent field.
@@ -171,24 +177,24 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setMaxExponent(int maxExponent)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMaxExponent(").appendData(maxExponent).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMaxExponent", maxExponent);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the base field.
-     * @return base
-     *
+     * @param callback base
+     */
     @SuppressWarnings("unchecked")
-    public int getBase(Callback callback)
+    public void getBase(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getBase");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the base field.
@@ -197,24 +203,24 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setBase(int base)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setBase(").appendData(base).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setBase", base);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the majorDivisions field, the number of major tick line divisions to place between the values base^n and base^(n+1). A good value can be base-1, though the default value is 1..
-     * @return majorDivisions
-     *
+     * @param callback majorDivisions
+     */
     @SuppressWarnings("unchecked")
-    public int getMajorDivisions(Callback callback)
+    public void getMajorDivisions(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getMajorDivisions");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the majorDivisions field.
@@ -223,25 +229,25 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void setMajorDivisions(int majorDivisions)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setMajorDivisions(").appendData(majorDivisions).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setMajorDivisions", majorDivisions);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * convert a number value to a coordinate between 0 and this.length, if the value is outside of the range of the axis, return the closest value in the range
      * @param value a value displayed along the axis
-     * @return coordinate along the axis
-     *
+     * @param callback coordinate along the axis
+     */
     @SuppressWarnings("unchecked")
-    public int getCoordinateFor(int value, Callback callback)
+    public void getCoordinateFor(int value, Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getCoordinateFor", value);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * same as getCoordinateFor(), but does not clip to bounds of the axis
@@ -250,8 +256,8 @@ public class LogarithmicAxis extends org.directwebremoting.proxy.jsx3.chart.Axis
     public void getCoordinateForNoClip(int value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getCoordinateForNoClip(").appendData(value).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getCoordinateForNoClip", value);
+        getScriptProxy().addScript(script);
     }
 
 }

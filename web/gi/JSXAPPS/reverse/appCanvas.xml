@@ -133,6 +133,19 @@
       </object>
       <object type="jsx3.gui.Block">
         <variants jsxoverflow="1"/>
+        <strings jsxname="blockCreate" jsxwidth="100%" jsxheight="100%" jsxrelativeposition="1"/>
+        <object type="jsx3.gui.Block">
+          <variants jsxrelativeposition="1" jsxoverflow="3" jsxwidth="100" jsxheight="22"/>
+          <strings jsxname="labelCreate" jsxtext="Create:" jsxpadding="2" jsxmargin="2" jsxtextalign="right"/>
+        </object>
+        <object type="jsx3.gui.Button">
+          <variants jsxindex="0" jsxheight="22" jsxwidth="60"/>
+          <strings jsxname="buttonCreate" jsxtext="New Button" jsxmargin="2" jsxpadding="2"/>
+          <events jsxexecute="Reverse.create();"/>
+        </object>
+      </object>
+      <object type="jsx3.gui.Block">
+        <variants jsxoverflow="1"/>
         <strings jsxname="blockColorPicker" jsxwidth="100%" jsxheight="100%" jsxrelativeposition="1"/>
         <object type="jsx3.gui.Block">
           <variants jsxrelativeposition="1" jsxoverflow="3" jsxwidth="100" jsxheight="22"/>

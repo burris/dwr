@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.proxy.jsx3.util;
-
+package org.directwebremoting.proxy;
 
 /**
- * @author Joe Walker [joe at getahead dot org]
- * @author DRAPGEN - Dwr Reverse Ajax Proxy GENerator
+ * A way to call functions in JavaScript that return data using a reverse ajax
+ * proxy.
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public interface Iterator
+public interface Callback<T>
 {
-
+    /**
+     * A browser has completed some remote call as has data for you
+     * @param data The data returned by the browser
+     */
+    void dataReturned(T data);
 }

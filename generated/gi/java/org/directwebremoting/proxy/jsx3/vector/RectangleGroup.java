@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +27,12 @@ public class RectangleGroup extends org.directwebremoting.proxy.jsx3.vector.Shap
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public RectangleGroup(ProxyHelper helper)
+    public RectangleGroup(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +44,10 @@ public class RectangleGroup extends org.directwebremoting.proxy.jsx3.vector.Shap
      */
     public RectangleGroup(int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new RectangleGroup", left, top, width, height);
+        setInitScript(script);
     }
 
     /**
@@ -56,14 +60,8 @@ public class RectangleGroup extends org.directwebremoting.proxy.jsx3.vector.Shap
     public void addRectangle(int x1, int y1, int x2, int y2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("addRectangle(").appendData(x1).appendScript(",")
-
-        .appendData(y1).appendScript(",")
-
-        .appendData(x2).appendScript(",")
-
-        .appendData(y2).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("addRectangle", x1, y1, x2, y2);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -76,14 +74,8 @@ public class RectangleGroup extends org.directwebremoting.proxy.jsx3.vector.Shap
     public void addRelativeRectangle(int x1, int y1, int w, int h)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("addRelativeRectangle(").appendData(x1).appendScript(",")
-
-        .appendData(y1).appendScript(",")
-
-        .appendData(w).appendScript(",")
-
-        .appendData(h).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("addRelativeRectangle", x1, y1, w, h);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -92,8 +84,8 @@ public class RectangleGroup extends org.directwebremoting.proxy.jsx3.vector.Shap
     public void clearRectangles()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("clearRectangles(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("clearRectangles");
+        getScriptProxy().addScript(script);
     }
 
 }

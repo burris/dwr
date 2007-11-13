@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Heavyweight(ProxyHelper helper)
+    public Heavyweight(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +46,10 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
      */
     public Heavyweight(String strId, org.directwebremoting.proxy.jsx3.gui.Painted objOwner)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Heavyweight", strId, objOwner);
+        setInitScript(script);
     }
 
     /**
@@ -58,11 +64,11 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight GO(String strId)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("GO(\"" + strId + "\").");
+        String extension = "GO(\"" + strId + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -77,8 +83,8 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public void show(boolean bDisplay)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("show(").appendData(bDisplay).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("show", bDisplay);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -87,8 +93,8 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public void applyRatio()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("applyRatio(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("applyRatio");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -99,10 +105,8 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public void applyRules(String strAxis, int intSize)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("applyRules(").appendData(strAxis).appendScript(",")
-
-        .appendData(intSize).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("applyRules", strAxis, intSize);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -111,8 +115,8 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public void hide()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("hide(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("hide");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -121,85 +125,69 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public void destroy()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("destroy(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("destroy");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns handle/reference to the Heavyweight Object's on-screen counterpart—basically a handle to a DHTML SPAN;
      * @param objGUI optional argument improves efficiency if provided.
-     * @return Browser-Native DHTML object
-     *
+     * @param callback Browser-Native DHTML object
+     */
     @SuppressWarnings("unchecked")
-    public String getRendered(org.directwebremoting.proxy.jsx3.gui.Event objGUI, Callback callback)
+    public void getRendered(org.directwebremoting.proxy.jsx3.gui.Event objGUI, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRendered", objGUI);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns handle/reference to the Heavyweight Object's on-screen counterpart—basically a handle to a DHTML SPAN;
      * @param objGUI optional argument improves efficiency if provided.
-     * @return Browser-Native DHTML object
-     *
+     * @param callback Browser-Native DHTML object
+     */
     @SuppressWarnings("unchecked")
-    public String getRendered(String objGUI, Callback callback)
+    public void getRendered(String objGUI, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns handle/reference to the Heavyweight Object's on-screen counterpart—basically a handle to a DHTML SPAN;
-     * @param objGUI optional argument improves efficiency if provided.
-     * @return Browser-Native DHTML object
-     *
-    @SuppressWarnings("unchecked")
-    public String getRendered(HTMLDocument objGUI, Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRendered", objGUI);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
-    /*
+    /**
      * Returns the unique id for this heavyweight instance
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getId(Callback callback)
+    public void getId(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns the HTML content to display inside the HW instance on-screen
-     *
-    @SuppressWarnings("unchecked")
-    public String getHTML(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getId");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the HTML content to display inside the HW instance on-screen
+     */
+    @SuppressWarnings("unchecked")
+    public void getHTML(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHTML");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the HTML content to display inside the HW instance on-screen; returns ref to self
@@ -210,26 +198,24 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight setHTML(String strHTML, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHTML(").appendData(strHTML).appendScript(",")
-
-        .appendData(bRepaint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHTML", strHTML, bRepaint);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns an object reference to the Browser Element parent to be used; if none specified, the browser BODY will be used
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getDomParent(Callback callback)
+    public void getDomParent(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getDomParent");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets an object reference to the Browser Element parent to be used; if none specified, the browser BODY will be used.
@@ -240,27 +226,27 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight setDomParent(String objGUI)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setDomParent(").appendData(objGUI).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setDomParent", objGUI);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the ratio (a decimal between .01 and .99) to multiply the "Rise + Run" by. When applied by the 'show'
     command during a double-pass, a width to height ratio can be established to provide a consistent L&F for
     the text content.  For example, a value of .8 would mean that the width of the heavyweight container would
     represent 80% and the height would represent 20% of the total perimiter
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getRatio(Callback callback)
+    public void getRatio(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getRatio");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the ratio (a decimal between .01 and .99) to multiply the "Rise + Run" by. When applied by the 'show' command during a double-pass, a width to height ratio can be established to provide a consistent L&F for the text content.  For example, a value of .8 would mean that the width of the heavyweight container would represent 80% and the height would represent 20% of the total perimiter;
@@ -271,25 +257,25 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight setRatio(int vntRatio)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setRatio(").appendData(vntRatio).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setRatio", vntRatio);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the overflow property for CONTENTS of the HW container; it is assumed that anytime a perfect fit cannot occur that the content will have its overflow property set to 'auto' unless specified otherwise
-     * @return [jsx3.gui.Block.OVERFLOWSCROLL, jsx3.gui.Block.OVERFLOWHIDDEN, jsx3.gui.Block.OVERFLOWEXPAND]
-     *
+     * @param callback [jsx3.gui.Block.OVERFLOWSCROLL, jsx3.gui.Block.OVERFLOWHIDDEN, jsx3.gui.Block.OVERFLOWEXPAND]
+     */
     @SuppressWarnings("unchecked")
-    public String getOverflow(Callback callback)
+    public void getOverflow(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getOverflow");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the overflow property for CONTENTS of the HW container; it is assumed that anytime a perfect fit cannot occur that the content will have its overflow property set to 'auto' unless specified otherwise
@@ -300,8 +286,8 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight setOverflow(String strOverflow)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setOverflow(").appendData(strOverflow).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setOverflow", strOverflow);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -314,24 +300,24 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight setVisibility(String strVisibility)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setVisibility(").appendData(strVisibility).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setVisibility", strVisibility);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the z-index property; assumes jsx3.gui.Heavyweight.DEFAULTZINDEX if none supplied
-     *
+     */
     @SuppressWarnings("unchecked")
-    public int getZIndex(Callback callback)
+    public void getZIndex(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getZIndex");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS z-index for the object; if null, is passed, jsx3.gui.Heavyweight.DEFAULTZINDEX will be used as the default value
@@ -341,25 +327,25 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight setZIndex(int intZIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setZIndex(").appendData(intZIndex).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setZIndex", intZIndex);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the CSS width property (in pixels); if this value is set, it is assumed that the Heavyweight container will not have its width lessened to fit on-screen.
-     * @return width (in pixels)
-     *
+     * @param callback width (in pixels)
+     */
     @SuppressWarnings("unchecked")
-    public int getWidth(Callback callback)
+    public void getWidth(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getWidth");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS width property (in pixels); if this value is set, it is assumed that the Heavyweight container will not have its width lessened to fit on-screen.
@@ -369,25 +355,25 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight setWidth(int intWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setWidth(").appendData(intWidth).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setWidth", intWidth);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns the CSS height property (in pixels); if this value is set, it is assumed that the Heavyweight container will not have its height lessened to fit on-screen.
-     * @return height (in pixels)
-     *
+     * @param callback height (in pixels)
+     */
     @SuppressWarnings("unchecked")
-    public int getHeight(Callback callback)
+    public void getHeight(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getHeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the CSS height property (in pixels); if this value is set, it is assumed that the Heavyweight container will not have its height lessened to fit on-screen.
@@ -398,8 +384,8 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight setHeight(int intHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setHeight(").appendData(intHeight).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setHeight", intHeight);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -416,11 +402,11 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight addXRule(Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").");
+        String extension = "addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -441,11 +427,11 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight addXRule(org.directwebremoting.proxy.jsx3.gui.Event objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").");
+        String extension = "addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -466,11 +452,11 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight addYRule(Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("addYRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").");
+        String extension = "addYRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -491,11 +477,11 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight addYRule(org.directwebremoting.proxy.jsx3.gui.Event objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("addYRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").");
+        String extension = "addYRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -515,11 +501,11 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Heavyweight addRule(int intPixel, String strPoint, int intOff, String strAxis)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("addRule(\"" + intPixel + "\", \"" + strPoint + "\", \"" + intOff + "\", \"" + strAxis + "\").");
+        String extension = "addRule(\"" + intPixel + "\", \"" + strPoint + "\", \"" + intOff + "\", \"" + strAxis + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Heavyweight> ctor = org.directwebremoting.proxy.jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -527,35 +513,35 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
         }
     }
 
-    /*
+    /**
      * Returns a POSITION RULE object at the given index; Note that POSITION RULE objects are JavaScript objects that implement the following 3 properties: _pixel (the on-screen point around which to pivot/place), _offset (amount to nudge the placement), _point (compass direction)
      * @param intIndex the index (in rank order of execution) of the POSITION RULEing rule set to apply (it is assumed that at least one POSITION RULE ruleset exists)
      * @param strAxis character (string) representing whether the rule is for the X or Y axis. Remember to capitalize!
-     *
+     */
     @SuppressWarnings("unchecked")
-    public String getPositionRule(int intIndex, String strAxis, Callback callback)
+    public void getPositionRule(int intIndex, String strAxis, Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns a JavaScript object array (hash).  This hash contains the Y rules and the X rules for positioning the object
-     *
-    @SuppressWarnings("unchecked")
-    public Object getPositionRules(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPositionRule", intIndex, strAxis);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns a JavaScript object array (hash).  This hash contains the Y rules and the X rules for positioning the object
+     */
+    @SuppressWarnings("unchecked")
+    public void getPositionRules(Callback<Object> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, Object.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getPositionRules");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Returns a JavaScript object with properties:  X,Y (Left and Top); relating to the 4 primary (N, S, E, W), 4 secondary (NE, SE, SW, NW), and origin (O) compass positions for O
@@ -565,10 +551,8 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public void getPoint(String objGUI, String strPoint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getPoint(").appendData(objGUI).appendScript(",")
-
-        .appendData(strPoint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getPoint", objGUI, strPoint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -579,10 +563,8 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public void getPoint(org.directwebremoting.proxy.jsx3.gui.Block objGUI, String strPoint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getPoint(").appendData(objGUI).appendScript(",")
-
-        .appendData(strPoint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getPoint", objGUI, strPoint);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -593,10 +575,8 @@ public class Heavyweight extends org.directwebremoting.proxy.jsx3.lang.Object
     public void getPoint(int objGUI, String strPoint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("getPoint(").appendData(objGUI).appendScript(",")
-
-        .appendData(strPoint).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("getPoint", objGUI, strPoint);
+        getScriptProxy().addScript(script);
     }
 
 }

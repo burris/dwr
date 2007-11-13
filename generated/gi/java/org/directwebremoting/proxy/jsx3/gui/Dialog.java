@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.gui;
 
 import java.lang.reflect.Constructor;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -29,11 +31,12 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Dialog(ProxyHelper helper)
+    public Dialog(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -45,7 +48,10 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
      */
     public Dialog(String strName, int vntWidth, int vntHeight, String strTitle)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Dialog", strName, vntWidth, vntHeight, strTitle);
+        setInitScript(script);
     }
 
     /**
@@ -90,23 +96,23 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public void doToggleState(int STATE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("doToggleState(").appendData(STATE).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("doToggleState", STATE);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether this dialog instance is the front-most dialog among all open dialogs
-     *
+     */
     @SuppressWarnings("unchecked")
-    public boolean isFront(Callback callback)
+    public void isFront(Callback<Boolean> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = isFront");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Returns object handle to the jsx3.gui.ToolbarButton instance that resides in the application (this.getServer()) task bar and is associated with this dialog instance; returns null if none found
@@ -116,11 +122,11 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.ToolbarButton getTaskButton(org.directwebremoting.proxy.jsx3.gui.WindowBar objTaskBar)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getTaskButton(\"" + objTaskBar + "\").");
+        String extension = "getTaskButton(\"" + objTaskBar + "\").";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.ToolbarButton> ctor = org.directwebremoting.proxy.jsx3.gui.ToolbarButton.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.ToolbarButton> ctor = org.directwebremoting.proxy.jsx3.gui.ToolbarButton.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -134,24 +140,24 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public void doClose()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("doClose(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("doClose");
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns state of the window (full-size / window-shaded). Default: jsx3.gui.Dialog.MAXIMIZED
-     * @return one of: jsx3.gui.Dialog.MAXIMIZED or jsx3.gui.Dialog.MINIMIZED
-     *
+     * @param callback one of: jsx3.gui.Dialog.MAXIMIZED or jsx3.gui.Dialog.MINIMIZED
+     */
     @SuppressWarnings("unchecked")
-    public int getWindowState(Callback callback)
+    public void getWindowState(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getWindowState");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets state of the window (full-size / window-shaded); returns ref to self for method chaining
@@ -161,25 +167,25 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Dialog setWindowState(int STATE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setWindowState(").appendData(STATE).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setWindowState", STATE);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns numeric multiplier for the dialog's z-index. If a dialog box needs to always be on top of other dialog box instances, this multiplier can be increased to assure the appropriate zIndex.  For example, a value of 5 would mean that this dialog box would be stacked on top of all dialog boxes with a alwaysOnTop multiplier less than 5. Default: 1
-     * @return integer
-     *
+     * @param callback integer
+     */
     @SuppressWarnings("unchecked")
-    public int getZMultiplier(Callback callback)
+    public void getZMultiplier(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getZMultiplier");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets numeric multiplier for the dialog's z-index. If a dialog box needs to always be on top of other dialog box instances, this multiplier can be increased to assure the appropriate zIndex.  For example, a value of 5 would mean that this dialog box would be stacked on top of all dialog boxes with a alwaysOnTop multiplier less than 5
@@ -189,25 +195,25 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Dialog setZMultiplier(int intMultiplier)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setZMultiplier(").appendData(intMultiplier).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setZMultiplier", intMultiplier);
+        getScriptProxy().addScript(script);
         return this;
     }
 
-    /*
+    /**
      * Returns whether a dialog displays as modal or not. Modal dialogs mask the rest of the container with an semi-transparent mask that blocks mouse interaction. Modal dialogs do not show up in the task bar. Default: jsx3.gui.Dialog.NONMODAL
-     * @return one of: jsx3.gui.Dialog.NONMODAL or jsx3.gui.Dialog.MODAL
-     *
+     * @param callback one of: jsx3.gui.Dialog.NONMODAL or jsx3.gui.Dialog.MODAL
+     */
     @SuppressWarnings("unchecked")
-    public int getModal(Callback callback)
+    public void getModal(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getModal");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether a dialog displays as modal or not. Modal dialogs mask the rest of the container with an semi-transparent mask that blocks mouse interaction. Modal dialogs do not show up in the task bar.
@@ -217,8 +223,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Dialog setModal(int intModal)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setModal(").appendData(intModal).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setModal", intModal);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -229,24 +235,24 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public void doMaximize(org.directwebremoting.proxy.jsx3.gui.ToolbarButton objTBB)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("doMaximize(").appendData(objTBB).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("doMaximize", objTBB);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns whether the dialog can be resized or not. Default: jsx3.gui.Dialog.RESIZABLE
-     * @return one of: jsx3.gui.Dialog.RESIZABLE jsx3.gui.Dialog.FIXED
-     *
+     * @param callback one of: jsx3.gui.Dialog.RESIZABLE jsx3.gui.Dialog.FIXED
+     */
     @SuppressWarnings("unchecked")
-    public int getResize(Callback callback)
+    public void getResize(Callback<Integer> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, Integer.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getResize");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets whether the dialog box's on-screen view can be resized; returns reference to self to facilitate method chaining
@@ -256,8 +262,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Dialog setResize(int RESIZE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setResize(").appendData(RESIZE).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setResize", RESIZE);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -274,18 +280,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public org.directwebremoting.proxy.jsx3.gui.Dialog setResizeParameters(int RESIZE, int intMinX, int intMinY, int intMaxX, int intMaxY, String strAfterResizeFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setResizeParameters(").appendData(RESIZE).appendScript(",")
-
-        .appendData(intMinX).appendScript(",")
-
-        .appendData(intMinY).appendScript(",")
-
-        .appendData(intMaxX).appendScript(",")
-
-        .appendData(intMaxY).appendScript(",")
-
-        .appendData(strAfterResizeFunction).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setResizeParameters", RESIZE, intMinX, intMinY, intMaxX, intMaxY, strAfterResizeFunction);
+        getScriptProxy().addScript(script);
         return this;
     }
 
@@ -296,11 +292,11 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.WindowBar getCaptionBar()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getCaptionBar().");
+        String extension = "getCaptionBar().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.WindowBar> ctor = org.directwebremoting.proxy.jsx3.gui.WindowBar.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.WindowBar> ctor = org.directwebremoting.proxy.jsx3.gui.WindowBar.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -315,11 +311,11 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public org.directwebremoting.proxy.jsx3.gui.Block getAlertsParent()
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAlertsParent().");
+        String extension = "getAlertsParent().";
         try
         {
-            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<org.directwebremoting.proxy.jsx3.gui.Block> ctor = org.directwebremoting.proxy.jsx3.gui.Block.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -335,11 +331,11 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public <T> T getAlertsParent(Class<T> returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("getAlertsParent().");
+        String extension = "getAlertsParent().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -364,8 +360,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public void constrainPosition(boolean arg)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("constrainPosition(").appendData(arg).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("constrainPosition", arg);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -385,8 +381,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public void constrainPosition(Object[] arg)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("constrainPosition(").appendData(arg).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("constrainPosition", arg);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -395,8 +391,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public void beep()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("beep(").appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("beep");
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -410,16 +406,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public void alert(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, String strOk, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("alert(").appendData(strTitle).appendScript(",")
-
-        .appendData(strMessage).appendScript(",")
-
-        .appendData(fctOnOk).appendScript(",")
-
-        .appendData(strOk).appendScript(",")
-
-        .appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("alert", strTitle, strMessage, fctOnOk, strOk, objParams);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -430,10 +418,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public void configureAlert(String objDialog, Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("configureAlert(").appendData(objDialog).appendScript(",")
-
-        .appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("configureAlert", objDialog, objParams);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -453,26 +439,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
             String strNo, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("confirm(").appendData(strTitle).appendScript(",")
-
-        .appendData(strMessage).appendScript(",")
-
-        .appendData(fctOnOk).appendScript(",")
-
-        .appendData(fctOnCancel).appendScript(",")
-
-        .appendData(strOk).appendScript(",")
-
-        .appendData(strCancel).appendScript(",")
-
-        .appendData(intBtnDefault).appendScript(",")
-
-        .appendData(fctOnNo).appendScript(",")
-
-        .appendData(strNo).appendScript(",")
-
-        .appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("confirm", strTitle, strMessage, fctOnOk, fctOnCancel, strOk, strCancel, intBtnDefault, fctOnNo, strNo, objParams);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -488,20 +456,8 @@ public class Dialog extends org.directwebremoting.proxy.jsx3.gui.Block
     public void prompt(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, org.directwebremoting.proxy.CodeBlock fctOnCancel, String strOk, String strCancel, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("prompt(").appendData(strTitle).appendScript(",")
-
-        .appendData(strMessage).appendScript(",")
-
-        .appendData(fctOnOk).appendScript(",")
-
-        .appendData(fctOnCancel).appendScript(",")
-
-        .appendData(strOk).appendScript(",")
-
-        .appendData(strCancel).appendScript(",")
-
-        .appendData(objParams).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("prompt", strTitle, strMessage, fctOnOk, fctOnCancel, strOk, strCancel, objParams);
+        getScriptProxy().addScript(script);
     }
 
 }

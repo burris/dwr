@@ -18,9 +18,7 @@ package org.directwebremoting.proxy.jsx3;
 import java.util.Collection;
 
 import org.directwebremoting.ScriptSession;
-import org.directwebremoting.proxy.ProxyHelper;
 import org.directwebremoting.proxy.ScriptProxy;
-import org.directwebremoting.proxy.io.Context;
 import org.directwebremoting.proxy.jsx3.app.Server;
 
 /**
@@ -39,9 +37,7 @@ public class GI
     public static Server getServer(Collection<ScriptSession> scriptSessions, String name)
     {
         ScriptProxy proxy = new ScriptProxy(scriptSessions);
-        Context context = new Context(null, name + ".");
-        ProxyHelper helper = new ProxyHelper(proxy, context);
-        return new Server(helper);
+        return new Server(null, name + ".", proxy);
     }
 
     /**
@@ -53,8 +49,6 @@ public class GI
     public static Server getServer(ScriptSession scriptSession, String name)
     {
         ScriptProxy proxy = new ScriptProxy(scriptSession);
-        Context context = new Context(null, name + ".");
-        ProxyHelper helper = new ProxyHelper(proxy, context);
-        return new Server(helper);
+        return new Server(null, name + ".", proxy);
     }
 }

@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.extend.CallbackHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +29,12 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public TextLine(ProxyHelper helper)
+    public TextLine(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -44,23 +47,26 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
      */
     public TextLine(int x1, int y1, int x2, int y2, String text)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextLine", x1, y1, x2, y2, text);
+        setInitScript(script);
     }
 
-    /*
+    /**
      * Returns the text field.
-     * @return text
-     *
+     * @param callback text
+     */
     @SuppressWarnings("unchecked")
-    public String getText(Callback callback)
+    public void getText(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getText");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
 
     /**
      * Sets the text field, the text to display on the text path.
@@ -69,114 +75,114 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setText(String text)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setText(").appendData(text).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setText", text);
+        getScriptProxy().addScript(script);
     }
 
-    /*
+    /**
      * Returns the color field.
-     * @return color
-     *
+     * @param callback color
+     */
     @SuppressWarnings("unchecked")
-    public String getColor(Callback callback)
+    public void getColor(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getColor");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the fontFamily field.
-     * @return fontFamily
-     *
+     * @param callback fontFamily
+     */
     @SuppressWarnings("unchecked")
-    public String getFontFamily(Callback callback)
+    public void getFontFamily(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFontFamily");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the fontsize field.
-     * @return fontsize
-     *
+     * @param callback fontsize
+     */
     @SuppressWarnings("unchecked")
-    public String getFontSize(Callback callback)
+    public void getFontSize(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFontSize");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the fontStyle field.
-     * @return fontStyle
-     *
+     * @param callback fontStyle
+     */
     @SuppressWarnings("unchecked")
-    public String getFontStyle(Callback callback)
+    public void getFontStyle(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFontStyle");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the fontWeight field.
-     * @return fontWeight
-     *
+     * @param callback fontWeight
+     */
     @SuppressWarnings("unchecked")
-    public String getFontWeight(Callback callback)
+    public void getFontWeight(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getFontWeight");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the textAlign field.
-     * @return textAlign
-     *
+     * @param callback textAlign
+     */
     @SuppressWarnings("unchecked")
-    public String getTextAlign(Callback callback)
+    public void getTextAlign(Callback<String> callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
-    }
-    */
+        String key = CallbackHelper.saveCallback(callback, String.class);
 
-    /*
-     * Returns the textDecoration field.
-     * @return textDecoration
-     *
-    @SuppressWarnings("unchecked")
-    public String getTextDecoration(Callback callback)
-    {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map<String, Callback> callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTextAlign");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
+
+    /**
+     * Returns the textDecoration field.
+     * @param callback textDecoration
+     */
+    @SuppressWarnings("unchecked")
+    public void getTextDecoration(Callback<String> callback)
+    {
+        String key = CallbackHelper.saveCallback(callback, String.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = getTextDecoration");
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
+    }
 
     /**
      * Sets the color field.
@@ -185,8 +191,8 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setColor(String color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setColor(").appendData(color).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setColor", color);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -196,8 +202,8 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setFontFamily(String fontFamily)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFontFamily(").appendData(fontFamily).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFontFamily", fontFamily);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -207,8 +213,8 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setFontSize(int fontSize)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFontSize(").appendData(fontSize).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFontSize", fontSize);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -218,8 +224,8 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setFontStyle(String fontStyle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFontStyle(").appendData(fontStyle).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFontStyle", fontStyle);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -229,8 +235,8 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setFontWeight(String fontWeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setFontWeight(").appendData(fontWeight).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setFontWeight", fontWeight);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -240,8 +246,8 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setTextAlign(String textAlign)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTextAlign(").appendData(textAlign).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTextAlign", textAlign);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -251,8 +257,8 @@ public class TextLine extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void setTextDecoration(String textDecoration)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("setTextDecoration(").appendData(textDecoration).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("setTextDecoration", textDecoration);
+        getScriptProxy().addScript(script);
     }
 
 }

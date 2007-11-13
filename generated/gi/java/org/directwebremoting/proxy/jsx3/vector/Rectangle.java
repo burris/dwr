@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.jsx3.vector;
 
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -27,11 +27,12 @@ public class Rectangle extends org.directwebremoting.proxy.jsx3.vector.Shape
 {
     /**
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public Rectangle(ProxyHelper helper)
+    public Rectangle(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
 
     /**
@@ -43,7 +44,10 @@ public class Rectangle extends org.directwebremoting.proxy.jsx3.vector.Shape
      */
     public Rectangle(int left, int top, int width, int height)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Rectangle", left, top, width, height);
+        setInitScript(script);
     }
 
     /**
@@ -53,8 +57,8 @@ public class Rectangle extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void clipToBox(org.directwebremoting.proxy.jsx3.gui.Block obj)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("clipToBox(").appendData(obj).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("clipToBox", obj);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -64,8 +68,8 @@ public class Rectangle extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void clipToBox(org.directwebremoting.proxy.jsx3.html.BlockTag obj)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("clipToBox(").appendData(obj).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("clipToBox", obj);
+        getScriptProxy().addScript(script);
     }
 
     /**
@@ -78,14 +82,8 @@ public class Rectangle extends org.directwebremoting.proxy.jsx3.vector.Shape
     public void clipTo(int l1, int t1, int w1, int h1)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext()).appendScript("clipTo(").appendData(l1).appendScript(",")
-
-        .appendData(t1).appendScript(",")
-
-        .appendData(w1).appendScript(",")
-
-        .appendData(h1).appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("clipTo", l1, t1, w1, h1);
+        getScriptProxy().addScript(script);
     }
 
 }
