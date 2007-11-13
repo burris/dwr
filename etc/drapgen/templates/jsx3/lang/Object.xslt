@@ -20,34 +20,25 @@
  */
 package org.directwebremoting.proxy.jsx3.lang;
 
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
  * @author DRAPGEN - Dwr Reverse Ajax Proxy GENerator
  */
-public class Object
+public class Object extends Context
 {
     /**
-     * Most Reverse Ajax proxies will have a ProxyHelper to aid in generating
-     * the correct script.
-     * @param helper The new ProxyHelper
+     * All reverse ajax proxies need context to work from
+     * @param parent The parent context
+     * @param extension The script to take us from the parent to this object
+     * @param scriptProxy The new script proxy
      */
-    public Object(ProxyHelper helper)
+    public Object(Context parent, String extension, ScriptProxy scriptProxy)
     {
-        this.helper = helper;
+        super(parent, extension, scriptProxy);
     }
-
-    /**
-     * Return the helper class that lets us know our context in Javascript
-     * @return Our ProxyHelper
-     */
-    protected ProxyHelper getProxyHelper()
-    {
-        return helper;
-    }
-
-    private ProxyHelper helper;
 }
 </xsl:text>
 </xsl:template>

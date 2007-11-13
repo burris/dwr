@@ -29,12 +29,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.</xsl:text><xsl:value-of select="@package"/><xsl:text>;
 
 import java.lang.reflect.Constructor;
+import java.util.Date;
+
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
+import org.directwebremoting.extend.CallbackHelper;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -70,13 +74,16 @@ public interface </xsl:text><xsl:value-of select="@shortname"/>
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.directwebremoting.proxy.</xsl:text><xsl:value-of select="@package"/><xsl:text>;
 
-import java.util.Date;
 import java.lang.reflect.Constructor;
+import java.util.Date;
+
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.proxy.ProxyHelper;
+import org.directwebremoting.proxy.Callback;
+import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.io.Context;
+import org.directwebremoting.extend.CallbackHelper;
 
 /**
  * @author Joe Walker [joe at getahead dot org]
@@ -90,11 +97,12 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
 {
     /**<!-- A contructor for chaining from some JSX3 function -->
      * All reverse ajax proxies need context to work from
-     * @param helper The store of the context for the current action
+     * @param scriptProxy The place we are writing scripts to
+     * @param context The script that got us to where we are now
      */
-    public </xsl:text><xsl:value-of select="@shortname"/><xsl:text>(ProxyHelper helper)
+    public </xsl:text><xsl:value-of select="@shortname"/><xsl:text>(Context context, String extension, ScriptProxy scriptProxy)
     {
-        super(helper);
+        super(context, extension, scriptProxy);
     }
     </xsl:text>
 
@@ -125,9 +133,12 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
     public <xsl:value-of select="dwr:normalizeClassname(../@shortname)"/>(<xsl:for-each select="param">
       <xsl:value-of select="dwr:normalizeClassname(type/@name)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/>
       <xsl:if test="position() != last()">, </xsl:if>
-    </xsl:for-each>)
+    </xsl:for-each><xsl:text>)
     {
-        super((ProxyHelper) null);
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new </xsl:text><xsl:value-of select="dwr:normalizeClassname(../@shortname)"/>"<xsl:for-each select="param">, <xsl:value-of select="@name"/></xsl:for-each>);
+        setInitScript(script);
     }
 </xsl:template>
 
@@ -150,14 +161,8 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
     </xsl:for-each>)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("<xsl:value-of select="@name"/>(")<xsl:for-each select="param">
-              .appendData(<xsl:value-of select="@name"/>)<xsl:if test="position() != last()">
-              .appendScript(",")
-              </xsl:if>
-              </xsl:for-each>
-              .appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("<xsl:value-of select="@name"/>"<xsl:for-each select="param">, <xsl:value-of select="@name"/></xsl:for-each>);
+        getScriptProxy().addScript(script);
     }
     </xsl:when>
 
@@ -181,14 +186,8 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
     </xsl:for-each>)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendData(getProxyHelper().getContext())
-              .appendScript("<xsl:value-of select="@name"/>(")<xsl:for-each select="param">
-              .appendData(<xsl:value-of select="@name"/>)<xsl:if test="position() != last()">
-              .appendScript(",")
-              </xsl:if>
-              </xsl:for-each>
-              .appendScript(");");
-        getProxyHelper().getScriptProxy().addScript(script);
+        script.appendCall("<xsl:value-of select="@name"/>"<xsl:for-each select="param">, <xsl:value-of select="@name"/></xsl:for-each>);
+        getScriptProxy().addScript(script);
         return this;
     }
     </xsl:when>
@@ -213,11 +212,11 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
       <xsl:if test="position() != last()">, </xsl:if>
     </xsl:for-each>)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("<xsl:value-of select="@name"/>(<xsl:for-each select="param">\"" + <xsl:value-of select="@name"/> + "\"<xsl:if test="position() != last()">, </xsl:if></xsl:for-each>).");
+        String extension = "<xsl:value-of select="@name"/>(<xsl:for-each select="param">\"" + <xsl:value-of select="@name"/> + "\"<xsl:if test="position() != last()">, </xsl:if></xsl:for-each>).";
         try
         {
-            Constructor&lt;<xsl:value-of select="dwr:normalizeClassname(return/type/@name)"/>&gt; ctor = <xsl:value-of select="dwr:normalizeClassname(return/type/@name)"/>.class.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor&lt;<xsl:value-of select="dwr:normalizeClassname(return/type/@name)"/>&gt; ctor = <xsl:value-of select="dwr:normalizeClassname(return/type/@name)"/>.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -237,8 +236,8 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
      * <xsl:copy-of select="dwr:trim(text)"/>
      <xsl:for-each select="param">
      * @param <xsl:value-of select="@name"/><xsl:text> </xsl:text><xsl:value-of select="dwr:trim(@text)"/>
-     </xsl:for-each><xsl:if test="return and string-length(dwr:trim(return/@text)) != 0">
-     * @param returnType The expected return type
+     </xsl:for-each>
+     * @param returnType The expected return type<xsl:if test="return and string-length(dwr:trim(return/@text)) != 0">
      * @return <xsl:value-of select="dwr:trim(return/@text)"/></xsl:if>
      */
     @SuppressWarnings("unchecked")
@@ -247,11 +246,11 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
       <xsl:if test="position() != last()">, </xsl:if>
     </xsl:for-each><xsl:if test="count(param) > 0">, </xsl:if>Class&lt;T&gt; returnType)
     {
-        ProxyHelper child = getProxyHelper().getChildHelper("<xsl:value-of select="@name"/>(<xsl:for-each select="param">\"" + <xsl:value-of select="@name"/> + "\"<xsl:if test="position() != last()">, </xsl:if></xsl:for-each>).");
+        String extension = "<xsl:value-of select="@name"/>(<xsl:for-each select="param">\"" + <xsl:value-of select="@name"/> + "\"<xsl:if test="position() != last()">, </xsl:if></xsl:for-each>).";
         try
         {
-            Constructor&lt;T&gt; ctor = returnType.getConstructor(ProxyHelper.class);
-            return ctor.newInstance(child);
+            Constructor&lt;T&gt; ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
         {
@@ -265,26 +264,26 @@ public class </xsl:text><xsl:value-of select="@shortname"/>
     When the return type is not a proxy, we will need to call out to the browser
     -->
     <xsl:otherwise>
-    /*
+    /**
      * <xsl:copy-of select="dwr:trim(text)"/>
      <xsl:for-each select="param">
      * @param <xsl:value-of select="@name"/><xsl:text> </xsl:text><xsl:value-of select="dwr:trim(@text)"/>
      </xsl:for-each><xsl:if test="return and string-length(dwr:trim(return/@text)) != 0">
-     * @return <xsl:value-of select="dwr:trim(return/@text)"/></xsl:if>
-     *
+     * @param callback <xsl:value-of select="dwr:trim(return/@text)"/></xsl:if>
+     */
     @SuppressWarnings("unchecked")
-    public <xsl:value-of select="dwr:normalizeClassname(return/type/@name)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/>(<xsl:for-each select="param">
+    public void <xsl:value-of select="@name"/>(<xsl:for-each select="param">
       <xsl:value-of select="dwr:normalizeClassname(type/@name)"/><xsl:text> </xsl:text><xsl:value-of select="@name"/>
       <xsl:if test="position() != last()">, </xsl:if>
-    </xsl:for-each><xsl:if test="count(param) > 0">, </xsl:if>Callback callback)
+    </xsl:for-each><xsl:if test="count(param) > 0">, </xsl:if>Callback&lt;<xsl:value-of select="dwr:normalizeNonNativeClassname(return/type/@name)"/>&gt; callback)
     {
-        String key = // Generate some id
-        ScriptSession session = WebContext.get().getScriptSession();
-        Map&lt;String, Callback&gt; callbackMap = session.getAttribute(CALLBACK_KEY);
-        calbackMap.put(key, callback);
-        session.addAttribute(CALLBACK_KEY, callbackMap);
+        String key = CallbackHelper.saveCallback(callback, <xsl:value-of select="dwr:normalizeNonNativeClassname(return/type/@name)"/>.class);
+
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("var reply = <xsl:value-of select="@name"/>"<xsl:for-each select="param">, <xsl:value-of select="@name"/></xsl:for-each>);
+        script.appendCall("__System.activateCallback", key, "reply");
+        getScriptProxy().addScript(script);
     }
-    */
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>

@@ -127,16 +127,24 @@ public class Generate
                 }
             });
         }
-
         exec.shutdown();
         exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 
         // Remove functions implemented by parent
         log.info("Trimming methods with identical implementation in parent.");
-        for (JsClass code : registry.getClasses())
+        exec = Executors.newFixedThreadPool(2);
+        for (final JsClass code : registry.getClasses())
         {
-            code.trimDuplicateMethods(registry);
+            exec.execute(new Runnable()
+            {
+                public void run()
+                {
+                    code.trimDuplicateMethods(registry);
+                }
+            });
         }
+        exec.shutdown();
+        exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 
         // Transform them all
         log.info("Transforming " + registry.getClasses().size() + " classes.");

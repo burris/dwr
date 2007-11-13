@@ -56,7 +56,27 @@ public class ExtensionFunctions
      */
     public static String normalizeClassname(String original)
     {
-        for (String[] swap : swaps)
+        for (String[] swap : nativeSwaps)
+        {
+            Pattern pattern = Pattern.compile(swap[SEARCH], Pattern.UNIX_LINES);
+            Matcher matcher = pattern.matcher(original);
+            if (matcher.find())
+            {
+                return matcher.replaceAll(swap[REPLACE]);
+            }
+        }
+
+        return original;
+    }
+
+    /**
+     * Convert a jsx3 classname into a Java classname
+     * @param original The name of the jsx3 class
+     * @return The name of a comparable Java class
+     */
+    public static String normalizeNonNativeClassname(String original)
+    {
+        for (String[] swap : nonNativeSwaps)
         {
             Pattern pattern = Pattern.compile(swap[SEARCH], Pattern.UNIX_LINES);
             Matcher matcher = pattern.matcher(original);
@@ -81,8 +101,9 @@ public class ExtensionFunctions
 
     private static final int SEARCH = 0;
     private static final int REPLACE = 1;
-    private static final String[][] swaps = new String[][]
+    private static final String[][] nativeSwaps = new String[][]
     {
+        { "^$", "Object" },
         { "^Number$", "int" },
         { "^jsx3\\.lang\\.Class$", "Class" },
         { "^Array$", "Object[]" },
@@ -91,6 +112,27 @@ public class ExtensionFunctions
         { "^jsx3\\.lang\\.Exception$", "Exception" },
         { "^jsx3\\.Boolean$", "Boolean" },
         { "^HTMLElement$", "String" },
+        { "^HTMLDocument$", "String" },
+        { "^VectorStroke$", "String" },
+        { "^jsx3\\.lang\\.IllegalArgumentException$", "IllegalArgumentException" },
+        { "^jsx3\\.(.*)$", "org.directwebremoting.proxy.jsx3.$1" },
+    };
+    private static final String[][] nonNativeSwaps = new String[][]
+    {
+        { "^$", "Object" },
+        { "^float$", "Float" },
+        { "^int$", "Integer" },
+        { "^boolean$", "Boolean" },
+        { "^Number$", "Integer" },
+        { "^jsx3\\.lang\\.Class$", "Class" },
+        { "^Array$", "Object[]" },
+        { "^Function$", "org.directwebremoting.proxy.CodeBlock" },
+        { "^jsx3\\.app\\.Properties$", "java.util.Properties" },
+        { "^jsx3\\.lang\\.Exception$", "Exception" },
+        { "^jsx3\\.Boolean$", "Boolean" },
+        { "^HTMLElement$", "String" },
+        { "^HTMLDocument$", "String" },
+        { "^VectorStroke$", "String" },
         { "^jsx3\\.lang\\.IllegalArgumentException$", "IllegalArgumentException" },
         { "^jsx3\\.(.*)$", "org.directwebremoting.proxy.jsx3.$1" },
     };

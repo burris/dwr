@@ -170,10 +170,10 @@ public class JsClass
         catch (TransformerException ex)
         {
             SourceLocator locator = ex.getLocator();
+            log.fatal("Failed to transform", ex);
             log.warn("Line: " + locator.getLineNumber() + ", Column: " + locator.getColumnNumber());
             log.warn("PublicId: " + locator.getPublicId());
             log.warn("SystemId: " + locator.getSystemId());
-            log.fatal("Failed to transform", ex);
         }
         catch (Exception ex)
         {
@@ -390,11 +390,7 @@ public class JsClass
         Element element = method.getElement();
 
         Node parent = element.getParentNode();
-        if (parent == null)
-        {
-            log.info("null parent for: " + method);
-        }
-        else
+        if (parent != null)
         {
             parent.removeChild(element);
         }
