@@ -85,6 +85,11 @@ public class Batch
             throw new ServerException(Messages.getString("BaseCallMarshaller.BadCallCount", callStr));
         }
 
+        if (callCount > maxCallsPerBatch)
+        {
+            throw new SecurityException("Too many calls in a batch");
+        }
+
         // Extract the ids, script names and method names
         for (int callNum = 0; callNum < callCount; callNum++)
         {
@@ -256,6 +261,11 @@ public class Batch
      * done for each call.
      */
     private List<InboundContext> inboundContexts = new ArrayList<InboundContext>();
+
+    /**
+     * We don't want to allow too many calls in a batch
+     */
+    private int maxCallsPerBatch = 1000;
 
     /**
      * The list of calls in the batch
