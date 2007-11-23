@@ -138,6 +138,10 @@ public class PollHandler implements Handler
         {
             sleeper = new JettyContinuationSleeper(request);
         }
+        else if (Continuation.isGrizzly())
+        {
+            sleeper = new GrizzlyContinuationSleeper(request);
+        }
         else
         {
             sleeper = new ThreadWaitSleeper();

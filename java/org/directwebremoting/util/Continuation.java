@@ -36,6 +36,18 @@ public class Continuation
     public Continuation(HttpServletRequest request)
     {
         proxy = request.getAttribute(ATTRIBUTE_JETTY_CONTINUATION);
+        if (proxy == null && isGrizzly())
+        {
+            try
+            {
+                Class<?> gContinuation = LocalUtil.classForName("com.sun.grizzly.Continuation");
+                Method gMethod = gContinuation.getMethod("getContinuation");
+                proxy = gMethod.invoke((Object[])null,(Object[])null);
+            }
+            catch (Throwable ex)
+            {
+            }
+        }
     }
 
     /**
@@ -203,7 +215,12 @@ public class Continuation
     /**
      * Are we using Jetty at all?
      */
-    protected static boolean isJetty;
+    protected static boolean isJetty = false;
+    
+    /**
+     * Are we using Grizzly at all?
+     */
+    protected static boolean isGrizzly = false;
 
     /**
      * Can we use Jetty?
@@ -212,25 +229,44 @@ public class Continuation
     {
         try
         {
-            continuationClass = LocalUtil.classForName("org.mortbay.util.ajax.Continuation");
+            try
+            {
+                continuationClass = LocalUtil.classForName("org.mortbay.util.ajax.Continuation");
+                isJetty = true;
+            } 
+            catch (Exception ex) 
+            {
+                Class<?> gContinuation = LocalUtil.classForName("com.sun.grizzly.Continuation");
+                Method gMethod = gContinuation.getMethod("getContinuation");
+                continuationClass = gMethod.invoke(gMethod).getClass();
+                isGrizzly = true;
+            }
+
             suspendMethod = continuationClass.getMethod("suspend", Long.TYPE);
             resumeMethod = continuationClass.getMethod("resume");
             getObject = continuationClass.getMethod("getObject");
             setObject = continuationClass.getMethod("setObject", Object.class);
-            isJetty = true;
         }
         catch (Exception ex)
         {
             isJetty = false;
-            log.debug("No Jetty ContuniationSupport class, using standard Servlet API");
+            log.debug("No Jetty or Grizzly Continuation class, using standard Servlet API");
         }
     }
 
     /**
-     * @return True if we have detected Continuation classes
+     * @return True if we have detected Jetty classes
      */
     public static boolean isJetty()
     {
         return isJetty;
     }
+    
+    /**
+     * @return True if we have detected Grizzly classes
+     */
+    public static boolean isGrizzly()
+    {
+        return isGrizzly;
+    }    
 }

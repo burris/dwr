@@ -71,7 +71,10 @@ public class OutputAlarm extends BasicAlarm implements Alarm
     public void cancel()
     {
         scriptSession.removeScriptConduit(conduit);
-        future.cancel(false);
+        if (future != null)
+        {
+            future.cancel(false);
+        }
         super.cancel();
     }
 
