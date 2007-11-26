@@ -1,8 +1,0 @@
-
-// jar:file:${catalina.home}/webapps/dwr/WEB-INF/lib/dwr.jar!/-
-grant codeBase "file:/Share/joe/other/dwr/web/WEB-INF/classes/-"
-{
-     permission java.lang.RuntimePermission "accessClassInPackage.org.apache.tomcat.util.http";
-};
-
-http://www.trimpath.com/project/wiki/JavaScriptTemplates
