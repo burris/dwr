@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * A class to manage the types of creators and the instansiated creators.
+ * A class to manage the types of creators and the instantiated creators.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface CreatorManager

@@ -188,7 +188,7 @@ public class DefaultRemoterTest
         assertTrue(result.indexOf("creatorName.toString = function(") != -1);
         assertTrue(result.indexOf("creatorName.testMethodWithServletParameters = function(") != -1);
 
-        // make sure no entry is generated for the reserved javvascript word 'namespace'
+        // make sure no entry is generated for the reserved javascript word 'namespace'
         assertFalse(result.indexOf("creatorName.namespace = function(") != -1);
     }
 

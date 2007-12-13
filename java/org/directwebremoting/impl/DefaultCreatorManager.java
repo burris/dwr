@@ -32,7 +32,7 @@ import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
 
 /**
- * A class to manage the types of creators and the instansiated creators.
+ * A class to manage the types of creators and the instantiated creators.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class DefaultCreatorManager implements CreatorManager
