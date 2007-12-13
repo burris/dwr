@@ -41,14 +41,14 @@ public class DownloadHandler implements Handler
 
         if (!id.startsWith(downloadHandlerUrl))
         {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Wrong prefix: " + id);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
         id = id.substring(downloadHandlerUrl.length());
 
         FileGenerator generator = downloadManager.getFile(id);
         if (generator == null)
         {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Missing id: " + id);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
         else
         {

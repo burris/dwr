@@ -426,6 +426,20 @@ public class DefaultRemoter implements Remoter
             Object reply = chain.doFilter(object, method, call.getParameters());
             return new Reply(call.getCallId(), reply);
         }
+        catch (SecurityException ex)
+        {
+            log.warn("Security Exception: ", ex);
+
+            // If we are in live mode, then we don't even say what went wrong
+            if (debug)
+            {
+                return new Reply(call.getCallId(), null, ex);
+            }
+            else
+            {
+                return new Reply(call.getCallId(), null, new SecurityException());
+            }
+        }
         catch (InvocationTargetException ex)
         {
             // Allow Jetty RequestRetry exception to propagate to container
@@ -507,6 +521,20 @@ public class DefaultRemoter implements Remoter
     {
         this.maxCallCount = maxCallCount;
     }
+
+    /**
+     * Set the debug status
+     * @param debug The new debug setting
+     */
+    public void setDebug(boolean debug)
+    {
+        this.debug = debug;
+    }
+
+    /**
+     * Are we in debug-mode and therefore more helpful at the expense of security?
+     */
+    private boolean debug = false;
 
     /**
      * What AjaxFilters apply to which Ajax calls?

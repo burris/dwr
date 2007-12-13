@@ -56,9 +56,9 @@ public class Batch
     /**
      * Ctor for the Bayeux client which doesn't have requests and responses
      * @param allParameters A set of name value pairs
-     * @throws ServerException If the parameters can't be decoded
+     * @throws SecurityException If the parameters can't be decoded
      */
-    public Batch(Map<String, FormField> allParameters) throws ServerException
+    public Batch(Map<String, FormField> allParameters)
     {
         this.allParameters = allParameters;
         parseParameters();
@@ -66,9 +66,9 @@ public class Batch
 
     /**
      * Fish out the important parameters
-     * @throws ServerException If the parsing of input parameter fails
+     * @throws SecurityException If the parsing of input parameter fails
      */
-    protected void parseParameters() throws ServerException
+    protected void parseParameters()
     {
         Map<String, FormField> paramMap = new HashMap<String, FormField>(allParameters);
         calls = new Calls();
@@ -82,7 +82,7 @@ public class Batch
         }
         catch (NumberFormatException ex)
         {
-            throw new ServerException(Messages.getString("BaseCallMarshaller.BadCallCount", callStr));
+            throw new SecurityException("Invalid Call Count");
         }
 
         if (callCount > maxCallsPerBatch)

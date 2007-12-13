@@ -195,7 +195,7 @@ public class DefaultAccessControl implements AccessControl
             }
         }
 
-        throw new AccessDeniedException(Messages.getString("DefaultAccessControl.DeniedByJ2EERoles", roles.toString()));
+        throw new AccessDeniedException(Messages.getString("DefaultAccessControl.DeniedByJ2EERoles"));
     }
 
     /**
