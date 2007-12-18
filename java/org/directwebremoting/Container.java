@@ -18,7 +18,10 @@ package org.directwebremoting;
 import java.util.Collection;
 
 /**
- * A very basic IoC container
+ * A very basic IoC container.
+ * See {@link org.directwebremoting.impl.ContainerUtil} for information on how
+ * to setup a {@link Container}
+ * @see org.directwebremoting.impl.ContainerUtil
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface Container
