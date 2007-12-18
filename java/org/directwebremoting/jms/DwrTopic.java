@@ -16,27 +16,32 @@
 package org.directwebremoting.jms;
 
 import javax.jms.JMSException;
-import javax.jms.ServerSession;
-import javax.jms.Session;
+import javax.jms.Topic;
 
 /**
- * An implementation of {@link ServerSession} for DWR
+ * A {@link Topic} for DWR
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrServerSession implements ServerSession
+public class DwrTopic implements Topic
 {
-	/* (non-Javadoc)
-	 * @see javax.jms.ServerSession#getSession()
-	 */
-	public Session getSession() throws JMSException
-	{
-		return new DwrSession();
-	}
+    /**
+     * @see javax.jms.Session#createTopic(String)
+     */
+    public DwrTopic(String topicName)
+    {
+        this.topicName = topicName;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.jms.ServerSession#start()
-	 */
-	public void start() throws JMSException
-	{
-	}
+    /* (non-Javadoc)
+     * @see javax.jms.Topic#getTopicName()
+     */
+    public String getTopicName() throws JMSException
+    {
+        return topicName;
+    }
+
+    /**
+     * The name of this topic
+     */
+    private String topicName;
 }

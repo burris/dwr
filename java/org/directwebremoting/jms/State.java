@@ -15,28 +15,12 @@
  */
 package org.directwebremoting.jms;
 
-import javax.jms.ConnectionConsumer;
-import javax.jms.JMSException;
-import javax.jms.ServerSessionPool;
-
 /**
- * An implementation of {@link ConnectionConsumer} for DWR
- * @author Joe Walker [joe at getahead dot ltd dot uk]
+ * The available states of this some resource
  */
-public class DwrConnectionConsumer implements ConnectionConsumer
+public enum State
 {
-	/* (non-Javadoc)
-	 * @see javax.jms.ConnectionConsumer#close()
-	 */
-	public void close() throws JMSException
-	{
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.jms.ConnectionConsumer#getServerSessionPool()
-	 */
-	public ServerSessionPool getServerSessionPool() throws JMSException
-	{
-		return new DwrServerSessionPool();
-	}
+	STOPPED,
+	STARTED,
+	CLOSED,
 }

@@ -17,13 +17,16 @@ package org.directwebremoting.jms;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionConsumer;
-import javax.jms.ConnectionMetaData;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.ServerSessionPool;
 import javax.jms.Session;
 import javax.jms.Topic;
+import javax.servlet.ServletContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * An implementation of {@link Connection} for DWR
@@ -31,12 +34,29 @@ import javax.jms.Topic;
  */
 public class DwrConnection implements Connection
 {
-	/* (non-Javadoc)
+    /**
+     * Simple setup
+     */
+    public DwrConnection()
+    {
+    }
+
+    /* (non-Javadoc)
 	 * @see javax.jms.Connection#createSession(boolean, int)
 	 */
-	public Session createSession(boolean transacted, int acknowledgeMode) throws JMSException
+	public DwrSession createSession(boolean transacted, int acknowledgeMode) throws JMSException
 	{
-		return new DwrSession();
+	    if (transacted != false)
+	    {
+	        log.error("transacted == true is not currently supported");
+	    }
+
+	    if (acknowledgeMode != Session.AUTO_ACKNOWLEDGE)
+	    {
+            log.error("acknowledgeMode != Session.AUTO_ACKNOWLEDGE is not currently supported");
+	    }
+
+	    return new DwrSession(this, transacted, acknowledgeMode);
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +64,7 @@ public class DwrConnection implements Connection
 	 */
 	public ConnectionConsumer createConnectionConsumer(Destination destination, String messageSelector, ServerSessionPool sessionPool, int maxMessages) throws JMSException
 	{
-		return new DwrConnectionConsumer();
+	    throw Unsupported.noConnectionConsumers();
 	}
 
 	/* (non-Javadoc)
@@ -52,13 +72,13 @@ public class DwrConnection implements Connection
 	 */
 	public ConnectionConsumer createDurableConnectionConsumer(Topic topic, String subscriptionName, String messageSelector, ServerSessionPool sessionPool, int maxMessages) throws JMSException
 	{
-		return new DwrConnectionConsumer();
+        throw Unsupported.noConnectionConsumers();
 	}
 
 	/* (non-Javadoc)
 	 * @see javax.jms.Connection#getMetaData()
 	 */
-	public ConnectionMetaData getMetaData() throws JMSException
+	public DwrConnectionMetaData getMetaData() throws JMSException
 	{
 		return new DwrConnectionMetaData();
 	}
@@ -138,13 +158,26 @@ public class DwrConnection implements Connection
 		return state;
 	}
 
-	/**
-	 * The available states of this Connection
+    /**
+     * @return the servletContext
+     */
+    public ServletContext getServletContext()
+    {
+        return servletContext;
+    }
+
+    /**
+     * @param servletContext the servletContext to set
+     */
+    public void setServletContext(ServletContext servletContext)
+    {
+        this.servletContext = servletContext;
+    }
+
+    /**
+	 * Our connection to the DWR infrastructure
 	 */
-	public enum State
-	{
-		STOPPED, STARTED, CLOSED
-	}
+	private ServletContext servletContext;
 
 	/**
 	 * What's the current state of the current connection?
@@ -160,4 +193,9 @@ public class DwrConnection implements Connection
 	 * If something goes wrong we call this
 	 */
 	private ExceptionListener listener;
+
+	/**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(DwrConnection.class);
 }
