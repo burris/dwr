@@ -19,6 +19,7 @@ import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
+import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.io.RawData;
@@ -45,6 +46,9 @@ public class RawConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
-        throw new MarshallException(RawData.class, "RawData is not availble during inbound marshalling");
+        // We don't actually need to cast to RawData, but we want to make sure
+        // that that's was we've really been given
+        RawData raw = (RawData) data;
+        return new NonNestedOutboundVariable(raw.toString());
     }
 }
