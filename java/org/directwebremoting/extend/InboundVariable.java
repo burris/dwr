@@ -74,7 +74,7 @@ public final class InboundVariable
                 throw new MarshallException(getClass(), Messages.getString("InboundVariable.MissingVariable", formField.getString()));
             }
 
-            type = cd.getType();
+            type = cd.type;
             formField = cd.getFormField();
 
             // For some reason we used to leave this until the loop finished
@@ -106,11 +106,21 @@ public final class InboundVariable
     }
 
     /**
-     * @return Returns the type.
+     * If we are using object parameters that have specified types then the
+     * {@link ConverterManager} will need to get to know what the required type
+     * is.
+     * @return The requested object type, or null if one was not specified
      */
-    public String getType()
+    public String getNamedObjectType()
     {
-        return type;
+        if (type.startsWith("Object_"))
+        {
+            return type.substring("Object_".length());
+        }
+        else
+        {
+            return null;
+        }
     }
 
     /**

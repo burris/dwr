@@ -131,10 +131,16 @@ public class DefaultConverterManager implements ConverterManager
         Object converted = inctx.getConverted(data, paramType);
         if (converted == null)
         {
+            Converter converter = null;
+
             // Was the inbound variable marshalled as an Object in the client
             // (could mean that this is an instance of one of our generated
             // JavaScript classes)
-            Converter converter = getNamedConverter(paramType, data.getType());
+            String type = data.getNamedObjectType();
+            if (type != null)
+            {
+                converter = getNamedConverter(paramType, type);
+            }
 
             // Fall back to the standard way of locating a converter if we
             // didn't find anything above
@@ -239,50 +245,42 @@ public class DefaultConverterManager implements ConverterManager
      * When we are using typed Javascript names we sometimes want to get a
      * specially named converter
      * @param paramType The class that we are converting to
-     * @param type The type name as passed in from the client
+     * @param javascriptClassName The type name as passed in from the client
      * @return The Converter that matches this request (if any)
      * @throws MarshallException IF marshalling fails
      */
-    protected Converter getNamedConverter(Class<?> paramType, String type) throws MarshallException
+    protected Converter getNamedConverter(Class<?> paramType, String javascriptClassName) throws MarshallException
     {
-        if (type.startsWith("Object_"))
+        // Locate a converter for this JavaScript classname
+        for (Map.Entry<String, Converter> entry : converters.entrySet())
         {
-            // Extract the JavaScript classname from the inbound type
-            String javascriptClassName = type.substring("Object_".length());
+            String match = entry.getKey();
+            Converter conv = entry.getValue();
 
-            // Locate a converter for this JavaScript classname
-            for (Map.Entry<String, Converter> entry : converters.entrySet())
+            // JavaScript mapping is only applicable for compound converters
+            if (conv instanceof NamedConverter)
             {
-                String match = entry.getKey();
-                Converter conv = entry.getValue();
-
-                // JavaScript mapping is only applicable for compound converters
-                if (conv instanceof NamedConverter)
+                NamedConverter boConv = (NamedConverter) conv;
+                if (boConv.getJavascript() != null && boConv.getJavascript().equals(javascriptClassName))
                 {
-                    NamedConverter boConv = (NamedConverter) conv;
-                    if (boConv.getJavascript() != null && boConv.getJavascript().equals(javascriptClassName))
+                    // We found a potential converter! But is the converter's
+                    // Java class compatible with the parameter type?
+                    try
                     {
-                        // We found a potential converter! But is the
-                        // converter's Java class compatible with the
-                        // parameter type?
-                        try
+                        Class<?> inboundClass = LocalUtil.classForName(match);
+                        if (paramType.isAssignableFrom(inboundClass))
                         {
-                            Class<?> inboundClass = LocalUtil.classForName(match);
-                            if (paramType.isAssignableFrom(inboundClass))
-                            {
-                                // Hack: We also want to make sure that the
-                                // converter creates its object based on the
-                                // inbound class instead of the parameter
-                                // type, and we have to use the other ref
-                                // for this:
-                                boConv.setInstanceType(inboundClass);
-                                return boConv;
-                            }
+                            // Hack: We also want to make sure that the
+                            // converter creates its object based on the inbound
+                            // class instead of the parameter type, and we have
+                            // to use the other reference for this:
+                            boConv.setInstanceType(inboundClass);
+                            return boConv;
                         }
-                        catch (ClassNotFoundException ex)
-                        {
-                            throw new MarshallException(paramType, ex);
-                        }
+                    }
+                    catch (ClassNotFoundException ex)
+                    {
+                        throw new MarshallException(paramType, ex);
                     }
                 }
             }

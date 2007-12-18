@@ -25,6 +25,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
 /**
+ * {@link TypeHintContext} should probably be called TypeHint. Its a way to
+ * provide help to the converter in describing what types it should be
+ * converting to.
  * Something to hold the method, paramNo and index together as an object
  * that can be a key in a Map.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
