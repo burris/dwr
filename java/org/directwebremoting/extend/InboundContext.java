@@ -51,7 +51,7 @@ public final class InboundContext
      */
     public void pushContext(TypeHintContext context)
     {
-        contexts.addFirst(context);
+        typeHintStack.addFirst(context);
     }
 
     /**
@@ -59,7 +59,7 @@ public final class InboundContext
      */
     public void popContext()
     {
-        contexts.removeFirst();
+        typeHintStack.removeFirst();
     }
 
     /**
@@ -67,7 +67,7 @@ public final class InboundContext
      */
     public TypeHintContext getCurrentTypeHintContext()
     {
-        return contexts.getFirst();
+        return typeHintStack.getFirst();
     }
 
     /**
@@ -321,7 +321,7 @@ public final class InboundContext
      * The stack of pushed conversion contexts.
      * i.e. What is the context of this type conversion.
      */
-    private LinkedList<TypeHintContext> contexts = new LinkedList<TypeHintContext>();
+    private LinkedList<TypeHintContext> typeHintStack = new LinkedList<TypeHintContext>();
 
     /**
      * How many params are there?.
