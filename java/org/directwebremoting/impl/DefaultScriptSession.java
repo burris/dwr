@@ -267,6 +267,7 @@ public class DefaultScriptSession implements RealScriptSession
                 catch (MarshallException ex)
                 {
                     log.warn("Failed to convert data. Dropping Javascript: " + script, ex);
+                    it.remove();
                 }
             }
         }
