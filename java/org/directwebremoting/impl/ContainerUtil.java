@@ -18,7 +18,9 @@ package org.directwebremoting.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletConfig;
@@ -30,6 +32,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
+import org.directwebremoting.ServerContext;
+import org.directwebremoting.ServerContextFactory;
+import org.directwebremoting.HubFactory.HubBuilder;
 import org.directwebremoting.ServerContextFactory.ServerContextBuilder;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.annotations.AnnotationsConfigurator;
@@ -187,6 +192,7 @@ public class ContainerUtil
         container.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
         container.addParameter(CreatorManager.class.getName(), DefaultCreatorManager.class.getName());
         container.addParameter(UrlProcessor.class.getName(), UrlProcessor.class.getName());
+        container.addParameter(HubBuilder.class.getName(), DefaultHubBuilder.class.getName());
         container.addParameter(WebContextBuilder.class.getName(), DefaultWebContextBuilder.class.getName());
         container.addParameter(ServerContextBuilder.class.getName(), DefaultServerContextBuilder.class.getName());
         container.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
@@ -467,6 +473,32 @@ public class ContainerUtil
         }
         containers.add(container);
         servletContext.setAttribute(ATTRIBUTE_CONTAINER_LIST, containers);
+
+        // Update the list of ServerContexts
+        ServerContext serverContext = ServerContextFactory.get(servletContext);
+        String name = servletConfig.getServletName();
+        contextMap.put(name, serverContext);
+        log.debug("Adding to contextMap, a serverContext called " + name);
+
+        if (contextMap.containsKey(DEFAULT_SERVERCONTEXT_NAME))
+        {
+            contextMap.remove(DEFAULT_SERVERCONTEXT_NAME);
+            log.debug("Multiple instances of DWR detected.");
+        }
+        else
+        {
+            contextMap.put(DEFAULT_SERVERCONTEXT_NAME, serverContext);
+        }
+    }
+
+    /**
+     * If there is only once instance of DWR defined in a ServletContext then
+     * we can get at it using this method.
+     * @return The one-and-only ServerContext or null if there are more than 1.
+     */
+    public static ServerContext getSingletonServerContext()
+    {
+        return contextMap.get(DEFAULT_SERVERCONTEXT_NAME);
     }
 
     /**
@@ -593,6 +625,17 @@ public class ContainerUtil
      * The name under which we publish all {@link Container}s.
      */
     public static final String ATTRIBUTE_CONTAINER_LIST = "org.directwebremoting.ContainerList";
+
+    /**
+     * We store a single ServerContext in the contextMap under this name.
+     */
+    public static final String DEFAULT_SERVERCONTEXT_NAME = "__default";
+
+    /**
+     * To enable us to get at a ServerContext if one has been defined or at
+     * all of them if several have been defined
+     */
+    private static final Map<String, ServerContext> contextMap = new HashMap<String, ServerContext>();
 
     /**
      * The log stream

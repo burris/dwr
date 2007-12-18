@@ -19,11 +19,13 @@
  */
 if (typeof this['dwr'] == 'undefined') this.dwr = {};
 if (typeof dwr['engine'] == 'undefined') dwr.engine = {};
+if (typeof dwr['hub'] == 'undefined') dwr.hub = {};
 if (typeof this['DWREngine'] == 'undefined') this.DWREngine = dwr.engine;
 
 /**
  * Set an alternative error handler from the default alert box.
- * @see getahead.org/dwr/browser/engine/errors
+ * @param {Function} handler The function to call when an error happens
+ * @see http://getahead.org/dwr/browser/engine/errors
  */
 dwr.engine.setErrorHandler = function(handler) {
   dwr.engine._errorHandler = handler;
@@ -31,7 +33,8 @@ dwr.engine.setErrorHandler = function(handler) {
 
 /**
  * Set an alternative warning handler from the default alert box.
- * @see getahead.org/dwr/browser/engine/errors
+ * @param {Function} handler The function to call when a warning happens
+ * @see http://getahead.org/dwr/browser/engine/errors
  */
 dwr.engine.setWarningHandler = function(handler) {
   dwr.engine._warningHandler = handler;
@@ -40,6 +43,7 @@ dwr.engine.setWarningHandler = function(handler) {
 /**
  * Setter for the text/html handler - what happens if a DWR request gets an HTML
  * reply rather than the expected Javascript. Often due to login timeout
+ * @param {Function} handler The function to call on an unexpected text/html content type
  */
 dwr.engine.setTextHtmlHandler = function(handler) {
   dwr.engine._textHtmlHandler = handler;
@@ -47,6 +51,7 @@ dwr.engine.setTextHtmlHandler = function(handler) {
 
 /**
  * Set a default timeout value for all calls. 0 (the default) turns timeouts off.
+ * @param {Function} handler The function to call when we get bored of waiting for a call
  * @see getahead.org/dwr/browser/engine/errors
  */
 dwr.engine.setTimeout = function(timeout) {
@@ -55,6 +60,7 @@ dwr.engine.setTimeout = function(timeout) {
 
 /**
  * The Pre-Hook is called before any DWR remoting is done.
+ * @param {Function} handler The function to call before any remote calls
  * @see getahead.org/dwr/browser/engine/hooks
  */
 dwr.engine.setPreHook = function(handler) {
@@ -63,6 +69,7 @@ dwr.engine.setPreHook = function(handler) {
 
 /**
  * The Post-Hook is called after any DWR remoting is done.
+ * @param {Function} handler The function to call after any remote calls
  * @see getahead.org/dwr/browser/engine/hooks
  */
 dwr.engine.setPostHook = function(handler) {
@@ -96,7 +103,7 @@ dwr.engine.ScriptTag = 3;
 
 /**
  * Set the preferred remoting type.
- * @param newType One of dwr.engine.XMLHttpRequest or dwr.engine.IFrame or dwr.engine.ScriptTag
+ * @param {int} newType One of dwr.engine.XMLHttpRequest or dwr.engine.IFrame or dwr.engine.ScriptTag
  * @see getahead.org/dwr/browser/engine/options
  */
 dwr.engine.setRpcType = function(newType) {
@@ -237,9 +244,53 @@ dwr.engine.setMethod = function(type) { dwr.engine.setRpcType(type); };
 dwr.engine.setVerb = function(verb) { dwr.engine.setHttpMethod(verb); };
 dwr.engine.setPollType = function() { dwr.engine._debug("Manually setting the Poll Type is not supported"); };
 
+/**
+ * Publish some data to a given topic
+ * @param {Object} topicName The topic to publish to
+ * @param {Object} data The data to publish
+ */
+dwr.hub.publish = function(topicName, data) {
+  dwr.engine._execute(dwr.engine._defaultPath, '__System', 'publish', topicName, data, {});
+};
+
+/**
+ * Subscribe to get notifications of publish events to a given topic
+ * @param {String} topicName The topic to subscribe to
+ * @param {Function} callback The function to call when a publish happens
+ * @param {Object} scope The 'this' object on which the callback executes (optional)
+ * @param {Object} subscriberData Data that the subscriber wishes to remember (optional)
+ * @return An opaque type for use with unsubscribe
+ */
+dwr.hub.subscribe = function(topicName, callback, scope, subscriberData) {
+  var subscription = "" + dwr.hub._subscriptionId++;
+  dwr.hub._subscriptions[subscription] = {
+    callback:callback,
+    scope:scope,
+    subscriberData:subscriberData
+  };
+  dwr.engine._execute(dwr.engine._defaultPath, '__System', 'subscribe', topicName, subscription, {});
+  return subscription;
+};
+
+/**
+ * Stop geting notifications of publish events
+ * @param {Object} subscription An object returned from a call to dwr.hub.subscribe()
+ */
+dwr.hub.unsubscribe = function(subscription) {
+  dwr.engine._execute(dwr.engine._defaultPath, '__System', 'unsubscribe', subscription, function(success) {
+    if (success) delete dwr.hub._subscriptions[subscription];
+  });
+};
+
 //==============================================================================
 // Only private stuff below here
 //==============================================================================
+
+/** Each time we subscribe to something, we use a unique number */
+dwr.hub._subscriptionId = 0;
+
+/** We need to remember what we are subscribed to so we can recall the callback */
+dwr.hub._subscriptions = {};
 
 /** The session cookie name */
 dwr.engine._sessionCookieName = "${sessionCookieName}"; // JSESSIONID
@@ -1167,7 +1218,16 @@ dwr.engine._serializeAll = function(batch, referto, data, name) {
       batch.fileUpload = true;
       batch.map[name] = data;
     }
-    else batch.map[name] = dwr.engine._serializeObject(batch, referto, data, name);
+    else {
+      // This check for an HTML is not complete, but is there a better way?
+      // Maybe we should add: data.hasChildNodes typeof "function" == true
+      if (data.nodeName && data.nodeType) {
+        batch.map[name] = dwr.engine._serializeXml(batch, referto, data, name);
+      }
+      else {
+        batch.map[name] = dwr.engine._serializeObject(batch, referto, data, name);
+      }
+    }
     break;
   case "function":
     // We just ignore functions.
@@ -1198,12 +1258,6 @@ dwr.engine._lookup = function(referto, data, name) {
 dwr.engine._serializeObject = function(batch, referto, data, name) {
   var ref = dwr.engine._lookup(referto, data, name);
   if (ref) return ref;
-
-  // This check for an HTML is not complete, but is there a better way?
-  // Maybe we should add: data.hasChildNodes typeof "function" == true
-  if (data.nodeName && data.nodeType) {
-    return dwr.engine._serializeXml(batch, referto, data, name);
-  }
 
   // treat objects as an associative arrays
   var reply = "Object_" + dwr.engine._getObjectClassName(data) + ":{";
@@ -1368,7 +1422,13 @@ dwr.engine._debug = function(message, stacktrace) {
   }
 };
 
-/** @private init */
+/** @private Called by the server: A publish event has happened that we care about */
+dwr.hub._remotePublish = function(subscriptionId, publishData) {
+  var subscriptionData = dwr.hub._subscriptions[subscription];
+  if (!subscriptionData) return;
+  subscriptionData.callback.call(subscriptionData.scope, publishData, subscriptionData.subscriberData);
+};
+
 // Fetch the scriptSessionId from the server
 dwr.engine._execute(dwr.engine._defaultPath, '__System', 'pageLoaded', function(data) {
   dwr.engine._scriptSessionId = data;

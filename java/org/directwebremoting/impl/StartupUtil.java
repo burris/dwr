@@ -23,8 +23,10 @@ import javax.servlet.http.HttpServlet;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
+import org.directwebremoting.HubFactory;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.HubFactory.HubBuilder;
 import org.directwebremoting.ServerContextFactory.ServerContextBuilder;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.util.FakeServletConfig;
@@ -102,6 +104,19 @@ public class StartupUtil
     }
 
     /**
+     * Get the various objects out of the {@link Container}, and configure them.
+     * @param servletConfig The servlet configuration
+     * @param servletContext The servlet context
+     * @param container The container to save in the ServletContext
+     */
+    public static void initContainerBeans(ServletConfig servletConfig, ServletContext servletContext, Container container)
+    {
+        initWebContext(servletConfig, servletContext, container);
+        initServerContext(servletConfig, servletContext, container);
+        initHub(servletContext, container);
+    }
+
+    /**
      * Get the {@link WebContextFactory.WebContextBuilder} out of the
      * {@link Container}, configure it (call WebContextBuilder#set()) and use it
      * to configure the {@link WebContextFactory}.
@@ -109,7 +124,9 @@ public class StartupUtil
      * @param servletContext The servlet context
      * @param container The container to save in the ServletContext
      * @return a new WebContextBuilder
+     * @deprecated Use {@link #initContainerBeans(ServletConfig, ServletContext, Container)}
      */
+    @Deprecated
     public static WebContextBuilder initWebContext(ServletConfig servletConfig, ServletContext servletContext, Container container)
     {
         WebContextBuilder webContextBuilder = container.getBean(WebContextBuilder.class);
@@ -127,7 +144,9 @@ public class StartupUtil
      * @param servletContext The servlet context
      * @param container The container to save in the ServletContext
      * @return The newly created ServerContextBuilder
+     * @deprecated Use {@link #initContainerBeans(ServletConfig, ServletContext, Container)}
      */
+    @Deprecated
     public static ServerContextBuilder initServerContext(ServletConfig servletConfig, ServletContext servletContext, Container container)
     {
         ServerContextBuilder serverContextBuilder = container.getBean(ServerContextBuilder.class);
@@ -135,6 +154,24 @@ public class StartupUtil
         serverContextBuilder.set(servletConfig, servletContext, container);
 
         return serverContextBuilder;
+    }
+
+    /**
+     * Get the {@link HubFactory.HubBuilder} out of the {@link Container},
+     * configure it and use it to configure the {@link HubFactory}
+     * @param servletContext The servlet context
+     * @param container The container to save in the ServletContext
+     * @return The newly created HubBuilder
+     * @deprecated Use {@link #initContainerBeans(ServletConfig, ServletContext, Container)}
+     */
+    @Deprecated
+    public static HubBuilder initHub(ServletContext servletContext, Container container)
+    {
+        HubBuilder hubBuilder = container.getBean(HubBuilder.class);
+        HubFactory.setHubBuilder(hubBuilder);
+        hubBuilder.set(servletContext);
+
+        return hubBuilder;
     }
 
     /**

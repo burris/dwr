@@ -18,6 +18,7 @@ package org.directwebremoting.extend;
 import java.util.Collection;
 
 import org.directwebremoting.ScriptSession;
+import org.directwebremoting.event.ScriptSessionListener;
 
 /**
  * A ScriptSessionManager looks after a number of sessions (keyed using a
@@ -71,6 +72,18 @@ public interface ScriptSessionManager
      * @return the scriptSessionTimeout
      */
     long getScriptSessionTimeout();
+
+    /**
+     * Maintain the list of {@link ScriptSessionListener}s
+     * @param li the ScriptSessionListener to add
+     */
+    public void addScriptSessionListener(ScriptSessionListener li);
+
+    /**
+     * Maintain the list of {@link ScriptSessionListener}s
+     * @param li the ScriptSessionListener to remove
+     */
+    public void removeScriptSessionListener(ScriptSessionListener li);
 
     /**
      * The default length of time a session can go unused before it

@@ -28,6 +28,22 @@ import org.apache.commons.logging.LogFactory;
 public class ServerContextFactory
 {
     /**
+     * Accessor for the current ServerContext in the normal case where there is
+     * only one DWR in the current classloader
+     * @return The current ServerContext.
+     */
+    public static ServerContext get()
+    {
+        if (builder == null)
+        {
+            log.warn("ServerContextBuilder is null. This probably means that DWR has not initialized properly");
+            return null;
+        }
+
+        return builder.get();
+    }
+
+    /**
      * Accessor for the current ServerContext.
      * @param ctx The servlet context to allow us to bootstrap
      * @return The current ServerContext.
@@ -72,6 +88,13 @@ public class ServerContextFactory
          * @param container The IoC container
          */
         void set(ServletConfig config, ServletContext context, Container container);
+
+        /**
+         * Accessor for the current ServerContext in the normal case where there
+         * is only one DWR in the current classloader
+         * @return The ServerContext that is associated with this web application
+         */
+        ServerContext get();
 
         /**
          * Accessor for the current ServerContext

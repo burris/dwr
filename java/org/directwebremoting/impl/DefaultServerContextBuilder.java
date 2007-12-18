@@ -65,6 +65,23 @@ public class DefaultServerContextBuilder implements ServerContextBuilder
         return reply;
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ServerContextBuilder#get()
+     */
+    public ServerContext get()
+    {
+        ServerContext serverContext = ContainerUtil.getSingletonServerContext();
+        if (serverContext == null)
+        {
+            log.fatal("Error initializing Hub because singleton ServerContext == null.");
+            log.fatal("This probably means that either DWR has not been properly initialized (in which case you should delay the current action until it has)");
+            log.fatal("or that there is more than 1 DWR servlet is configured in this classloader, in which case you should provide a ServletContext to the Hub yourself.");
+            throw new IllegalStateException("No singleton ServerContext see logs for possible causes and solutions.");
+        }
+
+        return serverContext;
+    }
+
     /**
      * The attribute under which we publish the ServerContext
      */

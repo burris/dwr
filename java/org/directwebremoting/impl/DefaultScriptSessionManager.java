@@ -23,9 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.event.EventListenerList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptSession;
+import org.directwebremoting.event.ScriptSessionEvent;
+import org.directwebremoting.event.ScriptSessionListener;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.RealWebContext;
@@ -33,7 +37,7 @@ import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.IdGenerator;
 
 /**
- * A default implmentation of ScriptSessionManager.
+ * A default implementation of ScriptSessionManager.
  * <p>There are synchronization constraints on this class that could be broken
  * by subclasses. Specifically anyone accessing either <code>sessionMap</code>
  * or <code>pageSessionMap</code> must be holding the <code>sessionLock</code>.
@@ -51,17 +55,22 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     {
         maybeCheckTimeouts();
 
+        DefaultScriptSession scriptSession;
+
         synchronized (sessionLock)
         {
-            DefaultScriptSession scriptSession = sessionMap.get(id);
+            scriptSession = sessionMap.get(id);
             if (scriptSession == null)
             {
                 throw new SecurityException("Attempt to fix script session");
             }
 
             scriptSession.updateLastAccessedTime();
-            return scriptSession;
         }
+
+        // See notes on synchronization in invalidate()
+        fireScriptSessionCreatedEvent(scriptSession);
+        return scriptSession;
     }
 
     /* (non-Javadoc)
@@ -169,6 +178,11 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
                 log.error("DefaultScriptSessionManager.invalidate(): removeCount=" + removeCount + " when invalidating: " + scriptSession);
             }
         }
+
+        // Are there any risks from doing this outside the locks?
+        // The initial analysis is that 'Destroyed' is past tense so you would
+        // have expected it to have happened already.
+        fireScriptSessionDestroyedEvent(scriptSession);
     }
 
     /**
@@ -235,6 +249,22 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         this.scriptSessionTimeout = scriptSessionTimeout;
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ScriptSessionManager#addScriptSessionListener(org.directwebremoting.event.ScriptSessionListener)
+     */
+    public void addScriptSessionListener(ScriptSessionListener li)
+    {
+        scriptSessionListeners.add(ScriptSessionListener.class, li);
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ScriptSessionManager#removeScriptSessionListener(org.directwebremoting.event.ScriptSessionListener)
+     */
+    public void removeScriptSessionListener(ScriptSessionListener li)
+    {
+        scriptSessionListeners.remove(ScriptSessionListener.class, li);
+    }
+
     /**
      * Accessor for the PageNormalizer.
      * @param pageNormalizer The new PageNormalizer
@@ -251,6 +281,45 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     {
         this.scriptSessionCheckTime = scriptSessionCheckTime;
     }
+
+    /**
+     * This should be called whenever a {@link ScriptSession} is created
+     * @param scriptSession The newly created ScriptSession
+     */
+    protected void fireScriptSessionCreatedEvent(ScriptSession scriptSession)
+    {
+        ScriptSessionEvent ev = new ScriptSessionEvent(scriptSession);
+        Object[] listeners = scriptSessionListeners.getListenerList();
+        for (int i = 0; i < listeners.length - 2; i += 2)
+        {
+            if (listeners[i] == ScriptSessionListener.class)
+            {
+                ((ScriptSessionListener) listeners[i + 1]).sessionCreated(ev);
+            }
+        }
+    }
+
+    /**
+     * This should be called whenever a {@link ScriptSession} is destroyed
+     * @param scriptSession The newly destroyed ScriptSession
+     */
+    protected void fireScriptSessionDestroyedEvent(ScriptSession scriptSession)
+    {
+        ScriptSessionEvent ev = new ScriptSessionEvent(scriptSession);
+        Object[] listeners = scriptSessionListeners.getListenerList();
+        for (int i = 0; i < listeners.length - 2; i += 2)
+        {
+            if (listeners[i] == ScriptSessionListener.class)
+            {
+                ((ScriptSessionListener) listeners[i + 1]).sessionDestroyed(ev);
+            }
+        }
+    }
+
+    /**
+     * The list of current {@link ScriptSessionListener}s
+     */
+    protected EventListenerList scriptSessionListeners = new EventListenerList();
 
     /**
      * How we create script session ids.

@@ -25,8 +25,8 @@ public class SingletonContainer
             // Setup the DWR container
             container = ContainerUtil.createAndSetupDefaultContainer(servletConfig);
 
-            webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, container);
-            StartupUtil.initServerContext(servletConfig, servletContext, container);
+            StartupUtil.initContainerBeans(servletConfig, servletContext, container);
+            webContextBuilder = container.getBean(WebContextBuilder.class);
             ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, null);
 
             ContainerUtil.configureFromSystemDwrXml(container);
