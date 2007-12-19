@@ -14,7 +14,7 @@
       <object type="jsx3.gui.Matrix">
         <variants jsxpagingmodel="0" jsxselectionmodel="1" jsxscalewidth="1" jsxheaderheight="25" jsxrowheight="25"/>
         <strings jsxname="listCallers" jsxbodyborder="1px solid #dfdfef" jsxheaderborder="1px solid #dfdfef" jsxbgcolor="#efefff" jsxfocusstyle="font-weight:bold;" jsxxmlid="callers" jsxsortpath="timePlain" jsxsorttype="number" jsxsortdirection="descending"/>
-        <events jsxexecute="alert('list execute');" jsxselect="beginHandling();"/>
+        <events jsxselect="CallCenter.beginHandling(getSelectedId());"/>
         <xslparameters jsx_rowbg1="#ffffff" jsx_rowbg2="#efefff"/>
         <object type="jsx3.gui.Matrix.Column">
           <variants jsxwidth="80"/>
@@ -141,17 +141,17 @@
           <object type="jsx3.gui.Button">
             <variants jsxindex="0" jsxheight="30"/>
             <strings jsxname="buttonBook" jsxtext="Book &lt;img src=&quot;JSXAPPS/ticketcenter/images/ok.png&quot;/&gt;" jsxmargin="4" jsxpadding="4"/>
-            <events jsxexecute="completeHandling();"/>
+            <events jsxexecute="CallCenter.completeHandling(getCaller());"/>
           </object>
           <object type="jsx3.gui.Button">
             <variants jsxindex="0" jsxheight="30"/>
             <strings jsxname="buttonSupervisor" jsxtext="Supervisor &lt;img src=&quot;JSXAPPS/ticketcenter/images/irkickflash.png&quot;/&gt;" jsxmargin="4" jsxpadding="4"/>
-            <events jsxexecute="alertSupervisor();"/>
+            <events jsxexecute="CallCenter.alertSupervisor(getCaller());"/>
           </object>
           <object type="jsx3.gui.Button">
             <variants jsxindex="0" jsxheight="30"/>
             <strings jsxname="buttonCancel" jsxtext="Cancel &lt;img src=&quot;JSXAPPS/ticketcenter/images/cancel.png&quot;/&gt;" jsxmargin="4" jsxpadding="4"/>
-            <events jsxexecute="cancelHandling();"/>
+            <events jsxexecute="CallCenter.cancelHandling();"/>
           </object>
         </object>
       </object>

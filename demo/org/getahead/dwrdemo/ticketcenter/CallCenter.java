@@ -31,7 +31,15 @@ import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.proxy.ScriptProxy;
+import org.directwebremoting.proxy.browser.Window;
+import org.directwebremoting.proxy.jsx3.GI;
+import org.directwebremoting.proxy.jsx3.app.Server;
+import org.directwebremoting.proxy.jsx3.gui.Form;
+import org.directwebremoting.proxy.jsx3.gui.LayoutGrid;
+import org.directwebremoting.proxy.jsx3.gui.Matrix;
+import org.directwebremoting.proxy.jsx3.gui.TextBox;
+import org.directwebremoting.proxy.jsx3.xml.CdfDocument;
+import org.directwebremoting.proxy.jsx3.xml.Record;
 import org.getahead.dwrdemo.util.RandomData;
 
 /**
@@ -75,53 +83,108 @@ public class CallCenter implements Runnable
     /**
      * 
      */
-    public String alertSupervisor(int id, Call call)
+    public void alertSupervisor(Call call)
     {
+        ScriptSession session = WebContextFactory.get().getScriptSession();
+        Window window = new Window(session);
+        int handlingId = getHandlingId(session);
+
+        if (handlingId != -1)
+        {
+            window.alert("No call found");
+            return;
+        }
+
         synchronized (calls)
         {
-            Call old = findCaller(id);
-            if (call == null)
+            Call old = findCaller(handlingId);
+            if (old == null)
             {
-                return "That caller hung up, please select another";
+                window.alert("That caller hung up, please select another");
+                return;
             }
-            else
-            {
-                old.setName(call.getName());
-                old.setAddress(call.getAddress());
-                old.setNotes(call.getNotes());
-                old.setHandled(false);
-                old.setSupervisorAlert(true);
-                update();
-                return "";
-            }
+
+            old.setName(call.getName());
+            old.setAddress(call.getAddress());
+            old.setNotes(call.getNotes());
+            old.setHandled(false);
+            old.setSupervisorAlert(true);
+            update();
         }
     }
 
     /**
      * 
      */
-    public String beginHandling(int id)
+    public void completeHandling(Call call)
     {
+        ScriptSession session = WebContextFactory.get().getScriptSession();
+        Window window = new Window(session);
+        int handlingId = getHandlingId(session);
+
+        if (handlingId != -1)
+        {
+            window.alert("No call found");
+            return;
+        }
+
+        synchronized (calls)
+        {
+            Call old = findCaller(handlingId);
+            if (old == null)
+            {
+                window.alert("That caller hung up, please select another");
+                return;
+            }
+
+            log.debug("Call completed: " + call);
+            calls.remove(call);
+            update();
+        }
+    }
+
+    /**
+     * 
+     */
+    public void beginHandling(int id)
+    {
+        ScriptSession session = WebContextFactory.get().getScriptSession();
+        Window window = new Window(session);
+        int handlingId = getHandlingId(session);
+
+        if (handlingId != -1)
+        {
+            window.alert("Please finish handling the current call before selecting another");
+            return;
+        }
+
         synchronized (calls)
         {
             Call call = findCaller(id);
             if (call == null)
             {
                 log.debug("Caller not found: " + id);
-                return "That caller hung up, please select another";
+                window.alert("That caller hung up, please select another");
             }
             else
             {
                 if (call.isHandled())
                 {
-                    return "That call is being handled, please select another";
+                    window.alert("That call is being handled, please select another");
+                    return;
                 }
-                else
-                {
-                    call.setHandled(true);
-                    update();
-                    return "";
-                }
+
+                session.setAttribute("handlingId", handlingId);
+
+                call.setHandled(true);
+                Server ticketcenter = GI.getServer(session, "ticketcenter");
+                ticketcenter.getJSXByName("textPhone", TextBox.class).setValue(call.getPhoneNumber());
+                ticketcenter.getJSXByName("textName", TextBox.class).setValue(call.getName());
+                ticketcenter.getJSXByName("textNotes", TextBox.class).setValue(call.getNotes());
+                setFormEnabled(true);
+                ticketcenter.getJSXByName("layoutForm", TextBox.class).setBackgroundColor("#000", true);
+
+                update();
             }
         }
     }
@@ -129,46 +192,25 @@ public class CallCenter implements Runnable
     /**
      * 
      */
-    public String cancelHandling(int id)
+    public void cancelHandling()
     {
-        synchronized (calls)
+        ScriptSession session = WebContextFactory.get().getScriptSession();
+        Window window = new Window(session);
+        int handlingId = getHandlingId(session);
+        if (handlingId == -1)
         {
-            Call call = findCaller(id);
-            if (call == null)
-            {
-                log.debug("Caller not found: " + id);
-                return "That caller hung up, please select another";
-            }
-            else
-            {
-                call.setHandled(false);
-                update();
-                return "";
-            }
+            window.alert("That caller hung up, please select another");
+            return;
         }
-    }
 
-    /**
-     * 
-     */
-    public String completeHandling(int id, Call newCall)
-    {
         synchronized (calls)
         {
-            Call call = findCaller(id);
-            if (call == null)
-            {
-                log.debug("Caller not found: " + id);
-                return "That caller hung up, please select another";
-            }
-            else
-            {
-                log.debug("Call completed: " + newCall);
-                calls.remove(call);
-                update();
-                return "";
-            }
+            Call call = findCaller(handlingId);
+            call.setHandled(false);
+            update();
         }
+
+        deselect();
     }
 
     /**
@@ -292,8 +334,61 @@ public class CallCenter implements Runnable
         Collection<ScriptSession> sessions2 = serverContext.getScriptSessionsByPage(contextPath + "/gi/ticketcenter2.html");
         sessions.addAll(sessions2);
 
-        ScriptProxy proxy = new ScriptProxy(sessions);
-        proxy.addFunctionCall("updateCallers", calls, new Date());
+        Server ticketcenter = GI.getServer(sessions, "ticketcenter");
+
+        // Some tweaks so GI redraws everything without needing further explanation
+        // We copy the id to jsxid, and ensure that the fields for the checkboxes are
+        // 0 or 1 rather than true or false. We also check that any handled caller
+        // is still around and has not hung up
+        CdfDocument cdfdoc = new CdfDocument("jsxroot");
+        Date now = new Date();
+        for (Call call : calls)
+        {
+            Record record = new Record("" + call.getId());
+
+            record.setAttribute("phoneNumber", call.getPhoneNumber());
+
+            String name = call.getName();
+            if (name == null || name.equals(""))
+            {
+                name = "?";
+            }
+            record.setAttribute("name", name);
+
+            long timePlain = now.getTime() - call.getCallStarted().getTime();
+            int time = 10000 * Math.round(timePlain / 10000);
+            record.setAttribute("time", "" + time);
+
+            String handled = call.isHandled() ? "JSXAPPS/ticketcenter/images/configure.png" : "";
+            record.setAttribute("handled", handled);
+
+            String supervisorAlert = call.isSupervisorAlert() ? "JSXAPPS/ticketcenter/images/irkickflash.png" : "";
+            record.setAttribute("supervisorAlert", supervisorAlert);
+
+            for (ScriptSession session : sessions)
+            {
+                int handlingId = getHandlingId(session);
+                if (handlingId == call.getId())
+                {
+                    session.setAttribute("handlingIdFound", Boolean.TRUE);
+                }
+            }
+        }
+
+        // Convert the data into a CDF document and post to GI
+        ticketcenter.getCache().setDocument("callers", null /*cdfdoc*/);
+        //ticketcenter.getJSXByName("listCallers", Matrix.class).repaint(null);
+
+        // Work out what to do if the caller we're working on has hung up
+        for (ScriptSession session : sessions)
+        {
+            if (session.getAttribute("handlingIdFound") != null)
+            {
+                Window window = new Window(session);
+                window.alert("It appears that this caller has hung up. Please select another.");
+                deselect();
+            }
+        }
     }
 
     /**
@@ -310,6 +405,60 @@ public class CallCenter implements Runnable
         call.setPhoneNumber(addressAndNumber[1]);
         return call;
     }
+
+    /**
+     * Disable all the elements in the form
+     * @param enabled True to enable the elements/false ...
+     */
+    private void setFormEnabled(boolean enabled)
+    {
+        int state = enabled ? Form.STATEENABLED : Form.STATEDISABLED;
+
+        for (String element : elements)
+        {
+            ScriptSession session = WebContextFactory.get().getScriptSession();
+            TextBox form = GI.getServer(session, "ticketcenter").getJSX(element, TextBox.class);
+            form.setEnabled(state, true);
+        }
+    }
+
+    private void deselect()
+    {
+        ScriptSession session = WebContextFactory.get().getScriptSession();
+
+        Server ticketcenter = GI.getServer(session, "ticketcenter");
+        session.removeAttribute("handlingId");
+        for (String field : fields)
+        {
+            TextBox form = ticketcenter.getJSX(field, TextBox.class);
+            form.setValue("");
+        }
+
+        setFormEnabled(false);
+        ticketcenter.getJSX("layoutForm", LayoutGrid.class).setBackgroundColor("#EEE", true);
+    }
+
+    private int getHandlingId(ScriptSession session)
+    {
+        Object attribute = session.getAttribute("handlingId");
+        if (attribute == null)
+        {
+            return -1;
+        }
+
+        try
+        {
+            return Integer.parseInt(attribute.toString());
+        }
+        catch (NumberFormatException ex)
+        {
+            log.warn("Illegal number format: " + attribute.toString(), ex);
+            return -1;
+        }
+    }
+
+    private String[] fields = new String[] { "textPhone", "textName", "textAddress", "textNotes" };
+    private String[] elements = new String[] { "textPhone", "textName", "textAddress", "textPayment", "textNotes", "selectEvent", "selectPaymentType", "buttonBook", "buttonSupervisor", "buttonCancel" };
 
     /**
      * Get the next unique ID in a thread safe way
