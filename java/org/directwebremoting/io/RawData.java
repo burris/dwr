@@ -17,6 +17,8 @@ package org.directwebremoting.io;
 
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
+import org.directwebremoting.json.InvalidJsonException;
+import org.directwebremoting.util.JavascriptUtil;
 
 /**
  * Sometimes DWR can't know at runtime the type of the inbound data, this class
@@ -53,13 +55,29 @@ public class RawData
         return inboundVariable;
     }
 
+    /**
+     * @see InboundVariable#getJsonValue(org.directwebremoting.extend.InboundVariable.OnJsonParseError)
+     * @return A JSON approximation of this data
+     */
+    public String toJsonString()
+    {
+        try
+        {
+            return inboundVariable.getJsonValue(InboundVariable.OnJsonParseError.Hack).toExternalRepresentation();
+        }
+        catch (InvalidJsonException ex)
+        {
+            return "{ 'error':'The object could not be represented in JSON: " + JavascriptUtil.escapeJavaScript(ex.toString()) + "' }";
+        }
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString()
     {
-        return inboundVariable.getValue();
+        return toJsonString();
     }
 
     /**

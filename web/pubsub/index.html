@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>Editable Table Demo</title>
+  <title>Hub Demo</title>
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
   <script type='text/javascript' src='../tabs/tabs.js'> </script>
   <script type='text/javascript' src='../dwr/engine.js'> </script>
   <script type='text/javascript' src='../dwr/util.js'> </script>
-  <script type='text/javascript' src='../dwr/interface/People.js'> </script>
+  <script type='text/javascript' src='../dwr/interface/HubTest.js'> </script>
   <script type="text/javascript" src='index.js'> </script>
   <link rel="stylesheet" type="text/css" href="../tabs/tabs.css" />
   <link rel="stylesheet" type="text/css" href="../generic.css" />
@@ -17,9 +17,9 @@
   <a href="..">Web Application Index</a>
 ]</div>
 
-<h1>Dynamically Editing a Table</h1>
+<h1>Publish and Subscribe</h1>
 
-<p>This demo allows you to edit a table of data</p>
+<p>This demo allows you publish and subscribe to a topic on the DWR hub.</p>
 
 <ul id="tabList">
   <li><a href="#" tabId="demoDiv">Demo</a></li>
@@ -38,21 +38,20 @@
     <input type="text" id="clientText" onchange="dwr.util.onReturn(event, clientPublishText)"/>
     <input type="button" onclick="clientPublishText()" value="Publish Text"/></p>
     <p>Person name:
-    <input type="text" id="clientText" onchange="dwr.util.onEnter(clientPublishObject)"/>
+    <input type="text" id="clientPersonName" onchange="dwr.util.onReturn(clientPublishObject)"/>
     <input type="button" onclick="clientPublishObject()" value="Publish Object"/></p>
 
     <h3>Server Publish</h3>
     <p>These 2 examples request the server to publish data into the server hub,
     as above, one pushing text and the other an object.</p>
     <p>Publish text:
-    <input type="text" id="clientText" onchange="dwr.util.onReturn(event, serverPublishText)"/>
+    <input type="text" id="serverText" onchange="dwr.util.onReturn(event, serverPublishText)"/>
     <input type="button" onclick="serverPublishText()" value="Publish Text"/></p>
     <p>Person name:
-    <input type="text" id="clientText" onchange="dwr.util.onEnter(serverPublishObject)"/>
+    <input type="text" id="serverPersonName" onchange="dwr.util.onReturn(serverPublishObject)"/>
     <input type="button" onclick="serverPublishObject()" value="Publish Object"/></p>
 
     <h3>Subscriptions</h3>
-    <p>Received publishes are displayed here:</p>
     <div id="lazy">See the console</div>
 
   </div>

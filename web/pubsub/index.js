@@ -11,24 +11,24 @@ function init() {
 }
 
 function clientPublishText() {
-  dwr.hub.publish("pubsub.topicText", dwr.util.byId("clientText"));
+  dwr.hub.publish("pubsub.topicText", dwr.util.getValue("clientText"));
 }
 
 function clientPublishObject() {
   dwr.hub.publish("pubsub.topicPeople", {
-    name:dwr.util.byId("clientPersonName"),
+    name:dwr.util.getValue("clientPersonName"),
     address:"a made up address",
     phoneNumber:"000-000-0000"
   });
 }
 
 function serverPublishText() {
-  HubTest.publishText(dwr.util.byId("serverText"));
+  HubTest.publishText(dwr.util.getValue("serverText"));
 }
 
 function serverPublishObject() {
   HubTest.publishPerson({
-    name:dwr.util.byId("serverPersonName"),
+    name:dwr.util.getValue("serverPersonName"),
     address:"a made up address",
     phoneNumber:"000-000-0000"
   });

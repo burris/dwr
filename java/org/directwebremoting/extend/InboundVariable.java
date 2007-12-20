@@ -15,7 +15,22 @@
  */
 package org.directwebremoting.extend;
 
+import java.util.StringTokenizer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.dwrp.ParseUtil;
 import org.directwebremoting.dwrp.ProtocolConstants;
+import org.directwebremoting.json.InvalidJsonException;
+import org.directwebremoting.json.JsonArray;
+import org.directwebremoting.json.JsonBoolean;
+import org.directwebremoting.json.JsonHack;
+import org.directwebremoting.json.JsonNull;
+import org.directwebremoting.json.JsonNumber;
+import org.directwebremoting.json.JsonObject;
+import org.directwebremoting.json.JsonString;
+import org.directwebremoting.json.JsonValue;
+import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.Messages;
 
 /**
@@ -123,6 +138,182 @@ public final class InboundVariable
         }
     }
 
+    public enum OnJsonParseError
+    {
+        /**
+         * If there is anything about the {@link InboundVariable} that can not
+         * be represented in 100% pure JSON, then throw
+         */
+        Throw,
+
+        /**
+         * If there is anything about the {@link InboundVariable} that can not
+         * be represented in 100% pure JSON, then insert null and carry on
+         */
+        Skip,
+
+        /**
+         * If there is anything about the {@link InboundVariable} that can not
+         * be represented in 100% pure JSON, then find some hack to do the best
+         * we can and carry on. This option may produce invalid JSON
+         */
+        Hack,
+    }
+
+    /**
+     * Convert the set of {@link InboundVariable}s to JSON
+     * @return This object in JSON
+     * @throws InvalidJsonException If this can't be represented as JSON
+     */
+    public JsonValue getJsonValue(OnJsonParseError onError) throws InvalidJsonException
+    {
+        return getJsonValue(onError, 0);
+    }
+
+    /**
+     * Convert the set of {@link InboundVariable}s to JSON
+     * @return This object in JSON
+     * @throws InvalidJsonException If this can't be represented as JSON
+     */
+    private JsonValue getJsonValue(OnJsonParseError onError, int currentDepth) throws InvalidJsonException
+    {
+        if (currentDepth > 50)
+        {
+            throw new InvalidJsonException("JSON structure too deeply nested. Is it recursive?");
+        }
+
+        String value = getValue();
+
+        if (type.equalsIgnoreCase("boolean"))
+        {
+            return new JsonBoolean(Boolean.parseBoolean(value));
+        }
+        else if (type.equalsIgnoreCase("number"))
+        {
+            return new JsonNumber(Double.parseDouble(value));
+        }
+        else if (type.equalsIgnoreCase("string"))
+        {
+            return new JsonString(value);
+        }
+        else if (type.equalsIgnoreCase("date"))
+        {
+            switch (onError)
+            {
+            case Throw:
+                throw new InvalidJsonException("Can't use date in JSON");
+            case Skip:
+                return new JsonNull();
+            case Hack:
+                return new JsonHack("new Date(" + value + ")");
+            }
+        }
+        else if (type.equalsIgnoreCase("xml"))
+        {
+            switch (onError)
+            {
+            case Throw:
+                throw new InvalidJsonException("Can't use XML in JSON");
+            case Skip:
+                return new JsonNull();
+            case Hack:
+                return new JsonHack(EnginePrivate.xmlStringToJavascriptDom(value));
+            }
+        }
+        else if (type.equalsIgnoreCase("array"))
+        {
+            JsonArray array = new JsonArray();
+
+            // If the text is null then the whole bean is null
+            if (value.trim().equals(ProtocolConstants.INBOUND_NULL))
+            {
+                return new JsonNull();
+            }
+
+            if (!value.startsWith(ProtocolConstants.INBOUND_ARRAY_START))
+            {
+                throw new InvalidJsonException(Messages.getString("CollectionConverter.FormatError", ProtocolConstants.INBOUND_ARRAY_START));
+            }
+
+            if (!value.endsWith(ProtocolConstants.INBOUND_ARRAY_END))
+            {
+                throw new InvalidJsonException(Messages.getString("CollectionConverter.FormatError", ProtocolConstants.INBOUND_ARRAY_END));
+            }
+
+            value = value.substring(1, value.length() - 1);
+            StringTokenizer st = new StringTokenizer(value, ProtocolConstants.INBOUND_ARRAY_SEPARATOR);
+            int size = st.countTokens();
+            for (int i = 0; i < size; i++)
+            {
+                String token = st.nextToken();
+
+                String[] split = ParseUtil.splitInbound(token);
+                String splitValue = split[LocalUtil.INBOUND_INDEX_VALUE];
+
+                InboundVariable nested = context.getInboundVariable(splitValue);
+                array.add(nested.getJsonValue(onError, currentDepth + 1));
+            }
+
+            return array;
+        }
+        else if (type.startsWith("Object_"))
+        {
+            JsonObject object = new JsonObject();
+
+            // If the text is null then the whole bean is null
+            if (value.trim().equals(ProtocolConstants.INBOUND_NULL))
+            {
+                return new JsonNull();
+            }
+
+            if (!value.startsWith(ProtocolConstants.INBOUND_MAP_START))
+            {
+                throw new InvalidJsonException(Messages.getString("MapConverter.FormatError", ProtocolConstants.INBOUND_MAP_START));
+            }
+
+            if (!value.endsWith(ProtocolConstants.INBOUND_MAP_END))
+            {
+                throw new InvalidJsonException(Messages.getString("MapConverter.FormatError", ProtocolConstants.INBOUND_MAP_END));
+            }
+
+            value = value.substring(1, value.length() - 1);
+
+            // Loop through the property declarations
+            StringTokenizer st = new StringTokenizer(value, ",");
+            int size = st.countTokens();
+            for (int i = 0; i < size; i++)
+            {
+                String token = st.nextToken();
+                if (token.trim().length() == 0)
+                {
+                    continue;
+                }
+
+                int colonpos = token.indexOf(ProtocolConstants.INBOUND_MAP_ENTRY);
+                if (colonpos == -1)
+                {
+                    throw new InvalidJsonException(Messages.getString("MapConverter.MissingSeparator", ProtocolConstants.INBOUND_MAP_ENTRY, token));
+                }
+
+                // Convert the value part of the token by splitting it into the
+                // type and value (as passed in by Javascript)
+                String valStr = token.substring(colonpos + 1).trim();
+                String[] splitIv = ParseUtil.splitInbound(valStr);
+                String splitIvValue = splitIv[LocalUtil.INBOUND_INDEX_VALUE];
+
+                String keyStr = token.substring(0, colonpos).trim();
+
+                InboundVariable nested = context.getInboundVariable(splitIvValue);
+                object.put(keyStr, nested.getJsonValue(onError, currentDepth + 1));
+            }
+
+            return object;
+        }
+
+        log.warn("Data type: " + type + " is not one that InboundVariable understands");
+        throw new InvalidJsonException("Unknown data type");
+    }
+
     /**
      * Was this type null on the way in
      * @return true if the javascript variable was null or undefined.
@@ -221,4 +412,9 @@ public final class InboundVariable
      * The javascript declared file value
      */
     private FormField formField;
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(InboundVariable.class);
 }

@@ -1267,17 +1267,7 @@ dwr.engine._serializeObject = function(batch, referto, data, name) {
       batch.paramCount++;
       var childName = "c" + dwr.engine._batch.map.callCount + "-e" + batch.paramCount;
       dwr.engine._serializeAll(batch, referto, data[element], childName);
-
       reply += encodeURIComponent(element) + ":reference:" + childName + ", ";
-
-//      var childRef = dwr.engine._lookup(referto, data[element], childName);
-//      if (childRef) {
-//        reply += encodeURIComponent(element) + ":reference:" + childRef + ", ";
-//      }
-//      else {
-//        dwr.engine._serializeAll(batch, referto, data[element], childName);
-//        reply += encodeURIComponent(element) + ":reference:" + childName + ", ";
-//      }
     }
   }
 
@@ -1424,7 +1414,7 @@ dwr.engine._debug = function(message, stacktrace) {
 
 /** @private Called by the server: A publish event has happened that we care about */
 dwr.hub._remotePublish = function(subscriptionId, publishData) {
-  var subscriptionData = dwr.hub._subscriptions[subscription];
+  var subscriptionData = dwr.hub._subscriptions[subscriptionId];
   if (!subscriptionData) return;
   subscriptionData.callback.call(subscriptionData.scope, publishData, subscriptionData.subscriberData);
 };

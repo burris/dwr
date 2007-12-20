@@ -15,241 +15,27 @@
  */
 package org.directwebremoting.json;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-
-import org.directwebremoting.util.JavascriptUtil;
+import java.util.ListIterator;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class JsonArray
+public class JsonArray extends JsonValue implements List<JsonValue>
 {
-    /**
-     * @see java.util.List#size()
-     */
-    public int size()
-    {
-        return proxy.size();
-    }
-
-    /**
-     * @see java.util.List#clear()
-     */
-    public void clear()
-    {
-        proxy.clear();
-    }
-
-    /**
-     */
-    public boolean isEmpty()
-    {
-        return proxy.isEmpty();
-    }
-
-    /**
-     * @see java.util.List#contains(java.lang.Object)
-     */
-    public boolean contains(JsonObject o)
-    {
-        return proxy.contains(o);
-    }
-
-    /**
-     * @see java.util.List#get(int)
-     */
-    public JsonObject getJsonObject(int index)
-    {
-        return (JsonObject) proxy.get(index);
-    }
-
-    /**
-     * @see java.util.List#get(int)
-     */
-    public JsonArray getJsonArray(int index)
-    {
-        return (JsonArray) proxy.get(index);
-    }
-
-    /**
-     * @see java.util.List#get(int)
-     */
-    public String getString(int index)
-    {
-        return (String) proxy.get(index);
-    }
-
-    /**
-     * @see java.util.List#get(int)
-     */
-    public Integer getInteger(int index)
-    {
-        return (Integer) proxy.get(index);
-    }
-
-    /**
-     * @see java.util.List#get(int)
-     */
-    public Long getLong(int index)
-    {
-        return (Long) proxy.get(index);
-    }
-
-    /**
-     * @see java.util.List#get(int)
-     */
-    public Double getDouble(int index)
-    {
-        return (Double) proxy.get(index);
-    }
-
-    /**
-     * @see java.util.List#add(java.lang.Object)
-     */
-    public void add(JsonObject o)
-    {
-        proxy.add(o);
-    }
-
-    /**
-     * @see java.util.List#add(java.lang.Object)
-     */
-    public void add(JsonArray o)
-    {
-        proxy.add(o);
-    }
-
-    /**
-     * @see java.util.List#add(java.lang.Object)
-     */
-    public void add(String o)
-    {
-        proxy.add(o);
-    }
-
-    /**
-     * @see java.util.List#add(java.lang.Object)
-     */
-    public void add(Integer o)
-    {
-        proxy.add(o);
-    }
-
-    /**
-     * @see java.util.List#add(java.lang.Object)
-     */
-    public void add(Long o)
-    {
-        proxy.add(o);
-    }
-
-    /**
-     * @see java.util.List#add(java.lang.Object)
-     */
-    public void add(Double o)
-    {
-        proxy.add(o);
-    }
-
-    /**
-     * @see java.util.List#set(int, java.lang.Object)
-     */
-    public void set(int index, JsonArray element)
-    {
-        proxy.set(index, element);
-    }
-
-    /**
-     * @see java.util.List#set(int, java.lang.Object)
-     */
-    public void set(int index, String element)
-    {
-        proxy.set(index, element);
-    }
-
-    /**
-     * @see java.util.List#set(int, java.lang.Object)
-     */
-    public void set(int index, Integer element)
-    {
-        proxy.set(index, element);
-    }
-
-    /**
-     * @see java.util.List#set(int, java.lang.Object)
-     */
-    public void set(int index, Long element)
-    {
-        proxy.set(index, element);
-    }
-
-    /**
-     * @see java.util.List#set(int, java.lang.Object)
-     */
-    public void set(int index, Double element)
-    {
-        proxy.set(index, element);
-    }
-
-    /**
-     * @see java.util.List#contains(java.lang.Object)
-     */
-    public boolean contains(JsonArray o)
-    {
-        return proxy.contains(o);
-    }
-
-    /**
-     * @see java.util.List#contains(java.lang.Object)
-     */
-    public boolean contains(String o)
-    {
-        return proxy.contains(o);
-    }
-
-    /**
-     * @see java.util.List#contains(java.lang.Object)
-     */
-    public boolean contains(Integer o)
-    {
-        return proxy.contains(o);
-    }
-
-    /**
-     * @see java.util.List#contains(java.lang.Object)
-     */
-    public boolean contains(Long o)
-    {
-        return proxy.contains(o);
-    }
-
-    /**
-     * @see java.util.List#contains(java.lang.Object)
-     */
-    public boolean contains(Double o)
-    {
-        return proxy.contains(o);
-    }
-
-    /**
-     * @see java.util.List#remove(int)
-     */
-    public void remove(int index)
-    {
-        proxy.remove(index);
-    }
-
     /* (non-Javadoc)
-     * @see java.lang.Object#toString()
+     * @see org.directwebremoting.json.JsonValue#toExternalRepresentation()
      */
     @Override
-    public String toString()
+    public String toExternalRepresentation()
     {
         StringBuffer output = new StringBuffer();
-        output.append("{ ");
+        output.append("[ ");
 
         boolean isFirst = true;
-        for (Object value : proxy)
+        for (JsonValue value : proxy)
         {
             if (isFirst)
             {
@@ -260,20 +46,19 @@ public class JsonArray
                 output.append(", ");
             }
 
-            if (value instanceof String)
-            {
-                output.append("'");
-                output.append(JavascriptUtil.escapeJavaScript((String) value));
-                output.append("'");
-            }
-            else
-            {
-                output.append(value.toString());
-            }
-            output.append(":");
+            output.append(value.toExternalRepresentation());
         }
-        output.append(" }");
+        output.append(" ]");
         return output.toString();
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString()
+    {
+        return toExternalRepresentation();
     }
 
     /* (non-Javadoc)
@@ -294,6 +79,189 @@ public class JsonArray
         return proxy.hashCode();
     }
 
-    private List<Object> proxy;
-}
+    /* (non-Javadoc)
+     * @see java.util.List#add(int, java.lang.Object)
+     */
+    public void add(int index, JsonValue value)
+    {
+        proxy.add(index, value);
+    }
 
+    /* (non-Javadoc)
+     * @see java.util.List#add(java.lang.Object)
+     */
+    public boolean add(JsonValue value)
+    {
+        return proxy.add(value);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#addAll(java.util.Collection)
+     */
+    public boolean addAll(Collection<? extends JsonValue> collection)
+    {
+        return proxy.addAll(collection);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#addAll(int, java.util.Collection)
+     */
+    public boolean addAll(int index, Collection<? extends JsonValue> collection)
+    {
+        return proxy.addAll(index, collection);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#clear()
+     */
+    public void clear()
+    {
+        proxy.clear();
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#contains(java.lang.Object)
+     */
+    public boolean contains(Object sought)
+    {
+        return proxy.contains(sought);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#containsAll(java.util.Collection)
+     */
+    public boolean containsAll(Collection<?> collection)
+    {
+        return proxy.containsAll(collection);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#get(int)
+     */
+    public JsonValue get(int index)
+    {
+        return proxy.get(index);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#indexOf(java.lang.Object)
+     */
+    public int indexOf(Object sought)
+    {
+        return proxy.indexOf(sought);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#isEmpty()
+     */
+    public boolean isEmpty()
+    {
+        return proxy.isEmpty();
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#iterator()
+     */
+    public Iterator<JsonValue> iterator()
+    {
+        return proxy.iterator();
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#lastIndexOf(java.lang.Object)
+     */
+    public int lastIndexOf(Object sought)
+    {
+        return proxy.lastIndexOf(sought);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#listIterator()
+     */
+    public ListIterator<JsonValue> listIterator()
+    {
+        return proxy.listIterator();
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#listIterator(int)
+     */
+    public ListIterator<JsonValue> listIterator(int startIndex)
+    {
+        return proxy.listIterator(startIndex);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#remove(int)
+     */
+    public JsonValue remove(int value)
+    {
+        return proxy.remove(value);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#remove(java.lang.Object)
+     */
+    public boolean remove(Object value)
+    {
+        return proxy.remove(value);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#removeAll(java.util.Collection)
+     */
+    public boolean removeAll(Collection<?> collection)
+    {
+        return proxy.removeAll(collection);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#retainAll(java.util.Collection)
+     */
+    public boolean retainAll(Collection<?> collection)
+    {
+        return proxy.retainAll(collection);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#set(int, java.lang.Object)
+     */
+    public JsonValue set(int index, JsonValue value)
+    {
+        return proxy.set(index, value);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#size()
+     */
+    public int size()
+    {
+        return proxy.size();
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#subList(int, int)
+     */
+    public List<JsonValue> subList(int startIndex, int endIndex)
+    {
+        return proxy.subList(startIndex, endIndex);
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#toArray()
+     */
+    public Object[] toArray()
+    {
+        return proxy.toArray();
+    }
+
+    /* (non-Javadoc)
+     * @see java.util.List#toArray(T[])
+     */
+    public <T> T[] toArray(T[] toFill)
+    {
+        return proxy.toArray(toFill);
+    }
+
+    private List<JsonValue> proxy;
+}
