@@ -235,12 +235,12 @@ public class AnnotationsConfigurator implements Configurator
     }
 
     /**
-     * Process the @DataTransferObject annotaion on a given class
+     * Process the @DataTransferObject annotation on a given class
      * @param clazz The class annotated with @DataTransferObject
      * @param convertAnn The annotation
      * @param container The IoC container to configure
-     * @throws InstantiationException If there are problems instansiating the Converter
-     * @throws IllegalAccessException If there are problems instansiating the Converter
+     * @throws InstantiationException If there are problems instantiating the Converter
+     * @throws IllegalAccessException If there are problems instantiating the Converter
      */
     protected void processConvert(Class<?> clazz, DataTransferObject convertAnn, Container container) throws InstantiationException, IllegalAccessException
     {
