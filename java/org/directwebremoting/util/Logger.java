@@ -15,8 +15,7 @@
  */
 package org.directwebremoting.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.lang.reflect.Constructor;
 
 /**
  * A very quick and dirty logging implementation.
@@ -24,30 +23,82 @@ import org.apache.commons.logging.LogFactory;
  * don't want to force users to import log4j or commons-logging.
  * Don't use this outside of DWR - it's just a quick hack to keep things simple.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
- * @deprecated Use Commons Logging directly rather than this proxy
  */
-@Deprecated
 public final class Logger
 {
     /**
      * @param base The class to log against
      * @return A new logger
-     * @deprecated Use Commons Logging directly rather than this proxy
      */
-    @Deprecated
     public static Logger getLogger(Class<?> base)
     {
         return new Logger(base);
     }
 
     /**
-     * Prevent instansiation
+     * @param defaultImplementation the defaultImplementation to set
+     */
+    public static void setDefaultImplementation(Class<? extends LoggingOutput> defaultImplementation)
+    {
+        Logger.defaultImplementation = defaultImplementation;
+    }
+
+    /**
+     * Prevent instantiation
      * @param base The class to log against
      */
+    @SuppressWarnings("unchecked")
     private Logger(Class<?> base)
     {
-        log = LogFactory.getLog(base);
+        if (!defaultTried)
+        {
+            try
+            {
+                constructor = defaultImplementation.getConstructor(Class.class);
+                LoggingOutput internal = constructor.newInstance(Logger.class);
+                internal.debug("Logging using " + defaultImplementation.getSimpleName());
+                defaultAvailable = true;
+            }
+            catch (Throwable ex)
+            {
+                LoggingOutput internal = new ServletLoggingOutput(base);
+                internal.debug("Logging using servlet.log.");
+                defaultAvailable = false;
+            }
+
+            defaultTried = true;
+        }
+
+        if (defaultAvailable)
+        {
+            try
+            {
+                output = constructor.newInstance(base);
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+                output = new ServletLoggingOutput(base);
+            }
+        }
+        else
+        {
+            output = new ServletLoggingOutput(base);
+        }
     }
+
+    private static Class<? extends LoggingOutput> defaultImplementation = CommonsLoggingOutput.class;
+
+    private static Constructor<? extends LoggingOutput> constructor;
+
+    private static boolean defaultTried = false;
+
+    private static boolean defaultAvailable = false;
+
+    /**
+     * The logging implementation
+     */
+    private LoggingOutput output;
 
     /**
      * Logger a debug message
@@ -55,7 +106,7 @@ public final class Logger
      */
     public void debug(String message)
     {
-        log.debug(message);
+        output.debug(message);
     }
 
     /**
@@ -64,7 +115,7 @@ public final class Logger
      */
     public void info(String message)
     {
-        log.info(message);
+        output.info(message);
     }
 
     /**
@@ -73,7 +124,7 @@ public final class Logger
      */
     public void warn(String message)
     {
-        log.warn(message);
+        output.warn(message);
     }
 
     /**
@@ -83,7 +134,7 @@ public final class Logger
      */
     public void warn(String message, Throwable th)
     {
-        log.warn(message, th);
+        output.warn(message, th);
     }
 
     /**
@@ -92,7 +143,7 @@ public final class Logger
      */
     public void error(String message)
     {
-        log.error(message);
+        output.error(message);
     }
 
     /**
@@ -102,7 +153,7 @@ public final class Logger
      */
     public void error(String message, Throwable th)
     {
-        log.error(message, th);
+        output.error(message, th);
     }
 
     /**
@@ -111,7 +162,7 @@ public final class Logger
      */
     public void fatal(String message)
     {
-        log.fatal(message);
+        output.fatal(message);
     }
 
     /**
@@ -121,7 +172,7 @@ public final class Logger
      */
     public void fatal(String message, Throwable th)
     {
-        log.fatal(message, th);
+        output.fatal(message, th);
     }
 
     /**
@@ -130,8 +181,6 @@ public final class Logger
      */
     public boolean isDebugEnabled()
     {
-        return log.isDebugEnabled();
+        return output.isDebugEnabled();
     }
-
-    private final Log log;
 }

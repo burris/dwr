@@ -15,19 +15,16 @@
  */
 package org.directwebremoting.util;
 
-import javax.servlet.http.HttpServlet;
-
 /**
- * An implementation of LoggingOutput that sends stuff to the Servlet.log
- * stream.
+ * An implementation of LoggingOutput that sends stuff to System.out
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ServletLoggingOutput implements LoggingOutput
+public class SystemOutLoggingOutput implements LoggingOutput
 {
     /**
      * @param base All LoggingOutput must have a constructor like this
      */
-    public ServletLoggingOutput(Class<?> base)
+    public SystemOutLoggingOutput(Class<?> base)
     {
     }
 
@@ -105,49 +102,16 @@ public class ServletLoggingOutput implements LoggingOutput
     {
         if (loglevel >= level)
         {
-            HttpServlet servlet = servlets.get();
-            if (servlet != null)
+            if (message != null)
             {
-                // Tomcat 4 NPEs is th is null
-                if (th == null)
-                {
-                    servlet.log(message);
-                }
-                else
-                {
-                    servlet.log(message, th);
-                }
+                System.out.println(message);
             }
-            else
-            {
-                if (message != null)
-                {
-                    System.out.println(message);
-                }
 
-                if (th != null)
-                {
-                    th.printStackTrace();
-                }
+            if (th != null)
+            {
+                th.printStackTrace();
             }
         }
-    }
-
-    /**
-     * Associate a servlet with this thread for logging purposes.
-     * @param servlet The servlet to use for logging in this thread
-     */
-    public static void setExecutionContext(HttpServlet servlet)
-    {
-        servlets.set(servlet);
-    }
-
-    /**
-     * Remove the servlet from this thread for logging purposes
-     */
-    public static void unsetExecutionContext()
-    {
-        servlets.set(null);
     }
 
     /**
@@ -195,7 +159,7 @@ public class ServletLoggingOutput implements LoggingOutput
      */
     public static void setLevel(int level)
     {
-        ServletLoggingOutput.level = level;
+        SystemOutLoggingOutput.level = level;
     }
 
     /**
@@ -205,11 +169,6 @@ public class ServletLoggingOutput implements LoggingOutput
     {
         return level;
     }
-
-    /**
-     * The container for all known threads
-     */
-    private static final ThreadLocal<HttpServlet> servlets = new ThreadLocal<HttpServlet>();
 
     /**
      * What is the current debug level?
