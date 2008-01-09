@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.drapgen.xslt;
+package org.directwebremoting.drapgen.generate.xslt;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.directwebremoting.drapgen.ast.JsClassloader;
+import org.directwebremoting.drapgen.generate.gi.GiProject;
 
 /**
  * Functions to make up for the inadequacies of XSTL
@@ -92,12 +92,12 @@ public class ExtensionFunctions
     /**
      * @param registry the generate to set
      */
-    public static void setJsClassloader(JsClassloader registry)
+    public static void setJsClassloader(GiProject registry)
     {
         ExtensionFunctions.registry = registry;
     }
 
-    private static JsClassloader registry;
+    private static GiProject registry;
 
     private static final int SEARCH = 0;
     private static final int REPLACE = 1;

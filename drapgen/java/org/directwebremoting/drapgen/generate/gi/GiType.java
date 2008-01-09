@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.drapgen.ast;
+package org.directwebremoting.drapgen.generate.gi;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,7 +46,6 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.drapgen.Generate;
 import org.directwebremoting.util.LocalUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -56,12 +55,12 @@ import org.w3c.dom.NodeList;
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class JsClass
+public class GiType
 {
     /**
      * @param xmlFile The GI doc description file to read
      */
-    public JsClass(File xmlFile)
+    public GiType(String xmlBase, File xmlFile)
     {
         FileInputStream in = null;
 
@@ -71,12 +70,10 @@ public class JsClass
             in = new FileInputStream(xmlFile);
             document = docBuilder.parse(in);
             this.xmlFile = xmlFile;
-            xmlClassName = xmlFile.getAbsolutePath().substring(Generate.XML_BASE.length());
+            xmlClassName = xmlFile.getAbsolutePath().substring(xmlBase.length());
             className = xmlClassName.replaceFirst("\\.xml$", "").replace("/", ".");
             // Setup the outputs
-            String javaClassName = xmlClassName.replaceFirst("\\.xml$", ".java");
-            javaFile = new File(Generate.GENERATED_BASE + javaClassName);
-            javaParentDir = javaFile.getParentFile();
+
             output = new StringWriter();
         }
         catch (Exception ex)
@@ -110,12 +107,20 @@ public class JsClass
     }
 
     /**
+     * @param preprocXslt The preprocessor XSLT
      *
      */
-    public void cloneForOverloading()
+    public void cloneForOverloading(String preprocXslt)
     {
         try
         {
+            // Read the XSLT
+            if (preprocessTemplate == null)
+            {
+                Source xslSource = new StreamSource(new File(preprocXslt));
+                preprocessTemplate = factory.newTemplates(xslSource);
+            }
+
             Source xmlSource = new DOMSource(document);
 
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
@@ -141,16 +146,18 @@ public class JsClass
     }
 
     /**
+     * @param templateDir The base directory for the templates
+     * @param defaultTemplate The extra path (from templateDir) to the default
      *
      */
-    public void transform()
+    public void transform(String templateDir, String defaultTemplate)
     {
         try
         {
-            File templateFile = new File(Generate.TEMPLATES_BASE + xmlClassName.replaceFirst("\\.xml$", ".xslt"));
+            File templateFile = new File(templateDir + xmlClassName.replaceFirst("\\.xml$", ".xslt"));
             if (!templateFile.canRead())
             {
-                templateFile = new File(Generate.TEMPLATES_BASE + Generate.DEFAULT_TEMPLATE);
+                templateFile = new File(templateDir + defaultTemplate);
             }
 
             // Read the XSLT
@@ -182,10 +189,57 @@ public class JsClass
     }
 
     /**
+     * @param directory Where to write the xml
      * @throws java.io.IOException If writing fails
      */
-    public void write() throws IOException
+    public void writeDOM(String directory) throws IOException
     {
+        FileWriter out = null;
+
+        try
+        {
+            Transformer transformer = factory.newTransformer();
+            Source source = new DOMSource(document);
+
+            StringWriter xml = new StringWriter();
+            StreamResult result = new StreamResult(xml);
+
+            transformer.transform(source, result);
+
+            xml.flush();
+
+            String domName = xmlClassName.replaceAll("/", ".");
+            File domFile = new File(directory + "org.directwebremoting.proxy." + domName);
+            out = new FileWriter(domFile);
+            out.append(xml.toString());
+        }
+        catch (TransformerException ex)
+        {
+            SourceLocator locator = ex.getLocator();
+            log.fatal("Failed to transform", ex);
+            log.warn("Line: " + locator.getLineNumber() + ", Column: " + locator.getColumnNumber());
+            log.warn("PublicId: " + locator.getPublicId());
+            log.warn("SystemId: " + locator.getSystemId());
+        }
+        finally
+        {
+            if (out != null)
+            {
+                out.close();
+            }
+        }
+    }
+
+    /**
+     * @param directory Base directory in which to write the Java files
+     * @throws java.io.IOException If writing fails
+     */
+    public void writeCode(String directory) throws IOException
+    {
+        String javaClassName = xmlClassName.replaceFirst("\\.xml$", ".java");
+        File javaFile = new File(directory + javaClassName);
+        File javaParentDir = javaFile.getParentFile();
+
         if (!javaParentDir.isDirectory())
         {
             if (!javaParentDir.mkdirs())
@@ -210,7 +264,7 @@ public class JsClass
                 out = new FileWriter(javaFile);
                 out.append(outerCode);
 
-                for (JsClass innerSource : innerSources)
+                for (GiType innerSource : innerSources)
                 {
                     String innerCode = innerSource.output.toString();
                     innerCode = innerCode.replaceAll("import .*;", "");
@@ -280,7 +334,7 @@ public class JsClass
      * Add this given class to this class as an inner class
      * @param clazz The class to add an an inner class
      */
-    public void absorbClass(JsClass clazz)
+    public void absorbClass(GiType clazz)
     {
         innerSources.add(clazz);
     }
@@ -290,18 +344,18 @@ public class JsClass
      *   <method id="method:setEnabled" idfk="method:setEnabled" inherited="1" name="setEnabled" source="jsx3.gui.Form"/>
      * @return A list of pairs: name|source
      */
-    public List<JsMethod> getMixinFunctions()
+    public List<GiMethod> getMixinFunctions()
     {
         try
         {
-            List<JsMethod> reply = new ArrayList<JsMethod>();
+            List<GiMethod> reply = new ArrayList<GiMethod>();
 
             // Find all the inherited functions, and trim the ones that are not
             // from super-classes - leaving the mixins
             NodeList nodelist = (NodeList) mixinFunctionFinder.evaluate(document, XPathConstants.NODESET);
             for (int i = 0; i < nodelist.getLength(); i++)
             {
-                JsMethod method = new JsMethod((Element) nodelist.item(i), getClassName());
+                GiMethod method = new GiMethod((Element) nodelist.item(i), getClassName());
 
                 boolean isFunctionFromMixin = true;
                 for (String superClass : superClasses)
@@ -332,12 +386,12 @@ public class JsClass
      * @param name A method name to find in the input document
      * @return the node that matches the given name
      */
-    public JsMethod getImplementationDeclaration(String name)
+    public GiMethod getImplementationDeclaration(String name)
     {
         try
         {
             XPathExpression implementationFinder = xpath.compile("//method[@name='" + name + "']");
-            return new JsMethod((Element) implementationFinder.evaluate(document, XPathConstants.NODE), getClassName());
+            return new GiMethod((Element) implementationFinder.evaluate(document, XPathConstants.NODE), getClassName());
         }
         catch (XPathExpressionException ex)
         {
@@ -348,13 +402,13 @@ public class JsClass
     /**
      * 
      */
-    public void trimDuplicateMethods(JsClassloader classloader)
+    public void trimDuplicateMethods(GiProject classloader)
     {
         // Get a list of super classes
-        List<JsClass> parents = new ArrayList<JsClass>();
+        List<GiType> parents = new ArrayList<GiType>();
         for (String superClassName : superClasses)
         {
-            JsClass parent = classloader.getClassByName(superClassName);
+            GiType parent = classloader.getClassByName(superClassName);
             if (parent == null)
             {
                 throw new IllegalStateException("Unknown superclass: " + superClassName);
@@ -363,15 +417,15 @@ public class JsClass
         }
 
         // Get a list of method signatures
-        List<JsMethod> functions = getImplementedMethods();
+        List<GiMethod> functions = getImplementedMethods();
 
         // Loop over signatures, checking for methods in super-classes
-        for (JsMethod function : functions)
+        for (GiMethod function : functions)
         {
-            for (JsClass parent : parents)
+            for (GiType parent : parents)
             {
-                List<JsMethod> parentMethods = parent.getImplementedMethods();
-                for (JsMethod parentMethod : parentMethods)
+                List<GiMethod> parentMethods = parent.getImplementedMethods();
+                for (GiMethod parentMethod : parentMethods)
                 {
                     if (function.equals(parentMethod))
                     {
@@ -385,7 +439,7 @@ public class JsClass
     /**
      * @param method
      */
-    private void removeMethod(JsMethod method)
+    private void removeMethod(GiMethod method)
     {
         Element element = method.getElement();
 
@@ -399,11 +453,11 @@ public class JsClass
     /**
      *
      */
-    private List<JsMethod> getImplementedMethods()
+    private List<GiMethod> getImplementedMethods()
     {
         try
         {
-            List<JsMethod> reply = new ArrayList<JsMethod>();
+            List<GiMethod> reply = new ArrayList<GiMethod>();
     
             // Find all the inherited functions, and trim the ones that are not
             // from super-classes - leaving the mixins
@@ -416,7 +470,7 @@ public class JsClass
                     log.debug("node without parent: " + element);
                 }
 
-                JsMethod method = new JsMethod(element, getClassName());
+                GiMethod method = new GiMethod(element, getClassName());
                 reply.add(method);
             }
     
@@ -433,7 +487,7 @@ public class JsClass
      * @param newMethod The element to replace the declaration with
      * @param oldMethod A method name to replace in the input document
      */
-    public void replaceImplementation(JsMethod newMethod, JsMethod oldMethod)
+    public void replaceImplementation(GiMethod newMethod, GiMethod oldMethod)
     {
         Element oldChild = oldMethod.getElement();
         Element newChild = newMethod.getElement();
@@ -446,10 +500,9 @@ public class JsClass
     private String className;
     private File xmlFile;
     private String xmlClassName;
-    private File javaFile;
-    private File javaParentDir;
+
     private StringWriter output;
-    private List<JsClass> innerSources = new ArrayList<JsClass>();
+    private List<GiType> innerSources = new ArrayList<GiType>();
     private Document document;
     private boolean superclass = false;
     private List<String> superClasses;
@@ -462,14 +515,14 @@ public class JsClass
     private static final XPathExpression functionFinder;
 
     private static final TransformerFactory factory = TransformerFactory.newInstance();
-    private static final Templates preprocessTemplate;
+    private static Templates preprocessTemplate;
 
     private static final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 
     /**
      * The log stream
      */
-    private static final Log log = LogFactory.getLog(JsClass.class);
+    private static final Log log = LogFactory.getLog(GiType.class);
 
     static
     {
@@ -478,10 +531,6 @@ public class JsClass
             superClassFinder = xpath.compile("//superclass/@name");
             mixinFunctionFinder = xpath.compile("//method[@inherited='1']");
             functionFinder = xpath.compile("//method[not(@inherited)]");
-
-            // Read the XSLT
-            Source xslSource = new StreamSource(new File(Generate.PREPROCESSOR));
-            preprocessTemplate = factory.newTemplates(xslSource);
         }
         catch (RuntimeException ex)
         {

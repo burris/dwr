@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.drapgen.ast;
+package org.directwebremoting.drapgen.generate.gi;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,14 +23,14 @@ import java.util.Map;
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class JsClassloader
+public class GiProject
 {
-    protected final Map<String, JsClass> sources = new HashMap<String, JsClass>();
+    protected final Map<String, GiType> sources = new HashMap<String, GiType>();
 
     /**
      * @param code
      */
-    public void add(JsClass code)
+    public void add(GiType code)
     {
         sources.put(code.getClassName(), code);
     }
@@ -37,7 +38,7 @@ public class JsClassloader
     /**
      *
      */
-    public Collection<JsClass> getClasses()
+    public Collection<GiType> getClasses()
     {
         return sources.values();
     }
@@ -45,8 +46,20 @@ public class JsClassloader
     /**
      *
      */
-    public JsClass getClassByName(String name)
+    public GiType getClassByName(String name)
     {
         return sources.get(name);
+    }
+
+    /**
+     * @param directory Where to write the XML
+     * 
+     */
+    public void save(String directory) throws IOException
+    {
+        for (GiType code : sources.values())
+        {
+            code.writeDOM(directory);
+        }
     }
 }

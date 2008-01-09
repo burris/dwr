@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.drapgen;
+package org.directwebremoting.drapgen.generate.gi;
 
 import java.io.File;
 import java.util.Iterator;
@@ -22,25 +22,23 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.drapgen.ast.JsClass;
-import org.directwebremoting.drapgen.ast.JsClassloader;
-import org.directwebremoting.drapgen.ast.JsMethod;
-import org.directwebremoting.drapgen.xslt.ExtensionFunctions;
+import org.directwebremoting.drapgen.generate.xslt.ExtensionFunctions;
+import org.directwebremoting.drapgen.loader.gi.GiLoader;
 import org.directwebremoting.fsguide.FileSystemGuide;
 import org.directwebremoting.fsguide.Visitor;
+import org.directwebremoting.util.Logger;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Generate
 {
-    public static final String XML_BASE = "/Applications/TIBCO/tibco-gi-3.5-pro-src/dist/gi/api/xml/";
-    public static final String GENERATED_BASE = "generated/gi/java/org/directwebremoting/proxy/";
-    public static final String TEMPLATES_BASE = "etc/drapgen/templates/";
-    public static final String DEFAULT_TEMPLATE = "default.xslt";
-    public static final String PREPROCESSOR = "etc/drapgen/preprocess/default.xslt";
+    private static final String XML_BASE = "/Applications/TIBCO/tibco-gi-3.5-pro-src/dist/gi/api/xml/";
+    private static final String GENERATED_BASE = "generated/gi/java/org/directwebremoting/proxy/";
+    private static final String DOM_BASE = "generated/gi/dom/";
+    private static final String TEMPLATES_BASE = "etc/drapgen/templates/";
+    private static final String DEFAULT_TEMPLATE = "default.xslt";
+    private static final String PREPROCESSOR = "etc/drapgen/preprocess/default.xslt";
 
     public static void main(String[] args) throws Exception
     {
@@ -49,7 +47,7 @@ public class Generate
 
     public void generate() throws Exception
     {
-        final JsClassloader registry = new JsClassloader();
+        final GiProject registry = new GiProject();
 
         // Create a list of all the classes we need to generate
         log.info("Searching for XML files.");
@@ -60,7 +58,7 @@ public class Generate
             {
                 if (file.getAbsolutePath().endsWith(".xml"))
                 {
-                    JsClass code = new JsClass(file);
+                    GiType code = new GiType(Generate.XML_BASE, file);
                     registry.add(code);
                 }
                 else
@@ -78,14 +76,14 @@ public class Generate
 
         // Clone the functions with multiple input parameter types for overloading
         log.info("Cloning for overloading.");
-        for (JsClass code : registry.getClasses())
+        for (GiType code : registry.getClasses())
         {
-            code.cloneForOverloading();
+            code.cloneForOverloading(PREPROCESSOR);
         }
         
         // Work out which classes are super-classes and mixins
         log.info("Calculating super classes.");
-        for (JsClass code : registry.getClasses())
+        for (GiType code : registry.getClasses())
         {
             List<String> parents = code.getSuperClasses();
             for (String parent : parents)
@@ -97,7 +95,7 @@ public class Generate
         // Copying mixin functions because Java does not do MI
         log.info("Copying mixin functions.");
         ExecutorService exec = Executors.newFixedThreadPool(2);
-        for (final JsClass code : registry.getClasses())
+        for (final GiType code : registry.getClasses())
         {
             exec.execute(new Runnable()
             {
@@ -105,14 +103,14 @@ public class Generate
                 {
                     // Search the XML for lines like this from Button.xml:
                     //   <implements direct="1" id="implements:0" loaded="1" name="jsx3.gui.Form"/>
-                    List<JsMethod> functions = code.getMixinFunctions();
-                    for (JsMethod function : functions)
+                    List<GiMethod> functions = code.getMixinFunctions();
+                    for (GiMethod function : functions)
                     {
                         // replace the method element with the corresponding element from Form.
                         if (!"jsx3.lang.Object".equals(function.getDeclarationClassName()))
                         {
-                            JsClass implementingClass = registry.getClassByName(function.getDeclarationClassName());
-                            JsMethod node = implementingClass.getImplementationDeclaration(function.getName());
+                            GiType implementingClass = registry.getClassByName(function.getDeclarationClassName());
+                            GiMethod node = implementingClass.getImplementationDeclaration(function.getName());
                             if (node == null)
                             {
                                 log.warn("- No implementation of: " + function.getDeclarationClassName() + "." + function.getName() + "() refered to by " + code.getClassName());
@@ -133,7 +131,7 @@ public class Generate
         // Remove functions implemented by parent
         log.info("Trimming methods with identical implementation in parent.");
         exec = Executors.newFixedThreadPool(2);
-        for (final JsClass code : registry.getClasses())
+        for (final GiType code : registry.getClasses())
         {
             exec.execute(new Runnable()
             {
@@ -146,18 +144,36 @@ public class Generate
         exec.shutdown();
         exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 
+        // Remove documentation classes
+        log.info("Pruning documentation classes.");
+        for (Iterator<GiType> it = registry.getClasses().iterator(); it.hasNext();)
+        {
+            GiType code = it.next();
+            if (code.getClassName().equals("index") ||
+                code.getClassName().equals("inheritance") ||
+                code.getClassName().equals("package-summary"))
+            {
+                it.remove();
+            }
+        }
+
+        // Write the DOM out to disk
+        log.info("Serializing " + registry.getClasses().size() + " classes.");
+        registry.save(DOM_BASE);
+        System.exit(0);
+
         // Transform them all
         log.info("Transforming " + registry.getClasses().size() + " classes.");
-        for (JsClass code : registry.getClasses())
+        for (GiType code : registry.getClasses())
         {
-            code.transform();
+            code.transform(TEMPLATES_BASE, DEFAULT_TEMPLATE);
         }
 
         // Merge Inner Classes
         log.info("Merging Inner Classes");
-        for (Iterator<JsClass> it = registry.getClasses().iterator(); it.hasNext();)
+        for (Iterator<GiType> it = registry.getClasses().iterator(); it.hasNext();)
         {
-            JsClass code = it.next();
+            GiType code = it.next();
             String parentName = "";
 
             int lastDot = code.getClassName().lastIndexOf('.');
@@ -166,7 +182,7 @@ public class Generate
                 parentName = code.getClassName().substring(0, lastDot);
             }
 
-            JsClass parent = registry.getClassByName(parentName);
+            GiType parent = registry.getClassByName(parentName);
             if (parent != null)
             {
                 it.remove();
@@ -176,14 +192,14 @@ public class Generate
 
         // Write them to disk
         log.info("Writing " + registry.getClasses().size() + " classes.");
-        for (JsClass code : registry.getClasses())
+        for (GiType code : registry.getClasses())
         {
-            code.write();
+            code.writeCode(GENERATED_BASE);
         }
     }
 
     /**
      * The log stream
      */
-    protected static final Log log = LogFactory.getLog(Generate.class);
+    protected static final Logger log = Logger.getLogger(GiLoader.class);
 }

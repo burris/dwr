@@ -1,4 +1,4 @@
-package org.directwebremoting.drapgen.ast;
+package org.directwebremoting.drapgen.generate.gi;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -7,12 +7,12 @@ import org.w3c.dom.Node;
 /**
  * 
  */
-public class JsMethod
+public class GiMethod
 {
     /**
      * @param element
      */
-    public JsMethod(Element element, String creatingClassName)
+    public GiMethod(Element element, String creatingClassName)
     {
         NamedNodeMap attributes = element.getAttributes();
 
@@ -91,7 +91,7 @@ public class JsMethod
             return false;
         }
 
-        JsMethod that = (JsMethod) obj;
+        GiMethod that = (GiMethod) obj;
 
         if (!this.name.equals(that.name))
         {
