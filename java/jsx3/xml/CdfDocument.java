@@ -1,4 +1,4 @@
-package org.directwebremoting.proxy.jsx3.xml;
+package jsx3.xml;
 
 /**
  * CdfDocuments and the root of a Node tree.

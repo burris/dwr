@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.proxy.jsx3;
+package jsx3;
 
 import java.util.Collection;
 
+import jsx3.app.Server;
+
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
-import org.directwebremoting.proxy.jsx3.app.Server;
 
 /**
  * A Factory class to allow access to GI components in the same way that the

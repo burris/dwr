@@ -1,4 +1,4 @@
-package org.directwebremoting.proxy.jsx3.xml;
+package jsx3.xml;
 
 import java.util.HashMap;
 import java.util.Iterator;

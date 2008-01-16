@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.convert;
+package jsx3.xml;
 
+import org.directwebremoting.convert.BaseV20Converter;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.InboundContext;
@@ -23,8 +24,6 @@ import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
-import org.directwebremoting.proxy.jsx3.xml.CdfDocument;
-
 
 /**
  * An implementation of Converter for DOM objects.

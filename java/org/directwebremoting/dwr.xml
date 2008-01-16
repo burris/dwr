@@ -40,6 +40,9 @@
     <converter id="context" class="org.directwebremoting.convert.ContextConverter"/>
     <converter id="stringWrapper" class="org.directwebremoting.convert.StringWrapperConverter"/>
     <converter id="raw" class="org.directwebremoting.convert.RawConverter"/>
+
+    <converter id="jsx3uri" class="jsx3.net.URIResolverConverter"/>
+    <converter id="jsx3doc" class="jsx3.xml.CdfDocumentConverter"/>
   </init>
 
   <allow>
@@ -119,6 +122,9 @@
     <convert converter="file" match="org.directwebremoting.io.FileTransfer"/>
     <convert converter="file" match="java.io.InputStream"/>
     <convert converter="file" match="java.awt.image.BufferedImage"/>
+
+    <convert converter="jsx3uri" match="jsx3.net.URIResolver"/>
+    <convert converter="jsx3doc" match="jsx3.xml.CdfDocument"/>
 
     <create creator="new" javascript="__System" scope="application">
       <param name="class" value="org.directwebremoting.export.System"/>
