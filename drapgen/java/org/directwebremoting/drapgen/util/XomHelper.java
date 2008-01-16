@@ -48,7 +48,7 @@ public class XomHelper
         throw new XPathException("XPath expression returned more than 1 node");
     }
 
-    public static void query(Node doc, String xpath, ElementBlock functor)
+    public static int query(Node doc, String xpath, ElementBlock functor)
     {
         Nodes nodes = doc.query(xpath);
         for (int i = 0; i < nodes.size(); i++)
@@ -56,9 +56,10 @@ public class XomHelper
             Element element = (Element) nodes.get(i);
             functor.use(element);
         }
+        return nodes.size();
     }
 
-    public static void getChildElements(Element element, String name, ElementBlock functor)
+    public static int getChildElements(Element element, String name, ElementBlock functor)
     {
         Elements children = element.getChildElements(name);
         for (int i = 0; i < children.size(); i++)
@@ -66,5 +67,6 @@ public class XomHelper
             Element child = children.get(i);
             functor.use(child);
         }
+        return children.size();
     }
 }

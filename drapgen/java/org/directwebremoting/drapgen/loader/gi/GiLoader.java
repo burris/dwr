@@ -30,12 +30,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import nu.xom.Attribute;
 import nu.xom.Builder;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
+import nu.xom.Node;
 import nu.xom.Nodes;
+import nu.xom.XPathException;
 
 import org.directwebremoting.drapgen.ast.Constructor;
 import org.directwebremoting.drapgen.ast.Field;
@@ -71,9 +72,53 @@ public class GiLoader implements Loader
     {
         loadGiClasses(source);
 
-        // markSuperClasses();
-        // copyMixinFunctions();
-        // trimDuplicateMethods();
+        copyMixinFunctions();
+        trimDuplicateMethods();
+        applyLocalHacks();
+    }
+
+    /**
+     * 
+     */
+    protected void applyLocalHacks()
+    {
+        // Multi-line values get trimmed to 1st line
+        removeElement("jsx3.chart.Chart", "/class/field[@name='DEFAULT_FILLS']");
+        removeElement("jsx3.app.Model", "/class/field[@name='META_FIELDS']");
+        removeElement("jsx3.gui.Sound", "/class/field[@name='QUICKTIME']");
+        removeElement("jsx3.gui.Table", "/class/field[@name='DEFAULT_CELL_VALUE_TEMPLATE']");
+
+        // Inner classes we could handle as a special case, but for now we're lazy
+        removeElement("jsx3.chart.PointRenderer", "/interface/field[@name='CIRCLE']");
+        removeElement("jsx3.chart.PointRenderer", "/interface/field[@name='CROSS']");
+        removeElement("jsx3.chart.PointRenderer", "/interface/field[@name='DIAMOND']");
+        removeElement("jsx3.chart.PointRenderer", "/interface/field[@name='BOX']");
+        removeElement("jsx3.chart.PointRenderer", "/interface/field[@name='TRIANGLE']");
+
+        // ';' in value triggers end of line trimming
+        removeElement("jsx3.gui.Stack", "/class/field[@name='BORDER']");
+        removeElement("jsx3.gui.WindowBar", "/class/field[@name='DEFAULTBORDER']");
+        removeElement("jsx3.gui.WindowBar", "/class/field[@name='DEFAULTBORDERCAPTION']");
+    }
+
+    /**
+     * Utility to remove (an) element(s) by xpath selector from a type
+     */
+    protected void removeElement(String typename, String xpath)
+    {
+        Document chart = types.get(typename);
+        int changes = XomHelper.query(chart, xpath, new ElementBlock()
+        {
+            public void use(Element element)
+            {
+                element.getParent().removeChild(element);
+            }
+        });
+
+        if (changes == 0)
+        {
+            log.warn("Removing " + xpath + " from " + typename + " didn't result in any changes");
+        }
     }
 
     /**
@@ -122,22 +167,6 @@ public class GiLoader implements Loader
     }
 
     /**
-     * Work out which classes are super-classes and mixins
-     */
-    protected void markSuperClasses()
-    {
-        log.info("Calculating super classes.");
-        for (Document doc : types.values())
-        {
-            for (String superClass : getSuperClasses(doc))
-            {   
-                Document childDoc = types.get(superClass);
-                childDoc.getRootElement().addAttribute(new Attribute("superClass", "true"));
-            }
-        }
-    }
-
-    /**
      * Find the super class names listed in the given document.
      * Perhaps this should be cached somewhere???
      * @param doc The document to search in
@@ -177,46 +206,50 @@ public class GiLoader implements Loader
 
                     // Find all the inherited functions, and trim the ones that are not
                     // from super-classes - leaving the mixins
-                    Nodes inheritedNodes = doc.query("/class/method[@inherited='1']");
+                    Nodes mixinRefNodes = doc.query("/class/method[@inherited='1']");
 
-                    for (int i = 0; i < inheritedNodes.size(); i++)
+                    for (int i = 0; i < mixinRefNodes.size(); i++)
                     {
-                        Element inheritedNode = (Element) inheritedNodes.get(i);
-                        String name = inheritedNode.getAttributeValue("name");
+                        Element mixinRefNode = (Element) mixinRefNodes.get(i);
+                        String name = mixinRefNode.getAttributeValue("name");
                         if (name == null)
                         {
-                            throw new NullPointerException("Missing name attribute from element: " + inheritedNode);
+                            throw new NullPointerException("Missing name attribute from element: " + mixinRefNode);
                         }
 
                         // We might be implemented elsewhere
-                        String declarationClassName = inheritedNode.getAttributeValue("source");
-                        if (declarationClassName == null)
+                        String mixinSource = mixinRefNode.getAttributeValue("source");
+                        if (mixinSource == null)
                         {
-                            declarationClassName = className;
+                            mixinSource = className;
                         }
 
-                        boolean isFunctionFromMixin = true;
+                        boolean isMixin = true;
                         for (String superClass : getSuperClasses(doc))
                         {
-                            if (declarationClassName.equals(superClass))
+                            if (mixinSource.equals(superClass))
                             {
-                                isFunctionFromMixin = false;
+                                isMixin = false;
                             }
                         }
 
-                        if (isFunctionFromMixin)
+                        if (isMixin)
                         {
                             // replace the method element with the corresponding element from Form.
-                            if (!"jsx3.lang.Object".equals(declarationClassName))
+                            if (!"jsx3.lang.Object".equals(mixinSource))
                             {
-                                Nodes nodes = doc.query("/class/method[@name='" + name + "']");
-                                if (nodes.size() != 1)
+                                Document mixinSourceDocument = types.get(mixinSource);
+                                Nodes templateNodes = mixinSourceDocument.query("/interface/method[@name='" + name + "']");
+                                if (templateNodes.size() != 1)
                                 {
-                                    throw new IllegalArgumentException("query returned wrong number of results");
+                                    log.warn("Found " + templateNodes.size() + " methods called " + name + " in " + mixinSource + " as a result of reference from " + className);
                                 }
-
-                                Element newMethod = (Element) nodes.get(0);
-                                inheritedNode.getParent().replaceChild(inheritedNode, newMethod);
+                                else
+                                {
+                                    Element templateNode = (Element) templateNodes.get(0);
+                                    Node replacementNode = templateNode.copy();
+                                    mixinRefNode.getParent().replaceChild(mixinRefNode, replacementNode);
+                                }
                             }
                         }
                     }
@@ -264,22 +297,29 @@ public class GiLoader implements Loader
                             // Loop over signatures, checking for methods in super-classes
                             for (Document parent : parents)
                             {
-                                XomHelper.query(parent, "/class/method[not(@inherited)]", new ElementBlock()
+                                try
                                 {
-                                    public void use(Element parentMethod)
+                                    XomHelper.query(parent, "/class/method[not(@inherited)]", new ElementBlock()
                                     {
-                                        if (inherited.getParent() == null)
+                                        public void use(Element parentMethod)
                                         {
-                                            return;
+                                            if (inherited.getParent() == null)
+                                            {
+                                                return;
+                                            }
+    
+                                            String parentMethodName = parentMethod.getAttributeValue("name");
+                                            if (inheritedName.equals(parentMethodName))
+                                            {
+                                                inherited.getParent().removeChild(inherited);
+                                            }
                                         }
-
-                                        String parentMethodName = parentMethod.getAttributeValue("name");
-                                        if (inheritedName.equals(parentMethodName))
-                                        {
-                                            inherited.getParent().removeChild(inherited);
-                                        }
-                                    }
-                                });
+                                    });
+                                }
+                                catch (XPathException ex)
+                                {
+                                    log.warn("Failed XPath: " + ex.getXPath(), ex);
+                                }
                             }
                         }
                     });
@@ -302,10 +342,16 @@ public class GiLoader implements Loader
         {
             log.info("  " + className);
 
-            String alternate = checkAlternativeNames(className);
-            if (!alternate.equals(className))
+            String rename = hasLocalVersion(className);
+            if (rename != null)
             {
-                log.info("    Skipping: has a local version - " + alternate);
+                log.info("    Skipping: has a local version - " + rename);
+                continue;
+            }
+
+            if (skipOnInput(className))
+            {
+                log.info("    Skipping: marked skip on input");
                 continue;
             }
 
@@ -331,147 +377,223 @@ public class GiLoader implements Loader
             type.setDocumentation(typeDocs);
 
             String superClassName = XomHelper.queryValue(root, "superclass[@direct='1']/@name");
-            if (superClassName != null)
+            if (superClassName == null)
+            {
+                type.setSuperClass(getType(project, "jsx3.lang.Object"));
+            }
+            else
             {
                 type.setSuperClass(getType(project, superClassName));
             }
 
-            XomHelper.getChildElements(root, "implements", new ElementBlock()
-            {
-                public void use(Element implementsElement)
-                {
-                    String direct = implementsElement.getAttributeValue("direct");
-                    if (direct == null || !direct.equals("1"))
-                    {
-                        return;
-                    }
-
-                    String interfaceName = implementsElement.getAttributeValue("name");
-                    if (interfaceName == null)
-                    {
-                        log.warn("    Skipping direct implements element with no name");
-                    }
-                    type.addInterface(getType(project, interfaceName));
-                }
-            });
-
-            // Find all the constructors that we're interested in
-            XomHelper.getChildElements(root, "constructor", new ElementBlock()
-            {
-                public void use(Element ctorElement)
-                {
-                    if (ctorElement.getAttribute("deprecated") != null)
-                    {
-                        return;
-                    }
-
-                    // Read a set of param elements attached to a constructor or method
-
-                    String documentation = readDocumentation(ctorElement);
-                    Set<List<Parameter>> parameters = getGiParamList(ctorElement, "ctor", project);
-                    for (List<Parameter> parameter : parameters)
-                    {
-                        Constructor constructor = type.createConstructor();
-                        constructor.setDocumentation(documentation);
-                        constructor.setParameters(parameter);
-                    }
-                }
-            });
-
-            // Find all the methods that we're interested in
-            XomHelper.getChildElements(root, "method", new ElementBlock()
-            {
-                public void use(Element methodElement)
-                {
-                    if (methodElement.getAttribute("deprecated") != null)
-                    {
-                        return;
-                    }
-
-                    if (methodElement.getAttribute("inherited") != null)
-                    {
-                        return;
-                    }
-
-                    String methodName = methodElement.getAttributeValue("name");
-                    String documentation = readDocumentation(methodElement);
-                    Type returnType = readGiReturnType(methodElement, project, methodName);
-
-                    // Read a set of param elements attached to a constructor or method
-
-                    Set<List<Parameter>> parameters = getGiParamList(methodElement, methodName, project);
-                    for (List<Parameter> parameter : parameters)
-                    {
-                        Method method = type.createMethod();
-                        method.setDocumentation(documentation);
-                        method.setName(methodName);
-                        method.setType(returnType);
-                        method.setParameters(parameter);
-                    }
-                }
-            });
-
-            XomHelper.getChildElements(root, "field", new ElementBlock()
-            {
-                public void use(Element fieldElement)
-                {
-                    if (fieldElement.getAttribute("deprecated") != null)
-                    {
-                        return;
-                    }
-
-                    String statc = fieldElement.getAttributeValue("static");
-                    if (statc == null || !statc.equals("1"))
-                    {
-                        return;
-                    }
-
-                    String access = fieldElement.getAttributeValue("access");
-                    if (access == null || !access.equals("public"))
-                    {
-                        return;
-                    }
-
-                    String name = fieldElement.getAttributeValue("name");
-
-                    Field field = type.createConstant();
-                    field.setDocumentation(fieldElement.getAttributeValue("text"));
-                    field.setName(name);
-                    field.setValue(fieldElement.getAttributeValue("value"));
-
-                    Elements typeElements = fieldElement.getChildElements("type");
-                    if (typeElements.size() == 0)
-                    {
-                        log.warn("    ." + name + "(): Missing return element. Using Object.");
-                        field.setType(getType(project, "java.lang.Object"));
-                    }
-                    else
-                    {
-                        if (typeElements.size() > 1)
-                        {
-                            log.warn("    ." + name + "(): More than one type element. Using first.");
-                        }
-
-                        Element typeElement = typeElements.get(0);
-                        String typeName = typeElement.getAttributeValue("name");
-                        field.setType(getType(project, typeName));
-                    }
-                }
-            });
+            XomHelper.getChildElements(root, "implements", new ImplementsElementBlock(project, type));
+            XomHelper.getChildElements(root, "constructor", new ConstructorElementBlock(project, type));
+            XomHelper.getChildElements(root, "method", new MethodElementBlock(project, type));
+            XomHelper.getChildElements(root, "field", new FieldElementBlock(project, type));
         }
 
         // We need to remove the classes that we don't want to generate
         Set<Type> toDelete = new HashSet<Type>();
+        types:
         for (Type type : project.getTypes())
         {
             if (!type.getPackageName().startsWith("jsx3"))
             {
                 toDelete.add(type);
+                continue types;
+            }
+            for (String manualClassName : SKIP_ON_OUTPUT)
+            {
+                if (type.getFullName().equals(manualClassName))
+                {
+                    toDelete.add(type);
+                    continue types;
+                }
             }
         }
         for (Type type : toDelete)
         {
             project.remove(type);
+        }
+    }
+
+    /**
+     * Find all the constants
+     */
+    protected class FieldElementBlock extends ProjectElementBlock
+    {
+        protected FieldElementBlock(Project project, Type type)
+        {
+            super(project, type);
+        }
+
+        public void use(Element fieldElement)
+        {
+            if (fieldElement.getAttribute("deprecated") != null)
+            {
+                return;
+            }
+
+            String statc = fieldElement.getAttributeValue("static");
+            if (statc == null || !statc.equals("1"))
+            {
+                return;
+            }
+
+            String access = fieldElement.getAttributeValue("access");
+            if (access == null || !access.equals("public"))
+            {
+                return;
+            }
+
+            String name = fieldElement.getAttributeValue("name");
+
+            Field field = type.createConstant();
+            field.setDocumentation(stripToNull(fieldElement.getAttributeValue("text")));
+            field.setDocumentation(readDocumentation(fieldElement));
+            field.setName(name);
+            field.setValue(fieldElement.getAttributeValue("value"));
+
+            Elements typeElements = fieldElement.getChildElements("type");
+            if (typeElements.size() == 0)
+            {
+                log.warn("    ." + name + "(): Missing return element. Using Object.");
+                field.setType(getType(project, "java.lang.Object"));
+            }
+            else
+            {
+                if (typeElements.size() > 1)
+                {
+                    log.warn("    ." + name + "(): More than one type element. Using first.");
+                }
+
+                Element typeElement = typeElements.get(0);
+                String typeName = typeElement.getAttributeValue("name");
+                field.setType(getType(project, typeName));
+            }
+        }
+    }
+
+    /**
+     * Find all the methods that we're interested in
+     */
+    protected class MethodElementBlock extends ProjectElementBlock
+    {
+        protected MethodElementBlock(Project project, Type type)
+        {
+            super(project, type);
+        }
+
+        public void use(Element methodElement)
+        {
+            if (methodElement.getAttribute("deprecated") != null)
+            {
+                return;
+            }
+
+            if (methodElement.getAttribute("inherited") != null)
+            {
+                return;
+            }
+
+            String methodName = methodElement.getAttributeValue("name");
+            String documentation = readDocumentation(methodElement);
+            Parameter returnType = readGiReturnType(methodElement, project, methodName);
+
+            // Read a set of param elements attached to a constructor or method
+
+            Set<List<Parameter>> parameters = getGiParamList(methodElement, methodName, project);
+            for (List<Parameter> parameter : parameters)
+            {
+                Method method = type.createMethod();
+                method.setDocumentation(documentation);
+                method.setName(methodName);
+                method.setReturnType(returnType);
+                method.setParameters(parameter);
+            }
+        }
+    }
+
+    /**
+     * Find all the constructors that we're interested in
+     */
+    protected class ConstructorElementBlock extends ProjectElementBlock
+    {
+        protected ConstructorElementBlock(Project project, Type type)
+        {
+            super(project, type);
+        }
+
+        public void use(Element ctorElement)
+        {
+            if (ctorElement.getAttribute("deprecated") != null)
+            {
+                return;
+            }
+
+            // Read a set of param elements attached to a constructor or method
+
+            String documentation = readDocumentation(ctorElement);
+            Set<List<Parameter>> parameters = getGiParamList(ctorElement, "ctor", project);
+            for (List<Parameter> parameter : parameters)
+            {
+                Constructor constructor = type.createConstructor();
+                constructor.setDocumentation(documentation);
+                constructor.setParameters(parameter);
+            }
+        }
+    }
+
+    /**
+     * Helper so we can implement ElementBlock easily
+     */
+    protected abstract class ProjectElementBlock implements ElementBlock
+    {
+        /**
+         * @param project The project that we are writing to
+         * @param type The type we are creating
+         */
+        protected ProjectElementBlock(Project project, Type type)
+        {
+            this.project = project;
+            this.type = type;
+        }
+
+        /**
+         * The project that we are writing to
+         */
+        protected final Project project;
+
+        /**
+         * The type we are creating
+         */
+        protected final Type type;
+    }
+
+    /**
+     * Process an implements element
+     */
+    protected class ImplementsElementBlock extends ProjectElementBlock
+    {
+        protected ImplementsElementBlock(Project project, Type type)
+        {
+            super(project, type);
+        }
+
+        public void use(Element implementsElement)
+        {
+            String direct = implementsElement.getAttributeValue("direct");
+            if (direct == null || !direct.equals("1"))
+            {
+                return;
+            }
+
+            String interfaceName = implementsElement.getAttributeValue("name");
+            if (interfaceName == null)
+            {
+                log.warn("    Skipping direct implements element with no name");
+            }
+            type.addInterface(getType(project, interfaceName));
         }
     }
 
@@ -516,7 +638,14 @@ public class GiLoader implements Loader
      */
     protected String checkAlternativeNames(String className)
     {
-        for (String[] pairs : classNameSwaps)
+        for (String[] pairs : JSX3_RENAMES)
+        {
+            if (className.equals(pairs[0]))
+            {
+                return pairs[1];
+            }
+        }
+        for (String[] pairs : HAS_LOCAL_VERSION)
         {
             if (className.equals(pairs[0]))
             {
@@ -527,32 +656,118 @@ public class GiLoader implements Loader
     }
 
     /**
-     * 
+     * Does the given string have a local version?
      */
-    private static final String[][] classNameSwaps = new String[][]
+    protected String hasLocalVersion(String className)
     {
-        { "", "java.lang.Object" },
-        { "Object", "java.lang.Object" },
+        for (String[] pairs : HAS_LOCAL_VERSION)
+        {
+            if (className.equals(pairs[0]))
+            {
+                return pairs[1];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Does the given string have a local version?
+     */
+    protected boolean skipOnInput(String className)
+    {
+        for (String skip : SKIP_ON_INPUT)
+        {
+            if (className.equals(skip))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * We might want to move jsx3 classes around the hierarchy, mostly this
+     * is due to lack of current support for inner classes
+     */
+    private static final String[][] JSX3_RENAMES = new String[][]
+    {
+        { "jsx3.gui.Matrix.BlockMask", "jsx3.gui.matrix.BlockMask" },
+        { "jsx3.gui.Matrix.Column", "jsx3.gui.matrix.Column" },
+        { "jsx3.gui.Matrix.ColumnFormat", "jsx3.gui.matrix.ColumnFormat" },
+        { "jsx3.gui.Matrix.EditMask", "jsx3.gui.matrix.EditMask" },
+    };
+
+    /**
+     * JSX classes that we don't have a local version of, but we ignore anyway
+     */
+    private static final String[] SKIP_ON_INPUT = new String[]
+    {
+        "jsx3.app.Monitor",
+        "jsx3.app.PropsBundle",
+        "jsx3.lang.NativeError",
+        "jsx3.lang.Package",
+        "jsx3.net.URIResolver",
+        "jsx3.util.Logger",
+        "jsx3.util.Logger.AlertHandler",
+        "jsx3.util.Logger.FormatHandler",
+        "jsx3.util.Logger.Handler",
+        "jsx3.util.Logger.Manager",
+        "jsx3.util.Logger.MemoryHandler",
+        "jsx3.util.Logger.Record",
+        "jsx3.xml.XslDocument",
+    };
+
+    /**
+     * Many JSX classes are not converted because there is a better local
+     * version.
+     */
+    private static final String[][] HAS_LOCAL_VERSION = new String[][]
+    {
+        { "", "jsx3.lang.Object" },
+        { "Object", "jsx3.lang.Object" },
         { "Date", "java.util.Date" },
         { "Iterator", "java.util.Iterator" },
-        { "Math", "jsx3.lang.Unavailable" },
-        { "RegExp", "jsx3.lang.Unavailable" },
+        { "Math", "java.lang.Math" },
+        { "RegExp", "java.util.regex.Pattern" },
         { "Number", "Integer" },
-        { "String", "java.lang.String" },
+        { "String", "String" },
         { "Array", "Object[]" },
-        { "Boolean", "java.lang.Boolean" },
+        { "Boolean", "Boolean" },
         { "Function", "org.directwebremoting.proxy.CodeBlock" },
         { "HTMLElement", "String" },
         { "HTMLDocument", "String" },
         { "VectorStroke", "String" },
         { "jsx3.Boolean", "Boolean" },
+        { "jsx3.app.Locale", "java.util.Locale" },
         { "jsx3.app.Properties", "java.util.Properties" },
-        { "jsx3.lang.Class", "java.lang.Class" },
-        { "jsx3.lang.ClassLoader", "java.lang.ClassLoader" },
+        { "jsx3.lang.Class", "Class" },
+        { "jsx3.lang.ClassLoader", "ClassLoader" },
         { "jsx3.lang.Exception", "Exception" },
         { "jsx3.lang.IllegalArgumentException", "IllegalArgumentException" },
-        { "jsx3.util.Logger", "jsx3.lang.Unavailable" },
-        { "jsx3.util.Logger.Record", "jsx3.lang.Unavailable" },
+        { "jsx3.lang.Method", "java.lang.reflect.Method" },
+        { "jsx3.net.URI", "java.net.URI" },
+        { "jsx3.util.DateFormat", "java.util.DateFormat" },
+        { "jsx3.util.Locale", "java.util.Locale" },
+        { "jsx3.util.List", "java.util.List" },
+        { "jsx3.util.Iterator", "java.util.Iterator" },
+        { "jsx3.util.MessageFormat", "java.util.MessageFormat" },
+        { "jsx3.util.NumberFormat", "java.util.NumberFormat" },
+        { "jsx3.xml.CDF", "jsx3.xml.CdfDocument" },
+        { "jsx3.xml.CDF.Document", "jsx3.xml.CdfDocument" },
+        { "jsx3.xml.Document", "jsx3.xml.CdfDocument" },
+        { "jsx3.xml.Entity", "jsx3.xml.Node" },
+    };
+
+    /**
+     * Some JSX3 classes have been hand cranked, or should not be generated
+     */
+    private static final String[] SKIP_ON_OUTPUT = new String[]
+    {
+        "jsx3.lang.Object",
+        "jsx3.lang.Unavailable",
+        "jsx3.net.URIResolver",
+        "jsx3.xml.CdfDocument",
+        "jsx3.xml.Node",
     };
 
     /**
@@ -565,7 +780,7 @@ public class GiLoader implements Loader
         Element textElement = xomElement.getFirstChildElement("text");
         if (textElement != null)
         {
-            return textElement.getValue();
+            return stripToNull(textElement.getValue());
         }
         else
         {
@@ -595,7 +810,7 @@ public class GiLoader implements Loader
         {
             public void use(Element paramElement)
             {
-                String documentation = paramElement.getAttributeValue("text");
+                String documentation = stripToNull(paramElement.getAttributeValue("text"));
                 String name = paramElement.getAttributeValue("name");
 
                 Set<Type> alternatives = new HashSet<Type>();
@@ -688,13 +903,16 @@ public class GiLoader implements Loader
      * crashes the VM on mac-os. Why???
      * @param element The XOM element to read from
      */
-    protected Type readGiReturnType(Element element, Project project, final String name)
+    protected Parameter readGiReturnType(Element element, Project project, final String name)
     {
+        Parameter returnType = new Parameter(project);
+
         //Project project = method.getParent().getProject();
         Elements returnElements = element.getChildElements("return");
         if (returnElements.size() == 0)
         {
-            return getType(project, "void");
+            returnType.setType(getType(project, "void"));
+            return returnType;
         }
         else
         {
@@ -704,11 +922,17 @@ public class GiLoader implements Loader
             }
 
             Element returnElement = returnElements.get(0);
+
+            String documentation = returnElement.getAttributeValue("text");
+            returnType.setDocumentation(stripToNull(documentation));
+
             Elements typeElements = returnElement.getChildElements("type");
             if (typeElements.size() == 0)
             {
                 log.warn("    ." + name + "(): Missing return element. Using Object.");
-                return getType(project, "java.lang.Object");
+                Type type = getType(project, "java.lang.Object");
+                returnType.setType(type);
+                return returnType;
             }
             else
             {
@@ -719,9 +943,31 @@ public class GiLoader implements Loader
 
                 Element typeElement = typeElements.get(0);
                 String typeName = typeElement.getAttributeValue("name");
-                return getType(project, typeName);
+                Type type = getType(project, typeName);
+                returnType.setType(type);
+                return returnType;
             }
         }
+    }
+
+    /**
+     * Utility for simplifying documentation
+     * @param input The string to call {@link String#trim()} on before swapping
+     * empty replies for null
+     * @return A non blank, trimmed string, possibly null
+     */
+    public static String stripToNull(String input)
+    {
+        if (input == null)
+        {
+            return null;
+        }
+        String output = input.trim();
+        if (output.length() == 0)
+        {
+            return null;
+        }
+        return output;
     }
 
     /**

@@ -53,17 +53,17 @@ public class Method extends Subroutine
     /**
      * @return the returnType
      */
-    public Type getType()
+    public Parameter getReturnType()
     {
-        return type;
+        return returnType;
     }
 
     /**
-     * @param type the return Type to set
+     * @param returnType the return Type to set
      */
-    public void setType(Type type)
+    public void setReturnType(Parameter returnType)
     {
-        this.type = type;
+        this.returnType = returnType;
     }
 
     /**
@@ -74,7 +74,7 @@ public class Method extends Subroutine
     {
         nu.xom.Element element = super.toXomElement(METHOD);
         element.addAttribute(new Attribute(NAME, name));
-        element.addAttribute(new Attribute(TYPE, type.getFullName()));
+        element.appendChild(returnType.toXomElement(RETURN_TYPE));
 
         return element;
     }
@@ -88,7 +88,7 @@ public class Method extends Subroutine
     {
         super.fromXomDocument(element);
         name = element.getAttributeValue(NAME);
-        type = getParent().getProject().getType(element.getAttributeValue(TYPE));
+        returnType.fromXomDocument(element.getFirstChildElement(RETURN_TYPE));
     }
 
     /* (non-Javadoc)
@@ -152,5 +152,5 @@ public class Method extends Subroutine
 
     private String name;
 
-    private Type type;
+    private Parameter returnType;
 }

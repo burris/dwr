@@ -17,7 +17,6 @@ package org.directwebremoting.drapgen.ast;
 
 import java.util.List;
 
-import nu.xom.Attribute;
 import nu.xom.Elements;
 
 import static org.directwebremoting.drapgen.ast.SerializationStrings.*;
@@ -65,18 +64,11 @@ public abstract class Subroutine extends Element
     protected nu.xom.Element toXomElement(String name)
     {
         nu.xom.Element element = new nu.xom.Element(name);
-        String documentation = getDocumentation();
-        if (documentation != null)
-        {
-            element.addAttribute(new Attribute(DOCUMENTATION, documentation));
-        }
+        writeDocumentation(element);
 
         for (Parameter parameter : parameters)
         {
-            nu.xom.Element param = new nu.xom.Element(PARAM);
-            param.addAttribute(new Attribute(TYPE, parameter.getType().getFullName()));
-            param.addAttribute(new Attribute(NAME, parameter.getName()));
-            element.appendChild(param);
+            element.appendChild(parameter.toXomElement(PARAM));
         }
 
         return element;
@@ -88,7 +80,7 @@ public abstract class Subroutine extends Element
      */
     protected void fromXomDocument(nu.xom.Element element)
     {
-        setDocumentation(element.getAttributeValue(DOCUMENTATION));
+        readDocumentation(element);
 
         Elements childElements = element.getChildElements(PARAM);
         parameters.clear();
@@ -96,10 +88,7 @@ public abstract class Subroutine extends Element
         {
             nu.xom.Element childElement = childElements.get(i);
             Parameter parameter = new Parameter(getParent().getProject());
-            parameter.setDocumentation(childElement.getAttributeValue(DOCUMENTATION));
-            parameter.setName(childElement.getAttributeValue(NAME));
-            String typeName = childElement.getAttributeValue(TYPE);
-            parameter.setType(parent.getProject().getType(typeName));
+            parameter.fromXomDocument(childElement);
             parameters.add(parameter);
         }
     }

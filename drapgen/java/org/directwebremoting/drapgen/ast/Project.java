@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -112,6 +114,75 @@ public class Project
     }
 
     /**
+     * Is the given (full) class name one that another class claims as it's
+     * ancestor?
+     * @param name The class name to search for
+     * @return true iff the class has children
+     */
+    public boolean isSuperClass(String name)
+    {
+        if (superClasses == null)
+        {
+            superClasses = new HashSet<String>();
+            for (Type type : types.values())
+            {
+                Type superClass = type.getSuperClass();
+                if (superClass != null)
+                {
+                    superClasses.add(superClass.getFullName());
+                }
+
+                for (Type iface : type.getInterfaces())
+                {
+                    superClasses.add(iface.getFullName());
+                }
+            }
+        }
+
+        return superClasses.contains(name);
+    }
+
+    /**
+     * @return An class name with native types replaced by Object types
+     */
+    public String asObject(String maybeNative)
+    {
+        if (maybeNative.equals("int"))
+        {
+            return "Integer";
+        }
+        else if (maybeNative.equals("char"))
+        {
+            return "Character";
+        }
+        else if (maybeNative.equals("boolean"))
+        {
+            return "Boolean";
+        }
+        else if (maybeNative.equals("long"))
+        {
+            return "Long";
+        }
+        else if (maybeNative.equals("float"))
+        {
+            return "Float";
+        }
+        else if (maybeNative.equals("double"))
+        {
+            return "Double";
+        }
+        else if (maybeNative.equals("short"))
+        {
+            return "Short";
+        }
+        else if (maybeNative.equals("byte"))
+        {
+            return "Byte";
+        }
+        return maybeNative;
+    }
+
+    /**
      * @see java.util.Set#clear()
      */
     public void clear()
@@ -189,6 +260,11 @@ public class Project
      * The store of the types we are about to generate from
      */
     private Map<String, Type> types = new HashMap<String, Type>();
+
+    /**
+     * We cache the names of the super classes that we've found
+     */
+    private Set<String> superClasses;
 
     /**
      * The log stream

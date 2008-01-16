@@ -67,6 +67,7 @@ public class FreemarkerGenerator implements Generator
 
                 Map<String, Object> root = new HashMap<String, Object>();
                 root.put("type", type);
+                root.put("project", project);
                 template.process(root, out);
             }
             catch (TemplateException ex)

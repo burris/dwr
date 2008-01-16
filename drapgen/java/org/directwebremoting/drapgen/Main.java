@@ -39,14 +39,14 @@ public class Main
         Logger.setDefaultImplementation(SystemOutLoggingOutput.class);
         SystemOutLoggingOutput.setLevel(LoggingOutput.LEVEL_INFO);
 
-        Loader loader = new GiLoader(new File("/Applications/TIBCO/tibco-gi-3.5-pro-src/dist/gi/api/xml/"));
+        Loader loader = new GiLoader(new File("/Users/joe/Workspace/gi/dist/gi/api/xml/"));
         Project project = new Project();
         loader.loadToProject(project);
 
         project.save(new File("generated/gi/dom/"));
 
         Generator generator = new FreemarkerGenerator();
-        generator.setGeneratedBase(new File("generated/gi/java2/"));
+        generator.setGeneratedBase(new File("generated/gi/java/"));
         generator.generate(project);
     }
 }

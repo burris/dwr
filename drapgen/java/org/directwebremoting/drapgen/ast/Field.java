@@ -90,11 +90,7 @@ public class Field extends Element
     protected nu.xom.Element toXomElement()
     {
         nu.xom.Element field = new nu.xom.Element(CONSTANT);
-        String documentation = getDocumentation();
-        if (documentation != null)
-        {
-            field.addAttribute(new Attribute(DOCUMENTATION, documentation));
-        }
+        writeDocumentation(field);
         field.addAttribute(new Attribute(NAME, name));
         field.addAttribute(new Attribute(TYPE, type.getFullName()));
         field.addAttribute(new Attribute(VALUE, value));
@@ -108,7 +104,7 @@ public class Field extends Element
      */
     protected void fromXomDocument(nu.xom.Element element)
     {
-        setDocumentation(element.getAttributeValue(DOCUMENTATION));
+        readDocumentation(element);
         name = element.getAttributeValue(NAME);
         type = parent.getProject().getType(element.getAttributeValue(TYPE));
         value = element.getAttributeValue(VALUE);

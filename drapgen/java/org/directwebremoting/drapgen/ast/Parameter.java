@@ -67,16 +67,22 @@ public class Parameter extends Element
 
     /**
      * Create a XOM Element from this
+     * @param elementName The name so we can use return type parameters
      * @return a Element representing this Type
      */
-    protected nu.xom.Element toXomElement()
+    protected nu.xom.Element toXomElement(String elementName)
     {
-        nu.xom.Element constructor = new nu.xom.Element(METHOD);
-        constructor.addAttribute(new Attribute(DOCUMENTATION, getDocumentation()));
-        constructor.addAttribute(new Attribute(NAME, name));
-        constructor.addAttribute(new Attribute(TYPE, type.getFullName()));
+        nu.xom.Element element = new nu.xom.Element(elementName);
+        writeDocumentation(element);
 
-        return constructor;
+        if (name != null)
+        {
+            element.addAttribute(new Attribute(NAME, name));
+        }
+
+        element.addAttribute(new Attribute(TYPE, type.getFullName()));
+
+        return element;
     }
 
     /**
@@ -85,7 +91,8 @@ public class Parameter extends Element
      */
     protected void fromXomDocument(nu.xom.Element element)
     {
-        setDocumentation(element.getAttributeValue(DOCUMENTATION));
+        readDocumentation(element);
+
         name = element.getAttributeValue(NAME);
         type = project.getType(element.getAttributeValue(TYPE));
     }

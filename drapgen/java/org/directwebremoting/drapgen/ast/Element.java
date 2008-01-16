@@ -15,6 +15,8 @@
  */
 package org.directwebremoting.drapgen.ast;
 
+import static org.directwebremoting.drapgen.ast.SerializationStrings.*;
+
 /**
  * Element it the parent type for anything in Drapgen that can be documented.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -35,6 +37,33 @@ public class Element
     public void setDocumentation(String documentation)
     {
         this.documentation = documentation;
+    }
+
+    /**
+     * Add a documentation element to the given element
+     * @param element The element to which to add a documentation element
+     */
+    protected void writeDocumentation(nu.xom.Element element)
+    {
+        if (documentation != null && documentation.length() != 0)
+        {
+            nu.xom.Element docElement = new nu.xom.Element(DOCUMENTATION);
+            docElement.appendChild(documentation);
+            element.appendChild(docElement);
+        }
+    }
+
+    /**
+     * Read a documentation element child of the given element
+     * @param element The element from which to read a documentation element
+     */
+    protected void readDocumentation(nu.xom.Element element)
+    {
+        nu.xom.Element docElement = element.getFirstChildElement(DOCUMENTATION);
+        if (docElement != null)
+        {
+            documentation = docElement.getValue();
+        }
     }
 
     private String documentation;

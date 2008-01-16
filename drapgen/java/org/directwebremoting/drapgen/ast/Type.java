@@ -122,13 +122,7 @@ public class Type extends Element
         root.addAttribute(new Attribute(PACKAGE, packageName));
         root.addAttribute(new Attribute(NAME, name));
 
-        String documentation = getDocumentation();
-        if (documentation != null)
-        {
-            nu.xom.Element docElement = new nu.xom.Element(DOCUMENTATION);
-            docElement.appendChild(documentation);
-            root.appendChild(docElement);
-        }
+        writeDocumentation(root);
 
         if (superClass != null)
         {
@@ -173,12 +167,7 @@ public class Type extends Element
         packageName = root.getAttributeValue(PACKAGE);
         name = root.getAttributeValue(NAME);
 
-        nu.xom.Element docElement = root.getFirstChildElement(DOCUMENTATION);
-        if (docElement != null)
-        {
-            String documentation = docElement.getValue();
-            setDocumentation(documentation);
-        }
+        readDocumentation(root);
 
         String superClassName = root.getAttributeValue(EXTENDS);
         superClass = project.getType(superClassName);

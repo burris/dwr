@@ -31,4 +31,5 @@ public class SerializationStrings
     protected static final String EXTENDS = "extends";
     protected static final String PACKAGE = "package";
     protected static final String VALUE = "value";
+    protected static final String RETURN_TYPE = "returnType";
 }
