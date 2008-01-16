@@ -17,13 +17,14 @@ package org.getahead.dwrdemo.proxy.demo;
 
 import java.util.Collection;
 
+import jsx3.GI;
+import jsx3.app.Server;
+import jsx3.gui.Button;
+import jsx3.gui.Form;
+
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
-import org.directwebremoting.proxy.jsx3.GI;
-import org.directwebremoting.proxy.jsx3.gui.Button;
-import org.directwebremoting.proxy.jsx3.gui.Form;
-import org.directwebremoting.proxy.jsx3.app.Server;
 
 public class Test
 {

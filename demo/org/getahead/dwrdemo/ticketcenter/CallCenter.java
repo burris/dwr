@@ -24,6 +24,15 @@ import java.util.Random;
 
 import javax.servlet.ServletContext;
 
+import jsx3.GI;
+import jsx3.app.Server;
+import jsx3.gui.Form;
+import jsx3.gui.LayoutGrid;
+import jsx3.gui.Matrix;
+import jsx3.gui.TextBox;
+import jsx3.xml.CdfDocument;
+import jsx3.xml.Record;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptSession;
@@ -32,14 +41,6 @@ import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.browser.Window;
-import org.directwebremoting.proxy.jsx3.GI;
-import org.directwebremoting.proxy.jsx3.app.Server;
-import org.directwebremoting.proxy.jsx3.gui.Form;
-import org.directwebremoting.proxy.jsx3.gui.LayoutGrid;
-import org.directwebremoting.proxy.jsx3.gui.Matrix;
-import org.directwebremoting.proxy.jsx3.gui.TextBox;
-import org.directwebremoting.proxy.jsx3.xml.CdfDocument;
-import org.directwebremoting.proxy.jsx3.xml.Record;
 import org.getahead.dwrdemo.util.RandomData;
 
 /**

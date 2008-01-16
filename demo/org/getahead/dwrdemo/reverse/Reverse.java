@@ -18,20 +18,21 @@ package org.getahead.dwrdemo.reverse;
 import java.util.Collection;
 import java.util.Date;
 
+import jsx3.GI;
+import jsx3.app.Model;
+import jsx3.app.Server;
+import jsx3.gui.Block;
+import jsx3.gui.Button;
+import jsx3.gui.ColorPicker;
+import jsx3.gui.DatePicker;
+import jsx3.gui.Form;
+import jsx3.gui.Select;
+import jsx3.gui.Slider;
+import jsx3.gui.TextBox;
+
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.proxy.jsx3.GI;
-import org.directwebremoting.proxy.jsx3.app.Model;
-import org.directwebremoting.proxy.jsx3.app.Server;
-import org.directwebremoting.proxy.jsx3.gui.Block;
-import org.directwebremoting.proxy.jsx3.gui.Button;
-import org.directwebremoting.proxy.jsx3.gui.ColorPicker;
-import org.directwebremoting.proxy.jsx3.gui.DatePicker;
-import org.directwebremoting.proxy.jsx3.gui.Form;
-import org.directwebremoting.proxy.jsx3.gui.Select;
-import org.directwebremoting.proxy.jsx3.gui.Slider;
-import org.directwebremoting.proxy.jsx3.gui.TextBox;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]

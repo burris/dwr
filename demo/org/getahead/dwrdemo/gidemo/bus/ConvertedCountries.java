@@ -1,9 +1,10 @@
 package org.getahead.dwrdemo.gidemo.bus;
 
+import jsx3.xml.CdfDocument;
+import jsx3.xml.Record;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.proxy.jsx3.xml.CdfDocument;
-import org.directwebremoting.proxy.jsx3.xml.Record;
 
 
 /**
