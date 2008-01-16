@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.event.EventListenerList;
 
@@ -35,6 +37,7 @@ import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.IdGenerator;
+import org.directwebremoting.util.SharedObjects;
 
 /**
  * A default implementation of ScriptSessionManager.
@@ -48,6 +51,26 @@ import org.directwebremoting.util.IdGenerator;
  */
 public class DefaultScriptSessionManager implements ScriptSessionManager
 {
+    /**
+     * Setup a timer that will invalidate sessions
+     */
+    public DefaultScriptSessionManager()
+    {
+        Runnable runnable = new Runnable()
+        {
+            public void run()
+            {
+                maybeCheckTimeouts();
+            }
+        };
+
+        ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
+        executor.schedule(runnable, 60, TimeUnit.SECONDS);
+
+        // maybe we need be able to cancel the executor?
+        // ScheduledFuture<?> future = executor.schedule...
+    }
+
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#getScriptSession(java.lang.String)
      */
