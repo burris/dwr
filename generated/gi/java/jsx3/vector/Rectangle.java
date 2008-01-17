@@ -57,7 +57,7 @@ public class Rectangle extends jsx3.vector.Shape
      * Clips this rectangle to the bounds of obj.
      * @param obj any object that has <code>getLeft()</code>, etc methods.
      */
-    public void clipToBox(jsx3.html.BlockTag obj)
+    public void clipToBox(jsx3.gui.Block obj)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("clipToBox", obj);
@@ -68,7 +68,7 @@ public class Rectangle extends jsx3.vector.Shape
      * Clips this rectangle to the bounds of obj.
      * @param obj any object that has <code>getLeft()</code>, etc methods.
      */
-    public void clipToBox(jsx3.gui.Block obj)
+    public void clipToBox(jsx3.html.BlockTag obj)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("clipToBox", obj);

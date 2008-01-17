@@ -44,7 +44,7 @@ public class Dialog extends jsx3.gui.Block
      * @param vntHeight height in pixels
      * @param strTitle if != null,  will be set as the text property on the child captionbar
      */
-    public Dialog(String strName, int vntWidth, String vntHeight, String strTitle)
+    public Dialog(String strName, int vntWidth, int vntHeight, String strTitle)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -89,7 +89,7 @@ public class Dialog extends jsx3.gui.Block
      * @param vntHeight height in pixels
      * @param strTitle if != null,  will be set as the text property on the child captionbar
      */
-    public Dialog(String strName, int vntWidth, int vntHeight, String strTitle)
+    public Dialog(String strName, int vntWidth, String vntHeight, String strTitle)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -404,7 +404,7 @@ model event.
    <code>null</code> value for any dimension means that the entire dimension should be shown. A negative value
    means the number of pixels less than the size of the dialog in that dimension.
      */
-    public void constrainPosition(Object[] arg)
+    public void constrainPosition(boolean arg)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("constrainPosition", arg);
@@ -425,7 +425,7 @@ model event.
    <code>null</code> value for any dimension means that the entire dimension should be shown. A negative value
    means the number of pixels less than the size of the dialog in that dimension.
      */
-    public void constrainPosition(boolean arg)
+    public void constrainPosition(Object[] arg)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("constrainPosition", arg);

@@ -45,23 +45,6 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
-    public Block(String strName, int vntLeft, String vntTop, int vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
     public Block(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -79,7 +62,58 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
-    public Block(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight, String strHTML)
+    public Block(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, int vntLeft, String vntTop, int vntWidth, int vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, String vntLeft, int vntTop, String vntWidth, int vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -130,58 +164,7 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
-    public Block(String strName, String vntLeft, int vntTop, String vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, String vntLeft, int vntTop, int vntWidth, String vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strHTML)
+    public Block(String strName, String vntLeft, String vntTop, String vntWidth, String vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -215,41 +198,7 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
-    public Block(String strName, int vntLeft, String vntTop, String vntWidth, String vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, String vntLeft, String vntTop, String vntWidth, String vntHeight, String strHTML)
+    public Block(String strName, String vntLeft, String vntTop, int vntWidth, String vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -283,6 +232,23 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
+    public Block(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
     public Block(String strName, int vntLeft, int vntTop, int vntWidth, String vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -300,7 +266,7 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
-    public Block(String strName, String vntLeft, String vntTop, int vntWidth, String vntHeight, String strHTML)
+    public Block(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -308,11 +274,40 @@ public class Block extends jsx3.gui.Painted
         setInitScript(script);
     }
 
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, int vntLeft, String vntTop, String vntWidth, String vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
 
     /**
-     * 1
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
-    public static final int OVERFLOWSCROLL = 1;
+    public Block(String strName, String vntLeft, int vntTop, int vntWidth, String vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
 
     /**
      * 2
@@ -328,11 +323,6 @@ public class Block extends jsx3.gui.Painted
      * Verdana
      */
     public static final String DEFAULTFONTNAME = "Verdana";
-
-    /**
-     * 10
-     */
-    public static final int DEFAULTFONTSIZE = 10;
 
     /**
      * #000000
@@ -753,7 +743,7 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
      * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
      * @return this object.
      */
-    public jsx3.gui.Block setHeight(int vntHeight, boolean bRepaint)
+    public jsx3.gui.Block setHeight(String vntHeight, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setHeight", vntHeight, bRepaint);
@@ -767,7 +757,7 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
      * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
      * @return this object.
      */
-    public jsx3.gui.Block setHeight(String vntHeight, boolean bRepaint)
+    public jsx3.gui.Block setHeight(int vntHeight, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setHeight", vntHeight, bRepaint);
@@ -826,7 +816,7 @@ from its parent and only applies if this object is absolutely positioned.
      * @param bRepaint if @vntLeft is in integer (a number with no modifier) and @bRepaint is true, the object's on-screen VIEW is immediately updated to match its MODEL, obviating the need to call '[object].repaint()'
      * @return this object.
      */
-    public jsx3.gui.Block setLeft(String vntLeft, boolean bRepaint)
+    public jsx3.gui.Block setLeft(int vntLeft, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setLeft", vntLeft, bRepaint);
@@ -841,7 +831,7 @@ from its parent and only applies if this object is absolutely positioned.
      * @param bRepaint if @vntLeft is in integer (a number with no modifier) and @bRepaint is true, the object's on-screen VIEW is immediately updated to match its MODEL, obviating the need to call '[object].repaint()'
      * @return this object.
      */
-    public jsx3.gui.Block setLeft(int vntLeft, boolean bRepaint)
+    public jsx3.gui.Block setLeft(String vntLeft, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setLeft", vntLeft, bRepaint);
@@ -859,126 +849,7 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
      * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
    an <code>Array</code> then this parameter is the second parameter passed to this method.
      */
-    public void setDimensions(String left, String top, int width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, String top, int width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, int top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, String top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, String top, int width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, int top, int width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, int top, int width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, String top, int width, String height, boolean bRepaint)
+    public void setDimensions(String left, int top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setDimensions", left, top, width, height, bRepaint);
@@ -1012,194 +883,7 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
      * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
    an <code>Array</code> then this parameter is the second parameter passed to this method.
      */
-    public void setDimensions(int left, int top, int width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, String top, String width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, int top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, int top, String width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
     public void setDimensions(Object[] left, int top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, String top, int width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, int top, int width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, int top, String width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, int top, int width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, int top, int width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, int top, String width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, String top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setDimensions", left, top, width, height, bRepaint);
@@ -1233,6 +917,159 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
      * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
    an <code>Array</code> then this parameter is the second parameter passed to this method.
      */
+    public void setDimensions(int left, int top, String width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(Object[] left, int top, int width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, int top, String width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, String top, String width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, int top, int width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, int top, String width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, String top, int width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(Object[] left, String top, int width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, int top, int width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
     public void setDimensions(int left, String top, int width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
@@ -1250,7 +1087,160 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
      * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
    an <code>Array</code> then this parameter is the second parameter passed to this method.
      */
+    public void setDimensions(Object[] left, String top, int width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(Object[] left, int top, String width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, int top, int width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(Object[] left, int top, int width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
     public void setDimensions(Object[] left, String top, String width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, String top, String width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, String top, String width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, int top, int width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, String top, int width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, String top, int width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setDimensions", left, top, width, height, bRepaint);
@@ -1531,7 +1521,7 @@ from its parent and only applies if this object is absolutely positioned.
      * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
      * @return this object.
      */
-    public jsx3.gui.Block setTop(int vntTop, boolean bRepaint)
+    public jsx3.gui.Block setTop(String vntTop, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setTop", vntTop, bRepaint);
@@ -1546,7 +1536,7 @@ from its parent and only applies if this object is absolutely positioned.
      * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
      * @return this object.
      */
-    public jsx3.gui.Block setTop(String vntTop, boolean bRepaint)
+    public jsx3.gui.Block setTop(int vntTop, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setTop", vntTop, bRepaint);
@@ -1602,7 +1592,7 @@ from its parent and only applies if this object is absolutely positioned.
      * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
      * @return this object.
      */
-    public jsx3.gui.Block setWidth(String vntWidth, boolean bRepaint)
+    public jsx3.gui.Block setWidth(int vntWidth, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setWidth", vntWidth, bRepaint);
@@ -1616,7 +1606,7 @@ from its parent and only applies if this object is absolutely positioned.
      * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
      * @return this object.
      */
-    public jsx3.gui.Block setWidth(int vntWidth, boolean bRepaint)
+    public jsx3.gui.Block setWidth(String vntWidth, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setWidth", vntWidth, bRepaint);
@@ -1897,6 +1887,126 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
+    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    {
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
+        }
+    }
+
+
+    /**
+     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
+will be checked against the hot key. If an event matches, the callback function will execute and the event
+bubble will be canceled.
+
+If the four parameters vntKey, bShift, bControl, and bAlt
+match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
+function (the most recently registered) will be executed by a single keydown event.
+     * @param vntCallback either a function, or the name of a method bound to this object.
+   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
+   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
+   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
+   other parameters are ignored.
+     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
+   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
+   keycode value.
+     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
+   to invoke the hot key.
+     * @return the registered hot key.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.gui.HotKey registerHotKey(String vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    {
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
+        }
+    }
+
+
+    /**
+     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
+will be checked against the hot key. If an event matches, the callback function will execute and the event
+bubble will be canceled.
+
+If the four parameters vntKey, bShift, bControl, and bAlt
+match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
+function (the most recently registered) will be executed by a single keydown event.
+     * @param vntCallback either a function, or the name of a method bound to this object.
+   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
+   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
+   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
+   other parameters are ignored.
+     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
+   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
+   keycode value.
+     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
+   to invoke the hot key.
+     * @return the registered hot key.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    {
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
+        }
+    }
+
+
+    /**
+     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
+will be checked against the hot key. If an event matches, the callback function will execute and the event
+bubble will be canceled.
+
+If the four parameters vntKey, bShift, bControl, and bAlt
+match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
+function (the most recently registered) will be executed by a single keydown event.
+     * @param vntCallback either a function, or the name of a method bound to this object.
+   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
+   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
+   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
+   other parameters are ignored.
+     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
+   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
+   keycode value.
+     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
+   to invoke the hot key.
+     * @return the registered hot key.
+     */
+    @SuppressWarnings("unchecked")
     public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
@@ -1977,127 +2087,7 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
-    {
-        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
-        }
-    }
-
-
-    /**
-     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
-will be checked against the hot key. If an event matches, the callback function will execute and the event
-bubble will be canceled.
-
-If the four parameters vntKey, bShift, bControl, and bAlt
-match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
-function (the most recently registered) will be executed by a single keydown event.
-     * @param vntCallback either a function, or the name of a method bound to this object.
-   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
-   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
-   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
-   other parameters are ignored.
-     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
-   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
-   keycode value.
-     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
-   to invoke the hot key.
-     * @return the registered hot key.
-     */
-    @SuppressWarnings("unchecked")
     public jsx3.gui.HotKey registerHotKey(String vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
-    {
-        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
-        }
-    }
-
-
-    /**
-     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
-will be checked against the hot key. If an event matches, the callback function will execute and the event
-bubble will be canceled.
-
-If the four parameters vntKey, bShift, bControl, and bAlt
-match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
-function (the most recently registered) will be executed by a single keydown event.
-     * @param vntCallback either a function, or the name of a method bound to this object.
-   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
-   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
-   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
-   other parameters are ignored.
-     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
-   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
-   keycode value.
-     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
-   to invoke the hot key.
-     * @return the registered hot key.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(String vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
-    {
-        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
-        }
-    }
-
-
-    /**
-     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
-will be checked against the hot key. If an event matches, the callback function will execute and the event
-bubble will be canceled.
-
-If the four parameters vntKey, bShift, bControl, and bAlt
-match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
-function (the most recently registered) will be executed by a single keydown event.
-     * @param vntCallback either a function, or the name of a method bound to this object.
-   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
-   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
-   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
-   other parameters are ignored.
-     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
-   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
-   keycode value.
-     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
-   to invoke the hot key.
-     * @return the registered hot key.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
@@ -2486,7 +2476,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
      * @param intLeft use an integer to specify an on-screen location; otherwise, use a <code>jsx3.gui.Event</code> instance to have the system automatically calculate the x/y position.
      * @param intTop use an integer if <code>intLeft</code> also uses an integer. Otherwise, use null.
      */
-    public void showSpy(String strHTML, jsx3.gui.Event intLeft, int intTop)
+    public void showSpy(String strHTML, int intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("showSpy", strHTML, intLeft, intTop);
@@ -2500,7 +2490,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
      * @param intLeft use an integer to specify an on-screen location; otherwise, use a <code>jsx3.gui.Event</code> instance to have the system automatically calculate the x/y position.
      * @param intTop use an integer if <code>intLeft</code> also uses an integer. Otherwise, use null.
      */
-    public void showSpy(String strHTML, int intLeft, int intTop)
+    public void showSpy(String strHTML, jsx3.gui.Event intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("showSpy", strHTML, intLeft, intTop);

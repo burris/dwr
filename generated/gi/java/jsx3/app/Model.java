@@ -132,51 +132,6 @@ children are searched in order and the first matching child is returned.
     child exists.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.app.Model getChild(int vntIndexOrName)
-    {
-        String extension = "getChild(\"" + vntIndexOrName + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
-        }
-    }
-
-    /**
-     * Returns the child DOM node of this node at the given index or with the given name. If a name is supplied, the
-children are searched in order and the first matching child is returned.
-     * @param vntIndexOrName either the integer index or the string name of the child.
-     * @param returnType The expected return type
-     * @return the child at the given index or with the given name, or <code>null</code> if no such
-    child exists.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getChild(int vntIndexOrName, Class<T> returnType)
-    {
-        String extension = "getChild(\"" + vntIndexOrName + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Returns the child DOM node of this node at the given index or with the given name. If a name is supplied, the
-children are searched in order and the first matching child is returned.
-     * @param vntIndexOrName either the integer index or the string name of the child.
-     * @return the child at the given index or with the given name, or <code>null</code> if no such
-    child exists.
-     */
-    @SuppressWarnings("unchecked")
     public jsx3.app.Model getChild(String vntIndexOrName)
     {
         String extension = "getChild(\"" + vntIndexOrName + "\").";
@@ -201,6 +156,51 @@ children are searched in order and the first matching child is returned.
      */
     @SuppressWarnings("unchecked")
     public <T> T getChild(String vntIndexOrName, Class<T> returnType)
+    {
+        String extension = "getChild(\"" + vntIndexOrName + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Returns the child DOM node of this node at the given index or with the given name. If a name is supplied, the
+children are searched in order and the first matching child is returned.
+     * @param vntIndexOrName either the integer index or the string name of the child.
+     * @return the child at the given index or with the given name, or <code>null</code> if no such
+    child exists.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.app.Model getChild(int vntIndexOrName)
+    {
+        String extension = "getChild(\"" + vntIndexOrName + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
+        }
+    }
+
+    /**
+     * Returns the child DOM node of this node at the given index or with the given name. If a name is supplied, the
+children are searched in order and the first matching child is returned.
+     * @param vntIndexOrName either the integer index or the string name of the child.
+     * @param returnType The expected return type
+     * @return the child at the given index or with the given name, or <code>null</code> if no such
+    child exists.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getChild(int vntIndexOrName, Class<T> returnType)
     {
         String extension = "getChild(\"" + vntIndexOrName + "\").";
         try
@@ -537,53 +537,6 @@ method.
      * @return this object
      */
     @SuppressWarnings("unchecked")
-    public jsx3.app.Model removeChild(int vntItem)
-    {
-        String extension = "removeChild(\"" + vntItem + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
-        }
-    }
-
-    /**
-     * Removes a DOM child from this object. This method removes the on-screen DHTML of the removed object. The removed
-child will be completely derefenced from the DOM and will be prepped for garbage collection. If a DOM child must
-continue to exist after removing it from this parent, adoptChild() should be used instead of this
-method.
-     * @param vntItem either the index of the child to remove or the child itself.
-     * @param returnType The expected return type
-     * @return this object
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T removeChild(int vntItem, Class<T> returnType)
-    {
-        String extension = "removeChild(\"" + vntItem + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Removes a DOM child from this object. This method removes the on-screen DHTML of the removed object. The removed
-child will be completely derefenced from the DOM and will be prepped for garbage collection. If a DOM child must
-continue to exist after removing it from this parent, adoptChild() should be used instead of this
-method.
-     * @param vntItem either the index of the child to remove or the child itself.
-     * @return this object
-     */
-    @SuppressWarnings("unchecked")
     public jsx3.app.Model removeChild(jsx3.app.Model vntItem)
     {
         String extension = "removeChild(\"" + vntItem + "\").";
@@ -609,6 +562,53 @@ method.
      */
     @SuppressWarnings("unchecked")
     public <T> T removeChild(jsx3.app.Model vntItem, Class<T> returnType)
+    {
+        String extension = "removeChild(\"" + vntItem + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Removes a DOM child from this object. This method removes the on-screen DHTML of the removed object. The removed
+child will be completely derefenced from the DOM and will be prepped for garbage collection. If a DOM child must
+continue to exist after removing it from this parent, adoptChild() should be used instead of this
+method.
+     * @param vntItem either the index of the child to remove or the child itself.
+     * @return this object
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.app.Model removeChild(int vntItem)
+    {
+        String extension = "removeChild(\"" + vntItem + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
+        }
+    }
+
+    /**
+     * Removes a DOM child from this object. This method removes the on-screen DHTML of the removed object. The removed
+child will be completely derefenced from the DOM and will be prepped for garbage collection. If a DOM child must
+continue to exist after removing it from this parent, adoptChild() should be used instead of this
+method.
+     * @param vntItem either the index of the child to remove or the child itself.
+     * @param returnType The expected return type
+     * @return this object
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T removeChild(int vntItem, Class<T> returnType)
     {
         String extension = "removeChild(\"" + vntItem + "\").";
         try
@@ -839,6 +839,53 @@ object's parent node.
      * @return the child of the given type or <code>null</code> if none found.
      */
     @SuppressWarnings("unchecked")
+    public jsx3.app.Model getFirstChildOfType(Class strType, boolean bExact)
+    {
+        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
+        }
+    }
+
+    /**
+     * Finds the first child of the given type.
+     * @param strType the fully-qualified class name, class constructor function,
+   or <code>jsx3.Class</code> instance.
+     * @param bExact if <code>true</code> then only return objects whose class is exactly <code>strType</code>
+   (rather than returning subclasses too).
+     * @param returnType The expected return type
+     * @return the child of the given type or <code>null</code> if none found.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getFirstChildOfType(Class strType, boolean bExact, Class<T> returnType)
+    {
+        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Finds the first child of the given type.
+     * @param strType the fully-qualified class name, class constructor function,
+   or <code>jsx3.Class</code> instance.
+     * @param bExact if <code>true</code> then only return objects whose class is exactly <code>strType</code>
+   (rather than returning subclasses too).
+     * @return the child of the given type or <code>null</code> if none found.
+     */
+    @SuppressWarnings("unchecked")
     public jsx3.app.Model getFirstChildOfType(String strType, boolean bExact)
     {
         String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
@@ -925,53 +972,6 @@ object's parent node.
     }
 
     /**
-     * Finds the first child of the given type.
-     * @param strType the fully-qualified class name, class constructor function,
-   or <code>jsx3.Class</code> instance.
-     * @param bExact if <code>true</code> then only return objects whose class is exactly <code>strType</code>
-   (rather than returning subclasses too).
-     * @return the child of the given type or <code>null</code> if none found.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.app.Model getFirstChildOfType(Class strType, boolean bExact)
-    {
-        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
-        }
-    }
-
-    /**
-     * Finds the first child of the given type.
-     * @param strType the fully-qualified class name, class constructor function,
-   or <code>jsx3.Class</code> instance.
-     * @param bExact if <code>true</code> then only return objects whose class is exactly <code>strType</code>
-   (rather than returning subclasses too).
-     * @param returnType The expected return type
-     * @return the child of the given type or <code>null</code> if none found.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getFirstChildOfType(Class strType, boolean bExact, Class<T> returnType)
-    {
-        String extension = "getFirstChildOfType(\"" + strType + "\", \"" + bExact + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
      * Finds all descendants of the given type.
      * @param strType the fully-qualified class name, class constructor function,
    or <code>jsx3.Class</code> instance.
@@ -997,7 +997,7 @@ object's parent node.
      * @param callback an array of matching descendants
      */
     @SuppressWarnings("unchecked")
-    public void getDescendantsOfType(String strType, boolean bShallow, org.directwebremoting.proxy.Callback<Object[]> callback)
+    public void getDescendantsOfType(org.directwebremoting.proxy.CodeBlock strType, boolean bShallow, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
         String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
@@ -1015,7 +1015,7 @@ object's parent node.
      * @param callback an array of matching descendants
      */
     @SuppressWarnings("unchecked")
-    public void getDescendantsOfType(org.directwebremoting.proxy.CodeBlock strType, boolean bShallow, org.directwebremoting.proxy.Callback<Object[]> callback)
+    public void getDescendantsOfType(String strType, boolean bShallow, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
         String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
@@ -1291,49 +1291,6 @@ deserializes and paints in relation to its parent DOM node.
      * @return the first ancestor of the given type or <code>null</code> if none found.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.app.Model getAncestorOfType(org.directwebremoting.proxy.CodeBlock strType)
-    {
-        String extension = "getAncestorOfType(\"" + strType + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
-        }
-    }
-
-    /**
-     * Returns the first ancestor of the given type.
-     * @param strType the fully-qualified class name, class constructor function,
-   or <code>jsx3.Class</code> instance.
-     * @param returnType The expected return type
-     * @return the first ancestor of the given type or <code>null</code> if none found.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getAncestorOfType(org.directwebremoting.proxy.CodeBlock strType, Class<T> returnType)
-    {
-        String extension = "getAncestorOfType(\"" + strType + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Returns the first ancestor of the given type.
-     * @param strType the fully-qualified class name, class constructor function,
-   or <code>jsx3.Class</code> instance.
-     * @return the first ancestor of the given type or <code>null</code> if none found.
-     */
-    @SuppressWarnings("unchecked")
     public jsx3.app.Model getAncestorOfType(String strType)
     {
         String extension = "getAncestorOfType(\"" + strType + "\").";
@@ -1357,6 +1314,49 @@ deserializes and paints in relation to its parent DOM node.
      */
     @SuppressWarnings("unchecked")
     public <T> T getAncestorOfType(String strType, Class<T> returnType)
+    {
+        String extension = "getAncestorOfType(\"" + strType + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Returns the first ancestor of the given type.
+     * @param strType the fully-qualified class name, class constructor function,
+   or <code>jsx3.Class</code> instance.
+     * @return the first ancestor of the given type or <code>null</code> if none found.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.app.Model getAncestorOfType(org.directwebremoting.proxy.CodeBlock strType)
+    {
+        String extension = "getAncestorOfType(\"" + strType + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
+        }
+    }
+
+    /**
+     * Returns the first ancestor of the given type.
+     * @param strType the fully-qualified class name, class constructor function,
+   or <code>jsx3.Class</code> instance.
+     * @param returnType The expected return type
+     * @return the first ancestor of the given type or <code>null</code> if none found.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getAncestorOfType(org.directwebremoting.proxy.CodeBlock strType, Class<T> returnType)
     {
         String extension = "getAncestorOfType(\"" + strType + "\").";
         try
@@ -1710,55 +1710,6 @@ or its ancestor was loaded into the DOM with an explicit URI resolver.
    object, in which case this method returns the first deserialized object.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.app.Model loadXML(jsx3.xml.CdfDocument strXML, boolean bRepaint, jsx3.net.URIResolver objResolver)
-    {
-        String extension = "loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
-        }
-    }
-
-    /**
-     * Deserializes a JSX serialization file and appends the deserialized objects as children of this DOM node.
-     * @param strXML the XML content of a JSX serialization file.
-     * @param bRepaint if <code>true</code> or <code>null</code> the deserialized objects will be
-   added to the parent's view via the parent object's <code>paintChild()</code> method.
-     * @param objResolver 
-     * @param returnType The expected return type
-     * @return the deserialized object. A serialization file may specify more than one root
-   object, in which case this method returns the first deserialized object.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T loadXML(jsx3.xml.CdfDocument strXML, boolean bRepaint, jsx3.net.URIResolver objResolver, Class<T> returnType)
-    {
-        String extension = "loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Deserializes a JSX serialization file and appends the deserialized objects as children of this DOM node.
-     * @param strXML the XML content of a JSX serialization file.
-     * @param bRepaint if <code>true</code> or <code>null</code> the deserialized objects will be
-   added to the parent's view via the parent object's <code>paintChild()</code> method.
-     * @param objResolver 
-     * @return the deserialized object. A serialization file may specify more than one root
-   object, in which case this method returns the first deserialized object.
-     */
-    @SuppressWarnings("unchecked")
     public jsx3.app.Model loadXML(String strXML, boolean bRepaint, jsx3.net.URIResolver objResolver)
     {
         String extension = "loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
@@ -1799,6 +1750,55 @@ or its ancestor was loaded into the DOM with an explicit URI resolver.
     }
 
     /**
+     * Deserializes a JSX serialization file and appends the deserialized objects as children of this DOM node.
+     * @param strXML the XML content of a JSX serialization file.
+     * @param bRepaint if <code>true</code> or <code>null</code> the deserialized objects will be
+   added to the parent's view via the parent object's <code>paintChild()</code> method.
+     * @param objResolver 
+     * @return the deserialized object. A serialization file may specify more than one root
+   object, in which case this method returns the first deserialized object.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.app.Model loadXML(jsx3.xml.CdfDocument strXML, boolean bRepaint, jsx3.net.URIResolver objResolver)
+    {
+        String extension = "loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.app.Model.class.getName());
+        }
+    }
+
+    /**
+     * Deserializes a JSX serialization file and appends the deserialized objects as children of this DOM node.
+     * @param strXML the XML content of a JSX serialization file.
+     * @param bRepaint if <code>true</code> or <code>null</code> the deserialized objects will be
+   added to the parent's view via the parent object's <code>paintChild()</code> method.
+     * @param objResolver 
+     * @param returnType The expected return type
+     * @return the deserialized object. A serialization file may specify more than one root
+   object, in which case this method returns the first deserialized object.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T loadXML(jsx3.xml.CdfDocument strXML, boolean bRepaint, jsx3.net.URIResolver objResolver, Class<T> returnType)
+    {
+        String extension = "loadXML(\"" + strXML + "\", \"" + bRepaint + "\", \"" + objResolver + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
      * Loads a component file and caches the document in an XML cache. If the component file already exists in the cache
 then it is loaded from the cache. All component files loaded as a result of this call (referenced files) are also
 cached. This method is a useful replacement for load() when the same URL will be loaded multiple
@@ -1812,7 +1812,7 @@ times in one application.
      * @param objResolver If this parameter is provided, <code>strURL</code> is resolved
    relative to it. Additionally, this resolver is stored as the URI resolver for this DOM node and its descendants.
      */
-    public void loadAndCache(java.net.URI strURL, boolean bRepaint, jsx3.app.Cache objCache, jsx3.net.URIResolver objResolver)
+    public void loadAndCache(String strURL, boolean bRepaint, jsx3.app.Cache objCache, jsx3.net.URIResolver objResolver)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("loadAndCache", strURL, bRepaint, objCache, objResolver);
@@ -1833,7 +1833,7 @@ times in one application.
      * @param objResolver If this parameter is provided, <code>strURL</code> is resolved
    relative to it. Additionally, this resolver is stored as the URI resolver for this DOM node and its descendants.
      */
-    public void loadAndCache(String strURL, boolean bRepaint, jsx3.app.Cache objCache, jsx3.net.URIResolver objResolver)
+    public void loadAndCache(java.net.URI strURL, boolean bRepaint, jsx3.app.Cache objCache, jsx3.net.URIResolver objResolver)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("loadAndCache", strURL, bRepaint, objCache, objResolver);
@@ -1940,51 +1940,6 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
      * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
      */
-    public void subscribe(Object[] strEventId, String objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, jsx3.lang.Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
     public void subscribe(Object[] strEventId, jsx3.lang.Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
@@ -2015,22 +1970,7 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
      * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
      */
-    public void subscribe(String strEventId, jsx3.lang.Object objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
+    public void subscribe(Object[] strEventId, jsx3.lang.Object objHandler, String objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("subscribe", strEventId, objHandler, objFunction);
@@ -2060,37 +2000,7 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
      * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
      */
-    public void subscribe(Object[] strEventId, jsx3.lang.Object objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
     public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("subscribe", strEventId, objHandler, objFunction);
@@ -2113,16 +2023,92 @@ As of version 3.4 a string value for objHandler is deprecated.
     }
 
     /**
-     * Unsubscribe an object or function from an event published by this object.
+     * Subscribes an object or function to a type of event published by this object.
 
 As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
-     * @param objHandler the value of objHandler passed to subscribe
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
      */
-    public void unsubscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
+    public void subscribe(String strEventId, jsx3.lang.Object objHandler, String objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, jsx3.lang.Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(Object[] strEventId, String objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
         getScriptProxy().addScript(script);
     }
 
@@ -2134,20 +2120,6 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param objHandler the value of objHandler passed to subscribe
      */
     public void unsubscribe(String strEventId, String objHandler)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Unsubscribe an object or function from an event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler the value of objHandler passed to subscribe
-     */
-    public void unsubscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("unsubscribe", strEventId, objHandler);
@@ -2175,7 +2147,7 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
      * @param objHandler the value of objHandler passed to subscribe
      */
-    public void unsubscribe(Object[] strEventId, jsx3.lang.Object objHandler)
+    public void unsubscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("unsubscribe", strEventId, objHandler);
@@ -2190,6 +2162,34 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param objHandler the value of objHandler passed to subscribe
      */
     public void unsubscribe(Object[] strEventId, String objHandler)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Unsubscribe an object or function from an event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler the value of objHandler passed to subscribe
+     */
+    public void unsubscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Unsubscribe an object or function from an event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler the value of objHandler passed to subscribe
+     */
+    public void unsubscribe(Object[] strEventId, jsx3.lang.Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("unsubscribe", strEventId, objHandler);

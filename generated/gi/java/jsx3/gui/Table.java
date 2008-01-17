@@ -187,7 +187,7 @@ for the other selection models
      * @param strId jsxid attribute for the CDF record(s) to select
      * @return this object.
      */
-    public jsx3.gui.Table setValue(String strId)
+    public jsx3.gui.Table setValue(Object[] strId)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setValue", strId);
@@ -200,7 +200,7 @@ for the other selection models
      * @param strId jsxid attribute for the CDF record(s) to select
      * @return this object.
      */
-    public jsx3.gui.Table setValue(Object[] strId)
+    public jsx3.gui.Table setValue(String strId)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setValue", strId);
@@ -2214,7 +2214,7 @@ which the record identified by strSourceId will be placed
      * @return the adopted record.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.xml.Node adoptRecordBefore(jsx3.xml.CdfDocument strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw)
+    public jsx3.xml.Node adoptRecordBefore(String strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw)
     {
         String extension = "adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
         try
@@ -2252,7 +2252,7 @@ which the record identified by strSourceId will be placed
      * @return the adopted record.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.xml.Node adoptRecordBefore(String strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw)
+    public jsx3.xml.Node adoptRecordBefore(jsx3.xml.CdfDocument strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw)
     {
         String extension = "adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
         try

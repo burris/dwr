@@ -137,7 +137,7 @@ public class Heavyweight extends jsx3.lang.Object
      * @param callback Browser-Native DHTML object
      */
     @SuppressWarnings("unchecked")
-    public void getRendered(jsx3.gui.Event objGUI, org.directwebremoting.proxy.Callback<String> callback)
+    public void getRendered(String objGUI, org.directwebremoting.proxy.Callback<String> callback)
     {
         String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
@@ -153,7 +153,7 @@ public class Heavyweight extends jsx3.lang.Object
      * @param callback Browser-Native DHTML object
      */
     @SuppressWarnings("unchecked")
-    public void getRendered(String objGUI, org.directwebremoting.proxy.Callback<String> callback)
+    public void getRendered(jsx3.gui.Event objGUI, org.directwebremoting.proxy.Callback<String> callback)
     {
         String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
@@ -398,7 +398,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @return this object (this)
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.Heavyweight addXRule(jsx3.gui.Event objAnchor, String strAnchorPoint, String strPoint, int intOff)
+    public jsx3.gui.Heavyweight addXRule(jsx3.lang.Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
         String extension = "addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
@@ -424,7 +424,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @return this object (this)
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.Heavyweight addXRule(jsx3.lang.Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
+    public jsx3.gui.Heavyweight addXRule(jsx3.gui.Event objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
         String extension = "addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
@@ -450,7 +450,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @return this object (this)
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.Heavyweight addYRule(jsx3.gui.Event objAnchor, String strAnchorPoint, String strPoint, int intOff)
+    public jsx3.gui.Heavyweight addYRule(jsx3.lang.Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
         String extension = "addYRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
@@ -476,7 +476,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @return this object (this)
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.Heavyweight addYRule(jsx3.lang.Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
+    public jsx3.gui.Heavyweight addYRule(jsx3.gui.Event objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
         String extension = "addYRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
@@ -586,7 +586,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @param objGUI GUI object in the browser DOM (typically an HTML element such as a DIV or SPAN) for which to provide the X,Y for
      * @param strPoint a character denoting one of the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O)
      */
-    public void getPoint(int objGUI, String strPoint)
+    public void getPoint(String objGUI, String strPoint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("getPoint", objGUI, strPoint);
@@ -598,7 +598,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @param objGUI GUI object in the browser DOM (typically an HTML element such as a DIV or SPAN) for which to provide the X,Y for
      * @param strPoint a character denoting one of the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O)
      */
-    public void getPoint(String objGUI, String strPoint)
+    public void getPoint(int objGUI, String strPoint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("getPoint", objGUI, strPoint);

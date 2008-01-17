@@ -41,7 +41,7 @@ public class Fill extends jsx3.html.Tag
      * @param color the color value, as a hex String or 24-bit integer value, defaults to 0x000000
      * @param alpha the opacity value, valid values are between 0 and 1, defaults to 1
      */
-    public Fill(String color, float alpha)
+    public Fill(int color, float alpha)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -54,7 +54,7 @@ public class Fill extends jsx3.html.Tag
      * @param color the color value, as a hex String or 24-bit integer value, defaults to 0x000000
      * @param alpha the opacity value, valid values are between 0 and 1, defaults to 1
      */
-    public Fill(int color, float alpha)
+    public Fill(String color, float alpha)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();

@@ -44,6 +44,22 @@ public class ColorPicker extends jsx3.gui.Block
      * @param vntWidth 
      * @param vntHeight 
      */
+    public ColorPicker(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new ColorPicker", strName, vntLeft, vntTop, vntWidth, vntHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName 
+     * @param vntLeft 
+     * @param vntTop 
+     * @param vntWidth 
+     * @param vntHeight 
+     */
     public ColorPicker(String strName, String vntLeft, String vntTop, int vntWidth, int vntHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -61,22 +77,6 @@ public class ColorPicker extends jsx3.gui.Block
      * @param vntHeight 
      */
     public ColorPicker(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new ColorPicker", strName, vntLeft, vntTop, vntWidth, vntHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName 
-     * @param vntLeft 
-     * @param vntTop 
-     * @param vntWidth 
-     * @param vntHeight 
-     */
-    public ColorPicker(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();

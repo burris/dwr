@@ -221,7 +221,7 @@ public class Tree extends jsx3.gui.Block
      * @param bReveal 
      * @return this object
      */
-    public jsx3.gui.Tree setValue(Object[] strRecordId, boolean bReveal)
+    public jsx3.gui.Tree setValue(String strRecordId, boolean bReveal)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setValue", strRecordId, bReveal);
@@ -235,7 +235,7 @@ public class Tree extends jsx3.gui.Block
      * @param bReveal 
      * @return this object
      */
-    public jsx3.gui.Tree setValue(String strRecordId, boolean bReveal)
+    public jsx3.gui.Tree setValue(Object[] strRecordId, boolean bReveal)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setValue", strRecordId, bReveal);

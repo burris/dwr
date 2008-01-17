@@ -48,21 +48,6 @@ public class Slider extends jsx3.gui.Block
      * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param vntLength the length of the control along the draggable axis
      */
-    public Slider(String strName, String vntLeft, int vntTop, String vntLength)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Slider", strName, vntLeft, vntTop, vntLength);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntLength the length of the control along the draggable axis
-     */
     public Slider(String strName, int vntLeft, String vntTop, int vntLength)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -93,37 +78,7 @@ public class Slider extends jsx3.gui.Block
      * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param vntLength the length of the control along the draggable axis
      */
-    public Slider(String strName, String vntLeft, String vntTop, int vntLength)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Slider", strName, vntLeft, vntTop, vntLength);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntLength the length of the control along the draggable axis
-     */
     public Slider(String strName, String vntLeft, String vntTop, String vntLength)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Slider", strName, vntLeft, vntTop, vntLength);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntLength the length of the control along the draggable axis
-     */
-    public Slider(String strName, int vntLeft, int vntTop, int vntLength)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -153,7 +108,52 @@ public class Slider extends jsx3.gui.Block
      * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param vntLength the length of the control along the draggable axis
      */
+    public Slider(String strName, String vntLeft, String vntTop, int vntLength)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Slider", strName, vntLeft, vntTop, vntLength);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntLength the length of the control along the draggable axis
+     */
+    public Slider(String strName, String vntLeft, int vntTop, String vntLength)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Slider", strName, vntLeft, vntTop, vntLength);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntLength the length of the control along the draggable axis
+     */
     public Slider(String strName, String vntLeft, int vntTop, int vntLength)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Slider", strName, vntLeft, vntTop, vntLength);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntLength the length of the control along the draggable axis
+     */
+    public Slider(String strName, int vntLeft, int vntTop, int vntLength)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -237,7 +237,7 @@ public class Slider extends jsx3.gui.Block
      * @param bRepaint whether to repaint this slider immediately to reflect the change.
      * @return this object.
      */
-    public jsx3.gui.Slider setLength(String vntLength, boolean bRepaint)
+    public jsx3.gui.Slider setLength(int vntLength, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setLength", vntLength, bRepaint);
@@ -251,7 +251,7 @@ public class Slider extends jsx3.gui.Block
      * @param bRepaint whether to repaint this slider immediately to reflect the change.
      * @return this object.
      */
-    public jsx3.gui.Slider setLength(int vntLength, boolean bRepaint)
+    public jsx3.gui.Slider setLength(String vntLength, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setLength", vntLength, bRepaint);

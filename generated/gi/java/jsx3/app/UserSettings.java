@@ -84,7 +84,7 @@ public class UserSettings extends jsx3.lang.Object
      * @param strKey the setting key.
      * @param value the value to store.
      */
-    public void set(String strKey, jsx3.lang.Object value)
+    public void set(String strKey, String value)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("set", strKey, value);
@@ -108,19 +108,7 @@ public class UserSettings extends jsx3.lang.Object
      * @param strKey the setting key.
      * @param value the value to store.
      */
-    public void set(String strKey, Object[] value)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("set", strKey, value);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Sets a stored setting value.
-     * @param strKey the setting key.
-     * @param value the value to store.
-     */
-    public void set(String strKey, String value)
+    public void set(String strKey, jsx3.lang.Object value)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("set", strKey, value);
@@ -133,6 +121,18 @@ public class UserSettings extends jsx3.lang.Object
      * @param value the value to store.
      */
     public void set(String strKey, Integer value)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("set", strKey, value);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets a stored setting value.
+     * @param strKey the setting key.
+     * @param value the value to store.
+     */
+    public void set(String strKey, Object[] value)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("set", strKey, value);

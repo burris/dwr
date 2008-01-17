@@ -183,7 +183,7 @@ public class AddIn extends jsx3.lang.Object
      * @param bRel 
      */
     @SuppressWarnings("unchecked")
-    public void relativizeURI(java.net.URI strURI, boolean bRel, org.directwebremoting.proxy.Callback<java.net.URI> callback)
+    public void relativizeURI(String strURI, boolean bRel, org.directwebremoting.proxy.Callback<java.net.URI> callback)
     {
         String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.net.URI.class);
 
@@ -199,7 +199,7 @@ public class AddIn extends jsx3.lang.Object
      * @param bRel 
      */
     @SuppressWarnings("unchecked")
-    public void relativizeURI(String strURI, boolean bRel, org.directwebremoting.proxy.Callback<java.net.URI> callback)
+    public void relativizeURI(java.net.URI strURI, boolean bRel, org.directwebremoting.proxy.Callback<java.net.URI> callback)
     {
         String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.net.URI.class);
 

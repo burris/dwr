@@ -91,7 +91,7 @@ the tab itself.
      * @param bRepaint if <code>true</code>, immediately updates the view to reflect the new active tab.
      * @return this object.
      */
-    public jsx3.gui.TabbedPane setSelectedIndex(int intIndex, boolean bRepaint)
+    public jsx3.gui.TabbedPane setSelectedIndex(jsx3.gui.Tab intIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setSelectedIndex", intIndex, bRepaint);
@@ -106,7 +106,7 @@ the tab itself.
      * @param bRepaint if <code>true</code>, immediately updates the view to reflect the new active tab.
      * @return this object.
      */
-    public jsx3.gui.TabbedPane setSelectedIndex(jsx3.gui.Tab intIndex, boolean bRepaint)
+    public jsx3.gui.TabbedPane setSelectedIndex(int intIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setSelectedIndex", intIndex, bRepaint);

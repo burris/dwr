@@ -42,7 +42,7 @@ public class Polygon extends jsx3.vector.Shape
      * @param top top position (in pixels) of the object relative to its parent container
      * @param points the list of points comprising the polygon
      */
-    public Polygon(int left, int top, Object[] points)
+    public Polygon(int left, int top, String points)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -56,7 +56,7 @@ public class Polygon extends jsx3.vector.Shape
      * @param top top position (in pixels) of the object relative to its parent container
      * @param points the list of points comprising the polygon
      */
-    public Polygon(int left, int top, String points)
+    public Polygon(int left, int top, Object[] points)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();

@@ -508,7 +508,7 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
@@ -548,7 +548,7 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
@@ -1017,7 +1017,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
      * @param intLeft use an integer to specify an on-screen location; otherwise, use a <code>jsx3.gui.Event</code> instance to have the system automatically calculate the x/y position.
      * @param intTop use an integer if <code>intLeft</code> also uses an integer. Otherwise, use null.
      */
-    public void showSpy(String strHTML, int intLeft, int intTop)
+    public void showSpy(String strHTML, jsx3.gui.Event intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("showSpy", strHTML, intLeft, intTop);
@@ -1031,7 +1031,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
      * @param intLeft use an integer to specify an on-screen location; otherwise, use a <code>jsx3.gui.Event</code> instance to have the system automatically calculate the x/y position.
      * @param intTop use an integer if <code>intLeft</code> also uses an integer. Otherwise, use null.
      */
-    public void showSpy(String strHTML, jsx3.gui.Event intLeft, int intTop)
+    public void showSpy(String strHTML, int intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("showSpy", strHTML, intLeft, intTop);

@@ -46,7 +46,7 @@ public class Tab extends jsx3.gui.Block
      * @param strHexActiveColor valid css property for defining the color to use when the tab is active (i.e., red, #ff0000, etc)
      * @param strHexInactiveColor valid css property for defining the color to use when the tab is inactive (i.e., red, #ff0000, etc)
      */
-    public Tab(String strName, String strText, String vntWidth, String strHexActiveColor, String strHexInactiveColor)
+    public Tab(String strName, String strText, int vntWidth, String strHexActiveColor, String strHexInactiveColor)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -62,7 +62,7 @@ public class Tab extends jsx3.gui.Block
      * @param strHexActiveColor valid css property for defining the color to use when the tab is active (i.e., red, #ff0000, etc)
      * @param strHexInactiveColor valid css property for defining the color to use when the tab is inactive (i.e., red, #ff0000, etc)
      */
-    public Tab(String strName, String strText, int vntWidth, String strHexActiveColor, String strHexInactiveColor)
+    public Tab(String strName, String strText, String vntWidth, String strHexActiveColor, String strHexInactiveColor)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();

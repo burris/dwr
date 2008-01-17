@@ -414,45 +414,6 @@ override this method should begin with a call to jsxsuper().
      * @param type the fully-qualified class name or the class constructor function.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.html.Tag getFirstChildOfType(org.directwebremoting.proxy.CodeBlock type)
-    {
-        String extension = "getFirstChildOfType(\"" + type + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.html.Tag> ctor = jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.html.Tag.class.getName());
-        }
-    }
-
-    /**
-     * Returns the first child tag of type type.
-     * @param type the fully-qualified class name or the class constructor function.
-     * @param returnType The expected return type
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getFirstChildOfType(org.directwebremoting.proxy.CodeBlock type, Class<T> returnType)
-    {
-        String extension = "getFirstChildOfType(\"" + type + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Returns the first child tag of type type.
-     * @param type the fully-qualified class name or the class constructor function.
-     */
-    @SuppressWarnings("unchecked")
     public jsx3.html.Tag getFirstChildOfType(String type)
     {
         String extension = "getFirstChildOfType(\"" + type + "\").";
@@ -474,6 +435,45 @@ override this method should begin with a call to jsxsuper().
      */
     @SuppressWarnings("unchecked")
     public <T> T getFirstChildOfType(String type, Class<T> returnType)
+    {
+        String extension = "getFirstChildOfType(\"" + type + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Returns the first child tag of type type.
+     * @param type the fully-qualified class name or the class constructor function.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.html.Tag getFirstChildOfType(org.directwebremoting.proxy.CodeBlock type)
+    {
+        String extension = "getFirstChildOfType(\"" + type + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.html.Tag> ctor = jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.html.Tag.class.getName());
+        }
+    }
+
+    /**
+     * Returns the first child tag of type type.
+     * @param type the fully-qualified class name or the class constructor function.
+     * @param returnType The expected return type
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getFirstChildOfType(org.directwebremoting.proxy.CodeBlock type, Class<T> returnType)
     {
         String extension = "getFirstChildOfType(\"" + type + "\").";
         try

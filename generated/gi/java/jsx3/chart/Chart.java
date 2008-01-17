@@ -160,7 +160,7 @@ public class Chart extends jsx3.vector.Block
      * Sets the borderColor field.
      * @param borderColor the new value for borderColor
      */
-    public void setBorderColor(Integer borderColor)
+    public void setBorderColor(String borderColor)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setBorderColor", borderColor);
@@ -171,7 +171,7 @@ public class Chart extends jsx3.vector.Block
      * Sets the borderColor field.
      * @param borderColor the new value for borderColor
      */
-    public void setBorderColor(String borderColor)
+    public void setBorderColor(Integer borderColor)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setBorderColor", borderColor);

@@ -42,7 +42,7 @@ public class Stroke extends jsx3.html.Tag
      * @param width the width of the stroke, in pixels, defaults to 1
      * @param alpha the opacity value, valid values are between 0 and 1, defaults to 1
      */
-    public Stroke(int color, int width, float alpha)
+    public Stroke(String color, int width, float alpha)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -56,7 +56,7 @@ public class Stroke extends jsx3.html.Tag
      * @param width the width of the stroke, in pixels, defaults to 1
      * @param alpha the opacity value, valid values are between 0 and 1, defaults to 1
      */
-    public Stroke(String color, int width, float alpha)
+    public Stroke(int color, int width, float alpha)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
