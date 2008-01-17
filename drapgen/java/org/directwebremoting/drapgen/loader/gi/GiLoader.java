@@ -125,8 +125,17 @@ public class GiLoader implements Loader
      */
     protected void applyPostProcessingHacks()
     {
-        // log.warn("jsx3.gui.Block.DEFAULTCLASSNAME: Field is overridden, is this safe?");
+        log.warn("jsx3.gui.TextBox.OVERFLOWSCROLL: Field is overridden from jsx3.gui.Block (with a different type), is this safe?");
+        removeElement("jsx3.gui.TextBox", "/class/field[@name='OVERFLOWSCROLL']");
+
+        log.warn("jsx3.gui.Block.OVERFLOWSCROLL: Field is overridden in jsx3.gui.TextBox (with a different type), is this safe?");
+        removeElement("jsx3.gui.Block", "/class/field[@name='OVERFLOWSCROLL']");
+
+        log.warn("jsx3.gui.Block.DEFAULTCLASSNAME: Field is overridden in several places, is this safe?");
         removeElement("jsx3.gui.Block", "/class/field[@name='DEFAULTCLASSNAME']");
+
+        log.warn("jsx3.gui.Block.DEFAULTFONTSIZE: Field is overridden in jsx3.gui.WindowBar, is this safe?");
+        removeElement("jsx3.gui.Block", "/class/field[@name='DEFAULTFONTSIZE']");
 
         log.warn("jsx3.chart.Chart.DEFAULT_FILLS: Ignoring, value has been trimmed to 1st line");
         removeElement("jsx3.chart.Chart", "/class/field[@name='DEFAULT_FILLS']");
