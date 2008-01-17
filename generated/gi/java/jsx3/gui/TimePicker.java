@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -52,21 +48,6 @@ public class TimePicker extends jsx3.gui.Block
      * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public TimePicker(String strName, int intLeft, int intTop, String intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
     public TimePicker(String strName, String intLeft, int intTop, String intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -82,52 +63,7 @@ public class TimePicker extends jsx3.gui.Block
      * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public TimePicker(String strName, int intLeft, int intTop, int intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public TimePicker(String strName, String intLeft, String intTop, String intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
     public TimePicker(String strName, int intLeft, String intTop, String intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public TimePicker(String strName, String intLeft, String intTop, int intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -165,6 +101,66 @@ public class TimePicker extends jsx3.gui.Block
         setInitScript(script);
     }
 
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public TimePicker(String strName, int intLeft, int intTop, int intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public TimePicker(String strName, int intLeft, int intTop, String intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public TimePicker(String strName, String intLeft, String intTop, String intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public TimePicker(String strName, String intLeft, String intTop, int intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
+        setInitScript(script);
+    }
+
 
 
     /**
@@ -172,9 +168,9 @@ public class TimePicker extends jsx3.gui.Block
      * @param callback 0 or 1.
      */
     @SuppressWarnings("unchecked")
-    public void getShowSeconds(Callback<Integer> callback)
+    public void getShowSeconds(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getShowSeconds");
@@ -188,9 +184,9 @@ display if both this and showSeconds are true.
      * @param callback 0 or 1.
      */
     @SuppressWarnings("unchecked")
-    public void getShowMillis(Callback<Integer> callback)
+    public void getShowMillis(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getShowMillis");
@@ -204,9 +200,9 @@ locale.
      * @param callback 0 or 1.
      */
     @SuppressWarnings("unchecked")
-    public void is24Hour(Callback<Integer> callback)
+    public void is24Hour(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = is24Hour");
@@ -251,9 +247,9 @@ locale.
      * Returns the hour (0-23) of the time value of this time picker.
      */
     @SuppressWarnings("unchecked")
-    public void getHours(Callback<Integer> callback)
+    public void getHours(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getHours");
@@ -276,9 +272,9 @@ locale.
      * Returns the minute (0-60) of the time value of this time picker.
      */
     @SuppressWarnings("unchecked")
-    public void getMinutes(Callback<Integer> callback)
+    public void getMinutes(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMinutes");
@@ -301,9 +297,9 @@ locale.
      * Returns the second (0-60) of the time value of this time picker.
      */
     @SuppressWarnings("unchecked")
-    public void getSeconds(Callback<Integer> callback)
+    public void getSeconds(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSeconds");
@@ -326,9 +322,9 @@ locale.
      * Returns the millisecond (0-999) of the time value of this time picker.
      */
     @SuppressWarnings("unchecked")
-    public void getMilliseconds(Callback<Integer> callback)
+    public void getMilliseconds(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMilliseconds");
@@ -354,9 +350,9 @@ it returns a new date (the current day) with the time of day set.
      * @param objDate the date on which to set the time of day. This parameter is optional.
      */
     @SuppressWarnings("unchecked")
-    public void getDate(java.util.Date objDate, Callback<java.util.Date> callback)
+    public void getDate(java.util.Date objDate, org.directwebremoting.proxy.Callback<java.util.Date> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, java.util.Date.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.util.Date.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDate", objDate);
@@ -368,9 +364,9 @@ it returns a new date (the current day) with the time of day set.
      * Returns the value of this time picker as a formatted string matching the appearance of the control.
      */
     @SuppressWarnings("unchecked")
-    public void getValue(Callback<String> callback)
+    public void getValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getValue");
@@ -412,7 +408,7 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
         String extension = "doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").";
         try
         {
-            Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -432,7 +428,7 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
         String extension = "doReset().";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -452,7 +448,7 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
         String extension = "doReset().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -466,9 +462,9 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
      * @param callback <code>STATEINVALID</code> or <code>STATEVALID</code>.
      */
     @SuppressWarnings("unchecked")
-    public void doValidate(Callback<Integer> callback)
+    public void doValidate(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = doValidate");
@@ -481,9 +477,9 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
      * @param callback valid CSS property value, (i.e., red, #ff0000)
      */
     @SuppressWarnings("unchecked")
-    public void getDisabledBackgroundColor(Callback<String> callback)
+    public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDisabledBackgroundColor");
@@ -496,9 +492,9 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
      * @param callback valid CSS property value, (i.e., red, #ff0000)
      */
     @SuppressWarnings("unchecked")
-    public void getDisabledColor(Callback<String> callback)
+    public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDisabledColor");
@@ -512,9 +508,9 @@ STATEENABLED.
      * @param callback <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getEnabled(Callback<Integer> callback)
+    public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getEnabled");
@@ -527,9 +523,9 @@ STATEENABLED.
      * @param callback plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
      */
     @SuppressWarnings("unchecked")
-    public void getKeyBinding(Callback<String> callback)
+    public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getKeyBinding");
@@ -543,9 +539,9 @@ OPTIONAL.
      * @param callback <code>REQUIRED</code> or <code>OPTIONAL</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getRequired(Callback<Integer> callback)
+    public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRequired");
@@ -559,9 +555,9 @@ STATEVALID.
      * @param callback <code>STATEINVALID</code> or <code>STATEVALID</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getValidationState(Callback<Integer> callback)
+    public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getValidationState");
@@ -580,7 +576,7 @@ STATEVALID.
         String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -601,7 +597,7 @@ STATEVALID.
         String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -621,7 +617,7 @@ STATEVALID.
         String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -642,7 +638,7 @@ STATEVALID.
         String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -676,7 +672,7 @@ event for this control.
         String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -698,7 +694,7 @@ event for this control.
         String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -718,7 +714,7 @@ event for this control.
         String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -739,7 +735,7 @@ event for this control.
         String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -759,7 +755,7 @@ event for this control.
         String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -780,48 +776,7 @@ event for this control.
         String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Sets the value of this control.
-     * @param vntValue string/int value for the component
-     * @return this object.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.gui.Form setValue(Integer vntValue)
-    {
-        String extension = "setValue(\"" + vntValue + "\").";
-        try
-        {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.Form.class.getName());
-        }
-    }
-
-    /**
-     * Sets the value of this control.
-     * @param vntValue string/int value for the component
-     * @param returnType The expected return type
-     * @return this object.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T setValue(Integer vntValue, Class<T> returnType)
-    {
-        String extension = "setValue(\"" + vntValue + "\").";
-        try
-        {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -841,7 +796,7 @@ event for this control.
         String extension = "setValue(\"" + vntValue + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -862,7 +817,48 @@ event for this control.
         String extension = "setValue(\"" + vntValue + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Sets the value of this control.
+     * @param vntValue string/int value for the component
+     * @return this object.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.gui.Form setValue(Integer vntValue)
+    {
+        String extension = "setValue(\"" + vntValue + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.Form.class.getName());
+        }
+    }
+
+    /**
+     * Sets the value of this control.
+     * @param vntValue string/int value for the component
+     * @param returnType The expected return type
+     * @return this object.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T setValue(Integer vntValue, Class<T> returnType)
+    {
+        String extension = "setValue(\"" + vntValue + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

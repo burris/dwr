@@ -15,11 +15,7 @@
  */
 package jsx3.vector;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -85,9 +81,9 @@ public class Tag extends jsx3.html.BlockTag
      * @param callback rotation
      */
     @SuppressWarnings("unchecked")
-    public void getRotation(Callback<Integer> callback)
+    public void getRotation(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRotation");

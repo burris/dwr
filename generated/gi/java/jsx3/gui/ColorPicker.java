@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -48,22 +44,6 @@ public class ColorPicker extends jsx3.gui.Block
      * @param vntWidth 
      * @param vntHeight 
      */
-    public ColorPicker(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new ColorPicker", strName, vntLeft, vntTop, vntWidth, vntHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName 
-     * @param vntLeft 
-     * @param vntTop 
-     * @param vntWidth 
-     * @param vntHeight 
-     */
     public ColorPicker(String strName, String vntLeft, String vntTop, int vntWidth, int vntHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -80,7 +60,7 @@ public class ColorPicker extends jsx3.gui.Block
      * @param vntWidth 
      * @param vntHeight 
      */
-    public ColorPicker(String strName, int vntLeft, String vntTop, int vntWidth, int vntHeight)
+    public ColorPicker(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -97,6 +77,22 @@ public class ColorPicker extends jsx3.gui.Block
      * @param vntHeight 
      */
     public ColorPicker(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new ColorPicker", strName, vntLeft, vntTop, vntWidth, vntHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName 
+     * @param vntLeft 
+     * @param vntTop 
+     * @param vntWidth 
+     * @param vntHeight 
+     */
+    public ColorPicker(String strName, int vntLeft, String vntTop, int vntWidth, int vntHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -136,25 +132,13 @@ public class ColorPicker extends jsx3.gui.Block
 a 24-bit number of the form 0xRRGGBB.
      */
     @SuppressWarnings("unchecked")
-    public void getValue(Callback<Integer> callback)
+    public void getValue(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getValue");
         script.appendCall("__System.activateCallback", key, "reply");
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Sets the RGB value of this color picker.
-     * @param strValue the supported formats are: RGB integer value as number or string and HTML hex
-   code, <code>"#000000"</code>.
-     */
-    public void setValue(int strValue)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setValue", strValue);
         getScriptProxy().addScript(script);
     }
 
@@ -171,13 +155,25 @@ a 24-bit number of the form 0xRRGGBB.
     }
 
     /**
+     * Sets the RGB value of this color picker.
+     * @param strValue the supported formats are: RGB integer value as number or string and HTML hex
+   code, <code>"#000000"</code>.
+     */
+    public void setValue(int strValue)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setValue", strValue);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * 
      * @param callback always <code>jsx3.gui.Form.STATEVALID</code>.
      */
     @SuppressWarnings("unchecked")
-    public void doValidate(Callback<Integer> callback)
+    public void doValidate(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = doValidate");
@@ -190,9 +186,9 @@ a 24-bit number of the form 0xRRGGBB.
 a 24-bit number of the form 0xRRGGBB.
      */
     @SuppressWarnings("unchecked")
-    public void getRGB(Callback<Integer> callback)
+    public void getRGB(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRGB");
@@ -216,9 +212,9 @@ a 24-bit number of the form 0xRRGGBB.
      * @param callback <code>HUE</code>, <code>SATURATION</code>, or <code>BRIGHTNESS</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getAxis(Callback<Integer> callback)
+    public void getAxis(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAxis");
@@ -260,9 +256,9 @@ left side.
      * @param callback <code>[r, g, b]</code>. Each component is an integer [0, 255].
      */
     @SuppressWarnings("unchecked")
-    public void HSBtoRGB(float h, float s, float l, Callback<Object[]> callback)
+    public void HSBtoRGB(float h, float s, float l, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = HSBtoRGB", h, s, l);
@@ -279,9 +275,9 @@ left side.
      * @param callback <code>[h, s, b]</code>. Each component is a float <code>[0.0, 1.0]</code>.
      */
     @SuppressWarnings("unchecked")
-    public void RGBtoHSB(int r, int g, int b, Callback<Object[]> callback)
+    public void RGBtoHSB(int r, int g, int b, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = RGBtoHSB", r, g, b);
@@ -311,7 +307,7 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
         String extension = "doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").";
         try
         {
-            Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -331,7 +327,7 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
         String extension = "doReset().";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -351,7 +347,7 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
         String extension = "doReset().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -365,9 +361,9 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
      * @param callback valid CSS property value, (i.e., red, #ff0000)
      */
     @SuppressWarnings("unchecked")
-    public void getDisabledBackgroundColor(Callback<String> callback)
+    public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDisabledBackgroundColor");
@@ -380,9 +376,9 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
      * @param callback valid CSS property value, (i.e., red, #ff0000)
      */
     @SuppressWarnings("unchecked")
-    public void getDisabledColor(Callback<String> callback)
+    public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDisabledColor");
@@ -396,9 +392,9 @@ STATEENABLED.
      * @param callback <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getEnabled(Callback<Integer> callback)
+    public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getEnabled");
@@ -411,9 +407,9 @@ STATEENABLED.
      * @param callback plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
      */
     @SuppressWarnings("unchecked")
-    public void getKeyBinding(Callback<String> callback)
+    public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getKeyBinding");
@@ -427,9 +423,9 @@ OPTIONAL.
      * @param callback <code>REQUIRED</code> or <code>OPTIONAL</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getRequired(Callback<Integer> callback)
+    public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRequired");
@@ -443,9 +439,9 @@ STATEVALID.
      * @param callback <code>STATEINVALID</code> or <code>STATEVALID</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getValidationState(Callback<Integer> callback)
+    public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getValidationState");
@@ -464,7 +460,7 @@ STATEVALID.
         String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -485,7 +481,7 @@ STATEVALID.
         String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -505,7 +501,7 @@ STATEVALID.
         String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -526,7 +522,7 @@ STATEVALID.
         String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -560,7 +556,7 @@ event for this control.
         String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -582,7 +578,7 @@ event for this control.
         String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -602,7 +598,7 @@ event for this control.
         String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -623,7 +619,7 @@ event for this control.
         String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -643,7 +639,7 @@ event for this control.
         String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -664,7 +660,7 @@ event for this control.
         String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

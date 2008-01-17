@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 

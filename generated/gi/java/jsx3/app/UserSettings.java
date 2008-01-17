@@ -15,11 +15,7 @@
  */
 package jsx3.app;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -73,9 +69,9 @@ public class UserSettings extends jsx3.lang.Object
      * @param callback the stored value.
      */
     @SuppressWarnings("unchecked")
-    public void get(String strKey, Callback<String> callback)
+    public void get(String strKey, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = get", strKey);
@@ -88,31 +84,7 @@ public class UserSettings extends jsx3.lang.Object
      * @param strKey the setting key.
      * @param value the value to store.
      */
-    public void set(String strKey, String value)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("set", strKey, value);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Sets a stored setting value.
-     * @param strKey the setting key.
-     * @param value the value to store.
-     */
-    public void set(String strKey, Object[] value)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("set", strKey, value);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Sets a stored setting value.
-     * @param strKey the setting key.
-     * @param value the value to store.
-     */
-    public void set(String strKey, Integer value)
+    public void set(String strKey, jsx3.lang.Object value)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("set", strKey, value);
@@ -136,7 +108,31 @@ public class UserSettings extends jsx3.lang.Object
      * @param strKey the setting key.
      * @param value the value to store.
      */
-    public void set(String strKey, jsx3.lang.Object value)
+    public void set(String strKey, Object[] value)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("set", strKey, value);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets a stored setting value.
+     * @param strKey the setting key.
+     * @param value the value to store.
+     */
+    public void set(String strKey, String value)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("set", strKey, value);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets a stored setting value.
+     * @param strKey the setting key.
+     * @param value the value to store.
+     */
+    public void set(String strKey, Integer value)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("set", strKey, value);

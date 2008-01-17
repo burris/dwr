@@ -15,11 +15,7 @@
  */
 package jsx3.html;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -111,7 +107,7 @@ public class Tag extends jsx3.lang.Object
         String extension = "getParent().";
         try
         {
-            Constructor<jsx3.html.Tag> ctor = jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.html.Tag> ctor = jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -131,7 +127,7 @@ public class Tag extends jsx3.lang.Object
         String extension = "getParent().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -145,9 +141,9 @@ public class Tag extends jsx3.lang.Object
      * @param callback children
      */
     @SuppressWarnings("unchecked")
-    public void getChildren(Callback<Object[]> callback)
+    public void getChildren(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getChildren");
@@ -160,9 +156,9 @@ public class Tag extends jsx3.lang.Object
      * @param callback id
      */
     @SuppressWarnings("unchecked")
-    public void getId(Callback<String> callback)
+    public void getId(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getId");
@@ -186,9 +182,9 @@ public class Tag extends jsx3.lang.Object
      * @param callback cssClass
      */
     @SuppressWarnings("unchecked")
-    public void getClassName(Callback<String> callback)
+    public void getClassName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getClassName");
@@ -234,9 +230,9 @@ public class Tag extends jsx3.lang.Object
      * @param callback <code>true</code> to allow the append, <code>false</code> to veto.
      */
     @SuppressWarnings("unchecked")
-    public void onAppendChild(jsx3.html.Tag child, Callback<Boolean> callback)
+    public void onAppendChild(jsx3.html.Tag child, org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = onAppendChild", child);
@@ -250,9 +246,9 @@ public class Tag extends jsx3.lang.Object
      * @param callback <code>true</code> to allow the removal, <code>false</code> to veto.
      */
     @SuppressWarnings("unchecked")
-    public void onRemoveChild(jsx3.html.Tag child, Callback<Boolean> callback)
+    public void onRemoveChild(jsx3.html.Tag child, org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = onRemoveChild", child);
@@ -279,9 +275,9 @@ interpreted as name/value pairs, i.e.: tag.setProperty(n1, p1, n2, p2);.
      * @param callback the value of the attribute.
      */
     @SuppressWarnings("unchecked")
-    public void getProperty(String strName, Callback<String> callback)
+    public void getProperty(String strName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getProperty", strName);
@@ -319,9 +315,9 @@ interpreted as name/value pairs, i.e.: tag.setStyle(n1, s1, n2, s2);.
      * @param callback the value of the style.
      */
     @SuppressWarnings("unchecked")
-    public void getStyle(String strName, Callback<String> callback)
+    public void getStyle(String strName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getStyle", strName);
@@ -345,9 +341,9 @@ interpreted as name/value pairs, i.e.: tag.setStyle(n1, s1, n2, s2);.
      * @param callback the tag name
      */
     @SuppressWarnings("unchecked")
-    public void getTagName(Callback<String> callback)
+    public void getTagName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTagName");
@@ -360,9 +356,9 @@ interpreted as name/value pairs, i.e.: tag.setStyle(n1, s1, n2, s2);.
      * @param callback the tag name
      */
     @SuppressWarnings("unchecked")
-    public void getTagNS(Callback<String> callback)
+    public void getTagNS(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTagNS");
@@ -376,9 +372,9 @@ This method is only available in the VML version of this class.
      * @param callback this tag serialized to HTML.
      */
     @SuppressWarnings("unchecked")
-    public void paint(Callback<String> callback)
+    public void paint(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = paint");
@@ -392,9 +388,9 @@ This method is only available in the SVG version of this class.
      * @param callback the native browser html element.
      */
     @SuppressWarnings("unchecked")
-    public void paintDom(Callback<String> callback)
+    public void paintDom(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = paintDom");
@@ -418,51 +414,12 @@ override this method should begin with a call to jsxsuper().
      * @param type the fully-qualified class name or the class constructor function.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.html.Tag getFirstChildOfType(String type)
-    {
-        String extension = "getFirstChildOfType(\"" + type + "\").";
-        try
-        {
-            Constructor<jsx3.html.Tag> ctor = jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.html.Tag.class.getName());
-        }
-    }
-
-    /**
-     * Returns the first child tag of type type.
-     * @param type the fully-qualified class name or the class constructor function.
-     * @param returnType The expected return type
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getFirstChildOfType(String type, Class<T> returnType)
-    {
-        String extension = "getFirstChildOfType(\"" + type + "\").";
-        try
-        {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Returns the first child tag of type type.
-     * @param type the fully-qualified class name or the class constructor function.
-     */
-    @SuppressWarnings("unchecked")
     public jsx3.html.Tag getFirstChildOfType(org.directwebremoting.proxy.CodeBlock type)
     {
         String extension = "getFirstChildOfType(\"" + type + "\").";
         try
         {
-            Constructor<jsx3.html.Tag> ctor = jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.html.Tag> ctor = jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -482,7 +439,46 @@ override this method should begin with a call to jsxsuper().
         String extension = "getFirstChildOfType(\"" + type + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Returns the first child tag of type type.
+     * @param type the fully-qualified class name or the class constructor function.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.html.Tag getFirstChildOfType(String type)
+    {
+        String extension = "getFirstChildOfType(\"" + type + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.html.Tag> ctor = jsx3.html.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.html.Tag.class.getName());
+        }
+    }
+
+    /**
+     * Returns the first child tag of type type.
+     * @param type the fully-qualified class name or the class constructor function.
+     * @param returnType The expected return type
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getFirstChildOfType(String type, Class<T> returnType)
+    {
+        String extension = "getFirstChildOfType(\"" + type + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

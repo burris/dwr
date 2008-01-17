@@ -15,11 +15,7 @@
  */
 package jsx3.vector;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -63,9 +59,9 @@ public class TextLine extends jsx3.vector.Shape
      * @param callback text
      */
     @SuppressWarnings("unchecked")
-    public void getText(Callback<String> callback)
+    public void getText(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getText");
@@ -89,9 +85,9 @@ public class TextLine extends jsx3.vector.Shape
      * @param callback color
      */
     @SuppressWarnings("unchecked")
-    public void getColor(Callback<String> callback)
+    public void getColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getColor");
@@ -104,9 +100,9 @@ public class TextLine extends jsx3.vector.Shape
      * @param callback fontFamily
      */
     @SuppressWarnings("unchecked")
-    public void getFontFamily(Callback<String> callback)
+    public void getFontFamily(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getFontFamily");
@@ -119,9 +115,9 @@ public class TextLine extends jsx3.vector.Shape
      * @param callback fontsize
      */
     @SuppressWarnings("unchecked")
-    public void getFontSize(Callback<String> callback)
+    public void getFontSize(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getFontSize");
@@ -134,9 +130,9 @@ public class TextLine extends jsx3.vector.Shape
      * @param callback fontStyle
      */
     @SuppressWarnings("unchecked")
-    public void getFontStyle(Callback<String> callback)
+    public void getFontStyle(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getFontStyle");
@@ -149,9 +145,9 @@ public class TextLine extends jsx3.vector.Shape
      * @param callback fontWeight
      */
     @SuppressWarnings("unchecked")
-    public void getFontWeight(Callback<String> callback)
+    public void getFontWeight(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getFontWeight");
@@ -164,9 +160,9 @@ public class TextLine extends jsx3.vector.Shape
      * @param callback textAlign
      */
     @SuppressWarnings("unchecked")
-    public void getTextAlign(Callback<String> callback)
+    public void getTextAlign(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTextAlign");
@@ -179,9 +175,9 @@ public class TextLine extends jsx3.vector.Shape
      * @param callback textDecoration
      */
     @SuppressWarnings("unchecked")
-    public void getTextDecoration(Callback<String> callback)
+    public void getTextDecoration(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTextDecoration");
@@ -215,7 +211,7 @@ public class TextLine extends jsx3.vector.Shape
      * Sets the fontsize field.
      * @param fontSize the new value for fontsize
      */
-    public void setFontSize(String fontSize)
+    public void setFontSize(int fontSize)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setFontSize", fontSize);
@@ -226,7 +222,7 @@ public class TextLine extends jsx3.vector.Shape
      * Sets the fontsize field.
      * @param fontSize the new value for fontsize
      */
-    public void setFontSize(int fontSize)
+    public void setFontSize(String fontSize)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setFontSize", fontSize);

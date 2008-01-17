@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -66,9 +62,9 @@ public class PieChart extends jsx3.chart.RadialChart
      * @param callback innerRadius
      */
     @SuppressWarnings("unchecked")
-    public void getInnerRadius(Callback<Float> callback)
+    public void getInnerRadius(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getInnerRadius");
@@ -92,9 +88,9 @@ public class PieChart extends jsx3.chart.RadialChart
      * @param callback seriesPadding
      */
     @SuppressWarnings("unchecked")
-    public void getSeriesPadding(Callback<Float> callback)
+    public void getSeriesPadding(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSeriesPadding");
@@ -118,9 +114,9 @@ public class PieChart extends jsx3.chart.RadialChart
      * @param callback totalAngle
      */
     @SuppressWarnings("unchecked")
-    public void getTotalAngle(Callback<Integer> callback)
+    public void getTotalAngle(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTotalAngle");
@@ -144,9 +140,9 @@ public class PieChart extends jsx3.chart.RadialChart
      * @param callback startAngle
      */
     @SuppressWarnings("unchecked")
-    public void getStartAngle(Callback<Integer> callback)
+    public void getStartAngle(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getStartAngle");
@@ -170,9 +166,9 @@ public class PieChart extends jsx3.chart.RadialChart
      * @param callback categoryField
      */
     @SuppressWarnings("unchecked")
-    public void getCategoryField(Callback<String> callback)
+    public void getCategoryField(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCategoryField");
@@ -196,9 +192,9 @@ public class PieChart extends jsx3.chart.RadialChart
      * @param callback colors
      */
     @SuppressWarnings("unchecked")
-    public void getColors(Callback<Object[]> callback)
+    public void getColors(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getColors");
@@ -222,9 +218,9 @@ public class PieChart extends jsx3.chart.RadialChart
      * @param callback colorFunction
      */
     @SuppressWarnings("unchecked")
-    public void getColorFunction(Callback<org.directwebremoting.proxy.CodeBlock> callback)
+    public void getColorFunction(org.directwebremoting.proxy.Callback<org.directwebremoting.proxy.CodeBlock> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getColorFunction");
@@ -248,9 +244,9 @@ public class PieChart extends jsx3.chart.RadialChart
      * @param callback seriesStroke
      */
     @SuppressWarnings("unchecked")
-    public void getSeriesStroke(Callback<String> callback)
+    public void getSeriesStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSeriesStroke");
@@ -280,7 +276,7 @@ public class PieChart extends jsx3.chart.RadialChart
         String extension = "defaultColoring(\"" + record + "\", \"" + index + "\").";
         try
         {
-            Constructor<jsx3.vector.Fill> ctor = jsx3.vector.Fill.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Fill> ctor = jsx3.vector.Fill.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

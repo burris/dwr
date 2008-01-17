@@ -15,11 +15,7 @@
  */
 package jsx3.app;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -127,7 +123,7 @@ public class Cache extends jsx3.lang.Object
         String extension = "clearById(\"" + strId + "\").";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -148,7 +144,7 @@ public class Cache extends jsx3.lang.Object
         String extension = "clearById(\"" + strId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -163,9 +159,9 @@ public class Cache extends jsx3.lang.Object
      * @param callback the ids of the removed documents.
      */
     @SuppressWarnings("unchecked")
-    public void clearByTimestamp(java.util.Date intTimestamp, Callback<Object[]> callback)
+    public void clearByTimestamp(int intTimestamp, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = clearByTimestamp", intTimestamp);
@@ -179,9 +175,9 @@ public class Cache extends jsx3.lang.Object
      * @param callback the ids of the removed documents.
      */
     @SuppressWarnings("unchecked")
-    public void clearByTimestamp(int intTimestamp, Callback<Object[]> callback)
+    public void clearByTimestamp(java.util.Date intTimestamp, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = clearByTimestamp", intTimestamp);
@@ -200,7 +196,7 @@ public class Cache extends jsx3.lang.Object
         String extension = "getDocument(\"" + strId + "\").";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -221,58 +217,7 @@ public class Cache extends jsx3.lang.Object
         String extension = "getDocument(\"" + strId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Retrieves a document from this cache or, if this cache contains no such document, loads the document
-synchronously and returns it.
-     * @param strURL the URI of the document.
-     * @param strId the id under which the document is/will be stored. If this parameter is not provided, the
-   <code>strURL</code> parameter is used as the id.
-     * @param objClass <code>jsx3.xml.Document</code> (default value) or one of its subclasses. The
-   class with which to instantiate the new document instance if a new document is opened.
-     * @return the document retrieved from the cache or loaded.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.xml.CdfDocument getOrOpenDocument(java.net.URI strURL, String strId, Class objClass)
-    {
-        String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
-        try
-        {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.xml.CdfDocument.class.getName());
-        }
-    }
-
-    /**
-     * Retrieves a document from this cache or, if this cache contains no such document, loads the document
-synchronously and returns it.
-     * @param strURL the URI of the document.
-     * @param strId the id under which the document is/will be stored. If this parameter is not provided, the
-   <code>strURL</code> parameter is used as the id.
-     * @param objClass <code>jsx3.xml.Document</code> (default value) or one of its subclasses. The
-   class with which to instantiate the new document instance if a new document is opened.
-     * @param returnType The expected return type
-     * @return the document retrieved from the cache or loaded.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getOrOpenDocument(java.net.URI strURL, String strId, Class objClass, Class<T> returnType)
-    {
-        String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
-        try
-        {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -297,7 +242,7 @@ synchronously and returns it.
         String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -323,7 +268,58 @@ synchronously and returns it.
         String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Retrieves a document from this cache or, if this cache contains no such document, loads the document
+synchronously and returns it.
+     * @param strURL the URI of the document.
+     * @param strId the id under which the document is/will be stored. If this parameter is not provided, the
+   <code>strURL</code> parameter is used as the id.
+     * @param objClass <code>jsx3.xml.Document</code> (default value) or one of its subclasses. The
+   class with which to instantiate the new document instance if a new document is opened.
+     * @return the document retrieved from the cache or loaded.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.xml.CdfDocument getOrOpenDocument(java.net.URI strURL, String strId, Class objClass)
+    {
+        String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.xml.CdfDocument.class.getName());
+        }
+    }
+
+    /**
+     * Retrieves a document from this cache or, if this cache contains no such document, loads the document
+synchronously and returns it.
+     * @param strURL the URI of the document.
+     * @param strId the id under which the document is/will be stored. If this parameter is not provided, the
+   <code>strURL</code> parameter is used as the id.
+     * @param objClass <code>jsx3.xml.Document</code> (default value) or one of its subclasses. The
+   class with which to instantiate the new document instance if a new document is opened.
+     * @param returnType The expected return type
+     * @return the document retrieved from the cache or loaded.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getOrOpenDocument(java.net.URI strURL, String strId, Class objClass, Class<T> returnType)
+    {
+        String extension = "getOrOpenDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -347,7 +343,7 @@ synchronously and returns it.
         String extension = "openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -372,7 +368,7 @@ synchronously and returns it.
         String extension = "openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -396,7 +392,7 @@ synchronously and returns it.
         String extension = "openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -421,58 +417,7 @@ synchronously and returns it.
         String extension = "openDocument(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Asynchronously loads an xml document and stores it in this cache.
-     * @param strURL url (relative or absolute) the URI of the document to open.
-     * @param strId the id under which to store the document. If this parameter is not provided, the
-   <code>strURL</code> parameter is used as the id.
-     * @param objClass <code>jsx3.xml.Document</code> (default value) or one of its subclasses. The
-   class with which to instantiate the new document instance.
-     * @return the document retrieved from the cache or a placeholder document if the document
-   is in the process of loading asynchronously.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.xml.CdfDocument getOrOpenAsync(String strURL, String strId, Class objClass)
-    {
-        String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
-        try
-        {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.xml.CdfDocument.class.getName());
-        }
-    }
-
-    /**
-     * Asynchronously loads an xml document and stores it in this cache.
-     * @param strURL url (relative or absolute) the URI of the document to open.
-     * @param strId the id under which to store the document. If this parameter is not provided, the
-   <code>strURL</code> parameter is used as the id.
-     * @param objClass <code>jsx3.xml.Document</code> (default value) or one of its subclasses. The
-   class with which to instantiate the new document instance.
-     * @param returnType The expected return type
-     * @return the document retrieved from the cache or a placeholder document if the document
-   is in the process of loading asynchronously.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getOrOpenAsync(String strURL, String strId, Class objClass, Class<T> returnType)
-    {
-        String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
-        try
-        {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -497,7 +442,7 @@ synchronously and returns it.
         String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -523,7 +468,58 @@ synchronously and returns it.
         String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Asynchronously loads an xml document and stores it in this cache.
+     * @param strURL url (relative or absolute) the URI of the document to open.
+     * @param strId the id under which to store the document. If this parameter is not provided, the
+   <code>strURL</code> parameter is used as the id.
+     * @param objClass <code>jsx3.xml.Document</code> (default value) or one of its subclasses. The
+   class with which to instantiate the new document instance.
+     * @return the document retrieved from the cache or a placeholder document if the document
+   is in the process of loading asynchronously.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.xml.CdfDocument getOrOpenAsync(String strURL, String strId, Class objClass)
+    {
+        String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.xml.CdfDocument.class.getName());
+        }
+    }
+
+    /**
+     * Asynchronously loads an xml document and stores it in this cache.
+     * @param strURL url (relative or absolute) the URI of the document to open.
+     * @param strId the id under which to store the document. If this parameter is not provided, the
+   <code>strURL</code> parameter is used as the id.
+     * @param objClass <code>jsx3.xml.Document</code> (default value) or one of its subclasses. The
+   class with which to instantiate the new document instance.
+     * @param returnType The expected return type
+     * @return the document retrieved from the cache or a placeholder document if the document
+   is in the process of loading asynchronously.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getOrOpenAsync(String strURL, String strId, Class objClass, Class<T> returnType)
+    {
+        String extension = "getOrOpenAsync(\"" + strURL + "\", \"" + strId + "\", \"" + objClass + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -552,9 +548,9 @@ exists in this cache under strId then that document is removed from the cache.
    in this cache.
      */
     @SuppressWarnings("unchecked")
-    public void getTimestamp(String strId, Callback<Integer> callback)
+    public void getTimestamp(String strId, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTimestamp", strId);
@@ -566,9 +562,9 @@ exists in this cache under strId then that document is removed from the cache.
      * Returns a list of all the keys in this cache instance.
      */
     @SuppressWarnings("unchecked")
-    public void keys(Callback<Object[]> callback)
+    public void keys(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = keys");
@@ -593,58 +589,13 @@ method.
      * @param callback the number of listeners to which the event was broadcast
      */
     @SuppressWarnings("unchecked")
-    public void publish(jsx3.lang.Object objEvent, Callback<Integer> callback)
+    public void publish(jsx3.lang.Object objEvent, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = publish", objEvent);
         script.appendCall("__System.activateCallback", key, "reply");
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
         getScriptProxy().addScript(script);
     }
 
@@ -686,67 +637,37 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
      * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
      */
-    public void subscribe(String strEventId, String objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(Object[] strEventId, jsx3.lang.Object objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, String objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
     public void subscribe(Object[] strEventId, String objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("subscribe", strEventId, objHandler, objFunction);
@@ -776,7 +697,82 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
      * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
      */
+    public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(Object[] strEventId, jsx3.lang.Object objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
     public void subscribe(String strEventId, jsx3.lang.Object objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, String objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, String objHandler, String objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("subscribe", strEventId, objHandler, objFunction);
@@ -790,7 +786,21 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
      * @param objHandler the value of objHandler passed to subscribe
      */
-    public void unsubscribe(String strEventId, jsx3.lang.Object objHandler)
+    public void unsubscribe(Object[] strEventId, jsx3.lang.Object objHandler)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Unsubscribe an object or function from an event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler the value of objHandler passed to subscribe
+     */
+    public void unsubscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("unsubscribe", strEventId, objHandler);
@@ -818,34 +828,6 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
      * @param objHandler the value of objHandler passed to subscribe
      */
-    public void unsubscribe(String strEventId, String objHandler)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Unsubscribe an object or function from an event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler the value of objHandler passed to subscribe
-     */
-    public void unsubscribe(Object[] strEventId, jsx3.lang.Object objHandler)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Unsubscribe an object or function from an event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler the value of objHandler passed to subscribe
-     */
     public void unsubscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
@@ -860,7 +842,21 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
      * @param objHandler the value of objHandler passed to subscribe
      */
-    public void unsubscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
+    public void unsubscribe(String strEventId, String objHandler)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Unsubscribe an object or function from an event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler the value of objHandler passed to subscribe
+     */
+    public void unsubscribe(String strEventId, jsx3.lang.Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("unsubscribe", strEventId, objHandler);

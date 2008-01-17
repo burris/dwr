@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -63,9 +59,9 @@ public class GridLines extends jsx3.chart.ChartComponent
      * @param callback horizontalAbove
      */
     @SuppressWarnings("unchecked")
-    public void getHorizontalAbove(Callback<Boolean> callback)
+    public void getHorizontalAbove(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getHorizontalAbove");
@@ -89,9 +85,9 @@ public class GridLines extends jsx3.chart.ChartComponent
      * @param callback inForeground
      */
     @SuppressWarnings("unchecked")
-    public void getInForeground(Callback<Boolean> callback)
+    public void getInForeground(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getInForeground");
@@ -115,9 +111,9 @@ public class GridLines extends jsx3.chart.ChartComponent
      * @param callback borderStroke
      */
     @SuppressWarnings("unchecked")
-    public void getBorderStroke(Callback<String> callback)
+    public void getBorderStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBorderStroke");
@@ -141,9 +137,9 @@ public class GridLines extends jsx3.chart.ChartComponent
      * @param callback fillV
      */
     @SuppressWarnings("unchecked")
-    public void getFillV(Callback<Object[]> callback)
+    public void getFillV(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getFillV");
@@ -167,9 +163,9 @@ public class GridLines extends jsx3.chart.ChartComponent
      * @param callback strokeMajorV
      */
     @SuppressWarnings("unchecked")
-    public void getStrokeMajorV(Callback<Object[]> callback)
+    public void getStrokeMajorV(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getStrokeMajorV");
@@ -193,9 +189,9 @@ public class GridLines extends jsx3.chart.ChartComponent
      * @param callback strokeMinorV
      */
     @SuppressWarnings("unchecked")
-    public void getStrokeMinorV(Callback<Object[]> callback)
+    public void getStrokeMinorV(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getStrokeMinorV");
@@ -219,9 +215,9 @@ public class GridLines extends jsx3.chart.ChartComponent
      * @param callback fillH
      */
     @SuppressWarnings("unchecked")
-    public void getFillH(Callback<Object[]> callback)
+    public void getFillH(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getFillH");
@@ -245,9 +241,9 @@ public class GridLines extends jsx3.chart.ChartComponent
      * @param callback strokeMajorH
      */
     @SuppressWarnings("unchecked")
-    public void getStrokeMajorH(Callback<Object[]> callback)
+    public void getStrokeMajorH(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getStrokeMajorH");
@@ -271,9 +267,9 @@ public class GridLines extends jsx3.chart.ChartComponent
      * @param callback strokeMinorH
      */
     @SuppressWarnings("unchecked")
-    public void getStrokeMinorH(Callback<Object[]> callback)
+    public void getStrokeMinorH(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getStrokeMinorH");
@@ -301,7 +297,7 @@ public class GridLines extends jsx3.chart.ChartComponent
         String extension = "getXAxis().";
         try
         {
-            Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -320,7 +316,7 @@ public class GridLines extends jsx3.chart.ChartComponent
         String extension = "getXAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -338,7 +334,7 @@ public class GridLines extends jsx3.chart.ChartComponent
         String extension = "getYAxis().";
         try
         {
-            Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -357,7 +353,7 @@ public class GridLines extends jsx3.chart.ChartComponent
         String extension = "getYAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

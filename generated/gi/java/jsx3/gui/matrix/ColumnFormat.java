@@ -15,11 +15,7 @@
  */
 package jsx3.gui.matrix;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -72,7 +68,7 @@ public class ColumnFormat extends jsx3.lang.Object
         String extension = "getInstance(\"" + strKey + "\", \"" + objColumn + "\").";
         try
         {
-            Constructor<jsx3.gui.matrix.ColumnFormat> ctor = jsx3.gui.matrix.ColumnFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.matrix.ColumnFormat> ctor = jsx3.gui.matrix.ColumnFormat.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -88,9 +84,9 @@ false is returned, the formatter will not even attempt to iterate
      * @param callback true if the formatter should be called to iterate and format
      */
     @SuppressWarnings("unchecked")
-    public void validate(Callback<Boolean> callback)
+    public void validate(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = validate");

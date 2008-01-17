@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -72,9 +68,9 @@ public class Chart extends jsx3.vector.Block
      * @param callback titlePlacement, one of {'top','right','bottom','left'}
      */
     @SuppressWarnings("unchecked")
-    public void getTitlePlacement(Callback<String> callback)
+    public void getTitlePlacement(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTitlePlacement");
@@ -98,9 +94,9 @@ public class Chart extends jsx3.vector.Block
      * @param callback legendPlacement, one of {'top','right','bottom','left'}
      */
     @SuppressWarnings("unchecked")
-    public void getLegendPlacement(Callback<String> callback)
+    public void getLegendPlacement(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLegendPlacement");
@@ -124,9 +120,9 @@ public class Chart extends jsx3.vector.Block
      * @param callback dataPadding
      */
     @SuppressWarnings("unchecked")
-    public void getDataPadding(Callback<String> callback)
+    public void getDataPadding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDataPadding");
@@ -150,9 +146,9 @@ public class Chart extends jsx3.vector.Block
      * @param callback borderColor
      */
     @SuppressWarnings("unchecked")
-    public void getBorderColor(Callback<String> callback)
+    public void getBorderColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBorderColor");
@@ -187,9 +183,9 @@ public class Chart extends jsx3.vector.Block
      * @param callback borderWidth
      */
     @SuppressWarnings("unchecked")
-    public void getBorderWidth(Callback<Integer> callback)
+    public void getBorderWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBorderWidth");
@@ -213,9 +209,9 @@ public class Chart extends jsx3.vector.Block
      * @param callback borderAlpha
      */
     @SuppressWarnings("unchecked")
-    public void getBorderAlpha(Callback<Float> callback)
+    public void getBorderAlpha(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBorderAlpha");
@@ -239,9 +235,9 @@ public class Chart extends jsx3.vector.Block
      * @param callback alpha
      */
     @SuppressWarnings("unchecked")
-    public void getAlpha(Callback<Float> callback)
+    public void getAlpha(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAlpha");
@@ -264,9 +260,9 @@ public class Chart extends jsx3.vector.Block
      * Returns the list of Series children.
      */
     @SuppressWarnings("unchecked")
-    public void getSeries(Callback<Object[]> callback)
+    public void getSeries(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSeries");
@@ -280,9 +276,9 @@ public class Chart extends jsx3.vector.Block
      * @param callback the index or -1 if not found
      */
     @SuppressWarnings("unchecked")
-    public void getSeriesIndex(jsx3.chart.Series s, Callback<Integer> callback)
+    public void getSeriesIndex(jsx3.chart.Series s, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSeriesIndex", s);
@@ -299,7 +295,7 @@ public class Chart extends jsx3.vector.Block
         String extension = "getChartTitle().";
         try
         {
-            Constructor<jsx3.chart.ChartLabel> ctor = jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.ChartLabel> ctor = jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -318,7 +314,7 @@ public class Chart extends jsx3.vector.Block
         String extension = "getLegend().";
         try
         {
-            Constructor<jsx3.chart.Legend> ctor = jsx3.chart.Legend.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.Legend> ctor = jsx3.chart.Legend.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -333,9 +329,9 @@ public class Chart extends jsx3.vector.Block
      * @param callback <code>jsx3.chart.Legend.SHOW_SERIES</code>
      */
     @SuppressWarnings("unchecked")
-    public void getLegendEntryType(Callback<Integer> callback)
+    public void getLegendEntryType(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLegendEntryType");
@@ -372,9 +368,9 @@ is destroyed.
      * @param callback <code>CLEANUPRESOURCES</code> or <code>SHARERESOURCES</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getShareResources(Callback<Integer> callback)
+    public void getShareResources(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getShareResources");
@@ -405,7 +401,7 @@ following actions are also taken:
         String extension = "getXML().";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -438,7 +434,7 @@ following actions are also taken:
         String extension = "getXML().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -452,9 +448,9 @@ following actions are also taken:
      * @param callback the XML ID.
      */
     @SuppressWarnings("unchecked")
-    public void getXMLId(Callback<String> callback)
+    public void getXMLId(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getXMLId");
@@ -466,9 +462,9 @@ following actions are also taken:
      * Returns the XML string of this object.
      */
     @SuppressWarnings("unchecked")
-    public void getXMLString(Callback<String> callback)
+    public void getXMLString(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getXMLString");
@@ -480,9 +476,9 @@ following actions are also taken:
      * Returns the list of XML transformers of this object.
      */
     @SuppressWarnings("unchecked")
-    public void getXMLTransformers(Callback<Object[]> callback)
+    public void getXMLTransformers(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getXMLTransformers");
@@ -494,9 +490,9 @@ following actions are also taken:
      * Returns the XML URL of this object.
      */
     @SuppressWarnings("unchecked")
-    public void getXMLURL(Callback<String> callback)
+    public void getXMLURL(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getXMLURL");
@@ -521,7 +517,7 @@ following actions are also taken:
         String extension = "getXSL().";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -548,7 +544,7 @@ following actions are also taken:
         String extension = "getXSL().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -561,9 +557,9 @@ following actions are also taken:
      * Returns the XSL ID of this object.
      */
     @SuppressWarnings("unchecked")
-    public void getXSLId(Callback<String> callback)
+    public void getXSLId(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getXSLId");
@@ -580,7 +576,7 @@ following actions are also taken:
         String extension = "getXSLParams().";
         try
         {
-            Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -599,7 +595,7 @@ following actions are also taken:
         String extension = "getXSLParams().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -613,9 +609,9 @@ following actions are also taken:
      * @param callback <code>0</code> or <code>1</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getXmlAsync(Callback<Integer> callback)
+    public void getXmlAsync(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getXmlAsync");
@@ -628,9 +624,9 @@ following actions are also taken:
      * @param callback <code>0</code> or <code>1</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getXmlBind(Callback<Integer> callback)
+    public void getXmlBind(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getXmlBind");
@@ -668,7 +664,7 @@ Any methods overriding this method should begin with a call to jsxsupermix().
         String extension = "removeXSLParam(\"" + strName + "\").";
         try
         {
-            Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -689,7 +685,7 @@ Any methods overriding this method should begin with a call to jsxsupermix().
         String extension = "removeXSLParam(\"" + strName + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -708,7 +704,7 @@ Any methods overriding this method should begin with a call to jsxsupermix().
         String extension = "removeXSLParams().";
         try
         {
-            Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -728,7 +724,7 @@ Any methods overriding this method should begin with a call to jsxsupermix().
         String extension = "removeXSLParams().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -774,7 +770,7 @@ is destroyed.
         String extension = "setShareResources(\"" + intShare + "\").";
         try
         {
-            Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -797,7 +793,7 @@ is destroyed.
         String extension = "setShareResources(\"" + intShare + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -828,7 +824,7 @@ string of this object. This method executes the following steps:
         String extension = "setSourceXML(\"" + objDoc + "\", \"" + objCache + "\").";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -860,7 +856,7 @@ string of this object. This method executes the following steps:
         String extension = "setSourceXML(\"" + objDoc + "\", \"" + objCache + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -882,7 +878,7 @@ If no value is specified, a unique id is generated.
         String extension = "setXMLId(\"" + strXMLId + "\").";
         try
         {
-            Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -905,7 +901,7 @@ If no value is specified, a unique id is generated.
         String extension = "setXMLId(\"" + strXMLId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -926,7 +922,7 @@ way of specifying the source XML document of this object.
         String extension = "setXMLString(\"" + strXML + "\").";
         try
         {
-            Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -948,7 +944,7 @@ way of specifying the source XML document of this object.
         String extension = "setXMLString(\"" + strXML + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -988,7 +984,7 @@ source XML document of this object.
         String extension = "setXMLURL(\"" + strXMLURL + "\").";
         try
         {
-            Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1011,7 +1007,7 @@ source XML document of this object.
         String extension = "setXMLURL(\"" + strXMLURL + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1033,7 +1029,7 @@ strValue is null the parameter is removed.
         String extension = "setXSLParam(\"" + strName + "\", \"" + strValue + "\").";
         try
         {
-            Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1056,7 +1052,7 @@ strValue is null the parameter is removed.
         String extension = "setXSLParam(\"" + strName + "\", \"" + strValue + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1077,7 +1073,7 @@ data sources loaded from an XML URL.
         String extension = "setXmlAsync(\"" + bAsync + "\").";
         try
         {
-            Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Cacheable> ctor = jsx3.xml.Cacheable.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1099,7 +1095,7 @@ data sources loaded from an XML URL.
         String extension = "setXmlAsync(\"" + bAsync + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1116,9 +1112,9 @@ the cache under the XML Id of this object changes.
      * @param callback <code>0</code> or <code>1</code>.
      */
     @SuppressWarnings("unchecked")
-    public void setXmlBind(java.lang.Object bBind, Callback<Integer> callback)
+    public void setXmlBind(boolean bBind, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = setXmlBind", bBind);
@@ -1151,12 +1147,12 @@ the this object already has a record with jsxid equal to the record to adopt
      * @return the adopted record.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.xml.Node adoptRecord(jsx3.xml.CdfDocument strSourceId, String strRecordId, String strParentRecordId, boolean bRedraw)
+    public jsx3.xml.Node adoptRecord(String strSourceId, String strRecordId, String strParentRecordId, boolean bRedraw)
     {
         String extension = "adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1191,50 +1187,12 @@ the this object already has a record with jsxid equal to the record to adopt
      * @return the adopted record.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.xml.Node adoptRecord(String strSourceId, String strRecordId, String strParentRecordId, boolean bRedraw)
+    public jsx3.xml.Node adoptRecord(jsx3.xml.CdfDocument strSourceId, String strRecordId, String strParentRecordId, boolean bRedraw)
     {
         String extension = "adoptRecord(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.xml.Node.class.getName());
-        }
-    }
-
-
-    /**
-     * Equivalent to adoptRecord, except that the to-be relationship is as a previousSibling to the CDF record identified by the parameter, strSiblingRecordId
-
-This method fails quietly if any of the following conditions apply:
-
-there is no record with a jsxid equal to strSourceId
-        
-there is no record in the source object with a jsxid equal to strRecordId
-        
-
-          strSiblingRecordId is specified and there is no record in this object with a
-   jsxid equal to strParentRecordId
-        
-this object already has a record with jsxid equal to the record to adopt
-     * @param strSourceId <span style="text-decoration: line-through;">either the id of the source object or the</span> source object itself.
-     * @param strRecordId the <code>jsxid</code> attribute of the data record in the source object to transfer.
-     * @param strSiblingRecordId the unique <code>jsxid</code> of an existing record in front of
-which the record identified by strSourceId will be placed
-     * @param bRedraw if <code>true</code> or <code>null</code>, the on-screen view of this object is
-   immediately updated to reflect the deleted record.
-     * @return the adopted record.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.xml.Node adoptRecordBefore(String strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw)
-    {
-        String extension = "adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
-        try
-        {
-            Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1272,7 +1230,45 @@ which the record identified by strSourceId will be placed
         String extension = "adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.xml.Node.class.getName());
+        }
+    }
+
+
+    /**
+     * Equivalent to adoptRecord, except that the to-be relationship is as a previousSibling to the CDF record identified by the parameter, strSiblingRecordId
+
+This method fails quietly if any of the following conditions apply:
+
+there is no record with a jsxid equal to strSourceId
+        
+there is no record in the source object with a jsxid equal to strRecordId
+        
+
+          strSiblingRecordId is specified and there is no record in this object with a
+   jsxid equal to strParentRecordId
+        
+this object already has a record with jsxid equal to the record to adopt
+     * @param strSourceId <span style="text-decoration: line-through;">either the id of the source object or the</span> source object itself.
+     * @param strRecordId the <code>jsxid</code> attribute of the data record in the source object to transfer.
+     * @param strSiblingRecordId the unique <code>jsxid</code> of an existing record in front of
+which the record identified by strSourceId will be placed
+     * @param bRedraw if <code>true</code> or <code>null</code>, the on-screen view of this object is
+   immediately updated to reflect the deleted record.
+     * @return the adopted record.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.xml.Node adoptRecordBefore(String strSourceId, String strRecordId, String strSiblingRecordId, boolean bRedraw)
+    {
+        String extension = "adoptRecordBefore(\"" + strSourceId + "\", \"" + strRecordId + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1311,7 +1307,7 @@ the value of the property.
         String extension = "deleteRecord(\"" + strRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1352,7 +1348,7 @@ objCDF.getRecordNode(strId).getAttribute("propName");
         String extension = "getRecord(\"" + strRecordId + "\").";
         try
         {
-            Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1379,7 +1375,7 @@ objCDF.getRecordNode(strId).getAttribute("propName");
         String extension = "getRecord(\"" + strRecordId + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1403,7 +1399,7 @@ redrawRecord(strRecordId, jsx3.xml.CDF.UPDATE); on this object.
         String extension = "getRecordNode(\"" + strRecordId + "\").";
         try
         {
-            Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1440,7 +1436,7 @@ the given jsxid is inserted.
         String extension = "insertRecord(\"" + objRecord + "\", \"" + strParentRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1474,7 +1470,7 @@ there is an existing record with jsxid equal to objRecord.jsxid
         String extension = "insertRecordBefore(\"" + objRecord + "\", \"" + strSiblingRecordId + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1521,7 +1517,7 @@ in the XML document, this method fails quietly.
         String extension = "insertRecordProperty(\"" + strRecordId + "\", \"" + strPropName + "\", \"" + strPropValue + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.CdfDocument> ctor = jsx3.xml.CdfDocument.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -1548,7 +1544,7 @@ in the XML document, this method fails quietly.
         String extension = "insertRecordProperty(\"" + strRecordId + "\", \"" + strPropName + "\", \"" + strPropValue + "\", \"" + bRedraw + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

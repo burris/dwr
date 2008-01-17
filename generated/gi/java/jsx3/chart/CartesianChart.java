@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -69,9 +65,9 @@ public class CartesianChart extends jsx3.chart.Chart
      * @param callback gridLines
      */
     @SuppressWarnings("unchecked")
-    public void getGridLines(Callback<Object[]> callback)
+    public void getGridLines(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getGridLines");
@@ -89,7 +85,7 @@ public class CartesianChart extends jsx3.chart.Chart
         String extension = "getPrimaryXAxis().";
         try
         {
-            Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -109,7 +105,7 @@ public class CartesianChart extends jsx3.chart.Chart
         String extension = "getPrimaryXAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -128,7 +124,7 @@ public class CartesianChart extends jsx3.chart.Chart
         String extension = "getPrimaryYAxis().";
         try
         {
-            Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -148,7 +144,7 @@ public class CartesianChart extends jsx3.chart.Chart
         String extension = "getPrimaryYAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -163,9 +159,9 @@ public class CartesianChart extends jsx3.chart.Chart
      * @param callback [min,max] or null if no range can be found
      */
     @SuppressWarnings("unchecked")
-    public void getRangeForAxis(jsx3.chart.Axis axis, Callback<Object[]> callback)
+    public void getRangeForAxis(jsx3.chart.Axis axis, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRangeForAxis", axis);
@@ -179,9 +175,9 @@ public class CartesianChart extends jsx3.chart.Chart
      * @param callback [min,max] or null if no range can be found
      */
     @SuppressWarnings("unchecked")
-    public void getXRange(Object[] series, Callback<Object[]> callback)
+    public void getXRange(Object[] series, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getXRange", series);
@@ -195,9 +191,9 @@ public class CartesianChart extends jsx3.chart.Chart
      * @param callback [min,max] or null if no range can be found
      */
     @SuppressWarnings("unchecked")
-    public void getYRange(Object[] series, Callback<Object[]> callback)
+    public void getYRange(Object[] series, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getYRange", series);

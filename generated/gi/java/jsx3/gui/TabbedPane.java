@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -78,9 +74,9 @@ public class TabbedPane extends jsx3.gui.Block
      * Returns the zero-based child index of the active child tab.
      */
     @SuppressWarnings("unchecked")
-    public void getSelectedIndex(Callback<Integer> callback)
+    public void getSelectedIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSelectedIndex");
@@ -123,9 +119,9 @@ the tab itself.
      * @param callback height (in pixels)
      */
     @SuppressWarnings("unchecked")
-    public void getTabHeight(Callback<Integer> callback)
+    public void getTabHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTabHeight");

@@ -15,11 +15,7 @@
  */
 package jsx3.gui.matrix;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -79,9 +75,9 @@ public class Column extends jsx3.gui.Block
      * @param strDefault xsl:template
      */
     @SuppressWarnings("unchecked")
-    public void getValueTemplate(String strDefault, Callback<String> callback)
+    public void getValueTemplate(String strDefault, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getValueTemplate", strDefault);
@@ -108,9 +104,9 @@ The path wildcard is as follows:
      * Gets whether or not this column can be resized by the user. If not set, the column will be assumed resizable
      */
     @SuppressWarnings("unchecked")
-    public void getResizable(Callback<Boolean> callback)
+    public void getResizable(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getResizable");
@@ -136,9 +132,9 @@ this column will called to repaint to reflect the updated value
      * @param callback Comma-delimited attribute list
      */
     @SuppressWarnings("unchecked")
-    public void getTriggers(Callback<String> callback)
+    public void getTriggers(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTriggers");
@@ -163,9 +159,9 @@ this column will called to repaint to reflect the updated value
      * @param callback selection path
      */
     @SuppressWarnings("unchecked")
-    public void getPath(Callback<String> callback)
+    public void getPath(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPath");
@@ -193,9 +189,9 @@ returns the value of this.getPath(). The data source of the matrix containing th
 sorted on this attribute when the matrix is sorted on this column.
      */
     @SuppressWarnings("unchecked")
-    public void getSortPath(Callback<String> callback)
+    public void getSortPath(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSortPath");
@@ -219,9 +215,9 @@ sorted on this attribute when the matrix is sorted on this column.
      * @param callback data type for this column's data
      */
     @SuppressWarnings("unchecked")
-    public void getDataType(Callback<String> callback)
+    public void getDataType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDataType");
@@ -245,9 +241,9 @@ sorted on this attribute when the matrix is sorted on this column.
      * @param callback one of: jsx3.gui.Matrix.Column.TYPE_TEXT, jsx3.gui.Matrix.Column.TYPE_NUMBER
      */
     @SuppressWarnings("unchecked")
-    public void getSortDataType(Callback<String> callback)
+    public void getSortDataType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSortDataType");
@@ -271,9 +267,9 @@ sorted on this attribute when the matrix is sorted on this column.
 the parent control explicitly specifies that no column should sort.
      */
     @SuppressWarnings("unchecked")
-    public void getCanSort(Callback<Boolean> callback)
+    public void getCanSort(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCanSort");
@@ -304,7 +300,7 @@ function(element, cdfkey, matrix, column, rownumber, server) {
 };
 </pre></p>
      */
-    public void setFormatHandler(String handler)
+    public void setFormatHandler(jsx3.gui.matrix.ColumnFormat handler)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setFormatHandler", handler);
@@ -342,7 +338,7 @@ function(element, cdfkey, matrix, column, rownumber, server) {
 };
 </pre></p>
      */
-    public void setFormatHandler(jsx3.gui.matrix.ColumnFormat handler)
+    public void setFormatHandler(String handler)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setFormatHandler", handler);
@@ -356,9 +352,9 @@ Can also return the function literal
      * @param callback named object or function literal
      */
     @SuppressWarnings("unchecked")
-    public void getFormatHandler(Callback<String> callback)
+    public void getFormatHandler(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getFormatHandler");
@@ -373,9 +369,9 @@ displayed (e.g., display = none), the value returned from this method will be le
 Returns null if this object is not displayed.
      */
     @SuppressWarnings("unchecked")
-    public void getDisplayIndex(Callback<Integer> callback)
+    public void getDisplayIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDisplayIndex");
@@ -387,9 +383,9 @@ Returns null if this object is not displayed.
      * Returns CSS property value for the data cell background-color.
      */
     @SuppressWarnings("unchecked")
-    public void getCellBackgroundColor(Callback<String> callback)
+    public void getCellBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellBackgroundColor");
@@ -412,9 +408,9 @@ Returns null if this object is not displayed.
      * Returns CSS property value for the data cell border.
      */
     @SuppressWarnings("unchecked")
-    public void getCellBorder(Callback<String> callback)
+    public void getCellBorder(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellBorder");
@@ -441,9 +437,9 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
      * Returns CSS property value for the data cell color.
      */
     @SuppressWarnings("unchecked")
-    public void getCellColor(Callback<String> callback)
+    public void getCellColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellColor");
@@ -466,9 +462,9 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
      * Returns CSS property value for the data cell cursor.
      */
     @SuppressWarnings("unchecked")
-    public void getCellCursor(Callback<String> callback)
+    public void getCellCursor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellCursor");
@@ -491,9 +487,9 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
      * Returns the CSS property value for the data cell font-family.
      */
     @SuppressWarnings("unchecked")
-    public void getCellFontName(Callback<String> callback)
+    public void getCellFontName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellFontName");
@@ -516,9 +512,9 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
      * Returns the CSS property value for the data cell font-size.
      */
     @SuppressWarnings("unchecked")
-    public void getCellFontSize(Callback<Integer> callback)
+    public void getCellFontSize(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellFontSize");
@@ -541,9 +537,9 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
      * Returns the CSS property value for the data cell font-weight.
      */
     @SuppressWarnings("unchecked")
-    public void getCellFontWeight(Callback<String> callback)
+    public void getCellFontWeight(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellFontWeight");
@@ -566,9 +562,9 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
      * Returns the CSS property value for the data cell padding.
      */
     @SuppressWarnings("unchecked")
-    public void getCellPadding(Callback<String> callback)
+    public void getCellPadding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellPadding");
@@ -595,9 +591,9 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
      * Returns the CSS property value for the data cell text-align.
      */
     @SuppressWarnings("unchecked")
-    public void getCellTextAlign(Callback<String> callback)
+    public void getCellTextAlign(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellTextAlign");
@@ -620,9 +616,9 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
      * Returns the CSS property value for the data cell vertical-align. If no value is provided, the data cells render top-aligned.
      */
     @SuppressWarnings("unchecked")
-    public void getCellVAlign(Callback<String> callback)
+    public void getCellVAlign(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellVAlign");
@@ -646,9 +642,9 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
      * @param strDefault The default value to use if null
      */
     @SuppressWarnings("unchecked")
-    public void getCellWrap(String strDefault, Callback<Integer> callback)
+    public void getCellWrap(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCellWrap", strDefault);
@@ -673,9 +669,9 @@ specified, the text will not wrap. Call repaint to update the VIEW
      * @param strDefault The default value to use if null
      */
     @SuppressWarnings("unchecked")
-    public void getWrap(String strDefault, Callback<Boolean> callback)
+    public void getWrap(String strDefault, org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getWrap", strDefault);
@@ -698,9 +694,9 @@ specified, the text will not wrap. Call repaint to update the VIEW
      * Returns the CSS property value for the header cell vertical-align. If no value is provided, the header cell render top-aligned.
      */
     @SuppressWarnings("unchecked")
-    public void getVAlign(Callback<String> callback)
+    public void getVAlign(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getVAlign");

@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -46,9 +42,9 @@ public class Image extends jsx3.gui.Block
      * 
      */
     @SuppressWarnings("unchecked")
-    public void getRenderedWidth(Callback<Integer> callback)
+    public void getRenderedWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRenderedWidth");
@@ -60,9 +56,9 @@ public class Image extends jsx3.gui.Block
      * 
      */
     @SuppressWarnings("unchecked")
-    public void getRenderedHeight(Callback<Integer> callback)
+    public void getRenderedHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRenderedHeight");
@@ -74,9 +70,9 @@ public class Image extends jsx3.gui.Block
      * Returns the URI of this image.
      */
     @SuppressWarnings("unchecked")
-    public void getSrc(Callback<String> callback)
+    public void getSrc(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSrc");

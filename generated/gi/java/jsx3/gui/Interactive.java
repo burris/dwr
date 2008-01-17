@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -320,7 +316,7 @@ the instance field itself and not a copy.
         String extension = "getEvents().";
         try
         {
-            Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -341,7 +337,7 @@ the instance field itself and not a copy.
         String extension = "getEvents().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -357,9 +353,9 @@ setEvent() method or during component deserialization.
      * @param callback the JavaScript event script
      */
     @SuppressWarnings("unchecked")
-    public void getEvent(String strType, Callback<String> callback)
+    public void getEvent(String strType, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getEvent", strType);
@@ -373,9 +369,9 @@ setEvent() method or during component deserialization.
      * @param callback the JavaScript event script
      */
     @SuppressWarnings("unchecked")
-    public void hasEvent(String strType, Callback<String> callback)
+    public void hasEvent(String strType, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = hasEvent", strType);
@@ -399,7 +395,7 @@ registered event script is executed in isolation to prevent most side effects.
         String extension = "doEvent(\"" + strType + "\", \"" + objContext + "\").";
         try
         {
-            Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -425,7 +421,7 @@ registered event script is executed in isolation to prevent most side effects.
         String extension = "doEvent(\"" + strType + "\", \"" + objContext + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -445,7 +441,7 @@ registered event script is executed in isolation to prevent most side effects.
         String extension = "removeEvent(\"" + strType + "\").";
         try
         {
-            Constructor<jsx3.gui.Interactive> ctor = jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Interactive> ctor = jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -466,7 +462,7 @@ registered event script is executed in isolation to prevent most side effects.
         String extension = "removeEvent(\"" + strType + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -485,7 +481,7 @@ registered event script is executed in isolation to prevent most side effects.
         String extension = "removeEvents().";
         try
         {
-            Constructor<jsx3.gui.Interactive> ctor = jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Interactive> ctor = jsx3.gui.Interactive.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -505,7 +501,7 @@ registered event script is executed in isolation to prevent most side effects.
         String extension = "removeEvents().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -533,9 +529,9 @@ can decide whether to consult this value or ignore it.
      * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
      */
     @SuppressWarnings("unchecked")
-    public void getCanMove(Callback<Integer> callback)
+    public void getCanMove(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCanMove");
@@ -563,9 +559,9 @@ dragged and dropped on another container supporting drop.
      * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
      */
     @SuppressWarnings("unchecked")
-    public void getCanDrag(Callback<Integer> callback)
+    public void getCanDrag(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCanDrag");
@@ -592,9 +588,9 @@ this value or ignore it.
      * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
      */
     @SuppressWarnings("unchecked")
-    public void getCanDrop(Callback<Integer> callback)
+    public void getCanDrop(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCanDrop");
@@ -621,9 +617,9 @@ this value or ignore it.
      * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>
      */
     @SuppressWarnings("unchecked")
-    public void getCanSpy(Callback<Integer> callback)
+    public void getCanSpy(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCanSpy");
@@ -636,9 +632,9 @@ this value or ignore it.
 clicks on this object with the right button.
      */
     @SuppressWarnings("unchecked")
-    public void getMenu(Callback<String> callback)
+    public void getMenu(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMenu");
@@ -667,7 +663,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
      * @param intLeft use an integer to specify an on-screen location; otherwise, use a <code>jsx3.gui.Event</code> instance to have the system automatically calculate the x/y position.
      * @param intTop use an integer if <code>intLeft</code> also uses an integer. Otherwise, use null.
      */
-    public void showSpy(String strHTML, jsx3.gui.Event intLeft, int intTop)
+    public void showSpy(String strHTML, int intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("showSpy", strHTML, intLeft, intTop);
@@ -681,7 +677,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
      * @param intLeft use an integer to specify an on-screen location; otherwise, use a <code>jsx3.gui.Event</code> instance to have the system automatically calculate the x/y position.
      * @param intTop use an integer if <code>intLeft</code> also uses an integer. Otherwise, use null.
      */
-    public void showSpy(String strHTML, int intLeft, int intTop)
+    public void showSpy(String strHTML, jsx3.gui.Event intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("showSpy", strHTML, intLeft, intTop);
@@ -724,12 +720,52 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
+    public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    {
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
+        }
+    }
+
+
+    /**
+     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
+will be checked against the hot key. If an event matches, the callback function will execute and the event
+bubble will be canceled.
+
+If the four parameters vntKey, bShift, bControl, and bAlt
+match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
+function (the most recently registered) will be executed by a single keydown event.
+     * @param vntCallback either a function, or the name of a method bound to this object.
+   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
+   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
+   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
+   other parameters are ignored.
+     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
+   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
+   keycode value.
+     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
+   to invoke the hot key.
+     * @return the registered hot key.
+     */
+    @SuppressWarnings("unchecked")
     public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
         {
-            Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -769,127 +805,7 @@ function (the most recently registered) will be executed by a single keydown eve
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
         {
-            Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
-        }
-    }
-
-
-    /**
-     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
-will be checked against the hot key. If an event matches, the callback function will execute and the event
-bubble will be canceled.
-
-If the four parameters vntKey, bShift, bControl, and bAlt
-match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
-function (the most recently registered) will be executed by a single keydown event.
-     * @param vntCallback either a function, or the name of a method bound to this object.
-   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
-   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
-   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
-   other parameters are ignored.
-     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
-   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
-   keycode value.
-     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
-   to invoke the hot key.
-     * @return the registered hot key.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
-    {
-        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
-        try
-        {
-            Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
-        }
-    }
-
-
-    /**
-     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
-will be checked against the hot key. If an event matches, the callback function will execute and the event
-bubble will be canceled.
-
-If the four parameters vntKey, bShift, bControl, and bAlt
-match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
-function (the most recently registered) will be executed by a single keydown event.
-     * @param vntCallback either a function, or the name of a method bound to this object.
-   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
-   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
-   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
-   other parameters are ignored.
-     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
-   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
-   keycode value.
-     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
-   to invoke the hot key.
-     * @return the registered hot key.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(String vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
-    {
-        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
-        try
-        {
-            Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
-        }
-    }
-
-
-    /**
-     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
-will be checked against the hot key. If an event matches, the callback function will execute and the event
-bubble will be canceled.
-
-If the four parameters vntKey, bShift, bControl, and bAlt
-match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
-function (the most recently registered) will be executed by a single keydown event.
-     * @param vntCallback either a function, or the name of a method bound to this object.
-   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
-   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
-   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
-   other parameters are ignored.
-     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
-   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
-   keycode value.
-     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
-   to invoke the hot key.
-     * @return the registered hot key.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
-    {
-        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
-        try
-        {
-            Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -929,7 +845,87 @@ function (the most recently registered) will be executed by a single keydown eve
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
         {
-            Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
+        }
+    }
+
+
+    /**
+     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
+will be checked against the hot key. If an event matches, the callback function will execute and the event
+bubble will be canceled.
+
+If the four parameters vntKey, bShift, bControl, and bAlt
+match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
+function (the most recently registered) will be executed by a single keydown event.
+     * @param vntCallback either a function, or the name of a method bound to this object.
+   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
+   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
+   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
+   other parameters are ignored.
+     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
+   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
+   keycode value.
+     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
+   to invoke the hot key.
+     * @return the registered hot key.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    {
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
+        }
+    }
+
+
+    /**
+     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
+will be checked against the hot key. If an event matches, the callback function will execute and the event
+bubble will be canceled.
+
+If the four parameters vntKey, bShift, bControl, and bAlt
+match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
+function (the most recently registered) will be executed by a single keydown event.
+     * @param vntCallback either a function, or the name of a method bound to this object.
+   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
+   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
+   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
+   other parameters are ignored.
+     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
+   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
+   keycode value.
+     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
+   to invoke the hot key.
+     * @return the registered hot key.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.gui.HotKey registerHotKey(String vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    {
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

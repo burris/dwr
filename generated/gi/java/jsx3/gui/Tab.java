@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -50,7 +46,7 @@ public class Tab extends jsx3.gui.Block
      * @param strHexActiveColor valid css property for defining the color to use when the tab is active (i.e., red, #ff0000, etc)
      * @param strHexInactiveColor valid css property for defining the color to use when the tab is inactive (i.e., red, #ff0000, etc)
      */
-    public Tab(String strName, String strText, int vntWidth, String strHexActiveColor, String strHexInactiveColor)
+    public Tab(String strName, String strText, String vntWidth, String strHexActiveColor, String strHexInactiveColor)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -66,7 +62,7 @@ public class Tab extends jsx3.gui.Block
      * @param strHexActiveColor valid css property for defining the color to use when the tab is active (i.e., red, #ff0000, etc)
      * @param strHexInactiveColor valid css property for defining the color to use when the tab is inactive (i.e., red, #ff0000, etc)
      */
-    public Tab(String strName, String strText, String vntWidth, String strHexActiveColor, String strHexInactiveColor)
+    public Tab(String strName, String strText, int vntWidth, String strHexActiveColor, String strHexInactiveColor)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -121,9 +117,9 @@ public class Tab extends jsx3.gui.Block
      * @param callback valid url (typically relative) to point to an image that can be used as a bacground image for the tab
      */
     @SuppressWarnings("unchecked")
-    public void getBevel(Callback<String> callback)
+    public void getBevel(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBevel");
@@ -159,9 +155,9 @@ public class Tab extends jsx3.gui.Block
      * @param callback valid CSS property value, (e.g., red, #ffffff)
      */
     @SuppressWarnings("unchecked")
-    public void getActiveColor(Callback<String> callback)
+    public void getActiveColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getActiveColor");
@@ -187,9 +183,9 @@ public class Tab extends jsx3.gui.Block
      * @param callback valid CSS property value, (e.g., red, #ffffff)
      */
     @SuppressWarnings("unchecked")
-    public void getInactiveColor(Callback<String> callback)
+    public void getInactiveColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getInactiveColor");
@@ -215,9 +211,9 @@ public class Tab extends jsx3.gui.Block
      * @param callback one of: jsx3.gui.Tab.STATEDISABLED, jsx3.gui.Tab.STATEENABLED
      */
     @SuppressWarnings("unchecked")
-    public void getEnabled(Callback<Integer> callback)
+    public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getEnabled");
@@ -248,7 +244,7 @@ first child of this stack.
         String extension = "getContentChild().";
         try
         {
-            Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -268,7 +264,7 @@ first child of this stack.
         String extension = "getContentChild().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

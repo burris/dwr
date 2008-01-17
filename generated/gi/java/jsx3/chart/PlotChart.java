@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -86,9 +82,9 @@ public class PlotChart extends jsx3.chart.CartesianChart
      * @param callback maxPointRadius
      */
     @SuppressWarnings("unchecked")
-    public void getMaxPointRadius(Callback<Integer> callback)
+    public void getMaxPointRadius(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMaxPointRadius");
@@ -112,9 +108,9 @@ public class PlotChart extends jsx3.chart.CartesianChart
      * @param callback magnitudeMethod, one of {"radius","diameter","area"}
      */
     @SuppressWarnings("unchecked")
-    public void getMagnitudeMethod(Callback<String> callback)
+    public void getMagnitudeMethod(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMagnitudeMethod");

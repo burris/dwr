@@ -15,11 +15,7 @@
  */
 package jsx3.app;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -46,6 +42,20 @@ class are backed by the same XML source document.
      * @param intDomain the domain of the settings to load, one of <code>jsx3.app.Settings.DOMAIN</code>...
      * @param objInstance if in the project or addin domain, the key of the specific project or addin to load settings for
      */
+    public Settings(int intDomain, jsx3.lang.Object objInstance)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Settings", intDomain, objInstance);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer. Creates a view onto the settings persisted on disk. All identical instances of this
+class are backed by the same XML source document.
+     * @param intDomain the domain of the settings to load, one of <code>jsx3.app.Settings.DOMAIN</code>...
+     * @param objInstance if in the project or addin domain, the key of the specific project or addin to load settings for
+     */
     public Settings(int intDomain, String objInstance)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -61,20 +71,6 @@ class are backed by the same XML source document.
      * @param objInstance if in the project or addin domain, the key of the specific project or addin to load settings for
      */
     public Settings(jsx3.xml.CdfDocument intDomain, String objInstance)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Settings", intDomain, objInstance);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer. Creates a view onto the settings persisted on disk. All identical instances of this
-class are backed by the same XML source document.
-     * @param intDomain the domain of the settings to load, one of <code>jsx3.app.Settings.DOMAIN</code>...
-     * @param objInstance if in the project or addin domain, the key of the specific project or addin to load settings for
-     */
-    public Settings(int intDomain, jsx3.lang.Object objInstance)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -114,9 +110,9 @@ class are backed by the same XML source document.
      * @param callback the stored value.
      */
     @SuppressWarnings("unchecked")
-    public void get(String strKey, Callback<String> callback)
+    public void get(String strKey, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = get", strKey);
@@ -134,7 +130,7 @@ class are backed by the same XML source document.
         String extension = "getNode(\"" + strKey + "\").";
         try
         {
-            Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.xml.Node> ctor = jsx3.xml.Node.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

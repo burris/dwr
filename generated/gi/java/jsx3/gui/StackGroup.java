@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -74,9 +70,9 @@ public class StackGroup extends jsx3.gui.LayoutGrid
      * @param callback size in pixels
      */
     @SuppressWarnings("unchecked")
-    public void getBarSize(Callback<Integer> callback)
+    public void getBarSize(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBarSize");
@@ -102,9 +98,9 @@ public class StackGroup extends jsx3.gui.LayoutGrid
      * Returns zero-based index for the tab that is active per its placement in the child JScript array
      */
     @SuppressWarnings("unchecked")
-    public void getSelectedIndex(Callback<Integer> callback)
+    public void getSelectedIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSelectedIndex");

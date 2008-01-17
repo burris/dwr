@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -82,9 +78,9 @@ public class ChartLabel extends jsx3.chart.ChartComponent
      * @param callback preferredWidth
      */
     @SuppressWarnings("unchecked")
-    public void getPreferredWidth(Callback<Integer> callback)
+    public void getPreferredWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPreferredWidth");
@@ -108,9 +104,9 @@ public class ChartLabel extends jsx3.chart.ChartComponent
      * @param callback preferredHeight
      */
     @SuppressWarnings("unchecked")
-    public void getPreferredHeight(Callback<Integer> callback)
+    public void getPreferredHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPreferredHeight");
@@ -134,9 +130,9 @@ public class ChartLabel extends jsx3.chart.ChartComponent
      * @param callback alpha
      */
     @SuppressWarnings("unchecked")
-    public void getAlpha(Callback<Float> callback)
+    public void getAlpha(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAlpha");
@@ -160,9 +156,9 @@ public class ChartLabel extends jsx3.chart.ChartComponent
      * @param callback borderStroke
      */
     @SuppressWarnings("unchecked")
-    public void getBorderStroke(Callback<String> callback)
+    public void getBorderStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBorderStroke");
@@ -186,9 +182,9 @@ public class ChartLabel extends jsx3.chart.ChartComponent
      * @param callback labelRotation
      */
     @SuppressWarnings("unchecked")
-    public void getLabelRotation(Callback<Integer> callback)
+    public void getLabelRotation(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLabelRotation");
@@ -211,9 +207,9 @@ public class ChartLabel extends jsx3.chart.ChartComponent
      * whether this label is display at 90 or -90 degrees
      */
     @SuppressWarnings("unchecked")
-    public void isRotated(Callback<Boolean> callback)
+    public void isRotated(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isRotated");

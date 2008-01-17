@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -71,9 +67,9 @@ public class Splitter extends jsx3.gui.Block
      * Returns a valid percentage (e.g., 100.00%  23.567%) that will be applied to the on-screen element as its CSS width/height percentage
      */
     @SuppressWarnings("unchecked")
-    public void getSubcontainer1Pct(Callback<String> callback)
+    public void getSubcontainer1Pct(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSubcontainer1Pct");
@@ -99,9 +95,9 @@ public class Splitter extends jsx3.gui.Block
      * Returns a valid integer representing the minimum size in pixels for the container; the default minimum is 1
      */
     @SuppressWarnings("unchecked")
-    public void getSubcontainer1Min(Callback<Integer> callback)
+    public void getSubcontainer1Min(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSubcontainer1Min");
@@ -127,9 +123,9 @@ public class Splitter extends jsx3.gui.Block
      * Returns a valid integer representing the minimum size in pixels for the container; the default minimum is 8
      */
     @SuppressWarnings("unchecked")
-    public void getSubcontainer2Min(Callback<Integer> callback)
+    public void getSubcontainer2Min(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSubcontainer2Min");
@@ -155,9 +151,9 @@ public class Splitter extends jsx3.gui.Block
      * *Returns whether the splitter layout is top-over (--) or side-by-side (|).
      */
     @SuppressWarnings("unchecked")
-    public void getOrientation(Callback<Integer> callback)
+    public void getOrientation(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getOrientation");
@@ -183,9 +179,9 @@ public class Splitter extends jsx3.gui.Block
      * Returns the URL for the image to use for the splitter handle when the splitter is rendered top over bottom (--).  When not set, Splitter.VSPLITIMAGE will be used when painted on-screen.
      */
     @SuppressWarnings("unchecked")
-    public void getVSplitImage(Callback<String> callback)
+    public void getVSplitImage(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getVSplitImage");
@@ -210,9 +206,9 @@ public class Splitter extends jsx3.gui.Block
      * Returns the URL for the image to use for the splitter handle when the splitter is rendered side by side ( | ). When not set, Splitter.HSPLITIMAGE will be used when painted on-screen.
      */
     @SuppressWarnings("unchecked")
-    public void getHSplitImage(Callback<String> callback)
+    public void getHSplitImage(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getHSplitImage");

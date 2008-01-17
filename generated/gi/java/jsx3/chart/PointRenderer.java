@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -60,7 +56,7 @@ public class PointRenderer extends jsx3.lang.Object
         String extension = "render(\"" + x1 + "\", \"" + y1 + "\", \"" + x2 + "\", \"" + y2 + "\", \"" + fill + "\", \"" + stroke + "\").";
         try
         {
-            Constructor<jsx3.vector.Tag> ctor = jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Tag> ctor = jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -85,7 +81,7 @@ public class PointRenderer extends jsx3.lang.Object
         String extension = "render(\"" + x1 + "\", \"" + y1 + "\", \"" + x2 + "\", \"" + y2 + "\", \"" + fill + "\", \"" + stroke + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -100,9 +96,9 @@ public class PointRenderer extends jsx3.lang.Object
      * @param area 
      */
     @SuppressWarnings("unchecked")
-    public void areaToRadius(Integer area, Callback<Integer> callback)
+    public void areaToRadius(Integer area, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = areaToRadius", area);

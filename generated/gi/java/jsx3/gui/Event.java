@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -303,7 +299,7 @@ public class Event extends jsx3.lang.Object
      * @param objHandler 
      * @param objFunction 
      */
-    public void subscribe(String strEventId, String objHandler, String objFunction)
+    public void subscribe(String strEventId, java.lang.Object objHandler, java.lang.Object objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("subscribe", strEventId, objHandler, objFunction);
@@ -315,7 +311,7 @@ public class Event extends jsx3.lang.Object
      * @param strEventId the event type, e.g. <code>jsx3.gui.Event.CLICK</code>.
      * @param objHandler 
      */
-    public void unsubscribe(String strEventId, String objHandler)
+    public void unsubscribe(String strEventId, java.lang.Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("unsubscribe", strEventId, objHandler);
@@ -338,9 +334,9 @@ public class Event extends jsx3.lang.Object
      * @param callback event type
      */
     @SuppressWarnings("unchecked")
-    public void getType(Callback<String> callback)
+    public void getType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getType");
@@ -353,9 +349,9 @@ public class Event extends jsx3.lang.Object
      * @param callback HTML object
      */
     @SuppressWarnings("unchecked")
-    public void srcElement(Callback<String> callback)
+    public void srcElement(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = srcElement");
@@ -368,9 +364,9 @@ public class Event extends jsx3.lang.Object
      * @param callback HTML object
      */
     @SuppressWarnings("unchecked")
-    public void toElement(Callback<String> callback)
+    public void toElement(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = toElement");
@@ -383,9 +379,9 @@ public class Event extends jsx3.lang.Object
      * @param callback HTML object
      */
     @SuppressWarnings("unchecked")
-    public void fromElement(Callback<String> callback)
+    public void fromElement(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = fromElement");
@@ -398,9 +394,9 @@ public class Event extends jsx3.lang.Object
      * @param callback keycode
      */
     @SuppressWarnings("unchecked")
-    public void keyCode(Callback<Integer> callback)
+    public void keyCode(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = keyCode");
@@ -413,9 +409,9 @@ public class Event extends jsx3.lang.Object
      * @param callback pixel position
      */
     @SuppressWarnings("unchecked")
-    public void clientX(Callback<Integer> callback)
+    public void clientX(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = clientX");
@@ -428,9 +424,9 @@ public class Event extends jsx3.lang.Object
      * @param callback pixel position
      */
     @SuppressWarnings("unchecked")
-    public void clientY(Callback<Integer> callback)
+    public void clientY(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = clientY");
@@ -443,9 +439,9 @@ public class Event extends jsx3.lang.Object
      * @param callback pixel position
      */
     @SuppressWarnings("unchecked")
-    public void getTrueX(Callback<Integer> callback)
+    public void getTrueX(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTrueX");
@@ -458,9 +454,9 @@ public class Event extends jsx3.lang.Object
      * @param callback pixel position
      */
     @SuppressWarnings("unchecked")
-    public void getTrueY(Callback<Integer> callback)
+    public void getTrueY(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTrueY");
@@ -472,9 +468,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the shift key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void shiftKey(Callback<Boolean> callback)
+    public void shiftKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = shiftKey");
@@ -486,9 +482,9 @@ public class Event extends jsx3.lang.Object
      * Returns true the ctrl key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void ctrlKey(Callback<Boolean> callback)
+    public void ctrlKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = ctrlKey");
@@ -500,9 +496,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the alt key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void altKey(Callback<Boolean> callback)
+    public void altKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = altKey");
@@ -514,9 +510,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the enter key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void enterKey(Callback<Boolean> callback)
+    public void enterKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = enterKey");
@@ -528,9 +524,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the space bar was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void spaceKey(Callback<Boolean> callback)
+    public void spaceKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = spaceKey");
@@ -542,9 +538,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the tab key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void tabKey(Callback<Boolean> callback)
+    public void tabKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = tabKey");
@@ -556,9 +552,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the right-arrow key was pressed
      */
     @SuppressWarnings("unchecked")
-    public void rightArrow(Callback<Boolean> callback)
+    public void rightArrow(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = rightArrow");
@@ -570,9 +566,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the left-arrow key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void leftArrow(Callback<Boolean> callback)
+    public void leftArrow(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = leftArrow");
@@ -584,9 +580,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the up-arrow key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void upArrow(Callback<Boolean> callback)
+    public void upArrow(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = upArrow");
@@ -598,9 +594,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the down-arrow key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void downArrow(Callback<Boolean> callback)
+    public void downArrow(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = downArrow");
@@ -612,9 +608,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the delete key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void deleteKey(Callback<Boolean> callback)
+    public void deleteKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = deleteKey");
@@ -626,9 +622,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the backspace key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void backspaceKey(Callback<Boolean> callback)
+    public void backspaceKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = backspaceKey");
@@ -640,9 +636,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the insert key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void insertKey(Callback<Boolean> callback)
+    public void insertKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = insertKey");
@@ -654,9 +650,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the home key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void homeKey(Callback<Boolean> callback)
+    public void homeKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = homeKey");
@@ -668,9 +664,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the end key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void endKey(Callback<Boolean> callback)
+    public void endKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = endKey");
@@ -682,9 +678,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the page-up key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void pageUpKey(Callback<Boolean> callback)
+    public void pageUpKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = pageUpKey");
@@ -696,9 +692,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the page-down key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void pageDownKey(Callback<Boolean> callback)
+    public void pageDownKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = pageDownKey");
@@ -710,9 +706,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the escape key was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void escapeKey(Callback<Boolean> callback)
+    public void escapeKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = escapeKey");
@@ -754,9 +750,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the left-mouse-button was clicked.
      */
     @SuppressWarnings("unchecked")
-    public void leftButton(Callback<Boolean> callback)
+    public void leftButton(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = leftButton");
@@ -768,9 +764,9 @@ public class Event extends jsx3.lang.Object
      * Returns true if the right-mouse-button was clicked.
      */
     @SuppressWarnings("unchecked")
-    public void rightButton(Callback<Boolean> callback)
+    public void rightButton(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = rightButton");
@@ -782,9 +778,9 @@ public class Event extends jsx3.lang.Object
      * Returns integer designating the mouse button clicked/moused-down/moused-up; 1 (left), 2 (right), and as supported.
      */
     @SuppressWarnings("unchecked")
-    public void button(Callback<Integer> callback)
+    public void button(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = button");
@@ -807,9 +803,9 @@ public class Event extends jsx3.lang.Object
      * Whether one of the four arrow keys was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void isArrowKey(Callback<Boolean> callback)
+    public void isArrowKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isArrowKey");
@@ -821,9 +817,9 @@ public class Event extends jsx3.lang.Object
      * Whether one of the 15 function keys was pressed.
      */
     @SuppressWarnings("unchecked")
-    public void isFunctionKey(Callback<Boolean> callback)
+    public void isFunctionKey(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isFunctionKey");

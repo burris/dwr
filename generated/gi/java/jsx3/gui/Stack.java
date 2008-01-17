@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -105,7 +101,7 @@ returns the first child that is not a menu or a toolbar button.
         String extension = "getContentChild().";
         try
         {
-            Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -125,7 +121,7 @@ returns the first child that is not a menu or a toolbar button.
         String extension = "getContentChild().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -139,9 +135,9 @@ returns the first child that is not a menu or a toolbar button.
      * @param callback valid CSS property value, (i.e., red, #ffffff)
      */
     @SuppressWarnings("unchecked")
-    public void getActiveColor(Callback<String> callback)
+    public void getActiveColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getActiveColor");
@@ -168,9 +164,9 @@ returns the first child that is not a menu or a toolbar button.
      * @param callback valid CSS property value, (i.e., red, #ffffff)
      */
     @SuppressWarnings("unchecked")
-    public void getInactiveColor(Callback<String> callback)
+    public void getInactiveColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getInactiveColor");
@@ -196,9 +192,9 @@ returns the first child that is not a menu or a toolbar button.
      * Returns whether or not this stack is the active (expanded) stack
      */
     @SuppressWarnings("unchecked")
-    public void isFront(Callback<Boolean> callback)
+    public void isFront(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isFront");

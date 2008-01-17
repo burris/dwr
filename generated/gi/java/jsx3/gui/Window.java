@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -92,9 +88,9 @@ successfully opened is to register for the DID_OPEN event.
      * @param callback <code>true</code> if the window successfully opened (probably).
      */
     @SuppressWarnings("unchecked")
-    public void open(Callback<Boolean> callback)
+    public void open(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = open");
@@ -108,9 +104,9 @@ successfully opened is to register for the DID_OPEN event.
    because of JavaScript security constraints or user interaction.
      */
     @SuppressWarnings("unchecked")
-    public void close(Callback<Boolean> callback)
+    public void close(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = close");
@@ -133,9 +129,9 @@ successfully opened is to register for the DID_OPEN event.
      * @param callback <code>true</code> if the window is open.
      */
     @SuppressWarnings("unchecked")
-    public void isOpen(Callback<Boolean> callback)
+    public void isOpen(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isOpen");
@@ -148,9 +144,9 @@ successfully opened is to register for the DID_OPEN event.
      * @param callback <code>true</code> if the parent window is open.
      */
     @SuppressWarnings("unchecked")
-    public void isParentOpen(Callback<Boolean> callback)
+    public void isParentOpen(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isParentOpen");
@@ -188,9 +184,9 @@ If the parent window is no longer open, this method returns the position relativ
 corner of the screen.
      */
     @SuppressWarnings("unchecked")
-    public void getOffsetLeft(Callback<Integer> callback)
+    public void getOffsetLeft(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getOffsetLeft");
@@ -204,9 +200,9 @@ If the parent window is no longer open, this method returns the position relativ
 corner of the screen.
      */
     @SuppressWarnings("unchecked")
-    public void getOffsetTop(Callback<Integer> callback)
+    public void getOffsetTop(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getOffsetTop");
@@ -224,7 +220,7 @@ to the DOM, and returns it. A window will only render its first DOM child.
         String extension = "getRootBlock().";
         try
         {
-            Constructor<jsx3.gui.Block> ctor = jsx3.gui.Block.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Block> ctor = jsx3.gui.Block.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -244,7 +240,7 @@ to the DOM, and returns it. A window will only render its first DOM child.
         String extension = "getRootBlock().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -257,9 +253,9 @@ to the DOM, and returns it. A window will only render its first DOM child.
      * Repaints the root block of this window.
      */
     @SuppressWarnings("unchecked")
-    public void repaint(Callback<String> callback)
+    public void repaint(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = repaint");
@@ -272,9 +268,9 @@ to the DOM, and returns it. A window will only render its first DOM child.
 browser may render around the window content.
      */
     @SuppressWarnings("unchecked")
-    public void getWidth(Callback<Integer> callback)
+    public void getWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getWidth");
@@ -299,9 +295,9 @@ immediately.
 browser may render around the window content.
      */
     @SuppressWarnings("unchecked")
-    public void getHeight(Callback<Integer> callback)
+    public void getHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getHeight");
@@ -328,9 +324,9 @@ browser window.
      * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
      */
     @SuppressWarnings("unchecked")
-    public void isResizable(Callback<Integer> callback)
+    public void isResizable(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isResizable");
@@ -356,9 +352,9 @@ reflect the current state of the browser window.
      * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
      */
     @SuppressWarnings("unchecked")
-    public void isScrollable(Callback<Integer> callback)
+    public void isScrollable(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isScrollable");
@@ -386,9 +382,9 @@ will raise errors.
      * @param callback <code>jsx3.Boolean.TRUE</code> or <code>jsx3.Boolean.FALSE</code>.
      */
     @SuppressWarnings("unchecked")
-    public void isDependent(Callback<Integer> callback)
+    public void isDependent(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isDependent");
@@ -411,9 +407,9 @@ will raise errors.
      * Returns the title of this window.
      */
     @SuppressWarnings("unchecked")
-    public void getTitle(Callback<String> callback)
+    public void getTitle(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTitle");

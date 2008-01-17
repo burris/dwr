@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -68,7 +64,7 @@ public class Painted extends jsx3.app.Model
         String extension = "getAbsolutePosition(\"" + objRoot + "\", \"" + objGUI + "\").";
         try
         {
-            Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -92,7 +88,7 @@ public class Painted extends jsx3.app.Model
         String extension = "getAbsolutePosition(\"" + objRoot + "\", \"" + objGUI + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -122,9 +118,9 @@ public class Painted extends jsx3.app.Model
      * @param callback value of the property
      */
     @SuppressWarnings("unchecked")
-    public void getDynamicProperty(String strName, Callback<String> callback)
+    public void getDynamicProperty(String strName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDynamicProperty", strName);
@@ -151,9 +147,9 @@ public class Painted extends jsx3.app.Model
      * @param strName the name of the property/attribute
      */
     @SuppressWarnings("unchecked")
-    public void getAttribute(String strName, Callback<String> callback)
+    public void getAttribute(String strName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAttribute", strName);
@@ -171,7 +167,7 @@ public class Painted extends jsx3.app.Model
         String extension = "getAttributes().";
         try
         {
-            Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -191,7 +187,7 @@ public class Painted extends jsx3.app.Model
         String extension = "getAttributes().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -211,7 +207,7 @@ public class Painted extends jsx3.app.Model
         String extension = "removeAttribute(\"" + strName + "\").";
         try
         {
-            Constructor<jsx3.gui.Painted> ctor = jsx3.gui.Painted.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Painted> ctor = jsx3.gui.Painted.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -232,7 +228,7 @@ public class Painted extends jsx3.app.Model
         String extension = "removeAttribute(\"" + strName + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -251,7 +247,7 @@ public class Painted extends jsx3.app.Model
         String extension = "removeAttributes().";
         try
         {
-            Constructor<jsx3.gui.Painted> ctor = jsx3.gui.Painted.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Painted> ctor = jsx3.gui.Painted.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -271,7 +267,7 @@ public class Painted extends jsx3.app.Model
         String extension = "removeAttributes().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -284,9 +280,9 @@ public class Painted extends jsx3.app.Model
      * gives focus to the on-screen VIEW for the element; returns a handle to the html/dhtml element as exposed by the native browser
      */
     @SuppressWarnings("unchecked")
-    public void focus(Callback<String> callback)
+    public void focus(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = focus");
@@ -301,9 +297,9 @@ public class Painted extends jsx3.app.Model
      * @param callback IE DHTML object
      */
     @SuppressWarnings("unchecked")
-    public void getRendered(jsx3.lang.Object objGUI, Callback<String> callback)
+    public void getRendered(jsx3.lang.Object objGUI, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRendered", objGUI);
@@ -318,9 +314,9 @@ public class Painted extends jsx3.app.Model
      * @param callback IE DHTML object
      */
     @SuppressWarnings("unchecked")
-    public void getRendered(jsx3.gui.Event objGUI, Callback<String> callback)
+    public void getRendered(jsx3.gui.Event objGUI, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRendered", objGUI);
@@ -334,9 +330,9 @@ returned HTML. This method has no effect if this object is not currently display
      * @param callback the result of calling <code>paint()</code> or <code>null</code> if this object is not displayed.
      */
     @SuppressWarnings("unchecked")
-    public void repaint(Callback<String> callback)
+    public void repaint(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = repaint");
@@ -349,9 +345,9 @@ returned HTML. This method has no effect if this object is not currently display
      * @param callback DHTML
      */
     @SuppressWarnings("unchecked")
-    public void paint(Callback<String> callback)
+    public void paint(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = paint");
@@ -399,9 +395,9 @@ has no effect if this object is not currently painted.
      * @param callback DHTML
      */
     @SuppressWarnings("unchecked")
-    public void paintChildren(Object[] c, Callback<String> callback)
+    public void paintChildren(Object[] c, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = paintChildren", c);

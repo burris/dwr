@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -52,7 +48,7 @@ public class Alerts extends jsx3.lang.Object
         String extension = "getAlertsParent().";
         try
         {
-            Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.app.Model> ctor = jsx3.app.Model.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -72,7 +68,7 @@ public class Alerts extends jsx3.lang.Object
         String extension = "getAlertsParent().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -138,7 +134,7 @@ public class Alerts extends jsx3.lang.Object
      * @param objDialog the dialog
      * @param objParams may include fields 'width', 'height', 'noTitle', and 'nonModal'.
      */
-    public void configureAlert(String objDialog, jsx3.lang.Object objParams)
+    public void configureAlert(java.lang.Object objDialog, jsx3.lang.Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("configureAlert", objDialog, objParams);

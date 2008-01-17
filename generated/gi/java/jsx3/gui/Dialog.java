@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -39,21 +35,6 @@ public class Dialog extends jsx3.gui.Block
     public Dialog(Context context, String extension, ScriptProxy scriptProxy)
     {
         super(context, extension, scriptProxy);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntWidth width in pixels
-     * @param vntHeight height in pixels
-     * @param strTitle if != null,  will be set as the text property on the child captionbar
-     */
-    public Dialog(String strName, int vntWidth, int vntHeight, String strTitle)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Dialog", strName, vntWidth, vntHeight, strTitle);
-        setInitScript(script);
     }
 
     /**
@@ -94,6 +75,21 @@ public class Dialog extends jsx3.gui.Block
      * @param strTitle if != null,  will be set as the text property on the child captionbar
      */
     public Dialog(String strName, String vntWidth, String vntHeight, String strTitle)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Dialog", strName, vntWidth, vntHeight, strTitle);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntWidth width in pixels
+     * @param vntHeight height in pixels
+     * @param strTitle if != null,  will be set as the text property on the child captionbar
+     */
+    public Dialog(String strName, int vntWidth, int vntHeight, String strTitle)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -153,9 +149,9 @@ public class Dialog extends jsx3.gui.Block
      * Returns whether this dialog instance is the front-most dialog among all open dialogs
      */
     @SuppressWarnings("unchecked")
-    public void isFront(Callback<Boolean> callback)
+    public void isFront(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = isFront");
@@ -174,7 +170,7 @@ public class Dialog extends jsx3.gui.Block
         String extension = "getTaskButton(\"" + objTaskBar + "\").";
         try
         {
-            Constructor<jsx3.gui.ToolbarButton> ctor = jsx3.gui.ToolbarButton.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.ToolbarButton> ctor = jsx3.gui.ToolbarButton.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -199,9 +195,9 @@ public class Dialog extends jsx3.gui.Block
      * @param callback one of: jsx3.gui.Dialog.MAXIMIZED or jsx3.gui.Dialog.MINIMIZED
      */
     @SuppressWarnings("unchecked")
-    public void getWindowState(Callback<Integer> callback)
+    public void getWindowState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getWindowState");
@@ -227,9 +223,9 @@ public class Dialog extends jsx3.gui.Block
      * @param callback integer
      */
     @SuppressWarnings("unchecked")
-    public void getZMultiplier(Callback<Integer> callback)
+    public void getZMultiplier(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getZMultiplier");
@@ -255,9 +251,9 @@ public class Dialog extends jsx3.gui.Block
      * @param callback one of: jsx3.gui.Dialog.NONMODAL or jsx3.gui.Dialog.MODAL
      */
     @SuppressWarnings("unchecked")
-    public void getModal(Callback<Integer> callback)
+    public void getModal(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getModal");
@@ -294,9 +290,9 @@ public class Dialog extends jsx3.gui.Block
      * @param callback one of: jsx3.gui.Dialog.RESIZABLE jsx3.gui.Dialog.FIXED
      */
     @SuppressWarnings("unchecked")
-    public void getResize(Callback<Integer> callback)
+    public void getResize(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getResize");
@@ -345,7 +341,7 @@ public class Dialog extends jsx3.gui.Block
         String extension = "getCaptionBar().";
         try
         {
-            Constructor<jsx3.gui.WindowBar> ctor = jsx3.gui.WindowBar.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.WindowBar> ctor = jsx3.gui.WindowBar.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -365,7 +361,7 @@ public class Dialog extends jsx3.gui.Block
         String extension = "getAlertsParent().";
         try
         {
-            Constructor<jsx3.gui.Block> ctor = jsx3.gui.Block.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Block> ctor = jsx3.gui.Block.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -385,7 +381,7 @@ public class Dialog extends jsx3.gui.Block
         String extension = "getAlertsParent().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -408,7 +404,7 @@ model event.
    <code>null</code> value for any dimension means that the entire dimension should be shown. A negative value
    means the number of pixels less than the size of the dialog in that dimension.
      */
-    public void constrainPosition(boolean arg)
+    public void constrainPosition(Object[] arg)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("constrainPosition", arg);
@@ -429,7 +425,7 @@ model event.
    <code>null</code> value for any dimension means that the entire dimension should be shown. A negative value
    means the number of pixels less than the size of the dialog in that dimension.
      */
-    public void constrainPosition(Object[] arg)
+    public void constrainPosition(boolean arg)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("constrainPosition", arg);
@@ -466,7 +462,7 @@ model event.
      * @param objDialog the dialog
      * @param objParams may include fields 'width', 'height', 'noTitle', and 'nonModal'.
      */
-    public void configureAlert(String objDialog, jsx3.lang.Object objParams)
+    public void configureAlert(java.lang.Object objDialog, jsx3.lang.Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("configureAlert", objDialog, objParams);

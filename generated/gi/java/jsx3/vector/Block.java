@@ -15,11 +15,7 @@
  */
 package jsx3.vector;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -55,7 +51,7 @@ createVector() is called to create it.
         String extension = "getCanvas().";
         try
         {
-            Constructor<jsx3.vector.Tag> ctor = jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Tag> ctor = jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -75,7 +71,7 @@ createVector() is called to create it.
         String extension = "getCanvas().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -105,7 +101,7 @@ rendered on screen, but without calling updateVector() directly.
         String extension = "createVector().";
         try
         {
-            Constructor<jsx3.vector.Tag> ctor = jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Tag> ctor = jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -136,7 +132,7 @@ rendered on screen, but without calling updateVector() directly.
         String extension = "createVector().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -162,9 +158,9 @@ CustomVector.prototype.updateVector = function(objVector) {
    recreated by calling <code>createVector()</code>.
      */
     @SuppressWarnings("unchecked")
-    public void updateVector(jsx3.vector.Tag objVector, Callback<Boolean> callback)
+    public void updateVector(jsx3.vector.Tag objVector, org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = updateVector", objVector);
@@ -183,7 +179,7 @@ overridden to provide a base tag of another type that Canvas.
         String extension = "createCanvas().";
         try
         {
-            Constructor<jsx3.vector.Tag> ctor = jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Tag> ctor = jsx3.vector.Tag.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -204,7 +200,7 @@ overridden to provide a base tag of another type that Canvas.
         String extension = "createCanvas().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

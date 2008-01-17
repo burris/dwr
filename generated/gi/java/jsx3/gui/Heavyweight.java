@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -72,7 +68,7 @@ public class Heavyweight extends jsx3.lang.Object
         String extension = "GO(\"" + strId + "\").";
         try
         {
-            Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -105,7 +101,7 @@ public class Heavyweight extends jsx3.lang.Object
 
     /**
      * can be called if show() has been called; allows an existing HW window to re-apply its rules (used for complex layouts requiring a multi-pass)
-     * @param strAxis character (string) representing whether the rule is for the X or Y axis. Remember to capitalize!
+     * @param strAxis character (string) representing whether the rule is for the X or Y axis. Rememeber to capitalize!
      * @param intSize 
      */
     public void applyRules(String strAxis, int intSize)
@@ -141,9 +137,9 @@ public class Heavyweight extends jsx3.lang.Object
      * @param callback Browser-Native DHTML object
      */
     @SuppressWarnings("unchecked")
-    public void getRendered(String objGUI, Callback<String> callback)
+    public void getRendered(jsx3.gui.Event objGUI, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRendered", objGUI);
@@ -157,9 +153,9 @@ public class Heavyweight extends jsx3.lang.Object
      * @param callback Browser-Native DHTML object
      */
     @SuppressWarnings("unchecked")
-    public void getRendered(jsx3.gui.Event objGUI, Callback<String> callback)
+    public void getRendered(String objGUI, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRendered", objGUI);
@@ -171,9 +167,9 @@ public class Heavyweight extends jsx3.lang.Object
      * Returns the unique id for this heavyweight instance
      */
     @SuppressWarnings("unchecked")
-    public void getId(Callback<String> callback)
+    public void getId(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getId");
@@ -185,9 +181,9 @@ public class Heavyweight extends jsx3.lang.Object
      * Returns the HTML content to display inside the HW instance on-screen
      */
     @SuppressWarnings("unchecked")
-    public void getHTML(Callback<String> callback)
+    public void getHTML(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getHTML");
@@ -213,9 +209,9 @@ public class Heavyweight extends jsx3.lang.Object
      * Returns an object reference to the Browser Element parent to be used; if none specified, the browser BODY will be used
      */
     @SuppressWarnings("unchecked")
-    public void getDomParent(Callback<String> callback)
+    public void getDomParent(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDomParent");
@@ -244,9 +240,9 @@ the text content.  For example, a value of .8 would mean that the width of the h
 represent 80% and the height would represent 20% of the total perimiter
      */
     @SuppressWarnings("unchecked")
-    public void getRatio(Callback<Integer> callback)
+    public void getRatio(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRatio");
@@ -273,9 +269,9 @@ represent 80% and the height would represent 20% of the total perimiter
      * @param callback [jsx3.gui.Block.OVERFLOWSCROLL, jsx3.gui.Block.OVERFLOWHIDDEN, jsx3.gui.Block.OVERFLOWEXPAND]
      */
     @SuppressWarnings("unchecked")
-    public void getOverflow(Callback<String> callback)
+    public void getOverflow(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getOverflow");
@@ -315,9 +311,9 @@ represent 80% and the height would represent 20% of the total perimiter
      * Returns the z-index property; assumes jsx3.gui.Heavyweight.DEFAULTZINDEX if none supplied
      */
     @SuppressWarnings("unchecked")
-    public void getZIndex(Callback<Integer> callback)
+    public void getZIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getZIndex");
@@ -328,14 +324,12 @@ represent 80% and the height would represent 20% of the total perimiter
     /**
      * Sets the CSS z-index for the object; if null, is passed, jsx3.gui.Heavyweight.DEFAULTZINDEX will be used as the default value
      * @param intZIndex z-index value
-     * @return this object
      */
-    public jsx3.gui.Heavyweight setZIndex(int intZIndex)
+    public void setZIndex(int intZIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setZIndex", intZIndex);
         getScriptProxy().addScript(script);
-        return this;
     }
 
     /**
@@ -343,9 +337,9 @@ represent 80% and the height would represent 20% of the total perimiter
      * @param callback width (in pixels)
      */
     @SuppressWarnings("unchecked")
-    public void getWidth(Callback<Integer> callback)
+    public void getWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getWidth");
@@ -356,14 +350,12 @@ represent 80% and the height would represent 20% of the total perimiter
     /**
      * Sets the CSS width property (in pixels); if this value is set, it is assumed that the Heavyweight container will not have its width lessened to fit on-screen.
      * @param intWidth width (in pixels)
-     * @return this object
      */
-    public jsx3.gui.Heavyweight setWidth(int intWidth)
+    public void setWidth(int intWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setWidth", intWidth);
         getScriptProxy().addScript(script);
-        return this;
     }
 
     /**
@@ -371,9 +363,9 @@ represent 80% and the height would represent 20% of the total perimiter
      * @param callback height (in pixels)
      */
     @SuppressWarnings("unchecked")
-    public void getHeight(Callback<Integer> callback)
+    public void getHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getHeight");
@@ -411,7 +403,7 @@ represent 80% and the height would represent 20% of the total perimiter
         String extension = "addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
         {
-            Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -437,33 +429,7 @@ represent 80% and the height would represent 20% of the total perimiter
         String extension = "addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
         {
-            Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.Heavyweight.class.getName());
-        }
-    }
-
-
-    /**
-     * adds a POSITION RULE ruleset (Y value) (a simple structure/hash) to the array of position rules; Note that POSITION RULE objects are used by the show() method to determine the best possible location for a heavyweight item
-     * @param objAnchor Either an event or an on-screen HTML element
-     * @param strAnchorPoint REQUIRED if @objAnchor is an HTML element; when used, defines one of  the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O). Note that it
-           is from this point (on @objAnchor) that the heavyweight item will try to position itself
-     * @param strPoint Defines one of  the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O). Note that it
-           is from this point (on the Heavyweight instance) that the heavyweight item will try to position itself
-     * @param intOff offset (in pixels) by which to nudge the vertical placement of the HW instance before displaying (useful for submenus, for example, where their left has a -10px offset to overlay the parent menu item)
-     * @return this object (this)
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.gui.Heavyweight addYRule(jsx3.lang.Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
-    {
-        String extension = "addYRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
-        try
-        {
-            Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -489,7 +455,33 @@ represent 80% and the height would represent 20% of the total perimiter
         String extension = "addYRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
         {
-            Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.Heavyweight.class.getName());
+        }
+    }
+
+
+    /**
+     * adds a POSITION RULE ruleset (Y value) (a simple structure/hash) to the array of position rules; Note that POSITION RULE objects are used by the show() method to determine the best possible location for a heavyweight item
+     * @param objAnchor Either an event or an on-screen HTML element
+     * @param strAnchorPoint REQUIRED if @objAnchor is an HTML element; when used, defines one of  the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O). Note that it
+           is from this point (on @objAnchor) that the heavyweight item will try to position itself
+     * @param strPoint Defines one of  the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O). Note that it
+           is from this point (on the Heavyweight instance) that the heavyweight item will try to position itself
+     * @param intOff offset (in pixels) by which to nudge the vertical placement of the HW instance before displaying (useful for submenus, for example, where their left has a -10px offset to overlay the parent menu item)
+     * @return this object (this)
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.gui.Heavyweight addYRule(jsx3.lang.Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
+    {
+        String extension = "addYRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -505,7 +497,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @param strPoint Defines one of  the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O). Note that it
            is from this point (on the Heavyweight instance) that the heavyweight item will try to position itself
      * @param intOff offset (in pixels) by which to nudge the vertical placement of the HW instance before displaying (useful for submenus, for example, where their left has a -10px offset to overlay the parent menu item)
-     * @param strAxis character (string) representing whether the rule is for the X or Y axis. Remember to capitalize!
+     * @param strAxis character (string) representing whether the rule is for the X or Y axis. Rememeber to capitalize!
      * @return this object (this)
      */
     @SuppressWarnings("unchecked")
@@ -514,7 +506,7 @@ represent 80% and the height would represent 20% of the total perimiter
         String extension = "addRule(\"" + intPixel + "\", \"" + strPoint + "\", \"" + intOff + "\", \"" + strAxis + "\").";
         try
         {
-            Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Heavyweight> ctor = jsx3.gui.Heavyweight.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -527,12 +519,12 @@ represent 80% and the height would represent 20% of the total perimiter
     /**
      * Returns a POSITION RULE object at the given index; Note that POSITION RULE objects are JavaScript objects that implement the following 3 properties: _pixel (the on-screen point around which to pivot/place), _offset (amount to nudge the placement), _point (compass direction)
      * @param intIndex the index (in rank order of execution) of the POSITION RULEing rule set to apply (it is assumed that at least one POSITION RULE ruleset exists)
-     * @param strAxis character (string) representing whether the rule is for the X or Y axis. Remember to capitalize!
+     * @param strAxis character (string) representing whether the rule is for the X or Y axis. Rememeber to capitalize!
      */
     @SuppressWarnings("unchecked")
-    public void getPositionRule(int intIndex, String strAxis, Callback<String> callback)
+    public void getPositionRule(int intIndex, String strAxis, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPositionRule", intIndex, strAxis);
@@ -549,7 +541,7 @@ represent 80% and the height would represent 20% of the total perimiter
         String extension = "getPositionRules().";
         try
         {
-            Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -568,7 +560,7 @@ represent 80% and the height would represent 20% of the total perimiter
         String extension = "getPositionRules().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -582,7 +574,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @param objGUI GUI object in the browser DOM (typically an HTML element such as a DIV or SPAN) for which to provide the X,Y for
      * @param strPoint a character denoting one of the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O)
      */
-    public void getPoint(int objGUI, String strPoint)
+    public void getPoint(jsx3.gui.Block objGUI, String strPoint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("getPoint", objGUI, strPoint);
@@ -594,7 +586,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @param objGUI GUI object in the browser DOM (typically an HTML element such as a DIV or SPAN) for which to provide the X,Y for
      * @param strPoint a character denoting one of the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O)
      */
-    public void getPoint(jsx3.gui.Block objGUI, String strPoint)
+    public void getPoint(int objGUI, String strPoint)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("getPoint", objGUI, strPoint);

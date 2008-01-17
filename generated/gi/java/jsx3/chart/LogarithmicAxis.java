@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -61,9 +57,9 @@ public class LogarithmicAxis extends jsx3.chart.Axis
      * @param callback autoAdjust
      */
     @SuppressWarnings("unchecked")
-    public void getAutoAdjust(Callback<Boolean> callback)
+    public void getAutoAdjust(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAutoAdjust");
@@ -87,9 +83,9 @@ public class LogarithmicAxis extends jsx3.chart.Axis
      * @param callback baseAtZero
      */
     @SuppressWarnings("unchecked")
-    public void getBaseAtZero(Callback<Boolean> callback)
+    public void getBaseAtZero(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBaseAtZero");
@@ -113,9 +109,9 @@ public class LogarithmicAxis extends jsx3.chart.Axis
      * @param callback showNegativeValues
      */
     @SuppressWarnings("unchecked")
-    public void getShowNegativeValues(Callback<Boolean> callback)
+    public void getShowNegativeValues(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getShowNegativeValues");
@@ -139,9 +135,9 @@ public class LogarithmicAxis extends jsx3.chart.Axis
      * @param callback minExponent
      */
     @SuppressWarnings("unchecked")
-    public void getMinExponent(Callback<Integer> callback)
+    public void getMinExponent(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMinExponent");
@@ -165,9 +161,9 @@ public class LogarithmicAxis extends jsx3.chart.Axis
      * @param callback maxExponent
      */
     @SuppressWarnings("unchecked")
-    public void getMaxExponent(Callback<Integer> callback)
+    public void getMaxExponent(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMaxExponent");
@@ -191,9 +187,9 @@ public class LogarithmicAxis extends jsx3.chart.Axis
      * @param callback base
      */
     @SuppressWarnings("unchecked")
-    public void getBase(Callback<Integer> callback)
+    public void getBase(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBase");
@@ -217,9 +213,9 @@ public class LogarithmicAxis extends jsx3.chart.Axis
      * @param callback majorDivisions
      */
     @SuppressWarnings("unchecked")
-    public void getMajorDivisions(Callback<Integer> callback)
+    public void getMajorDivisions(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMajorDivisions");
@@ -244,9 +240,9 @@ public class LogarithmicAxis extends jsx3.chart.Axis
      * @param callback coordinate along the axis
      */
     @SuppressWarnings("unchecked")
-    public void getCoordinateFor(Integer value, Callback<Integer> callback)
+    public void getCoordinateFor(Integer value, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCoordinateFor", value);
@@ -258,7 +254,7 @@ public class LogarithmicAxis extends jsx3.chart.Axis
      * same as getCoordinateFor(), but does not clip to bounds of the axis
      * @param value 
      */
-    public void getCoordinateForNoClip(int value)
+    public void getCoordinateForNoClip(java.lang.Object value)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("getCoordinateForNoClip", value);

@@ -15,11 +15,7 @@
  */
 package jsx3.vector;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -78,9 +74,9 @@ public class Line extends jsx3.vector.Shape
      * @param callback x1
      */
     @SuppressWarnings("unchecked")
-    public void getX1(Callback<Integer> callback)
+    public void getX1(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getX1");
@@ -104,9 +100,9 @@ public class Line extends jsx3.vector.Shape
      * @param callback y1
      */
     @SuppressWarnings("unchecked")
-    public void getY1(Callback<Integer> callback)
+    public void getY1(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getY1");
@@ -130,9 +126,9 @@ public class Line extends jsx3.vector.Shape
      * @param callback x2
      */
     @SuppressWarnings("unchecked")
-    public void getX2(Callback<Integer> callback)
+    public void getX2(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getX2");
@@ -156,9 +152,9 @@ public class Line extends jsx3.vector.Shape
      * @param callback y2
      */
     @SuppressWarnings("unchecked")
-    public void getY2(Callback<Integer> callback)
+    public void getY2(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getY2");

@@ -15,11 +15,7 @@
  */
 package jsx3.gui;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -57,69 +53,6 @@ public class RadioButton extends jsx3.gui.Block
      * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
    <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
      */
-    public RadioButton(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
-     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
-     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
-     * @param strText the text/HTML markup to display with the radio button.
-     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
-     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
-     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
-   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
-     */
-    public RadioButton(String strName, int vntLeft, String vntTop, int vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
-     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
-     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
-     * @param strText the text/HTML markup to display with the radio button.
-     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
-     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
-     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
-   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
-     */
-    public RadioButton(String strName, String vntLeft, int vntTop, String vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
-     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
-     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
-     * @param strText the text/HTML markup to display with the radio button.
-     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
-     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
-     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
-   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
-     */
     public RadioButton(String strName, int vntLeft, int vntTop, String vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -141,7 +74,7 @@ public class RadioButton extends jsx3.gui.Block
      * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
    <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
      */
-    public RadioButton(String strName, int vntLeft, String vntTop, String vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    public RadioButton(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -183,6 +116,90 @@ public class RadioButton extends jsx3.gui.Block
      * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
    <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
      */
+    public RadioButton(String strName, String vntLeft, String vntTop, String vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
+     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
+     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
+     * @param strText the text/HTML markup to display with the radio button.
+     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
+     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
+     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
+   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
+     */
+    public RadioButton(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
+     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
+     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
+     * @param strText the text/HTML markup to display with the radio button.
+     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
+     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
+     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
+   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
+     */
+    public RadioButton(String strName, String vntLeft, String vntTop, int vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
+     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
+     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
+     * @param strText the text/HTML markup to display with the radio button.
+     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
+     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
+     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
+   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
+     */
+    public RadioButton(String strName, int vntLeft, String vntTop, String vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
+     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
+     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
+     * @param strText the text/HTML markup to display with the radio button.
+     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
+     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
+     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
+   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
+     */
     public RadioButton(String strName, String vntLeft, String vntTop, int vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -204,7 +221,49 @@ public class RadioButton extends jsx3.gui.Block
      * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
    <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
      */
-    public RadioButton(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    public RadioButton(String strName, int vntLeft, String vntTop, int vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
+     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
+     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
+     * @param strText the text/HTML markup to display with the radio button.
+     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
+     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
+     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
+   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
+     */
+    public RadioButton(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
+     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
+     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
+     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
+     * @param strText the text/HTML markup to display with the radio button.
+     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
+     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
+     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
+   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
+     */
+    public RadioButton(String strName, String vntLeft, int vntTop, String vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -267,69 +326,6 @@ public class RadioButton extends jsx3.gui.Block
      * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
    <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
      */
-    public RadioButton(String strName, int vntLeft, String vntTop, int vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
-     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
-     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
-     * @param strText the text/HTML markup to display with the radio button.
-     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
-     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
-     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
-   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
-     */
-    public RadioButton(String strName, String vntLeft, String vntTop, int vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
-     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
-     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
-     * @param strText the text/HTML markup to display with the radio button.
-     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
-     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
-     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
-   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
-     */
-    public RadioButton(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new RadioButton", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, strValue, strGroupName, intSelected);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName a unique name distinguishing this object from all other JSX GUI objects in the JSX application.
-     * @param vntLeft the left offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntTop the top offset of this object from the parent container as a number (in pixels) or a string css value.
-     * @param vntWidth the width of this object as a number (in pixels) or a string css value.
-     * @param vntHeight the height of this object as a number (in pixels) or a string css value.
-     * @param strText the text/HTML markup to display with the radio button.
-     * @param strValue the value of the radio button (equivalent to the <code>value</code> property on a standard HTML radio button).
-     * @param strGroupName the group name of the radio button (equivalent to the <code>name</code> property on a standard HTML radio button).
-     * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
-   <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
-     */
     public RadioButton(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -351,7 +347,7 @@ public class RadioButton extends jsx3.gui.Block
      * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
    <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
      */
-    public RadioButton(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    public RadioButton(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -372,7 +368,7 @@ public class RadioButton extends jsx3.gui.Block
      * @param intSelected the default selection state of the radio button. <code>SELECTED</code> or
    <code>UNSELECTED</code>. <code>null</code> is equivalent to <code>SELECTED</code>.
      */
-    public RadioButton(String strName, String vntLeft, String vntTop, String vntWidth, String vntHeight, String strText, String strValue, String strGroupName, int intSelected)
+    public RadioButton(String strName, int vntLeft, String vntTop, int vntWidth, int vntHeight, String strText, String strValue, String strGroupName, int intSelected)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -402,9 +398,9 @@ public class RadioButton extends jsx3.gui.Block
 standard HTML radio button.
      */
     @SuppressWarnings("unchecked")
-    public void getGroupName(Callback<String> callback)
+    public void getGroupName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getGroupName");
@@ -430,9 +426,9 @@ at one time.
      * @param callback <code>SELECTED</code> or <code>UNSELECTED</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getDefaultSelected(Callback<Integer> callback)
+    public void getDefaultSelected(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDefaultSelected");
@@ -458,9 +454,9 @@ at one time.
      * @param callback <code>SELECTED</code> or <code>UNSELECTED</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getSelected(Callback<Integer> callback)
+    public void getSelected(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSelected");
@@ -493,9 +489,9 @@ buttons that are also rendered on screen.
      * @param bRendered 
      */
     @SuppressWarnings("unchecked")
-    public void getSiblings(boolean bRendered, Callback<Object[]> callback)
+    public void getSiblings(boolean bRendered, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSiblings", bRendered);
@@ -509,9 +505,9 @@ equal to the value of this radio button.
      * @param callback the value of this radio button.
      */
     @SuppressWarnings("unchecked")
-    public void getValue(Callback<String> callback)
+    public void getValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getValue");
@@ -538,9 +534,9 @@ equal to the value of this radio button.
      * @param callback the value of the selected radio button or <code>null</code> if no button is selected.
      */
     @SuppressWarnings("unchecked")
-    public void getGroupValue(Callback<String> callback)
+    public void getGroupValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getGroupValue");
@@ -565,9 +561,9 @@ optional or if it is required and it or one of its sibling radio buttons is sele
      * @param callback <code>jsx3.gui.Form.STATEVALID</code> or <code>jsx3.gui.Form.INSTATEVALID</code>.
      */
     @SuppressWarnings("unchecked")
-    public void doValidate(Callback<Integer> callback)
+    public void doValidate(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = doValidate");
@@ -597,7 +593,7 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
         String extension = "doKeyBinding(\"" + fctCallback + "\", \"" + strKeys + "\").";
         try
         {
-            Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -617,7 +613,7 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
         String extension = "doReset().";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -637,7 +633,7 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
         String extension = "doReset().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -651,9 +647,9 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
      * @param callback valid CSS property value, (i.e., red, #ff0000)
      */
     @SuppressWarnings("unchecked")
-    public void getDisabledBackgroundColor(Callback<String> callback)
+    public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDisabledBackgroundColor");
@@ -666,9 +662,9 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
      * @param callback valid CSS property value, (i.e., red, #ff0000)
      */
     @SuppressWarnings("unchecked")
-    public void getDisabledColor(Callback<String> callback)
+    public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDisabledColor");
@@ -682,9 +678,9 @@ STATEENABLED.
      * @param callback <code>STATEDISABLED</code> or <code>STATEENABLED</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getEnabled(Callback<Integer> callback)
+    public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getEnabled");
@@ -697,9 +693,9 @@ STATEENABLED.
      * @param callback plus-delimited (e.g.,'+') key sequence such as ctrl+s or ctrl+shift+alt+h or shift+a, etc
      */
     @SuppressWarnings("unchecked")
-    public void getKeyBinding(Callback<String> callback)
+    public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getKeyBinding");
@@ -713,9 +709,9 @@ OPTIONAL.
      * @param callback <code>REQUIRED</code> or <code>OPTIONAL</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getRequired(Callback<Integer> callback)
+    public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getRequired");
@@ -729,9 +725,9 @@ STATEVALID.
      * @param callback <code>STATEINVALID</code> or <code>STATEVALID</code>.
      */
     @SuppressWarnings("unchecked")
-    public void getValidationState(Callback<Integer> callback)
+    public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getValidationState");
@@ -750,7 +746,7 @@ STATEVALID.
         String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -771,7 +767,7 @@ STATEVALID.
         String extension = "setDisabledBackgroundColor(\"" + strColor + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -791,7 +787,7 @@ STATEVALID.
         String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -812,7 +808,7 @@ STATEVALID.
         String extension = "setDisabledColor(\"" + strColor + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -846,7 +842,7 @@ event for this control.
         String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -868,7 +864,7 @@ event for this control.
         String extension = "setKeyBinding(\"" + strSequence + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -888,7 +884,7 @@ event for this control.
         String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -909,7 +905,7 @@ event for this control.
         String extension = "setRequired(\"" + required + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -929,7 +925,7 @@ event for this control.
         String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -950,7 +946,7 @@ event for this control.
         String extension = "setValidationState(\"" + intState + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

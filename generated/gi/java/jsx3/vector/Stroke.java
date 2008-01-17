@@ -15,11 +15,7 @@
  */
 package jsx3.vector;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -46,7 +42,7 @@ public class Stroke extends jsx3.html.Tag
      * @param width the width of the stroke, in pixels, defaults to 1
      * @param alpha the opacity value, valid values are between 0 and 1, defaults to 1
      */
-    public Stroke(String color, int width, float alpha)
+    public Stroke(int color, int width, float alpha)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -60,7 +56,7 @@ public class Stroke extends jsx3.html.Tag
      * @param width the width of the stroke, in pixels, defaults to 1
      * @param alpha the opacity value, valid values are between 0 and 1, defaults to 1
      */
-    public Stroke(int color, int width, float alpha)
+    public Stroke(String color, int width, float alpha)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -75,9 +71,9 @@ public class Stroke extends jsx3.html.Tag
      * @param callback color
      */
     @SuppressWarnings("unchecked")
-    public void getColor(Callback<Integer> callback)
+    public void getColor(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getColor");
@@ -89,24 +85,13 @@ public class Stroke extends jsx3.html.Tag
      * Returns the color field, as a CSS hex string.
      */
     @SuppressWarnings("unchecked")
-    public void getColorHtml(Callback<String> callback)
+    public void getColorHtml(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getColorHtml");
         script.appendCall("__System.activateCallback", key, "reply");
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Sets the color field.
-     * @param color the new value for color
-     */
-    public void setColor(int color)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColor", color);
         getScriptProxy().addScript(script);
     }
 
@@ -122,13 +107,24 @@ public class Stroke extends jsx3.html.Tag
     }
 
     /**
+     * Sets the color field.
+     * @param color the new value for color
+     */
+    public void setColor(int color)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("setColor", color);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
      * Returns the width field.
      * @param callback width
      */
     @SuppressWarnings("unchecked")
-    public void getWidth(Callback<Integer> callback)
+    public void getWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getWidth");
@@ -152,9 +148,9 @@ public class Stroke extends jsx3.html.Tag
      * @param callback alpha
      */
     @SuppressWarnings("unchecked")
-    public void getAlpha(Callback<Float> callback)
+    public void getAlpha(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAlpha");
@@ -179,9 +175,9 @@ public class Stroke extends jsx3.html.Tag
      * @param callback null if v is empty, v if v is already a VectorStroke, or otherwise a new VectorStroke created by parsing the string according to the format specified above
      */
     @SuppressWarnings("unchecked")
-    public void valueOf(String v, Callback<String> callback)
+    public void valueOf(String v, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = valueOf", v);

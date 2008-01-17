@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -70,9 +66,9 @@ public class Legend extends jsx3.chart.ChartComponent
      * @param callback boxHeight
      */
     @SuppressWarnings("unchecked")
-    public void getBoxHeight(Callback<Integer> callback)
+    public void getBoxHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBoxHeight");
@@ -96,9 +92,9 @@ public class Legend extends jsx3.chart.ChartComponent
      * @param callback lineHeight
      */
     @SuppressWarnings("unchecked")
-    public void getLineHeight(Callback<Integer> callback)
+    public void getLineHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLineHeight");
@@ -122,9 +118,9 @@ public class Legend extends jsx3.chart.ChartComponent
      * @param callback labelClass
      */
     @SuppressWarnings("unchecked")
-    public void getLabelClass(Callback<String> callback)
+    public void getLabelClass(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLabelClass");
@@ -148,9 +144,9 @@ public class Legend extends jsx3.chart.ChartComponent
      * @param callback labelStyle
      */
     @SuppressWarnings("unchecked")
-    public void getLabelStyle(Callback<String> callback)
+    public void getLabelStyle(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLabelStyle");
@@ -174,9 +170,9 @@ public class Legend extends jsx3.chart.ChartComponent
      * @param callback backgroundFill
      */
     @SuppressWarnings("unchecked")
-    public void getBackgroundFill(Callback<String> callback)
+    public void getBackgroundFill(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBackgroundFill");
@@ -200,9 +196,9 @@ public class Legend extends jsx3.chart.ChartComponent
      * @param callback backgroundStroke
      */
     @SuppressWarnings("unchecked")
-    public void getBackgroundStroke(Callback<String> callback)
+    public void getBackgroundStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBackgroundStroke");
@@ -226,9 +222,9 @@ public class Legend extends jsx3.chart.ChartComponent
      * @param callback preferredWidth
      */
     @SuppressWarnings("unchecked")
-    public void getPreferredWidth(Callback<Integer> callback)
+    public void getPreferredWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPreferredWidth");
@@ -252,9 +248,9 @@ public class Legend extends jsx3.chart.ChartComponent
      * @param callback preferredHeight
      */
     @SuppressWarnings("unchecked")
-    public void getPreferredHeight(Callback<Integer> callback)
+    public void getPreferredHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPreferredHeight");
@@ -282,7 +278,7 @@ public class Legend extends jsx3.chart.ChartComponent
         String extension = "getLegendTitle().";
         try
         {
-            Constructor<jsx3.chart.ChartLabel> ctor = jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.ChartLabel> ctor = jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

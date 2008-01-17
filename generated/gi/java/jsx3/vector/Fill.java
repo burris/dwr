@@ -15,11 +15,7 @@
  */
 package jsx3.vector;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -82,9 +78,9 @@ public class Fill extends jsx3.html.Tag
      * Returns the color field, as a CSS hex string.
      */
     @SuppressWarnings("unchecked")
-    public void getColorHtml(Callback<String> callback)
+    public void getColorHtml(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getColorHtml");
@@ -119,9 +115,9 @@ public class Fill extends jsx3.html.Tag
      * @param callback alpha
      */
     @SuppressWarnings("unchecked")
-    public void getAlpha(Callback<Float> callback)
+    public void getAlpha(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAlpha");
@@ -145,9 +141,9 @@ public class Fill extends jsx3.html.Tag
      * @param callback type
      */
     @SuppressWarnings("unchecked")
-    public void getType(Callback<String> callback)
+    public void getType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getType");
@@ -213,9 +209,9 @@ public class Fill extends jsx3.html.Tag
      * @param callback alpha2
      */
     @SuppressWarnings("unchecked")
-    public void getAlpha2(Callback<Float> callback)
+    public void getAlpha2(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAlpha2");
@@ -239,9 +235,9 @@ public class Fill extends jsx3.html.Tag
      * @param callback angle
      */
     @SuppressWarnings("unchecked")
-    public void getAngle(Callback<Integer> callback)
+    public void getAngle(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAngle");
@@ -265,9 +261,9 @@ public class Fill extends jsx3.html.Tag
      * @param callback colors
      */
     @SuppressWarnings("unchecked")
-    public void getColors(Callback<String> callback)
+    public void getColors(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getColors");
@@ -299,7 +295,7 @@ public class Fill extends jsx3.html.Tag
         String extension = "valueOf(\"" + v + "\").";
         try
         {
-            Constructor<jsx3.vector.Fill> ctor = jsx3.vector.Fill.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Fill> ctor = jsx3.vector.Fill.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -322,7 +318,7 @@ public class Fill extends jsx3.html.Tag
         String extension = "valueOf(\"" + v + "\").";
         try
         {
-            Constructor<jsx3.vector.Fill> ctor = jsx3.vector.Fill.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Fill> ctor = jsx3.vector.Fill.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

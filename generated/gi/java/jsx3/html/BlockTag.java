@@ -15,11 +15,7 @@
  */
 package jsx3.html;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -66,9 +62,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback left
      */
     @SuppressWarnings("unchecked")
-    public void getLeft(Callback<Integer> callback)
+    public void getLeft(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLeft");
@@ -92,9 +88,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback top
      */
     @SuppressWarnings("unchecked")
-    public void getTop(Callback<Integer> callback)
+    public void getTop(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTop");
@@ -118,9 +114,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback width
      */
     @SuppressWarnings("unchecked")
-    public void getWidth(Callback<Integer> callback)
+    public void getWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getWidth");
@@ -144,9 +140,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback height
      */
     @SuppressWarnings("unchecked")
-    public void getHeight(Callback<Integer> callback)
+    public void getHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getHeight");
@@ -170,9 +166,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback margin
      */
     @SuppressWarnings("unchecked")
-    public void getMargin(Callback<String> callback)
+    public void getMargin(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMargin");
@@ -196,9 +192,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback padding
      */
     @SuppressWarnings("unchecked")
-    public void getPadding(Callback<String> callback)
+    public void getPadding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPadding");
@@ -222,9 +218,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback position
      */
     @SuppressWarnings("unchecked")
-    public void getPosition(Callback<String> callback)
+    public void getPosition(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPosition");
@@ -248,9 +244,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback zIndex
      */
     @SuppressWarnings("unchecked")
-    public void getZIndex(Callback<Integer> callback)
+    public void getZIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getZIndex");
@@ -274,9 +270,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback bgcolor
      */
     @SuppressWarnings("unchecked")
-    public void getBackgroundColor(Callback<String> callback)
+    public void getBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBackgroundColor");
@@ -300,9 +296,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback [top,right,bottom,left]
      */
     @SuppressWarnings("unchecked")
-    public void getMarginDimensions(Callback<Object[]> callback)
+    public void getMarginDimensions(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMarginDimensions");
@@ -315,9 +311,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback [top,right,bottom,left]
      */
     @SuppressWarnings("unchecked")
-    public void getPaddingDimensions(Callback<Object[]> callback)
+    public void getPaddingDimensions(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPaddingDimensions");
@@ -330,9 +326,9 @@ public class BlockTag extends jsx3.html.Tag
      * @param callback [left,top,width,height]
      */
     @SuppressWarnings("unchecked")
-    public void getDimensions(Callback<Object[]> callback)
+    public void getDimensions(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Object[].class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDimensions");
@@ -347,7 +343,7 @@ public class BlockTag extends jsx3.html.Tag
      * @param width the new width value
      * @param height the new height value
      */
-    public void setDimensions(int left, int top, int width, int height)
+    public void setDimensions(Object[] left, int top, int width, int height)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setDimensions", left, top, width, height);
@@ -361,7 +357,7 @@ public class BlockTag extends jsx3.html.Tag
      * @param width the new width value
      * @param height the new height value
      */
-    public void setDimensions(Object[] left, int top, int width, int height)
+    public void setDimensions(int left, int top, int width, int height)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setDimensions", left, top, width, height);

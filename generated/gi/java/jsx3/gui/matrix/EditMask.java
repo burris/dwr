@@ -15,11 +15,7 @@
  */
 package jsx3.gui.matrix;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -76,9 +72,9 @@ to initialize itself.
      * @param callback <code>false</code> to cancel the edit session.
      */
     @SuppressWarnings("unchecked")
-    public void emBeginEdit(String strValue, jsx3.lang.Object objTdDim, jsx3.lang.Object objPaneDim, jsx3.gui.Matrix objMatrix, jsx3.gui.matrix.Column objColumn, String strRecordId, String objTD, Callback<Boolean> callback)
+    public void emBeginEdit(String strValue, jsx3.lang.Object objTdDim, jsx3.lang.Object objPaneDim, jsx3.gui.Matrix objMatrix, jsx3.gui.matrix.Column objColumn, String strRecordId, String objTD, org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = emBeginEdit", strValue, objTdDim, objPaneDim, objMatrix, objColumn, strRecordId, objTD);
@@ -91,9 +87,9 @@ to initialize itself.
      * @param callback the edited value.
      */
     @SuppressWarnings("unchecked")
-    public void emEndEdit(Callback<String> callback)
+    public void emEndEdit(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = emEndEdit");
@@ -106,9 +102,9 @@ to initialize itself.
      * @param callback the current value of the edit mask.
      */
     @SuppressWarnings("unchecked")
-    public void emGetValue(Callback<String> callback)
+    public void emGetValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = emGetValue");
@@ -153,7 +149,7 @@ value {String} may be null
         String extension = "emGetSession().";
         try
         {
-            Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.lang.Object> ctor = jsx3.lang.Object.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -180,7 +176,7 @@ value {String} may be null
         String extension = "emGetSession().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

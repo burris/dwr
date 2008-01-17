@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -71,9 +67,9 @@ public class LinearAxis extends jsx3.chart.Axis
      * @param callback autoAdjust
      */
     @SuppressWarnings("unchecked")
-    public void getAutoAdjust(Callback<Boolean> callback)
+    public void getAutoAdjust(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAutoAdjust");
@@ -97,9 +93,9 @@ public class LinearAxis extends jsx3.chart.Axis
      * @param callback baseAtZero
      */
     @SuppressWarnings("unchecked")
-    public void getBaseAtZero(Callback<Boolean> callback)
+    public void getBaseAtZero(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getBaseAtZero");
@@ -123,9 +119,9 @@ public class LinearAxis extends jsx3.chart.Axis
      * @param callback min
      */
     @SuppressWarnings("unchecked")
-    public void getMin(Callback<Integer> callback)
+    public void getMin(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMin");
@@ -149,9 +145,9 @@ public class LinearAxis extends jsx3.chart.Axis
      * @param callback max
      */
     @SuppressWarnings("unchecked")
-    public void getMax(Callback<Integer> callback)
+    public void getMax(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMax");
@@ -175,9 +171,9 @@ public class LinearAxis extends jsx3.chart.Axis
      * @param callback interval
      */
     @SuppressWarnings("unchecked")
-    public void getInterval(Callback<Integer> callback)
+    public void getInterval(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getInterval");
@@ -202,9 +198,9 @@ public class LinearAxis extends jsx3.chart.Axis
      * @param callback coordinate along the axis
      */
     @SuppressWarnings("unchecked")
-    public void getCoordinateFor(Integer value, Callback<Integer> callback)
+    public void getCoordinateFor(Integer value, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCoordinateFor", value);
@@ -216,7 +212,7 @@ public class LinearAxis extends jsx3.chart.Axis
      * same as getCoordinateFor(), but does not clip to bounds of the axis
      * @param value 
      */
-    public void getCoordinateForNoClip(int value)
+    public void getCoordinateForNoClip(java.lang.Object value)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("getCoordinateForNoClip", value);

@@ -15,11 +15,7 @@
  */
 package jsx3.lang;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -47,9 +43,9 @@ public class System extends jsx3.lang.Object
      * @param strKey 
      */
     @SuppressWarnings("unchecked")
-    public void getProperty(String strKey, Callback<String> callback)
+    public void getProperty(String strKey, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getProperty", strKey);
@@ -72,7 +68,7 @@ locale is determined by introspecting the browser. If all else fails the default
      * Sets the system-wide locale. This in turn affects all applications running under the JSX system.
      * @param objLocale 
      */
-    public void setLocale(String objLocale)
+    public void setLocale(java.lang.Object objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("setLocale", objLocale);
@@ -95,9 +91,9 @@ locale is determined by introspecting the browser. If all else fails the default
      * @param strTokens 
      */
     @SuppressWarnings("unchecked")
-    public void getMessage(String strKey, jsx3.lang.Object strTokens, Callback<String> callback)
+    public void getMessage(String strKey, jsx3.lang.Object strTokens, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMessage", strKey, strTokens);
@@ -110,9 +106,9 @@ locale is determined by introspecting the browser. If all else fails the default
      * @param callback <code>"3.1.0"</code>, etc.
      */
     @SuppressWarnings("unchecked")
-    public void getVersion(Callback<String> callback)
+    public void getVersion(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getVersion");

@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -62,9 +58,9 @@ public class Series extends jsx3.chart.ChartComponent
      * @param callback seriesName
      */
     @SuppressWarnings("unchecked")
-    public void getSeriesName(Callback<String> callback)
+    public void getSeriesName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSeriesName");
@@ -99,9 +95,9 @@ public class Series extends jsx3.chart.ChartComponent
      * @param callback function(series,record) : string
      */
     @SuppressWarnings("unchecked")
-    public void getTooltipFunction(Callback<org.directwebremoting.proxy.CodeBlock> callback)
+    public void getTooltipFunction(org.directwebremoting.proxy.Callback<org.directwebremoting.proxy.CodeBlock> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTooltipFunction");
@@ -114,9 +110,9 @@ public class Series extends jsx3.chart.ChartComponent
      * @param callback stroke
      */
     @SuppressWarnings("unchecked")
-    public void getStroke(Callback<String> callback)
+    public void getStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getStroke");
@@ -140,9 +136,9 @@ public class Series extends jsx3.chart.ChartComponent
      * @param callback fill
      */
     @SuppressWarnings("unchecked")
-    public void getFill(Callback<String> callback)
+    public void getFill(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getFill");
@@ -166,9 +162,9 @@ public class Series extends jsx3.chart.ChartComponent
      * @param callback fillGradient
      */
     @SuppressWarnings("unchecked")
-    public void getFillGradient(Callback<String> callback)
+    public void getFillGradient(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getFillGradient");
@@ -197,7 +193,7 @@ public class Series extends jsx3.chart.ChartComponent
         String extension = "getXAxis().";
         try
         {
-            Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -217,7 +213,7 @@ public class Series extends jsx3.chart.ChartComponent
         String extension = "getXAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -236,7 +232,7 @@ public class Series extends jsx3.chart.ChartComponent
         String extension = "getYAxis().";
         try
         {
-            Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -256,7 +252,7 @@ public class Series extends jsx3.chart.ChartComponent
         String extension = "getYAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -270,9 +266,9 @@ public class Series extends jsx3.chart.ChartComponent
      * @param callback colorFunction
      */
     @SuppressWarnings("unchecked")
-    public void getColorFunction(Callback<org.directwebremoting.proxy.CodeBlock> callback)
+    public void getColorFunction(org.directwebremoting.proxy.Callback<org.directwebremoting.proxy.CodeBlock> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getColorFunction");
@@ -300,7 +296,7 @@ public class Series extends jsx3.chart.ChartComponent
         String extension = "getLabel().";
         try
         {
-            Constructor<jsx3.chart.ChartLabel> ctor = jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.ChartLabel> ctor = jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

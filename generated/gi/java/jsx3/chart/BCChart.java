@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -82,9 +78,9 @@ public class BCChart extends jsx3.chart.CartesianChart
      * @param callback type
      */
     @SuppressWarnings("unchecked")
-    public void getType(Callback<String> callback)
+    public void getType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getType");
@@ -108,9 +104,9 @@ public class BCChart extends jsx3.chart.CartesianChart
      * @param callback seriesOverlap
      */
     @SuppressWarnings("unchecked")
-    public void getSeriesOverlap(Callback<Float> callback)
+    public void getSeriesOverlap(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getSeriesOverlap");
@@ -134,9 +130,9 @@ public class BCChart extends jsx3.chart.CartesianChart
      * @param callback categoryCoverage
      */
     @SuppressWarnings("unchecked")
-    public void getCategoryCoverage(Callback<Float> callback)
+    public void getCategoryCoverage(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCategoryCoverage");

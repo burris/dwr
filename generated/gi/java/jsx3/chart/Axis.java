@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -104,9 +100,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param v 
      */
     @SuppressWarnings("unchecked")
-    public void percent(Integer v, Callback<String> callback)
+    public void percent(Integer v, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = percent", v);
@@ -120,9 +116,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param signif 
      */
     @SuppressWarnings("unchecked")
-    public void scientific(Integer v, int signif, Callback<String> callback)
+    public void scientific(Integer v, int signif, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = scientific", v, signif);
@@ -135,9 +131,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback horizontal
      */
     @SuppressWarnings("unchecked")
-    public void getHorizontal(Callback<Boolean> callback)
+    public void getHorizontal(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getHorizontal");
@@ -161,9 +157,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback showAxis
      */
     @SuppressWarnings("unchecked")
-    public void getShowAxis(Callback<Boolean> callback)
+    public void getShowAxis(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getShowAxis");
@@ -187,9 +183,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback labelFunction
      */
     @SuppressWarnings("unchecked")
-    public void getLabelFunction(Callback<org.directwebremoting.proxy.CodeBlock> callback)
+    public void getLabelFunction(org.directwebremoting.proxy.Callback<org.directwebremoting.proxy.CodeBlock> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, org.directwebremoting.proxy.CodeBlock.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLabelFunction");
@@ -213,9 +209,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback axisStroke
      */
     @SuppressWarnings("unchecked")
-    public void getAxisStroke(Callback<String> callback)
+    public void getAxisStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getAxisStroke");
@@ -239,9 +235,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback showLabels
      */
     @SuppressWarnings("unchecked")
-    public void getShowLabels(Callback<Boolean> callback)
+    public void getShowLabels(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getShowLabels");
@@ -265,9 +261,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback labelGap
      */
     @SuppressWarnings("unchecked")
-    public void getLabelGap(Callback<Integer> callback)
+    public void getLabelGap(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLabelGap");
@@ -302,9 +298,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback tickLength
      */
     @SuppressWarnings("unchecked")
-    public void getTickLength(Callback<Integer> callback)
+    public void getTickLength(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTickLength");
@@ -328,9 +324,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback tickPlacement, one of {'none','inside','outside','cross'}
      */
     @SuppressWarnings("unchecked")
-    public void getTickPlacement(Callback<String> callback)
+    public void getTickPlacement(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTickPlacement");
@@ -354,9 +350,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback tickStroke
      */
     @SuppressWarnings("unchecked")
-    public void getTickStroke(Callback<String> callback)
+    public void getTickStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTickStroke");
@@ -380,9 +376,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback minorTickDivisions
      */
     @SuppressWarnings("unchecked")
-    public void getMinorTickDivisions(Callback<Integer> callback)
+    public void getMinorTickDivisions(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMinorTickDivisions");
@@ -406,9 +402,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback minorTickLength
      */
     @SuppressWarnings("unchecked")
-    public void getMinorTickLength(Callback<Integer> callback)
+    public void getMinorTickLength(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMinorTickLength");
@@ -432,9 +428,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback minorTickPlacement, one of {'none','inside','outside','cross'}
      */
     @SuppressWarnings("unchecked")
-    public void getMinorTickPlacement(Callback<String> callback)
+    public void getMinorTickPlacement(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMinorTickPlacement");
@@ -458,9 +454,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback minorTickStroke
      */
     @SuppressWarnings("unchecked")
-    public void getMinorTickStroke(Callback<String> callback)
+    public void getMinorTickStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMinorTickStroke");
@@ -484,9 +480,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback labelClass
      */
     @SuppressWarnings("unchecked")
-    public void getLabelClass(Callback<String> callback)
+    public void getLabelClass(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLabelClass");
@@ -510,9 +506,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback labelStyle
      */
     @SuppressWarnings("unchecked")
-    public void getLabelStyle(Callback<String> callback)
+    public void getLabelStyle(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLabelStyle");
@@ -536,9 +532,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback labelColor
      */
     @SuppressWarnings("unchecked")
-    public void getLabelColor(Callback<String> callback)
+    public void getLabelColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getLabelColor");
@@ -573,9 +569,9 @@ public class Axis extends jsx3.chart.ChartComponent
      * @param callback displayWidth
      */
     @SuppressWarnings("unchecked")
-    public void getDisplayWidth(Callback<Integer> callback)
+    public void getDisplayWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDisplayWidth");
@@ -603,7 +599,7 @@ public class Axis extends jsx3.chart.ChartComponent
         String extension = "getAxisTitle().";
         try
         {
-            Constructor<jsx3.chart.ChartLabel> ctor = jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.ChartLabel> ctor = jsx3.chart.ChartLabel.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -622,7 +618,7 @@ public class Axis extends jsx3.chart.ChartComponent
         String extension = "getOpposingAxis().";
         try
         {
-            Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.Axis> ctor = jsx3.chart.Axis.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -641,7 +637,7 @@ public class Axis extends jsx3.chart.ChartComponent
         String extension = "getOpposingAxis().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

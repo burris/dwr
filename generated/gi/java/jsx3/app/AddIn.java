@@ -15,11 +15,7 @@
  */
 package jsx3.app;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -52,9 +48,9 @@ public class AddIn extends jsx3.lang.Object
      * 
      */
     @SuppressWarnings("unchecked")
-    public void getId(Callback<String> callback)
+    public void getId(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getId");
@@ -66,9 +62,9 @@ public class AddIn extends jsx3.lang.Object
      * 
      */
     @SuppressWarnings("unchecked")
-    public void getName(Callback<String> callback)
+    public void getName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getName");
@@ -80,9 +76,9 @@ public class AddIn extends jsx3.lang.Object
      * 
      */
     @SuppressWarnings("unchecked")
-    public void getDescription(Callback<String> callback)
+    public void getDescription(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getDescription");
@@ -94,9 +90,9 @@ public class AddIn extends jsx3.lang.Object
      * 
      */
     @SuppressWarnings("unchecked")
-    public void getVersion(Callback<String> callback)
+    public void getVersion(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getVersion");
@@ -108,9 +104,9 @@ public class AddIn extends jsx3.lang.Object
      * 
      */
     @SuppressWarnings("unchecked")
-    public void getKey(Callback<String> callback)
+    public void getKey(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getKey");
@@ -127,7 +123,7 @@ public class AddIn extends jsx3.lang.Object
         String extension = "getSettings().";
         try
         {
-            Constructor<jsx3.app.Settings> ctor = jsx3.app.Settings.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.app.Settings> ctor = jsx3.app.Settings.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -142,9 +138,9 @@ public class AddIn extends jsx3.lang.Object
      * @param strURI 
      */
     @SuppressWarnings("unchecked")
-    public void resolveURI(java.net.URI strURI, Callback<java.net.URI> callback)
+    public void resolveURI(java.net.URI strURI, org.directwebremoting.proxy.Callback<java.net.URI> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, java.net.URI.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.net.URI.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = resolveURI", strURI);
@@ -157,9 +153,9 @@ public class AddIn extends jsx3.lang.Object
      * @param strURI 
      */
     @SuppressWarnings("unchecked")
-    public void resolveURI(String strURI, Callback<java.net.URI> callback)
+    public void resolveURI(String strURI, org.directwebremoting.proxy.Callback<java.net.URI> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, java.net.URI.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.net.URI.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = resolveURI", strURI);
@@ -171,9 +167,9 @@ public class AddIn extends jsx3.lang.Object
      * 
      */
     @SuppressWarnings("unchecked")
-    public void getUriPrefix(Callback<String> callback)
+    public void getUriPrefix(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getUriPrefix");
@@ -187,9 +183,9 @@ public class AddIn extends jsx3.lang.Object
      * @param bRel 
      */
     @SuppressWarnings("unchecked")
-    public void relativizeURI(java.net.URI strURI, boolean bRel, Callback<java.net.URI> callback)
+    public void relativizeURI(java.net.URI strURI, boolean bRel, org.directwebremoting.proxy.Callback<java.net.URI> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, java.net.URI.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.net.URI.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = relativizeURI", strURI, bRel);
@@ -203,9 +199,9 @@ public class AddIn extends jsx3.lang.Object
      * @param bRel 
      */
     @SuppressWarnings("unchecked")
-    public void relativizeURI(String strURI, boolean bRel, Callback<java.net.URI> callback)
+    public void relativizeURI(String strURI, boolean bRel, org.directwebremoting.proxy.Callback<java.net.URI> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, java.net.URI.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.net.URI.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = relativizeURI", strURI, bRel);

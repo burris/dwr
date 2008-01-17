@@ -15,11 +15,7 @@
  */
 package jsx3.vector;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -46,7 +42,7 @@ public class Polygon extends jsx3.vector.Shape
      * @param top top position (in pixels) of the object relative to its parent container
      * @param points the list of points comprising the polygon
      */
-    public Polygon(int left, int top, String points)
+    public Polygon(int left, int top, Object[] points)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -60,7 +56,7 @@ public class Polygon extends jsx3.vector.Shape
      * @param top top position (in pixels) of the object relative to its parent container
      * @param points the list of points comprising the polygon
      */
-    public Polygon(int left, int top, Object[] points)
+    public Polygon(int left, int top, String points)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();

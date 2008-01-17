@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -69,9 +65,9 @@ public class PointSeries extends jsx3.chart.PlotSeries
      * @param callback magnitude
      */
     @SuppressWarnings("unchecked")
-    public void getMagnitude(Callback<Integer> callback)
+    public void getMagnitude(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getMagnitude");
@@ -96,9 +92,9 @@ public class PointSeries extends jsx3.chart.PlotSeries
      * @param record 
      */
     @SuppressWarnings("unchecked")
-    public void tooltip(jsx3.chart.Series series, jsx3.xml.Node record, Callback<String> callback)
+    public void tooltip(jsx3.chart.Series series, jsx3.xml.Node record, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = tooltip", series, record);

@@ -15,11 +15,7 @@
  */
 package jsx3.vector;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -66,9 +62,9 @@ public class Shape extends jsx3.vector.Tag
      * @param callback path
      */
     @SuppressWarnings("unchecked")
-    public void getPath(Callback<String> callback)
+    public void getPath(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPath");
@@ -100,7 +96,7 @@ public class Shape extends jsx3.vector.Tag
         String extension = "pathMoveTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<jsx3.vector.Shape> ctor = jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Shape> ctor = jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -123,7 +119,7 @@ public class Shape extends jsx3.vector.Tag
         String extension = "pathMoveTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -145,7 +141,7 @@ public class Shape extends jsx3.vector.Tag
         String extension = "pathLineTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<jsx3.vector.Shape> ctor = jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Shape> ctor = jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -168,7 +164,7 @@ public class Shape extends jsx3.vector.Tag
         String extension = "pathLineTo(\"" + x + "\", \"" + y + "\", \"" + bRel + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -196,7 +192,7 @@ public class Shape extends jsx3.vector.Tag
         String extension = "pathArcTo(\"" + cx + "\", \"" + cy + "\", \"" + rx + "\", \"" + ry + "\", \"" + x1 + "\", \"" + y1 + "\", \"" + x2 + "\", \"" + y2 + "\", \"" + bCW + "\").";
         try
         {
-            Constructor<jsx3.vector.Shape> ctor = jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Shape> ctor = jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -225,7 +221,7 @@ public class Shape extends jsx3.vector.Tag
         String extension = "pathArcTo(\"" + cx + "\", \"" + cy + "\", \"" + rx + "\", \"" + ry + "\", \"" + x1 + "\", \"" + y1 + "\", \"" + x2 + "\", \"" + y2 + "\", \"" + bCW + "\").";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -244,7 +240,7 @@ public class Shape extends jsx3.vector.Tag
         String extension = "pathClose().";
         try
         {
-            Constructor<jsx3.vector.Shape> ctor = jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.vector.Shape> ctor = jsx3.vector.Shape.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -264,7 +260,7 @@ public class Shape extends jsx3.vector.Tag
         String extension = "pathClose().";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)

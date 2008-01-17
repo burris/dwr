@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -72,9 +68,9 @@ public class CategoryAxis extends jsx3.chart.Axis
      * @param callback tickAlignment, one of {'aligned','between'}
      */
     @SuppressWarnings("unchecked")
-    public void getTickAlignment(Callback<String> callback)
+    public void getTickAlignment(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getTickAlignment");
@@ -98,9 +94,9 @@ public class CategoryAxis extends jsx3.chart.Axis
      * @param callback categoryField
      */
     @SuppressWarnings("unchecked")
-    public void getCategoryField(Callback<String> callback)
+    public void getCategoryField(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getCategoryField");
@@ -124,9 +120,9 @@ public class CategoryAxis extends jsx3.chart.Axis
      * @param callback paddingLow
      */
     @SuppressWarnings("unchecked")
-    public void getPaddingLow(Callback<Float> callback)
+    public void getPaddingLow(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPaddingLow");
@@ -150,9 +146,9 @@ public class CategoryAxis extends jsx3.chart.Axis
      * @param callback paddingHigh
      */
     @SuppressWarnings("unchecked")
-    public void getPaddingHigh(Callback<Float> callback)
+    public void getPaddingHigh(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Float.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPaddingHigh");

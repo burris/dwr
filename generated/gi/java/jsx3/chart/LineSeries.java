@@ -15,11 +15,7 @@
  */
 package jsx3.chart;
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -99,9 +95,9 @@ public class LineSeries extends jsx3.chart.Series
      * @param callback xField
      */
     @SuppressWarnings("unchecked")
-    public void getXField(Callback<String> callback)
+    public void getXField(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getXField");
@@ -125,9 +121,9 @@ public class LineSeries extends jsx3.chart.Series
      * @param callback yField
      */
     @SuppressWarnings("unchecked")
-    public void getYField(Callback<String> callback)
+    public void getYField(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getYField");
@@ -151,9 +147,9 @@ public class LineSeries extends jsx3.chart.Series
      * @param callback form
      */
     @SuppressWarnings("unchecked")
-    public void getForm(Callback<String> callback)
+    public void getForm(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getForm");
@@ -177,9 +173,9 @@ public class LineSeries extends jsx3.chart.Series
      * @param callback interpolateValues
      */
     @SuppressWarnings("unchecked")
-    public void getInterpolateValues(Callback<Boolean> callback)
+    public void getInterpolateValues(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Boolean.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getInterpolateValues");
@@ -203,9 +199,9 @@ public class LineSeries extends jsx3.chart.Series
      * @param callback pointRadius
      */
     @SuppressWarnings("unchecked")
-    public void getPointRadius(Callback<Integer> callback)
+    public void getPointRadius(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, Integer.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPointRadius");
@@ -234,7 +230,7 @@ public class LineSeries extends jsx3.chart.Series
         String extension = "getPointRenderer().";
         try
         {
-            Constructor<jsx3.chart.PointRenderer> ctor = jsx3.chart.PointRenderer.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<jsx3.chart.PointRenderer> ctor = jsx3.chart.PointRenderer.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -260,9 +256,9 @@ public class LineSeries extends jsx3.chart.Series
      * @param callback pointFill
      */
     @SuppressWarnings("unchecked")
-    public void getPointFill(Callback<String> callback)
+    public void getPointFill(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPointFill");
@@ -286,9 +282,9 @@ public class LineSeries extends jsx3.chart.Series
      * @param callback pointStroke
      */
     @SuppressWarnings("unchecked")
-    public void getPointStroke(Callback<String> callback)
+    public void getPointStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPointStroke");
@@ -312,9 +308,9 @@ public class LineSeries extends jsx3.chart.Series
      * @param callback pointGradient
      */
     @SuppressWarnings("unchecked")
-    public void getPointGradient(Callback<String> callback)
+    public void getPointGradient(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = getPointGradient");
@@ -339,9 +335,9 @@ public class LineSeries extends jsx3.chart.Series
      * @param record 
      */
     @SuppressWarnings("unchecked")
-    public void tooltip(jsx3.chart.Series series, jsx3.xml.Node record, Callback<String> callback)
+    public void tooltip(jsx3.chart.Series series, jsx3.xml.Node record, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, String.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = tooltip", series, record);
