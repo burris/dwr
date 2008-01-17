@@ -93,7 +93,14 @@ public class Field extends Element
         writeDocumentation(field);
         field.addAttribute(new Attribute(NAME, name));
         field.addAttribute(new Attribute(TYPE, type.getFullName()));
-        field.addAttribute(new Attribute(VALUE, value));
+        if (value == null)
+        {
+            field.addAttribute(new Attribute(VALUE, "null"));
+        }
+        else
+        {
+            field.addAttribute(new Attribute(VALUE, value));
+        }
 
         return field;
     }

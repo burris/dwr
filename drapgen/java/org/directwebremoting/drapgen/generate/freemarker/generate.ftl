@@ -15,11 +15,7 @@
  */
 package ${type.packageName};
 
-import java.lang.reflect.Constructor;
-
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.extend.CallbackHelper;
-import org.directwebremoting.proxy.Callback;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -69,7 +65,7 @@ public class ${type.name} <#if type.superClass??>extends ${type.superClass.fullN
     /**
      * ${constant.documentation!noDocumentation}
      */
-    public static final ${constant.type} ${constant.name} = ${constant.value};
+    public static final ${constant.type} ${constant.name} = ${constant.value!'null'};
 
 </#macro>
 
@@ -137,7 +133,7 @@ public class ${type.name} <#if type.superClass??>extends ${type.superClass.fullN
         String extension = "${method.name}(<#list method.parameters as parameter>\"" + ${parameter.name} + "\"<#if parameter_has_next>, </#if></#list>).";
         try
         {
-            Constructor<${project.asObject(method.returnType.type)}> ctor = ${method.returnType.type}.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<${project.asObject(method.returnType.type)}> ctor = ${method.returnType.type}.class.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -155,7 +151,7 @@ public class ${type.name} <#if type.superClass??>extends ${type.superClass.fullN
         String extension = "${method.name}(<#list method.parameters as parameter>\"" + ${parameter.name} + "\"<#if parameter_has_next>, </#if></#list>).";
         try
         {
-            Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
             return ctor.newInstance(this, extension, getScriptProxy());
         }
         catch (Exception ex)
@@ -168,9 +164,9 @@ public class ${type.name} <#if type.superClass??>extends ${type.superClass.fullN
 <#macro createMethodCallback method>
     <@subroutineDoc subroutine=method returnInCallback=true/>
     @SuppressWarnings("unchecked")
-    public void ${method.name}(<#list method.parameters as parameter>${parameter.type} ${parameter.name}, </#list>Callback<${project.asObject(method.returnType.type)}> callback)
+    public void ${method.name}(<#list method.parameters as parameter>${parameter.type} ${parameter.name}, </#list>org.directwebremoting.proxy.Callback<${project.asObject(method.returnType.type)}> callback)
     {
-        String key = CallbackHelper.saveCallback(callback, ${project.asObject(method.returnType.type)}.class);
+        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, ${project.asObject(method.returnType.type)}.class);
 
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("var reply = ${method.name}"<#list method.parameters as parameter>, ${parameter.name}</#list>);
