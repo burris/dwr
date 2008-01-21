@@ -44,6 +44,6 @@ public class ContextConverter extends BaseV20Converter implements Converter
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx) throws MarshallException
     {
         Context context = (Context) data;
-        return new NonNestedOutboundVariable(context.internalFullPath(this));
+        return new NonNestedOutboundVariable(/*context.getContextPath()*/null);
     }
 }

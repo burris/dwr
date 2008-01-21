@@ -151,7 +151,7 @@ public class AnnotationsConfigurator implements Configurator
         ScriptScope scope = createAnn.scope();
 
         CreatorManager creatorManager = container.getBean(CreatorManager.class);
-        String creatorName = LocalUtil.replace(creatorClass, ".", "_");
+        String creatorName = creatorClass.replace(".", "_");
         creatorManager.addCreatorType(creatorName, creatorClass);
 
         Map<String, String> params = new HashMap<String, String>();
@@ -249,7 +249,7 @@ public class AnnotationsConfigurator implements Configurator
         Map<String, String> params = getParamsMap(convertAnn.params());
 
         ConverterManager converterManager = container.getBean(ConverterManager.class);
-        String converterName = LocalUtil.replace(converterClass, ".", "_");
+        String converterName = converterClass.replace(".", "_");
         converterManager.addConverterType(converterName, converterClass);
 
         if (BeanConverter.class.isAssignableFrom(converter))

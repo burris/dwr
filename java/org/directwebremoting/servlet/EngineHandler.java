@@ -130,6 +130,33 @@ public class EngineHandler extends FileHandler
     }
 
     /**
+     * Does engine.js do GETs for Safari
+     */
+    protected static final String PARAM_SCRIPT_ALLOWGET = "${allowGetForSafariButMakeForgeryEasier}";
+
+    /**
+     * Do we force polling with XHR on IE to prevent clicking
+     */
+    protected static final String PARAM_SCRIPT_POLLXHR = "${pollWithXhr}";
+
+    /**
+     * Under what cookie name is the session id stored?
+     */
+    protected static final String PARAM_SCRIPT_COOKIENAME = "${sessionCookieName}";
+
+    /**
+     * What is the replacement field we use to tell engine.js what we are using
+     * for script tag hack protection
+     */
+    protected static final String PARAM_SCRIPT_TAG_PROTECTION = "${scriptTagProtection}";
+
+    /**
+     * What is the replacement field we use to tell engine.js what we are using
+     * for script tag hack protection
+     */
+    protected static final String PARAM_DEFAULT_PATH = "${defaultPath}";
+
+    /**
      * If we need to override the default path
      */
     private String overridePath = null;

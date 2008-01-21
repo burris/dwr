@@ -66,35 +66,46 @@ public final class LocalUtil
     }
 
     /**
-     * Replacement for String#replaceAll(String, String) in JDK 1.4+
-     * @param text source text
-     * @param repl the stuff to get rid of
-     * @param with the stuff to replace it with
-     * @return replaced text or null if any args are null
+     * Create a string by joining the array elements together with the separator
+     * in-between each element. A null (in the array or as a separator) is
+     * treated as an empty string.
+     * @param array The array of elements to join
+     * @param separator The string sequence to place between array elements
+     * @return A string containing the joined elements
      */
-    public static String replace(String text, String repl, String with)
+    public static String join(Object[] array, String separator)
     {
-        if (text == null || repl == null || with == null || repl.length() == 0)
+        if (array == null)
         {
-            return text;
+            return null;
         }
 
-        StringBuffer buf = new StringBuffer(text.length());
-        int searchFrom = 0;
-        while (true)
+        if (separator == null)
         {
-            int foundAt = text.indexOf(repl, searchFrom);
-            if (foundAt == -1)
+            separator = "";
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        boolean isFirst = true;
+
+        for (Object object : array)
+        {
+            if (isFirst)
             {
-                break;
+                isFirst = false;
+            }
+            else
+            {
+                buffer.append(separator);
             }
 
-            buf.append(text.substring(searchFrom, foundAt)).append(with);
-            searchFrom = foundAt + repl.length();
+            if (object != null)
+            {
+                buffer.append(object);
+            }
         }
-        buf.append(text.substring(searchFrom));
 
-        return buf.toString();
+        return buffer.toString();
     }
 
     /**

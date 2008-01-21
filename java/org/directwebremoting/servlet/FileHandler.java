@@ -88,7 +88,7 @@ public class FileHandler implements Handler
                                 String search = entry.getKey();
                                 if (line.contains(search))
                                 {
-                                    line = LocalUtil.replace(line, search, entry.getValue());
+                                    line = line.replace(search, entry.getValue());
                                 }
                             }
                         }
@@ -349,38 +349,6 @@ public class FileHandler implements Handler
 
         ETAG = "\"" + CONTAINER_START_TIME + '\"';
     }
-
-    /**
-     * Does engine.js do GETs for Safari
-     */
-    protected static final String PARAM_SCRIPT_ALLOWGET = "${allowGetForSafariButMakeForgeryEasier}";
-
-    /**
-     * Do we force polling with XHR on IE to prevent clicking
-     */
-    protected static final String PARAM_SCRIPT_POLLXHR = "${pollWithXhr}";
-
-    /**
-     * The page id parameter that goes in engine.js
-     */
-    protected static final String PARAM_SCRIPT_SESSIONID = "${scriptSessionId}";
-
-    /**
-     * Under what cookie name is the session id stored?
-     */
-    protected static final String PARAM_SCRIPT_COOKIENAME = "${sessionCookieName}";
-
-    /**
-     * What is the replacement field we use to tell engine.js what we are using
-     * for script tag hack protection
-     */
-    protected static final String PARAM_SCRIPT_TAG_PROTECTION = "${scriptTagProtection}";
-
-    /**
-     * What is the replacement field we use to tell engine.js what we are using
-     * for script tag hack protection
-     */
-    protected static final String PARAM_DEFAULT_PATH = "${defaultPath}";
 
     /**
      * The log stream

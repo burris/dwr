@@ -18,8 +18,6 @@ package org.getahead.dwrdemo.address;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.directwebremoting.util.LocalUtil;
-
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
@@ -39,7 +37,7 @@ public class AddressLookup
     public Map<String, String> fillAddress(String origpostcode)
     {
         Map<String, String> reply = new HashMap<String, String>();
-        String postcode = LocalUtil.replace(origpostcode, " ", "");
+        String postcode = origpostcode.replace(" ", "");
 
         if ("LE167TR".equalsIgnoreCase(postcode))
         {

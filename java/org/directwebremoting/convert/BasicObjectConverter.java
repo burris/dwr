@@ -235,7 +235,7 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
 
         exclusions = new ArrayList<String>();
 
-        String toSplit = LocalUtil.replace(excludes, ",", " ");
+        String toSplit = excludes.replace(",", " ");
         StringTokenizer st = new StringTokenizer(toSplit);
         while (st.hasMoreTokens())
         {
@@ -262,7 +262,7 @@ public abstract class BasicObjectConverter extends BaseV20Converter implements N
 
         inclusions = new ArrayList<String>();
 
-        String toSplit = LocalUtil.replace(includes, ",", " ");
+        String toSplit = includes.replace(",", " ");
         StringTokenizer st = new StringTokenizer(toSplit);
         while (st.hasMoreTokens())
         {

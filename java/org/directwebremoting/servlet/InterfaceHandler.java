@@ -38,8 +38,8 @@ public class InterfaceHandler implements Handler
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String scriptName = request.getPathInfo();
-        scriptName = LocalUtil.replace(scriptName, interfaceHandlerUrl, "");
-        scriptName = LocalUtil.replace(scriptName, PathConstants.EXTENSION_JS, "");
+        scriptName = scriptName.replace(interfaceHandlerUrl, "");
+        scriptName = scriptName.replace(PathConstants.EXTENSION_JS, "");
         if (!LocalUtil.isJavaIdentifier(scriptName))
         {
             throw new SecurityException("Script names may only contain Java Identifiers");

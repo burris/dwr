@@ -29,7 +29,6 @@ import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
 import org.directwebremoting.hibernate.Database;
 import org.directwebremoting.hibernate.H3SessionAjaxFilter;
-import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.SingletonContainer;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -520,8 +519,8 @@ public class AllConverterTest
         Assert.assertNotNull(result);
 
         String script = result.getDeclareCode() + result.getBuildCode() + result.getAssignCode();
-        script = LocalUtil.replace(script, "\r", "");
-        script = LocalUtil.replace(script, "\n", "");
+        script = script.replace("\r", "");
+        script = script.replace("\n", "");
 
         Assert.assertEquals(expected, script);
     }
