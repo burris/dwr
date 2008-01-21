@@ -109,7 +109,7 @@ public class ${type.name} <#if type.superClass??>extends ${type.superClass.fullN
     public void ${method.name}(<#list method.parameters as parameter>${parameter.type} ${parameter.name}<#if parameter_has_next>, </#if></#list>)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("${method.name}"<#list method.parameters as parameter>, ${parameter.name}</#list>);
+        script.appendCall(getContextPath() + "${method.name}"<#list method.parameters as parameter>, ${parameter.name}</#list>);
         getScriptProxy().addScript(script);
     }
 </#macro>
@@ -119,7 +119,7 @@ public class ${type.name} <#if type.superClass??>extends ${type.superClass.fullN
     public ${method.returnType.type} ${method.name}(<#list method.parameters as parameter>${parameter.type} ${parameter.name}<#if parameter_has_next>, </#if></#list>)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("${method.name}"<#list method.parameters as parameter>, ${parameter.name}</#list>);
+        script.appendCall(getContextPath() + "${method.name}"<#list method.parameters as parameter>, ${parameter.name}</#list>);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -166,11 +166,22 @@ public class ${type.name} <#if type.superClass??>extends ${type.superClass.fullN
     @SuppressWarnings("unchecked")
     public void ${method.name}(<#list method.parameters as parameter>${parameter.type} ${parameter.name}, </#list>org.directwebremoting.proxy.Callback<${project.asObject(method.returnType.type)}> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, ${project.asObject(method.returnType.type)}.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = ${method.name}"<#list method.parameters as parameter>, ${parameter.name}</#list>);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "${method.name}"<#list method.parameters as parameter>, ${parameter.name}</#list>);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, ${project.asObject(method.returnType.type)}.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 </#macro>

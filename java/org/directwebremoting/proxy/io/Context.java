@@ -17,7 +17,6 @@ package org.directwebremoting.proxy.io;
 
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ScriptProxy;
-import org.directwebremoting.convert.ContextConverter;
 
 /**
  * Context is a way for a {@link ScriptProxy} to return a value that can only be
@@ -44,9 +43,9 @@ public class Context
      * Accessor for the string to append to the parent context to define us
      * @return the extension
      */
-    public String internalFullPath(ContextConverter ignore)
+    protected String getContextPath()
     {
-        String prefix = (parent == null) ? "" : parent.internalFullPath(ignore);
+        String prefix = (parent == null) ? "" : parent.getContextPath();
         return prefix + extension;
     }
 
